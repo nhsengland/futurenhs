@@ -1,0 +1,36 @@
+﻿@model MvcForum.Web.ViewModels.Admin.CategoryEditViewModel
+
+@{
+    ViewBag.Title = "Edit Category";
+}
+
+@Html.Partial("_CategoryNavButtons")
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+        @if(Model.Id != Guid.Empty) {
+            <div class="pull-right">
+                <a href="@Url.Action("EditCategoryPermissions", "Permissions", new {Model.Id})"
+                   style="margin-left: 10px; margin-top: -7px;" role="button"
+                   class="btn-mvc-green">Role Permissions</a>
+            </div>
+        }
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("EditCategory", "AdminCategory", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(false)
+            @Html.HiddenFor(model => model.Id)
+
+            @Html.Partial("_CategoryFields", Model)
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Update" />
+                <a href="@Url.Action("DeleteCategoryConfirmation", new { id = Model.Id })" class="btn-mvc btn-mvc-large" role="button">Delete</a>
+            </div>
+        }
+
+    </div>
+</div>
+

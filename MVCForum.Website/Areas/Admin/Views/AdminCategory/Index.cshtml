@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Manage Categories";
+}
+
+@section AdminHeader
+{
+    <link href="@Url.Content("~/Content/jstree/themes/proton/style.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Content/jstree/jstree.min.js")"></script>
+    <script>
+        $(function () {
+            $('#container').jstree({
+                'core': {
+                    'themes': {
+                        'name': 'proton',
+                        'responsive': true
+                    },
+                    'check_callback': true
+                }
+            }).bind("select_node.jstree", function (e, data) {
+                var href = data.node.a_attr.href;
+                document.location.href = href;
+            });
+            //,
+            //'plugins': ["dnd"]
+            //$(document).on('dnd_start.vakata', function (e, data) {
+            //    console.log('Started');
+            //});
+            //$(document).on('dnd_stop.vakata', function (e, data) {
+            //    var eValue = e;
+            //    var dataValue = data;
+            //});
+        });
+    </script>
+
+}
+
+@Html.Partial("_CategoryNavButtons")
+
+
+@Html.Action("GetMainCategories")
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Language.LanguageListAllViewModel
+<div class="side-box categories-box">
+    <h5>@Html.LanguageString("Language.Change")</h5>
+    <div class="languageselector">
+        @Html.DropDownListFor(model => model.CurrentLanguage, new SelectList(Model.Alllanguages, "Id", "Name"))
+    </div>
+</div>

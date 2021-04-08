@@ -1,0 +1,25 @@
+﻿@using MvcForum.Core.Constants
+@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Admin
+@{
+    var genericMessage = new GenericMessageViewModel();
+    if (TempData[Constants.MessageViewBagName] != null)
+    {
+        genericMessage = (GenericMessageViewModel)TempData[Constants.MessageViewBagName];
+    }
+    else if (ViewBag.Message != null)
+    {
+        genericMessage = (GenericMessageViewModel)ViewBag.Message;
+    }
+}
+
+<div id="jsquickmessage" style="display:none;"></div>
+@if (!string.IsNullOrEmpty(genericMessage.Message))
+{
+<script type="text/javascript"> $(function () { $('div.alert').delay(1800).fadeOut(); });</script>
+<div class="alert alert-block alert-@genericMessage.MessageType.ToString() fade in out">
+    <a href="#" data-dismiss="alert" class="close">&times;</a>
+    @genericMessage.Message
+</div>
+}
+        

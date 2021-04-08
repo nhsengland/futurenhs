@@ -1,0 +1,49 @@
+﻿@using MvcForum.Core.Models.Entities
+@model MvcForum.Web.ViewModels.Admin.ListCategoriesViewModel
+@{
+    var mainCategories = Model.Categories.Where(x => x.ParentCategory == null).ToList();
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>All Categories</h5>
+    </div>
+    <div class="panel-content">
+        <div id="container">
+            <ul>
+                @foreach (var cat in mainCategories)
+                {
+                    <li class="maincategory">
+                        <a href="@Url.Action("EditCategory", new { id = cat.Id })">
+                            @Html.Raw(cat.Name)
+                        </a>
+                        @GetSubCategories(cat)
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+@helper GetSubCategories(Category cat)
+{
+    var subCategories = Model.Categories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == cat.Id).ToList();
+    if (subCategories.Any())
+    {
+        <ul>
+            @foreach (var subCat in subCategories)
+            {
+                <li>
+                    <a href="@Url.Action("EditCategory", new { id = subCat.Id })">
+                        @Html.Raw(subCat.Name)
+                    </a>
+                    @GetSubCategories(subCat)
+                </li>
+            }
+        </ul>
+    }
+}
+

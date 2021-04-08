@@ -1,0 +1,26 @@
+﻿@model MvcForum.Web.ViewModels.Admin.CategoryEditViewModel
+@{
+    ViewBag.Title = "Create Category";
+}
+
+@Html.Partial("_CategoryNavButtons")
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("CreateCategory", "AdminCategory", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+
+            @Html.Partial("_CategoryFields", Model)
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Create" />
+            </div>
+        }
+    </div>
+</div>
+
