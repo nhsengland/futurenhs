@@ -269,3 +269,12 @@ __pycache__/
 /MVCForum.Website/App_Data/Plugins/MvcForum.Plugins.dll
 /.vs/config/applicationhost.config
 /.vs/config/applicationhost.config
+
+MVCForum.Website/UI/assets/dist/
+MVCForum.Website/assets/dist/*
+MVCForum.Website/UI/prototypes/dist/*
+MVCForum.Website/sw.js
+MVCForum.Website/sw.js.map
+.awcache
+yarn.lock
+package-lock.json

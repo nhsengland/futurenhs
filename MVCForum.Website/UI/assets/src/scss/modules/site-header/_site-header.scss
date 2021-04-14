@@ -1,0 +1,350 @@
+.c-site-header {
+
+    position: relative;
+    background-color: $t-site-header-one;
+    box-shadow: 0 derived-dimension(.5) derived-dimension(.5) 0 $t-shadow-one;
+
+    @include respond-to(tablet) {
+        height: auto;
+    }
+
+    &_tools {
+
+        position: relative;
+        height: $site-header-tools-mobile-height;
+        background-color: $t-site-header-two;
+
+        @include respond-to(tablet) {
+
+            &:after {
+                content: '';
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 100%;
+                bottom: 0;
+                width: 1000%;
+                background-color: inherit;
+            }
+
+        }
+
+    }
+
+    &_tools-menu {
+
+        float: left;
+        position: relative;
+        padding: $spacer-xsm $spacer-xsm $spacer-xsm 0;
+        min-width: $site-header-tools-menu-mobile-width;
+        max-width: $site-header-tools-menu-mobile-width;
+        height: $site-header-tools-mobile-height;
+        background: $t-site-header-one;
+
+        @include respond-to(desktop-large) {
+
+            padding: 0;
+            max-width: 420px;
+
+        }
+
+    }
+
+    &_tools-menu-mobile-trigger {
+
+        @include font-family-poppins-bold;
+        position: relative;
+        display: block;
+        box-sizing: border-box;
+        color: $t-interaction-two;
+        fill: $t-icon-three;
+        background-color: $t-site-header-one;
+        font-size: $large-text;
+
+        @include respond-to(desktop-large) {
+
+            display: none;
+
+        }
+
+    }
+
+    &_tools-menu-content {
+
+        position: fixed;
+        width: auto;
+        top: $site-header-tools-mobile-height;
+        left: 0;
+        z-index: 2;
+        padding: $spacer-xsm derived-dimension(1.5);
+        background-color: $t-site-header-one;
+        border: derived-dimension(.5) solid $t-border-one;
+        border-top: $spacer-xsm solid $t-border-one;
+        min-width: $site-header-tools-menu-mobile-width + $mobile-gutter;
+
+        @include respond-to(desktop-large) {
+
+            display: flex;
+            top: 0;
+            left: 0;
+            align-items: center;
+            position: relative;
+            padding: 0;
+            height: $site-header-tools-mobile-height;
+            border: 0;
+            border-top: 0;
+            border-bottom: derived-dimension(.5) solid $t-border-two;
+
+        }
+
+    }
+
+    &_tools-menu-item {
+
+        @include focus-outline;
+        display: block;
+        margin: 0 0 $base-dimension-unit;
+        position: relative;
+
+        &:last-child {
+            margin: 0;
+        }
+
+        @include respond-to(desktop-large) {
+
+            display: inline-block;
+            margin: 0 0 0 $spacer-sm;
+
+            &:first-child {
+                margin: 0;
+            }
+
+            &:last-child {
+                margin: 0 $spacer-sm;
+            }
+
+        }
+
+    }
+
+    &_tools-menu-link {
+
+        @include font-family-poppins-bold;
+        @include focus-outline;
+        @include hover-primary;
+        @include active-primary;
+        display: block;
+        font-size: $large-text;
+        color: $t-text-one;
+
+        &--active {
+            display: none;
+        }
+
+        @include respond-to(desktop-large) {
+
+            color: $t-interaction-two;
+
+            &--active {
+
+                display: block;
+                color: $t-text-one;
+
+                &:after {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    top: 100%;
+                    width: 100%;
+                    height: $base-dimension-unit;
+                    margin: $base-dimension-unit 0 0;
+                    background-color: $t-site-header-two;
+                }
+
+            }
+
+        }
+
+    }
+
+    &_tools-callouts {
+
+        position: relative;
+        float: right;
+        padding: $spacer-xsm 0;
+        height: $site-header-tools-mobile-height;
+        z-index: 1;
+        background-color: $t-site-header-two;
+
+        &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            width: $mobile-gutter;
+            top: 0;
+            left: 100%;
+            bottom: 0;
+            background-color: inherit;
+            z-index: -1;
+        }
+
+        @include respond-to(tablet) {
+
+            &:after {
+                display: none;
+            }
+
+        }
+
+    }
+
+    &_tools-callouts-item {
+
+        @include font-family-poppins-bold;
+        @include hover-primary;
+        @include active-primary;
+        display: inline-block;
+        margin: 0 0 0 $spacer-xsm;
+        font-size: $large-text;
+        color: $t-interaction-two;
+
+        @include respond-to(desktop) {
+
+            margin: 0 0 0 derived-dimension(5);
+
+        }
+
+    }
+
+    &_tools-callouts-search {
+        position: relative;
+    }
+
+    &_tools-callouts-search-input {
+        @include focus-outline;
+        @include placeholder-colour($t-text-one);
+        margin: -2px 0 0;
+        padding: derived-dimension(.5) $spacer-sm derived-dimension(.25) 0;
+        box-shadow: inset 0 -1px 0 0 $t-interaction-two;
+        background-color: transparent;
+        font-size: $large-text;
+    }
+
+    &_tools-callouts-search-button {
+        @extend %clear-button-styles;
+        @include focus-outline;
+        position: absolute;
+        top: 2px;
+        right: 0;
+        width: $spacer-xsm;
+        height: $spacer-xsm;
+        fill: $t-icon-one;
+
+        &:hover,
+        &:active {
+            fill: $t-interaction-one-hover;
+        }
+
+    }
+
+    &_tools-callouts-search-button-icon {
+        width: $spacer-xsm;
+        height: $spacer-xsm;
+    }
+
+    &_tools-callouts-button {
+        @extend %button-base;
+        @include focus-outline;
+        padding: 0;
+        min-height: auto;
+        background-color: transparent;
+        color: $t-interaction-two;
+        line-height: $large-text;
+        font-size: $large-text;
+    }
+
+    &_tools-callouts-button-icon {
+        width: derived-dimension(2.5);
+        height: derived-dimension(2.5);
+        margin-left: derived-dimension(.5);
+        margin-bottom: -(derived-dimension(.5));
+        fill: $t-icon-two;
+    }
+
+    &_content {
+        padding: $spacer-xsm 0;
+    }
+
+    &_logo {
+
+        @include focus-outline-large;
+        display: block;
+        float: left;
+        width: $site-logo-mobile-width;
+        height: $site-logo-mobile-height;
+
+        @include respond-to(tablet) {
+            width: $site-logo-tablet-width;
+            height: $site-logo-tablet-height;
+        }
+
+    }
+
+    &_nav {
+
+        display: block;
+        float: right;
+        width: auto;
+        min-width: 176px;
+
+        @include respond-to(tablet) {
+            min-height: $site-header-nav-tablet-height;
+        }
+
+    }
+
+    &_mobile-search {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin: $mobile-gutter;
+        border: 1px solid $t-site-header-one;
+    }
+
+    &_mobile-search-label {
+        @include font-family-poppins-bold;
+        @include small-heading;
+        display: block;
+        margin: 0 0 $base-dimension-unit;
+    }
+
+    &_mobile-search-input {
+        width: 100%;
+        box-sizing: border-box;
+        height: $site-header-tools-mobile-height;
+        padding: $spacer-xsm derived-dimension(8) $spacer-xsm $spacer-xsm;
+        font-size: $large-text;
+        border: 1px solid $t-border-three;
+    }
+
+    &_mobile-search-button {
+        @extend %clear-button-styles;
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: $site-header-tools-mobile-height;
+        height: $site-header-tools-mobile-height;
+        padding: $spacer-xsm;
+        background-color: $digital-water-blue;
+        fill: $white;
+    }
+
+    &_mobile-search-button-icon {
+        width: 100%;
+        height: 100%;
+    }
+
+}

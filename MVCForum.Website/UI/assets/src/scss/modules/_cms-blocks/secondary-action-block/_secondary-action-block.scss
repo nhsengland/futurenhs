@@ -1,0 +1,122 @@
+.c-secondary-action-column-block {
+
+    @include block;
+    @include card-padding-very-large;
+    @include card-shadow;
+    background-color: $t-card-background-one;
+
+    &--plain {
+        padding: 0;
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    &_icon {
+
+        display: block;
+        height: derived-dimension(10);
+        margin: 0 0 $spacer-rg;
+        fill: $t-icon-two;
+
+        &--primary {
+            fill: $t-icon-two;
+        }
+
+        &--secondary {
+            fill: $t-icon-one;
+        }
+
+    }
+
+    &_link {
+        @include hover-primary;
+        @include active-primary;
+        @include font-family-poppins-bold;
+        display: block;
+        margin: 0 0 derived-dimension(.5);
+        line-height: $h6-line-height-mobile;
+        font-size: $h6-font-size-mobile;
+        color: $t-text-one;
+    }
+
+    &_body {
+        @include very-large-text;
+        text-align: center;
+        color: $t-text-one;
+    }
+
+    // &_content { // sass-lint:no-empty-rulesets
+
+    // }
+
+}
+
+.c-secondary-action-row-block {
+
+    @include card-padding-large;
+    @include card-shadow;
+    display: flex;
+    flex-direction: row;
+    color: $t-interaction-two;
+    fill: $t-icon-two;
+    background-color: $t-card-background-one;
+
+    &--plain {
+        padding: 0;
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    &_icon {
+
+        display: block;
+        width: derived-dimension(7);
+        min-width: derived-dimension(7);
+        height: derived-dimension(7);
+        margin: 0 $spacer-rg 0 0;
+        float: left;
+
+        &--primary {
+            fill: $t-icon-two;
+        }
+
+        &--secondary {
+            fill: $t-icon-one;
+        }
+
+    }
+
+    &_link {
+
+        @include hover-secondary;
+        @include active-secondary;
+        @include font-family-poppins-bold;
+        display: block;
+        margin: 0 0 derived-dimension(.5);
+        line-height: $h5-line-height-mobile;
+        font-size: $h5-font-size-mobile;
+        color: $t-interaction-one;
+        text-decoration: underline;
+
+        &--primary {
+            color: $t-interaction-one;
+        }
+
+        &--secondary {
+            color: $t-interaction-two;
+        }
+
+    }
+
+    &_body {
+        float: right;
+        line-height: $large-text-line-height;
+        font-size: $large-text;
+        color: $t-text-one;
+    }
+
+    // &_content {
+
+    // }
+
+}

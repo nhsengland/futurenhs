@@ -221,7 +221,7 @@ namespace MvcForum.Core.Services.Migrations
                         AdminEmailAddress = "my@email.com",
                         NotificationReplyEmail = "noreply@myemail.com",
                         SMTPEnableSSL = false,
-                        Theme = "Metro",
+                        Theme = "Default",
                         NewMemberStartingRole = standardRole,
                         DefaultLanguage = language,
                         ActivitiesPerPage = 20,

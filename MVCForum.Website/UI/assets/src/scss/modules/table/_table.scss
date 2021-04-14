@@ -1,0 +1,23 @@
+table {
+    @include large-text;
+    color: $t-text-one;
+}
+
+tr {
+    background-color: $t-table-row-background-one;
+
+    &:nth-child(even) {
+        background-color: $t-table-row-background-two;
+    }
+}
+
+th {
+    padding: derived-dimension(1);
+    text-align: left;
+    background-color: $t-table-header-background-one;
+    color: $t-table-header-text-one;
+}
+
+td {
+    padding: derived-dimension(1);
+}

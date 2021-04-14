@@ -7,9 +7,8 @@
     var theme = new Theme
     {
         ThemeName = themeName,
-        ThemePath = string.Concat(ForumConfiguration.Instance.ThemeRootFolder, themeName)
+        ThemePath = ForumConfiguration.Instance.ThemeRootFolder
     };
-    TempData[Constants.GlobalClass] = Convert.ToBoolean(PageData[Constants.IsMobileDevice]) ? "mobile" : "desktop";
     TempData[Constants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
     TempData[Constants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
 }
@@ -38,8 +37,7 @@
     }
 </head>
 
-<body class="@TempData[Constants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
-    
+<body class="loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
     <nav class="pushy pushy-left">
         <ul>
             @if (User.Identity.IsAuthenticated)
@@ -72,7 +70,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                        <img src="@Url.Content($"{theme.ThemePath}/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
+                        <img src="@Url.Content("~/UI/assets/dist/img/content/logo.svg")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
                     </a>
                 </div>
 

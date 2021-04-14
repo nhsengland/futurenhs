@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="105.0113mm"
+   height="18.52083mm"
+   viewBox="0 0 105.0113 18.52083"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="FutureNHS logo full.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0649823"
+     inkscape:cx="457.44442"
+     inkscape:cy="-87.172726"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3735"
+       originx="-158.75"
+       originy="-333.37502" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-79.374998,-111.79167)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 79.374999,111.79167 6.879168,9.26041 -6.879167,9.26042 h 2.645833 L 88.9,121.05208 82.020832,111.79167 Z"
+       id="path3737"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 84.666665,111.79167 6.879168,9.26041 -6.879167,9.26042 h 2.645833 l 6.879167,-9.26042 -6.879168,-9.26041 z"
+       id="path3737-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 89.958334,111.79167 6.879168,9.26041 -6.879167,9.26042 h 2.645833 l 6.879167,-9.26042 -6.879168,-9.26041 z"
+       id="path3737-6-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="fill:#ec8a00;fill-opacity:1;stroke:none;stroke-width:0.0051457;stroke-miterlimit:4;stroke-dasharray:0, 0.05660268;stroke-dashoffset:0"
+       d="m 89.74869,130.16082 c 0,-0.011 1.511887,-2.05466 3.359748,-4.54159 1.84786,-2.48693 3.359745,-4.54227 3.359745,-4.56743 0,-0.0334 -5.757328,-7.81944 -6.621269,-8.95442 l -0.108649,-0.14274 1.136108,0.001 1.136107,10e-4 3.374774,4.54585 c 2.344592,3.1582 3.362423,4.56213 3.334319,4.59916 -0.02225,0.0293 -1.547591,2.08396 -3.389649,4.56589 l -3.349196,4.5126 H 90.86471 c -0.613812,0 -1.11602,-0.009 -1.11602,-0.0199 z"
+       id="path6012"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#f3b55c;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 321.24863,491.81413 c 1.16219,-1.44871 25.32428,-34.12185 25.33667,-34.26145 0.009,-0.10558 -5.54779,-7.68106 -12.34924,-16.83442 -6.80145,-9.15336 -12.50433,-16.854 -12.67306,-17.11253 l -0.30678,-0.47007 h 4.23646 4.23647 l 12.66934,17.05292 c 6.96814,9.3791 12.66935,17.17884 12.66935,17.33276 0,0.15391 -5.71422,7.97729 -12.69826,17.38528 l -12.69825,17.10543 -4.29457,0.005 c -3.41426,0.004 -4.26046,-0.0378 -4.12813,-0.20271 z"
+       id="path6016"
+       inkscape:connector-curvature="0"
+       transform="scale(0.26458333)" />
+    <path
+       style="fill:#f3b55c;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 80.230042,130.14484 c 0.008,-0.0197 1.521587,-2.06321 3.363407,-4.54106 1.841823,-2.47785 3.348768,-4.52626 3.348768,-4.55204 0,-0.0258 -1.406522,-1.93988 -3.125607,-4.25357 -1.719083,-2.31369 -3.231748,-4.35 -3.361476,-4.52512 l -0.235868,-0.31841 1.132623,0.001 1.132626,10e-4 3.375043,4.54572 c 2.358861,3.17707 3.362777,4.56187 3.334306,4.59935 -0.02241,0.0295 -1.547569,2.08429 -3.389252,4.56622 l -3.348516,4.5126 h -1.120347 c -0.61619,0 -1.113758,-0.0161 -1.105707,-0.0359 z"
+       id="path6018"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#f0a133;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 322.24596,491.90072 -0.95175,-0.0615 2.20788,-2.93813 c 2.92739,-3.89562 13.57326,-18.28223 18.75624,-25.34681 2.27728,-3.10402 4.20402,-5.72487 4.28164,-5.82411 0.18311,-0.23413 -0.7907,-1.57699 -17.44352,-24.05413 -7.65299,-10.32962 -7.64164,-10.31412 -7.64164,-10.4362 0,-0.0573 1.84872,-0.10344 4.10826,-0.10253 l 4.10826,0.002 6.99063,9.41829 c 16.13554,21.739 18.3931,24.85336 18.22358,25.13986 -0.45785,0.77375 -8.95642,12.32358 -21.59243,29.34479 l -3.63517,4.89672 -3.23011,0.0118 c -1.77657,0.006 -3.65841,-0.0159 -4.18187,-0.0497 z"
+       id="path6020"
+       inkscape:connector-curvature="0"
+       transform="scale(0.26458333)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#025cbc;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="101.10043"
+       y="119.36905"
+       id="text6041"><tspan
+         sodipodi:role="line"
+         x="101.10043"
+         y="119.36905"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;font-family:Arial;-inkscape-font-specification:Arial;fill:#025cbc;fill-opacity:1;stroke-width:0.26458332"
+         id="tspan6043">Future<tspan
+   style="font-weight:bold;font-size:8.46666622px;fill:#025cbc;fill-opacity:1"
+   id="tspan6045">NHS</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#595959;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="101.10043"
+       y="128.87926"
+       id="text6041-5"><tspan
+         sodipodi:role="line"
+         x="101.10043"
+         y="128.87926"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;font-family:Arial;-inkscape-font-specification:Arial;fill:#595959;fill-opacity:1;stroke-width:0.26458332"
+         id="tspan6043-2">Collaboration Platform</tspan></text>
+  </g>
+</svg>

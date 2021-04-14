@@ -1,0 +1,49 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "sourceMap": true,
+        "target": "es5",
+        "jsx": "react",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "declaration": false,
+        "noImplicitAny": false,
+        "noImplicitReturns": false,
+        "removeComments": false,
+        "strictNullChecks": false,
+        "allowSyntheticDefaultImports": true,
+        "outDir": "dist",
+        "lib": [
+            "es6",
+            "es7",
+            "dom"
+        ],
+        "baseUrl": "MVCForum.Website/UI/assets/src",
+        "paths": {
+            "@root/*": ["ts/root/*"],
+            "@modules/*": ["ts/modules/*"],
+            "@utilities/*": ["ts/modules/utilities/*"],
+            "@appTypes/*": ["ts/types/*"],
+            "@scss/*": ["scss/*"]
+        }
+    },
+    "include": [
+        "MVCForum.Website/UI/assets/src/ts/**/*"
+    ],
+    "exclude": [
+        "MVCForum.Website/UI/assets/src/ts/coverage/**/*",
+        "node_modules"
+    ],
+    "awesomeTypescriptLoaderOptions": {
+        "useBabel": false,
+        "errorsAsWarnings": false,
+        "useTranspileModule": true,
+        "doTypeCheck": true,
+        "useCache": true,
+        "reportFiles": [
+            "MVCForum.Website/UI/assets/src/ts/**/*.{ts,tsx}"
+        ]
+    }
+}

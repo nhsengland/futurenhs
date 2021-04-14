@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="34.732" height="31.73" viewBox="0 0 34.732 31.73">
+  <g id="Group_186" data-name="Group 186" transform="translate(-435.634 -9160)">
+    <g id="Group_245" data-name="Group 245" transform="translate(23 -28)">
+      <g id="Polygon_1" data-name="Polygon 1" transform="translate(417 9190)" fill="none" stroke-linejoin="round">
+        <path d="M13.088,0,26.176,23H0Z" stroke="none"/>
+        <path d="M 13.087890625 0 L 0 23 L 26.17578125 23 L 13.087890625 0 M 13.087890625 -2 C 13.8068904876709 -2 14.47056102752686 -1.614059448242188 14.8261604309082 -0.9891395568847656 L 27.9140510559082 22.01086044311523 C 28.2663402557373 22.62994003295898 28.26277160644531 23.3896598815918 27.90468978881836 24.00540924072266 C 27.54662132263184 24.62116050720215 26.88808059692383 25 26.17578125 25 L 0 25 C -0.7122993469238281 25 -1.370840072631836 24.62116050720215 -1.728908538818359 24.00540924072266 C -2.08698844909668 23.3896598815918 -2.090559005737305 22.62994003295898 -1.738269805908203 22.01086044311523 L 11.3496208190918 -0.9891395568847656 C 11.70522022247314 -1.614059448242188 12.3688907623291 -2 13.087890625 -2 Z" stroke="none" fill="#131c42"/>
+      </g>
+      <line id="Line_44" data-name="Line 44" x2="15.912" transform="translate(422.491 9218.73)" fill="none" stroke="#131c42" stroke-linecap="round" stroke-width="2"/>
+      <line id="Line_45" data-name="Line 45" x2="15.912" transform="translate(414 9206.172) rotate(-60)" fill="none" stroke="#131c42" stroke-linecap="round" stroke-width="2"/>
+      <line id="Line_46" data-name="Line 46" x2="15.912" transform="translate(438.044 9192.393) rotate(60)" fill="none" stroke="#131c42" stroke-linecap="round" stroke-width="2"/>
+    </g>
+  </g>
+</svg>

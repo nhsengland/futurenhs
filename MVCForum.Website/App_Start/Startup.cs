@@ -83,7 +83,7 @@ namespace MvcForum.Web
                 loggingService.Error($"Error processing badge classes: {ex.Message}");
             }
 
-            var theme = "Metro";
+            var theme = "Default";
             var settings = mvcForumContext.Setting.FirstOrDefault();
             if (settings != null)
             {

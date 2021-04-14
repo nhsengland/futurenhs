@@ -1,0 +1,32 @@
+.c-card {
+    @include card-padding;
+    @include card-shadow;
+    display: block;
+    margin: 0 0 $spacer-xsm;
+    background-color: $t-card-background-one;
+
+    &--large {
+        @include card-padding-large;
+    }
+
+    &--very-large {
+        @include card-padding-very-large;
+    }
+
+    &--theme-1 {
+        background-color: $t-card-background-one;
+    }
+
+    &--theme-2 {
+        background-color: $t-card-background-two;
+    }
+
+    &--theme-3 {
+        background-color: $t-card-background-three;
+    }
+
+    &--theme-4 {
+        background-color: $t-card-background-four;
+    }
+
+}

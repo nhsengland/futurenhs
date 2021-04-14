@@ -1,0 +1,53 @@
+.c-button {
+    @extend %button-base;
+
+    &:disabled {
+        @extend %button-disabled;
+    }
+
+    &--large {
+
+        padding: $base-dimension-unit * 2 $spacer-rg;
+        font-size: $very-large-text;
+
+    }
+
+    &--primary {
+        @extend %button-primary;
+    }
+
+    &--primary-callout {
+        @extend %button-primary-callout;
+    }
+
+    &--secondary {
+        @extend %button-secondary;
+    }
+
+    &--secondary-callout {
+        @extend %button-secondary-callout;
+    }
+
+    &--link {
+        @extend %button-link;
+    }
+
+    &--block {
+        display: block;
+        width: 100%;
+    }
+
+    &--inline-block {
+        display: inline-block;
+    }
+
+    &_icon {
+        &--before {
+            margin: 0 $spacer-xsm 0 0;
+        }
+
+        &--after {
+            margin: 0 0 0 $spacer-xsm;
+        }
+    }
+}

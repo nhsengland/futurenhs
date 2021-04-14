@@ -1,0 +1,26 @@
+.c-skip-links {
+
+    &_item {
+        margin: 0;
+    }
+
+    &_link {
+
+        @include visually-hidden;
+        @include focus-outline(false);
+        @include hover-primary;
+        @include active-primary;
+        display: block;
+        padding: $base-dimension-unit;
+        color: $t-text-one;
+
+        &:focus {
+            position: relative !important; // sass-lint:disable-line no-important
+            top: 0;
+            left: 0;
+            margin: $focus-outline-width;
+        }
+
+    }
+
+}

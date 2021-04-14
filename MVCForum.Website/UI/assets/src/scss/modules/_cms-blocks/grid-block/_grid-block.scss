@@ -1,0 +1,37 @@
+.c-grid-block {
+
+    @include row(true);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    &--left {
+        justify-content: flex-start;
+    }
+
+    &--right {
+        justify-content: flex-end;
+    }
+
+    & > .c-grid-block { // sass-lint:disable-line no-combinators
+
+        width: 100%;
+
+        &:last-child {
+            margin: 0;
+        }
+
+    }
+
+    &_item {
+        display: flex;
+        flex-direction: column;
+
+        & > * { // sass-lint:disable-line no-combinators no-universal-selectors
+            flex-grow: 1;
+            margin-bottom: $spacer-xsm;
+        }
+
+    }
+
+}

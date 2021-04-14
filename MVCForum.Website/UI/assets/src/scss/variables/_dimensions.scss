@@ -1,0 +1,31 @@
+﻿$base-dimension-unit: 8px;
+$spacer-xsm: $base-dimension-unit * 2;
+$spacer-sm: $base-dimension-unit * 3;
+$spacer-rg: $base-dimension-unit * 4;
+$spacer-md: $base-dimension-unit * 6;
+$spacer-lg: $base-dimension-unit * 12;
+$spacer-xl: $base-dimension-unit * 24;
+
+$layout-max-width: 1920px;
+$content-max-width: 1136px;
+
+$mobile-gutter: $spacer-xsm;
+$button-height: 40px;
+$border-radius: 4px;
+
+$site-header-mobile-height: 130px;
+$site-header-tools-mobile-height: 54px;
+$site-header-tools-menu-mobile-width: 136px;
+$site-header-nav-mobile-height: 48px;
+$site-header-nav-tablet-height: 68px;
+
+$site-logo-mobile-height: 48px;
+$site-logo-mobile-width: 125px;
+$site-logo-tablet-height: 68px;
+$site-logo-tablet-width: 176px;
+
+$hero-banner-block-tablet-height: 450px;
+$hero-banner-block-desktop-height: 650px;
+
+$focus-outline-width: 2px;
+$focus-outline-large-width: 4px;
