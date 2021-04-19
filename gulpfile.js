@@ -397,8 +397,8 @@ gulp.task('favicon', () => {
 
     return gulp.src(`${uiAssetsSrcPath}/img/favicon/logo.png`)
         .pipe(favicons({
-            appName: 'Yorkshire Water',
-            appDescription: 'Customer website',
+            appName: 'Future NHS',
+            appDescription: '',
             developerName: '',
             developerURL: '',
             background: '#fff',
@@ -413,6 +413,13 @@ gulp.task('favicon', () => {
             html: 'index.html',
             pipeHTML: true,
             replace: true,
+            icons : {
+                appleStartup: false,
+                firefox: false,
+                windows: false,
+                yandex: false,
+                coast: false
+            }
         }))
         .pipe(gulp.dest(`${uiAssetsDistPath}/img/favicon`));
 
@@ -549,7 +556,7 @@ gulp.task('watch:basic', () => {
     gulp.watch([`${uiAssetsSrcPath}/ts/**/*.ts`], ['js']);
     gulp.watch([`${uiAssetsSrcPath}/img/**/*`, `${uiAssetsSrcPath}/img/*`, `!${uiAssetsSrcPath}/img/{sprite,sprite/**/*,}`, `!${uiAssetsSrcPath}/img/favicon/**/*,}`], ['images']);
     gulp.watch([`${uiAssetsSrcPath}/img/svg-icons/active/*`], ['svgSprite']);
-    gulp.watch([`${uiAssetsSrcPath}/img/favicon/*`], ['favicon']);
+    // gulp.watch([`${uiAssetsSrcPath}/img/favicon/*`], ['favicon']);
     gulp.watch('./workbox.cli.config.js', ['sw']);
 
 });

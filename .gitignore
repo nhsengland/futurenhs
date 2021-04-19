@@ -275,6 +275,8 @@ MVCForum.Website/assets/dist/*
 MVCForum.Website/UI/prototypes/dist/*
 MVCForum.Website/sw.js
 MVCForum.Website/sw.js.map
+MVCForum.Website/workbox*.js
+MVCForum.Website/workbox*.js.map
 .awcache
 yarn.lock
 package-lock.json
