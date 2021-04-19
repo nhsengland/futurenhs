@@ -605,7 +605,7 @@ function HighlightUpdated(clickedElement) {
 }
 function ShowUserMessage(message) {
     if (message != null) {
-        var jsMessage = $('#jsquickmessage');
+        var jsMessage = $('#js-toast');
         var toInject = "<div class=\"alert alert-info fade in\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;<\/span><\/button>" + message + "<\/div>";
         jsMessage.html(toInject);
         jsMessage.show();

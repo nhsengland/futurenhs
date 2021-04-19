@@ -1,9 +1,11 @@
 import { pushgtmDataLayerEvent } from '@utilities/gtmDataLayer';
-import { ping } from '@utilities/routing'
+import { ping } from '@utilities/routing';
 
 export const uiComponentsInit = (config: {
 
 }) => {
+
+    let toast: any = undefined;
 
     /**
      * Ping the back end to let it know the user is still online
@@ -27,6 +29,28 @@ export const uiComponentsInit = (config: {
         new EmailSubscription({});
 
     });
+
+    /**
+     * Init toast
+     */
+     const toastElement: HTMLElement = document.getElementById('js-toast');
+
+     if (toastElement) {
+ 
+        import('@modules/ui/components/toast').then(({ Toast }) => {
+
+            const message: string = toastElement.dataset?.message;
+            const timeOut: number = toastElement.dataset?.timeout ? parseInt(toastElement.dataset?.timeout, 10) : undefined;
+ 
+            toast = new Toast({
+                wrapperSelector: toastElement,
+                timeOutMillis: timeOut,
+                messageText: message
+            });
+ 
+        });
+ 
+    }
 
     /**
      * Init upload buttons
@@ -90,21 +114,25 @@ export const uiComponentsInit = (config: {
                 wrapperSelector: ajaxForm,
                 successCallBack: (result: any) => {
 
-                    if (result.Success) {
+                    const { Success, ReturnMessage } = result;
+
+                    if (Success) {
 
                         window.closeSlideOutPanel();
-                        window.ShowUserMessage(result.ReturnMessage);
+                        toast?.show(ReturnMessage);
 
                     } else {
 
-                        window.ShowUserMessage(result.ReturnMessage);
+                        toast?.show(ReturnMessage);
 
                     }
 
                 },
                 errorCallBack: (xhr, ajaxOptions, thrownError) => {
 
-                    window.ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    const { status } = xhr;
+
+                    toast?.show(`Error: ${status} ${thrownError}`);
 
                 }
             }));
