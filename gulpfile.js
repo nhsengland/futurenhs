@@ -194,39 +194,31 @@ gulp.task('start:site', (done) => {
 });
 
 gulp.task('stop:site', (done) => {
-    const proc = childProcess.spawn('node', [
+
+    const proc2 = childProcess.spawn('node', [
         './node_modules/pm2/bin/pm2',
         'delete',
-        'MVCForum.Website'
+        'nhs.futures.website'
     ], {
         cwd: process.cwd()
     });
 
-    proc.stdout.on('data', (data) => {
+    proc2.stdout.on('data', (data) => {
         console.log(data.toString());
     });
 
-    proc.stderr.on('data', (data) => {
+    proc2.stderr.on('data', (data) => {
         console.log(data.toString());
     });
 
-    proc.on('close', (code) => {
+    proc2.on('close', (code) => {
         return done();
     });
 });
 
 gulp.task('activate', sequence(
-    //'resolve:binaries',
     //'db:build', <-- TODO how are we going to handle the DB?
     'build',
-    'build:web',
-    'stop:site',
-    'start:site'
-));
-
-gulp.task('pipeline-activate', sequence(
-    'db:build',
-    //'db:build', <-- TODO how are we going to handle the DB?
     'build:web',
     'stop:site',
     'start:site'
@@ -538,7 +530,7 @@ gulp.task('build:web', sequence(
     'templates',
     'fonts',
     'images',
-    // 'favicon',
+    'favicon',
     'scss',
     'moveDefaultThemeCss',
     'js',
@@ -557,7 +549,7 @@ gulp.task('watch:basic', () => {
     gulp.watch([`${uiAssetsSrcPath}/ts/**/*.ts`], ['js']);
     gulp.watch([`${uiAssetsSrcPath}/img/**/*`, `${uiAssetsSrcPath}/img/*`, `!${uiAssetsSrcPath}/img/{sprite,sprite/**/*,}`, `!${uiAssetsSrcPath}/img/favicon/**/*,}`], ['images']);
     gulp.watch([`${uiAssetsSrcPath}/img/svg-icons/active/*`], ['svgSprite']);
-    // gulp.watch([`${uiAssetsSrcPath}/img/favicon/*`], ['favicon']);
+    gulp.watch([`${uiAssetsSrcPath}/img/favicon/*`], ['favicon']);
     gulp.watch('./workbox.cli.config.js', ['sw']);
 
 });
