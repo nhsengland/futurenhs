@@ -18,9 +18,6 @@ export class AjaxForm extends UIComponentBase {
         super();
 
         this.wrapperSelector = config.wrapperSelector;
-        this.successCallBack = config.successCallBack;
-        this.errorCallBack = config.errorCallBack;
-
         this.wrapperSelector.addEventListener('submit', (event: any) => {
 
             event.preventDefault();
@@ -35,8 +32,8 @@ export class AjaxForm extends UIComponentBase {
                     data: $(this).serialize(),
                     dataType: "json",
                     cache: false,
-                    success: (result) => this.successCallBack?.(result),
-                    error: (xhr, ajaxOptions, thrownError) => this.errorCallBack?.(xhr, ajaxOptions, thrownError)
+                    success: (result) => this.emit('success', result),
+                    error: (xhr, ajaxOptions, thrownError) => this.emit('error', xhr, ajaxOptions, thrownError)
                 });
 
             }

@@ -1,0 +1,147 @@
+trigger:
+- dev
+
+stages:
+  - stage: Build
+    displayName: Build, Test and Publish  
+    jobs:
+    - job: BuildTestPublish
+      displayName: BuildTestPublish
+      pool:
+        vmImage: 'windows-latest'
+      steps:
+      - task: NodeTool@0
+        inputs:
+            versionSpec: '10.16.3'
+
+      - task: UniversalPackages@0
+        displayName: Download Nuget
+        inputs:
+          command: 'download'
+          downloadDirectory: '$(Build.SourcesDirectory)'
+          feedsToUse: 'internal'
+          vstsFeed: '0cd28b67-a0d7-4e40-ba83-946804e0cc17'
+          vstsFeedPackage: '09af3028-0311-4d18-ac27-2a255dc8770f'
+          vstsPackageVersion: '4.8.1'
+      
+      - task: ExtractFiles@1
+        displayName: Extract Nuget
+        inputs:
+          archiveFilePatterns: '$(Build.SourcesDirectory)/nuget-4.8.1.zip'
+          destinationFolder: '$(Build.SourcesDirectory)/.nuget'
+          cleanDestinationFolder: true
+          overwriteExistingFiles: true
+
+      - task: Cache@2
+        displayName: npm Cache
+        inputs:
+          key: 'npm | "$(Agent.OS)" | package.json'
+          path: '$(Build.SourcesDirectory)/node_modules'
+          cacheHitVar: 'npm_cache_hit'
+
+      - task: Npm@1
+        displayName: 'npm install'
+        condition: ne(variables.npm_cache_hit, 'true')
+        inputs:
+            command: 'install'
+            workingDir: '$(Build.SourcesDirectory)'
+
+      - task: Cache@2
+        displayName: Nuget Cache
+        inputs:
+          key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/.nuget/packages.config'
+          path: '$(Build.SourcesDirectory)/packages'
+
+      - task: CmdLine@2
+        displayName: 'Gulp activate'
+        inputs:
+            script: 'node ./node_modules/gulp/bin/gulp.js activate'
+            workingDirectory: '$(Build.SourcesDirectory)'
+            failOnStderr: false
+
+      - task: VSTest@2
+        displayName: 'Unit test'
+        inputs:
+            codeCoverageEnabled: true
+
+      - task: CmdLine@2
+        displayName: 'Gulp test'
+        inputs:
+            script: 'node ./node_modules/gulp/bin/gulp.js test'
+            workingDirectory: '$(Build.SourcesDirectory)'
+            failOnStderr: false
+
+      - task: CmdLine@2
+        displayName: 'Gulp deactivate'
+        inputs:
+            script: 'node ./node_modules/gulp/bin/gulp.js deactivate'
+            workingDirectory: '$(Build.SourcesDirectory)'
+            failOnStderr: false
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: '$(Build.SourcesDirectory)/yw.website.nuspec'
+          versioningScheme: 'off'
+
+      - task: CmdLine@2
+        displayName: 'Rename as zip'
+        inputs:
+          script : 'ren *.nupkg *.zip'
+          workingDirectory: '$(build.ArtifactStagingDirectory)'
+          failOnStderr : false
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'publish artifacts to staging directory'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
+
+  - stage: Analyse
+    displayName: SonarQube Analysis  
+    jobs:
+      - job: SonarQubeAnalysis
+        displayName: SonarQube Analysis
+        pool:
+          name: 'Partners-YWAzure'
+        steps:
+        
+        - task: SonarQubePrepare@4
+          inputs:
+            SonarQube: 'SonarQube-Partners'
+            scannerMode: 'MSBuild'
+            projectKey: 'YW.Website'
+            projectName: '$(Build.Repository.Name)'
+            projectVersion: '$(Build.BuildId)'
+                    
+        - task: Cache@2
+          displayName: Nuget Cache
+          inputs:
+            key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/yw.website/packages.config'
+            path: '$(Build.SourcesDirectory)/packages'
+            
+        - task: MSBuild@1
+          inputs:
+            solution: '**/*.sln'
+
+        - task: dependency-check-build-task@6
+          displayName: 'OWASP Dependency Check'
+          inputs:
+            projectName: 'YW Website'
+            scanPath: '$(Build.SourcesDirectory)/packages'
+            format: 'ALL'
+
+        - task: PublishTestResults@2
+          displayName: 'Publish Dependency Check Results'
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: 'dependency-check/*junit.xml'
+            searchFolder: '$(Common.TestResultsDirectory)'
+            testRunTitle: 'Dependency Check'
+
+        - task: SonarQubeAnalyze@4
+
+        - task: SonarQubePublish@4
+          inputs:
+            pollingTimeoutSec: '300'

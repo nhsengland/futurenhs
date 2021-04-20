@@ -83,7 +83,7 @@
         public static List<string> GetThemeFolders()
         {
             var folders = new List<string>();
-            var themeRootFolder = HostingEnvironment.MapPath($"~/{ForumConfiguration.Instance.ThemeRootFolderName}");
+            var themeRootFolder = HostingEnvironment.MapPath($"{ForumConfiguration.Instance.ThemeRootFolderName}");
             if (Directory.Exists(themeRootFolder))
             {
                 folders.AddRange(Directory.GetDirectories(themeRootFolder)
@@ -92,7 +92,7 @@
             }
             else
             {
-                throw new ApplicationException("Theme folder not found");
+                throw new ApplicationException("No themes folder found");
             }
             return folders;
         }

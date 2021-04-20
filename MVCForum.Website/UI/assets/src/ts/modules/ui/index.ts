@@ -110,9 +110,13 @@ export const uiComponentsInit = (config: {
 
         import('@modules/ui/components/ajaxForm').then(({ AjaxForm }) => {
 
-            ajaxForms.forEach((ajaxForm: HTMLFormElement) => new AjaxForm({
-                wrapperSelector: ajaxForm,
-                successCallBack: (result: any) => {
+            ajaxForms.forEach((ajaxForm: HTMLFormElement) => {
+                
+                const form = new AjaxForm({
+                    wrapperSelector: ajaxForm
+                });
+
+                form.on('success', (result) => {
 
                     const { Success, ReturnMessage } = result;
 
@@ -127,15 +131,17 @@ export const uiComponentsInit = (config: {
 
                     }
 
-                },
-                errorCallBack: (xhr, ajaxOptions, thrownError) => {
+                });
+
+                form.on('error', (xhr, ajaxOptions, thrownError) => {
 
                     const { status } = xhr;
 
                     toast?.show(`Error: ${status} ${thrownError}`);
 
-                }
-            }));
+                });
+            
+            });
 
         });
 

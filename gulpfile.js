@@ -277,7 +277,7 @@ gulp.task('scss', () => {
         }))
         .pipe(sassLint.format())
         .pipe(sassLint.failOnError())
-        .pipe(sassThemes(`${uiAssetsSrcPath}/scss/theme-variables/*.scss`))
+        .pipe(sassThemes(`${uiAssetsSrcPath}/scss/theme-variables/**/*.scss`))
         .pipe(sass({
             outputStyle: 'compressed'
         }).on('error', sass.logError)) // compile css
@@ -289,17 +289,6 @@ gulp.task('scss', () => {
         .pipe(browserSync.reload({ // reload any browsers displaying prototypes
             stream: true
         }));
-
-});
-
-gulp.task('moveDefaultThemeCss', [], () => {
-    // the base option sets the relative root for the set of files,
-    // preserving the folder structure
-    gulp
-        .src([`${uiAssetsDistPath}/css/default.min.css`])
-        .pipe(gulp.dest(`${uiAssetsDistPath}/css/themes/`));
-
-    del(`${uiAssetsDistPath}/css/default.min.css`);
 
 });
 
@@ -539,7 +528,6 @@ gulp.task('build:web', sequence(
     'images',
     'favicon',
     'scss',
-    'moveDefaultThemeCss',
     'js',
     'sw'
 ));
@@ -551,12 +539,11 @@ gulp.task('watch:web', ['build:web', 'watch:basic', 'browserSync']);
 gulp.task('watch:basic', () => {
 
     gulp.watch(`${uiProtoTypesDistPath}/*.html`, browserSync.reload);
-    gulp.watch(`${uiAssetsSrcPath}/**/*.scss`, ['scss', 'moveDefaultThemeCss']);
+    gulp.watch(`${uiAssetsSrcPath}/**/*.scss`, ['scss']);
     gulp.watch([`${uiProtoTypesSrcPath}/pages/*.html`, `${uiProtoTypesSrcPath}/layouts/*.html`, `${uiProtoTypesSrcPath}/partials/**/*.html`], ['templates', browserSync.reload]);
     gulp.watch([`${uiAssetsSrcPath}/ts/**/*.ts`], ['js']);
     gulp.watch([`${uiAssetsSrcPath}/img/**/*`, `${uiAssetsSrcPath}/img/*`, `!${uiAssetsSrcPath}/img/{sprite,sprite/**/*,}`, `!${uiAssetsSrcPath}/img/favicon/**/*,}`], ['images']);
     gulp.watch([`${uiAssetsSrcPath}/img/svg-icons/active/*`], ['svgSprite']);
-    // gulp.watch([`${uiAssetsSrcPath}/img/favicon/*`], ['favicon']);
     gulp.watch('./workbox.cli.config.js', ['sw']);
 
 });
