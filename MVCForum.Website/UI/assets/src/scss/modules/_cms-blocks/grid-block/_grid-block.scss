@@ -27,10 +27,10 @@
         display: flex;
         flex-direction: column;
 
-        & > * { // sass-lint:disable-line no-combinators no-universal-selectors
-            flex-grow: 1;
-            margin-bottom: $spacer-xsm;
-        }
+        // & > * { // sass-lint:disable-line no-combinators no-universal-selectors
+        //     flex-grow: 1;
+        //     margin-bottom: $spacer-xsm;
+        // }
 
     }
 

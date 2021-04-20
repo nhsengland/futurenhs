@@ -122,11 +122,11 @@
         }
         @if (Model.TotalCount > 0)
         {
-            <div class="row topicstarterpostbeginpostsheading">
-                <div class="col-md-8 hidden-xs topicstarterpostcomments">
+            <div class="l-row topicstarterpostbeginpostsheading">
+                <div class="l-col-12 l-col-8-t hidden-xs topicstarterpostcomments">
                     @(Model.TotalCount) @Html.LanguageString("Topic.CommentsDetails")
                 </div>
-                <div class="col-md-4 topicpostorderfilter">
+                <div class="l-col-12 l-col-4-t topicpostorderfilter">
                     @if ((Model.TotalCount - 1) > 0)
                     {
                         <text> @Html.LanguageString("PostFilter.OrderBy")

@@ -61,7 +61,7 @@
     <header>
 
         <nav class="navbar navbar-default" role="navigation">
-            <div class="container">
+            <div class="l-container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle menu-btn">
                         <span class="sr-only">Toggle navigation</span>
@@ -98,9 +98,9 @@
     </header>
 
     <section class="content-strip content-strip-@(User.Identity.IsAuthenticated.ToString().ToLower())">
-        <div class="container sub-nav-container">
-            <div class="row">
-                <div class="col-sm-12">
+        <div class="l-container sub-nav-container">
+            <div class="c-grid-block">
+                <div class="c-grid-block_item l-col-12">
                     <ul>
                         @Html.Partial("SubNavigation")
                     </ul>
@@ -109,7 +109,7 @@
         </div>
     </section>
 
-    <section class="container main-section">
+    <section class="l-container main-section">
         @Html.Partial("_GenericMessage")
         @Html.Partial("_EmailConfirmationNotice")
         @Html.Partial("_NoScript")
@@ -122,21 +122,21 @@
 
 
     <footer>
-        <div class="container">
+        <div class="l-container">
 
             @RenderSection("Footer", false)
 
-            <div class="row">
-                <div class="col-sm-6">
+            <div class="c-grid-block">
+                <div class="c-grid-block_item l-col-12 l-col-6-t">
                     @Html.Action("GetMainStats", "Stats")
                 </div>
-                <div class="col-sm-6">
+                <div class="c-grid-block_item l-col-12 l-col-6-t">
                     @Html.Action("GetCurrentActiveMembers", "Members")
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
+            <div class="c-grid-block">
+                <div class="c-grid-block_item l-col-12">
                     <div class="licenceblock">
                         <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
 

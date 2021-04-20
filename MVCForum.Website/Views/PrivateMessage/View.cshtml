@@ -6,9 +6,9 @@
 }
 
 <div class="pmview">
-    <div class="row">
+    <div class="c-grid-block">
 
-        <div class="@(Model.IsAjaxRequest ? "col-md-12" : "col-md-8 col-md-offset-2")">            
+        <div class="c-grid-block_item l-col-12 @(Model.IsAjaxRequest ? "" : "l-col-6-d")">            
             @if (!Model.IsAjaxRequest)
             {
                 <div class="btn-group top-pm-nav">

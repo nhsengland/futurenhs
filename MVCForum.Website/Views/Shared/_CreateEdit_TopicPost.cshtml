@@ -10,13 +10,13 @@
 @Html.HiddenFor(x => x.TopicId)
 @if (Model.IsTopicStarter)
 {
-    <div class="row paddedrow">
-        <div class="col-md-8 topictitleholder">
+    <div class="c-grid-block paddedrow">
+        <div class="c-grid-block_item l-col-12 l-col-8-t topictitleholder">
             <h2>@ViewBag.Title</h2>
         </div>
         @if (Html.Settings().EnablePolls == true)
         {
-            <div class="col-md-4 pollcreatebuttonholder" @Html.Raw(Model.OptionalPermissions.CanCreatePolls ? "" : displayNone)>
+            <div class="c-grid-block_item l-col-12 l-col-4-t pollcreatebuttonholder" @Html.Raw(Model.OptionalPermissions.CanCreatePolls ? "" : displayNone)>
                 <a href="#" class="btn-mvc btn-mvc-fullwidth createpollbutton">@Html.LanguageString("Poll.Button.Create")</a>
                 <a href="#" style="display: none;" class="btn-mvc btn-mvc-fullwidth removepollbutton">@Html.LanguageString("Poll.Button.Remove")</a>
             </div>
@@ -31,8 +31,8 @@
         </div>
     </div>
 
-    <div class="row paddedrow relatedtopicsholder">
-        <div class="col-md-12 relatedtopics">
+    <div class="c-grid-block paddedrow relatedtopicsholder">
+        <div class="c-grid-block_item l-col-12 relatedtopics">
             <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
             <div class="relatedtopicskey"></div>
         </div>
@@ -41,8 +41,8 @@
     if (Html.Settings().EnablePolls == true)
     {
         <div class="pollanswerholder" @Html.Raw(Model.PollAnswers != null && Model.PollAnswers.Any() ? "" : displayNone)>
-            <div class="row paddedrow">
-                <div class="col-md-9">
+            <div class="c-grid-block paddedrow">
+                <div class="c-grid-block_item l-col-12 l-col-9-t">
 
                     <ul class="pollanswerlist">
                         @if (Model.PollAnswers != null && Model.PollAnswers.Any())
@@ -60,7 +60,7 @@
                     </ul>
                     <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")" />
                 </div>
-                <div class="col-md-3 polladdremovenewanswers">
+                <div class="l-col-12 l-col-3-t polladdremovenewanswers">
                     <a href="#" class="btn-mvc addanswer">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     </a>
@@ -69,8 +69,8 @@
                     </a>
                 </div>
             </div>
-            <div class="paddedrow pollcloseafterdays">
-                <div class="form-group">
+            <div class="c-grid-block paddedrow pollcloseafterdays">
+                <div class="c-grid-block_item l-col-12 form-group">
                     @Html.LabelFor(model => model.PollCloseAfterDays)
                     @Html.TextBoxFor(model => model.PollCloseAfterDays, new { @class = "form-control", type = "number" })
                     @Html.ValidationMessageFor(model => model.PollCloseAfterDays)
@@ -101,8 +101,8 @@ else
 
 
 
-<div class="row">
-    <div class="col-md-12 topiccontent">
+<div class="c-grid-block">
+    <div class="c-grid-block_item l-col-12 topiccontent">
         <div class="editor-field editorholder">
             @Html.EditorFor(model => model.Content)
             @Html.ValidationMessageFor(model => model.Content)
@@ -110,8 +110,33 @@ else
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-6 createtopicbuttonholder">
+
+@if (Model.IsTopicStarter)
+{
+    <div class="c-grid-block">
+        <div class="c-grid-block_item l-col-12 topiccategory">
+
+            @if (Model.Id == Guid.Empty)
+            {
+                <div class="form-group createuploadfiles" @Html.Raw(Model.OptionalPermissions.CanUploadFiles ? "" : displayNone)>
+                    @Html.LabelFor(x => x.Files)
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                @Html.LanguageString("Post.Browse") <input type="file" name="files" id="files" multiple="multiple" value="">
+                            </span>
+                        </span>
+                        <input type="text" class="form-control" readonly="">
+                    </div>
+                    @Html.ValidationMessageFor(x => x.Files)
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div class="l-row">
+    <div class="l-col-12 l-col-6-d createtopicbuttonholder">
         <div class="submit-holder">
             <button type="submit" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                 @if (Model.Id == Guid.Empty)
@@ -149,28 +174,6 @@ else
             </div>
         }
     </div>
-
-    @if (Model.IsTopicStarter)
-    {
-        <div class="col-md-5 col-md-offset-1 topiccategory">
-
-            @if (Model.Id == Guid.Empty)
-            {
-                <div class="form-group createuploadfiles" @Html.Raw(Model.OptionalPermissions.CanUploadFiles ? "" : displayNone)>
-                    @Html.LabelFor(x => x.Files)
-                    <div class="input-group">
-                        <span class="input-group-btn">
-                            <span class="btn btn-default btn-file">
-                                @Html.LanguageString("Post.Browse") <input type="file" name="files" id="files" multiple="multiple" value="">
-                            </span>
-                        </span>
-                        <input type="text" class="form-control" readonly="">
-                    </div>
-                    @Html.ValidationMessageFor(x => x.Files)
-                </div>
-            }
-        </div>
-    }
     
     @Html.HiddenFor(x => x.IsPostEdit)
 

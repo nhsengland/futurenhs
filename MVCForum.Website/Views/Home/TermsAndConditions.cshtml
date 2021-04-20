@@ -8,9 +8,9 @@
 <script type="text/javascript">
     $.validator.unobtrusive.adapters.addBool("mustbetrue", "required");
 </script>
-<div class="row">
+<div class="c-grid-block">
 
-    <div class="col-md-6 col-md-offset-3">
+    <div class="c-grid-block_item l-col-12 l-col-6-t">
         <h1>@ViewBag.Title</h1>
         @using (Html.BeginForm("TermsAndConditions", "Home", FormMethod.Post, new {@class = "form-report"}))
         {

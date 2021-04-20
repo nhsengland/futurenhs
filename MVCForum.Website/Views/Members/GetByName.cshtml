@@ -45,9 +45,9 @@
 
 <div class="memberprofilepublic">
 
-    <div class="row">
+    <div class="c-grid-block">
 
-        <div class="col-md-3 memberavatardetails">
+        <div class="c-grid-block_item l-col-12 l-col-3-t memberavatardetails">
             <p class="memberavatar"><img src="@Model.User.MemberImage(ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.User.UserName"></p>
 
             @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && Html.CurrentMember().DisablePrivateMessages != true && Html.Settings().EnablePrivateMessages)
@@ -73,14 +73,14 @@
             }
         </div>
 
-        <div class="col-md-9 membermaindetails">
+        <div class="c-grid-block_item l-col-12 l-col-9-t membermaindetails">
 
             <div class="membersection memberbio">
-                <div class="row">
-                    <div class="col-md-12">
+                <div class="c-grid-block">
+                    <div class="c-grid-block_item l-col-12 l-col-12-d">
                         <h3>@Model.User.UserName</h3>
                     </div>
-                    <div class="col-md-6">
+                    <div class="c-grid-block_item l-col-12 l-col-6-d">
                         <p>@Html.LanguageString("Members.Profile.Joined") @DatesUi.GetPrettyDate(Model.User.CreateDate.ToString())</p>
                         @if (Model.User.LastActivityDate != null)
                         {
@@ -90,7 +90,7 @@
                         <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
                         <p>@Html.LanguageString("Members.Profile.Age") @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>  
                     </div>
-                    <div class="col-md-6">
+                    <div class="c-grid-block_item l-col-12 l-col-6-d">
                         <p>@Html.LanguageString("Members.Profile.Location") @Html.Raw(string.IsNullOrEmpty(Model.User.Location) ? "" : Model.User.Location)</p>
                         <p>@Html.LanguageString("Members.Profile.Website") @Html.Raw(string.IsNullOrEmpty(Model.User.Website) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Website))</p>
                         <p>@Html.LanguageString("Members.Profile.Twitter") @Html.Raw(string.IsNullOrEmpty(Model.User.Twitter) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Twitter))</p>

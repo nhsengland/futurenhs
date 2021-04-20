@@ -6,9 +6,9 @@
     ViewBag.Title = Html.LanguageString("Post.Move.PostTitle");
 }
 
-<div class="row">
+<div class="c-grid-block">
 
-    <div class="col-md-6 col-md-offset-3">
+    <div class="c-grid-block_item l-col-12 l-col-6-t">
         <p>@Html.Lang("Post.Move.Description")</p>
         @using (Html.BeginForm("MovePost", "post", FormMethod.Post, new {@class = "form-report"}))
         {

@@ -19,9 +19,8 @@
     </script>
 
 }
-<div class="row">
-
-    <div class="col-md-6 col-md-offset-3">
+<div class="c-grid-block">
+    <div class="c-grid-block_item l-col-12 l-col-6-t">
         @using (Html.BeginForm("Edit", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "editmemberform" }))
         {
             @Html.HiddenFor(x => Model.Id)
@@ -49,11 +48,11 @@
 
                 @if (!Model.DisableFileUploads)
                 {
-                    <div class="row membereditavatar">
-                        <div class="col-md-2">
+                    <div class="c-grid-block membereditavatar">
+                        <div class="c-grid-block_item l-col-12 l-col-2-t">
                             <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.UserName">
                         </div>
-                        <div class="col-md-10">
+                        <div class="c-grid-block_item l-col-12 l-col-10-t">
                             @Html.LabelFor(x => x.Files)
                             <div class="input-group">
                                 <span class="input-group-btn">

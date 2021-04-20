@@ -46,7 +46,7 @@
 
     .l-col-#{$i}-lm {
 
-        @include respond-to(large-mobile) {
+        @include respond-to(mobile-large) {
 
             @include column($i);
 

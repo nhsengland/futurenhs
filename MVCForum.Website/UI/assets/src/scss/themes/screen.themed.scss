@@ -1,6 +1,4 @@
-﻿// @import 'imports'; <-- uncomment this once all the below is refactored into proper BEM modules and utlity classes
-
-@import '../variables/variables';
+﻿@import '../imports';
 
 // sass-lint:disable-all
 $color-global-green: $color_nhsuk-green;
@@ -14,19 +12,19 @@ $link-color: $nhsuk-link-color;
 $border-color: $color-global-grey-blue; 
 
 $heading-base-color: $nhsuk-text-color;
-$heading-font-weight: 300;
-$heading-one-font-size: 29px;
-$heading-two-font-size: 26px;
-$heading-three-font-size: 22px;
+$heading-font-weight: 600;
+$heading-one-font-size: $h1-font-size-tablet;
+$heading-two-font-size: $h2-font-size-tablet;
+$heading-three-font-size: $h3-font-size-tablet;
 
 $font-base-color: $nhsuk-text-color;
 $font-lighter-base-color: $nhsuk-secondary-text-color;
 $font-base-family: 'Open Sans', Arial, Helvetica, sans-serif;
-$font-light-weight: 300;
+$font-light-weight: 400;
 
-$media-query-medium: 991px;
-$media-query-small: 767px;
-$media-query-mobile: 600px;
+$media-query-medium: $break-point-desktop;
+$media-query-small: $break-point-tablet;
+$media-query-mobile: $break-point-mobile-max;
 
 // Mixins
 
@@ -49,8 +47,22 @@ input.form-control, textarea.form-control, select.form-control { -ms-border-radi
         }
     }
 }
-.navbar-brand { padding-top: 5px; padding-bottom: 5px; height: auto; color: #fff; font-weight: bold;
-    &:hover, &:focus { color: #efefef; }
+.navbar-brand {
+    max-width: 60%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: auto;
+    color: #fff;
+    font-weight: bold;
+
+    img {
+        max-width: 100%;
+    }
+
+    &:hover,
+    &:focus {
+        color: #efefef;
+    }
 }
 .dropdown-menu { -ms-border-radius: 0; border-radius: 0; }
 .navbar-toggle { padding: 7px 8px; background-color: #ddd; }
@@ -98,9 +110,9 @@ h1, h2, h3, h4, h5, h6 { padding: 0; margin: 0 0 12px 0; color: $heading-base-co
 h1 { font-size: $heading-one-font-size; }
 h2 { font-size: $heading-two-font-size; }
 h3 { font-size: $heading-three-font-size; }
-h4 { font-size: 19px; }
-h5 { font-size: 17px; }
-h6 { font-size: 16px; }
+h4 { font-size: $h4-font-size-tablet; }
+h5 { font-size: $h5-font-size-tablet; }
+h6 { font-size: $h5-font-size-tablet; }
 
 // General Table Styles
 

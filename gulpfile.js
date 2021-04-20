@@ -252,7 +252,7 @@ gulp.task('scss', () => {
         autoprefixer: {},
         pxtorem: {
             // defines the root px value
-            rootValue: 14,
+            rootValue: 10,
             // The properties that can change from px to rem. * to enable all properties. ! to not match a property
             propList: ['font-size', 'line-height'],
             // does not replace px, but adds rems after

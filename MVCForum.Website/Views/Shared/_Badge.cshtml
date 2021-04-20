@@ -3,11 +3,11 @@
 
 
 <div class="publicbadgeline">
-    <div class="row">
-        <div class="publicbadge col-md-2">
+    <div class="c-grid-block">
+        <div class="publicbadge c-grid-block_item l-col-2 l-col-1-lm">
             <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(Model.Image))" alt="@Model.Name" />
         </div>
-        <div class="publicbadgedetails col-md-10">
+        <div class="publicbadgedetails c-grid-block_item l-col-12 l-col-11-lm">
             <p class="publicbadgename">@Html.Raw(Model.DisplayName)</p>
             <p class="publicbadgenamedesc">@Model.Description</p>
             @if (Model.AwardsPoints != null && Model.AwardsPoints > 0)

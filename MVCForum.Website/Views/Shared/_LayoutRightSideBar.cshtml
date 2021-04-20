@@ -9,13 +9,13 @@
 @section Header {
     @RenderSection("Header", false)
 }
-<div class="row">
-    <div class="col-md-9">
+<div class="c-grid-block">
+    <div class="c-grid-block_item l-col-12 l-col-9-d">
 
         @RenderBody()
 
     </div>
-    <div class="col-md-3 sidelayoutsection">
+    <div class="c-grid-block_item l-col-12 l-col-3-d sidelayoutsection">
         <div class="main-side-box clearfix">
             @if (User.Identity.IsAuthenticated)
             {
