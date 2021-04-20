@@ -1,4 +1,6 @@
 ﻿import { UIComponentBase } from '@modules/ui/componentBase/index';
+import * as fetchHelpers from '@utilities/fetch';
+import { FetchOptions } from '@appTypes/fetch';
 
 /**
  * Ajax Progressive enhancement for form element
@@ -6,13 +8,11 @@
 export class AjaxForm extends UIComponentBase {
 
     wrapperSelector: HTMLFormElement = undefined;
-    successCallBack: Function = undefined;
-    errorCallBack: Function = undefined;
 
     constructor(config: {
         wrapperSelector: HTMLFormElement,
-        successCallBack?: Function,
-        errorCallBack?: Function
+    }, dependencies = {
+        fetchHelpers: fetchHelpers
     }) {
 
         super();
@@ -26,15 +26,12 @@ export class AjaxForm extends UIComponentBase {
 
             if (($(this) as any).valid()) {
 
-                $.ajax({
-                    url: (this as any).action,
-                    type: (this as any).method,
-                    data: $(this).serialize(),
-                    dataType: "json",
-                    cache: false,
-                    success: (result) => this.emit('success', result),
-                    error: (xhr, ajaxOptions, thrownError) => this.emit('error', xhr, ajaxOptions, thrownError)
-                });
+                const { setFetchJSONOptions, fetchJSON } = dependencies.fetchHelpers;
+                const fetchOptions: FetchOptions = setFetchJSONOptions('POST', {}, '', $(this).serialize());
+
+                fetchJSON(this.apiUrl, fetchOptions, 60000)
+                    .then((data: any) => this.emit('success', data))
+                    .catch((error: any) => this.emit('error', `Error: ${error}`));
 
             }
 

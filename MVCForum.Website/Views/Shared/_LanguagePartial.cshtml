@@ -3,6 +3,6 @@
 <div class="side-box categories-box">
     <h5>@Html.LanguageString("Language.Change")</h5>
     <div class="languageselector">
-        @Html.DropDownListFor(model => model.CurrentLanguage, new SelectList(Model.Alllanguages, "Id", "Name"))
+        @Html.DropDownListFor(model => model.CurrentLanguage, new SelectList(Model.Alllanguages, "Id", "Name"), new { @class="js-language-selector" })
     </div>
 </div>

@@ -29,7 +29,7 @@ export const uiComponentsInit = (config: {
         new EmailSubscription({});
 
     });
-
+    
     /**
      * Init toast
      */
@@ -53,15 +53,39 @@ export const uiComponentsInit = (config: {
     }
 
     /**
+     * Init language switchers
+     */
+     const languageSwitcherElements: Array<HTMLElement> = Array.from(document.querySelectorAll('.js-language-selector'));
+
+     if (languageSwitcherElements.length > 0) {
+ 
+        import('@modules/ui/components/languageSwitcher').then(({ LanguageSwitcher }) => {
+
+            languageSwitcherElements.forEach((languageSwitcherElement: HTMLSelectElement) => {
+                
+                const languageSwitcher = new LanguageSwitcher({
+                    wrapperSelector: languageSwitcherElement
+                });
+
+                languageSwitcher.on('success', () => window.location.reload());
+                languageSwitcher.on('error', (errorText: string) => toast?.show(errorText));
+        
+            });
+ 
+        });
+ 
+    }
+
+    /**
      * Init upload buttons
      */
-     const uploadButtons: Array<HTMLElement> = Array.from(document.querySelectorAll('.btn-file'));
+     const uploadButtonElements: Array<HTMLElement> = Array.from(document.querySelectorAll('.btn-file'));
 
-     if (uploadButtons?.length > 0) {
+     if (uploadButtonElements?.length > 0) {
  
         import('@modules/ui/components/uploadButton').then(({ UploadButton }) => {
  
-            uploadButtons.forEach((uploadButtonElement: HTMLElement) => new UploadButton({
+            uploadButtonElements.forEach((uploadButtonElement: HTMLElement) => new UploadButton({
                 wrapperSelector: uploadButtonElement
             }));
  
