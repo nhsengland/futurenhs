@@ -22,7 +22,9 @@ describe('Details', () => {
     it('Binds successfully', () => {
 
         const selector: HTMLDetailsElement = document.querySelector('#mock');
-        const details: Details = new Details(selector);
+        const details: Details = new Details({
+            wrapperSelector: selector
+        });
 
         expect(details).toBeTruthy();
 
@@ -31,7 +33,9 @@ describe('Details', () => {
     it('Sets correct icon on init when detail is closed', () => {
 
         const selector: HTMLDetailsElement = document.querySelector('#mock');
-        const details: Details = new Details(selector);
+        const details: Details = new Details({
+            wrapperSelector: selector
+        });        
         const xLinkHref: string = selector.querySelector('use').getAttribute('xlink:href');
 
         expect(xLinkHref).toEqual('#icon-chevron-down');
@@ -44,7 +48,9 @@ describe('Details', () => {
 
         selector.setAttribute('open', 'true');
 
-        const details: Details = new Details(selector);
+        const details: Details = new Details({
+            wrapperSelector: selector
+        });        
         const xLinkHref: string = selector.querySelector('use').getAttribute('xlink:href');
 
         expect(xLinkHref).toEqual('#icon-chevron-up');

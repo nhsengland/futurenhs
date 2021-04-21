@@ -38,3 +38,22 @@ export const fancyScrollTo: Function = (offSet: number): void => {
     }
 
 }
+
+/**
+ * Lock or unlock page scroll - useful when opening and closing modal elements
+ */
+export const lockPageScroll: Function = (shouldLock: boolean): void => {
+
+    if(shouldLock){
+
+        $('body').css('overflow', 'hidden').css('height', '100%');
+        $('html').css('overflow', 'hidden').css('height', '100%');
+
+    } else {
+
+        $('body').css('overflow', '').css('height', '');
+        $('html').css('overflow', '').css('height', '');
+
+    }
+
+}

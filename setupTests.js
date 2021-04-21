@@ -6,6 +6,7 @@ const fetch = require('jest-fetch-mock');
 const Enzyme = require('enzyme');
 
 global.$ = $;
+global.jQuery = $;
 global.fetch = fetch;
 global.matchMedia = () => {};
 global.scrollTo = () => {};

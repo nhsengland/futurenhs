@@ -11,7 +11,7 @@ export class UploadButton extends UIComponentBase {
         wrapperSelector: HTMLElement
     }) {
 
-        super();
+        super(config);
 
         this.wrapperSelector = config.wrapperSelector;
 

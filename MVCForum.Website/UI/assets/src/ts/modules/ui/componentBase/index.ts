@@ -12,7 +12,11 @@ export class UIComponentBase extends (EventEmitter as { new(): any; }) {
         breakPoints?: any;
     } = {};
 
-    constructor() {
+    constructor(config: {
+        wrapperSelector: any
+    }, dependencies?: {
+        fetchHelpers: any;
+    }) {
 
         super();
 

@@ -6,4 +6,6 @@ declare interface Window {
     app_base: any;
     closeSlideOutPanel: any;
     ShowUserMessage: any;
+    tinyMCE: any;
+    jQuery: any;
 }

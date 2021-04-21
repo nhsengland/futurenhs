@@ -75,65 +75,8 @@
 			"install": [
 				"unzip -o ./.nuget/nuget.zip -d ./.nuget"
 			]
-		},
-		{
-			"name": "selenium-server-standalone",
-			"version": "3.141.59",
-			"extension": "jar",
-			"detect": "selenium.jar",
-			"path": "selenium.jar"
-		},
-		{
-			"name": "chromedriver_x64",
-			"version": "80.0.3987",
-			"extension": "zip",
-			"path": "chromedriver.zip",
-			"detect": "chromedriver.exe",
-			"install": [
-				"unzip -o chromedriver.zip",
-				"rm -rf chromedriver.zip"
-			]
-		},
-		{
-			"name": "chrome-standalone",
-			"version": "80.0.3987",
-			"extension": "zip",
-			"path": "chrome.zip",
-			"detect": "chrome",
-			"install": [
-				"unzip -q -o chrome.zip -d chrome",
-				"rm -rf chrome.zip"
-			]
 		}
 	],
-	"accessibility": {
-		"start": "TBC",
-		"hosts": [
-			"TBC"
-		],
-		"ignore": [],
-		"rules": {
-			"ignoreCritical": false,
-			"ignoreSerious": false,
-			"ignoreMinor": false,
-			"ignoreModerate": false,
-			"ignore": [],
-			"tags": [
-				"wcag2a",
-				"wcag2aa"
-			]
-		}
-	},
-	"html": {
-		"start": "TBC",
-		"hosts": [
-			"TBC"
-		],
-		"ignore": [],
-		"rules": {
-			"ignoreErrors": false
-		}
-	},
 	"nuget": {
 		"repository": "ignore",
 		"packages": [
@@ -141,8 +84,7 @@
 				"name": "MVCForum.Website",
 				"directory": "MVCForum.Website",
 				"ignore": [
-					"node_modules/**/*",
-					"UI/assets/src/apps/map/node_modules/**/*"
+					"node_modules/**/*"
 				]
 			}
 		]

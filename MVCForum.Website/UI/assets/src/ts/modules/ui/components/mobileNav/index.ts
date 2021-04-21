@@ -9,14 +9,15 @@ export class MobileNav extends UIComponentBase {
     contentSelector: HTMLElement = undefined;
 
     constructor(config: {
-        triggerButtonSelector?: HTMLElement,
-        contentSelector?: HTMLElement
+        wrapperSelector: HTMLElement;
+        triggerButtonSelector: HTMLElement;
+        contentSelector: HTMLElement;
     }) {
 
-        super();
+        super(config);
 
-        this.triggerButtonSelector = config.triggerButtonSelector ?? document.querySelector('.showmobilenavbar');
-        this.contentSelector = config.contentSelector ?? document.querySelector('.mobilenavbar-inner ul.nav');
+        this.triggerButtonSelector = config.triggerButtonSelector;
+        this.contentSelector = config.contentSelector;
             
         this.triggerButtonSelector?.addEventListener('click', (event: any) => {
             

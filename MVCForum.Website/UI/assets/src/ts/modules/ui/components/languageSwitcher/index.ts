@@ -9,6 +9,7 @@ export class LanguageSwitcher extends UIComponentBase {
 
     wrapperSelector: HTMLSelectElement = undefined;
     apiUrl: string = undefined;
+    fetchHelpers: any = undefined;
 
     constructor(config: {
         wrapperSelector: HTMLSelectElement,
@@ -17,24 +18,29 @@ export class LanguageSwitcher extends UIComponentBase {
         fetchHelpers: fetchHelpers
     }) {
 
-        super();
+        super(config, dependencies);
 
         this.wrapperSelector = config.wrapperSelector;
         this.apiUrl = config.apiUrl ?? '/Language/ChangeLanguage';
+        this.fetchHelpers = dependencies.fetchHelpers;
 
-        this.wrapperSelector.addEventListener('change', () => {
+        this.handleRequest = this.handleRequest.bind(this);
 
-            const selectedLanguage: string = this.wrapperSelector.value;            
-            const { setFetchJSONOptions, fetchJSON } = dependencies.fetchHelpers;
-            const fetchOptions: FetchOptions = setFetchJSONOptions('POST', {}, '', { 
-                lang: selectedLanguage 
-            });
+        this.wrapperSelector.addEventListener('change', () => this.handleRequest());
 
-            fetchJSON(this.apiUrl, fetchOptions, 60000)
-                .then(() => this.emit('success'))
-                .catch((error: any) => this.emit('error', `Error: ${error}`));
+    }
 
+    private handleRequest = (): void => {
+
+        const selectedLanguage: string = this.wrapperSelector.value;            
+        const { setFetchJSONOptions, fetchJSON } = this.fetchHelpers;
+        const fetchOptions: FetchOptions = setFetchJSONOptions('POST', {}, '', { 
+            lang: selectedLanguage 
         });
+
+        fetchJSON(this.apiUrl, fetchOptions, 60000)
+            .then(() => this.emit('success'))
+            .catch((error: any) => this.emit('error', `Error: ${error}`));
 
     }
 

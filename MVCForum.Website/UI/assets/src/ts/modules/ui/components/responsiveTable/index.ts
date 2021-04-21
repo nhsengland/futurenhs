@@ -11,7 +11,7 @@ export class ResponsiveTable extends UIComponentBase {
         wrapperSelector: HTMLTableElement
     }) {
 
-        super();
+        super(config);
 
         this.wrapperSelector = config.wrapperSelector;
         

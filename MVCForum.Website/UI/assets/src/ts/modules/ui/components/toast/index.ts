@@ -15,7 +15,7 @@ export class Toast extends UIComponentBase {
         timeOutMillis?: number;
     }) {
 
-        super();
+        super(config);
 
         this.wrapperSelector = config.wrapperSelector;
         this.timeOutMillis = config.timeOutMillis ?? 5000;

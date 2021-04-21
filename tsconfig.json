@@ -25,6 +25,7 @@
             "@root/*": ["ts/root/*"],
             "@modules/*": ["ts/modules/*"],
             "@utilities/*": ["ts/modules/utilities/*"],
+            "@constants/*": ["ts/constants/*"],
             "@appTypes/*": ["ts/types/*"],
             "@scss/*": ["scss/*"]
         }

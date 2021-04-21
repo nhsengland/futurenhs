@@ -5,16 +5,19 @@
  */
 export class Icon extends UIComponentBase {
 
-    selector: any = undefined;
+    wrapperSelector: any = undefined;
     useElement: any = undefined;
     name: string = '';
 
-    constructor(selector: SVGSVGElement, name: string) {
+    constructor(config: {
+        wrapperSelector: SVGSVGElement, 
+        name: string
+    }) {
 
-        super();
+        super(config);
 
-        this.selector = selector;
-        this.name = name;
+        this.wrapperSelector = config.wrapperSelector;
+        this.name = config.name;
 
         this.update = this.update.bind(this);
 
@@ -25,7 +28,7 @@ export class Icon extends UIComponentBase {
     public update(name: string): any {
 
         this.name = name;
-        this.useElement = this.selector.querySelector('use');
+        this.useElement = this.wrapperSelector.querySelector('use');
         this.useElement?.setAttribute('xlink:href', `#${this.name}`);
 
     }

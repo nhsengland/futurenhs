@@ -273,6 +273,8 @@ __pycache__/
 MVCForum.Website/UI/assets/dist/
 MVCForum.Website/assets/dist/*
 MVCForum.Website/UI/prototypes/dist/*
+js-report/
+js-report/*
 MVCForum.Website/sw.js
 MVCForum.Website/sw.js.map
 MVCForum.Website/workbox*.js

@@ -8,10 +8,10 @@ export class EmailSubscription extends UIComponentBase {
     wrapperSelector: HTMLElement = undefined;
 
     constructor(config: {
-        wrapperSelector?: HTMLElement
+        wrapperSelector: HTMLElement
     }) {
 
-        super();
+        super(config);
 
         this.wrapperSelector = config.wrapperSelector;
 

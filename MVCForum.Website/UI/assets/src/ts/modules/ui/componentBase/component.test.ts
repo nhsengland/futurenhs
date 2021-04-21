@@ -14,8 +14,9 @@ describe('UI Component Base', () => {
 
     it('Binds successfully', () => {
 
-        const $mainElement: JQuery = $('#main');
-        const uiComponentBase: UIComponentBase = new UIComponentBase();
+        const uiComponentBase: UIComponentBase = new UIComponentBase({
+            wrapperSelector: document.getElementById('main')
+        });
 
         expect(uiComponentBase).toBeTruthy();
 

@@ -17,7 +17,11 @@ export const uiComponentsInit = (config: {
      */
     import('@modules/ui/components/mobileNav').then(({ MobileNav }) => {
 
-        new MobileNav({});
+        new MobileNav({
+            wrapperSelector: undefined,
+            triggerButtonSelector: document.querySelector('.showmobilenavbar'),
+            contentSelector: document.querySelector('.mobilenavbar-inner ul.nav')
+        });
 
     });
 
@@ -26,7 +30,9 @@ export const uiComponentsInit = (config: {
      */
      import('@modules/ui/components/emailSubscription').then(({ EmailSubscription }) => {
 
-        new EmailSubscription({});
+        new EmailSubscription({
+            wrapperSelector: undefined
+        });
 
     });
     
@@ -119,7 +125,9 @@ export const uiComponentsInit = (config: {
 
         import('@modules/ui/components/details').then(({ Details }) => {
 
-            detailsElements.forEach((detailsElement: HTMLDetailsElement) => new Details(detailsElement));
+            detailsElements.forEach((detailsElement: HTMLDetailsElement) => new Details({
+                wrapperSelector: detailsElement
+            }));
 
         });
 

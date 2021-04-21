@@ -7,24 +7,23 @@ module.exports = {
     clearMocks: true,
     preset: 'ts-jest/presets/js-with-ts',
     testEnvironment: 'jest-environment-jsdom-fifteen',
-    testPathIgnorePatterns: [
-        '<rootDir>/yw.website/UI/assets/src/apps/*' // temporarily excluded while WIP
-    ],
+    testPathIgnorePatterns: [],
     setupFilesAfterEnv: [
         './setupTests.js'
     ],
     collectCoverage: true,
     collectCoverageFrom: [
-        'yw.website/UI/assets/src/ts/**/*.{ts,tsx,js,jsx}'
+        'MVCForum.Website/UI/assets/src/ts/**/*.{ts,tsx,js,jsx}'
     ],
     coverageDirectory: 'js-report',
     coveragePathIgnorePatterns: [
         './node_modules/',
-        'yw.website/UI/assets/src/ts/modules/utilities/index',
-        'yw.website/UI/assets/src/ts/modules/ui/index',
-        'yw.website/UI/assets/src/ts/root/global',
-        'yw.website/UI/assets/src/ts/types/*',
-        'yw.website/UI/assets/src/apps/maps/*' // temporarily excluded while WIP
+        'MVCForum.Website/UI/assets/src/ts/modules/utilities/index',
+        'MVCForum.Website/UI/assets/src/ts/modules/ui/index',
+        'MVCForum.Website/UI/assets/src/ts/modules/polyfills/svg',
+        'MVCForum.Website/UI/assets/src/ts/root/global',
+        'MVCForum.Website/UI/assets/src/ts/root/polyfills',
+        'MVCForum.Website/UI/assets/src/ts/types/*',
     ],
     globals: {
         'ts-jest': {
@@ -40,6 +39,6 @@ module.exports = {
         'json'
     ],
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-        prefix: '<rootDir>/yw.website/UI/assets/src'
+        prefix: '<rootDir>/MVCForum.Website/UI/assets/src'
     })
 };

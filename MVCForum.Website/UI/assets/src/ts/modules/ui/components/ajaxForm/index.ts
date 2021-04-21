@@ -15,7 +15,7 @@ export class AjaxForm extends UIComponentBase {
         fetchHelpers: fetchHelpers
     }) {
 
-        super();
+        super(config, dependencies);
 
         this.wrapperSelector = config.wrapperSelector;
         this.wrapperSelector.addEventListener('submit', (event: any) => {
@@ -24,7 +24,9 @@ export class AjaxForm extends UIComponentBase {
 
             ($(this) as any).validate();
 
-            if (($(this) as any).valid()) {
+            const isValid: boolean = ($(this) as any).valid();
+
+            if (isValid) {
 
                 const { setFetchJSONOptions, fetchJSON } = dependencies.fetchHelpers;
                 const fetchOptions: FetchOptions = setFetchJSONOptions('POST', {}, '', $(this).serialize());
