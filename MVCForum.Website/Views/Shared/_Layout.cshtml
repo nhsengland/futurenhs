@@ -27,7 +27,7 @@
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
     @Html.Partial("_StyleSheets", theme)
-    <link rel="shortcut icon" href="@Url.Content($"{theme.ThemePath}/content/images/favicon.ico")">
+    <link rel="shortcut icon" href="@Url.Content($"~/UI/assets/dist/img/favicon/favicon.ico")">
     <link rel="apple-touch-icon-precomposed" href="@Url.Content($"{theme.ThemePath}/content/images/apple-touch-icon-57-precomposed.png")">
     @Html.Partial("_JavaScript", theme)
     @RenderSection("Header", false)
