@@ -38,6 +38,7 @@
 </head>
 
 <body class="loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
+    @Html.Partial("_SVGSprite")
     <nav class="pushy pushy-left">
         <ul>
             @if (User.Identity.IsAuthenticated)
