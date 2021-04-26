@@ -81,40 +81,6 @@ export const uiComponentsInit = (config: {
         });
  
     }
-
-    /**
-     * Init upload buttons
-     */
-     const uploadButtonElements: Array<HTMLElement> = Array.from(document.querySelectorAll('.btn-file'));
-
-     if (uploadButtonElements?.length > 0) {
- 
-        import('@modules/ui/components/uploadButton').then(({ UploadButton }) => {
- 
-            uploadButtonElements.forEach((uploadButtonElement: HTMLElement) => new UploadButton({
-                wrapperSelector: uploadButtonElement
-            }));
- 
-        });
- 
-    }
-    
-    /**
-     * Init responsive tables
-     */
-    const responsiveTables: Array<HTMLTableElement> = Array.from(document.querySelectorAll('.table-adaptive'));
-
-     if (responsiveTables?.length > 0) {
- 
-        import('@modules/ui/components/responsiveTable').then(({ ResponsiveTable }) => {
- 
-            responsiveTables.forEach((tableElement: HTMLTableElement) => new ResponsiveTable({
-                wrapperSelector: tableElement
-            }));
- 
-        });
- 
-    }
     
     /**
      * Init details accordions
