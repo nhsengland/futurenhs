@@ -707,43 +707,6 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
     .membereditavatar { padding-bottom: 12px; }
 }
 
-// Private Messages
-
-.privatemessages { clear: both; padding: 30px 0 0 0;
-    .top-pm-nav { padding-top: 8px; padding-bottom: 12px; }
-    .newmessageicon {color:$color-global-green;}
-}
-.previousmessageholder { padding-top: 20px; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; }
-.pmview {
-    h1 { margin: 20px 0 0 0;
-        .pmavatar { float: left; margin: 0 15px 0 0; -ms-border-radius: 50%; border-radius: 50%; margin-top: -8px; }
-        span.label { font-size: 12px; font-weight: $font-light-weight; }
-    }
-    .pmblock { margin-bottom: 25px; padding: 12px 12px 8px 12px;
-        .pmsmallavatar { -ms-border-radius: 50%; border-radius: 50%; z-index: 10; }
-    }
-    .pmmessagetools { padding: 8px 0 0 0; margin: 0; text-align: right; font-size: 12px;
-        a, a:visited { cursor: pointer; }
-        li { list-style: none; display: inline-block; text-align: left; padding: 0 0 0 4px;
-            .glyphicon-ok { color: $color-global-green; }
-        }
-    }
-    .pmblockfrom { margin-right: 20%; background-color: #f2f2f2; position: relative;
-        &:after { top: -14px; left: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 20px solid #f2f2f2; z-index: 5; }
-    }
-    .pmblockto { margin-left: 20%; background-color: #dedede; position: relative;
-        &:after { bottom: -14px; right: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 4px solid transparent; border-bottom: 14px solid transparent; border-right: 20px solid #dedede; z-index: 5; }
-    }
-    #createpostholder { padding: 0; }
-    .pmadminav {
-        padding: 0 0 15px 0; margin:0 0 0 0;
-            li {display:inline-block; padding:0 7px 0 0;margin:0 0 0 0;}
-        
-    }
-    p.pmerrormessage{text-align:center; font-weight:bold;margin:0;display:block;padding:15px 0;}
-}
-.form-createpm { padding: 10px 0; clear: both; }
-
 // Responsive Videos
 
 .video-container { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;

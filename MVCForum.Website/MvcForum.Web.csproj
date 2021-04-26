@@ -1113,9 +1113,6 @@
     <Content Include="Views\Point\CurrentWeekHighPointUsers.cshtml" />
     <Content Include="Views\Topic\EditPostTopic.cshtml" />
     <Content Include="Views\Post\Report.cshtml" />
-    <Content Include="Views\PrivateMessage\Create.cshtml" />
-    <Content Include="Views\PrivateMessage\Index.cshtml" />
-    <Content Include="Views\PrivateMessage\View.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Search\SideSearch.cshtml" />
     <Content Include="Views\Shared\_CreateNewPost.cshtml" />
