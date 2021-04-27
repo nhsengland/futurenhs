@@ -986,7 +986,6 @@
     <Content Include="Scripts\language.js" />
     <Content Include="Scripts\notifications.js" />
     <Content Include="Scripts\plugins.js" />
-    <Content Include="Scripts\privatemessage.js" />
     <Content Include="Scripts\slideoutpanel.js" />
     <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.js" />
     <Content Include="Views\Shared\_SlideOutPanel.cshtml" />
@@ -995,8 +994,6 @@
     <Content Include="Views\Shared\_StyleSheets.cshtml" />
     <Content Include="Views\Shared\_JavaScript.cshtml" />
     <Content Include="Views\Shared\_PostLikedBy.cshtml" />
-    <Content Include="Views\PrivateMessage\AjaxMore.cshtml" />
-    <Content Include="Areas\Admin\Views\Batch\BatchDeletePrivateMessages.cshtml" />
     <Content Include="App_Data\forum.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1039,7 +1036,6 @@
     <Content Include="Scripts\markdown\Markdown.Sanitizer.js" />
     <Content Include="Scripts\markdown\wmd-buttons.png" />
     <Content Include="Scripts\memberprofiles.js" />
-    <Content Include="Scripts\leaderboard.js" />
     <Content Include="Scripts\tags.js" />
     <Content Include="Scripts\jquery.tagsinput.min.js" />
     <Content Include="Scripts\MicrosoftAjax.debug.js" />
@@ -1096,7 +1092,6 @@
     <Content Include="Views\Home\Activity.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Topic\LatestTopics.cshtml" />
-    <Content Include="Views\Home\Leaderboard.cshtml" />
     <Content Include="Views\Members\AdminMemberProfileTools.cshtml" />
     <Content Include="Views\Members\ChangePassword.cshtml" />
     <Content Include="Views\Members\Edit.cshtml" />
@@ -1151,7 +1146,6 @@
     <Content Include="Views\Shared\_CommonSideNav.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\forumeditor.cshtml" />
     <Content Include="Views\Shared\customeditors\tinymceeditor.cshtml" />
-    <Content Include="Views\Shared\_PrivateMessage.cshtml" />
     <Content Include="Views\Members\PasswordResetSent.cshtml" />
     <Content Include="Views\Members\ResetPassword.cshtml" />
     <Content Include="Views\Members\PasswordChanged.cshtml" />
