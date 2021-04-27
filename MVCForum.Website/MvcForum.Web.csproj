@@ -193,6 +193,7 @@
     <Compile Include="ViewModels\Moderate\ModerateActionViewModel.cs" />
     <Compile Include="ViewModels\Favourite\MyFavouritesViewModel.cs" />
     <Compile Include="ViewModels\Registration\ResetPasswordViewModel.cs" />
+    <Compile Include="ViewModels\Shared\SVGIconViewModel.cs" />
     <Compile Include="ViewModels\Topic\ActiveTopicsViewModel.cs" />
     <Compile Include="ViewModels\Topic\CheckCreateTopicPermissions.cs" />
     <Compile Include="ViewModels\Topic\CreateEditTopicViewModel.cs" />
