@@ -11,7 +11,7 @@
 <div class="c-grid-block">
 
     <div class="c-grid-block_item l-col-12 l-col-6-t">
-        <h1>@ViewBag.Title</h1>
+        <h2>@ViewBag.Title</h2>
         @using (Html.BeginForm("TermsAndConditions", "Home", FormMethod.Post, new {@class = "form-report"}))
         {
             @Html.ValidationSummary(true)

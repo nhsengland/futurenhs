@@ -31,18 +31,6 @@ $media-query-mobile: $break-point-mobile-max;
 @mixin standard-button() { display: inline-block; padding: 7px 20px; margin-bottom: 0; font-size: 14px; font-weight: normal; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; -ms-border-radius: 3px; border-radius: 3px; text-decoration: none; background-color: #efefef; color: #333; }
 
 //  Bootstrap overides
-// .navbar-default { background: $color-global-blue; border: none; -ms-border-radius: 0; border-radius: 0; color: #fff;
-//     .navbar-nav {
-//         > li {
-//             > a, > a:visited { color: #fff; padding-top: 10px; padding-bottom: 10px;
-//                 &:hover, &:focus { color: #fff; background-color: lighten($color-global-blue, 8%); }
-//             }
-//         }
-//         > .open {
-//             > a, > a:visited, > a:hover, > a:focus { background-color: darken($color-global-blue, 8%) !important; color: #fff; }
-//         }
-//     }
-// }
 .navbar-brand {
     max-width: 60%;
     padding: 8px 0;
@@ -239,14 +227,14 @@ section.content-strip {
 .side-box {
     padding: 0 0 20px 0;
     a, a:visited { color: $font-base-color; }
-    h5 { font-size: 12px; color: $font-lighter-base-color; text-transform: uppercase; border-bottom: 1px solid $border-color; padding-bottom: 8px; margin-bottom: 12px; }
+    &_title { font-size: 12px; color: $font-lighter-base-color; text-transform: uppercase; border-bottom: 1px solid $border-color; padding-bottom: 8px; margin-bottom: 12px; }
     @media (max-width: $media-query-medium) { float: left; width: 50%; padding: 0 20px 20px 0;}
     @media (max-width: $media-query-mobile) { float: none; width: auto; padding: 0 0 25px 0; }
 }
 
-// Side Boxes - Category
+// Side Boxes - Group
 
-.categories-box {
+.Group-box {
     ul { padding: 0; margin: 0;
         li { margin: 2px 0; list-style: none;
             a, a:visited { border-left: 5px $border-color solid; padding-left: 8px; }
@@ -255,9 +243,9 @@ section.content-strip {
     }
 }
 
-// Sub Categories
+// Sub Group
 
-.subcategoryholder { border-top: 1px $border-color solid; border-bottom: 1px $border-color solid; padding: 4px 0; margin: 4px 0;
+.subGroupholder { border-top: 1px $border-color solid; border-bottom: 1px $border-color solid; padding: 4px 0; margin: 4px 0;
     ul { padding: 0; margin: 0;
         li { list-style: none; display: inline-block; padding: 7px 7px 7px 0;
             a, a:visited { border-left: 5px #83b6b9 solid; padding-left: 8px; }
@@ -350,15 +338,15 @@ section.content-strip {
 
 .topicrow { padding: 15px;
     p {
-        &.category { line-height: 16px; font-size: 12px; color: #b3b3b3; padding: 0 0 0 10px; margin: 0; border-left: 3px solid #ccc;
+        &.Group { line-height: 16px; font-size: 12px; color: #b3b3b3; padding: 0 0 0 10px; margin: 0; border-left: 3px solid #ccc;
             a, a:visited { color: #727272;
                 &:hover, &:focus { color: $font-lighter-base-color; }
             }
-            &.categorysolvedtrue { border-left: 3px solid $color-global-green !important; }
+            &.Groupsolvedtrue { border-left: 3px solid $color-global-green !important; }
         }
     }
     .rowdetails {
-        h3 { margin: 6px 0; padding: 0;
+        h3, h4 { margin: 6px 0; padding: 0;
             a, a:visited { font-size: 22px; color: #494848; font-weight: 600; margin-top: 7px; line-height: 26px; text-decoration: none;
                 span.glyphicon { font-size: 17px; }
                 &:hover, &:focus { color: #373737; text-decoration: underline; }
@@ -383,12 +371,8 @@ section.content-strip {
 }
 
 // Search Post
-.searchpost {
-    h5 {
-        &.topiccategory {
-            .glyphicon { font-size: 13px; }
-        }
-    }
+.searchpost h3.topiccategory {
+    .glyphicon { font-size: 13px; }
 }
 
 // Topic Poll
@@ -429,21 +413,21 @@ section.content-strip {
 }
 .topicpostorderfilter { text-align: right; }
 
-// Category Show Page
+// Group Show Page
 
-.category {
+.Group {
     .mainheading { padding: 0; }
-    .categoryimage { float: left; margin: 0 12px 12px 0; }
+    .Groupimage { float: left; margin: 0 12px 12px 0; }
 }
 
-// Category Rows
+// Group Rows
 
-.categoryrow { border-bottom: 1px #f2f2f2 solid; padding: 15px 0 15px 0;
-    h2 { border-left: 5px #83b6b9 solid; padding-left: 8px; }
+.Grouprow { border-bottom: 1px #f2f2f2 solid; padding: 15px 0 15px 0;
+    h3 { border-left: 5px #83b6b9 solid; padding-left: 8px; }
     a, a:visited { color: #2c2c2c; }
     &:last-child { border: none; }
 }
-.categoryrowfooter { color: #B3B3B3; font-size: 13px; font-weight: 300; padding-bottom: 10px;
+.Grouprowfooter { color: #B3B3B3; font-size: 13px; font-weight: 300; padding-bottom: 10px;
     .catmostrecent {
         a, a:visited { font-weight: 400;}
     }
@@ -650,7 +634,7 @@ pre span.tag { display: inline; line-height: normal; height: auto; -ms-border-ra
 
 footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 0;
     .licenceblock { font-weight: 400; font-size: 14px; padding: 14px 0 0 0; margin: 14px 0 0 0; text-align: center; border-top: 1px darken($color-global-grey-blue, 6%) solid; }
-    h6 { margin-bottom: 12px; }
+    h3 { margin-bottom: 12px; }
 }
 
 // Stats Block
@@ -743,8 +727,7 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 
 // ============ tinyMCE overides
 
-.mce-container, .mce-container *,
-.mce-widget, .mce-widget * { color: inherit; font-family: inherit; }
+.mce-container, .mce-container *, .mce-widget, .mce-widget * { color: inherit; font-family: inherit; }
 #mce-modal-block.mce-in { opacity: .7; filter: alpha(opacity=70); }
 .tinymceholder { margin-bottom: 14px; border: 1px solid #e5e5e5; width: 99.5%;
     textarea { width: 100%; min-height: 100px; }

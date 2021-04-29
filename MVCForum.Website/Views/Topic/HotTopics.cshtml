@@ -6,7 +6,7 @@
 @if (Model.Topics.Any())
 {
     <div class="side-box hottopics-box">
-        <h5>@Html.LanguageString("Topic.HotTopics")</h5>
+        <h3 class="side-box_title">@Html.LanguageString("Topic.HotTopics")</h3>
 
         <ul>
             @foreach (var topicViewModel in Model.Topics)

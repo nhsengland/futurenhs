@@ -286,9 +286,9 @@ gulp.task('scss', () => {
             suffix: '.min'
         })) // and filename suffix
         .pipe(gulp.dest(`${uiAssetsDistPath}/css/`)) // and put the compiled css files in the dist folder
-        .pipe(browserSync.reload({ // reload any browsers displaying prototypes
-            stream: true
-        }));
+        // .pipe(browserSync.reload({ // reload any browsers displaying prototypes
+        //     stream: true
+        // }));
 
 });
 
@@ -375,9 +375,9 @@ gulp.task('images', () => {
             use: [pngquant()]
         }))
         .pipe(gulp.dest(`${uiAssetsDistPath}/img/`))
-        .pipe(browserSync.reload({
-            stream: true
-        }));
+        // .pipe(browserSync.reload({
+        //     stream: true
+        // }));
 
 });
 
@@ -533,14 +533,14 @@ gulp.task('build:web', sequence(
 ));
 
 // Watch task - runs all the web tasks then watches and re-runs tasks on subsequent changes - also hosts local prototyping server for prototyping
-gulp.task('watch:web', ['build:web', 'watch:basic', 'browserSync']);
+gulp.task('watch:web', ['build:web', 'watch:basic']);
 
 // Basic watch task - watches and re-runs tasks on subsequent changes
 gulp.task('watch:basic', () => {
 
-    gulp.watch(`${uiProtoTypesDistPath}/*.html`, browserSync.reload);
+    // gulp.watch(`${uiProtoTypesDistPath}/*.html`, browserSync.reload);
     gulp.watch(`${uiAssetsSrcPath}/**/*.scss`, ['scss']);
-    gulp.watch([`${uiProtoTypesSrcPath}/pages/*.html`, `${uiProtoTypesSrcPath}/layouts/*.html`, `${uiProtoTypesSrcPath}/partials/**/*.html`], ['templates', browserSync.reload]);
+    gulp.watch([`${uiProtoTypesSrcPath}/pages/*.html`, `${uiProtoTypesSrcPath}/layouts/*.html`, `${uiProtoTypesSrcPath}/partials/**/*.html`], ['templates']);
     gulp.watch([`${uiAssetsSrcPath}/ts/**/*.ts`], ['js']);
     gulp.watch([`${uiAssetsSrcPath}/img/**/*`, `${uiAssetsSrcPath}/img/*`, `!${uiAssetsSrcPath}/img/{sprite,sprite/**/*,}`, `!${uiAssetsSrcPath}/img/favicon/**/*,}`], ['images']);
     gulp.watch([`${uiAssetsSrcPath}/img/svg-icons/active/*`], ['svgSprite']);

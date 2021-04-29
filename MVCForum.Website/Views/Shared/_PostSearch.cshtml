@@ -21,9 +21,9 @@
     <div class="rowdetails clearfix">
 
         <div class="postdetails">
-            <h5 class="topicGroup">
+            <h3 class="topiccategory">
                 <a href="@Model.ParentTopic.Group.NiceUrl">@Html.Raw(Model.ParentTopic.Group.Name)</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <a href="@Html.Raw(Model.PermaLink)">@Html.Raw(Model.ParentTopic.Name)</a> 
-            </h5>
+            </h3>
             <div class="postbodytop">
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
                 @Html.LanguageString("Post.PostedThis")

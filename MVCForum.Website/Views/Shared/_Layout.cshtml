@@ -61,7 +61,7 @@
 
     <header>
 
-        <nav class="navbar navbar-default" role="navigation">
+        <nav class="navbar navbar-default">
             <div class="l-container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle menu-btn">
@@ -110,19 +110,21 @@
         </div>
     </section>
 
-    <section class="l-container main-section">
+    <div class="l-container main-section">
         @Html.Partial("_GenericMessage")
         @Html.Partial("_EmailConfirmationNotice")
         @Html.Partial("_NoScript")
         <div id="main" class="mainbody">
+            <h1 class="u-visually-hidden">Future NHS</h1>
 
             @RenderBody()
 
         </div>
-    </section>
+    </div>
 
 
     <footer>
+        <h2 class="u-visually-hidden">Footer Navigation</h2>
         <div class="l-container">
 
             @RenderSection("Footer", false)

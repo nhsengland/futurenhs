@@ -27,8 +27,10 @@
 
             @Html.ValidationSummary(true)
 
+            <h2>@ViewBag.Title</h2>
+
             <fieldset>
-                <legend>@ViewBag.Title</legend>
+                <legend class="u-visually-hidden">@ViewBag.Title</legend>
 
                 <p class="changepasswordtext">
                     @Html.Raw(string.Format(Html.LanguageString("Members.ChangePassword.Link"), string.Format("<a href=\"{0}\">{1}</a>", Url.Action("ChangePassword"), Html.LanguageString("Members.ChangePassword.Title"))))
@@ -57,10 +59,10 @@
                             <div class="input-group">
                                 <span class="input-group-btn">
                                     <span class="btn btn-default btn-file">
-                                        @Html.LanguageString("Post.Browse") <input type="file" name="files" id="files" value="">
+                                        @Html.LanguageString("Post.Browse") <input type="file" name="files" id="Files" value="">
                                     </span>
                                 </span>
-                                <input type="text" class="form-control" readonly="">
+                                <!-- <input type="text" class="form-control" readonly=""> -->
                             </div>
                             @Html.ValidationMessageFor(x => x.Files)
                         </div>

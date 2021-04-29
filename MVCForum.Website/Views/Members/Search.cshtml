@@ -15,12 +15,13 @@
     <div class="mainheading clearfix">
         <div class="c-grid-block">
             <div class="c-grid-block_item l-col-12 l-col-6-d">
-                <h1>@ViewBag.Title</h1>
+                <h2>@ViewBag.Title</h2>
             </div>
             <div class="c-grid-block_item l-col-12 l-col-6-d">
                 @using (Html.BeginForm("Search", "Members", FormMethod.Get))
                 {
                     <div class="input-group">
+                        @Html.LabelFor(x => Model.Search, new { @class = "u-visually-hidden" })
                         @Html.TextBoxFor(x => Model.Search, new { @class = "form-control" })
                         <span class="input-group-btn">
                             <button class="btn btn-default">@Html.LanguageString("Buttons.Search")</button>

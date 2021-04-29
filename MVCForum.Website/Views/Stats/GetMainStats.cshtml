@@ -5,7 +5,7 @@
     <p>@Html.Raw(string.Format(Html.LanguageString("Stats.FooterMainStatText"), Model.MemberCount, Model.PostCount, Model.TopicCount))</p>    
 </div>
 <div class="latest-members">
-    <h6>@Html.LanguageString("Stats.LatestMembers")</h6>
+    <h3 class="latest-members_title">@Html.LanguageString("Stats.LatestMembers")</h3>
     <ul class="latestmembersjoined">
         @foreach (var member in Model.LatestMembers)
         {

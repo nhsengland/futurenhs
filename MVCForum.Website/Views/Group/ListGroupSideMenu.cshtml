@@ -2,8 +2,8 @@
 @{
     var allCats = Model.AllPermissionSets.Keys;
 }
-<div class="side-box Groups-box">
-    <h5>@Html.LanguageString("Group.GroupsSideHeading")</h5>
+<div class="side-box Group-box">
+    <h3 class="side-box_title">@Html.LanguageString("Group.GroupsSideHeading")</h3>
 
     <ul>
         <li><a href="@Url.Action("Index")">@Html.LanguageString("Group.AllGroups")</a></li>

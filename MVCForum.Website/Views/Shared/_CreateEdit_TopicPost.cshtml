@@ -85,7 +85,7 @@
         @Html.ValidationMessageFor(model => model.Group)
     </div>
     <div class="form-group">
-        <label>@Html.Lang("Topic.Label.Tags")</label>
+        <label for="Tags_tag">@Html.Lang("Topic.Label.Tags")</label>
         <div class="topictagholder">
             <p class="createtagmessage help-block">@Html.Lang("Tags.NoCreatePermission")</p>
             @Html.TextAreaFor(model => model.Tags, new {@class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic")})
@@ -104,6 +104,7 @@ else
 <div class="c-grid-block">
     <div class="c-grid-block_item l-col-12 topiccontent">
         <div class="editor-field editorholder">
+            @Html.LabelFor(model => model.Content)
             @Html.EditorFor(model => model.Content)
             @Html.ValidationMessageFor(model => model.Content)
         </div>
@@ -123,10 +124,11 @@ else
                     <div class="input-group">
                         <span class="input-group-btn">
                             <span class="btn btn-default btn-file">
-                                @Html.LanguageString("Post.Browse") <input type="file" name="files" id="files" multiple="multiple" value="">
+                                @Html.LanguageString("Post.Browse") <input type="file" name="files" id="Files" multiple="multiple" value="">
                             </span>
                         </span>
-                        <input type="text" class="form-control" readonly="">
+                        <label for="fileReadOnly" class="u-hidden">File Name</label>
+                        <input id="fileReadOnly" type="text" class="form-control" readonly="">
                     </div>
                     @Html.ValidationMessageFor(x => x.Files)
                 </div>

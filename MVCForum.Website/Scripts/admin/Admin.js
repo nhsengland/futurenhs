@@ -62,7 +62,7 @@
 
         var isChecked = checkBox.is(':checked');
         var permission = checkBox.data('permisssion');
-        var Group = checkBox.data('Group');
+        var group = checkBox.data('Group');
         var role = checkBox.data('role');
 
         // Ajax call here
@@ -70,7 +70,7 @@
         var ajaxEditPermissionViewModel = new Object();
         ajaxEditPermissionViewModel.HasPermission = isChecked;
         ajaxEditPermissionViewModel.Permission = permission;
-        ajaxEditPermissionViewModel.Group = Group;
+        ajaxEditPermissionViewModel.Group = group;
         ajaxEditPermissionViewModel.MembershipRole = role;
 
         // Ajax call to post the view model to the controller

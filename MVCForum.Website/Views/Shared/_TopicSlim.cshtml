@@ -9,7 +9,7 @@
     <div class="topicrow topicrow-slim topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
 
         <div class="rowdetails">
-            <h3>
+            <h4>
                 <a title="@postToolTip" href="@Html.Raw(Model.Topic.NiceUrl)">
                     @if (Model.Topic.IsSticky)
                     {
@@ -25,7 +25,7 @@
                     }
                     @Html.Raw(Model.Topic.Name)
                 </a>
-            </h3>
+            </h4>
             <p class="topicrowfooterinfo">
                 <a href="@Html.Raw(Model.Topic.NiceUrl)">@Html.LanguageString("Topic.LatestBy")</a>
                 <a href="@Model.Topic.LastPost.User.NiceUrl">@Model.Topic.LastPost.User.UserName</a>

@@ -11,12 +11,14 @@
 }
 <div class="c-grid-block">
     <div class="c-grid-block_item l-col-12 l-col-9-d">
-
-        @RenderBody()
-
+        <main>
+            @RenderBody()
+        </main>
     </div>
     <div class="c-grid-block_item l-col-12 l-col-3-d sidelayoutsection">
         <div class="main-side-box clearfix">
+            <h2 class="u-visually-hidden">Filters</h2>
+            
             @if (User.Identity.IsAuthenticated)
             {
                 @Html.Action("CreateTopicButton", "Topic")

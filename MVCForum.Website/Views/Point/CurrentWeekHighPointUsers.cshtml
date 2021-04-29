@@ -4,7 +4,7 @@
 @if (Html.Settings().EnablePoints && Model.HighEarners.Any(x => x.Value > 0))
 {
     <div class="side-box highearners-box">
-        <h5>@Html.LanguageString("Points.ThisWeeksHighEarners")</h5>
+        <h3 class="side-box_title">@Html.LanguageString("Points.ThisWeeksHighEarners")</h3>
 
         <ul>
             @foreach (var dict in Model.HighEarners.Where(x => x.Value > 0))
