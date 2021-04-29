@@ -15,7 +15,6 @@
 
     public partial class ActivityService : IActivityService
     {
-        private readonly IBadgeService _badgeService;
         private readonly ICacheService _cacheService;
         private readonly IGroupService _GroupService;
         private IMvcForumContext _context;
@@ -26,11 +25,10 @@
         /// <summary>
         ///     Constructor
         /// </summary>
-        public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMvcForumContext context,
+        public ActivityService(ILoggingService loggingService, IMvcForumContext context,
             ICacheService cacheService, ITopicService topicService, IPostService postService,
             IGroupService GroupService)
         {
-            _badgeService = badgeService;
             _loggingService = loggingService;
             _cacheService = cacheService;
             _topicService = topicService;
@@ -44,7 +42,6 @@
         public void RefreshContext(IMvcForumContext context)
         {
             _context = context;
-            _badgeService.RefreshContext(context);
             _topicService.RefreshContext(context);
             _postService.RefreshContext(context);
             _GroupService.RefreshContext(context);
@@ -123,18 +120,6 @@
             var activities = _context.Activity.Take(howMany).ToList();
             var specificActivities = ConvertToSpecificActivities(activities);
             return specificActivities;
-        }
-
-        /// <summary>
-        ///     New badge has been awarded
-        /// </summary>
-        /// <param name="badge"></param>
-        /// <param name="user"> </param>
-        /// <param name="timestamp"> </param>
-        public void BadgeAwarded(Badge badge, MembershipUser user, DateTime timestamp)
-        {
-            var badgeActivity = BadgeActivity.GenerateMappedRecord(badge, user, timestamp);
-            Add(badgeActivity);
         }
 
         /// <summary>
@@ -251,48 +236,6 @@
         }
 
         /// <summary>
-        ///     Make a badge activity object from the more generic database activity object
-        /// </summary>
-        /// <param name="activity"></param>
-        /// <returns></returns>
-        private BadgeActivity GenerateBadgeActivity(Activity activity)
-        {
-            // Get the corresponding badge
-            var dataPairs = ActivityBase.UnpackData(activity);
-
-            if (!dataPairs.ContainsKey(BadgeActivity.KeyBadgeId))
-            {
-                // Log the problem then skip
-                _loggingService.Error($"A badge activity record with id '{activity.Id}' has no badge id in its data.");
-                return null;
-            }
-
-            var badgeId = dataPairs[BadgeActivity.KeyBadgeId];
-            var badge = _badgeService.Get(new Guid(badgeId));
-
-            if (badge == null)
-            {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A badge activity record with id '{activity.Id}' has a badge id '{badgeId}' that is not found in the badge table.");
-                return null;
-            }
-
-            var userId = dataPairs[BadgeActivity.KeyUserId];
-            var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
-
-            if (user == null)
-            {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A badge activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
-                return null;
-            }
-
-            return new BadgeActivity(activity, badge, user);
-        }
-
-        /// <summary>
         ///     Make a profile updated joined activity object from the more generic database activity object
         /// </summary>
         /// <param name="activity"></param>
@@ -381,16 +324,7 @@
             var listedResults = new List<ActivityBase>();
             foreach (var activity in activities)
             {
-                if (activity.Type == ActivityType.BadgeAwarded.ToString())
-                {
-                    var badgeActivity = GenerateBadgeActivity(activity);
-
-                    if (badgeActivity != null)
-                    {
-                        listedResults.Add(badgeActivity);
-                    }
-                }
-                else if (activity.Type == ActivityType.MemberJoined.ToString())
+                if (activity.Type == ActivityType.MemberJoined.ToString())
                 {
                     var memberJoinedActivity = GenerateMemberJoinedActivity(activity);
 

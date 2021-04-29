@@ -13,16 +13,16 @@
 
     public class TopicNotificationsAndBadgesPipe : IPipe<IPipelineProcess<Topic>>
     {
-        private readonly IBadgeService _badgeService;
         private readonly INotificationService _notificationService;
         private readonly IActivityService _activityService;
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
 
-        public TopicNotificationsAndBadgesPipe(IBadgeService badgeService, INotificationService notificationService, 
-            IActivityService activityService, ILocalizationService localizationService, ILoggingService loggingService)
+        public TopicNotificationsAndBadgesPipe(INotificationService notificationService, 
+            IActivityService activityService, 
+            ILocalizationService localizationService, 
+            ILoggingService loggingService )
         {
-            _badgeService = badgeService;
             _notificationService = notificationService;
             _activityService = activityService;
             _localizationService = localizationService;
@@ -32,7 +32,6 @@
         /// <inheritdoc />
         public async Task<IPipelineProcess<Topic>> Process(IPipelineProcess<Topic> input, IMvcForumContext context)
         {
-            _badgeService.RefreshContext(context);
             _notificationService.RefreshContext(context);
             _activityService.RefreshContext(context);
             _localizationService.RefreshContext(context);
@@ -50,7 +49,7 @@
                 if (input.EntityToProcess.Tags != null && input.EntityToProcess.Tags.Any())
                 {
                     // Don't throw if badge fails as it's logged
-                    await _badgeService.ProcessBadge(BadgeType.Tag, input.EntityToProcess.User);
+                    //await _badgeService.ProcessBadge(BadgeType.Tag, input.EntityToProcess.User);
                 }
 
                 if (isEdit == false)

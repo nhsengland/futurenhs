@@ -56,7 +56,6 @@ namespace MvcForum.Web
 
             // Get services needed
             var mvcForumContext = unityContainer.Resolve<IMvcForumContext>();
-            var badgeService = unityContainer.Resolve<IBadgeService>();
             var loggingService = unityContainer.Resolve<ILoggingService>();
             var assemblyProvider = unityContainer.Resolve<IAssemblyProvider>();
 
@@ -72,17 +71,7 @@ namespace MvcForum.Web
             var assemblies = assemblyProvider.GetAssemblies(ForumConfiguration.Instance.PluginSearchLocations).ToList();
             ImplementationManager.SetAssemblies(assemblies);
 
-            // Do the badge processing
-            try
-            {
-                badgeService.SyncBadges(assemblies);
-                mvcForumContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                loggingService.Error($"Error processing badge classes: {ex.Message}");
-            }
-
+            
             var theme = "Default";
             var settings = mvcForumContext.Setting.FirstOrDefault();
             if (settings != null)

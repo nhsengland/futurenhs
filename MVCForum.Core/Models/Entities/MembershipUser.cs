@@ -77,8 +77,6 @@
         public virtual IList<Topic> Topics { get; set; }
         public virtual IList<Vote> Votes { get; set; }
         public virtual IList<Vote> VotesGiven { get; set; }
-        public virtual IList<Badge> Badges { get; set; }
-        public virtual IList<BadgeTypeTimeLastChecked> BadgeTypesTimeLastChecked { get; set; }
         public virtual IList<GroupNotification> GroupNotifications { get; set; }
         public virtual IList<TopicNotification> TopicNotifications { get; set; }
         public virtual IList<TagNotification> TagNotifications { get; set; }

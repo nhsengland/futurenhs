@@ -119,9 +119,6 @@
                         .Map(x => x.MapKey("UserFrom_Id"))
                         .WillCascadeOnDelete(false);
 
-            HasMany(x => x.BadgeTypesTimeLastChecked).WithRequired(x => x.User)
-                .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(false);
 
             // Many-to-many join table - a user may belong to many roles
             HasMany(t => t.Roles)
@@ -133,15 +130,6 @@
                 m.MapRightKey("RoleIdentifier");
             });
            
-            // Many-to-many join table - a badge may belong to many users
-            HasMany(t => t.Badges)
-           .WithMany(t => t.Users)
-           .Map(m =>
-           {
-               m.ToTable("MembershipUser_Badge");
-               m.MapLeftKey("MembershipUser_Id");
-               m.MapRightKey("Badge_Id");
-           });
 
             HasMany(x => x.PostEdits)
                 .WithRequired(x => x.EditedBy)

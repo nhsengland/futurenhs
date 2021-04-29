@@ -32,19 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Badges\AuthorMarkAsSolutionBadge.cs" />
-    <Compile Include="Badges\FavouriteFirstPostBadge.cs" />
-    <Compile Include="Badges\GrouchBadge.cs" />
-    <Compile Include="Badges\JediMaster.cs" />
-    <Compile Include="Badges\MemberForAYearBadge.cs" />
-    <Compile Include="Badges\OneThousandPoints.cs" />
-    <Compile Include="Badges\Padawan.cs" />
-    <Compile Include="Badges\Photogenic.cs" />
-    <Compile Include="Badges\PosterMarkAsSolutionBadge.cs" />
-    <Compile Include="Badges\PosterVoteUpBadge.cs" />
-    <Compile Include="Badges\UserVoteUpBadge.cs" />
-    <Compile Include="Badges\YourPostFavouritedBadge.cs" />
-    <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />
     <Compile Include="Pipelines\Group\GroupCreateEditPipe.cs" />
     <Compile Include="Pipelines\Group\GroupDeletePipe.cs" />
     <Compile Include="Pipelines\Group\GroupFilesPipe.cs" />

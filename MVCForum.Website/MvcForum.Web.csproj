@@ -80,7 +80,6 @@
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminLanguageController.cs" />
-    <Compile Include="Areas\Admin\Controllers\AdminBadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminSocialController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminSpamController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedEmailController.cs" />
@@ -89,7 +88,6 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
     <Compile Include="ExtensionMethods\GroupViewModelExtensions.cs" />
-    <Compile Include="ViewModels\Admin\AdminBadgeViewModels.cs" />
     <Compile Include="ViewModels\Admin\AjaxAdminViewModels.cs" />
     <Compile Include="ViewModels\Admin\BannedEmailViewModels.cs" />
     <Compile Include="ViewModels\Admin\BatchViewModels.cs" />
@@ -100,7 +98,6 @@
     <Compile Include="ViewModels\Admin\SocialViewModels.cs" />
     <Compile Include="ViewModels\Admin\SpamViewModels.cs" />
     <Compile Include="Controllers\ApiControllers\TinyMcePluginsController.cs" />
-    <Compile Include="Controllers\BadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseAdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminGroupController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImportExportController.cs" />
@@ -151,7 +148,6 @@
     <Compile Include="ViewModels\Admin\AdminMemberProfileToolsViewModel.cs" />
     <Compile Include="ViewModels\Admin\ViewAdminSidePanelViewModel.cs" />
     <Compile Include="ViewModels\AutocompleteViewModel.cs" />
-    <Compile Include="ViewModels\Badge\AllBadgesViewModel.cs" />
     <Compile Include="ViewModels\Breadcrumb\BreadcrumbViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupListViewModel.cs" />
     <Compile Include="ViewModels\Group\EditGroupPermissionsViewModel.cs" />
@@ -504,20 +500,6 @@
     <Content Include="Content\admin\Images\icons\zone.png" />
     <Content Include="Content\admin\Imports.css" />
     <Content Include="Content\admin\sb-admin.css" />
-    <Content Include="Content\badges\jedi.png" />
-    <Content Include="Content\badges\MemberForAYearBadge.png" />
-    <Content Include="Content\badges\MentionsUmbracoBadge.png" />
-    <Content Include="Content\badges\OneThousandPoints.png" />
-    <Content Include="Content\badges\padawan.png" />
-    <Content Include="Content\badges\photogenic.png" />
-    <Content Include="Content\badges\PosterMarkAsSolutionBadge.png" />
-    <Content Include="Content\badges\PosterVoteUpBadge.png" />
-    <Content Include="Content\badges\recognised-post.png" />
-    <Content Include="Content\badges\TheGrouch.png" />
-    <Content Include="Content\badges\UserMarkAsSolutionBadge.png" />
-    <Content Include="Content\badges\UserVoteUpBadge.png" />
-    <Content Include="Content\badges\you-favourited-your-first-post.png" />
-    <Content Include="Content\badges\your-post-got-favourited-by-another-member.png" />
     <Content Include="Content\bootstrap\css\bootstrap-prettify.css" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.min.css" />
@@ -668,7 +650,6 @@
     <Content Include="Installer\ru-RU.csv" />
     <None Include="Installer\en-US.csv" />
     <Content Include="Installer\ManualSql\manualVersionOneSevenToOneEight.sql" />
-    <Content Include="Scripts\badges.js" />
     <Content Include="Scripts\bbeditor\emoticons\alien.png" />
     <Content Include="Scripts\bbeditor\emoticons\angel.png" />
     <Content Include="Scripts\bbeditor\emoticons\angry.png" />
@@ -1084,7 +1065,6 @@
     <Content Include="Views\Vote\GetVotes.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_GenericMessage.cshtml" />
-    <Content Include="Views\Badge\AllBadges.cshtml" />
     <Content Include="Views\Group\Index.cshtml" />
     <Content Include="Views\Group\ListGroupSideMenu.cshtml" />
     <Content Include="Views\Group\ListMainGroups.cshtml" />
@@ -1141,7 +1121,6 @@
     <Content Include="Views\Shared\SubNavigation.cshtml" />
     <Content Include="Views\Topic\TopicsMemberHasPostedIn.cshtml" />
     <Content Include="Views\Favourite\Index.cshtml" />
-    <Content Include="Views\Shared\_Badge.cshtml" />
     <Content Include="Views\Shared\_PostSearch.cshtml" />
     <Content Include="Views\Shared\_CreateEdit_TopicPost.cshtml" />
     <Content Include="Views\Shared\_CommonSideNav.cshtml" />
@@ -1268,9 +1247,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminTag\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminBadge\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Log\Index.cshtml" />

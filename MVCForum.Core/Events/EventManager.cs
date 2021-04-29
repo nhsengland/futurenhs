@@ -17,7 +17,6 @@
 
         private static readonly object SyncRoot = new object();
 
-        public EventHandler<BadgeEventArgs> AfterBadgeAwarded;
         public EventHandler<FavouriteEventArgs> AfterFavourite;
         public EventHandler<LoginEventArgs> AfterLogin;
         public EventHandler<MarkedAsSolutionEventArgs> AfterMarkedAsSolution;
@@ -26,7 +25,6 @@
         public EventHandler<TopicMadeEventArgs> AfterTopicMade;
         public EventHandler<UpdateProfileEventArgs> AfterUpdateProfile;
         public EventHandler<VoteEventArgs> AfterVoteMade;
-        public EventHandler<BadgeEventArgs> BeforeBadgeAwarded;
         public EventHandler<FavouriteEventArgs> BeforeFavourite;
         public EventHandler<LoginEventArgs> BeforeLogin;
         public EventHandler<MarkedAsSolutionEventArgs> BeforeMarkedAsSolution;
@@ -121,20 +119,6 @@
         {
             Logger?.Error(msg);
         }
-
-        #region Badges
-
-        public void FireAfterBadgeAwarded(object sender, BadgeEventArgs eventArgs)
-        {
-            AfterBadgeAwarded?.Invoke(this, eventArgs);
-        }
-
-        public void FireBeforeBadgeAwarded(object sender, BadgeEventArgs eventArgs)
-        {
-            BeforeBadgeAwarded?.Invoke(this, eventArgs);
-        }
-
-        #endregion
 
         #region Votes
 

@@ -1,11 +1,5 @@
 ﻿namespace MvcForum.Web.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Web;
-    using System.Web.Mvc;
     using Application;
     using Application.CustomActionResults;
     using Application.ExtensionMethods;
@@ -18,6 +12,11 @@
     using Core.Models.Entities;
     using Core.Models.Enums;
     using Core.Models.General;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
     using ViewModels.Home;
 
     public partial class HomeController : BaseController
@@ -190,23 +189,8 @@
             // Now loop through the topics and remove any that user does not have permission for
             foreach (var activity in activities)
             {
-                if (activity is BadgeActivity)
-                {
-                    var badgeActivity = activity as BadgeActivity;
-                    rssActivities.Add(new RssItem
-                    {
-                        Description = badgeActivity.Badge.Description,
-                        Title = string.Concat(badgeActivity.User.UserName, " ",
-                            LocalizationService.GetResourceString("Activity.UserAwardedBadge"), " ",
-                            badgeActivity.Badge.DisplayName, " ",
-                            LocalizationService.GetResourceString("Activity.Badge")),
-                        PublishedDate = badgeActivity.ActivityMapped.Timestamp,
-                        RssImage = AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image),
-                        Link = activityLink
-                    });
-                }
-                else if (activity is MemberJoinedActivity)
-                {
+               if (activity is MemberJoinedActivity)
+               {
                     var memberJoinedActivity = activity as MemberJoinedActivity;
                     rssActivities.Add(new RssItem
                     {

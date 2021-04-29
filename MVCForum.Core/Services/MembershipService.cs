@@ -27,7 +27,6 @@
     {
         private const int MaxHoursToResetPassword = 48;
         private readonly IActivityService _activityService;
-        private readonly IBadgeService _badgeService;
         private readonly ICacheService _cacheService;
         private readonly IGroupService _GroupService;
         private IMvcForumContext _context;
@@ -60,21 +59,26 @@
         /// <param name="postService"></param>
         /// <param name="notificationService"></param>
         /// <param name="pollService"></param>
-        public MembershipService(IMvcForumContext context, ISettingsService settingsService,
+        public MembershipService(IMvcForumContext context, 
+            ISettingsService settingsService,
             ILocalizationService localizationService,
-            IActivityService activityService, ICacheService cacheService, IVoteService voteService,
-            IBadgeService badgeService,
+            IActivityService activityService,
+            ICacheService cacheService, 
+            IVoteService voteService,
             IPrivateMessageService privateMessageService,
-            IFavouriteService favouriteService, IMembershipUserPointsService membershipUserPointsService,
-            ITopicService topicService, IGroupService GroupService, IPostService postService,
-            INotificationService notificationService, IPollService pollService)
+            IFavouriteService favouriteService, 
+            IMembershipUserPointsService membershipUserPointsService,
+            ITopicService topicService, 
+            IGroupService GroupService, 
+            IPostService postService,
+            INotificationService notificationService, 
+            IPollService pollService )
         {
             _settingsService = settingsService;
             _localizationService = localizationService;
             _activityService = activityService;
             _cacheService = cacheService;
             _voteService = voteService;
-            _badgeService = badgeService;
             _privateMessageService = privateMessageService;
             _favouriteService = favouriteService;
             _membershipUserPointsService = membershipUserPointsService;
@@ -94,7 +98,6 @@
             _localizationService.RefreshContext(context);
             _activityService.RefreshContext(context);
             _voteService.RefreshContext(context);
-            _badgeService.RefreshContext(context);
             _privateMessageService.RefreshContext(context);
             _favouriteService.RefreshContext(context);
             _membershipUserPointsService.RefreshContext(context);
@@ -498,7 +501,6 @@
             slug = StringUtils.GetSafeHtml(slug);
 
             return _context.MembershipUser
-                .Include(x => x.Badges)
                 .Include(x => x.Roles)
                 .FirstOrDefault(name => name.Slug == slug);
         }

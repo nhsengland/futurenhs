@@ -70,7 +70,6 @@
         public MembershipUserPoints MembershipUserPoints { get; set; }
         public Post Post { get; set; }
         public Vote Vote { get; set; }
-        public Badge Badge { get; set; }
         public TopicTag TopicTag { get; set; }
     }
 

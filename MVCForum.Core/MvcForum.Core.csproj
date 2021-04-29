@@ -63,7 +63,6 @@
       <DependentUpon>202104301420534_renamecategoriestogroups.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
-    <Compile Include="Models\Activity\BadgeActivity.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
     <Compile Include="Models\Activity\MemberJoinedActivity.cs" />
@@ -76,19 +75,16 @@
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
-    <Compile Include="Models\Entities\Badge.cs" />
     <Compile Include="Models\Entities\BannedEmail.cs" />
     <Compile Include="Models\Entities\Group.cs" />
     <Compile Include="Models\Entities\GroupPermissions.cs" />
     <Compile Include="Models\Entities\GroupNotification.cs" />
-    <Compile Include="Models\Entities\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="Models\Activity\Activity.cs" />
     <Compile Include="Models\Entities\Block.cs" />
     <Compile Include="Models\Entities\ExtendedDataEntity.cs" />
     <Compile Include="Models\Entities\PostEdit.cs" />
     <Compile Include="Models\Entities\Section.cs" />
     <Compile Include="Models\Enums\ActivityType.cs" />
-    <Compile Include="Models\Enums\BadgeType.cs" />
     <Compile Include="Models\Enums\CacheTimes.cs" />
     <Compile Include="Models\Enums\LoginAttemptStatus.cs" />
     <Compile Include="Models\Enums\MembershipCreateStatus.cs" />
@@ -135,7 +131,6 @@
     <Compile Include="Models\General\UploadFileResult.cs" />
     <Compile Include="Models\Entities\Vote.cs" />
     <Compile Include="EqualityComparers\IEntityEqualityComparers.cs" />
-    <Compile Include="Events\BadgeEventArgs.cs" />
     <Compile Include="Events\EventManager.cs" />
     <Compile Include="Events\FavouriteEventArgs.cs" />
     <Compile Include="Events\LoginEventArgs.cs" />
@@ -146,15 +141,6 @@
     <Compile Include="Events\TopicMadeEventArgs.cs" />
     <Compile Include="Events\UpdateProfileEventArgs.cs" />
     <Compile Include="Events\VoteEventArgs.cs" />
-    <Compile Include="Interfaces\Badges\ITagBadge.cs" />
-    <Compile Include="Interfaces\Badges\IFavouriteBadge.cs" />
-    <Compile Include="Interfaces\Badges\IPostBadge.cs" />
-    <Compile Include="Interfaces\Badges\IMarkAsSolutionBadge.cs" />
-    <Compile Include="Interfaces\Badges\IProfileBadge.cs" />
-    <Compile Include="Interfaces\Badges\ITimeBadge.cs" />
-    <Compile Include="Interfaces\Badges\IBadge.cs" />
-    <Compile Include="Interfaces\Badges\IVoteDownBadge.cs" />
-    <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />
     <Compile Include="Interfaces\Providers\IStorageProvider.cs" />
@@ -175,7 +161,6 @@
     <Compile Include="Interfaces\Services\IEmailService.cs" />
     <Compile Include="Interfaces\Services\ILoggingService.cs" />
     <Compile Include="Interfaces\Services\IMembershipUserPointsService.cs" />
-    <Compile Include="Interfaces\Services\IBadgeService.cs" />
     <Compile Include="Interfaces\Services\ITopicTagService.cs" />
     <Compile Include="Interfaces\Services\ICategoryPermissionForRoleService.cs" />
     <Compile Include="Interfaces\Services\ICategoryService.cs" />
@@ -205,7 +190,6 @@
     <Compile Include="Reflection\AssemblyProvider.cs" />
     <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Services\ActivityService.cs" />
-    <Compile Include="Services\BadgeService.cs" />
     <Compile Include="Services\BannedEmailService.cs" />
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
@@ -215,8 +199,6 @@
     <Compile Include="Services\ConfigService.cs" />
     <Compile Include="Data\Context\MVCForumContext.cs" />
     <Compile Include="Data\Mapping\ActivityMapping.cs" />
-    <Compile Include="Data\Mapping\BadgeMapping.cs" />
-    <Compile Include="Data\Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
     <Compile Include="Data\Mapping\BannedEmailMapping.cs" />
     <Compile Include="Data\Mapping\BannedWordMapping.cs" />
     <Compile Include="Data\Mapping\BlockMapping.cs" />

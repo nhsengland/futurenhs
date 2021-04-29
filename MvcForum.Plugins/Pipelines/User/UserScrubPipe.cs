@@ -13,8 +13,7 @@
     public class UserScrubPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly IActivityService _activityService;
-        private readonly IBadgeService _badgeService;
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly IFavouriteService _favouriteService;
         private readonly ILoggingService _loggingService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
@@ -25,14 +24,19 @@
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
 
-        public UserScrubPipe(IVoteService voteService, IBadgeService badgeService,
-            INotificationService notificationService, IPrivateMessageService privateMessageService,
-            IFavouriteService favouriteService, IMembershipUserPointsService membershipUserPointsService,
-            IActivityService activityService, IPollService pollService, ITopicService topicService,
-            IGroupService GroupService, IPostService postService, ILoggingService loggingService)
+        public UserScrubPipe(IVoteService voteService,
+            INotificationService notificationService, 
+            IPrivateMessageService privateMessageService,
+            IFavouriteService favouriteService, 
+            IMembershipUserPointsService membershipUserPointsService,
+            IActivityService activityService, 
+            IPollService pollService, 
+            ITopicService topicService,
+            IGroupService groupService, 
+            IPostService postService,
+            ILoggingService loggingService )
         {
             _voteService = voteService;
-            _badgeService = badgeService;
             _notificationService = notificationService;
             _privateMessageService = privateMessageService;
             _favouriteService = favouriteService;
@@ -40,7 +44,7 @@
             _activityService = activityService;
             _pollService = pollService;
             _topicService = topicService;
-            _GroupService = GroupService;
+            _groupService = groupService;
             _postService = postService;
             _loggingService = loggingService;
         }
@@ -50,7 +54,6 @@
             IMvcForumContext context)
         {
             _voteService.RefreshContext(context);
-            _badgeService.RefreshContext(context);
             _notificationService.RefreshContext(context);
             _privateMessageService.RefreshContext(context);
             _favouriteService.RefreshContext(context);
@@ -58,7 +61,7 @@
             _activityService.RefreshContext(context);
             _pollService.RefreshContext(context);
             _topicService.RefreshContext(context);
-            _GroupService.RefreshContext(context);
+            _groupService.RefreshContext(context);
             _postService.RefreshContext(context);
 
             try
@@ -96,7 +99,7 @@
                     var postIds = posts.Select(x => x.Id).ToList();
 
                     // Get all Groups
-                    var allGroups = _GroupService.GetAll();
+                    var allGroups = _groupService.GetAll();
 
                     // Need to see if any of these are last posts on Topics
                     // If so, need to swap out last post
@@ -143,32 +146,6 @@
                     }
                     input.EntityToProcess.Votes.Clear();
                     input.EntityToProcess.VotesGiven.Clear();
-                    await context.SaveChangesAsync();
-                }
-
-                // User badge time checks
-                if (input.EntityToProcess.BadgeTypesTimeLastChecked != null)
-                {
-                    var toDelete = new List<BadgeTypeTimeLastChecked>();
-                    toDelete.AddRange(input.EntityToProcess.BadgeTypesTimeLastChecked);
-                    foreach (var obj in toDelete)
-                    {
-                        _badgeService.DeleteTimeLastChecked(obj);
-                    }
-                    input.EntityToProcess.BadgeTypesTimeLastChecked.Clear();
-                    await context.SaveChangesAsync();
-                }
-
-                // User Badges
-                if (input.EntityToProcess.Badges != null)
-                {
-                    var toDelete = new List<Badge>();
-                    toDelete.AddRange(input.EntityToProcess.Badges);
-                    foreach (var obj in toDelete)
-                    {
-                        _badgeService.Delete(obj);
-                    }
-                    input.EntityToProcess.Badges.Clear();
                     await context.SaveChangesAsync();
                 }
 

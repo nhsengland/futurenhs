@@ -24,9 +24,7 @@
         }
 
         public virtual DbSet<Activity> Activity { get; set; }
-        public virtual DbSet<Badge> Badge { get; set; }
         public virtual DbSet<Block> Block { get; set; }
-        public virtual DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
         public virtual DbSet<Group> Group { get; set; }
         public virtual DbSet<Section> Section { get; set; }
         public virtual DbSet<GroupNotification> GroupNotification { get; set; }

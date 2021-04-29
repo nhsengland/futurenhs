@@ -48,13 +48,6 @@
 
         IEnumerable<ActivityBase> GetAll(int howMany);
 
-        /// <summary>
-        ///     New badge has been awarded
-        /// </summary>
-        /// <param name="badge"></param>
-        /// <param name="user"> </param>
-        /// <param name="timestamp"> </param>
-        void BadgeAwarded(Badge badge, MembershipUser user, DateTime timestamp);
 
         void MemberJoined(MembershipUser user);
 

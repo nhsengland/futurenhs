@@ -104,17 +104,6 @@
             </div>
 
 
-            @if (Model.User.Badges != null && Model.User.Badges.Any())
-            {
-                <div class="membersection badgeactivity">
-                    <h3>@Html.LanguageString("Members.Profile.Badges")</h3>
-                    @foreach (var badge in Model.User.Badges)
-                    {
-                        @Html.Partial("_Badge", badge)
-                    }
-                </div>
-            }
-
             @if (User.IsInRole(Constants.AdminRoleName))
             {
                 if (Model.User.IsApproved == false)

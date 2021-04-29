@@ -10,9 +10,7 @@
     public partial interface IMvcForumContext : IDisposable
     {
         DbSet<Activity> Activity { get; set; }
-        DbSet<Badge> Badge { get; set; }
         DbSet<Block> Block { get; set; }
-        DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
         DbSet<Group> Group { get; set; }
         DbSet<Section> Section { get; set; }
         DbSet<GroupNotification> GroupNotification { get; set; }
