@@ -2,7 +2,7 @@
 {
     using Core.Models.Entities;
 
-    public class ListCategoriesViewModels
+    public class ListGroupsViewModels
     {
         public MembershipUser MembershipUser { get; set; }
         public MembershipRole MembershipRole { get; set; }

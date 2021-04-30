@@ -48,11 +48,11 @@ Buttons.ResetPassword,Reset Password
 Buttons.Save,Save
 Buttons.Search,Search
 Buttons.Send,Send
-Category.AllCategories,All Categories
-Category.CategoriesSideHeading,Categories
-Category.MostRecent,Most recent:
-Category.NoDiscussions,Currently no discussions in this category
-Category.SubCategoriesHeading,Sub Categories In
+Group.AllGroups,All Groups
+Group.GroupsSideHeading,Groups
+Group.MostRecent,Most recent:
+Group.NoDiscussions,Currently no discussions in this Group
+Group.SubGroupsHeading,Sub Groups In
 Confirmation.DeleteMembersPosts,Are you sure? This will delete all the members posts and topics!
 Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
 Date.DaysAgo,{0} days ago
@@ -75,8 +75,8 @@ Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not ad
 Favourites.NoMemberFavourites,You have not starred any posts
 Favourites.PageTitle,My Favourites
 File.SuccessfullyDeleted,File deleted
-Following.Categories,Categories you are following
-Following.PageTitle,Topics & Categories
+Following.Groups,Groups you are following
+Following.PageTitle,Topics & Groups
 Following.Topics,Topics you are following
 Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
 Home.LatestDiscussions,Latest Discussions
@@ -271,7 +271,7 @@ Post.Trusted,Trusted
 Post.TrustedUser,Trusted User
 Post.Label.IsStickyTopic,Is Sticky Topic
 Post.Label.LockTopic,Lock Topic
-Post.label.TopicCategory,Topic Category
+Post.label.TopicGroup,Topic Group
 Post.Label.TopicName,Topic Name
 Post.LastEdited,Last edited
 Post.LikedBy,Liked by
@@ -323,8 +323,8 @@ Report.Report,Report
 Report.Reporter,Reporter
 Report.ReportPostBy,Report Post By: 
 Report.ReportSent,Report Sent
-Rss.Category.Description,Latest discussions happening in the {0} category
-Rss.Category.Title,{0} Discussions
+Rss.Group.Description,Latest discussions happening in the {0} Group
+Rss.Group.Title,{0} Discussions
 Rss.LatestActivity.Description,Recent discussions
 Rss.LatestActivity.Title,Latest Forum Discussions
 Search.InTopic,In Topic
@@ -346,7 +346,7 @@ SubNav.Favourites,My Favourites
 SubNav.Following,Following
 SubNav.Latest,Latest
 SubNav.PostedIn,Posted In
-SubscribedCats.NothingToShow,You are not following to any Categories
+SubscribedCats.NothingToShow,You are not following to any Groups
 SubscribedTopics.NothingToShow,You are not following to any Topics
 Tags.PopularTags,Popular Tags
 Tags.NoCreatePermission,You do not have permission to create new tags, you can only use existing ones
@@ -367,7 +367,7 @@ TinyMCE.InsertImage.MaxFileSize,Max image file size is 2mb
 TinyMCE.InsertImage.OnlyImages,Only JPEG, PNG and GIF images can be uploaded
 TinyMCE.InsertImage.SelectFile,Please select a file
 Topic.AlreadyAnswered,Questions that may already have your answer
-Topic.Category,Category
+Topic.Group,Group
 Topic.Choose,Choose Existing Topic
 Topic.Comment,Answer
 Topic.Comments,Answers
@@ -376,12 +376,12 @@ Topic.CreateDiscussion,Create Discussion
 Topic.Deleted,Topic Deleted
 Topic.DiscussionTaggedWith,Discussions Tagged With: 
 Topic.HotTopics,Hot Topics
-Topic.InCategory, in 
+Topic.InGroup, in 
 Topic.IsLocked,Topic Is Locked
 Topic.IsPoll,Poll
 Topic.IsSolved,Topic Is Solved
 Topic.IsSticky,Topic Is Sticky
-Topic.Label.Category,Choose Category
+Topic.Label.Group,Choose Group
 Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave as 0 to disable
 Topic.Label.SubscribeToTopic,Get notified of replies?
 Topic.Label.Tags,Add Tag
@@ -389,7 +389,7 @@ Topic.Label.TopicTitle,Title
 Topic.Label.UploadFiles,Upload Files
 Topic.LastPost,Last Post
 Topic.LatestBy,Latest By
-Topic.Notification.NewTopics,A new topic or tag has been created in the {0} category
+Topic.Notification.NewTopics,A new topic or tag has been created in the {0} Group
 Topic.Notification.Subject,New Discussion On 
 Topic.OptionsHeading,Topic Options
 Topic.PollClosed,Closed

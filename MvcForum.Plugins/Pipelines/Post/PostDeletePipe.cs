@@ -57,7 +57,7 @@
                 var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
                 var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
                 var loggedOnUsersRole = loggedOnUser.GetRole(_roleService);
-                var permissions = _roleService.GetPermissions(input.EntityToProcess.Topic.Category, loggedOnUsersRole);
+                var permissions = _roleService.GetPermissions(input.EntityToProcess.Topic.Group, loggedOnUsersRole);
 
                 if (input.EntityToProcess.User.Id == loggedOnUser.Id ||
                     permissions[ForumConfiguration.Instance.PermissionDeletePosts].IsTicked)

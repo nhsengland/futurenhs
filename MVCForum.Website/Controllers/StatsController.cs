@@ -8,13 +8,13 @@
 
     public partial class StatsController : BaseController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
 
         public StatsController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            ITopicService topicService, IPostService postService, ICategoryService categoryService,
+            ITopicService topicService, IPostService postService, IGroupService GroupService,
             ICacheService cacheService,
             IMvcForumContext context) :
             base(loggingService, membershipService, localizationService, roleService,
@@ -22,14 +22,14 @@
         {
             _topicService = topicService;
             _postService = postService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
         }
 
         [ChildActionOnly]
         [OutputCache(Duration = (int) CacheTimes.OneHour)]
         public virtual PartialViewResult GetMainStats()
         {
-            var allCats = _categoryService.GetAll();
+            var allCats = _GroupService.GetAll();
             var viewModel = new MainStatsViewModel
             {
                 LatestMembers = MembershipService.GetLatestUsers(10),

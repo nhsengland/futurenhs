@@ -55,7 +55,7 @@
         {
             return _context.Favourite.AsNoTracking()
                 .Include(x => x.Post)
-                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.Group)
                 .Include(x => x.Member)
                 .ToList();
         }
@@ -64,7 +64,7 @@
         {
             return _context.Favourite
                 .Include(x => x.Post.User)
-                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.Group)
                 .Include(x => x.Member)
                 .FirstOrDefault(x => x.Id == id);
         }
@@ -73,7 +73,7 @@
         {
             return _context.Favourite
                 .Include(x => x.Post)
-                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.Group)
                 .Include(x => x.Member)
                 .Where(x => x.Member.Id == memberId).ToList();
         }
@@ -82,7 +82,7 @@
         {
             return _context.Favourite
                 .Include(x => x.Post)
-                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.Group)
                 .Include(x => x.Member)
                 .FirstOrDefault(x => x.Member.Id == memberId && x.Post.Id == postId);
         }
@@ -91,7 +91,7 @@
         {
             return _context.Favourite
                 .Include(x => x.Post)
-                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.Group)
                 .Include(x => x.Member)
                 .AsNoTracking()
                 .Where(x => x.Topic.Id == topicId).ToList();
@@ -102,7 +102,7 @@
         {
             return _context.Favourite
                 .Include(x => x.Post)
-                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.Group)
                 .Include(x => x.Member)
                 .AsNoTracking()
                 .Where(x => x.Topic.Id == topicId)
@@ -140,7 +140,7 @@
         {
             return _context.Favourite.AsNoTracking()
                 .Include(x => x.Post)
-                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.Group)
                 .Include(x => x.Member)
                 .Where(x => postIds.Contains(x.Post.Id))
                 .ToList()

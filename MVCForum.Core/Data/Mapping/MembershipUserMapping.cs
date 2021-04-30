@@ -97,7 +97,7 @@
                .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete(false);
 
-            HasMany(x => x.CategoryNotifications).WithRequired(x => x.User)
+            HasMany(x => x.GroupNotifications).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete(false);
 

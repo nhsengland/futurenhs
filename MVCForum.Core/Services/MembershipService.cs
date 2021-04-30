@@ -29,7 +29,7 @@
         private readonly IActivityService _activityService;
         private readonly IBadgeService _badgeService;
         private readonly ICacheService _cacheService;
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private IMvcForumContext _context;
         private readonly IFavouriteService _favouriteService;
         private readonly ILocalizationService _localizationService;
@@ -56,7 +56,7 @@
         /// <param name="favouriteService"></param>
         /// <param name="membershipUserPointsService"></param>
         /// <param name="topicService"></param>
-        /// <param name="categoryService"></param>
+        /// <param name="GroupService"></param>
         /// <param name="postService"></param>
         /// <param name="notificationService"></param>
         /// <param name="pollService"></param>
@@ -66,7 +66,7 @@
             IBadgeService badgeService,
             IPrivateMessageService privateMessageService,
             IFavouriteService favouriteService, IMembershipUserPointsService membershipUserPointsService,
-            ITopicService topicService, ICategoryService categoryService, IPostService postService,
+            ITopicService topicService, IGroupService GroupService, IPostService postService,
             INotificationService notificationService, IPollService pollService)
         {
             _settingsService = settingsService;
@@ -79,7 +79,7 @@
             _favouriteService = favouriteService;
             _membershipUserPointsService = membershipUserPointsService;
             _topicService = topicService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _postService = postService;
             _notificationService = notificationService;
             _pollService = pollService;
@@ -99,7 +99,7 @@
             _favouriteService.RefreshContext(context);
             _membershipUserPointsService.RefreshContext(context);
             _topicService.RefreshContext(context);
-            _categoryService.RefreshContext(context);
+            _GroupService.RefreshContext(context);
             _postService.RefreshContext(context);
             _notificationService.RefreshContext(context);
             _pollService.RefreshContext(context);

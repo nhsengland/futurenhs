@@ -17,7 +17,7 @@ Current Features Include
 - Points System
 - Moderate Topics & Posts
 - Badge System (Like StackOverflow)
-- Permission System (Category based and global)
+- Permission System (Group based and global)
 - Roles
 - Tags
 - RSS Feeds

@@ -13,12 +13,12 @@
     [AwardsPoints(2)]
     public class PosterMarkAsSolutionBadge : IMarkAsSolutionBadge
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IPostService _postService;
 
-        public PosterMarkAsSolutionBadge(ICategoryService categoryService, IPostService postService)
+        public PosterMarkAsSolutionBadge(IGroupService GroupService, IPostService postService)
         {
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _postService = postService;
         }
 
@@ -26,9 +26,9 @@
         {
             //Post is marked as the answer to a topic - give the post author a badge
 
-            // Get all categories as we want to check all the members solutions, even across
-            // categories that he no longer is allowed to access
-            var cats = _categoryService.GetAll();
+            // Get all Groups as we want to check all the members solutions, even across
+            // Groups that he no longer is allowed to access
+            var cats = _GroupService.GetAll();
             var usersSolutions = _postService.GetSolutionsByMember(user.Id, cats);
 
             return usersSolutions.Count >= 1;

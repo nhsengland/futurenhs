@@ -18,7 +18,7 @@
     {
         public MembershipRole MembershipRole { get; set; }
         public List<Permission> Permissions { get; set; }
-        public List<Category> Categories { get; set; }
+        public List<Group> Groups { get; set; }
         public PermissionSet CurrentGlobalPermissions { get; set; }
     }
 
@@ -59,6 +59,6 @@
         public Guid MembershipRole { get; set; }
 
         [Required]
-        public Guid Category { get; set; }
+        public Guid Group { get; set; }
     }
 }

@@ -14,15 +14,15 @@
 
     public partial class RoleService : IRoleService
     {
-        private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
+        private readonly IGroupPermissionForRoleService _GroupPermissionForRoleService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
         private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
-        public RoleService(IMvcForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService, ICacheService cacheService)
+        public RoleService(IMvcForumContext context, IGroupPermissionForRoleService GroupPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService, ICacheService cacheService)
         {
-            _categoryPermissionForRoleService = categoryPermissionForRoleService;
+            _GroupPermissionForRoleService = GroupPermissionForRoleService;
             _permissionService = permissionService;
             _globalPermissionForRoleService = globalPermissionForRoleService;
             _cacheService = cacheService;
@@ -33,7 +33,7 @@
         public void RefreshContext(IMvcForumContext context)
         {
             _context = context;
-            _categoryPermissionForRoleService.RefreshContext(context);
+            _GroupPermissionForRoleService.RefreshContext(context);
             _permissionService.RefreshContext(context);
             _globalPermissionForRoleService.RefreshContext(context);
         }
@@ -66,8 +66,8 @@
             if (removeTracking)
             {
                 return _context.MembershipRole
-                    .Include(x => x.CategoryPermissionForRoles.Select(p => p.Permission))
-                    .Include(x => x.CategoryPermissionForRoles.Select(p => p.Category))
+                    .Include(x => x.GroupPermissionForRoles.Select(p => p.Permission))
+                    .Include(x => x.GroupPermissionForRoles.Select(p => p.Group))
                     .Include(x => x.GlobalPermissionForRole.Select(p => p.Permission))
                     .AsNoTracking()
                     .FirstOrDefault(y => y.RoleName == roleName);
@@ -117,12 +117,12 @@
 
             if (okToDelete)
             {
-                // Get any categorypermissionforoles and delete these first
-                var rolesToDelete = _categoryPermissionForRoleService.GetByRole(role.Id);
+                // Get any Grouppermissionforoles and delete these first
+                var rolesToDelete = _GroupPermissionForRoleService.GetByRole(role.Id);
 
-                foreach (var categoryPermissionForRole in rolesToDelete)
+                foreach (var GroupPermissionForRole in rolesToDelete)
                 {
-                    _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
+                    _GroupPermissionForRoleService.Delete(GroupPermissionForRole);
                 }
 
                 _context.MembershipRole.Remove(role);
@@ -141,7 +141,7 @@
         /// <summary>
         /// Admin: so no need to check db, admin is all powerful
         /// </summary>
-        private PermissionSet GetAdminPermissions(Category category, MembershipRole role)
+        private PermissionSet GetAdminPermissions(Group Group, MembershipRole role)
         {
             // Get all permissions
             var permissionList = _permissionService.GetAll().ToList();
@@ -149,16 +149,16 @@
             // Make a new entry in the results against each permission. All true (this is admin) except "Deny Access" 
             // and "Read Only" which should be false
 
-            // Category could be null if only requesting global permissions
+            // Group could be null if only requesting global permissions
             // Just return a new list
-            var categoryPermissions = new List<CategoryPermissionForRole>();
-            if (category != null)
+            var GroupPermissions = new List<GroupPermissionForRole>();
+            if (Group != null)
             {
                 foreach (var permission in permissionList.Where(x => !x.IsGlobal))
                 {
-                    categoryPermissions.Add(new CategoryPermissionForRole
+                    GroupPermissions.Add(new GroupPermissionForRole
                     {
-                        Category = category,
+                        Group = Group,
                         IsTicked = (permission.Name != ForumConfiguration.Instance.PermissionDenyAccess && permission.Name != ForumConfiguration.Instance.PermissionReadOnly),
                         MembershipRole = role,
                         Permission = permission
@@ -178,49 +178,49 @@
                                         });
 
             // Create the permission set
-            return new PermissionSet(categoryPermissions, globalPermissions);
+            return new PermissionSet(GroupPermissions, globalPermissions);
         }
 
         /// <summary>
         /// Guest = Not logged in, so only need to check the access permission
         /// </summary>
-        /// <param name="category"></param>
+        /// <param name="Group"></param>
         /// <param name="role"></param>
-        private PermissionSet GetGuestPermissions(Category category, MembershipRole role)
+        private PermissionSet GetGuestPermissions(Group Group, MembershipRole role)
         {
             // Get all the permissions 
             var permissionList = _permissionService.GetAll().ToList();
 
-            // Make a CategoryPermissionForRole for each permission that exists,
-            // but only set the read-only permission to true for this role / category. All others false
+            // Make a GroupPermissionForRole for each permission that exists,
+            // but only set the read-only permission to true for this role / Group. All others false
 
-            // Category could be null if only requesting global permissions
+            // Group could be null if only requesting global permissions
             // Just return a new list
-            var categoryPermissions = new List<CategoryPermissionForRole>();
-            if (category != null)
+            var GroupPermissions = new List<GroupPermissionForRole>();
+            if (Group != null)
             {
                 foreach (var permission in permissionList.Where(x => !x.IsGlobal))
                 {
-                    categoryPermissions.Add(new CategoryPermissionForRole
+                    GroupPermissions.Add(new GroupPermissionForRole
                     {
-                        Category = category,
+                        Group = Group,
                         IsTicked = permission.Name == ForumConfiguration.Instance.PermissionReadOnly,
                         MembershipRole = role,
                         Permission = permission
                     });
                 }
 
-                // Deny Access may have been set (or left null) for guest for the category, so need to read for it
-                var denyAccessPermission = role.CategoryPermissionForRoles
-                                   .FirstOrDefault(x => x.Category.Id == category.Id &&
+                // Deny Access may have been set (or left null) for guest for the Group, so need to read for it
+                var denyAccessPermission = role.GroupPermissionForRoles
+                                   .FirstOrDefault(x => x.Group.Id == Group.Id &&
                                                         x.Permission.Name == ForumConfiguration.Instance.PermissionDenyAccess &&
                                                         x.MembershipRole.Id == role.Id);
 
-                // Set the Deny Access value in the results. If it's null for this role/category, record it as false in the results
-                var categoryPermissionForRole = categoryPermissions.FirstOrDefault(x => x.Permission.Name == ForumConfiguration.Instance.PermissionDenyAccess);
-                if (categoryPermissionForRole != null)
+                // Set the Deny Access value in the results. If it's null for this role/Group, record it as false in the results
+                var GroupPermissionForRole = GroupPermissions.FirstOrDefault(x => x.Permission.Name == ForumConfiguration.Instance.PermissionDenyAccess);
+                if (GroupPermissionForRole != null)
                 {
-                    categoryPermissionForRole.IsTicked = denyAccessPermission != null && denyAccessPermission.IsTicked;
+                    GroupPermissionForRole.IsTicked = denyAccessPermission != null && denyAccessPermission.IsTicked;
                 }
             }
 
@@ -236,34 +236,34 @@
                 });
             }
 
-            return new PermissionSet(categoryPermissions, globalPermissions);
+            return new PermissionSet(GroupPermissions, globalPermissions);
         }
 
         /// <summary>
         /// Get permissions for roles other than those specially treated in this class
         /// </summary>
-        /// <param name="category"></param>
+        /// <param name="Group"></param>
         /// <param name="role"></param>
         /// <returns></returns>
-        private PermissionSet GetOtherPermissions(Category category, MembershipRole role)
+        private PermissionSet GetOtherPermissions(Group Group, MembershipRole role)
         {
             // Get all permissions
             var permissionList = _permissionService.GetAll().ToList();
 
-            var categoryPermissions = new List<CategoryPermissionForRole>();
-            if (category != null)
+            var GroupPermissions = new List<GroupPermissionForRole>();
+            if (Group != null)
             {
-                // Get the known permissions for this role and category
-                var categoryRow = _categoryPermissionForRoleService.GetCategoryRow(role, category);
-                var categoryRowPermissions = categoryRow.ToDictionary(catRow => catRow.Key.Id);
+                // Get the known permissions for this role and Group
+                var GroupRow = _GroupPermissionForRoleService.GetGroupRow(role, Group);
+                var GroupRowPermissions = GroupRow.ToDictionary(catRow => catRow.Key.Id);
 
                 // Load up the results with the permisions for this role / cartegory. A null entry for a permissions results in a new
                 // record with a false value
                 foreach (var permission in permissionList.Where(x => !x.IsGlobal))
                 {
-                    categoryPermissions.Add(categoryRowPermissions.ContainsKey(permission.Id)
-                                        ? categoryRowPermissions[permission.Id].Value
-                                        : new CategoryPermissionForRole { Category = category, MembershipRole = role, IsTicked = false, Permission = permission });
+                    GroupPermissions.Add(GroupRowPermissions.ContainsKey(permission.Id)
+                                        ? GroupRowPermissions[permission.Id].Value
+                                        : new GroupPermissionForRole { Group = Group, MembershipRole = role, IsTicked = false, Permission = permission });
                 }
             }
 
@@ -283,16 +283,16 @@
                                     : new GlobalPermissionForRole { MembershipRole = role, IsTicked = false, Permission = permission });
             }
 
-            return new PermissionSet(categoryPermissions, globalPermissions);
+            return new PermissionSet(GroupPermissions, globalPermissions);
         }
 
         /// <summary>
-        /// Returns permission set based on category and role
+        /// Returns permission set based on Group and role
         /// </summary>
-        /// <param name="category">Category could be null when requesting global permissions</param>
+        /// <param name="Group">Group could be null when requesting global permissions</param>
         /// <param name="role"></param>
         /// <returns></returns>
-        public PermissionSet GetPermissions(Category category, MembershipRole role)
+        public PermissionSet GetPermissions(Group Group, MembershipRole role)
         {
             // Pass the role in to see select which permissions to apply
             // Going to cache this per request, just to help with performance
@@ -302,13 +302,13 @@
                 switch (role.RoleName)
                 {
                     case Constants.AdminRoleName:
-                        permissions = GetAdminPermissions(category, role);
+                        permissions = GetAdminPermissions(Group, role);
                         break;
                     case Constants.GuestRoleName:
-                        permissions = GetGuestPermissions(category, role);
+                        permissions = GetGuestPermissions(Group, role);
                         break;
                     default:
-                        permissions = GetOtherPermissions(category, role);
+                        permissions = GetOtherPermissions(Group, role);
                         break;
                 }
 

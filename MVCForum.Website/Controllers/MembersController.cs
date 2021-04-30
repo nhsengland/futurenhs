@@ -32,7 +32,7 @@
     /// </summary>
     public partial class MembersController : BaseController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IEmailService _emailService;
         private readonly IFavouriteService _favouriteService;
         private readonly INotificationService _notificationService;
@@ -55,7 +55,7 @@
         /// <param name="reportService"></param>
         /// <param name="emailService"></param>
         /// <param name="privateMessageService"></param>
-        /// <param name="categoryService"></param>
+        /// <param name="GroupService"></param>
         /// <param name="topicService"></param>
         /// <param name="cacheService"></param>
         /// <param name="notificationService"></param>
@@ -66,7 +66,7 @@
         public MembersController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             IPostService postService, IReportService reportService, IEmailService emailService,
-            IPrivateMessageService privateMessageService, ICategoryService categoryService, ITopicService topicService,
+            IPrivateMessageService privateMessageService, IGroupService GroupService, ITopicService topicService,
             ICacheService cacheService, INotificationService notificationService,
             IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
             IMvcForumContext context)
@@ -77,7 +77,7 @@
             _reportService = reportService;
             _emailService = emailService;
             _privateMessageService = privateMessageService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _topicService = topicService;
             _notificationService = notificationService;
             _pollService = pollService;
@@ -736,10 +736,10 @@
                     ? RoleService.GetRole(Constants.GuestRoleName, true)
                     : loggedOnReadOnlyUser.Roles.FirstOrDefault();
 
-                var allowedCategories = _categoryService.GetAllowedCategories(usersRole).ToList();
+                var allowedGroups = _GroupService.GetAllowedGroups(usersRole).ToList();
 
                 // Get the user discussions, only grab 100 posts
-                var posts = _postService.GetByMember(id, 100, allowedCategories);
+                var posts = _postService.GetByMember(id, 100, allowedGroups);
 
                 // Get the distinct topics
                 var topics = posts.Select(x => x.Topic).Distinct().Take(6)
@@ -747,7 +747,7 @@
 
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, usersRole,
-                    loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(), _postService,
+                    loggedOnReadOnlyUser, allowedGroups, SettingsService.GetSettings(), _postService,
                     _notificationService, _pollService, _voteService, _favouriteService);
 
                 // create the view model
@@ -893,10 +893,10 @@
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
             if (loggedOnReadOnlyUser != null)
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+                var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
                 privateMessageCount = _privateMessageService.NewPrivateMessageCount(loggedOnReadOnlyUser.Id);
-                var pendingTopics = _topicService.GetPendingTopics(allowedCategories, loggedOnUsersRole);
-                var pendingPosts = _postService.GetPendingPosts(allowedCategories, loggedOnUsersRole);
+                var pendingTopics = _topicService.GetPendingTopics(allowedGroups, loggedOnUsersRole);
+                var pendingPosts = _postService.GetPendingPosts(allowedGroups, loggedOnUsersRole);
                 moderateCount = pendingTopics.Count + pendingPosts.Count;
             }
 

@@ -88,7 +88,7 @@
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
-    <Compile Include="ExtensionMethods\CategoryViewModelExtensions.cs" />
+    <Compile Include="ExtensionMethods\GroupViewModelExtensions.cs" />
     <Compile Include="ViewModels\Admin\AdminBadgeViewModels.cs" />
     <Compile Include="ViewModels\Admin\AjaxAdminViewModels.cs" />
     <Compile Include="ViewModels\Admin\BannedEmailViewModels.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="Controllers\ApiControllers\TinyMcePluginsController.cs" />
     <Compile Include="Controllers\BadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseAdminController.cs" />
-    <Compile Include="Areas\Admin\Controllers\AdminCategoryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminGroupController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImportExportController.cs" />
     <Compile Include="Areas\Admin\Controllers\LogController.cs" />
     <Compile Include="Areas\Admin\Controllers\PermissionsController.cs" />
@@ -111,7 +111,7 @@
     <Compile Include="ViewModels\Admin\AdminCategoryViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminLanguageViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
-    <Compile Include="ViewModels\Category\SectionListViewModel.cs" />
+    <Compile Include="ViewModels\Group\SectionListViewModel.cs" />
     <Compile Include="ViewModels\GenericMessageViewModel.cs" />
     <Compile Include="ViewModels\Admin\LogViewModels.cs" />
     <Compile Include="ViewModels\Admin\PermissionsViewModels.cs" />
@@ -129,7 +129,7 @@
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SnippetsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
@@ -153,9 +153,9 @@
     <Compile Include="ViewModels\AutocompleteViewModel.cs" />
     <Compile Include="ViewModels\Badge\AllBadgesViewModel.cs" />
     <Compile Include="ViewModels\Breadcrumb\BreadcrumbViewModel.cs" />
-    <Compile Include="ViewModels\Category\CategoryListViewModel.cs" />
-    <Compile Include="ViewModels\Category\EditCategoryPermissionsViewModel.cs" />
-    <Compile Include="ViewModels\Category\SubCategoryViewModel.cs" />
+    <Compile Include="ViewModels\Group\GroupListViewModel.cs" />
+    <Compile Include="ViewModels\Group\EditGroupPermissionsViewModel.cs" />
+    <Compile Include="ViewModels\Group\SubGroupViewModel.cs" />
     <Compile Include="ExtensionMethods\MemberAddViewModelExtensions.cs" />
     <Compile Include="ExtensionMethods\MemberFrontEndEditViewModelExtensions.cs" />
     <Compile Include="ExtensionMethods\TopicViewModelExtensions.cs" />
@@ -207,7 +207,7 @@
     <Compile Include="ViewModels\Topic\TopicViewModel.cs" />
     <Compile Include="ViewModels\UploadViewModels.cs" />
     <Compile Include="ViewModels\EntityIdViewModel.cs" />
-    <Compile Include="ViewModels\Category\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\Group\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Email\EmailSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\Language\LanguageListAllViewModel.cs" />
     <Compile Include="ViewModels\Mapping\ViewModelMapping.cs" />
@@ -229,10 +229,10 @@
     <Content Include="Config\imageprocessor\processing.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Areas\Admin\Views\AdminCategory\Sections.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminCategory\_SectionNavButtons.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminCategory\GetSections.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminCategory\AddEditSection.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\Sections.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\_SectionNavButtons.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\GetSections.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\AddEditSection.cshtml" />
     <Content Include="Config\imageprocessor\security.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -959,7 +959,7 @@
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Admin\Views\Shared\_AdminScripts.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_AdminTopNav.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminCategory\_CategoryFields.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\_GroupFields.cshtml" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.eot" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.ttf" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.woff" />
@@ -969,7 +969,7 @@
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.eot" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.ttf" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.woff" />
-    <Content Include="Areas\Admin\Views\AdminCategory\_CategoryNavButtons.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\_GroupNavButtons.cshtml" />
     <Content Include="Areas\Admin\Views\Permissions\PermissionTypes.cshtml" />
     <Content Include="Areas\Admin\Views\AdminLanguage\Create.cshtml" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
@@ -1004,7 +1004,7 @@
     <Content Include="Views\Post\GetPostEditHistory.cshtml" />
     <Content Include="Areas\Admin\Views\Account\ManageUserPoints.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css.map" />
-    <Content Include="Areas\Admin\Views\Permissions\EditCategoryPermissions.cshtml" />
+    <Content Include="Areas\Admin\Views\Permissions\EditGroupPermissions.cshtml" />
     <Content Include="Installer\tr-TR.csv" />
     <None Include="Properties\PublishProfiles\CDSMVCForum - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
@@ -1085,10 +1085,10 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_GenericMessage.cshtml" />
     <Content Include="Views\Badge\AllBadges.cshtml" />
-    <Content Include="Views\Category\Index.cshtml" />
-    <Content Include="Views\Category\ListCategorySideMenu.cshtml" />
-    <Content Include="Views\Category\ListMainCategories.cshtml" />
-    <Content Include="Views\Category\Show.cshtml" />
+    <Content Include="Views\Group\Index.cshtml" />
+    <Content Include="Views\Group\ListGroupSideMenu.cshtml" />
+    <Content Include="Views\Group\ListMainGroups.cshtml" />
+    <Content Include="Views\Group\Show.cshtml" />
     <Content Include="Views\Closed\Index.cshtml" />
     <Content Include="Views\Home\Activity.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -1124,17 +1124,17 @@
     <Content Include="Views\Shared\_Post.cshtml" />
     <Content Include="Views\Shared\_PostModeration.cshtml" />
     <Content Include="Views\Shared\_SocialLoginButtons.cshtml" />
-    <Content Include="Views\Shared\_SubCategories.cshtml" />
+    <Content Include="Views\Shared\_SubGroups.cshtml" />
     <Content Include="Views\Shared\_Topic.cshtml" />
     <Content Include="Views\Shared\_TopicSlim.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\GetCategoryBreadcrumb.cshtml" />
+    <Content Include="Views\Shared\GetGroupBreadcrumb.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\colourpicker.cshtml" />
     <Content Include="Views\Topic\HotTopics.cshtml" />
     <Content Include="Views\Shared\_LayoutRightSideBar.cshtml" />
     <Content Include="Views\Shared\_LayoutFullWidth.cshtml" />
-    <Content Include="Views\Category\GetSubscribedCategories.cshtml" />
-    <Content Include="Views\Shared\_Category.cshtml" />
+    <Content Include="Views\Group\GetSubscribedGroups.cshtml" />
+    <Content Include="Views\Shared\_Group.cshtml" />
     <Content Include="Views\Topic\GetSubscribedTopics.cshtml" />
     <Content Include="Views\Home\Following.cshtml" />
     <Content Include="Views\Home\PostedIn.cshtml" />
@@ -1162,7 +1162,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
-    <Content Include="Views\Category\ListSections.cshtml" />
+    <Content Include="Views\Group\ListSections.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />
@@ -1204,22 +1204,22 @@
     <Content Include="Areas\Admin\Views\Settings\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminCategory\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminCategory\GetMainCategories.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\GetMainGroups.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminCategory\CreateCategory.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\CreateGroup.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminCategory\EditCategory.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\EditGroup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Shared\_AdminBlankLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminCategory\DeleteCategoryConfirmation.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminGroup\DeleteGroupConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Permissions\Index.cshtml" />

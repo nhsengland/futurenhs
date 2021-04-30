@@ -29,15 +29,15 @@
 
     public class BatchMoveTopicsViewModel
     {
-        public List<Category> Categories { get; set; }
+        public List<Group> Groups { get; set; }
 
         [Required]
-        [DisplayName("Move all Topics in this Category")]
-        public Guid? FromCategory { get; set; }
+        [DisplayName("Move all Topics in this Group")]
+        public Guid? FromGroup { get; set; }
 
         [Required]
-        [DisplayName("To this new Category")]
-        public Guid? ToCategory { get; set; }
+        [DisplayName("To this new Group")]
+        public Guid? ToGroup { get; set; }
     }
 
     #endregion

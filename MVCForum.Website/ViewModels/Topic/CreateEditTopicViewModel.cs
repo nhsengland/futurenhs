@@ -33,8 +33,8 @@
         public bool IsLocked { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Topic.Label.Category")]
-        public Guid Category { get; set; }
+        [ForumMvcResourceDisplayName("Topic.Label.Group")]
+        public Guid Group { get; set; }
 
         public string Tags { get; set; }
 
@@ -58,7 +58,7 @@
 
         // Collections
 
-        public List<SelectListItem> Categories { get; set; }
+        public List<SelectListItem> Groups { get; set; }
 
         public List<PollAnswer> PollAnswers { get; set; }
 

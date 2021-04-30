@@ -152,9 +152,9 @@
         {
             if (entity != null)
             {
-                if (entity is Category)
+                if (entity is Group)
                 {
-                    var cat = entity as Category;
+                    var cat = entity as Group;
                     return cat.Name;
                 }
                 if (entity is Topic)
@@ -195,9 +195,9 @@
             }
         }
 
-        public static string CategoryRssUrls(string slug)
+        public static string GroupRssUrls(string slug)
         {
-            return $"/{ForumConfiguration.Instance.CategoryUrlIdentifier}/rss/{slug}";
+            return $"/{ForumConfiguration.Instance.GroupUrlIdentifier}/rss/{slug}";
         }
 
         #endregion
@@ -239,15 +239,15 @@
             return StringUtils.GetGravatarImage(email, size);
         }
 
-        public static string CategoryImage(string image, Guid categoryId, int size)
+        public static string GroupImage(string image, Guid GroupId, int size)
         {
             var sizeFormat = string.Format("?width={0}&crop=0,0,{0},{0}", size);
             if (!string.IsNullOrWhiteSpace(image))
             {
                 var storageProvider = StorageProvider.Current;
-                return storageProvider.BuildFileUrl(categoryId, "/", image, sizeFormat);
+                return storageProvider.BuildFileUrl(GroupId, "/", image, sizeFormat);
             }
-            //TODO - Return default image for category
+            //TODO - Return default image for Group
             return null;
         }
 

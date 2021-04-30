@@ -72,27 +72,27 @@
         /// Get all topics
         /// </summary>
         /// <returns></returns>
-        public IList<Topic> GetAll(List<Category> allowedCategories)
+        public IList<Topic> GetAll(List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
-            return _context.Topic.Include(x => x.Category)
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
+            return _context.Topic.Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
                                 .AsNoTracking()
-                                .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
+                                .Where(x => allowedCatIds.Contains(x.Group.Id) && x.Pending != true)
                                 .ToList();
         }
 
-        public IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount)
+        public IList<SelectListItem> GetAllSelectList(List<Group> allowedGroups, int amount)
         {
 
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
+                // get the Group ids
+                var allowedCatIds = allowedGroups.Select(x => x.Id);
                 return _context.Topic.AsNoTracking()
-                                    .Include(x => x.Category)
-                                    .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
+                                    .Include(x => x.Group)
+                                    .Where(x => allowedCatIds.Contains(x.Group.Id) && x.Pending != true)
                                     .OrderByDescending(x => x.CreateDate)
                                     .Take(amount)
                                     .Select(x => new SelectListItem
@@ -103,24 +103,24 @@
          
         }
 
-        public IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories)
+        public IList<Topic> GetHighestViewedTopics(int amountToTake, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
             return _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
                                 .AsNoTracking()
                             .Where(x => x.Pending != true)
-                            .Where(x => allowedCatIds.Contains(x.Category.Id))
+                            .Where(x => allowedCatIds.Contains(x.Group.Id))
                             .OrderByDescending(x => x.Views)
                             .Take(amountToTake)
                             .ToList();
         }
 
-        public IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories, int amountToShow = 20)
+        public IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Group> allowedGroups, int amountToShow = 20)
         {
             if (from == null)
             {
@@ -132,15 +132,15 @@
                 to = DateTime.UtcNow;
             }
 
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             var topics = _context.Topic
-                .Include(x => x.Category)
+                .Include(x => x.Group)
                 .Include(x => x.LastPost)
                 .Include(x => x.Posts)
                 .Include(x => x.User)
-                .Where(x => allowedCatIds.Contains(x.Category.Id))
+                .Where(x => allowedCatIds.Contains(x.Group.Id))
                 .OrderByDescending(x => x.Posts.Count(c => c.DateCreated >= from && c.DateCreated <= to))
                 .ThenByDescending(x => x.Posts.Select(v => v.VoteCount).Sum())
                 .ThenByDescending(x => x.Views)
@@ -265,19 +265,19 @@
         /// Get todays topics
         /// </summary>
         /// <param name="amountToTake"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories)
+        public IList<Topic> GetTodaysTopics(int amountToTake, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
             return _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .AsNoTracking()
                         .Where(c => c.CreateDate >= DateTime.Today && c.Pending != true)
-                        .Where(x => allowedCatIds.Contains(x.Category.Id))
+                        .Where(x => allowedCatIds.Contains(x.Group.Id))
                         .OrderByDescending(x => x.CreateDate)
                         .Take(amountToTake)
                         .ToList();
@@ -287,7 +287,7 @@
         {
             var datefrom = DateTime.UtcNow.AddDays(-days);
             return _context.Topic
-                .Include(x => x.Category)
+                .Include(x => x.Group)
                 .Include(x => x.User)
                 .Include(x => x.Posts)
                 .Where(x => x.CreateDate <= datefrom && !x.Solved && x.Posts.Count > 1 && x.SolvedReminderSent != true)
@@ -305,21 +305,21 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<Topic>> GetRecentTopics(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetRecentTopics(int pageIndex, int pageSize, int amountToTake, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             // Get the topics using an efficient
             var query = _context.Topic
-                .Include(x => x.Category)
+                .Include(x => x.Group)
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
                 .Include(x => x.Tags)
-                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated);
 
             // Return a paged list
@@ -330,20 +330,20 @@
         /// Returns a specified amount of most recent topics in a list used for RSS feeds
         /// </summary>
         /// <param name="amountToTake"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public IList<Topic> GetRecentRssTopics(int amountToTake, List<Category> allowedCategories)
+        public IList<Topic> GetRecentRssTopics(int amountToTake, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             // Get the topics using an efficient query
             var results = _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .AsNoTracking()
-                                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                                 .OrderByDescending(s => s.CreateDate)
                                 .Take(amountToTake)
                                 .ToList();
@@ -355,59 +355,59 @@
         /// Returns all topics by a specified user
         /// </summary>
         /// <param name="memberId"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public IList<Topic> GetTopicsByUser(Guid memberId, List<Category> allowedCategories)
+        public IList<Topic> GetTopicsByUser(Guid memberId, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             // Get the topics using an efficient
             var results = _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
                                 .Include(x => x.Tags)
                                 .AsNoTracking()
                                 .Where(x => x.User.Id == memberId)
-                                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                                 .ToList();
             return results;
         }
 
-        public IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Category> allowedCategories)
+        public IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             return _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
-                    .Where(x => postIds.Contains(x.LastPost.Id) && allowedCatIds.Contains(x.Category.Id))
+                    .Where(x => postIds.Contains(x.LastPost.Id) && allowedCatIds.Contains(x.Group.Id))
                     .Where(x => x.Pending != true)
                     .ToList();
         }
 
         /// <summary>
-        /// Returns a paged list of topics from a specified category
+        /// Returns a paged list of topics from a specified Group
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
-        /// <param name="categoryId"></param>
+        /// <param name="GroupId"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<Topic>> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId)
+        public async Task<PaginatedList<Topic>> GetPagedTopicsByGroup(int pageIndex, int pageSize, int amountToTake, Guid GroupId)
         {
             // Get the topics using an efficient
             var query = _context.Topic
-                        .Include(x => x.Category)
+                        .Include(x => x.Group)
                         .Include(x => x.LastPost.User)
                         .Include(x => x.User)
                         .Include(x => x.Poll)
                         .Include(x => x.Tags)
-                        .Where(x => x.Category.Id == categoryId)
+                        .Where(x => x.Group.Id == GroupId)
                         .Where(x => x.Pending != true)
                         .OrderByDescending(x => x.IsSticky)
                         .ThenByDescending(x => x.LastPost.DateCreated);
@@ -421,48 +421,48 @@
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<Topic>> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetPagedPendingTopics(int pageIndex, int pageSize, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             // Get the topics using an efficient
             var query = _context.Topic
-                            .Include(x => x.Category)
+                            .Include(x => x.Group)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.User)
                             .Include(x => x.Poll)
                             .Include(x => x.Tags)
                             .AsNoTracking()
-                            .Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id))
+                            .Where(x => x.Pending == true && allowedCatIds.Contains(x.Group.Id))
                             .OrderBy(x => x.LastPost.DateCreated);
 
             // Return a paged list
             return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole)
+        public IList<Topic> GetPendingTopics(List<Group> allowedGroups, MembershipRole usersRole)
         {
 
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                var allPendingTopics = _context.Topic.AsNoTracking().Include(x => x.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id)).ToList();
+                var allowedCatIds = allowedGroups.Select(x => x.Id);
+                var allPendingTopics = _context.Topic.AsNoTracking().Include(x => x.Group).Where(x => x.Pending == true && allowedCatIds.Contains(x.Group.Id)).ToList();
                 if (usersRole != null)
                 {
                     var pendingTopics = new List<Topic>();
                     var permissionSets = new Dictionary<Guid, PermissionSet>();
-                    foreach (var category in allowedCategories)
+                    foreach (var Group in allowedGroups)
                     {
-                        var permissionSet = _roleService.GetPermissions(category, usersRole);
-                        permissionSets.Add(category.Id, permissionSet);
+                        var permissionSet = _roleService.GetPermissions(Group, usersRole);
+                        permissionSets.Add(Group.Id, permissionSet);
                     }
 
                     foreach (var pendingTopic in allPendingTopics)
                     {
-                        if (permissionSets.ContainsKey(pendingTopic.Category.Id))
+                        if (permissionSets.ContainsKey(pendingTopic.Group.Id))
                         {
-                            var permissions = permissionSets[pendingTopic.Category.Id];
+                            var permissions = permissionSets[pendingTopic.Group.Id];
                             if (permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                             {
                                 pendingTopics.Add(pendingTopic);
@@ -475,29 +475,29 @@
            
         }
 
-        public int GetPendingTopicsCount(List<Category> allowedCategories)
+        public int GetPendingTopicsCount(List<Group> allowedGroups)
         {
 
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Topic.AsNoTracking().Include(x => x.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
+                var allowedCatIds = allowedGroups.Select(x => x.Id);
+                return _context.Topic.AsNoTracking().Include(x => x.Group).Count(x => x.Pending == true && allowedCatIds.Contains(x.Group.Id));
         
 
         }
 
         /// <summary>
-        /// Returns a specified amount of most recent topics in a category used for RSS feeds
+        /// Returns a specified amount of most recent topics in a Group used for RSS feeds
         /// </summary>
         /// <param name="amountToTake"></param>
-        /// <param name="categoryId"></param>
+        /// <param name="GroupId"></param>
         /// <returns></returns>
-        public IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId)
+        public IList<Topic> GetRssTopicsByGroup(int amountToTake, Guid GroupId)
         {
             var topics = _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
-                            .Where(x => x.Category.Id == categoryId)
+                            .Where(x => x.Group.Id == GroupId)
                             .Where(x => x.Pending != true)
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Take(amountToTake)
@@ -513,21 +513,21 @@
         /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
         /// <param name="tag"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<Topic>> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             // Get the topics using an efficient
             var query = _context.Topic
-                .Include(x => x.Category)
+                .Include(x => x.Group)
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
                 .Include(x => x.Tags)
-                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                 .OrderByDescending(x => x.IsSticky)
                 .ThenByDescending(x => x.LastPost.DateCreated)
                 .Where(e => e.Tags.Any(t => t.Slug.Equals(tag)));
@@ -542,9 +542,9 @@
         /// </summary>
         /// <param name="amountToTake"></param>
         /// <param name="searchTerm"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public IList<Topic> SearchTopics(int amountToTake, string searchTerm, List<Category> allowedCategories)
+        public IList<Topic> SearchTopics(int amountToTake, string searchTerm, List<Group> allowedGroups)
         {
             // Create search term
             var search = StringUtils.ReturnSearchString(searchTerm);
@@ -553,20 +553,20 @@
             var splitSearch = search.Split(' ').ToList();
 
             // Pass the sanitised split words to the repo
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             // We might only want to display the top 100
             // but there might not be 100 topics
 
             var topics = _context.Topic
                             .Include(x => x.Posts)
-                            .Include(x => x.Category)
+                            .Include(x => x.Group)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.User)
                             .Include(x => x.Tags)
                             .AsNoTracking()
-                            .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                            .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                             .Where(x => x.Posts.Any(p => p.Pending != true));
 
             // Loop through each word and see if it's in the post
@@ -580,61 +580,61 @@
             return topics.Take(amountToTake).ToList();
         }
 
-        public async Task<PaginatedList<Topic>> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             // Now get the paged stuff
             var query = _context.Topic
-                .Include(x => x.Category)
+                .Include(x => x.Group)
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
                 .Include(x => x.Tags)
                 .Where(x => topicIds.Contains(x.Id))
-                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated);
 
             // Return a paged list
             return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public async Task<PaginatedList<Topic>> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             // Get the Posts and then get the topics from the post
             // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
             // be incorrect if all posts are from one topic.
             var query = _context.Topic
-                .Include(x => x.Category)
+                .Include(x => x.Group)
                 .Include(x => x.LastPost.User)
                 .Include(x => x.Poll)
                 .Include(x => x.User)
                 .Include(x => x.Posts)
                 .Include(x => x.Tags)
-                .Where(x => x.Posts.Any(u => u.User.Id == memberGuid && u.Pending != true) && allowedCatIds.Contains(x.Category.Id))
+                .Where(x => x.Posts.Any(u => u.User.Id == memberGuid && u.Pending != true) && allowedCatIds.Contains(x.Group.Id))
                 .OrderByDescending(x => x.LastPost.DateEdited);
 
             // Return a paged list
             return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Category> allowedCategories)
+        public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             var topics = _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
                                 .Include(x => x.Tags)
                             .Where(x => topicIds.Contains(x.Id))
-                            .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                            .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Take(amountToTake)
                             .ToList();
@@ -651,7 +651,7 @@
         {
             slug = StringUtils.GetSafeHtml(slug);
             return _context.Topic
-                    .Include(x => x.Category)
+                    .Include(x => x.Group)
                     .Include(x => x.LastPost.User)
                     .Include(x => x.User)
                     .Include(x => x.Poll)
@@ -668,7 +668,7 @@
         {
 
                 var topic = _context.Topic
-                                    .Include(x => x.Category)
+                                    .Include(x => x.Group)
                                     .Include(x => x.LastPost.User)
                                     .Include(x => x.User)
                                     .Include(x => x.Poll)
@@ -679,17 +679,17 @@
          
         }
 
-        public List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories)
+        public List<Topic> Get(List<Guid> topicIds, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
             return _context.Topic
-                .Include(x => x.Category)
+                .Include(x => x.Group)
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
                 .Include(x => x.Tags)
-                .Where(x => topicIds.Contains(x.Id) && allowedCatIds.Contains(x.Category.Id))
+                .Where(x => topicIds.Contains(x.Id) && allowedCatIds.Contains(x.Group.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated)
                 .ToList();
         }
@@ -724,15 +724,15 @@
             return await pipeline.Process(piplineModel);
         }
 
-        public int TopicCount(List<Category> allowedCategories)
+        public int TopicCount(List<Group> allowedGroups)
         {
  
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
+                // get the Group ids
+                var allowedCatIds = allowedGroups.Select(x => x.Id);
                 return _context.Topic
-                    .Include(x => x.Category)
+                    .Include(x => x.Group)
                     .AsNoTracking()
-                    .Count(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id));
+                    .Count(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id));
       
 
         }
@@ -741,15 +741,15 @@
         /// Return topics by a specified user that are marked as solved
         /// </summary>
         /// <param name="memberId"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public IList<Topic> GetSolvedTopicsByMember(Guid memberId, List<Category> allowedCategories)
+        public IList<Topic> GetSolvedTopicsByMember(Guid memberId, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             var results = _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
@@ -757,7 +757,7 @@
                                 .Include(x => x.Tags)
                                 .AsNoTracking()
                             .Where(x => x.User.Id == memberId)
-                            .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                            .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                             .ToList();
 
             return results.Where(x => x.Posts.Select(p => p.IsSolution).Contains(true)).ToList();
@@ -830,34 +830,34 @@
             return solved;
         }
 
-        public IList<Topic> GetAllTopicsByCategory(Guid categoryId)
+        public IList<Topic> GetAllTopicsByGroup(Guid GroupId)
         {
             var results = _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
                                 .AsNoTracking()
-                                .Where(x => x.Category.Id == categoryId)
+                                .Where(x => x.Group.Id == GroupId)
                                 .Where(x => x.Pending != true)
                                 .ToList();
 
             return results;
         }
 
-        public async Task<PaginatedList<Topic>> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Group> allowedGroups)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            // get the Group ids
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
 
             // Get the topics using an efficient
             var query = _context.Topic
-                .Include(x => x.Category)
+                .Include(x => x.Group)
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
-                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Group.Id))
                 .OrderByDescending(x => x.IsSticky)
                 .ThenByDescending(x => x.LastPost.DateCreated);
 
@@ -868,7 +868,7 @@
         public IList<Topic> GetTopicBySlugLike(string slug)
         {
             return _context.Topic
-                                .Include(x => x.Category)
+                                .Include(x => x.Group)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)

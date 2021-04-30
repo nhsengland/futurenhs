@@ -9,7 +9,7 @@ Layout.PoweredBy,Работает на
 Topic.Votes,Голоса
 Topic.Comments,Ответы
 Topic.StartedBy,Создано {0} пользователем {1}
-Topic.InCategory,в
+Topic.InGroup,в
 Topic.LatestBy,Новое
 Topic.Views,Просмотров
 Post.VoteUp,Нравится
@@ -100,14 +100,14 @@ Home.Rss,Rss
 Activity.ActivityTitle,Активность
 Notification.Subscribe,Подписаться
 Notification.UnSubscribe,Отписаться
-Category.NoDiscussions,В этой категории пока нет тем
-Category.CategoriesSideHeading,Категории
+Group.NoDiscussions,В этой категории пока нет тем
+Group.GroupsSideHeading,Категории
 PM.RecipientUsername,Получатель
 PM.MessageSubject,Тема
 Post.Label.TopicName,Название темы
 Post.Label.IsStickyTopic,Важная тема
 Post.Label.LockTopic,Закрыть тему
-Post.label.TopicCategory,Категория темы
+Post.label.TopicGroup,Категория темы
 Members.Label.Username,Имя пользователя
 Members.Label.EmailAddress,E-mail (используется Gravatar для отображения аватара)
 Members.Label.Password,Пароль
@@ -155,8 +155,8 @@ Language.Changed,Язык изменен
 Rss.LatestActivity.Title,Новые темы форума
 Rss.LatestActivity.Description,Новые темы
 Errors.NothingToDisplay,Пусто
-Rss.Category.Title,{0} темы
-Rss.Category.Description,Новые темы в категории {0}
+Rss.Group.Title,{0} темы
+Rss.Group.Description,Новые темы в категории {0}
 Report.Reporter,Пожаловался
 Report.MemberReported,На кого пожаловались
 Report.Reason,Причина
@@ -229,7 +229,7 @@ Search.NoResults,Ничего не найдено
 Topic.CommentsDetails,Комментарии
 Members.DeleteAllPosts,Удалить все сообщения
 Buttons.CreatePost,Добавить сообщение
-Topic.Label.Category,Выберите категорию
+Topic.Label.Group,Выберите категорию
 Editor.NeedHelp,Нужна помощь с форматированием?
 Members.BanUser,Забанить
 Members.UnBanUser,Разбанить
@@ -246,9 +246,9 @@ PostFilter.Votes,Голоса
 PM.NewPrivateMessageSubject,Новое личное сообщение
 PM.NewPrivateMessageBody,{0} только что отправил Вам личное сообщение.
 Post.DeleteConfirmation,Вы уверены, что хотите удалить?
-Category.SubCategoriesHeading,Подкатегории в
-Category.AllCategories,Все категории
-Category.MostRecent,Новое:
+Group.SubGroupsHeading,Подкатегории в
+Group.AllGroups,Все категории
+Group.MostRecent,Новое:
 Members.LogonFacebookButton,Войти через Facebook
 Members.LogonGoogleButton,Войти через Google
 Twitter.Error.EnabledButNotAddedKeys,Вы включили авторизацию с помощью учетной записи Twitter но не указали id и secret key в forum.config
@@ -308,7 +308,7 @@ Side.Search.SearchFor,Поиск...
 Side.Search.Go,Искать
 Topic.IsSticky,Важная тема
 Topic.IsSolved,Есть решение
-Topic.Category,Категория
+Topic.Group,Категория
 Topic.IsPoll,Опрос
 Topic.LastPost,Последнее сообщение
 Topic.HotTopics,Популярные темы
@@ -323,7 +323,7 @@ SubNav.Favourites,Избранное
 Favourites.PageTitle,Избранное
 Favourites.NoMemberFavourites,Вы не добавили ничего в избранное
 Following.PageTitle,Темы и категории
-Following.Categories,Категории, на которые Вы подписаны
+Following.Groups,Категории, на которые Вы подписаны
 SubscribedCats.NothingToShow,Вы не подписаны ни на одну категорию
 Following.Topics,Вы подписаны на темы
 SubscribedTopics.NothingToShow,Вы не подписаны ни на одну тему

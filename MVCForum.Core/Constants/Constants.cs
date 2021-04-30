@@ -20,7 +20,7 @@
         // View Bag / Temp Data Constants
         public const string MessageViewBagName = "Message";
 
-        public const string DefaultCategoryViewBagName = "DefaultCategory";
+        public const string DefaultGroupViewBagName = "DefaultGroup";
         public const string GlobalClass = "GlobalClass";
         public const string CurrentAction = "CurrentAction";
         public const string CurrentController = "CurrentController";
@@ -198,9 +198,9 @@
             public const string IgnoreLastPost = "IgnoreLastPost";
 
             /// <summary>
-            /// Parent Category
+            /// Parent Group
             /// </summary>
-            public const string ParentCategory = "ParentCategory";
+            public const string ParentGroup = "ParentGroup";
 
             /// <summary>
             /// Section 

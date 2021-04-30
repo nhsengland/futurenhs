@@ -8,7 +8,7 @@
 
     public static partial class TopicViewModelExtensions
     {
-        public static Topic ToTopic(this CreateEditTopicViewModel viewModel, Category category, MembershipUser user, Topic existingTopic)
+        public static Topic ToTopic(this CreateEditTopicViewModel viewModel, Group Group, MembershipUser user, Topic existingTopic)
         {
             if (existingTopic == null)
             {
@@ -20,7 +20,7 @@
             }
 
             existingTopic.Name = viewModel.Name;
-            existingTopic.Category = category;
+            existingTopic.Group = Group;
             existingTopic.IsLocked = viewModel.IsLocked;
             existingTopic.IsSticky = viewModel.IsSticky;
 

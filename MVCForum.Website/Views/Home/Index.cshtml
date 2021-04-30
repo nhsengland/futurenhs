@@ -19,11 +19,11 @@
 @{
     switch (ForumConfiguration.Instance.ForumIndexView)
     {
-        case "Categories":
-            @Html.Action("ListMainCategories", "Category")
+        case "Groups":
+            @Html.Action("ListMainGroups", "Group")
             break;
         case "Sections":
-            @Html.Action("ListSections", "Category")
+            @Html.Action("ListSections", "Group")
             break;
         case "Topics":
             @Html.Action("LatestTopics", "Topic")

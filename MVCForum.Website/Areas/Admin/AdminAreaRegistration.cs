@@ -19,9 +19,9 @@ namespace MvcForum.Web.Areas.Admin
             RouteTable.Routes.AppendTrailingSlash = true;
 
             //context.MapRoute(
-            //    "Admin_editcategoryroute",
+            //    "Admin_editGrouproute",
             //    "Admin/{controller}/{action}/{id}",
-            //    new { controller = "AdminCategory", action = "Index", id = UrlParameter.Optional }
+            //    new { controller = "AdminGroup", action = "Index", id = UrlParameter.Optional }
             //);
             //context.MapRoute(
             //    "Admin_edituserroute",

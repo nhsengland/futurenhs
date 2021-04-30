@@ -2,7 +2,7 @@
 {
     public enum UrlType
     {
-        Category,
+        Group,
         Topic,
         Member,
         Tag

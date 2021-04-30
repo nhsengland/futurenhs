@@ -64,7 +64,7 @@
                         var loggedOnUsersRole = loggedOnUser.GetRole(_roleService);
 
                         // Get the permissions and add to extendeddata as we'll use it again
-                        var permissions = _roleService.GetPermissions(input.EntityToProcess.Category, loggedOnUsersRole);
+                        var permissions = _roleService.GetPermissions(input.EntityToProcess.Group, loggedOnUsersRole);
                         input.ExtendedData.Add(Constants.ExtendedDataKeys.PermissionSet, permissions);
 
                         // Quick check to see if user is locked out, when logged in
@@ -85,8 +85,8 @@
                             return input;
                         }
 
-                        // Check for moderation on Category
-                        if (input.EntityToProcess.Category.ModerateTopics == true)
+                        // Check for moderation on Group
+                        if (input.EntityToProcess.Group.ModerateTopics == true)
                         {
                             input.EntityToProcess.Pending = true;
                             input.ExtendedData.Add(Constants.ExtendedDataKeys.Moderate, true);

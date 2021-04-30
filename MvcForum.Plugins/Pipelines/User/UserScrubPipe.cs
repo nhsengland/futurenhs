@@ -14,7 +14,7 @@
     {
         private readonly IActivityService _activityService;
         private readonly IBadgeService _badgeService;
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IFavouriteService _favouriteService;
         private readonly ILoggingService _loggingService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
@@ -29,7 +29,7 @@
             INotificationService notificationService, IPrivateMessageService privateMessageService,
             IFavouriteService favouriteService, IMembershipUserPointsService membershipUserPointsService,
             IActivityService activityService, IPollService pollService, ITopicService topicService,
-            ICategoryService categoryService, IPostService postService, ILoggingService loggingService)
+            IGroupService GroupService, IPostService postService, ILoggingService loggingService)
         {
             _voteService = voteService;
             _badgeService = badgeService;
@@ -40,7 +40,7 @@
             _activityService = activityService;
             _pollService = pollService;
             _topicService = topicService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _postService = postService;
             _loggingService = loggingService;
         }
@@ -58,7 +58,7 @@
             _activityService.RefreshContext(context);
             _pollService.RefreshContext(context);
             _topicService.RefreshContext(context);
-            _categoryService.RefreshContext(context);
+            _GroupService.RefreshContext(context);
             _postService.RefreshContext(context);
 
             try
@@ -95,12 +95,12 @@
                 {
                     var postIds = posts.Select(x => x.Id).ToList();
 
-                    // Get all categories
-                    var allCategories = _categoryService.GetAll();
+                    // Get all Groups
+                    var allGroups = _GroupService.GetAll();
 
                     // Need to see if any of these are last posts on Topics
                     // If so, need to swap out last post
-                    var lastPostTopics = _topicService.GetTopicsByLastPost(postIds, allCategories.ToList());
+                    var lastPostTopics = _topicService.GetTopicsByLastPost(postIds, allGroups.ToList());
                     foreach (var topic in lastPostTopics.Where(x => x.User.Id != input.EntityToProcess.Id))
                     {
                         var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id))
@@ -172,16 +172,16 @@
                     await context.SaveChangesAsync();
                 }
 
-                // User category notifications
-                if (input.EntityToProcess.CategoryNotifications != null)
+                // User Group notifications
+                if (input.EntityToProcess.GroupNotifications != null)
                 {
-                    var toDelete = new List<CategoryNotification>();
-                    toDelete.AddRange(input.EntityToProcess.CategoryNotifications);
+                    var toDelete = new List<GroupNotification>();
+                    toDelete.AddRange(input.EntityToProcess.GroupNotifications);
                     foreach (var obj in toDelete)
                     {
                         _notificationService.Delete(obj);
                     }
-                    input.EntityToProcess.CategoryNotifications.Clear();
+                    input.EntityToProcess.GroupNotifications.Clear();
                     await context.SaveChangesAsync();
                 }
 

@@ -51,7 +51,7 @@
                         var loggedOnUsersRole = loggedOnUser.GetRole(_roleService);
 
                         // Get the permissions and add to extendeddata as we'll use it again
-                        var permissions = _roleService.GetPermissions(input.EntityToProcess.Topic.Category, loggedOnUsersRole);
+                        var permissions = _roleService.GetPermissions(input.EntityToProcess.Topic.Group, loggedOnUsersRole);
                         input.ExtendedData.Add(Constants.ExtendedDataKeys.PermissionSet, permissions);
 
                         // Check this users role has permission to create a post

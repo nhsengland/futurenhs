@@ -46,35 +46,35 @@
             return await _context.SaveChangesAsync();
         }
 
-        #region Category Notifications
+        #region Group Notifications
 
         /// <inheritdoc />
-        public void Delete(CategoryNotification notification)
+        public void Delete(GroupNotification notification)
         {
-            _context.CategoryNotification.Remove(notification);
+            _context.GroupNotification.Remove(notification);
         }
 
         /// <inheritdoc />
-        public List<CategoryNotification> GetCategoryNotificationsByCategory(Category category)
+        public List<GroupNotification> GetGroupNotificationsByGroup(Group Group)
         {
-            return _context.CategoryNotification.AsNoTracking()
-                .Where(x => x.Category.Id == category.Id)
+            return _context.GroupNotification.AsNoTracking()
+                .Where(x => x.Group.Id == Group.Id)
                 .ToList();
         }
 
         /// <inheritdoc />
-        public List<CategoryNotification> GetCategoryNotificationsByUser(MembershipUser user)
+        public List<GroupNotification> GetGroupNotificationsByUser(MembershipUser user)
         {
-            return _context.CategoryNotification.AsNoTracking()
+            return _context.GroupNotification.AsNoTracking()
                 .Where(x => x.User.Id == user.Id)
                 .ToList();
         }
 
         /// <inheritdoc />
-        public List<CategoryNotification> GetCategoryNotificationsByUserAndCategory(MembershipUser user,
-            Category category, bool addTracking = false)
+        public List<GroupNotification> GetGroupNotificationsByUserAndGroup(MembershipUser user,
+            Group Group, bool addTracking = false)
         {
-            var notifications = _context.CategoryNotification.Where(x => x.Category.Id == category.Id && x.User.Id == user.Id);
+            var notifications = _context.GroupNotification.Where(x => x.Group.Id == Group.Id && x.User.Id == user.Id);
             if (addTracking)
             {
                 return notifications.ToList();
@@ -83,9 +83,9 @@
         }
 
         /// <inheritdoc />
-        public CategoryNotification Add(CategoryNotification category)
+        public GroupNotification Add(GroupNotification Group)
         {
-            return _context.CategoryNotification.Add(category);
+            return _context.GroupNotification.Add(Group);
         }
 
         #endregion
@@ -205,8 +205,8 @@
             }
             else
             {
-                // Get all notifications for this category and for the tags on the topic
-                userIdsToNotify = GetCategoryNotificationsByCategory(topic.Category).Select(x => x.User.Id).ToList();
+                // Get all notifications for this Group and for the tags on the topic
+                userIdsToNotify = GetGroupNotificationsByGroup(topic.Group).Select(x => x.User.Id).ToList();
 
                 // Merge and remove duplicate ids
                 if (topic.Tags != null && topic.Tags.Any())
@@ -237,13 +237,13 @@
                         var sb = new StringBuilder();
                         sb.AppendFormat("<p>{0}</p>",
                             string.Format(_localizationService.GetResourceString(notificationType == NotificationType.Post ? "Post.Notification.NewPosts" : "Topic.Notification.NewTopics"), 
-                            topic.Category.Name));
+                            topic.Group.Name));
                         sb.Append($"<p>{topic.Name}</p>");
                         if (ForumConfiguration.Instance.IncludeFullPostInEmailNotifications)
                         {
                             sb.Append(topic.LastPost.PostContent.ConvertPostContent());
                         }
-                        sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(StringUtils.ReturnCurrentDomain(), topic.Category.NiceUrl));
+                        sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(StringUtils.ReturnCurrentDomain(), topic.Group.NiceUrl));
 
                         // create the emails and only send them to people who have not had notifications disabled
                         var emails = users

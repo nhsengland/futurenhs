@@ -29,9 +29,9 @@
             public const string StartsWith = "PostEdit.";
         }
 
-        public static class Category
+        public static class Group
         {
-            public const string StartsWith = "Category.";
+            public const string StartsWith = "Group.";
         }
 
         public static class Member
@@ -74,14 +74,14 @@
             public const string StartsWith = "BannedWord.";
         }
 
-        public static class CategoryNotification
+        public static class GroupNotification
         {
-            public const string StartsWith = "CategoryNotification.";
+            public const string StartsWith = "GroupNotification.";
         }
 
-        public static class CategoryPermissionForRole
+        public static class GroupPermissionForRole
         {
-            public const string StartsWith = "CategoryPermissionForRole.";
+            public const string StartsWith = "GroupPermissionForRole.";
         }
 
         public static class Block

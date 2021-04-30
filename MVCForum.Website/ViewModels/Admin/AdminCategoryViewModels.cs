@@ -9,58 +9,58 @@
     using Core.Constants;
     using Core.Models.Entities;
 
-    public class ListCategoriesViewModel
+    public class ListGroupsViewModel
     {
-        public IEnumerable<Category> Categories { get; set; }
+        public IEnumerable<Group> Groups { get; set; }
     }
 
-    public class CategoryEditViewModel
+    public class GroupEditViewModel
     {
-        public CategoryEditViewModel()
+        public GroupEditViewModel()
         {
-            AllCategories = new List<SelectListItem>();
+            AllGroups = new List<SelectListItem>();
             AllSections = new List<SelectListItem>();
         }
 
         [HiddenInput]
         public Guid Id { get; set; }
 
-        [DisplayName("Category Name")]
+        [DisplayName("Group Name")]
         [Required]
         [StringLength(600)]
         public string Name { get; set; }
 
-        [DisplayName("Category Description")]
+        [DisplayName("Group Description")]
         [DataType(DataType.MultilineText)]
         [UIHint(Constants.EditorType)]
         [AllowHtml]
         public string Description { get; set; }
 
-        [DisplayName("Category Colour")]
+        [DisplayName("Group Colour")]
         [UIHint(Constants.EditorTemplateColourPicker)]
         [AllowHtml]
-        public string CategoryColour { get; set; }
+        public string GroupColour { get; set; }
 
-        [DisplayName("Lock The Category")]
+        [DisplayName("Lock The Group")]
         public bool IsLocked { get; set; }
 
-        [DisplayName("Moderate all topics in this Category")]
+        [DisplayName("Moderate all topics in this Group")]
         public bool ModerateTopics { get; set; }
 
-        [DisplayName("Moderate all posts in this Category")]
+        [DisplayName("Moderate all posts in this Group")]
         public bool ModeratePosts { get; set; }
 
         [DisplayName("Sort Order")]
         [Range(0, int.MaxValue)]
         public int SortOrder { get; set; }
 
-        [DisplayName("Parent Category")]
-        public Guid? ParentCategory { get; set; }
+        [DisplayName("Parent Group")]
+        public Guid? ParentGroup { get; set; }
 
         [DisplayName("Section")]
         public Guid? Section { get; set; }
 
-        public List<SelectListItem> AllCategories { get; set; }
+        public List<SelectListItem> AllGroups { get; set; }
 
         public IEnumerable<SelectListItem> AllSections { get; set; }
 
@@ -72,18 +72,18 @@
         [MaxLength(200)]
         public string MetaDesc { get; set; }
 
-        [DisplayName("Category Image")]
+        [DisplayName("Group Image")]
         public HttpPostedFileBase[] Files { get; set; }
 
         public string Image { get; set; }
     }
 
-    public class DeleteCategoryViewModel
+    public class DeleteGroupViewModel
     {
         [HiddenInput]
         public Guid Id { get; set; }
 
-        public Category Category { get; set; }
-        public List<Category> SubCategories { get; set; }
+        public Group Group { get; set; }
+        public List<Group> SubGroups { get; set; }
     }
 }

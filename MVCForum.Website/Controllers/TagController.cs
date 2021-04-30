@@ -11,18 +11,18 @@
 
     public partial class TagController : BaseController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly ITopicTagService _topicTagService;
 
         public TagController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            ITopicTagService topicTagService, ICategoryService categoryService, ICacheService cacheService,
+            ITopicTagService topicTagService, IGroupService GroupService, ICacheService cacheService,
             IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
             _topicTagService = topicTagService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
         }
 
         [ChildActionOnly]
@@ -35,8 +35,8 @@
             var viewModel = CacheService.Get<PopularTagViewModel>(cacheKey);
             if (viewModel == null)
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
-                var popularTags = _topicTagService.GetPopularTags(amountToTake, allowedCategories);
+                var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+                var popularTags = _topicTagService.GetPopularTags(amountToTake, allowedGroups);
                 viewModel = new PopularTagViewModel {PopularTags = popularTags};
                 CacheService.Set(cacheKey, viewModel, CacheTimes.SixHours);
             }

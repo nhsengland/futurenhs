@@ -19,7 +19,7 @@ namespace MVCForumAutomation
             var adminUser = MVCForum.LoginAsAdmin(adminPassword);
             var adminPage = adminUser.GoToAdminPage();
             var permissions = adminPage.GetPermissionsFor(TestDefaults.StandardMembers);
-            permissions.AddToCategory(TestDefaults.ExampleCategory, PermissionTypes.CreateTopics);
+            permissions.AddToGroup(TestDefaults.ExampleGroup, PermissionTypes.CreateTopics);
             adminUser.Logout();
         }
 

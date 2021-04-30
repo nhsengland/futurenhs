@@ -9,28 +9,28 @@
     using Core.Models.Entities;
     using Web.ViewModels;
     using Web.ViewModels.Admin;
-    using Web.ViewModels.Category;
+    using Web.ViewModels.Group;
 
     [Authorize(Roles = Constants.AdminRoleName)]
     public class PermissionsController : BaseAdminController
     {
-        private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupPermissionForRoleService _GroupPermissionForRoleService;
+        private readonly IGroupService _GroupService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
         private readonly IRoleService _roleService;
 
         public PermissionsController(ILoggingService loggingService, IRoleService roleService,
             ILocalizationService localizationService, IPermissionService permissionService,
-            ICategoryService categoryService, ICategoryPermissionForRoleService categoryPermissionForRoleService,
+            IGroupService GroupService, IGroupPermissionForRoleService GroupPermissionForRoleService,
             IMembershipService membershipService, ISettingsService settingsService,
             IGlobalPermissionForRoleService globalPermissionForRoleService, IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _roleService = roleService;
             _permissionService = permissionService;
-            _categoryService = categoryService;
-            _categoryPermissionForRoleService = categoryPermissionForRoleService;
+            _GroupService = GroupService;
+            _GroupPermissionForRoleService = GroupPermissionForRoleService;
             _globalPermissionForRoleService = globalPermissionForRoleService;
         }
 
@@ -49,7 +49,7 @@
         }
 
         /// <summary>
-        ///     Add / Remove permissions for a role on each category
+        ///     Add / Remove permissions for a role on each Group
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -60,19 +60,19 @@
             {
                 MembershipRole = role,
                 Permissions = _permissionService.GetAll().ToList(),
-                Categories = _categoryService.GetAll(),
+                Groups = _GroupService.GetAll(),
                 CurrentGlobalPermissions = _roleService.GetPermissions(null, role)
             };
 
             return View(permViewModel);
         }
 
-        public ActionResult EditCategoryPermissions(Guid id)
+        public ActionResult EditGroupPermissions(Guid id)
         {
-            var category = _categoryService.Get(id);
-            var catPermissionViewModel = new EditCategoryPermissionsViewModel
+            var Group = _GroupService.Get(id);
+            var catPermissionViewModel = new EditGroupPermissionsViewModel
             {
-                Category = category,
+                Group = Group,
                 Permissions = _permissionService.GetAll().ToList(),
                 Roles = _roleService.AllRoles()
                     .Where(x => x.RoleName != Constants.AdminRoleName)
@@ -137,9 +137,9 @@
             {
                 if (Request.IsAjaxRequest())
                 {
-                    if (ajaxEditPermissionViewModel.Category == Guid.Empty)
+                    if (ajaxEditPermissionViewModel.Group == Guid.Empty)
                     {
-                        // If category is empty guid then this is a global permission
+                        // If Group is empty guid then this is a global permission
 
                         var gpr = new GlobalPermissionForRole
                         {
@@ -153,18 +153,18 @@
                     }
                     else
                     {
-                        // We have a category so it's a category permission 
+                        // We have a Group so it's a Group permission 
 
-                        var mappedItem = new CategoryPermissionForRole
+                        var mappedItem = new GroupPermissionForRole
                         {
-                            Category = _categoryService.Get(ajaxEditPermissionViewModel.Category),
+                            Group = _GroupService.Get(ajaxEditPermissionViewModel.Group),
                             MembershipRole =
                                 _roleService.GetRole(ajaxEditPermissionViewModel.MembershipRole),
                             Permission =
                                 _permissionService.Get(ajaxEditPermissionViewModel.Permission),
                             IsTicked = ajaxEditPermissionViewModel.HasPermission
                         };
-                        _categoryPermissionForRoleService.UpdateOrCreateNew(mappedItem);
+                        _GroupPermissionForRoleService.UpdateOrCreateNew(mappedItem);
                     }
                 }
                 Context.SaveChanges();

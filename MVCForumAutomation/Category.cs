@@ -1,8 +1,8 @@
 namespace MVCForumAutomation
 {
-    public class Category
+    public class Group
     {
-        public Category(string name)
+        public Group(string name)
         {
             Name = name;
         }

@@ -23,18 +23,18 @@
     public partial class HomeController : BaseController
     {
         private readonly IActivityService _activityService;
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly ITopicService _topicService;
 
         public HomeController(ILoggingService loggingService, IActivityService activityService,
             IMembershipService membershipService, ITopicService topicService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, ICategoryService categoryService,
+            IRoleService roleService, ISettingsService settingsService, IGroupService GroupService,
             ICacheService cacheService, IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
             _topicService = topicService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _activityService = activityService;
         }
 
@@ -124,34 +124,34 @@
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
-            // Allowed Categories for a guest - As that's all we want latest RSS to show
+            // Allowed Groups for a guest - As that's all we want latest RSS to show
             var guestRole = RoleService.GetRole(Constants.GuestRoleName);
-            var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(guestRole);
 
             // get an rss lit ready
             var rssTopics = new List<RssItem>();
 
             // Get the latest topics
-            var topics = _topicService.GetRecentRssTopics(50, allowedCategories);
+            var topics = _topicService.GetRecentRssTopics(50, allowedGroups);
 
-            // Get all the categories for this topic collection
-            var categories = topics.Select(x => x.Category).Distinct();
+            // Get all the Groups for this topic collection
+            var Groups = topics.Select(x => x.Group).Distinct();
 
             // create permissions
-            var permissions = new Dictionary<Category, PermissionSet>();
+            var permissions = new Dictionary<Group, PermissionSet>();
 
-            // loop through the categories and get the permissions
-            foreach (var category in categories)
+            // loop through the Groups and get the permissions
+            foreach (var Group in Groups)
             {
-                var permissionSet = RoleService.GetPermissions(category, loggedOnUsersRole);
-                permissions.Add(category, permissionSet);
+                var permissionSet = RoleService.GetPermissions(Group, loggedOnUsersRole);
+                permissions.Add(Group, permissionSet);
             }
 
             // Now loop through the topics and remove any that user does not have permission for
             foreach (var topic in topics)
             {
-                // Get the permissions for this topic via its parent category
-                var permission = permissions[topic.Category];
+                // Get the permissions for this topic via its parent Group
+                var permission = permissions[topic.Group];
 
                 // Add only topics user has permission to
                 if (!permission[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
@@ -238,12 +238,12 @@
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
         public virtual ActionResult GoogleSitemap()
         {
-            // Allowed Categories for a guest
+            // Allowed Groups for a guest
             var guestRole = RoleService.GetRole(Constants.GuestRoleName);
-            var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(guestRole);
 
             // Get all topics that a guest has access to
-            var allTopics = _topicService.GetAll(allowedCategories);
+            var allTopics = _topicService.GetAll(allowedGroups);
 
             // Sitemap holder
             var sitemap = new List<SitemapEntry>();
@@ -292,25 +292,25 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public virtual ActionResult GoogleCategorySitemap()
+        public virtual ActionResult GoogleGroupSitemap()
         {
-            // Allowed Categories for a guest
+            // Allowed Groups for a guest
             var guestRole = RoleService.GetRole(Constants.GuestRoleName);
-            var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(guestRole);
 
             // Sitemap holder
             var sitemap = new List<SitemapEntry>();
 
-            // #### CATEGORIES
-            foreach (var category in allowedCategories)
+            // #### Groups
+            foreach (var Group in allowedGroups)
             {
                 // Get last post 
-                var topic = category.Topics.OrderByDescending(x => x.LastPost.DateEdited).FirstOrDefault();
+                var topic = Group.Topics.OrderByDescending(x => x.LastPost.DateEdited).FirstOrDefault();
                 var sitemapEntry = new SitemapEntry
                 {
-                    Name = category.Name,
-                    Url = category.NiceUrl,
-                    LastUpdated = topic?.LastPost.DateEdited ?? category.DateCreated,
+                    Name = Group.Name,
+                    Url = Group.NiceUrl,
+                    LastUpdated = topic?.LastPost.DateEdited ?? Group.DateCreated,
                     ChangeFrequency = SiteMapChangeFreqency.Monthly
                 };
                 sitemap.Add(sitemapEntry);

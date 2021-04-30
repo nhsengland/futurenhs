@@ -14,21 +14,21 @@
     [Authorize]
     public partial class ModerateController : BaseController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly IActivityService _activityService;
 
         public ModerateController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            IPostService postService, ITopicService topicService, ICategoryService categoryService,
+            IPostService postService, ITopicService topicService, IGroupService GroupService,
             ICacheService cacheService, IMvcForumContext context, IActivityService activityService)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
             _postService = postService;
             _topicService = topicService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _activityService = activityService;
         }
 
@@ -39,11 +39,11 @@
 
             // Show both pending topics and also pending posts
             // Use ajax for paging too
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
             var viewModel = new ModerateViewModel
             {
-                Posts = _postService.GetPendingPosts(allowedCategories, loggedOnUsersRole),
-                Topics = _topicService.GetPendingTopics(allowedCategories, loggedOnUsersRole)
+                Posts = _postService.GetPendingPosts(allowedGroups, loggedOnUsersRole),
+                Topics = _topicService.GetPendingTopics(allowedGroups, loggedOnUsersRole)
             };
             return View(viewModel);
         }
@@ -57,7 +57,7 @@
                 var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
                 var topic = _topicService.Get(viewModel.TopicId);
-                var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
+                var permissions = RoleService.GetPermissions(topic.Group, loggedOnUsersRole);
 
                 // Is this user allowed to moderate - We use EditPosts for now until we change the permissions system
                 if (!permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
@@ -101,7 +101,7 @@
                 var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
                 var post = _postService.Get(viewModel.PostId);
-                var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
+                var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
                 if (!permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                 {
                     return Content(LocalizationService.GetResourceString("Errors.NoPermission"));

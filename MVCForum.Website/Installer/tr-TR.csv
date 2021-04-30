@@ -8,7 +8,7 @@ Layout.Nav.Leaderboard,Afiş
 Layout.Nav.Admin,Yönetici
 Topic.StartedBy,Tarafından {0} Başladı {1}
 Topic.Comments,Cevaplar
-Topic.InCategory,içinde
+Topic.InGroup,içinde
 Topic.Votes,Oy
 Topic.Views,Görünümler
 Post.IsSolution,Çözüm
@@ -96,13 +96,13 @@ Home.LatestDiscussions,Son Tartışmalar
 Notification.Subscribe,Takip Et
 Activity.ActivityTitle,etkinlik
 Notification.UnSubscribe,Takibi Bırak
-Category.CategoriesSideHeading,Kategoriler
-Category.NoDiscussions,Bu kategoride şu anda hiçbir tartışma
+Group.GroupsSideHeading,Kategoriler
+Group.NoDiscussions,Bu kategoride şu anda hiçbir tartışma
 PM.RecipientUsername,Alıcı Adı
 PM.MessageSubject,Konu
 Post.Label.TopicName,Konu Adı
 Post.Label.IsStickyTopic,Sabit Konu mu
-Post.label.TopicCategory,Konu Kategorisi
+Post.label.TopicGroup,Konu Kategorisi
 Post.Label.LockTopic,Kilit Konu
 Members.Label.EmailAddress,E-posta adresi (Gravatar tarafından Ikinci el Avatar görüntü göstermek için)
 Members.Label.Username,Kullanıcı Adı
@@ -151,8 +151,8 @@ Language.Changed,Dil Değişti
 Rss.LatestActivity.Title,Son Forum Tartışmalar
 Rss.LatestActivity.Description,Son tartışmalar
 Errors.NothingToDisplay,Hiçbir şey Görüntülemek İçin
-Rss.Category.Title,{0} Tartışmalar
-Rss.Category.Description,Latest discussions happening in the {0} category
+Rss.Group.Title,{0} Tartışmalar
+Rss.Group.Description,Latest discussions happening in the {0} Group
 Report.Reporter,muhabir
 Report.MemberReported,Üye Dolaylı
 Report.Reason,nedeni
@@ -224,7 +224,7 @@ Search.NoResults,Üzgünüz, Sonuç bulunamadı
 Topic.CommentsDetails,Yorumlar
 Members.DeleteAllPosts,Bütün mesajları sil
 Buttons.CreatePost,Mesaj Ekle
-Topic.Label.Category,Kategori Seçin
+Topic.Label.Group,Kategori Seçin
 Editor.NeedHelp,Yardımamı ihtiyacınız var?
 Members.BanUser,Yasaklı kullanıcı
 Members.UnBanUser,Yasak kaldırılan kullanıcı
@@ -241,9 +241,9 @@ PostFilter.Votes,Oyla
 PM.NewPrivateMessageSubject,Yeni özel mesaj
 PM.NewPrivateMessageBody,{0} Sana özel mesaj gönderildi.
 Post.DeleteConfirmation,Silmek istediğine emin misin ?
-Category.SubCategoriesHeading,Alt kategoriler
-Category.AllCategories,Bütün kategoriler
-Category.MostRecent,En yeni:
+Group.SubGroupsHeading,Alt kategoriler
+Group.AllGroups,Bütün kategoriler
+Group.MostRecent,En yeni:
 Members.LogonFacebookButton,Facebook ile giriş yap
 Members.LogonGoogleButton,Google ile giriş yap
 Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the web.config
@@ -296,7 +296,7 @@ Side.Search.SearchFor,Aranacak kelimeyi girin...
 Side.Search.Go,Git
 Topic.IsSticky,Yapışkan konular
 Topic.IsSolved,Çözülmüş konular
-Topic.Category,Kategori
+Topic.Group,Kategori
 Topic.IsPoll,Anket
 Topic.LastPost,Son Konular
 Topic.HotTopics,En yeni konular
@@ -311,8 +311,8 @@ SubNav.Favourites,Favoriler
 Favourites.PageTitle,Favoriler
 Favourites.NoMemberFavourites,Yıldızlı Mesajlar
 Following.PageTitle,Konular & Kategoriler
-Following.Categories,Takip ettiğin kategoriler
-SubscribedCats.NothingToShow,You are not following to any Categories
+Following.Groups,Takip ettiğin kategoriler
+SubscribedCats.NothingToShow,You are not following to any Groups
 Following.Topics,Takip Ettiğin Konular
 SubscribedTopics.NothingToShow,You are not following to any Topics
 PostedIn.PageTitle,Konular & sana atılan mesajlar

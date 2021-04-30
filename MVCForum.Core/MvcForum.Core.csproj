@@ -58,25 +58,9 @@
     <Compile Include="Interfaces\Services\INotificationService.cs" />
     <Compile Include="Interfaces\Services\ISpamService.cs" />
     <Compile Include="MemoryFile.cs" />
-    <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
-    <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.Designer.cs">
-      <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201801021733452_ExtendedDataToMembershipUser.cs" />
-    <Compile Include="Migrations\201801021733452_ExtendedDataToMembershipUser.Designer.cs">
-      <DependentUpon>201801021733452_ExtendedDataToMembershipUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201801021904303_ExtendedDataOnAll.cs" />
-    <Compile Include="Migrations\201801021904303_ExtendedDataOnAll.Designer.cs">
-      <DependentUpon>201801021904303_ExtendedDataOnAll.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201801050701512_AddedTrustedUserOption.cs" />
-    <Compile Include="Migrations\201801050701512_AddedTrustedUserOption.Designer.cs">
-      <DependentUpon>201801050701512_AddedTrustedUserOption.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802090649239_Sections.cs" />
-    <Compile Include="Migrations\201802090649239_Sections.Designer.cs">
-      <DependentUpon>201802090649239_Sections.cs</DependentUpon>
+    <Compile Include="Migrations\202104301420534_renamecategoriestogroups.cs" />
+    <Compile Include="Migrations\202104301420534_renamecategoriestogroups.Designer.cs">
+      <DependentUpon>202104301420534_renamecategoriestogroups.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\BadgeActivity.cs" />
@@ -91,12 +75,12 @@
     <Compile Include="Models\Attributes\DescriptionAttribute.cs" />
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
-    <Compile Include="Models\CategoriesSummary.cs" />
+    <Compile Include="Models\GroupsSummary.cs" />
     <Compile Include="Models\Entities\Badge.cs" />
     <Compile Include="Models\Entities\BannedEmail.cs" />
-    <Compile Include="Models\Entities\Category.cs" />
-    <Compile Include="Models\Entities\CategoryPermissions.cs" />
-    <Compile Include="Models\Entities\CategoryNotification.cs" />
+    <Compile Include="Models\Entities\Group.cs" />
+    <Compile Include="Models\Entities\GroupPermissions.cs" />
+    <Compile Include="Models\Entities\GroupNotification.cs" />
     <Compile Include="Models\Entities\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="Models\Activity\Activity.cs" />
     <Compile Include="Models\Entities\Block.cs" />
@@ -114,7 +98,7 @@
     <Compile Include="Models\Enums\SiteMapChangeFreqency.cs" />
     <Compile Include="Models\Enums\UrlType.cs" />
     <Compile Include="Models\ExtendedDataItem.cs" />
-    <Compile Include="Models\General\CategoryWithSubCategories.cs" />
+    <Compile Include="Models\General\GroupWithSubGroups.cs" />
     <Compile Include="Models\Entities\BannedWord.cs" />
     <Compile Include="Models\Enums\LoginType.cs" />
     <Compile Include="Models\Entities\Favourite.cs" />
@@ -209,10 +193,6 @@
     <Compile Include="LocalizedString.cs" />
     <Compile Include="Models\Entities\PollAnswer.cs" />
     <Compile Include="Models\Entities\PollVote.cs" />
-    <Compile Include="Migrations\201712271549027_InitialCommit.cs" />
-    <Compile Include="Migrations\201712271549027_InitialCommit.Designer.cs">
-      <DependentUpon>201712271549027_InitialCommit.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
     <Compile Include="Models\PostType.cs" />
@@ -230,8 +210,8 @@
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
     <Compile Include="Services\CacheService.cs" />
-    <Compile Include="Services\CategoryPermissionForRoleService.cs" />
-    <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\GroupPermissionForRoleService.cs" />
+    <Compile Include="Services\GroupService.cs" />
     <Compile Include="Services\ConfigService.cs" />
     <Compile Include="Data\Context\MVCForumContext.cs" />
     <Compile Include="Data\Mapping\ActivityMapping.cs" />
@@ -407,23 +387,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201712271549027_InitialCommit.resx">
-      <DependentUpon>201712271549027_InitialCommit.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801011815079_IncreaseAccessTokenLength.resx">
-      <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801021733452_ExtendedDataToMembershipUser.resx">
-      <DependentUpon>201801021733452_ExtendedDataToMembershipUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801021904303_ExtendedDataOnAll.resx">
-      <DependentUpon>201801021904303_ExtendedDataOnAll.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801050701512_AddedTrustedUserOption.resx">
-      <DependentUpon>201801050701512_AddedTrustedUserOption.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802090649239_Sections.resx">
-      <DependentUpon>201802090649239_Sections.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202104301420534_renamecategoriestogroups.resx">
+      <DependentUpon>202104301420534_renamecategoriestogroups.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

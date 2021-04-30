@@ -12,7 +12,7 @@
     public class DashboardController : BaseAdminController
     {
         private const int AmountToShow = 7;
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IPostService _postService;
         private readonly IPrivateMessageService _privateMessageService;
@@ -21,13 +21,13 @@
         public DashboardController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, ISettingsService settingsService, IPostService postService,
             ITopicService topicService, ITopicTagService topicTagService,
-            IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService,
+            IMembershipUserPointsService membershipUserPointsService, IGroupService GroupService,
             IPrivateMessageService privateMessageService,
             IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _membershipUserPointsService = membershipUserPointsService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _privateMessageService = privateMessageService;
             _postService = postService;
             _topicService = topicService;
@@ -42,8 +42,8 @@
             }
 
             var moderateCount = 0;
-            var topicsToModerate = _topicService.GetPendingTopicsCount(_categoryService.GetAll());
-            var postsToModerate = _postService.GetPendingPostsCount(_categoryService.GetAll());
+            var topicsToModerate = _topicService.GetPendingTopicsCount(_GroupService.GetAll());
+            var postsToModerate = _postService.GetPendingPostsCount(_GroupService.GetAll());
             if (topicsToModerate > 0 || postsToModerate > 0)
             {
                 moderateCount = topicsToModerate + postsToModerate;
@@ -61,7 +61,7 @@
         public PartialViewResult TodaysTopics()
         {
             // Get all cats as only admins can view this page
-            var allCats = _categoryService.GetAll();
+            var allCats = _GroupService.GetAll();
 
             if (Request.IsAjaxRequest())
             {
@@ -118,7 +118,7 @@
             if (Request.IsAjaxRequest())
             {
                 // Get all cats as only admins can view this page
-                var allCats = _categoryService.GetAll();
+                var allCats = _GroupService.GetAll();
 
                 return PartialView(new HighestViewedTopics
                 {

@@ -89,7 +89,7 @@
         public int GravatarFooterSize => Convert.ToInt32(GetConfig("GravatarFooterSize"));
 
         // Url names
-        public string CategoryUrlIdentifier => GetConfig("CategoryUrlIdentifier");
+        public string GroupUrlIdentifier => GetConfig("GroupUrlIdentifier");
 
         public string TopicUrlIdentifier => GetConfig("TopicUrlIdentifier");
         public string TagsUrlIdentifier => GetConfig("TagsUrlIdentifier");
@@ -106,7 +106,7 @@
         ///     So they must be the same as the database value
         /// </summary>
 
-        // Category Permissions
+        // Group Permissions
         public string PermissionReadOnly => GetConfig("PermissionReadOnly");
 
         public string PermissionDeletePosts => GetConfig("PermissionDeletePosts");
@@ -135,7 +135,7 @@
         public string ThemeRootFolderName => GetConfig("ThemeRootFolderName");
 
         /// <summary>
-        ///     Show categories on home page instead of topics
+        ///     Show Groups on home page instead of topics
         /// </summary>
         public string ForumIndexView => GetConfig("ForumIndexView");
 
@@ -426,62 +426,62 @@
         }
 
         /// <summary>
-        /// Gets the Category Create Pipes from the config
+        /// Gets the Group Create Pipes from the config
         /// </summary>
-        private IList<string> _pipelineCategoryCreate;
-        public IList<string> PipelinesCategoryCreate
+        private IList<string> _pipelineGroupCreate;
+        public IList<string> PipelinesGroupCreate
         {
             get
             {
-                if (_pipelineCategoryCreate == null)
+                if (_pipelineGroupCreate == null)
                 {
-                    var pipes = GetPlugin("PipelinesCategoryCreate");
+                    var pipes = GetPlugin("PipelinesGroupCreate");
                     if (!string.IsNullOrWhiteSpace(pipes))
                     {
-                        _pipelineCategoryCreate = ConfigToListString(pipes);
+                        _pipelineGroupCreate = ConfigToListString(pipes);
                     }
                 }
-                return _pipelineCategoryCreate;
+                return _pipelineGroupCreate;
             }
         }
 
         /// <summary>
-        /// Gets the pipes for the Category update
+        /// Gets the pipes for the Group update
         /// </summary>
-        private IList<string> _pipelineCategoryUpdate;
-        public IList<string> PipelinesCategoryUpdate
+        private IList<string> _pipelineGroupUpdate;
+        public IList<string> PipelinesGroupUpdate
         {
             get
             {
-                if (_pipelineCategoryUpdate == null)
+                if (_pipelineGroupUpdate == null)
                 {
-                    var pipes = GetPlugin("PipelinesCategoryUpdate");
+                    var pipes = GetPlugin("PipelinesGroupUpdate");
                     if (!string.IsNullOrWhiteSpace(pipes))
                     {
-                        _pipelineCategoryUpdate = ConfigToListString(pipes);
+                        _pipelineGroupUpdate = ConfigToListString(pipes);
                     }
                 }
-                return _pipelineCategoryUpdate;
+                return _pipelineGroupUpdate;
             }
         }
 
         /// <summary>
-        /// Gets the pipes for the Category delete
+        /// Gets the pipes for the Group delete
         /// </summary>
-        private IList<string> _pipelineCategoryDelete;
-        public IList<string> PipelinesCategoryDelete
+        private IList<string> _pipelineGroupDelete;
+        public IList<string> PipelinesGroupDelete
         {
             get
             {
-                if (_pipelineCategoryDelete == null)
+                if (_pipelineGroupDelete == null)
                 {
-                    var pipes = GetPlugin("PipelinesCategoryDelete");
+                    var pipes = GetPlugin("PipelinesGroupDelete");
                     if (!string.IsNullOrWhiteSpace(pipes))
                     {
-                        _pipelineCategoryDelete = ConfigToListString(pipes);
+                        _pipelineGroupDelete = ConfigToListString(pipes);
                     }
                 }
-                return _pipelineCategoryDelete;
+                return _pipelineGroupDelete;
             }
         }
 

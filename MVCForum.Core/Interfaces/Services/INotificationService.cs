@@ -6,13 +6,13 @@
 
     public partial interface INotificationService : IContextService
     {
-        #region Categories
+        #region Groups
 
-        void Delete(CategoryNotification notification);
-        List<CategoryNotification> GetCategoryNotificationsByCategory(Category category);
-        List<CategoryNotification> GetCategoryNotificationsByUser(MembershipUser user);
-        List<CategoryNotification> GetCategoryNotificationsByUserAndCategory(MembershipUser user, Category category, bool addTracking = false);
-        CategoryNotification Add(CategoryNotification category);
+        void Delete(GroupNotification notification);
+        List<GroupNotification> GetGroupNotificationsByGroup(Group Group);
+        List<GroupNotification> GetGroupNotificationsByUser(MembershipUser user);
+        List<GroupNotification> GetGroupNotificationsByUserAndGroup(MembershipUser user, Group Group, bool addTracking = false);
+        GroupNotification Add(GroupNotification Group);
 
         #endregion
 

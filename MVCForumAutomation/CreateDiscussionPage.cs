@@ -47,11 +47,11 @@ namespace MVCForumAutomation
             submitButton.Click();
         }
 
-        public void SelectCategory(Category category)
+        public void SelectGroup(Group Group)
         {
-            var categoryCombo = _webDriver.FindElement(By.Id("Category"));
-            var select = new SelectElement(categoryCombo);
-            select.SelectByText(category.Name);
+            var GroupCombo = _webDriver.FindElement(By.Id("Group"));
+            var select = new SelectElement(GroupCombo);
+            select.SelectByText(Group.Name);
         }
     }
 }

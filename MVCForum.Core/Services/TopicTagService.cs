@@ -312,22 +312,22 @@
         ///     Get a specified amount of the most popular tags, ordered by use amount
         /// </summary>
         /// <param name="amount"></param>
-        /// <param name="allowedCategories"></param>
+        /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public Dictionary<TopicTag, int> GetPopularTags(int? amount, List<Category> allowedCategories)
+        public Dictionary<TopicTag, int> GetPopularTags(int? amount, List<Group> allowedGroups)
         {
-            var categoryIds = allowedCategories.Select(x => x.Id);
+            var GroupIds = allowedGroups.Select(x => x.Id);
             amount = amount ?? int.MaxValue;
 
             //var test = _context.TopicTag.SqlQuery("").ToList<TopicTag>();
 
             var tags = _context.TopicTag
-                .Include(x => x.Topics.Select(s => s.Category))
+                .Include(x => x.Topics.Select(s => s.Group))
                 .AsNoTracking()
                 .Select(x => new
                 {
                     topictag = x,
-                    topiccount = x.Topics.Count(c => categoryIds.Contains(c.Category.Id))
+                    topiccount = x.Topics.Count(c => GroupIds.Contains(c.Group.Id))
                 })
                 .Where(x => x.topiccount > 0)
                 .OrderByDescending(x => x.topiccount)

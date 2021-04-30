@@ -45,11 +45,11 @@
     <Compile Include="Badges\UserVoteUpBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />
-    <Compile Include="Pipelines\Category\CategoryCreateEditPipe.cs" />
-    <Compile Include="Pipelines\Category\CategoryDeletePipe.cs" />
-    <Compile Include="Pipelines\Category\CategoryFilesPipe.cs" />
-    <Compile Include="Pipelines\Category\CategoryPermissionsPipe.cs" />
-    <Compile Include="Pipelines\Category\CategorySpamPipe.cs" />
+    <Compile Include="Pipelines\Group\GroupCreateEditPipe.cs" />
+    <Compile Include="Pipelines\Group\GroupDeletePipe.cs" />
+    <Compile Include="Pipelines\Group\GroupFilesPipe.cs" />
+    <Compile Include="Pipelines\Group\GroupPermissionsPipe.cs" />
+    <Compile Include="Pipelines\Group\GroupSpamPipe.cs" />
     <Compile Include="Pipelines\Points\PointsCreatePipe.cs" />
     <Compile Include="Pipelines\Points\PointsDeletePipe.cs" />
     <Compile Include="Pipelines\Post\PostDeletePipe.cs" />
@@ -189,9 +189,9 @@
   <!--<PropertyGroup>
     <PostBuildEvent>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)MVCForum.Website\App_Data\Plugins" /I</PostBuildEvent>
   </PropertyGroup>-->
-
   <Target Name="AfterBuild">
-    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFiles="$(SolutionDir)MVCForum.Website\App_Data\Plugins\$(TargetFileName)" OverwriteReadOnlyFiles="true"></Copy>
+    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFiles="$(SolutionDir)MVCForum.Website\App_Data\Plugins\$(TargetFileName)" OverwriteReadOnlyFiles="true">
+    </Copy>
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

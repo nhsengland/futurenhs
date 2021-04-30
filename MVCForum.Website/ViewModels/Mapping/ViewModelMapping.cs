@@ -17,18 +17,18 @@
 
     public static class ViewModelMapping
     {
-        #region Category
+        #region Group
 
 
-        public static Dictionary<CategorySummary, PermissionSet> GetPermissionsForCategories(IEnumerable<CategorySummary> categories,
+        public static Dictionary<GroupSummary, PermissionSet> GetPermissionsForGroups(IEnumerable<GroupSummary> Groups,
             IRoleService roleService, MembershipRole usersRole, bool removeIfDenyAccess = false)
         {
             // Permissions
-            // loop through the categories and get the permissions
-            var permissions = new Dictionary<CategorySummary, PermissionSet>();
-            foreach (var summary in categories)
+            // loop through the Groups and get the permissions
+            var permissions = new Dictionary<GroupSummary, PermissionSet>();
+            foreach (var summary in Groups)
             {
-                var permissionSet = roleService.GetPermissions(summary.Category, usersRole);
+                var permissionSet = roleService.GetPermissions(summary.Group, usersRole);
 
                 // Should we add if deny access is ticked
                 if (removeIfDenyAccess)
@@ -45,16 +45,16 @@
             return permissions;
         }
 
-        public static Dictionary<Category, PermissionSet> GetPermissionsForCategories(IEnumerable<Category> categories,
+        public static Dictionary<Group, PermissionSet> GetPermissionsForGroups(IEnumerable<Group> Groups,
             IRoleService roleService, MembershipRole usersRole)
         {
             // Permissions
-            // loop through the categories and get the permissions
-            var permissions = new Dictionary<Category, PermissionSet>();
-            foreach (var category in categories)
+            // loop through the Groups and get the permissions
+            var permissions = new Dictionary<Group, PermissionSet>();
+            foreach (var Group in Groups)
             {
-                var permissionSet = roleService.GetPermissions(category, usersRole);
-                permissions.Add(category, permissionSet);
+                var permissionSet = roleService.GetPermissions(Group, usersRole);
+                permissions.Add(Group, permissionSet);
             }
             return permissions;
         }
@@ -255,20 +255,20 @@
 
         #region Topics
 
-        public static Dictionary<Category, PermissionSet> GetPermissionsForTopics(IEnumerable<Topic> topics,
+        public static Dictionary<Group, PermissionSet> GetPermissionsForTopics(IEnumerable<Topic> topics,
             IRoleService roleService, MembershipRole usersRole)
         {
-            // Get all the categories for this topic collection
-            var categories = topics.Select(x => x.Category).Distinct();
+            // Get all the Groups for this topic collection
+            var Groups = topics.Select(x => x.Group).Distinct();
 
-            return GetPermissionsForCategories(categories, roleService, usersRole);
+            return GetPermissionsForGroups(Groups, roleService, usersRole);
         }
 
         public static List<TopicViewModel> CreateTopicViewModels(List<Topic> topics,
             IRoleService roleService,
             MembershipRole usersRole,
             MembershipUser loggedOnUser,
-            List<Category> allowedCategories,
+            List<Group> allowedGroups,
             Settings settings,
             IPostService postService,
             INotificationService topicNotificationService,
@@ -280,7 +280,7 @@
             var topicIds = topics.Select(x => x.Id).ToList();
 
             // Gets posts for topics
-            var posts = postService.GetPostsByTopics(topicIds, allowedCategories);
+            var posts = postService.GetPostsByTopics(topicIds, allowedGroups);
             var groupedPosts = posts.ToLookup(x => x.Topic.Id);
 
             // Get all permissions
@@ -297,7 +297,7 @@
             foreach (var topic in topics)
             {
                 var id = topic.Id;
-                var permission = permissions[topic.Category];
+                var permission = permissions[topic.Group];
                 var topicPosts = groupedPosts.Contains(id) ? groupedPosts[id].ToList() : new List<Post>();
 
                 var votes = new Dictionary<Guid, List<Vote>>();
@@ -513,7 +513,7 @@
         /// <param name="favourites"></param>
         /// <returns></returns>
         public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, Dictionary<Guid, List<Vote>> votes,
-            Dictionary<Category, PermissionSet> permissions, MembershipUser loggedOnUser, Settings settings,
+            Dictionary<Group, PermissionSet> permissions, MembershipUser loggedOnUser, Settings settings,
             Dictionary<Guid, List<Favourite>> favourites)
         {
             var viewModels = new List<PostViewModel>();
@@ -521,7 +521,7 @@
             {
                 var id = post.Id;
                 var topic = post.Topic;
-                var permission = permissions[topic.Category];
+                var permission = permissions[topic.Group];
                 var postVotes = votes.ContainsKey(id) ? votes[id] : new List<Vote>();
                 var postFavs = favourites.ContainsKey(id) ? favourites[id] : new List<Favourite>();
                 viewModels.Add(

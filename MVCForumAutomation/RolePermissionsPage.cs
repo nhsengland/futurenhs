@@ -12,14 +12,14 @@ namespace MVCForumAutomation
             _webDriver = webDriver;
         }
 
-        public void AddToCategory(Category category, PermissionTypes permissionType)
+        public void AddToGroup(Group Group, PermissionTypes permissionType)
         {
             var permissionsTable = _webDriver.FindElement(By.ClassName("permissiontable"));
 
-            var categoryRows = permissionsTable.FindElements(By.CssSelector(".permissiontable tbody tr"));
-            var categoryRow = categoryRows.Single(row => row.FindElement(By.XPath("./td")).Text == category.Name);
+            var GroupRows = permissionsTable.FindElements(By.CssSelector(".permissiontable tbody tr"));
+            var GroupRow = GroupRows.Single(row => row.FindElement(By.XPath("./td")).Text == Group.Name);
 
-            var permissionCheckboxes = categoryRow.FindElements(By.CssSelector(".permissioncheckbox input"));
+            var permissionCheckboxes = GroupRow.FindElements(By.CssSelector(".permissioncheckbox input"));
             var permissionCheckbox = permissionCheckboxes[(int) permissionType];
             if (!permissionCheckbox.Selected)
                 permissionCheckbox.Click();

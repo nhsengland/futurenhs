@@ -54,7 +54,7 @@ namespace MVCForumAutomation
             public void Fill(CreateDiscussionPage createDiscussionPage)
             {
                 createDiscussionPage.Title = Guid.NewGuid().ToString();
-                createDiscussionPage.SelectCategory(_testDefaults.ExampleCategory);
+                createDiscussionPage.SelectGroup(_testDefaults.ExampleGroup);
                 createDiscussionPage.Body = _body;
 
                 createDiscussionPage.CreateDiscussion();

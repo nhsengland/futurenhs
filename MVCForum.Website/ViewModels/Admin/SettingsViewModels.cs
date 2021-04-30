@@ -39,7 +39,7 @@
         public bool IsClosed { get; set; }
 
         [DisplayName("Allow Rss Feeds")]
-        [Description("Show the RSS feed icons for the Topics and Categories")]
+        [Description("Show the RSS feed icons for the Topics and Groups")]
         public bool EnableRSSFeeds { get; set; }
 
         [DisplayName("Show Edited By Details On Posts")]

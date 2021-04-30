@@ -13,10 +13,10 @@
         DbSet<Badge> Badge { get; set; }
         DbSet<Block> Block { get; set; }
         DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
-        DbSet<Category> Category { get; set; }
+        DbSet<Group> Group { get; set; }
         DbSet<Section> Section { get; set; }
-        DbSet<CategoryNotification> CategoryNotification { get; set; }
-        DbSet<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
+        DbSet<GroupNotification> GroupNotification { get; set; }
+        DbSet<GroupPermissionForRole> GroupPermissionForRole { get; set; }
         DbSet<Language> Language { get; set; }
         DbSet<LocaleResourceKey> LocaleResourceKey { get; set; }
         DbSet<LocaleStringResource> LocaleStringResource { get; set; }

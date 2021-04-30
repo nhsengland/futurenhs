@@ -5,8 +5,8 @@
 
     public class BreadcrumbViewModel
     {
-        public List<Category> Categories { get; set; }
+        public List<Group> Groups { get; set; }
         public Topic Topic { get; set; }
-        public Category Category { get; set; }
+        public Group Group { get; set; }
     }
 }

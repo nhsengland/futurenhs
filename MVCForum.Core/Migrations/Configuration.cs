@@ -166,13 +166,13 @@ namespace MvcForum.Core.Services.Migrations
                     context.SaveChanges();
                 }
 
-                // Create an example Category
+                // Create an example Group
 
-                if (!context.Category.Any())
+                if (!context.Group.Any())
                 {
-                    // Doesn't exist so add the example category
-                    const string exampleCatName = "Example Category";
-                    var exampleCat = new Category
+                    // Doesn't exist so add the example Group
+                    const string exampleCatName = "Example Group";
+                    var exampleCat = new Group
                     {
                         Name = exampleCatName,
                         ModeratePosts = false,
@@ -181,7 +181,7 @@ namespace MvcForum.Core.Services.Migrations
                         DateCreated = DateTime.UtcNow
                     };
 
-                    context.Category.Add(exampleCat);
+                    context.Group.Add(exampleCat);
                     context.SaveChanges();
                 }
 
@@ -237,7 +237,7 @@ namespace MvcForum.Core.Services.Migrations
                     context.SaveChanges();
                 }
 
-                // Create the initial category permissions
+                // Create the initial Group permissions
 
                 // Edit Posts
                 if (context.Permission.FirstOrDefault(x => x.Name == ForumConfiguration.Instance.PermissionEditPosts) ==
@@ -381,10 +381,10 @@ namespace MvcForum.Core.Services.Migrations
 
                     // Now add read me
                     const string name = "Read Me";
-                    var category = context.Category.FirstOrDefault();
+                    var Group = context.Group.FirstOrDefault();
                     var topic = new Topic
                     {
-                        Category = category,
+                        Group = Group,
                         CreateDate = DateTime.UtcNow,
                         User = admin,
                         IsSticky = true,

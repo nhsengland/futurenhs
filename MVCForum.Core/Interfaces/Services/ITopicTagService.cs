@@ -24,7 +24,7 @@
         void DeleteByTopic(Topic tag);
         void DeleteTags(IEnumerable<TopicTag> tags);
         void UpdateTagNames(string tagName, string oldTagName);
-        Dictionary<TopicTag, int> GetPopularTags(int? amount, List<Category> allowedCategories);
+        Dictionary<TopicTag, int> GetPopularTags(int? amount, List<Group> allowedGroups);
         TopicTag GetTagName(string tag);
         void Delete(TopicTag item);
     }

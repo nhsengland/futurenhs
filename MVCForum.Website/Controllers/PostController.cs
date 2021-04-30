@@ -19,7 +19,7 @@
     [Authorize]
     public partial class PostController : BaseController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IPostEditService _postEditService;
         private readonly IPostService _postService;
         private readonly IReportService _reportService;
@@ -28,7 +28,7 @@
 
         public PostController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService,
-            IPostService postService, ISettingsService settingsService, ICategoryService categoryService,
+            IPostService postService, ISettingsService settingsService, IGroupService GroupService,
             IReportService reportService, IVoteService voteService,
             IPostEditService postEditService, ICacheService cacheService, IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
@@ -36,7 +36,7 @@
         {
             _topicService = topicService;
             _postService = postService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _reportService = reportService;
             _voteService = voteService;
             _postEditService = postEditService;
@@ -48,7 +48,7 @@
             var topic = _topicService.Get(post.Topic);
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
             var loggedOnUsersRole = loggedOnUser.GetRole(RoleService);
-            var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(topic.Group, loggedOnUsersRole);
 
             var postPipelineResult = await _postService.Create(post.PostContent, topic, loggedOnUser, null, false, post.InReplyTo);
             if (!postPipelineResult.Successful)
@@ -90,7 +90,7 @@
             var topicUrl = topic.NiceUrl;
 
             // get the users permissions
-            var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(topic.Group, loggedOnUsersRole);
 
             if (post.User.Id == loggedOnReadOnlyUser.Id ||
                 permissions[ForumConfiguration.Instance.PermissionDeletePosts].IsTicked)
@@ -238,7 +238,7 @@
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
             var post = _postService.Get(id);
-            var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
             var votes = _voteService.GetVotesByPosts(new List<Guid> { id });
             var viewModel = ViewModelMapping.CreatePostViewModel(post, votes[id], permissions, post.Topic,
                 loggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
@@ -259,11 +259,11 @@
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
 
-            var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
 
-            // Does the user have permission to this posts category
-            var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
+            // Does the user have permission to this posts Group
+            var cat = allowedGroups.FirstOrDefault(x => x.Id == post.Topic.Group.Id);
             if (cat == null)
             {
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -275,7 +275,7 @@
                 return NoPermission(post.Topic);
             }
 
-            var topics = _topicService.GetAllSelectList(allowedCategories, 30);
+            var topics = _topicService.GetAllSelectList(allowedGroups, 30);
             topics.Insert(0, new SelectListItem
             {
                 Text = LocalizationService.GetResourceString("Topic.Choose"),
@@ -319,11 +319,11 @@
             // Sort the view model before sending back
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
-            var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
 
             // Repopulate the topics
-            var topics = _topicService.GetAllSelectList(allowedCategories, 30);
+            var topics = _topicService.GetAllSelectList(allowedGroups, 30);
             topics.Insert(0, new SelectListItem
             {
                 Text = LocalizationService.GetResourceString("Topic.Choose"),
@@ -348,7 +348,7 @@
                 var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
                 // Check permissions
-                var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
+                var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
                 if (permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                 {
                     // Good to go

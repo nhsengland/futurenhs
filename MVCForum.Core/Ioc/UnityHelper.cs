@@ -53,7 +53,7 @@ namespace MvcForum.Core.Ioc
 
             //Bind the various domain model services and repositories that e.g. our controllers require         
             Container.BindInRequestScope<IRoleService, RoleService>();
-            Container.BindInRequestScope<ICategoryService, CategoryService>();
+            Container.BindInRequestScope<IGroupService, GroupService>();
             Container.BindInRequestScope<IMembershipService, MembershipService>();
             Container.BindInRequestScope<IPermissionService, PermissionService>();
             Container.BindInRequestScope<ISettingsService, SettingsService>();
@@ -64,7 +64,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IVoteService, VoteService>();
             Container.BindInRequestScope<IBadgeService, BadgeService>();
             Container.BindInRequestScope<IMembershipUserPointsService, MembershipUserPointsService>();
-            Container.BindInRequestScope<ICategoryPermissionForRoleService, CategoryPermissionForRoleService>();
+            Container.BindInRequestScope<IGroupPermissionForRoleService, GroupPermissionForRoleService>();
             Container.BindInRequestScope<IPrivateMessageService, PrivateMessageService>();
             Container.BindInRequestScope<ILoggingService, LoggingService>();
             Container.BindInRequestScope<IEmailService, EmailService>();

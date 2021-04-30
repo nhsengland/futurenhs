@@ -54,8 +54,8 @@
                 // Hold the previous topic
                 var previousTopic = input.EntityToProcess.Topic;
 
-                // Hold the previous category
-                var category = input.EntityToProcess.Topic.Category;
+                // Hold the previous Group
+                var Group = input.EntityToProcess.Topic.Group;
 
                 // Hold the post creator
                 var postCreator = input.EntityToProcess.User;
@@ -76,7 +76,7 @@
                     topic = new Topic
                     {
                         Name = newTopicTitle,
-                        Category = category,
+                        Group = Group,
                         User = postCreator
                     };
 

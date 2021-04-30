@@ -14,12 +14,12 @@
     public class AuthorMarkAsSolutionBadge : IMarkAsSolutionBadge
     {
         private readonly ITopicService _topicService;
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
 
-        public AuthorMarkAsSolutionBadge(ITopicService topicService, ICategoryService categoryService)
+        public AuthorMarkAsSolutionBadge(ITopicService topicService, IGroupService GroupService)
         {
             _topicService = topicService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@
         /// <returns></returns>
         public bool Rule(MembershipUser user)
         {
-            var allCats = _categoryService.GetAll();
+            var allCats = _GroupService.GetAll();
             return _topicService.GetSolvedTopicsByMember(user.Id, allCats).Count >= 1;
 
         }

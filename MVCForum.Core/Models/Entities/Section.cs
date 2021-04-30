@@ -10,7 +10,7 @@
     using Utilities;
 
     /// <summary>
-    ///     Section class is just a way to segment the categories in the main home page
+    ///     Section class is just a way to segment the Groups in the main home page
     /// </summary>
     public class Section : ExtendedDataEntity, IBaseEntity
     {
@@ -40,7 +40,7 @@
 
         public DateTime DateCreated { get; set; }
 
-        public virtual IList<Category> Categories { get; set; }
+        public virtual IList<Group> Groups { get; set; }
 
         // Should be using this then using EditorFor
         //[DataType(DataType.MultilineText)]

@@ -5,9 +5,9 @@
     using System.Data.Entity.ModelConfiguration;
     using Models.Entities;
 
-    public class CategoryMapping : EntityTypeConfiguration<Category>
+    public class GroupMapping : EntityTypeConfiguration<Group>
     {
-        public CategoryMapping()
+        public GroupMapping()
         {
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
@@ -16,7 +16,7 @@
             Property(x => x.DateCreated).IsRequired();
             Property(x => x.Slug).IsRequired().HasMaxLength(450)
                 .HasColumnAnnotation(IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("IX_Category_Slug", 1) {IsUnique = true}));
+                    new IndexAnnotation(new IndexAttribute("IX_Group_Slug", 1) {IsUnique = true}));
             Property(x => x.SortOrder).IsRequired();
             Property(x => x.IsLocked).IsRequired();
             Property(x => x.ModerateTopics).IsRequired();
@@ -27,18 +27,18 @@
             Property(x => x.Colour).IsOptional().HasMaxLength(50);
             Property(x => x.Image).IsOptional().HasMaxLength(200);
 
-            HasOptional(x => x.ParentCategory)
+            HasOptional(x => x.ParentGroup)
                 .WithMany()
-                .Map(x => x.MapKey("Category_Id"));
+                .Map(x => x.MapKey("Group_Id"));
 
             HasOptional(x => x.Section)
-                .WithMany(x => x.Categories)
+                .WithMany(x => x.Groups)
                 .Map(x => x.MapKey("Section_Id"))
                 .WillCascadeOnDelete(false);
 
-            HasMany(x => x.CategoryNotifications)
-                .WithRequired(x => x.Category)
-                .Map(x => x.MapKey("Category_Id"))
+            HasMany(x => x.GroupNotifications)
+                .WithRequired(x => x.Group)
+                .Map(x => x.MapKey("Group_Id"))
                 .WillCascadeOnDelete(false);
 
             // Ignores

@@ -56,7 +56,7 @@
                         var loggedOnReadOnlyUser = memberService.GetUser(HttpContext.Current.User.Identity.Name);
                         var permissions =
                             roleService.GetPermissions(null, loggedOnReadOnlyUser.Roles.FirstOrDefault());
-                        // Get the permissions for this category, and check they are allowed to update
+                        // Get the permissions for this Group, and check they are allowed to update
                         if (permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked &&
                             loggedOnReadOnlyUser.DisableFileUploads != true)
                         {

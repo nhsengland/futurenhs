@@ -27,8 +27,8 @@
         unSubscribe = displayNone;
     }
 
-    // Set a ViewBag for the category
-    //TempData[Constants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
+    // Set a ViewBag for the Group
+    //TempData[Constants.DefaultGroupViewBagName] = Model.Topic.Group.Id;
     var qs = Request.QueryString[Constants.PostOrderBy] ?? string.Empty;
 }
 @section SocialMeta {
@@ -157,7 +157,7 @@
     {
         <span id="newpostmarker"></span>
 
-        if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Category.IsLocked)
+        if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Group.IsLocked)
         {
             @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost, InReplyTo = Model.ReplyTo, ReplyToUsername = Model.ReplyToUsername})
         }

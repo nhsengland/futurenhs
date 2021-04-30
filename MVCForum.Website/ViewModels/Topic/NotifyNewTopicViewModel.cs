@@ -4,6 +4,6 @@
 
     public class NotifyNewTopicViewModel
     {
-        public Guid CategoryId { get; set; }
+        public Guid GroupId { get; set; }
     }
 }

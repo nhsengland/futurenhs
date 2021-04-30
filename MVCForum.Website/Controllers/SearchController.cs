@@ -12,7 +12,7 @@
 
     public partial class SearchController : BaseController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IFavouriteService _favouriteService;
         private readonly IPostService _postService;
         private readonly IVoteService _voteService;
@@ -20,14 +20,14 @@
         public SearchController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             IPostService postService, IVoteService voteService, IFavouriteService favouriteService,
-            ICategoryService categoryService, ICacheService cacheService, IMvcForumContext context)
+            IGroupService GroupService, ICacheService cacheService, IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
             _postService = postService;
             _voteService = voteService;
             _favouriteService = favouriteService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
         }
 
         [HttpGet]
@@ -46,8 +46,8 @@
                 // Get the global settings
                 var settings = SettingsService.GetSettings();
 
-                // Get allowed categories
-                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+                // Get allowed Groups
+                var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
 
 
                 // Set the page index
@@ -58,7 +58,7 @@
                     ForumConfiguration.Instance.SearchListSize,
                     int.MaxValue,
                     term,
-                    allowedCategories);
+                    allowedGroups);
 
                 // Get all the permissions for these topics
                 var topicPermissions =

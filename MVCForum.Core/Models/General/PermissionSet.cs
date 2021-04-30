@@ -5,12 +5,12 @@
 
     public partial class PermissionSet : Dictionary<string, PermissionForRole>
     {
-        public PermissionSet(IEnumerable<CategoryPermissionForRole> categoryPermissions, IEnumerable<GlobalPermissionForRole> globalPermissions)
+        public PermissionSet(IEnumerable<GroupPermissionForRole> GroupPermissions, IEnumerable<GlobalPermissionForRole> globalPermissions)
         {
-            // Add the category permissions
-            foreach (var categoryPermissionForRole in categoryPermissions)
+            // Add the Group permissions
+            foreach (var GroupPermissionForRole in GroupPermissions)
             {
-                Add(categoryPermissionForRole.Permission.Name, MapCategoryPermission(categoryPermissionForRole));
+                Add(GroupPermissionForRole.Permission.Name, MapGroupPermission(GroupPermissionForRole));
             }
 
             // Add the global permissions
@@ -20,11 +20,11 @@
             }
         }
 
-        private static PermissionForRole MapCategoryPermission(CategoryPermissionForRole cp)
+        private static PermissionForRole MapGroupPermission(GroupPermissionForRole cp)
         {
             var pfr = new PermissionForRole
             {
-                Category = cp.Category,
+                Group = cp.Group,
                 IsTicked = cp.IsTicked,
                 MembershipRole = cp.MembershipRole,
                 Permission = cp.Permission

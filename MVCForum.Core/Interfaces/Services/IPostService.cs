@@ -13,24 +13,24 @@
     {
         Post SanitizePost(Post post);
         Post GetTopicStarterPost(Guid topicId);
-        IEnumerable<Post> GetAll(List<Category> allowedCategories);
+        IEnumerable<Post> GetAll(List<Group> allowedGroups);
         IList<Post> GetLowestVotedPost(int amountToTake);
         IList<Post> GetHighestVotedPost(int amountToTake);
-        IList<Post> GetByMember(Guid memberId, int amountToTake, List<Category> allowedCategories);
+        IList<Post> GetByMember(Guid memberId, int amountToTake, List<Group> allowedGroups);
         IList<Post> GetReplyToPosts(Post post);
         IList<Post> GetReplyToPosts(Guid postId);
         IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites);
         IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId);
 
         Task<PaginatedList<Post>> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm,
-            List<Category> allowedCategories);
+            List<Group> allowedGroups);
 
         Task<PaginatedList<Post>> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId,
             PostOrderBy order);
 
-        Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
-        IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
-        int GetPendingPostsCount(List<Category> allowedCategories);
+        Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Group> allowedGroups);
+        IList<Post> GetPendingPosts(List<Group> allowedGroups, MembershipRole usersRole);
+        int GetPendingPostsCount(List<Group> allowedGroups);
 
         Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo);
         Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo);
@@ -39,14 +39,14 @@
 
         Post Initialise(string postContent, Topic topic, MembershipUser user);
         Post Get(Guid postId);
-        IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);
+        IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Group> allowedGroups);
         Task<IPipelineProcess<Post>> Delete(Post post, bool ignoreLastPost);
-        IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
-        int PostCount(List<Category> allowedCategories);
-        IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories);
-        IList<Post> GetAllSolutionPosts(List<Category> allowedCategories);
+        IList<Post> GetSolutionsByMember(Guid memberId, List<Group> allowedGroups);
+        int PostCount(List<Group> allowedGroups);
+        IList<Post> GetPostsByMember(Guid memberId, List<Group> allowedGroups);
+        IList<Post> GetAllSolutionPosts(List<Group> allowedGroups);
         IList<Post> GetPostsByTopic(Guid topicId);
-        IEnumerable<Post> GetAllWithTopics(List<Category> allowedCategories);
+        IEnumerable<Post> GetAllWithTopics(List<Group> allowedGroups);
         bool PassedPostFloodTest(MembershipUser user);
     }
 }

@@ -47,7 +47,7 @@
             // TODO - Need to improve performance of this
             foreach (var post in posts)
             {
-                var permissions = RoleService.GetPermissions(post.Topic.Category,
+                var permissions = RoleService.GetPermissions(post.Topic.Group,
                     loggedOnReadOnlyUser.Roles.FirstOrDefault());
                 var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
                     post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());

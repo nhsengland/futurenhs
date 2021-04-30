@@ -11,20 +11,20 @@
     public partial class EmailController : BaseController
     {
         private readonly INotificationService _notificationService;
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;
 
         public EmailController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             INotificationService notificationService,
-            ICategoryService categoryService,
+            IGroupService GroupService,
             ITopicService topicService, ITopicTagService topicTagService,
             ICacheService cacheService, IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _topicService = topicService;
             _topicTagService = topicTagService;
             _notificationService = notificationService;
@@ -39,27 +39,27 @@
                 try
                 {
                     // Add logic to add subscr
-                    var isCategory = subscription.SubscriptionType.Contains("category");
+                    var isGroup = subscription.SubscriptionType.Contains("Group");
                     var isTag = subscription.SubscriptionType.Contains("tag");
                     var id = subscription.Id;
                     var dbUser = MembershipService.GetUser(User.Identity.Name);
 
-                    if (isCategory)
+                    if (isGroup)
                     {
-                        // get the category
-                        var cat = _categoryService.Get(id);
+                        // get the Group
+                        var cat = _GroupService.Get(id);
 
                         if (cat != null)
                         {
                             // Create the notification
-                            var categoryNotification = new CategoryNotification
+                            var GroupNotification = new GroupNotification
                             {
-                                Category = cat,
+                                Group = cat,
                                 User = dbUser
                             };
                             //save
 
-                            _notificationService.Add(categoryNotification);
+                            _notificationService.Add(GroupNotification);
                         }
                     }
                     else if (isTag)
@@ -82,7 +82,7 @@
                     }
                     else
                     {
-                        // get the category
+                        // get the Group
                         var topic = _topicService.Get(id);
 
                         // check its not null
@@ -124,27 +124,27 @@
                 try
                 {
                     // Add logic to add subscr
-                    var isCategory = subscription.SubscriptionType.Contains("category");
+                    var isGroup = subscription.SubscriptionType.Contains("Group");
                     var isTag = subscription.SubscriptionType.Contains("tag");
                     var id = subscription.Id;
                     var dbUser = MembershipService.GetUser(User.Identity.Name);
-                    if (isCategory)
+                    if (isGroup)
                     {
-                        // get the category
-                        var cat = _categoryService.Get(id);
+                        // get the Group
+                        var cat = _GroupService.Get(id);
 
                         if (cat != null)
                         {
                             // get the notifications by user
                             var notifications =
-                                _notificationService.GetCategoryNotificationsByUserAndCategory(dbUser, cat, true);
+                                _notificationService.GetGroupNotificationsByUserAndGroup(dbUser, cat, true);
 
                             if (notifications.Any())
                             {
-                                foreach (var categoryNotification in notifications)
+                                foreach (var GroupNotification in notifications)
                                 {
                                     // Delete
-                                    _notificationService.Delete(categoryNotification);
+                                    _notificationService.Delete(GroupNotification);
                                 }
                             }
                         }

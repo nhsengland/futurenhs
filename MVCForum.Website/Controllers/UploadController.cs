@@ -51,12 +51,12 @@
                     // Check we get a valid post back and have some file
                     if (attachFileToPostViewModel.Files != null && attachFileToPostViewModel.Files.Any())
                     {
-                        // Now get the category
-                        var category = topic.Category;
+                        // Now get the Group
+                        var Group = topic.Group;
 
-                        // Get the permissions for this category, and check they are allowed to update and 
+                        // Get the permissions for this Group, and check they are allowed to update and 
                         // not trying to be a sneaky mofo
-                        var permissions = RoleService.GetPermissions(category, loggedOnUsersRole);
+                        var permissions = RoleService.GetPermissions(Group, loggedOnUsersRole);
                         if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked == false ||
                             loggedOnReadOnlyUser.DisableFileUploads == true)
                         {

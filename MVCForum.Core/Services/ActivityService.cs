@@ -17,7 +17,7 @@
     {
         private readonly IBadgeService _badgeService;
         private readonly ICacheService _cacheService;
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private IMvcForumContext _context;
         private readonly ILoggingService _loggingService;
         private readonly IPostService _postService;
@@ -28,14 +28,14 @@
         /// </summary>
         public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMvcForumContext context,
             ICacheService cacheService, ITopicService topicService, IPostService postService,
-            ICategoryService categoryService)
+            IGroupService GroupService)
         {
             _badgeService = badgeService;
             _loggingService = loggingService;
             _cacheService = cacheService;
             _topicService = topicService;
             _postService = postService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _context = context;
         }
 
@@ -47,7 +47,7 @@
             _badgeService.RefreshContext(context);
             _topicService.RefreshContext(context);
             _postService.RefreshContext(context);
-            _categoryService.RefreshContext(context);
+            _GroupService.RefreshContext(context);
         }
 
         /// <inheritdoc />
@@ -69,16 +69,16 @@
         {
             // Read the database for all activities and convert each to a more specialised activity type
 
-            var allowedCategories = _categoryService.GetAllowedCategories(usersRole);
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            var allowedGroups = _GroupService.GetAllowedGroups(usersRole);
+            var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             var query =
                 from activity in _context.Activity
                 where (activity.Type != ActivityType.TopicCreated.ToString() || _context.Topic
-                           .Where(p => allowedCatIds.Contains(p.Category.Id)).Select(q => q.Id.ToString())
+                           .Where(p => allowedCatIds.Contains(p.Group.Id)).Select(q => q.Id.ToString())
                            .Contains(activity.Data)) &&
                       (activity.Type != ActivityType.PostCreated.ToString() || _context.Post
-                           .Where(p => allowedCatIds.Contains(p.Topic.Category.Id)).Select(q => q.Id.ToString())
+                           .Where(p => allowedCatIds.Contains(p.Topic.Group.Id)).Select(q => q.Id.ToString())
                            .Contains(activity.Data))
                 select activity;
 

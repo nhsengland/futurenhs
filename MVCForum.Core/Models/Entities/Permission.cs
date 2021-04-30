@@ -14,7 +14,7 @@
         public Guid Id { get; set; }
         public string Name { get; set; }
         public bool IsGlobal { get; set; }
-        public virtual IList<CategoryPermissionForRole> CategoryPermissionForRoles { get; set; }
+        public virtual IList<GroupPermissionForRole> GroupPermissionForRoles { get; set; }
         public virtual IList<GlobalPermissionForRole> GlobalPermissionForRoles { get; set; }
     }
 }

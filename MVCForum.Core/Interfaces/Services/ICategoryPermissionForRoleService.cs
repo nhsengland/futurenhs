@@ -4,26 +4,26 @@
     using System.Collections.Generic;
     using Models.Entities;
 
-    public partial interface ICategoryPermissionForRoleService : IContextService
+    public partial interface IGroupPermissionForRoleService : IContextService
     {
         /// <summary>
-        ///     Add new category permission for role
+        ///     Add new Group permission for role
         /// </summary>
-        /// <param name="categoryPermissionForRole"></param>
-        CategoryPermissionForRole Add(CategoryPermissionForRole categoryPermissionForRole);
+        /// <param name="GroupPermissionForRole"></param>
+        GroupPermissionForRole Add(GroupPermissionForRole GroupPermissionForRole);
 
         /// <summary>
-        ///     Check the category permission for role actually exists
+        ///     Check the Group permission for role actually exists
         /// </summary>
-        /// <param name="categoryPermissionForRole"></param>
+        /// <param name="GroupPermissionForRole"></param>
         /// <returns></returns>
-        CategoryPermissionForRole CheckExists(CategoryPermissionForRole categoryPermissionForRole);
+        GroupPermissionForRole CheckExists(GroupPermissionForRole GroupPermissionForRole);
 
         /// <summary>
         ///     Either updates a CPFR if exists or creates a new one
         /// </summary>
-        /// <param name="categoryPermissionForRole"></param>
-        void UpdateOrCreateNew(CategoryPermissionForRole categoryPermissionForRole);
+        /// <param name="GroupPermissionForRole"></param>
+        void UpdateOrCreateNew(GroupPermissionForRole GroupPermissionForRole);
 
         /// <summary>
         ///     Returns a row with the permission and CPFR
@@ -31,18 +31,18 @@
         /// <param name="role"></param>
         /// <param name="cat"></param>
         /// <returns></returns>
-        Dictionary<Permission, CategoryPermissionForRole> GetCategoryRow(MembershipRole role, Category cat);
+        Dictionary<Permission, GroupPermissionForRole> GetGroupRow(MembershipRole role, Group cat);
 
         /// <summary>
-        ///     Get all category permissions by category
+        ///     Get all Group permissions by Group
         /// </summary>
-        /// <param name="categoryId"></param>
+        /// <param name="GroupId"></param>
         /// <returns></returns>
-        IEnumerable<CategoryPermissionForRole> GetByCategory(Guid categoryId);
+        IEnumerable<GroupPermissionForRole> GetByGroup(Guid GroupId);
 
-        IEnumerable<CategoryPermissionForRole> GetByRole(Guid roleId);
-        IEnumerable<CategoryPermissionForRole> GetByPermission(Guid permId);
-        CategoryPermissionForRole Get(Guid id);
-        void Delete(CategoryPermissionForRole categoryPermissionForRole);
+        IEnumerable<GroupPermissionForRole> GetByRole(Guid roleId);
+        IEnumerable<GroupPermissionForRole> GetByPermission(Guid permId);
+        GroupPermissionForRole Get(Guid id);
+        void Delete(GroupPermissionForRole GroupPermissionForRole);
     }
 }

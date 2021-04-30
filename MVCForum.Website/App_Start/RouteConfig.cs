@@ -19,18 +19,18 @@
             //routes.MapMvcAttributeRoutes();
 
             routes.MapRoute(
-                "categoryUrls", // Route name
-                string.Concat(ForumConfiguration.Instance.CategoryUrlIdentifier, "/{slug}"), // URL with parameters
-                new {controller = "Category", action = "Show", slug = UrlParameter.Optional} // Parameter defaults
+                "GroupUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}"), // URL with parameters
+                new {controller = "Group", action = "Show", slug = UrlParameter.Optional} // Parameter defaults
             );
 
             routes.MapRoute(
-                "categoryRssUrls", // Route name
-                string.Concat(ForumConfiguration.Instance.CategoryUrlIdentifier, "/rss/{slug}"), // URL with parameters
+                "GroupRssUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/rss/{slug}"), // URL with parameters
                 new
                 {
-                    controller = "Category",
-                    action = "CategoryRss",
+                    controller = "Group",
+                    action = "GroupRss",
                     slug = UrlParameter.Optional
                 } // Parameter defaults
             );
@@ -60,9 +60,9 @@
             );
 
             routes.MapRoute(
-                "categoryXmlSitemap", // Route name
-                "categoryxmlsitemap", // URL with parameters
-                new {controller = "Home", action = "GoogleCategorySitemap"} // Parameter defaults
+                "GroupXmlSitemap", // Route name
+                "Groupxmlsitemap", // URL with parameters
+                new {controller = "Home", action = "GoogleGroupSitemap"} // Parameter defaults
             );
 
             routes.MapRoute(

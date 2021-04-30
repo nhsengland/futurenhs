@@ -59,7 +59,7 @@
         public UploadedFile Get(Guid id)
         {
             return _context.UploadedFile
-                .Include(x => x.Post.Topic.Category)
+                .Include(x => x.Post.Topic.Group)
                 .FirstOrDefault(x => x.Id == id);
         }
     }

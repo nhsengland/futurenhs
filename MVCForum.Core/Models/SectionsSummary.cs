@@ -9,6 +9,6 @@
     public class SectionSummary
     {
         public Section Section { get; set; }
-        public List<CategorySummary> CategorySummaries { get; set; }
+        public List<GroupSummary> GroupSummaries { get; set; }
     }
 }

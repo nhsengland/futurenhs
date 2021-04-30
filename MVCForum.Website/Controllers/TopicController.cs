@@ -23,7 +23,7 @@
 
     public partial class TopicController : BaseController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IFavouriteService _favouriteService;
         private readonly INotificationService _notificationService;
         private readonly IPollService _pollService;
@@ -34,7 +34,7 @@
 
         public TopicController(ILoggingService loggingService, IMembershipService membershipService,
             IRoleService roleService, ITopicService topicService, IPostService postService,
-            ICategoryService categoryService, ILocalizationService localizationService,
+            IGroupService GroupService, ILocalizationService localizationService,
             ISettingsService settingsService, ITopicTagService topicTagService,
             IPollService pollService, IVoteService voteService, IFavouriteService favouriteService, ICacheService cacheService,
             IMvcForumContext context, INotificationService notificationService)
@@ -43,7 +43,7 @@
         {
             _topicService = topicService;
             _postService = postService;
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _topicTagService = topicTagService;
             _pollService = pollService;
             _voteService = voteService;
@@ -59,7 +59,7 @@
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnloggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnloggedOnUsersRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnloggedOnUsersRole);
             var settings = SettingsService.GetSettings();
             // Set the page index
             var pageIndex = p ?? 1;
@@ -69,11 +69,11 @@
                 settings.TopicsPerPage,
                 ForumConfiguration.Instance.MembersActivityListSize,
                 loggedOnReadOnlyUser.Id,
-                allowedCategories)).Result;
+                allowedGroups)).Result;
 
             // Get the Topic View Models
             var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnloggedOnUsersRole,
-                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _notificationService,
+                loggedOnReadOnlyUser, allowedGroups, settings, _postService, _notificationService,
                 _pollService, _voteService, _favouriteService);
 
             // create the view model
@@ -98,15 +98,15 @@
             var loggedOnloggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
 
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnloggedOnUsersRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnloggedOnUsersRole);
             var topicIds = loggedOnReadOnlyUser.TopicNotifications.Select(x => x.Topic.Id).ToList();
             if (topicIds.Any())
             {
-                var topics = _topicService.Get(topicIds, allowedCategories);
+                var topics = _topicService.Get(topicIds, allowedGroups);
 
                 // Get the Topic View Models
                 viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnloggedOnUsersRole,
-                    loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(), _postService,
+                    loggedOnReadOnlyUser, allowedGroups, SettingsService.GetSettings(), _postService,
                     _notificationService, _pollService, _voteService, _favouriteService);
 
                 // Show the unsubscribe link
@@ -125,19 +125,19 @@
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnloggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
-            var category = topic.Category;
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnloggedOnUsersRole);
+            var Group = topic.Group;
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnloggedOnUsersRole);
 
             var viewModel = new BreadcrumbViewModel
             {
-                Categories = _categoryService.GetCategoryParents(category, allowedCategories),
+                Groups = _GroupService.GetGroupParents(Group, allowedGroups),
                 Topic = topic
             };
-            if (!viewModel.Categories.Any())
+            if (!viewModel.Groups.Any())
             {
-                viewModel.Categories.Add(topic.Category);
+                viewModel.Groups.Add(topic.Group);
             }
-            return PartialView("GetCategoryBreadcrumb", viewModel);
+            return PartialView("GetGroupBreadcrumb", viewModel);
         }
 
         public virtual PartialViewResult CreateTopicButton()
@@ -152,15 +152,15 @@
 
             if (loggedOnReadOnlyUser != null)
             {
-                // Add all categories to a permission set
-                var allCategories = _categoryService.GetAll();
+                // Add all Groups to a permission set
+                var allGroups = _GroupService.GetAll();
 
-                foreach (var category in allCategories)
+                foreach (var Group in allGroups)
                 {
-                    // Now check to see if they have access to any categories
+                    // Now check to see if they have access to any Groups
                     // if so, check they are allowed to create topics - If no to either set to false
                     viewModel.UserCanPostTopics = false;
-                    var permissionSet = RoleService.GetPermissions(category, loggedOnloggedOnUsersRole);
+                    var permissionSet = RoleService.GetPermissions(Group, loggedOnloggedOnUsersRole);
                     if (permissionSet[ForumConfiguration.Instance.PermissionCreateTopics].IsTicked)
                     {
                         viewModel.UserCanPostTopics = true;
@@ -179,8 +179,8 @@
             {
                 var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
                 var loggedOnloggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
-                var category = _categoryService.Get(catId);
-                var permissionSet = RoleService.GetPermissions(category, loggedOnloggedOnUsersRole);
+                var Group = _GroupService.Get(catId);
+                var permissionSet = RoleService.GetPermissions(Group, loggedOnloggedOnUsersRole);
                 var model = GetCheckCreateTopicPermissions(permissionSet);
                 return Json(model);
             }
@@ -227,7 +227,7 @@
 
         #endregion
 
-        private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
+        private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Group> allowedGroups)
         {
             var userIsAdmin = User.IsInRole(Constants.AdminRoleName);
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
@@ -241,7 +241,7 @@
             return new CreateEditTopicViewModel
             {
                 SubscribeToTopic = true,
-                Categories = _categoryService.GetBaseSelectListCategories(allowedCategories),
+                Groups = _GroupService.GetBaseSelectListGroups(allowedGroups),
                 OptionalPermissions = new CheckCreateTopicPermissions
                 {
                     CanLockTopic = userIsAdmin,
@@ -257,20 +257,20 @@
             };
         }
 
-        private List<Category> AllowedCreateCategories(MembershipRole loggedOnUsersRole)
+        private List<Group> AllowedCreateGroups(MembershipRole loggedOnUsersRole)
         {
-            var allowedAccessCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
-            var allowedCreateTopicCategories =
-                _categoryService.GetAllowedCategories(loggedOnUsersRole,
+            var allowedAccessGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+            var allowedCreateTopicGroups =
+                _GroupService.GetAllowedGroups(loggedOnUsersRole,
                     ForumConfiguration.Instance.PermissionCreateTopics);
-            var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
-            if (allowedAccessCategories.Any())
+            var allowedCreateTopicGroupIds = allowedCreateTopicGroups.Select(x => x.Id);
+            if (allowedAccessGroups.Any())
             {
-                allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
-                allowedAccessCategories.RemoveAll(x =>
+                allowedAccessGroups.RemoveAll(x => allowedCreateTopicGroupIds.Contains(x.Id));
+                allowedAccessGroups.RemoveAll(x =>
                     loggedOnUsersRole.RoleName != Constants.AdminRoleName && x.IsLocked);
             }
-            return allowedAccessCategories;
+            return allowedAccessGroups;
         }
 
         /// <summary>
@@ -282,11 +282,11 @@
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
-            var allowedAccessCategories = AllowedCreateCategories(loggedOnUsersRole);
+            var allowedAccessGroups = AllowedCreateGroups(loggedOnUsersRole);
 
-            if (allowedAccessCategories.Any() && loggedOnReadOnlyUser.DisablePosting != true)
+            if (allowedAccessGroups.Any() && loggedOnReadOnlyUser.DisablePosting != true)
             {
-                var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+                var viewModel = PrePareCreateEditTopicViewModel(allowedAccessGroups);
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -306,17 +306,17 @@
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
             var loggedOnUsersRole = loggedOnUser.GetRole(RoleService);
 
-            // Get the category
-            var category = _categoryService.Get(topicViewModel.Category);
+            // Get the Group
+            var Group = _GroupService.Get(topicViewModel.Group);
 
-            // First check this user is allowed to create topics in this category
-            var permissions = RoleService.GetPermissions(category, loggedOnUsersRole);
+            // First check this user is allowed to create topics in this Group
+            var permissions = RoleService.GetPermissions(Group, loggedOnUsersRole);
 
-            // Now we have the category and permissionSet - Populate the optional permissions 
-            // This is just in case the viewModel is return back to the view also sort the allowedCategories
+            // Now we have the Group and permissionSet - Populate the optional permissions 
+            // This is just in case the viewModel is return back to the view also sort the allowedGroups
             topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            topicViewModel.Categories =
-                _categoryService.GetBaseSelectListCategories(AllowedCreateCategories(loggedOnUsersRole));
+            topicViewModel.Groups =
+                _GroupService.GetBaseSelectListGroups(AllowedCreateGroups(loggedOnUsersRole));
             topicViewModel.IsTopicStarter = true;
             if (topicViewModel.PollAnswers == null)
             {
@@ -334,7 +334,7 @@
                 else
                 {
                     // Map the new topic (Pass null for new topic)
-                    var topic = topicViewModel.ToTopic(category, loggedOnUser, null);
+                    var topic = topicViewModel.ToTopic(Group, loggedOnUser, null);
 
                     // Run the create pipeline
                     var createPipeLine = await _topicService.Create(topic, topicViewModel.Files, topicViewModel.Tags,
@@ -389,28 +389,28 @@
             var loggedOnloggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
             // get the users permissions
-            var permissions = RoleService.GetPermissions(topic.Category, loggedOnloggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(topic.Group, loggedOnloggedOnUsersRole);
 
             // Is the user allowed to edit this post
             if (post.User.Id == loggedOnReadOnlyUser.Id ||
                 permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
             {
-                // Get the allowed categories for this user
-                var allowedAccessCategories = _categoryService.GetAllowedCategories(loggedOnloggedOnUsersRole);
-                var allowedCreateTopicCategories =
-                    _categoryService.GetAllowedCategories(loggedOnloggedOnUsersRole,
+                // Get the allowed Groups for this user
+                var allowedAccessGroups = _GroupService.GetAllowedGroups(loggedOnloggedOnUsersRole);
+                var allowedCreateTopicGroups =
+                    _GroupService.GetAllowedGroups(loggedOnloggedOnUsersRole,
                         ForumConfiguration.Instance.PermissionCreateTopics);
-                var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+                var allowedCreateTopicGroupIds = allowedCreateTopicGroups.Select(x => x.Id);
 
                 // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
-                if (allowedAccessCategories.Any() && loggedOnReadOnlyUser.DisablePosting != true)
+                if (allowedAccessGroups.Any() && loggedOnReadOnlyUser.DisablePosting != true)
                 {
                     // Create the model for just the post
                     var viewModel = new CreateEditTopicViewModel
                     {
                         Content = post.PostContent,
                         Id = post.Id,
-                        Category = topic.Category.Id,
+                        Group = topic.Group.Id,
                         Name = topic.Name,
                         TopicId = topic.Id,
                         OptionalPermissions = GetCheckCreateTopicPermissions(permissions),
@@ -420,8 +420,8 @@
                     // Now check if this is a topic starter, if so add the rest of the field
                     if (post.IsTopicStarter)
                     {
-                        // Remove all Categories that don't have create topic permission
-                        allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
+                        // Remove all Groups that don't have create topic permission
+                        allowedAccessGroups.RemoveAll(x => allowedCreateTopicGroupIds.Contains(x.Id));
 
                         // See if this user is subscribed to this topic
                         var topicNotifications =
@@ -432,8 +432,8 @@
                         viewModel.IsSticky = topic.IsSticky;
                         viewModel.IsTopicStarter = post.IsTopicStarter;
                         viewModel.SubscribeToTopic = topicNotifications.Any();
-                        viewModel.Categories =
-                            _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
+                        viewModel.Groups =
+                            _GroupService.GetBaseSelectListGroups(allowedAccessGroups);
 
                         // Tags - Populate from the topic
                         if (topic.Tags.Any())
@@ -471,25 +471,25 @@
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
             var loggedOnUsersRole = loggedOnUser.GetRole(RoleService, false);
 
-            // Get the category
-            var category = _categoryService.Get(editPostViewModel.Category);
+            // Get the Group
+            var Group = _GroupService.Get(editPostViewModel.Group);
 
             // Get all the permissions for this user
-            var permissions = RoleService.GetPermissions(category, loggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(Group, loggedOnUsersRole);
 
-            // Now we have the category and permissionSet - Populate the optional permissions 
-            // This is just in case the viewModel is return back to the view also sort the allowedCategories
-            // Get the allowed categories for this user
-            var allowedAccessCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
-            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole,
+            // Now we have the Group and permissionSet - Populate the optional permissions 
+            // This is just in case the viewModel is return back to the view also sort the allowedGroups
+            // Get the allowed Groups for this user
+            var allowedAccessGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+            var allowedCreateTopicGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole,
                 ForumConfiguration.Instance.PermissionCreateTopics);
-            var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+            var allowedCreateTopicGroupIds = allowedCreateTopicGroups.Select(x => x.Id);
 
             // TODO ??? Is this correct ??
-            allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
+            allowedAccessGroups.RemoveAll(x => allowedCreateTopicGroupIds.Contains(x.Id));
 
-            // Set the categories
-            editPostViewModel.Categories = _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
+            // Set the Groups
+            editPostViewModel.Groups = _GroupService.GetBaseSelectListGroups(allowedAccessGroups);
 
             // Get the users permissions for the topic
             editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
@@ -535,7 +535,7 @@
                     else
                     {
                         // Map the new topic (Pass null for new topic)
-                        var topic = editPostViewModel.ToTopic(category, loggedOnUser, originalTopic);
+                        var topic = editPostViewModel.ToTopic(Group, loggedOnUser, originalTopic);
 
                         // Run the create pipeline
                         var editPipeLine = await _topicService.Edit(topic, editPostViewModel.Files,
@@ -624,8 +624,8 @@
                 // Get the topic starter post
                 var starterPost = _postService.GetTopicStarterPost(topic.Id);
 
-                // Get the permissions for the category that this topic is in
-                var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
+                // Get the permissions for the Group that this topic is in
+                var permissions = RoleService.GetPermissions(topic.Group, loggedOnUsersRole);
 
                 // If this user doesn't have access to this topic then
                 // redirect with message
@@ -743,8 +743,8 @@
             var topic = _topicService.Get(getMorePostsViewModel.TopicId);
             var settings = SettingsService.GetSettings();
 
-            // Get the permissions for the category that this topic is in
-            var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
+            // Get the permissions for the Group that this topic is in
+            var permissions = RoleService.GetPermissions(topic.Group, loggedOnUsersRole);
 
             // If this user doesn't have access to this topic then just return nothing
             if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
@@ -777,7 +777,7 @@
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
             var settings = SettingsService.GetSettings();
             var tagModel = _topicTagService.Get(tag);
             if (tag != null)
@@ -789,7 +789,7 @@
                 var topics = await _topicService.GetPagedTopicsByTag(pageIndex,
                     settings.TopicsPerPage,
                     int.MaxValue,
-                    tag, allowedCategories);
+                    tag, allowedGroups);
 
                 // See if the user has subscribed to this topic or not
                 var isSubscribed = User.Identity.IsAuthenticated &&
@@ -798,7 +798,7 @@
 
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnUsersRole,
-                    loggedOnReadOnlyUser, allowedCategories, settings, _postService, _notificationService,
+                    loggedOnReadOnlyUser, allowedGroups, settings, _postService, _notificationService,
                     _pollService, _voteService, _favouriteService);
 
                 // create the view model
@@ -826,12 +826,12 @@
 
             // Returns the formatted string to search on
             var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
             IList<Topic> topics = null;
             try
             {
                 var searchResults = _topicService.SearchTopics(ForumConfiguration.Instance.SimilarTopicsListSize,
-                    formattedSearchTerm, allowedCategories);
+                    formattedSearchTerm, allowedGroups);
                 if (searchResults != null)
                 {
                     topics = searchResults;
@@ -852,7 +852,7 @@
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
             var settings = SettingsService.GetSettings();
 
             // Set the page index
@@ -862,11 +862,11 @@
             var topics = Task.Run(() => _topicService.GetRecentTopics(pageIndex,
                 settings.TopicsPerPage,
                 ForumConfiguration.Instance.ActiveTopicsListSize,
-                allowedCategories)).Result;
+                allowedGroups)).Result;
 
             // Get the Topic View Models
             var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnUsersRole,
-                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _notificationService,
+                loggedOnReadOnlyUser, allowedGroups, settings, _postService, _notificationService,
                 _pollService, _voteService, _favouriteService);
 
             // create the view model
@@ -899,15 +899,15 @@
             var viewModel = CacheService.Get<HotTopicsViewModel>(cacheKey);
             if (viewModel == null)
             {
-                // Allowed Categories
-                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+                // Allowed Groups
+                var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
 
                 // Get the topics
-                var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
+                var topics = _topicService.GetPopularTopics(from, to, allowedGroups, (int)amountToShow);
 
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,
-                    loggedOnUsersRole, loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(),
+                    loggedOnUsersRole, loggedOnReadOnlyUser, allowedGroups, SettingsService.GetSettings(),
                     _postService, _notificationService, _pollService, _voteService, _favouriteService);
 
                 // create the view model

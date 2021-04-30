@@ -12,12 +12,12 @@
         /// <summary>
         /// permission cache key for getting and setting keys
         /// </summary>
-        /// <param name="categoryId"></param>
+        /// <param name="GroupId"></param>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public static string ReturnCacheKey(Guid categoryId, Guid roleId)
+        public static string ReturnCacheKey(Guid GroupId, Guid roleId)
         {
-            return $"permissioncache-{categoryId}-{roleId}";
+            return $"permissioncache-{GroupId}-{roleId}";
         }
         #endregion
 

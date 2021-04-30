@@ -27,10 +27,10 @@
         public virtual DbSet<Badge> Badge { get; set; }
         public virtual DbSet<Block> Block { get; set; }
         public virtual DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
-        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Group> Group { get; set; }
         public virtual DbSet<Section> Section { get; set; }
-        public virtual DbSet<CategoryNotification> CategoryNotification { get; set; }
-        public virtual DbSet<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
+        public virtual DbSet<GroupNotification> GroupNotification { get; set; }
+        public virtual DbSet<GroupPermissionForRole> GroupPermissionForRole { get; set; }
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<LocaleResourceKey> LocaleResourceKey { get; set; }
         public virtual DbSet<LocaleStringResource> LocaleStringResource { get; set; }

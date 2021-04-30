@@ -225,14 +225,14 @@ a, a:visited { color: $link-color;
 
 .mainadminbody { padding-top: 8px; }
 
-// Category List
+// Group List
 
-.mainadmincategorylist { margin: 0; padding: 15px 0;
+.mainadminGrouplist { margin: 0; padding: 15px 0;
     li { font-size: 1.4em; list-style: none; margin: 0 0 10px 0; padding: 10px 0; border-bottom: 1px dotted #eee;
-        &.subcategoryitem { padding: 3px 0; border: 0; }
+        &.subGroupitem { padding: 3px 0; border: 0; }
     }
     ul {
-        &.subcategorylist { font-size: 11px; padding: 0 0 0 5px; margin: 0 0 10px 10px; border-left: 2px #eeeeee solid; }
+        &.subGrouplist { font-size: 11px; padding: 0 0 0 5px; margin: 0 0 10px 10px; border-left: 2px #eeeeee solid; }
     }
 }
 

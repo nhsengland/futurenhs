@@ -1,0 +1,98 @@
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.ViewModels.Group
+
+@model GroupViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = Html.Raw(Model.Group.PageTitle ?? Model.Group.Name);
+    ViewBag.MetaDesc = Model.Group.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Group.Description);
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+
+    var subScribe = string.Empty;
+    var unSubscribe = string.Empty;
+    const string displayNone = "style='display:none;'";
+    if (Model.IsSubscribed)
+    {
+        subScribe = displayNone;
+    }
+    else
+    {
+        unSubscribe = displayNone;
+    }
+    //TempData[Constants.DefaultGroupViewBagName] = Model.Group.Id;
+}
+@section SocialMeta {
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@ViewBag.Title" />
+    <meta name="twitter:description" content="@ViewBag.MetaDesc" />
+}
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+@Html.Action("GetGroupBreadcrumb", "Group", new { Group = Model.Group })
+
+<div class="Group">
+
+    <div class="mainheading clearfix">
+
+        <div class="widgetright">
+            @if (Html.Settings().EnableRSSFeeds)
+            {
+                <a title="@Html.LanguageString("Home.Rss")" href="@Url.Action("GroupRss", "Group", new { slug = Model.Group.Slug })" class="rsssubscribe">
+                    <i class="fa fa-rss-square orange-colour"></i>
+                </a>
+            }
+            @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
+            {
+                <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Group.Id" data-type="Group">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    @Html.LanguageString("Notification.Subscribe")
+                </a>
+                <a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Group.Id" data-type="Group">
+                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    @Html.LanguageString("Notification.UnSubscribe")
+                </a>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Group.Image))
+        {
+            <img src="@AppHelpers.GroupImage(Model.Group.Image, Model.Group.Id,110)" alt="@Model.Group" class="Groupimage" />
+        }
+        <h1>@Html.Raw(Model.Group.Name)</h1>
+        <p>@Html.Raw(Model.Group.Description.ConvertPostContent())</p>
+    </div>
+
+    @if (Model.SubGroups != null)
+    {
+        Html.RenderPartial("_SubGroups", new SubGroupViewModel
+            {
+                AllPermissionSets = Model.SubGroups.AllPermissionSets,
+                ParentGroup = Model.Group
+            });
+    }
+
+    @if (Model.TotalCount > 0)
+    {
+        foreach (var topic in Model.Topics)
+        {
+            Html.RenderPartial("_Topic", topic);
+        }
+
+        if (Model.TotalPages > 1)
+        {
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
+        }
+    }
+    else
+    {
+        <p>@Html.LanguageString("Group.NoDiscussions")</p>
+    }
+
+</div>

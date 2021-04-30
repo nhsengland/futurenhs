@@ -15,17 +15,17 @@
     [Authorize(Roles = Constants.AdminRoleName)]
     public class BatchController : BaseAdminController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IGroupService _GroupService;
         private readonly IPrivateMessageService _privateMessageService;
         private readonly ITopicService _topicService;
 
         public BatchController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, ISettingsService settingsService,
-            ICategoryService categoryService, ITopicService topicService, IPrivateMessageService privateMessageService,
+            IGroupService GroupService, ITopicService topicService, IPrivateMessageService privateMessageService,
             IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
-            _categoryService = categoryService;
+            _GroupService = GroupService;
             _topicService = topicService;
             _privateMessageService = privateMessageService;
         }
@@ -83,7 +83,7 @@
         {
             var viewModel = new BatchMoveTopicsViewModel
             {
-                Categories = _categoryService.GetAll()
+                Groups = _GroupService.GetAll()
             };
             return View(viewModel);
         }
@@ -94,22 +94,22 @@
         {
             try
             {
-                var categoryFrom = _categoryService.Get((Guid)viewModel.FromCategory);
-                var categoryTo = _categoryService.Get((Guid)viewModel.ToCategory);
+                var GroupFrom = _GroupService.Get((Guid)viewModel.FromGroup);
+                var GroupTo = _GroupService.Get((Guid)viewModel.ToGroup);
 
-                var topicsToMove = _topicService.GetRssTopicsByCategory(int.MaxValue, categoryFrom.Id);
+                var topicsToMove = _topicService.GetRssTopicsByGroup(int.MaxValue, GroupFrom.Id);
                 var count = topicsToMove.Count;
 
                 foreach (var topic in topicsToMove)
                 {
-                    topic.Category = categoryTo;
+                    topic.Group = GroupTo;
                 }
 
                 Context.SaveChanges();
 
-                categoryFrom.Topics.Clear();
+                GroupFrom.Topics.Clear();
 
-                viewModel.Categories = _categoryService.GetAll();
+                viewModel.Groups = _GroupService.GetAll();
 
                 Context.SaveChanges();
 

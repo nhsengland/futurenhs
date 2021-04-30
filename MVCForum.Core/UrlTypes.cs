@@ -17,7 +17,7 @@
                 case UrlType.Tag:
                     return ForumConfiguration.Instance.TagsUrlIdentifier;
                 default:
-                    return ForumConfiguration.Instance.CategoryUrlIdentifier;
+                    return ForumConfiguration.Instance.GroupUrlIdentifier;
             }
         }
 

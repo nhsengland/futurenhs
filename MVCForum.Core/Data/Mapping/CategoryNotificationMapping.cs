@@ -3,16 +3,16 @@
     using System.Data.Entity.ModelConfiguration;
     using Models.Entities;
 
-    public class CategoryNotificationMapping : EntityTypeConfiguration<CategoryNotification>
+    public class GroupNotificationMapping : EntityTypeConfiguration<GroupNotification>
     {
-        public CategoryNotificationMapping()
+        public GroupNotificationMapping()
         {
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
 
-            HasRequired(x => x.Category)
-                .WithMany(x => x.CategoryNotifications)
-                .Map(x => x.MapKey("Category_Id"))
+            HasRequired(x => x.Group)
+                .WithMany(x => x.GroupNotifications)
+                .Map(x => x.MapKey("Group_Id"))
                 .WillCascadeOnDelete(false);
 
         }

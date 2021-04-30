@@ -38,8 +38,8 @@ $(function () {
         });
     }
 
-    var createTopicCategoryDropdown = $('.createtopicholder #Category');
-    if (createTopicCategoryDropdown.length > 0) {
+    var createTopicGroupDropdown = $('.createtopicholder #Group');
+    if (createTopicGroupDropdown.length > 0) {
         // This is purely for the UI - All the below permissions are 
         // checked server side so it doesn't matter if they submit
         // something they are not allowed to do. It won't get through
@@ -52,7 +52,7 @@ $(function () {
         var createTagsMessage = $('.createtopicholder .createtagmessage');
 
         // Fire when the dropdown changes
-        createTopicCategoryDropdown.change(function (e) {
+        createTopicGroupDropdown.change(function (e) {
             e.preventDefault();
             var catId = $(this).val();
             if (catId != "") {

@@ -8,7 +8,7 @@
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Guid CategoryId { get; set; }
-        public List<Category> Categories { get; set; }
+        public Guid GroupId { get; set; }
+        public List<Group> Groups { get; set; }
     }
 }

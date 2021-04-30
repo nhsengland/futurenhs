@@ -80,9 +80,9 @@
     }
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Category)
-        @Html.DropDownListFor(model => model.Category, Model.Categories, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Category)
+        @Html.LabelFor(model => model.Group)
+        @Html.DropDownListFor(model => model.Group, Model.Groups, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Group)
     </div>
     <div class="form-group">
         <label>@Html.Lang("Topic.Label.Tags")</label>
@@ -95,7 +95,7 @@
 else
 {
     <h2>@ViewBag.Title</h2>
-    @Html.HiddenFor(x => x.Category)
+    @Html.HiddenFor(x => x.Group)
     @Html.HiddenFor(x => x.Name)
 }
 
@@ -114,7 +114,7 @@ else
 @if (Model.IsTopicStarter)
 {
     <div class="c-grid-block">
-        <div class="c-grid-block_item l-col-12 topiccategory">
+        <div class="c-grid-block_item l-col-12 topicGroup">
 
             @if (Model.Id == Guid.Empty)
             {

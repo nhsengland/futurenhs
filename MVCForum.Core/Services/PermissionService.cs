@@ -14,12 +14,12 @@
     public partial class PermissionService : IPermissionService
     {
         private IMvcForumContext _context;
-        private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
+        private readonly IGroupPermissionForRoleService _GroupPermissionForRoleService;
         private readonly ICacheService _cacheService;
 
-        public PermissionService(ICategoryPermissionForRoleService categoryPermissionForRoleService, IMvcForumContext context, ICacheService cacheService)
+        public PermissionService(IGroupPermissionForRoleService GroupPermissionForRoleService, IMvcForumContext context, ICacheService cacheService)
         {
-            _categoryPermissionForRoleService = categoryPermissionForRoleService;
+            _GroupPermissionForRoleService = GroupPermissionForRoleService;
             _cacheService = cacheService;
             _context = context;
         }
@@ -28,7 +28,7 @@
         public void RefreshContext(IMvcForumContext context)
         {
             _context = context;
-            _categoryPermissionForRoleService.RefreshContext(context);
+            _GroupPermissionForRoleService.RefreshContext(context);
         }
 
         /// <inheritdoc />
@@ -66,15 +66,15 @@
         }
 
         /// <summary>
-        ///  Delete permission and associated category permission for roles
+        ///  Delete permission and associated Group permission for roles
         /// </summary>
         /// <param name="permission"></param>
         public void Delete(Permission permission)
         {
-            var catPermForRoles = _categoryPermissionForRoleService.GetByPermission(permission.Id);
-            foreach (var categoryPermissionForRole in catPermForRoles)
+            var catPermForRoles = _GroupPermissionForRoleService.GetByPermission(permission.Id);
+            foreach (var GroupPermissionForRole in catPermForRoles)
             {
-                _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
+                _GroupPermissionForRoleService.Delete(GroupPermissionForRole);
             }
 
             _context.Permission.Remove(permission);
