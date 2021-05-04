@@ -64,7 +64,6 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IVoteService, VoteService>();
             Container.BindInRequestScope<IMembershipUserPointsService, MembershipUserPointsService>();
             Container.BindInRequestScope<IGroupPermissionForRoleService, GroupPermissionForRoleService>();
-            Container.BindInRequestScope<IPrivateMessageService, PrivateMessageService>();
             Container.BindInRequestScope<ILoggingService, LoggingService>();
             Container.BindInRequestScope<IEmailService, EmailService>();
             Container.BindInRequestScope<IReportService, ReportService>();

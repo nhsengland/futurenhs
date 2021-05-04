@@ -36,7 +36,6 @@
         private readonly INotificationService _notificationService;
         private readonly IPollService _pollService;
         private readonly IPostService _postService;
-        private readonly IPrivateMessageService _privateMessageService;
         private readonly ISettingsService _settingsService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
@@ -65,7 +64,6 @@
             IActivityService activityService,
             ICacheService cacheService, 
             IVoteService voteService,
-            IPrivateMessageService privateMessageService,
             IFavouriteService favouriteService, 
             IMembershipUserPointsService membershipUserPointsService,
             ITopicService topicService, 
@@ -79,7 +77,6 @@
             _activityService = activityService;
             _cacheService = cacheService;
             _voteService = voteService;
-            _privateMessageService = privateMessageService;
             _favouriteService = favouriteService;
             _membershipUserPointsService = membershipUserPointsService;
             _topicService = topicService;
@@ -98,7 +95,6 @@
             _localizationService.RefreshContext(context);
             _activityService.RefreshContext(context);
             _voteService.RefreshContext(context);
-            _privateMessageService.RefreshContext(context);
             _favouriteService.RefreshContext(context);
             _membershipUserPointsService.RefreshContext(context);
             _topicService.RefreshContext(context);

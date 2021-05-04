@@ -16,18 +16,19 @@
     public class BatchController : BaseAdminController
     {
         private readonly IGroupService _GroupService;
-        private readonly IPrivateMessageService _privateMessageService;
         private readonly ITopicService _topicService;
 
-        public BatchController(ILoggingService loggingService, IMembershipService membershipService,
-            ILocalizationService localizationService, ISettingsService settingsService,
-            IGroupService GroupService, ITopicService topicService, IPrivateMessageService privateMessageService,
-            IMvcForumContext context)
+        public BatchController(ILoggingService loggingService, 
+            IMembershipService membershipService,
+            ILocalizationService localizationService, 
+            ISettingsService settingsService,
+            IGroupService GroupService, 
+            ITopicService topicService,
+            IMvcForumContext context )
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _GroupService = GroupService;
             _topicService = topicService;
-            _privateMessageService = privateMessageService;
         }
 
         #region Members
@@ -135,52 +136,6 @@
         }
 
         #endregion
-
-        #region Private Messages
-
-        public ActionResult BatchDeletePrivateMessages()
-        {
-            var viewModel = new BatchDeletePrivateMessagesViewModel();
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult BatchDeletePrivateMessages(BatchDeletePrivateMessagesViewModel viewModel)
-        {
-            try
-            {
-                var pms = _privateMessageService.GetPrivateMessagesOlderThan(viewModel.Days);
-                var pmToDelete = new List<PrivateMessage>();
-                pmToDelete.AddRange(pms);
-                var count = pmToDelete.Count;
-                foreach (var pm in pmToDelete)
-                {
-                    _privateMessageService.DeleteMessage(pm);
-                }
-                Context.SaveChanges();
-
-                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = $"{count} Private Messages deleted",
-                    MessageType = GenericMessages.success
-                };
-            }
-            catch (Exception ex)
-            {
-                Context.RollBack();
-                LoggingService.Error(ex);
-                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = ex.Message,
-                    MessageType = GenericMessages.danger
-                };
-            }
-
-
-            return View(viewModel);
-        }
-
-        #endregion
+        
     }
 }

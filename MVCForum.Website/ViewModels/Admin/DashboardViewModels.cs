@@ -5,7 +5,6 @@
 
     public class MainDashboardNavViewModel
     {
-        public int PrivateMessageCount { get; set; }
         public int ModerateCount { get; set; }
     }
 

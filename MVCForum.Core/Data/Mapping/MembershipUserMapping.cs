@@ -109,16 +109,6 @@
                .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete(false);
 
-            HasMany(x => x.PrivateMessagesReceived)
-                    .WithRequired(x => x.UserTo)
-                    .Map(x => x.MapKey("UserTo_Id"))
-                    .WillCascadeOnDelete(false);
-
-            HasMany(x => x.PrivateMessagesSent)
-                        .WithRequired(x => x.UserFrom)
-                        .Map(x => x.MapKey("UserFrom_Id"))
-                        .WillCascadeOnDelete(false);
-
 
             // Many-to-many join table - a user may belong to many roles
             HasMany(t => t.Roles)

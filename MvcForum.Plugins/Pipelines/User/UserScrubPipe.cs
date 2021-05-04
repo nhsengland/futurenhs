@@ -20,13 +20,11 @@
         private readonly INotificationService _notificationService;
         private readonly IPollService _pollService;
         private readonly IPostService _postService;
-        private readonly IPrivateMessageService _privateMessageService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
 
         public UserScrubPipe(IVoteService voteService,
             INotificationService notificationService, 
-            IPrivateMessageService privateMessageService,
             IFavouriteService favouriteService, 
             IMembershipUserPointsService membershipUserPointsService,
             IActivityService activityService, 
@@ -38,7 +36,6 @@
         {
             _voteService = voteService;
             _notificationService = notificationService;
-            _privateMessageService = privateMessageService;
             _favouriteService = favouriteService;
             _membershipUserPointsService = membershipUserPointsService;
             _activityService = activityService;
@@ -55,7 +52,6 @@
         {
             _voteService.RefreshContext(context);
             _notificationService.RefreshContext(context);
-            _privateMessageService.RefreshContext(context);
             _favouriteService.RefreshContext(context);
             _membershipUserPointsService.RefreshContext(context);
             _activityService.RefreshContext(context);
@@ -159,32 +155,6 @@
                         _notificationService.Delete(obj);
                     }
                     input.EntityToProcess.GroupNotifications.Clear();
-                    await context.SaveChangesAsync();
-                }
-
-                // User PM Received
-                if (input.EntityToProcess.PrivateMessagesReceived != null)
-                {
-                    var toDelete = new List<PrivateMessage>();
-                    toDelete.AddRange(input.EntityToProcess.PrivateMessagesReceived);
-                    foreach (var obj in toDelete)
-                    {
-                        _privateMessageService.DeleteMessage(obj);
-                    }
-                    input.EntityToProcess.PrivateMessagesReceived.Clear();
-                    await context.SaveChangesAsync();
-                }
-
-                // User PM Sent
-                if (input.EntityToProcess.PrivateMessagesSent != null)
-                {
-                    var toDelete = new List<PrivateMessage>();
-                    toDelete.AddRange(input.EntityToProcess.PrivateMessagesSent);
-                    foreach (var obj in toDelete)
-                    {
-                        _privateMessageService.DeleteMessage(obj);
-                    }
-                    input.EntityToProcess.PrivateMessagesSent.Clear();
                     await context.SaveChangesAsync();
                 }
 

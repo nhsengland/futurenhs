@@ -26,7 +26,6 @@
         DbSet<PollAnswer> PollAnswer { get; set; }
         DbSet<PollVote> PollVote { get; set; }
         DbSet<Post> Post { get; set; }
-        DbSet<PrivateMessage> PrivateMessage { get; set; }
         DbSet<Settings> Setting { get; set; }
         DbSet<Topic> Topic { get; set; }
         DbSet<TopicNotification> TopicNotification { get; set; }

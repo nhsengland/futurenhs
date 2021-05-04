@@ -21,7 +21,6 @@
         public EventHandler<LoginEventArgs> AfterLogin;
         public EventHandler<MarkedAsSolutionEventArgs> AfterMarkedAsSolution;
         public EventHandler<PostMadeEventArgs> AfterPostMade;
-        public EventHandler<PrivateMessageEventArgs> AfterPrivateMessage;
         public EventHandler<TopicMadeEventArgs> AfterTopicMade;
         public EventHandler<UpdateProfileEventArgs> AfterUpdateProfile;
         public EventHandler<VoteEventArgs> AfterVoteMade;
@@ -29,7 +28,6 @@
         public EventHandler<LoginEventArgs> BeforeLogin;
         public EventHandler<MarkedAsSolutionEventArgs> BeforeMarkedAsSolution;
         public EventHandler<PostMadeEventArgs> BeforePostMade;
-        public EventHandler<PrivateMessageEventArgs> BeforePrivateMessage;
         public EventHandler<TopicMadeEventArgs> BeforeTopicMade;
         public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
         public EventHandler<VoteEventArgs> BeforeVoteMade;
@@ -197,30 +195,6 @@
         public void FireBeforeFavourite(object sender, FavouriteEventArgs eventArgs)
         {
             var handler = BeforeFavourite;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        #endregion
-
-        #region Private Messages
-
-        public void FireAfterPrivateMessage(object sender, PrivateMessageEventArgs eventArgs)
-        {
-            var handler = AfterPrivateMessage;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireBeforePrivateMessage(object sender, PrivateMessageEventArgs eventArgs)
-        {
-            var handler = BeforePrivateMessage;
 
             if (handler != null)
             {

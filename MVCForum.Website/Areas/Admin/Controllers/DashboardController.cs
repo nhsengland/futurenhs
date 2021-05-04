@@ -15,32 +15,29 @@
         private readonly IGroupService _GroupService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IPostService _postService;
-        private readonly IPrivateMessageService _privateMessageService;
         private readonly ITopicService _topicService;
 
-        public DashboardController(ILoggingService loggingService, IMembershipService membershipService,
-            ILocalizationService localizationService, ISettingsService settingsService, IPostService postService,
-            ITopicService topicService, ITopicTagService topicTagService,
-            IMembershipUserPointsService membershipUserPointsService, IGroupService GroupService,
-            IPrivateMessageService privateMessageService,
-            IMvcForumContext context)
+        public DashboardController(ILoggingService loggingService, 
+            IMembershipService membershipService,
+            ILocalizationService localizationService, 
+            ISettingsService settingsService, 
+            IPostService postService,
+            ITopicService topicService, 
+            ITopicTagService topicTagService,
+            IMembershipUserPointsService membershipUserPointsService, 
+            IGroupService GroupService,
+            IMvcForumContext context )
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _GroupService = GroupService;
-            _privateMessageService = privateMessageService;
             _postService = postService;
             _topicService = topicService;
         }
 
         public PartialViewResult MainAdminNav()
         {
-            var pmCount = 0;
-            if (LoggedOnReadOnlyUser != null)
-            {
-                pmCount = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
-            }
-
+            
             var moderateCount = 0;
             var topicsToModerate = _topicService.GetPendingTopicsCount(_GroupService.GetAll());
             var postsToModerate = _postService.GetPendingPostsCount(_GroupService.GetAll());
@@ -51,7 +48,6 @@
 
             var viewModel = new MainDashboardNavViewModel
             {
-                PrivateMessageCount = pmCount,
                 ModerateCount = moderateCount
             };
             return PartialView(viewModel);

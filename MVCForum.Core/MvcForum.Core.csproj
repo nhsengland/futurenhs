@@ -101,7 +101,6 @@
     <Compile Include="Models\Entities\GlobalPermission.cs" />
     <Compile Include="Models\Entities\PermissionForRole.cs" />
     <Compile Include="Models\Entities\Poll.cs" />
-    <Compile Include="Models\Entities\PrivateMessage.cs" />
     <Compile Include="Models\General\FileCheckResult.cs" />
     <Compile Include="Models\General\MarkAsSolutionReminder.cs" />
     <Compile Include="Models\General\PaginatedList.cs" />
@@ -137,7 +136,6 @@
     <Compile Include="Events\MarkedAsSolutionEventArgs.cs" />
     <Compile Include="Events\MVCForumEventArgs.cs" />
     <Compile Include="Events\PostMadeEventArgs.cs" />
-    <Compile Include="Events\PrivateMessageEventArgs.cs" />
     <Compile Include="Events\TopicMadeEventArgs.cs" />
     <Compile Include="Events\UpdateProfileEventArgs.cs" />
     <Compile Include="Events\VoteEventArgs.cs" />
@@ -156,7 +154,6 @@
     <Compile Include="Interfaces\Services\IPollService.cs" />
     <Compile Include="Interfaces\Services\IActivityService.cs" />
     <Compile Include="Interfaces\Services\IPostEditService.cs" />
-    <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
     <Compile Include="Interfaces\Services\IReportService.cs" />
     <Compile Include="Interfaces\Services\IEmailService.cs" />
     <Compile Include="Interfaces\Services\ILoggingService.cs" />
@@ -219,7 +216,6 @@
     <Compile Include="Data\Mapping\PollVoteMapping.cs" />
     <Compile Include="Data\Mapping\PostEditMapping.cs" />
     <Compile Include="Data\Mapping\PostMapping.cs" />
-    <Compile Include="Data\Mapping\PrivateMessageMapping.cs" />
     <Compile Include="Data\Mapping\SettingsMapping.cs" />
     <Compile Include="Data\Mapping\TagNotificationMapping.cs" />
     <Compile Include="Data\Mapping\TopicMapping.cs" />
@@ -240,7 +236,6 @@
     <Compile Include="Services\PollService.cs" />
     <Compile Include="Services\PostEditService.cs" />
     <Compile Include="Services\PostService.cs" />
-    <Compile Include="Services\PrivateMessageService.cs" />
     <Compile Include="Services\RecurringJobService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\RoleService.cs" />

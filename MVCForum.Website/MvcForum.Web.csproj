@@ -123,7 +123,6 @@
     <Compile Include="Controllers\OAuthControllers\GoogleOAuthController.cs" />
     <Compile Include="Controllers\OAuthControllers\MicrosoftOAuthController.cs" />
     <Compile Include="Controllers\PollController.cs" />
-    <Compile Include="Controllers\PrivateMessageController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SnippetsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -172,11 +171,6 @@
     <Compile Include="ViewModels\Post\PostViewModel.cs" />
     <Compile Include="ViewModels\Post\ReportPostViewModel.cs" />
     <Compile Include="ViewModels\Post\ShowMorePostsViewModel.cs" />
-    <Compile Include="ViewModels\PrivateMessage\CreatePrivateMessageViewModel.cs" />
-    <Compile Include="ViewModels\PrivateMessage\DeletePrivateMessageViewModel.cs" />
-    <Compile Include="ViewModels\PrivateMessage\GetMoreViewModel.cs" />
-    <Compile Include="ViewModels\PrivateMessage\ListPrivateMessageViewModel.cs" />
-    <Compile Include="ViewModels\PrivateMessage\ViewPrivateMessageViewModel.cs" />
     <Compile Include="ViewModels\Registration\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\Registration\ForgotPasswordViewModel.cs" />
     <Compile Include="ViewModels\Registration\LogOnViewModel.cs" />

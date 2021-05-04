@@ -81,8 +81,6 @@
         public virtual IList<TopicNotification> TopicNotifications { get; set; }
         public virtual IList<TagNotification> TagNotifications { get; set; }
         public virtual IList<MembershipUserPoints> Points { get; set; }
-        public virtual IList<PrivateMessage> PrivateMessagesReceived { get; set; }
-        public virtual IList<PrivateMessage> PrivateMessagesSent { get; set; }
         public virtual IList<Poll> Polls { get; set; }
         public virtual IList<PollVote> PollVotes { get; set; }
         public virtual IList<Favourite> Favourites { get; set; }

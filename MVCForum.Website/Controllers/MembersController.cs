@@ -38,7 +38,6 @@
         private readonly INotificationService _notificationService;
         private readonly IPollService _pollService;
         private readonly IPostService _postService;
-        private readonly IPrivateMessageService _privateMessageService;
         private readonly IReportService _reportService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
@@ -63,20 +62,33 @@
         /// <param name="voteService"></param>
         /// <param name="favouriteService"></param>
         /// <param name="context"></param>
-        public MembersController(ILoggingService loggingService, IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            IPostService postService, IReportService reportService, IEmailService emailService,
-            IPrivateMessageService privateMessageService, IGroupService GroupService, ITopicService topicService,
-            ICacheService cacheService, INotificationService notificationService,
-            IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
-            IMvcForumContext context)
-            : base(loggingService, membershipService, localizationService, roleService,
-                settingsService, cacheService, context)
+        public MembersController(ILoggingService loggingService, 
+            IMembershipService membershipService,
+            ILocalizationService localizationService,
+            IRoleService roleService, 
+            ISettingsService settingsService,
+            IPostService postService, 
+            IReportService reportService, 
+            IEmailService emailService, 
+            IGroupService GroupService, 
+            ITopicService topicService,
+            ICacheService cacheService, 
+            INotificationService notificationService,
+            IPollService pollService, 
+            IVoteService voteService, 
+            IFavouriteService favouriteService,
+            IMvcForumContext context )
+            : base(loggingService, 
+                membershipService, 
+                localizationService, 
+                roleService,
+                settingsService, 
+                cacheService, 
+                context )
         {
             _postService = postService;
             _reportService = reportService;
             _emailService = emailService;
-            _privateMessageService = privateMessageService;
             _GroupService = GroupService;
             _topicService = topicService;
             _notificationService = notificationService;
@@ -878,7 +890,6 @@
         [Authorize]
         public virtual PartialViewResult SideAdminPanel(bool isDropDown)
         {
-            var privateMessageCount = 0;
             var moderateCount = 0;
             var settings = SettingsService.GetSettings();
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
@@ -886,7 +897,6 @@
             if (loggedOnReadOnlyUser != null)
             {
                 var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
-                privateMessageCount = _privateMessageService.NewPrivateMessageCount(loggedOnReadOnlyUser.Id);
                 var pendingTopics = _topicService.GetPendingTopics(allowedGroups, loggedOnUsersRole);
                 var pendingPosts = _postService.GetPendingPosts(allowedGroups, loggedOnUsersRole);
                 moderateCount = pendingTopics.Count + pendingPosts.Count;
@@ -897,8 +907,6 @@
             var viewModel = new ViewAdminSidePanelViewModel
             {
                 CurrentUser = loggedOnReadOnlyUser,
-                NewPrivateMessageCount = canViewPms ? privateMessageCount : 0,
-                CanViewPrivateMessages = canViewPms,
                 ModerateCount = moderateCount,
                 IsDropDown = isDropDown
             };
