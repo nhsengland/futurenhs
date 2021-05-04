@@ -83,7 +83,7 @@
 
         public int GravatarTopicSize => Convert.ToInt32(GetConfig("GravatarTopicSize"));
         public int GravatarProfileSize => Convert.ToInt32(GetConfig("GravatarProfileSize"));
-        public int GravatarLeaderboardSize => Convert.ToInt32(GetConfig("GravatarLeaderboardSize"));
+        public int GravatarMinimumSize => Convert.ToInt32(GetConfig("GravatarMinimumSize"));
         public int GravatarLikedBySize => Convert.ToInt32(GetConfig("GravatarLikedBySize"));
         public int GravatarLatestBySize => Convert.ToInt32(GetConfig("GravatarLatestBySize"));
         public int GravatarFooterSize => Convert.ToInt32(GetConfig("GravatarFooterSize"));

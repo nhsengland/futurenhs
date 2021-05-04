@@ -42,11 +42,6 @@
             return View();
         }
 
-        public virtual ActionResult Leaderboard()
-        {
-            return View();
-        }
-
         public virtual ActionResult Following()
         {
             return View();
