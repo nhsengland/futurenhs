@@ -13,24 +13,29 @@ namespace MvcForum.Web.Controllers
         [HttpGet]
         public IHttpActionResult HeartBeat()
         {
-            return Ok();
+            var databaseOk = Database();
+            if (databaseOk)
+            {
+                return Ok();
+            }
+
+            return InternalServerError();
         }
-        [Route("Database")]
-        [HttpGet]
-        public IHttpActionResult Database()
+      
+        private bool Database()
         {
             try
             {
                 var settingsService = UnityHelper.Container.Resolve<ISettingsService>();
                 var settings = settingsService.GetSettings(false);
-                return Ok();
+                return true;
             }
             catch (Exception ex)
             {
 
             }
            
-            return InternalServerError();
+            return false;
         }
     }
 }
