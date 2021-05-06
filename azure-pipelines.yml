@@ -1,0 +1,57 @@
+# Starter pipeline
+
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- SPRINT
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: 
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.17.0'
+    
+- task: Npm@1
+  inputs:
+    command: 'install'
+
+    
+- task: gulp@0
+  inputs:
+    gulpFile: 'gulpfile.js'
+    targets: 'build:web'
+    gulpjs: 'node_modules/gulp/bin/gulp.js'
+    enableCodeCoverage: false
+    
+- task: MSBuild@1
+  inputs:
+    solution: 'MVCForum.sln'
+    msbuildArchitecture: 'x64'
+    configuration: 'Release'
+    createLogFile: true
+    logFileVerbosity: 'diagnostic'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)'
+    artifact: 'FNHS'
+    publishLocation: 'pipeline'
+
+
