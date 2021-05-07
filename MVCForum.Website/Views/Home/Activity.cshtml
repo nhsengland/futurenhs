@@ -12,14 +12,6 @@
 }
 <div class="l-container">
     <div class="mainheading">
-        <div class="widgetright">
-            @if (Html.Settings().EnableRSSFeeds)
-            {
-                <a title="@Html.LanguageString("Home.Rss")" href="@Url.Action("ActivityRss", "Home")" class="rsssubscribe">
-                    <i class="fa fa-rss-square orange-colour"></i>
-                </a>
-            }
-        </div>
         <h2>@Html.Raw(ViewBag.Title)</h2>
     </div>
 

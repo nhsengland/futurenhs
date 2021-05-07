@@ -2,6 +2,8 @@
 @using MvcForum.Web.Application.ExtensionMethods
 @using MvcForum.Web.ViewModels.Post
 @model PostViewModel
+@using MvcForum.Web.ViewModels.Shared
+
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
@@ -151,7 +153,7 @@
                             </a>
                         </li>
                         <li>
-                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                            @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-thumbs-up", "c-ui-icon")); }
                             @if (Html.Settings().EnablePoints)
                             {
                                 <span class="count">@upVotes.Count.KiloFormat()</span>
@@ -167,7 +169,7 @@
                         @if (!Html.Settings().DisableDislikeButton)
                         {
                             <li>
-                                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-down", "c-ui-icon")); }
                                 @if (Html.Settings().EnablePoints)
                                 {
                                     <span class="count">@downVotes.Count.KiloFormat()</span>
@@ -181,7 +183,11 @@
                             </li>
                         }
                         <li>
-                            <span class="glyphicon @(Model.MemberHasFavourited ? "glyphicon glyphicon-star" : "glyphicon-star-empty")" aria-hidden="true"></span>
+                            @if (Model.MemberHasFavourited) {
+                                { Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-ui-icon c-ui-icon--yellow" )); }
+                            } else {
+                                { Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-ui-icon " )); }
+                            }
                             <span class="count">@Model.Favourites.Count</span>
                             @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId)
                             {
@@ -196,13 +202,13 @@
                             if (Model.ParentTopic.Solved && Model.Post.IsSolution)
                             {
                                 <li>
-                                    <span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span>
+                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon c-ui-icon--green")); }
                                 </li>
                             }
                             else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Html.CurrentMember() != null && (Model.ParentTopic.User.Id == loggedOnUserId || User.IsInRole(Constants.AdminRoleName)))
                             {
                                 <li>
-                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon")); }
                                     <a class="solutionlink" data-id="@postId">
                                         @Html.LanguageString("Post.IsSolution")
                                     </a>
@@ -213,7 +219,7 @@
                         @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId && !Model.Post.IsTopicStarter)
                         {
                             <li>
-                                <i class="fa fa-reply"></i>
+                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-left", "c-ui-icon")); }
                                 <a class="replytolink" href="?reply=@Model.Post.Id#createpost">
                                     @Html.LanguageString("Post.Reply")
                                 </a>
@@ -243,20 +249,23 @@
                         @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
                         {
                             <li>
-                                <a class="fileupload" href="@Url.Action("Download", "File", new { id = file.Id})" title="@file.Filename">
+                                <a class="fileupload" href="@Url.Action("Download", "File", new { id = file.Id})">
+                                    @**
                                     @if (AppHelpers.FileIsImage(file.FilePath))
                                     {
-                                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                                        Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-document", "c-ui-icon"));
                                     }
                                     else
                                     {
-                                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                                    }
+                                        Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-document", "c-ui-icon"));
+                                    } 
+                                    **@
+                                    @file.Filename 
                                 </a>
                                 @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(Constants.AdminRoleName))
                                 {
                                     <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })" class="deleteupload" title="@Html.LanguageString("Post.Delete")">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                         @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-close", "c-ui-icon"));}
                                     </a>
                                 }
                             </li>

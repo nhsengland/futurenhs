@@ -1,6 +1,8 @@
 ﻿@using MvcForum.Core.Utilities
 @using MvcForum.Web.Application.ExtensionMethods
 @model MvcForum.Web.ViewModels.Topic.TopicViewModel
+@using MvcForum.Web.ViewModels.Shared
+
 @{
     var postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
 }
@@ -27,15 +29,15 @@
                 <a title="@postToolTip" href="@Html.Raw(Model.Topic.NiceUrl)">
                     @if (Model.Topic.IsSticky)
                     {
-                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        {Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-important", "c-ui-icon"));}
                     }
                     @if (Model.Topic.IsLocked)
                     {
-                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        {Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-close", "c-ui-icon"));}
                     }
                     @if (Model.Topic.Poll != null)
                     {
-                        <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>
+                        {Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-document", "c-ui-icon"));}
                     }
                     @Html.Raw(Model.Topic.Name)
                 </a>
@@ -44,7 +46,7 @@
             {
                 <p>
                     <a href="#" class="emailunsubscription" data-id="@Model.Topic.Id" data-type="topic">
-                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon"));}
                         @Html.LanguageString("Topic.UnSubscribe")
                     </a>
                 </p>
@@ -70,13 +72,13 @@
                     @Model.Topic.LastPost.User.UserName
                 </a> 
                 @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
-                <span class="stats topicanswers"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
-                <span class="stats topicviews"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
-                <span class="stats topicupvotes"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>
-                <span class="stats topicdownvotes"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> @Model.VotesDown.KiloFormat()</span>
+                <span class="stats topicanswers">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-speech-bubbles", "c-ui-icon"));} @Model.Answers.KiloFormat()</span>
+                <span class="stats topicviews">Views: @Model.Views.KiloFormat()</span>
+                <span class="stats topicupvotes">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-thumbs-up", "c-ui-icon"));} @Model.VotesUp.KiloFormat()</span>
+                <span class="stats topicdownvotes">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-down", "c-ui-icon"));}  @Model.VotesDown.KiloFormat()</span>
                 @if (Model.Topic.Solved)
                 {
-                    <span class="stats topicsolved"><span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span></span>
+                    <span class="stats topicsolved">@{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon c-ui-icon--green")); }</span>
                 }
             </p>
 

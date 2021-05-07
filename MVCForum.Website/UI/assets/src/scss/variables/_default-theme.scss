@@ -14,22 +14,7 @@ $t-social-media-icon-one: $aqua !default;
 $t-site-background-one: $white !default;
 $t-shadow-one: $black-tint !default;
 
-$t-hero-banner-text-one: $white !default;
-$t-hero-banner-text-two: $night-blue !default;
-
 $t-section-divider-one: $aqua !default;
-$t-section-background-one: $sky-blue !default;
-$t-section-background-two: $white !default;
-$t-section-background-three: $light-grey !default;
-$t-section-background-four: $night-blue !default;
-$t-section-background-five: $aqua !default;
-$t-section-background-six: $buttercup !default;
-$t-section-background-seven: $green !default;
-$t-section-background-eight: $dark-blue !default;
-$t-section-background-nine: $digital-water-blue !default;
-$t-section-background-ten: $mid-grey !default;
-$t-section-background-eleven: $coral !default;
-$t-section-background-twelve: $grass !default;
 
 $t-accordion-background-one: $light-grey !default;
 
@@ -54,16 +39,11 @@ $form-input-border-one: $night-blue !default;
 $form-input-disabled-border-one: $mid-grey !default;
 
 $t-heading-one: $night-blue !default;
-$t-heading-two: $aqua !default;
 $t-heading-three: $digital-water-blue !default;
 
 $t-text-one: $night-blue !default;
 $t-text-two: $white !default;
 $t-text-three: $sky-blue !default;
-$t-text-four: $aqua !default;
-$t-text-five: $grass !default;
-$t-text-six: $coral !default;
-$t-text-seven: $buttercup !default;
 
 $t-button-text-one: $white !default;
 $t-button-text-two: $night-blue !default;
@@ -90,15 +70,10 @@ $t-callout-border-error-one: $coral !default;
 $t-site-search-header-background-one: $sky-blue !default;
 $t-site-search-results-background-one: $white !default;
 
-$t-loader-one: $white !default;
-$t-loader-two: $aqua !default;
-
 $t-table-header-background-one: $night-blue;
 $t-table-header-text-one: $white;
 $t-table-row-background-one: $white;
 $t-table-row-background-two: $sky-blue;
-
-$t-article-divider-one: $night-blue;
 
 $t-tag-text-one: $white;
 $t-tag-background-one: $dark-blue;
@@ -106,3 +81,12 @@ $t-tag-background-two: $night-blue;
 
 $t-blockquote-border-one: $dark-blue;
 $t-blockquote-background-one: $sky-blue;
+
+
+///////////////////
+// Move properties below this line if in use in refactored/redesigned code
+///////////////////
+
+$t-success-color: $green !default;
+$t-favourite-color: $yellow !default;
+$t-icon: $mid-grey !default;

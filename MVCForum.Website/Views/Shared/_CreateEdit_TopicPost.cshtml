@@ -1,6 +1,8 @@
 ﻿
 @using MvcForum.Web.Application.ExtensionMethods
 @model MvcForum.Web.ViewModels.Topic.CreateEditTopicViewModel
+@using MvcForum.Web.ViewModels.Shared
+
 @{
     var count = 0;
     const string displayNone = "style=\"display: none;\"";
@@ -62,10 +64,10 @@
                 </div>
                 <div class="l-col-12 l-col-3-t polladdremovenewanswers">
                     <a href="#" class="btn-mvc addanswer">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon c-ui-icon--large"));}
                     </a>
                     <a href="#" class="btn-mvc removeanswer">
-                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon c-ui-icon--large"));}
                     </a>
                 </div>
             </div>

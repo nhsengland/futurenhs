@@ -1,6 +1,7 @@
 ﻿@using MvcForum.Core.ExtensionMethods
 @using MvcForum.Core.Utilities
 @using MvcForum.Web.ViewModels.Group
+@using MvcForum.Web.ViewModels.Shared
 
 @model GroupViewModel
 @{
@@ -43,20 +44,14 @@
     <div class="mainheading clearfix">
 
         <div class="widgetright">
-            @if (Html.Settings().EnableRSSFeeds)
-            {
-                <a title="@Html.LanguageString("Home.Rss")" href="@Url.Action("GroupRss", "Group", new { slug = Model.Group.Slug })" class="rsssubscribe">
-                    <i class="fa fa-rss-square orange-colour"></i>
-                </a>
-            }
             @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
             {
                 <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Group.Id" data-type="Group">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon c-ui-icon--large"));}
                     @Html.LanguageString("Notification.Subscribe")
                 </a>
                 <a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Group.Id" data-type="Group">
-                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon c-ui-icon--large"));}
                     @Html.LanguageString("Notification.UnSubscribe")
                 </a>
             }

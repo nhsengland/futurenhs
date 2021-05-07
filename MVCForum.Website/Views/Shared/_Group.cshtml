@@ -1,19 +1,20 @@
 ﻿@using MvcForum.Core.ExtensionMethods
 @using MvcForum.Web.Application.ExtensionMethods
 @model MvcForum.Web.ViewModels.Group.GroupViewModel
+@using MvcForum.Web.ViewModels.Shared
 
 @if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
 {
     <div class="Grouprow">
 
         <h3 style="border-color: @(string.IsNullOrEmpty(Model.Group.Colour) ? "#ced1d1" : Model.Group.Colour)">
-            <a href="@Model.Group.NiceUrl">@Html.Raw(Model.Group.Name)</a>
+            <a href="@Model.Group.NiceUrl">@Html.Raw(Model.Group.Name)</a> <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
         </h3>
         @if (Model.ShowUnSubscribedLink)
         {
             <p>
                 <a href="#" class="emailunsubscription" data-id="@Model.Group.Id" data-type="Group">
-                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon c-ui-icon--large"));}
                     @Html.LanguageString("Notification.UnSubscribe")
                 </a>
             </p>
@@ -24,14 +25,6 @@
         }
 
         <div class="c-grid-block Grouprowfooter">
-            <div class="c-grid-block_item l-col-12 l-col-1-d hidden-xs catrss">
-                @if (Html.Settings().EnableRSSFeeds)
-                {
-                    <a title="@Html.LanguageString("Home.Rss")" href="@Url.Action("GroupRss", "Group", new { slug = Model.Group.Slug })" class="rsssubscribe">
-                        <i class="fa fa-rss-square orange-colour"></i>
-                    </a>
-                }
-            </div>
             <div class="c-grid-block_item l-col-6 l-col-2-d catdiscussions">
                 @string.Format(Html.LanguageString("Rss.Group.Title"), Model.TopicCount)
             </div>

@@ -2,6 +2,8 @@
 @using MvcForum.Web.Application.ExtensionMethods
 @using MvcForum.Web.ViewModels.Post
 @model PostViewModel
+@using MvcForum.Web.ViewModels.Shared
+
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
@@ -22,7 +24,7 @@
 
         <div class="postdetails">
             <h3 class="topiccategory">
-                <a href="@Model.ParentTopic.Group.NiceUrl">@Html.Raw(Model.ParentTopic.Group.Name)</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <a href="@Html.Raw(Model.PermaLink)">@Html.Raw(Model.ParentTopic.Name)</a> 
+                <a href="@Model.ParentTopic.Group.NiceUrl">@Html.Raw(Model.ParentTopic.Group.Name)</a> @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right", "c-ui-icon c-ui-icon--large"));} <a href="@Html.Raw(Model.PermaLink)">@Html.Raw(Model.ParentTopic.Name)</a> 
             </h3>
             <div class="postbodytop">
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
@@ -53,7 +55,7 @@
                     @if (Html.Settings().EnablePoints)
                     {
                         <li>
-                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                            @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-thumbs-up", "c-ui-icon")); }
                             <span class="count">@upVotes.Count().KiloFormat()</span>
                             @if (Model.AllowedToVote)
                             {
@@ -66,7 +68,7 @@
                         if (!Html.Settings().DisableDislikeButton)
                         {
                             <li>
-                                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-down", "c-ui-icon")); }
                                 <span class="count">@downVotes.Count().KiloFormat()</span>
                                 @if (Model.AllowedToVote)
                                 {
@@ -79,7 +81,11 @@
                     }
                     
                     <li>
-                        <span class="glyphicon @(Model.MemberHasFavourited ? "glyphicon glyphicon-star" : "glyphicon-star-empty")" aria-hidden="true"></span>
+                        @if (Model.MemberHasFavourited) {
+                                { Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-ui-icon c-ui-icon--yellow" )); }
+                            } else {
+                                { Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-ui-icon " )); }
+                            }
                         <span class="count">@Model.Favourites.Count()</span>
                         @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId)
                         {
@@ -94,13 +100,13 @@
                         if (Model.ParentTopic.Solved && Model.Post.IsSolution)
                         {
                             <li>
-                                <span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span>
+                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon c-ui-icon--green" )); }
                             </li>
                         }
                         else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Model.ParentTopic.User.Id == loggedOnUserId)
                         {
                             <li>
-                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon " )); }
                                 <a class="solutionlink" data-id="@postId">
                                     @Html.LanguageString("Post.IsSolution")
                                 </a>
@@ -132,21 +138,8 @@
                         {
                             <li>
                                 <a class="fileupload" href="@Html.Raw(Url.Content(file.FilePath))">
-                                    @if (AppHelpers.FileIsImage(file.FilePath))
-                                    {
-                                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
-                                    }
-                                    else
-                                    {
-                                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                                    }
+                                    @file.Filename 
                                 </a>
-                                @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(Constants.AdminRoleName))
-                                {
-                                    <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })" class="deleteupload" title="@Html.LanguageString("Post.Delete")">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                    </a>
-                                }
                             </li>
                         }
                     </ul>

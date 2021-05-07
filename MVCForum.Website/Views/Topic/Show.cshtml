@@ -4,6 +4,7 @@
 @using MvcForum.Web.ViewModels
 @using MvcForum.Web.ViewModels.Post
 @model MvcForum.Web.ViewModels.Topic.TopicViewModel
+@using MvcForum.Web.ViewModels.Shared
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
@@ -61,11 +62,11 @@
             @if (Html.CurrentMember() != null && Html.Settings().EnableEmailSubscriptions)
             {
                 <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Topic.Id" data-type="topic">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon"));}
                     @Html.LanguageString("Topic.Subscribe")
                 </a>
                 <a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Topic.Id" data-type="topic">
-                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon"));}
                     @Html.LanguageString("Topic.UnSubscribe")
                 </a>
             }
@@ -78,17 +79,17 @@
 
             @if (Model.Topic.IsSticky)
             {
-                <li><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> @Html.Lang("Topic.IsSticky")</li>
+                <li>@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-important", "c-ui-icon"));} @Html.Lang("Topic.IsSticky")</li>
             }
             @if (Model.Topic.IsLocked)
             {
-                <li><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> @Html.Lang("Topic.IsLocked")</li>
+                <li>@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-close", "c-ui-icon"));}</li>
             }
 
             @if (Model.Topic.Poll != null)
             {
                 <li>
-                    <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll") 
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-document", "c-ui-icon"));} @Html.Lang("Topic.IsPoll") 
                     @if (Model.Topic.Poll.IsClosed)
                     {
                         <text>(@Html.Lang("Topic.PollClosed"))</text>
@@ -96,14 +97,14 @@
                 </li>
             }
             <li>
-                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
+                 @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
             </li>
 
-            <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
+            <li>@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-speech-bubbles", "c-ui-icon"));}  @Html.Lang("Topic.LastPost") @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
 
             @if (Model.Topic.Solved)
             {
-                <li><span class="glyphicon glyphicon glyphicon-ok green-colour" aria-hidden="true"></span> @Html.Lang("Topic.IsSolved")</li>
+                <li>@{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon c-ui-icon--green")); } @Html.Lang("Topic.IsSolved")</li>
             }
 
         </ul>
