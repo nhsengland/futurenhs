@@ -48,9 +48,15 @@ steps:
     createLogFile: true
     logFileVerbosity: 'diagnostic'
 
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/MVCForum.Website'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Pipeline.Workspace)'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
     artifact: 'FNHS'
     publishLocation: 'pipeline'
 
