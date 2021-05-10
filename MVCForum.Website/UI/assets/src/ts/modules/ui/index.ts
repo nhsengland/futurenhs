@@ -1,8 +1,9 @@
-import { pushgtmDataLayerEvent } from '@utilities/gtmDataLayer';
 import { ping } from '@utilities/routing';
 
 export const uiComponentsInit = (config: {
-
+    adminClassNameEndPointMap: {
+        [key: string]: string
+    }
 }) => {
 
     let toast: any = undefined;
@@ -28,60 +29,60 @@ export const uiComponentsInit = (config: {
     /**
      * Init email subscribe /unsubscribe
      */
-     import('@modules/ui/components/emailSubscription').then(({ EmailSubscription }) => {
+    import('@modules/ui/components/emailSubscription').then(({ EmailSubscription }) => {
 
         new EmailSubscription({
             wrapperSelector: undefined
         });
 
     });
-    
+
     /**
      * Init toast
      */
-     const toastElement: HTMLElement = document.getElementById('js-toast');
+    const toastElement: HTMLElement = document.getElementById('js-toast');
 
-     if (toastElement) {
- 
+    if (toastElement) {
+
         import('@modules/ui/components/toast').then(({ Toast }) => {
 
             const message: string = toastElement.dataset?.message;
             const timeOut: number = toastElement.dataset?.timeout ? parseInt(toastElement.dataset?.timeout, 10) : undefined;
- 
+
             toast = new Toast({
                 wrapperSelector: toastElement,
                 timeOutMillis: timeOut,
                 messageText: message
             });
- 
+
         });
- 
+
     }
 
     /**
      * Init language switchers
      */
-     const languageSwitcherElements: Array<HTMLElement> = Array.from(document.querySelectorAll('.js-language-selector'));
+    const languageSwitcherElements: Array<HTMLElement> = Array.from(document.querySelectorAll('.js-language-selector'));
 
-     if (languageSwitcherElements.length > 0) {
- 
+    if (languageSwitcherElements.length > 0) {
+
         import('@modules/ui/components/languageSwitcher').then(({ LanguageSwitcher }) => {
 
             languageSwitcherElements.forEach((languageSwitcherElement: HTMLSelectElement) => {
-                
+
                 const languageSwitcher = new LanguageSwitcher({
                     wrapperSelector: languageSwitcherElement
                 });
 
                 languageSwitcher.on('success', () => window.location.reload());
                 languageSwitcher.on('error', (errorText: string) => toast?.show(errorText));
-        
+
             });
- 
+
         });
- 
+
     }
-    
+
     /**
      * Init details accordions
      */
@@ -109,7 +110,7 @@ export const uiComponentsInit = (config: {
         import('@modules/ui/components/ajaxForm').then(({ AjaxForm }) => {
 
             ajaxForms.forEach((ajaxForm: HTMLFormElement) => {
-                
+
                 const form = new AjaxForm({
                     wrapperSelector: ajaxForm
                 });
@@ -138,11 +139,31 @@ export const uiComponentsInit = (config: {
                     toast?.show(`Error: ${status} ${thrownError}`);
 
                 });
-            
+
             });
 
         });
 
     }
+
+    /**
+    * Init admin dashboard
+    */
+    const adminDashboardElements: Array<Element> = Array.from(document.getElementsByClassName('admindashboard'));
+
+    if (adminDashboardElements?.length > 0) {
+
+        import('@modules/ui/components/adminDashboard').then(({ AdminDashboard }) => {
+
+            new AdminDashboard({
+                wrapperSelector: undefined,
+                fetchTargets: config.adminClassNameEndPointMap
+            }).bindDataToHtmlElements();
+
+        });
+
+    }
+
+
 
 }

@@ -42,6 +42,21 @@ const loadPolyFills = (src: string, done): void => {
 }
 
 /**
+ * temporary hardcoded js config
+ */
+window.jsConfig = {
+    adminClassNameEndPointMap: {
+        'dashboardlatestusers': 'LatestUsers',
+        'dashboardlowestpointusers': 'LowestPointUsers',
+        'dashboardlowestpointposts': 'LowestPointPosts',
+        'dashboardtodaystopics': 'TodaysTopics',
+        'dashboardhighestviewedtopics': 'HighestViewedTopics',
+        'mvcforumlatestnews': 'MvcForumLatestNews'
+    }
+}
+
+
+/**
  * Init JS
  */
 const jsInit = (): void => {
@@ -64,7 +79,7 @@ const jsInit = (): void => {
  * If polyfills are required, fetch these first before initialising JS,
  * else init JS directly
  */
-if(shouldLoadPolyFills){
+if (shouldLoadPolyFills) {
 
     loadPolyFills('/UI/assets/dist/js/polyfills.min.js', jsInit);
 
