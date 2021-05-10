@@ -8,7 +8,7 @@
     <div class="Grouprow">
 
         <h3 style="border-color: @(string.IsNullOrEmpty(Model.Group.Colour) ? "#ced1d1" : Model.Group.Colour)">
-            <a href="@Model.Group.NiceUrl">@Html.Raw(Model.Group.Name)</a> <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+            <a href="@Model.Group.NiceUrl">@Html.Raw(Model.Group.Name)</a>
         </h3>
         @if (Model.ShowUnSubscribedLink)
         {
