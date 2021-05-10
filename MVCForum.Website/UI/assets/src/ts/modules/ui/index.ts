@@ -27,17 +27,6 @@ export const uiComponentsInit = (config: {
     });
 
     /**
-     * Init email subscribe /unsubscribe
-     */
-    import('@modules/ui/components/emailSubscription').then(({ EmailSubscription }) => {
-
-        new EmailSubscription({
-            wrapperSelector: undefined
-        });
-
-    });
-
-    /**
      * Init toast
      */
     const toastElement: HTMLElement = document.getElementById('js-toast');
@@ -58,6 +47,21 @@ export const uiComponentsInit = (config: {
         });
 
     }
+
+    /**
+     * Init email subscribe /unsubscribe
+     */
+    import('@modules/ui/components/emailSubscription').then(({ EmailSubscription }) => {
+
+        new EmailSubscription({
+            wrapperSelector: undefined,
+        }, {
+            components: {
+                toast: toast
+            }
+        });
+
+    });
 
     /**
      * Init language switchers

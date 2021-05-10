@@ -1,26 +1,33 @@
 ﻿import { UIComponentBase } from '@modules/ui/componentBase/index';
+import { Toast } from '@modules/ui/components/toast';
 
 /**
  * Email subscription
  */
 export class EmailSubscription extends UIComponentBase {
 
+    toast: Toast = undefined;
     wrapperSelector: HTMLElement = undefined;
 
     constructor(config: {
         wrapperSelector: HTMLElement
+    }, dependencies: {
+        components: {
+            toast: Toast
+        }
     }) {
 
-        super(config);
+        super(config, dependencies);
 
         this.wrapperSelector = config.wrapperSelector;
+        this.toast = dependencies.components.toast;
 
         /*------------ TODO: REFACTOR --------------------*/
         const emailsubscription = () => {
 
             var esub = $(".emailsubscription");
             if (esub.length > 0) {
-                esub.click(function (e) {
+                esub.click((e) => {
                     e.preventDefault();
                     var entityId = $(this).data("id");
                     var subscriptionType = $(this).data("type");
@@ -43,8 +50,8 @@ export class EmailSubscription extends UIComponentBase {
                         success: function (data) {
                             $(".emailunsubscription").fadeIn();
                         },
-                        error: function (xhr, ajaxOptions, thrownError) {
-                            window.ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                        error: (xhr, ajaxOptions, thrownError) => {
+                            this.toast.show("Error: " + xhr.status + " " + thrownError);
                         }
                     });
                 });
@@ -80,7 +87,7 @@ export class EmailSubscription extends UIComponentBase {
                         cache: false,
                         data: strung,
                         contentType: "application/json; charset=utf-8",
-                        success: function (data) {
+                        success: (data) => {
 
                             // We might be on the following page, so hide the items we need
                             var categoryRow = thisLink.closest(".categoryrow");
@@ -97,8 +104,8 @@ export class EmailSubscription extends UIComponentBase {
                                 emailsubscription.fadeIn();
                             }
                         },
-                        error: function (xhr, ajaxOptions, thrownError) {
-                            window.ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                        error: (xhr, ajaxOptions, thrownError) => {
+                            this.toast?.show("Error: " + xhr.status + " " + thrownError);
                         }
                     });
                 });

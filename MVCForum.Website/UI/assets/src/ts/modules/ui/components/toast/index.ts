@@ -1,4 +1,5 @@
 ﻿import { UIComponentBase } from '@modules/ui/componentBase';
+import { debounceTimout } from '@modules/utilities/debounce';
 
 /**
  * Toast
@@ -8,9 +9,11 @@ export class Toast extends UIComponentBase {
     wrapperSelector: HTMLElement = undefined;
     timeOutMillis: number = undefined;
     messageText: string = undefined;
+    isShowInProgress: boolean = false;
+    tmpShowInProgress: ReturnType<typeof setTimeout> = null;
 
     constructor(config: {
-        wrapperSelector:  HTMLElement,
+        wrapperSelector: HTMLElement,
         messageText?: string;
         timeOutMillis?: number;
     }) {
@@ -24,7 +27,7 @@ export class Toast extends UIComponentBase {
         this.getMessageMarkup = this.getMessageMarkup.bind(this);
         this.show = this.show.bind(this);
 
-        if(this.messageText){
+        if (this.messageText) {
 
             this.show();
 
@@ -53,12 +56,29 @@ export class Toast extends UIComponentBase {
 
         $(this.wrapperSelector).show();
 
-        setTimeout(() => {
+        const showMessageText = () => {
 
+            this.isShowInProgress = false;
+            
             $(this.wrapperSelector).fadeOut();
+
             this.wrapperSelector.innerHTML = '';
 
-        }, this.timeOutMillis);
+        }
+
+        if (this.isShowInProgress) {
+
+            clearTimeout(this.tmpShowInProgress);
+            
+            this.tmpShowInProgress = setTimeout(showMessageText, this.timeOutMillis);
+
+            return;
+
+        }
+
+        this.isShowInProgress = true;
+
+        this.tmpShowInProgress = setTimeout(showMessageText, this.timeOutMillis);
 
     }
 

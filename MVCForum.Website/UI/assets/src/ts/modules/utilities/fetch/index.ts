@@ -11,7 +11,7 @@ export const setFetchJSONOptions = (method: 'GET' | 'POST' | 'PUT' | 'PATCH' | '
         'If-Match': etag ?? '*'
     }, customHeaders));
 
-    if(method !== 'GET'){
+    if (method !== 'GET') {
 
         headers.append('X-idempotency-key', Math.random().toString(36).substring(7));
 
@@ -23,7 +23,7 @@ export const setFetchJSONOptions = (method: 'GET' | 'POST' | 'PUT' | 'PATCH' | '
         headers: headers
     };
 
-    if(body && method !== 'GET'){
+    if (body && method !== 'GET') {
 
         fetchOpts.body = JSON.stringify(body);
 
@@ -68,7 +68,7 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
              */
             return response?.text().then((text) => {
 
-                if(text){
+                if (text) {
 
                     let parsedResponse: string = '';
 
@@ -76,7 +76,7 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
 
                         parsedResponse = JSON.parse(text);
 
-                    } catch(error){
+                    } catch (error) {
 
                         parsedResponse = null;
 
@@ -99,7 +99,7 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
  */
 export const getErrorMessageString = (error: Error): string => {
 
-    if(!error){
+    if (!error) {
 
         return undefined;
 
@@ -109,4 +109,12 @@ export const getErrorMessageString = (error: Error): string => {
 
     return message;
 
+};
+
+
+export default { 
+    fetchJSON,
+    fetchWithTimeOut,
+    setFetchJSONOptions, 
+    getErrorMessageString
 };

@@ -1,5 +1,7 @@
 ﻿import breakPoints from '../../../../scss/variables/_break-points.scss';
+import fetchHelpers from '@utilities/fetch';
 const EventEmitter = require('events');
+
 
 EventEmitter.defaultMaxListeners = 100;
 
@@ -15,14 +17,15 @@ export class UIComponentBase extends (EventEmitter as { new(): any; }) {
     constructor(config: {
         wrapperSelector: any
     }, dependencies?: {
-        fetchHelpers: any;
+        fetchHelpers?: typeof fetchHelpers;
+        components?: any;
     }) {
 
         super();
 
-        if(breakPoints?.locals){
+        if (breakPoints?.locals) {
 
-            for(const key in breakPoints.locals){
+            for (const key in breakPoints.locals) {
 
                 breakPoints.locals[key] = parseInt(breakPoints.locals[key], 10);
 
