@@ -1,12 +1,39 @@
-﻿// NHS colour variables
-@import 'node_modules/nhsuk-frontend/packages/core/settings/_colours.scss';
+﻿
+// // sass-lint:disable no-color-hex
 
+// $color_nhsuk-blue: #005eb8;
+// $color_nhsuk-white: #ffffff;
+// $color_nhsuk-black: #212b32;
+// $color_nhsuk-green: #007f3b;
+// $color_nhsuk-purple: #330072;
+// $color_nhsuk-dark-pink: #7C2855;
+// $color_nhsuk-red: #d5281b;
+// $color_nhsuk-yellow: #ffeb3b;
+
+// //
+// // Secondary colours
+// //
+
+// $color_nhsuk-pale-yellow: #fff9c4;
+// $color_nhsuk-warm-yellow: #ffb81C;
+// $color_nhsuk-orange: #ED8B00;
+// $color_nhsuk-aqua-green: #00A499;
+// $color_nhsuk-pink: #AE2573;
+
+// //
+// // Greyscale
+// //
+
+// $color_nhsuk-grey-1: #4c6272;
+// $color_nhsuk-grey-2: #768692;
+// $color_nhsuk-grey-3: #aeb7bd;
+// $color_nhsuk-grey-4: #d8dde0;
+// $color_nhsuk-grey-5: #f0f4f5;
 
 $black: rgba(0, 0, 0, 1);
 $black-tint: rgba(0, 0, 0, .1);
 $mid-grey: rgba(112, 112, 112, 1);
 $light-grey: rgba(246, 246, 246, 1);
-$white: rgba(255, 255, 255, 1);
 $night-blue: rgba(19, 28, 66, 1);
 $dark-blue: rgba(18, 74, 135, 1);
 $digital-water-blue: rgba(36, 65, 229, 1);
@@ -19,9 +46,20 @@ $buttercup: rgba(238, 183, 68, 1);
 $coral: rgba(222, 110, 104, 1);
 $coral-tint: rgba(222, 110, 104, .2);
 
-
+$white: $color_nhsuk-white;
+$very-light-grey: rgba(247, 249, 250, 1);
+$light-grey: $color_nhsuk-grey-5;
+$light-mid-grey: $color_nhsuk-grey-4;
+$mid-grey: $color_nhsuk-grey-3;
+$dark-mid-grey: $color_nhsuk-grey-2;
+$dark-grey: $color_nhsuk-grey-1;
+$blue: $color_nhsuk-blue;
+$purple: $color_nhsuk-purple;
 $yellow: $color_nhsuk-yellow;
 $green: $color_nhsuk-green;
+$aqua: $color_nhsuk-aqua-green;
+$red: $color_nhsuk-red;
+$dark-red: rgba(138, 21, 56, 1);
 
 // :export {
 

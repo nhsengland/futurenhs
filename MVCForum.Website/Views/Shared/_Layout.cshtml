@@ -40,27 +40,12 @@
 
 <body class="loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
     @Html.Partial("_SVGSprite")
-    <nav class="pushy pushy-left">
-        <ul>
-            @if (User.Identity.IsAuthenticated)
-            {
-                @Html.Action("SideAdminPanel", "Members", new { isDropDown  = false})
-            }
-            else
-            {
-                if (Html.Settings().SuspendRegistration != true)
-                {
-                    <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
-                }
-                <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
-            }
-            <li><a href="@Url.Action("Index", "Group")">@Html.LanguageString("Group.AllGroups")</a></li>
-            @Html.Partial("SubNavigation")
-        </ul>
-    </nav>
     <div class="site-overlay"></div>    
 
-    <header>
+
+    @Html.Partial("_SiteHeader")
+
+    <!-- <header>
 
         <nav class="navbar navbar-default">
             <div class="l-container">
@@ -97,8 +82,11 @@
                 </div>
             </div>
         </nav>
-    </header>
+    </header> -->
 
+
+    @*
+    
     <section class="content-strip content-strip-@(User.Identity.IsAuthenticated.ToString().ToLower())">
         <div class="l-container sub-nav-container">
             <div class="c-grid-block">
@@ -111,19 +99,16 @@
         </div>
     </section>
 
-    <div class="l-container main-section">
+    *@
+    <div id="main" class="mainbody">
         @Html.Partial("_GenericMessage")
         @Html.Partial("_EmailConfirmationNotice")
         @Html.Partial("_NoScript")
-        <div id="main" class="mainbody">
-            <h1 class="u-visually-hidden">Future NHS</h1>
+        <h1 class="u-visually-hidden">Future NHS</h1>
 
-            @RenderBody()
+        @RenderBody()
 
-        </div>
     </div>
-
-
     <footer>
         <h2 class="u-visually-hidden">Footer Navigation</h2>
         <div class="l-container">

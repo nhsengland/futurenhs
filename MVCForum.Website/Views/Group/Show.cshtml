@@ -5,7 +5,7 @@
 
 @model GroupViewModel
 @{
-    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
     ViewBag.Title = Html.Raw(Model.Group.PageTitle ?? Model.Group.Name);
     ViewBag.MetaDesc = Model.Group.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Group.Description);
     var totalCount = Convert.ToInt32(Model.TotalCount);

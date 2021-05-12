@@ -1,3 +1,5 @@
+@use "sass:map";
+
 .u-no-decoration {
     &:active,
     &:focus,
@@ -118,6 +120,12 @@
     }
 }
 
+.u-desktop-hidden {
+    @include respond-to(desktop) {
+        display: none;
+    }
+}
+
 .u-tablet-up {
     display: none;
 
@@ -152,6 +160,14 @@
 
 .u-no-outline {
     outline: none;
+}
+
+.u-width-auto {
+    width: auto;
+}
+
+.u-width-zero {
+    width: 0;
 }
 
 .u-padding-base {
@@ -309,4 +325,24 @@
 
 .u-display-inline {
     display: block;
+}
+
+.u-max-height {
+    height: 100%;
+}
+
+@each $number, $theme in $t-utility-themes {
+
+    .u-bg-theme-#{$number} {
+        background-color: $theme;
+    }
+
+    .u-fill-theme-#{$number} {
+        fill: $theme;
+    }
+
+    .u-border-theme-#{$number} {
+        border-color: $theme;
+    }
+
 }

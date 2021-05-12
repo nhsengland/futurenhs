@@ -36,7 +36,7 @@ html {
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
     overflow-y: scroll;
-    font-size: .875em;
+    // font-size: .875em;
 }
 
 body,
@@ -156,6 +156,11 @@ summary {
         text-decoration: underline;
     }
 
+}
+
+svg {
+    height: 100%;
+    width: 100%;
 }
 
 // sass-lint:enable single-line-per-selector, no-universal-selectors, no-vendor-prefixes, pseudo-element, force-element-nesting, no-combinators

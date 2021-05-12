@@ -218,9 +218,9 @@ gulp.task('stop:site', (done) => {
 
 gulp.task('activate', sequence(
     //'db:build', <-- TODO how are we going to handle the DB?
+    'stop:site', // need to kill everything before build to avoid files being locked
     'build',
     'build:web',
-    'stop:site',
     'start:site'
 ));
 
@@ -252,7 +252,7 @@ gulp.task('scss', () => {
         autoprefixer: {},
         pxtorem: {
             // defines the root px value
-            rootValue: 10,
+            rootValue: 16,
             // The properties that can change from px to rem. * to enable all properties. ! to not match a property
             propList: ['font-size', 'line-height'],
             // does not replace px, but adds rems after

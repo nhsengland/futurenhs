@@ -48,6 +48,10 @@ blockquote {font-style:italic;}
 .textarea {min-height:150px;}
 
 // Main
+main{
+    margin: 20px 0;
+}
+
 body {
     font-family: $font-base-family;
     &.loggedin-true {
@@ -64,6 +68,12 @@ body {
     @media (max-width: $media-query-mobile) {
         .btn-mvc-large { padding-left: 0; padding-right: 0; width: 100%; display: block; }
     }
+}
+
+.mainbody {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 // Main Right Side Panel
@@ -113,12 +123,6 @@ table {
 .red-colour { color: $color-global-red; }
 .blue-colour { color: $color-global-blue; }
 .orange-colour { color: #ef9b00 !important; }
-
-// Link Styles
-
-a, a:visited { color: $link-color;
-    &:hover, &:focus { color: darken($link-color, 8%); }
-}
 
 // Validation Errors
 
@@ -189,25 +193,6 @@ a, a:visited { color: $link-color;
                 a, a:visited { font-size: 16px; line-height: 25px; }
             }
         }
-    }
-}
-
-// Header
-
-section.content-strip {
-    margin-top: -20px;
-    margin-bottom: 20px;
-    background: $color-global-grey-blue;
-    color: $font-lighter-base-color;
-    ul { margin: 0; padding: 0; text-align: left;
-        li { margin: 0; padding: 0; list-style: none; display: inline-block; text-align: center;
-            a, a:visited { display: block; color: $font-base-color; padding: 7px 18px 9px 18px; border-top: 5px transparent solid;
-                &:hover, &:focus, &.active { background-color: #fff; border-color: darken($border-color, 12%); }
-            }
-        }
-    }
-    @media (max-width: $media-query-small) { height: 8px;
-        .sub-nav-container { display: none; }
     }
 }
 
@@ -632,7 +617,7 @@ pre span.tag { display: inline; line-height: normal; height: auto; -ms-border-ra
 
 // Footer
 
-footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 0;
+footer { background: $color-global-grey-blue; padding: 20px 0; margin: 0;
     .licenceblock { font-weight: 400; font-size: 14px; padding: 14px 0 0 0; margin: 14px 0 0 0; text-align: center; border-top: 1px darken($color-global-grey-blue, 6%) solid; }
     h3 { margin-bottom: 12px; }
 }

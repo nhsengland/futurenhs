@@ -15,18 +15,23 @@ export const uiComponentsInit = (config: {
      */
     ping(window.app_base + "Members/LastActiveCheck");
 
+
     /**
-     * Init mobile nav
+     * Init the main site nav
      */
-    import('@modules/ui/components/mobileNav').then(({ MobileNav }) => {
+    const siteHeaderNavElement: HTMLElement = document.querySelector('.js-site-header-nav');
 
-        new MobileNav({
-            wrapperSelector: undefined,
-            triggerButtonSelector: document.querySelector('.showmobilenavbar'),
-            contentSelector: document.querySelector('.mobilenavbar-inner ul.nav')
+    if(siteHeaderNavElement){
+ 
+        import('@modules/ui/components/siteHeaderNav').then(({ SiteHeaderNav }) => {
+ 
+            new SiteHeaderNav({
+                wrapperSelector: siteHeaderNavElement
+            });
+ 
         });
-
-    });
+ 
+    }
 
     /**
      * Init toast

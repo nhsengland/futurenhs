@@ -2,7 +2,6 @@
 // Default Theme //
 ///////////////////
 
-$t-site-header-one: $color_nhsuk-blue !default;
 $t-site-header-two: $color_nhsuk-white !default;
 
 $t-site-footer-one: $night-blue !default;
@@ -12,7 +11,6 @@ $t-site-footer-divider-one: $dark-blue !default;
 $t-social-media-icon-one: $aqua !default;
 
 $t-site-background-one: $white !default;
-$t-shadow-one: $black-tint !default;
 
 $t-section-divider-one: $aqua !default;
 
@@ -26,7 +24,6 @@ $t-icon-one: $night-blue !default;
 $t-icon-two: $dark-blue !default;
 $t-icon-three: $digital-water-blue !default;
 
-$t-interaction-one: $digital-water-blue !default;
 $t-interaction-one-hover: $digital-water-blue !default;
 $t-interaction-one-active: $digital-water-blue !default;
 $t-interaction-one-focus: $buttercup !default;
@@ -41,7 +38,7 @@ $form-input-disabled-border-one: $mid-grey !default;
 $t-heading-one: $night-blue !default;
 $t-heading-three: $digital-water-blue !default;
 
-$t-text-one: $night-blue !default;
+
 $t-text-two: $white !default;
 $t-text-three: $sky-blue !default;
 
@@ -67,8 +64,8 @@ $t-callout-border-success-one: $green !default;
 $t-callout-border-warning-one: $buttercup !default;
 $t-callout-border-error-one: $coral !default;
 
-$t-site-search-header-background-one: $sky-blue !default;
-$t-site-search-results-background-one: $white !default;
+// $t-site-search-header-background-one: $sky-blue !default;
+// $t-site-search-results-background-one: $white !default;
 
 $t-table-header-background-one: $night-blue;
 $t-table-header-text-one: $white;
@@ -87,6 +84,32 @@ $t-blockquote-background-one: $sky-blue;
 // Move properties below this line if in use in refactored/redesigned code
 ///////////////////
 
-$t-success-color: $green !default;
-$t-favourite-color: $yellow !default;
+$t-interaction-one: $color_nhsuk-blue !default;
+
+$t-success-color: $color_nhsuk-green !default;
+$t-favourite-color: $color_nhsuk-yellow !default;
+
 $t-icon: $mid-grey !default;
+$t-site-header-background: $color_nhsuk-blue !default;
+$t-site-header-text: $white !default;
+
+$t-text-one: $nhsuk-text-color !default;
+
+$t-transparent_nhsuk-grey-4: transparentize($color_nhsuk-grey-4, .5);
+$t-shadow-one: $black-tint !default;
+
+$t-utility-themes: (
+    "1": $white,
+    "2": $very-light-grey,
+    "3": $light-grey,
+    "4": $light-mid-grey,
+    "5": $mid-grey,
+    "6": $dark-mid-grey,
+    "7": $dark-grey,
+    "8": $blue,
+    "9": $green,
+    "10": $purple,
+    "11": $aqua,
+    "12": $dark-red
+)
+

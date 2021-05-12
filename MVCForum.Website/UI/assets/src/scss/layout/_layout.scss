@@ -30,7 +30,7 @@
     @include row;
 }
 
-@for $i from 1 through 12 {
+@for $i from 0 through 12 {
 
     .l-col-#{$i} {
         @include column($i);
@@ -42,7 +42,7 @@
 
 }
 
-@for $i from 1 through 12 {
+@for $i from 0 through 12 {
 
     .l-col-#{$i}-lm {
 
@@ -60,7 +60,7 @@
 
 }
 
-@for $i from 1 through 12 {
+@for $i from 0 through 12 {
 
     .l-col-#{$i}-t {
 
@@ -84,7 +84,7 @@
 
 }
 
-@for $i from 1 through 12 {
+@for $i from 0 through 12 {
 
     .l-col-#{$i}-d {
 

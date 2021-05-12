@@ -1,4 +1,10 @@
-﻿@import "dimensions";
+﻿// NHS
+@import 'node_modules/nhsuk-frontend/packages/core/settings/_colours';
+@import 'node_modules/nhsuk-frontend/packages/core/settings/_globals';
+
+
+
+@import "dimensions";
 @import "break-points";
 @import "text";
 @import "colours";

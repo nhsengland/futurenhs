@@ -1,0 +1,75 @@
+﻿@using MvcForum.Web.ViewModels.Shared
+
+@{
+    Layout = "_Layout.cshtml";
+}
+
+@section SocialMeta{
+    @RenderSection("SocialMeta", false)
+}
+
+@section Header {
+    @RenderSection("Header", false)
+}
+<div class="u-bg-theme-3 u-max-height">
+    <div class="l-container u-max-height">
+        <div class="c-grid-block u-max-height">
+            <div class="c-grid-block_item l-col-0">
+                <div class="c-main-nav u-bg-theme-2">
+                    <nav id="main-nav" class="l-col-3" aria-label="Main">
+                        <ul class="c-main-nav_level-1" role="menubar">
+                            <li role="none">
+                                <a href="/" aria-current="true" aria-label="Home" title="Home" class="c-main-nav_level-1-link c-main-nav_level-1-link--active u-border-theme-8">
+                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-home", "c-main-nav_level-1-icon u-fill-theme-8")); }
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a href="/" aria-label="Groups" title="Groups" class="c-main-nav_level-1-link">
+                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-group", "c-main-nav_level-1-icon u-fill-theme-11")); }
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a href="/" aria-label="Discussions" aria-label="Discussions" class="c-main-nav_level-1-link">
+                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum", "c-main-nav_level-1-icon u-fill-theme-10")); }
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a href="/" aria-label="Favourites" aria-label="Favourites" class="c-main-nav_level-1-link">
+                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-favourite", "c-main-nav_level-1-icon u-fill-theme-9")); }
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a href="/" aria-label="Alerts" aria-label="Alerts (3)" class="c-main-nav_level-1-link">
+                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-notification", "c-main-nav_level-1-icon u-fill-theme-12")); }
+                                    <span aria-hidden="true" class="c-main-nav_level-1-link-meta u-bg-theme-12">3</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <details class="">
+                        <summary aria-label="Toggle the menu" aria-haspopup="true" class="c-main-nav_level-2-toggle-trigger" data-open-icon="icon-chevron-left" data-closed-icon="icon-chevron-right">
+                            @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right", "c-main-nav_level-2-toggle-icon u-fill-theme-6")); }
+                        </summary>
+                        <div class="c-main-nav_level-2-content">
+                            MENU CONTENT
+                        </div>
+                    </details>
+                </div>
+            </div>
+            <div class="c-grid-block_item l-col-12 u-width-zero">
+                <main>
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Footer {
+    @RenderSection("Footer", false)
+}    
+
+@* TODO: This isn't needed but server error when removed *@
+<div class="u-hidden">            
+    @RenderSection("side", false)
+</div>

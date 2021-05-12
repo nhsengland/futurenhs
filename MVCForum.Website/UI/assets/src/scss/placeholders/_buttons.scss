@@ -7,180 +7,334 @@
     cursor: pointer;
 }
 
-%button-base {
-    @extend %clear-button-styles;
-    @extend %button-transitions;
-    @include font-family-poppins-regular;
-    background-color: $t-button-background-two;
-    color: $t-button-text-two;
-    fill: $t-button-text-two;
-    position: relative;
-    display: inline-block;
-    margin: 0 $base-dimension-unit $base-dimension-unit 0;
-    padding: $base-dimension-unit $spacer-xsm;
-    min-width: $spacer-lg;
-    min-height: $button-height;
-    line-height: $very-large-text;
+
+////
+// NHS BUTTON STYLES 
+// these are taken from NHSUK-FRONTEND kit, button styles there are mixins/functions/classes, copied here for use in our toolkit
+//
+$button-shadow-size: 4px;
+
+%nhsuk-button {
     font-size: $large-text;
-    text-align: center;
-    text-decoration: none;
-    vertical-align: top;
-    outline: none;
-
-    span {
-        vertical-align: middle;
-    }
-
-    svg {
-        height: $spacer-sm;
-        width: $spacer-sm;
-        vertical-align: middle;
-    }
-}
-
-%button-primary {
-    @include focus-outline-large;
-    background-color: $t-button-background-one;
-    color: $t-button-text-one;
-    fill: $t-button-text-one;
-    border: $focus-outline-width solid $t-button-background-one;
-
-    &:hover {
-        background-color: $t-button-background-hover-one;
-        border: $focus-outline-width solid $t-button-background-hover-one;
-        text-decoration: none;
-    }
-
-    &:active {
-        background-color: $t-button-background-active-one;
-        border: $focus-outline-width solid $t-button-background-active-one;
-        text-decoration: none;
-    }
-
-    &:focus {
-        background-color: $t-button-background-focus-one;
-        border: $focus-outline-width solid $t-button-background-focus-one;
-    }
-
-    &:disabled {
-        @extend %button-disabled;
-    }
-}
-
-%button-primary-callout {
-    @extend %button-primary;
-    @include font-family-poppins-bold;
-    @include focus-outline-large;
-    @include very-large-text;
-    position: relative;
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: #{derived-dimension(2.5) - 2} $spacer-md #{derived-dimension(2.5) - 2} $spacer-sm;
-}
-
-%button-secondary {
-    @include focus-outline-large;
-    background-color: $t-button-background-two;
-    color: $t-button-text-two;
-    fill: $t-button-text-two;
-    border: $focus-outline-width solid $t-button-background-hover-two;
-
-    &:hover {
-        background-color: $t-button-background-hover-two;
-        color: $t-button-text-one;
-        fill: $t-text-two;
-        text-decoration: none;
-    }
-
-    &:active {
-        background-color: $t-button-background-active-two;
-        text-decoration: none;
-    }
-
-    &:focus {
-        color: $t-button-text-one;
-        fill: $t-button-text-one;
-        background-color: $t-button-background-focus-two;
-    }
-
-    &:disabled {
-        @extend %button-disabled;
-    }
-}
-
-%button-secondary-callout {
-    @extend %button-secondary;
-    @include font-family-poppins-bold;
-    @include focus-outline-large;
-    @include very-large-text;
-    position: relative;
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: #{derived-dimension(2.5) - 2} $spacer-md #{derived-dimension(2.5) - 2} $spacer-sm;
-}
-
-%button-link {
-    @extend %clear-button-styles;
-    @extend %standard-link;
-    margin: 0;
-    padding: 0;
-    min-height: auto;
-    min-width: auto;
-    background-color: transparent;
-    color: $t-interaction-one;
-    text-decoration: underline;
+    margin-bottom: 20px;
+    background-color: $nhsuk-button-color;
+    border: $nhsuk-border-width-form-element solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 $button-shadow-size 0 $nhsuk-button-shadow-color;
+    box-sizing: border-box;
+    color: $nhsuk-button-text-color;
     cursor: pointer;
+    display: inline-block;
+    font-weight: 600;
+    margin-top: 0;
+    position: relative;
+    text-align: center;
+    vertical-align: top;
+    width: auto;
+    padding: $nhsuk-spacing-point-2 $nhsuk-spacing-point-3;
 
-    &:disabled {
-        cursor: default;
-        color: $mid-grey;
-        background-color: transparent;
-        border-color: transparent;
+    @include respond-to(tablet) {
+        padding: 12px $nhsuk-spacing-point-3;
+    }
 
-        &:hover {
-            cursor: default;
-            color: $mid-grey;
-            text-decoration: underline;
-            background-color: transparent;
+    &:link,
+    &:visited,
+    &:active,
+    &:hover {
+        color: $nhsuk-button-text-color;
+        text-decoration: none;
+    }
+
+    &::-moz-focus-inner {
+        border: 0;
+        padding: 0;
+    }
+
+    &:hover {
+        background-color: $nhsuk-button-hover-color;
+    }
+
+    &:focus {
+        background: $nhsuk-focus-color;
+        box-shadow: 0 $button-shadow-size 0 $nhsuk-focus-text-color;
+        color: $nhsuk-focus-text-color;
+        outline: $nhsuk-focus-width solid transparent;
+
+        &:visited {
+            color: $nhsuk-focus-text-color;
+
+            &:active {
+                color: $color_nhsuk-white;
+            }
         }
     }
-}
 
-%button-disabled {
-    background-color: $mid-grey;
-    border-color: $mid-grey;
-    color: $t-text-two;
-    fill: $t-button-text-one;
 
-    &:hover {
-        cursor: default;
-        background-color: $mid-grey;
-        color: $white;
-        fill: $t-button-text-one;
+    &::before {
+        background: transparent;
+        bottom: -($nhsuk-border-width-form-element + $button-shadow-size);
+        content: '';
+        display: block;
+        left: -$nhsuk-border-width-form-element;
+        position: absolute;
+        right: -$nhsuk-border-width-form-element;
+        top: -$nhsuk-border-width-form-element;
     }
 
     &:active {
-        top: 0;
-        background-color: $mid-grey;
-        color: $white;
+        background: $nhsuk-button-active-color;
+        box-shadow: none;
+        color: $nhsuk-button-text-color;
+        top: $button-shadow-size;
+
+        //
+        // When the button is active it is shifted down by $button-shadow-size to
+        // denote a 'pressed' state. If the user happened to click at the very top
+        // of the button, their mouse is no longer over the button (because it has
+        // 'moved beneath them') and so the click event is not fired.
+        //
+        // This corrects that by shifting the top of the pseudo element so that it
+        // continues to cover the area that the user originally clicked, which means
+        // the click event is still fired.
+        //
+        &::before {
+            top: -($nhsuk-border-width-form-element + $button-shadow-size);
+        }
+    }
+
+}
+
+%toggle-button {
+    background-color: transparent;
+    color: $color_nhsuk-blue;
+    border: 2px solid $color_nhsuk-blue;
+    border-radius: $nhsuk-border-radius;
+    cursor: pointer;
+    box-shadow: none;
+
+    &:link,
+    &:visited,
+    &:active,
+    &:hover {
+        color: $color_nhsuk-blue;
+        text-decoration: none;
+    }
+
+    &::-moz-focus-inner {
+        border: 0;
+    }
+
+    &:hover {
+        background-color: $color_shade_nhsuk-blue-35;
+        border-color: $color_shade_nhsuk-blue-50;
+        color: $color_nhsuk-white;
+        box-shadow: none;
     }
 
     &:focus {
-        background-color: $mid-grey;
-        color: $white;
+        @extend %nhsuk-focused-button;
+        border: 2px solid $nhsuk-focus-color !important; // sass-lint:disable-line no-important /* [2] */
+        box-shadow: 0 0 0 2px $nhsuk-focus-color, 0 $nhsuk-focus-width 0 2px $nhsuk-focus-text-color;
+    }
+
+    &:active {
+        background-color: $color_shade_nhsuk-blue-50;
+        border-color: $color_shade_nhsuk-blue-35;
+        color: $color_nhsuk-grey-5;
+        top: 0;
     }
 }
 
-%button-transitions {
-    transition: color $button-transition, background-color $button-transition, border-color $button-transition,
-    box-shadow $button-transition, fill $button-transition;
+%toggle-button-white {
+    background-color: transparent;
+    border-color: $color_nhsuk-white;
+    color: $color_nhsuk-white;
 }
 
-%button-icon {
-    width: $spacer-xsm;
-    height: $spacer-xsm;
-    margin: 0 $base-dimension-unit 0 0;
-    vertical-align: text-bottom;
+%nhsuk-focused-button {
+    background-color: $nhsuk-focus-color;
+    border: 0;
+    box-shadow: 0 $nhsuk-focus-width 0 0 $nhsuk-focus-text-color;
+    color: $nhsuk-focus-text-color;
+    outline: $nhsuk-focus-width solid transparent;
+    outline-offset: $nhsuk-focus-width;
 }
+
+// %button-base {
+//     @extend %clear-button-styles;
+//     @extend %button-transitions;
+//     // @include font-family-poppins-regular;
+//     @include border-radius($border-radius);
+//     background-color: $t-button-background-two;
+//     color: $t-button-text-two;
+//     fill: $t-button-text-two;
+//     position: relative;
+//     display: inline-block;
+//     margin: 0 $base-dimension-unit $base-dimension-unit 0;
+//     padding: $base-dimension-unit $spacer-xsm;
+//     min-width: $button-height;
+//     min-height: $button-height;
+//     line-height: $very-large-text;
+//     font-size: $large-text;
+//     text-align: center;
+//     text-decoration: none;
+//     vertical-align: top;
+//     outline: none;
+
+//     span {
+//         vertical-align: middle;
+//     }
+
+//     svg {
+//         height: $spacer-sm;
+//         width: $spacer-sm;
+//         vertical-align: middle;
+//     }
+// }
+
+// %button-primary {
+//     @include focus-outline-large;
+//     background-color: $t-button-background-one;
+//     color: $t-button-text-one;
+//     fill: $t-button-text-one;
+//     border: $focus-outline-width solid $t-button-background-one;
+
+//     &:hover {
+//         background-color: $t-button-background-hover-one;
+//         border: $focus-outline-width solid $t-button-background-hover-one;
+//         text-decoration: none;
+//     }
+
+//     &:active {
+//         background-color: $t-button-background-active-one;
+//         border: $focus-outline-width solid $t-button-background-active-one;
+//         text-decoration: none;
+//     }
+
+//     &:focus {
+//         background-color: $t-button-background-focus-one;
+//         border: $focus-outline-width solid $t-button-background-focus-one;
+//     }
+
+//     &:disabled {
+//         @extend %button-disabled;
+//     }
+// }
+
+// %button-primary-callout {
+//     @extend %button-primary;
+//     @include font-family-poppins-bold;
+//     @include focus-outline-large;
+//     @include very-large-text;
+//     position: relative;
+//     display: block;
+//     width: 100%;
+//     margin: 0;
+//     padding: #{derived-dimension(2.5) - 2} $spacer-md #{derived-dimension(2.5) - 2} $spacer-sm;
+// }
+
+// %button-secondary {
+//     @include focus-outline-large;
+//     background-color: $t-button-background-two;
+//     color: $t-button-text-two;
+//     fill: $t-button-text-two;
+//     border: $focus-outline-width solid $t-button-background-hover-two;
+
+//     &:hover {
+//         background-color: $t-button-background-hover-two;
+//         color: $t-button-text-one;
+//         fill: $t-text-two;
+//         text-decoration: none;
+//     }
+
+//     &:active {
+//         background-color: $t-button-background-active-two;
+//         text-decoration: none;
+//     }
+
+//     &:focus {
+//         color: $t-button-text-one;
+//         fill: $t-button-text-one;
+//         background-color: $t-button-background-focus-two;
+//     }
+
+//     &:disabled {
+//         @extend %button-disabled;
+//     }
+// }
+
+// %button-secondary-callout {
+//     @extend %button-secondary;
+//     @include font-family-poppins-bold;
+//     @include focus-outline-large;
+//     @include very-large-text;
+//     position: relative;
+//     display: block;
+//     width: 100%;
+//     margin: 0;
+//     padding: #{derived-dimension(2.5) - 2} $spacer-md #{derived-dimension(2.5) - 2} $spacer-sm;
+// }
+
+// %button-link {
+//     @extend %clear-button-styles;
+//     @extend %standard-link;
+//     margin: 0;
+//     padding: 0;
+//     min-height: auto;
+//     min-width: auto;
+//     background-color: transparent;
+//     color: $t-interaction-one;
+//     text-decoration: underline;
+//     cursor: pointer;
+
+//     &:disabled {
+//         cursor: default;
+//         color: $mid-grey;
+//         background-color: transparent;
+//         border-color: transparent;
+
+//         &:hover {
+//             cursor: default;
+//             color: $mid-grey;
+//             text-decoration: underline;
+//             background-color: transparent;
+//         }
+//     }
+// }
+
+// %button-disabled {
+//     background-color: $mid-grey;
+//     border-color: $mid-grey;
+//     color: $t-text-two;
+//     fill: $t-button-text-one;
+
+//     &:hover {
+//         cursor: default;
+//         background-color: $mid-grey;
+//         color: $white;
+//         fill: $t-button-text-one;
+//     }
+
+//     &:active {
+//         top: 0;
+//         background-color: $mid-grey;
+//         color: $white;
+//     }
+
+//     &:focus {
+//         background-color: $mid-grey;
+//         color: $white;
+//     }
+// }
+
+// %button-transitions {
+//     transition: color $button-transition, background-color $button-transition, border-color $button-transition,
+//     box-shadow $button-transition, fill $button-transition;
+// }
+
+// %button-icon {
+//     width: $spacer-xsm;
+//     height: $spacer-xsm;
+//     margin: 0 $base-dimension-unit 0 0;
+//     vertical-align: text-bottom;
+// }

@@ -2,7 +2,7 @@
 @using MvcForum.Core.Utilities
 @model MvcForum.Web.ViewModels.Home.AllRecentActivitiesViewModel
 @{
-    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
     ViewBag.Title = @Html.LanguageString("Activity.ActivityTitle");
     var totalCount = Convert.ToInt32(Model.TotalCount);
 }

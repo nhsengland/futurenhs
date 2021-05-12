@@ -282,3 +282,4 @@ MVCForum.Website/workbox*.js.map
 .awcache
 yarn.lock
 package-lock.json
+*.orig

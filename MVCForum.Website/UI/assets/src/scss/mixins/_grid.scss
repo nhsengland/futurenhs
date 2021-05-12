@@ -28,7 +28,11 @@ $total-width: 100%;
 @mixin column($x, $isFullBleed:null, $columns:$columns) {
 	display: inline;
 	float: left;
-    @if($isFullBleed){
+
+    @if($x == 0){
+        width: auto;
+        max-width: fit-content;
+    } @else if($isFullBleed){
         width: $total-width*(((($gutter-width+$column-width)*$x)) / gridsystem-width($columns));
         max-width: $total-width*(((($gutter-width+$column-width)*$x)) / gridsystem-width($columns));
     } @else {

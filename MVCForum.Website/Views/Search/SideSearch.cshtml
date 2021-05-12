@@ -9,7 +9,7 @@
     {
         <div class="input-group">
             <label class="u-visually-hidden" for="term">Search site</label>
-            @Html.TextBox("term", null, new { @class = "form-control", placeholder = searchFor })
+            @Html.TextBox("term", null, new { @class = "form-control", placeholder = searchFor, type = "search", aria_label = "search"  })
             <span class="input-group-btn">
                 <button class="btn btn-default" type="submit">@Html.Lang("Side.Search.Go")</button>
             </span>
