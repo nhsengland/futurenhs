@@ -1,9 +1,11 @@
 import { ping } from '@utilities/routing';
+import { TagsInputAPIInterface } from '@modules/ui/components/tagsInput';
 
 export const uiComponentsInit = (config: {
     adminClassNameEndPointMap: {
         [key: string]: string
-    }
+    },
+    tagsInputAdditionalConfig: TagsInputAPIInterface
 }) => {
 
     let toast: any = undefined;
@@ -163,6 +165,28 @@ export const uiComponentsInit = (config: {
                 wrapperSelector: undefined,
                 fetchTargets: config.adminClassNameEndPointMap
             }).bindDataToHtmlElements();
+
+        });
+
+    }
+
+    /**
+    * Init tags input
+    */
+    const tagsTextareaElements: Array<Element> = Array.from(document.getElementsByClassName('tagstextarea'));
+
+    if (tagsTextareaElements?.length > 0) {
+
+        import('@modules/ui/components/tagsInput').then(({ TagsInput }) => {
+
+            tagsTextareaElements.forEach((tagTextarea: HTMLFormElement) => {
+
+                new TagsInput({
+                    wrapperSelector: tagTextarea,
+                    tagsInputAdditionalConfig: config.tagsInputAdditionalConfig
+                });
+
+            });
 
         });
 

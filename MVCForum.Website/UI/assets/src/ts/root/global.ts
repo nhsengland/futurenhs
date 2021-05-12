@@ -52,6 +52,12 @@ window.jsConfig = {
         'dashboardtodaystopics': 'TodaysTopics',
         'dashboardhighestviewedtopics': 'HighestViewedTopics',
         'mvcforumlatestnews': 'MvcForumLatestNews'
+    },
+    tagsInputAdditionalConfig: {
+        minChars: 2,
+        maxChars: 25,
+        removeWithBackspace: true,
+        autocomplete_url: '/tag/autocompletetags',
     }
 }
 
