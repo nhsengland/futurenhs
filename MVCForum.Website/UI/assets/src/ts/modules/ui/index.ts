@@ -198,5 +198,34 @@ export const uiComponentsInit = (config: {
     }
 
 
+    /**
+    * Init tags input
+    */
+    const createTopicHolders: Array<Element> = Array.from(document.getElementsByClassName('createtopicholder'));
+    const editPostHolders: Array<Element> = Array.from(document.getElementsByClassName('editpostholder'));
+
+    const createAndEditHolders:  Array<Element> =  [...createTopicHolders, ...editPostHolders];
+
+    if (createAndEditHolders?.length > 0) {
+
+        import('@modules/ui/components/createTopic').then(({ CreateTopic }) => {
+
+            createAndEditHolders.forEach((createAndEditHolder: HTMLFormElement) => {
+
+                new CreateTopic({
+                    wrapperSelector: createAndEditHolder
+                }, {
+                    components: {
+                        toast: toast
+                    }
+                });
+
+            });
+
+        });
+
+    }
+
+
 
 }
