@@ -29,7 +29,7 @@ namespace MvcForum.Web
 
             // Secure the control channel.
             // This is optional, but recommended.
-            quickPulseModule.AuthenticationApiKey = "YOUR-API-KEY-HERE";
+            quickPulseModule.AuthenticationApiKey = "APPINSIGHTS_APIKEY";
             quickPulseModule.Initialize(config);
             quickPulseModule.RegisterTelemetryProcessor(quickPulseProcessor);
 
