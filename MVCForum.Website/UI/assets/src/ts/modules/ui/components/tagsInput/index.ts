@@ -62,7 +62,7 @@ export class TagsInput extends UIComponentBase {
          * the textarea is used to store tag values added in the generated input
          * on input's foucsout event, if the input has a value, it will automatically add the value to textarea by generating an 'Enter' keyboard press
          */
-        const generatedInput: Element = (<any>this.wrapperSelector.nextSibling)?.getElementsByTagName('input')[0];
+        const generatedInput: Element = this.wrapperSelector.nextElementSibling?.getElementsByTagName('input')[0];
 
         generatedInput?.addEventListener('focusout', () => {
 

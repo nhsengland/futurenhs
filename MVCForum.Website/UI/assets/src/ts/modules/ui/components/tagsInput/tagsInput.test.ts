@@ -20,7 +20,7 @@ beforeEach(() => {
 
 describe('Tags input', () => {
 
-    it('Binds successfully', () => {
+    it('Binds and inits tags successfully', () => {
 
         const textareaElement: HTMLElement = document.getElementById('tagstextarea');
         const tagsInputInstance: TagsInput = new TagsInput({
@@ -29,6 +29,7 @@ describe('Tags input', () => {
 
         expect(tagsInputInstance).toBeTruthy();
         expect(tagsInputInstance.wrapperSelector).toBe(textareaElement);
+        expect(mockedTagsInput).toBeCalledTimes(1);
 
     });
 
@@ -50,29 +51,6 @@ describe('Tags input', () => {
         expect(tagsInput.tagsInputAdditionalConfig).toBe(tagsInputAdditionalConfig);
 
     });
-
-    it('Inits tags input', () => {
-
-        
-        const generatedInput: HTMLElement = document.getElementById('generatedInput');
-
-        const mockedTextareaElement =  { 
-            nextSibling:  {
-                getElementsByTagName: jest.fn((tagName) => [generatedInput])
-            } 
-        };
-
-        const tagsInputInstance: TagsInput = new TagsInput({
-            wrapperSelector:  <any>mockedTextareaElement,
-        });
-
-        tagsInputInstance.init();
-
-        expect(mockedTagsInput).toBeCalledTimes(1);
-
-    });
-
-
 
 })
 
