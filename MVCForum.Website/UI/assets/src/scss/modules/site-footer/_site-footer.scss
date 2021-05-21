@@ -1,143 +1,43 @@
 .c-site-footer {
+    background-color: $t-transparent_nhsuk-grey-4;
+    border-top: 4px solid $blue;
 
-    position: relative;
-    margin: 0;
-    padding: $spacer-rg 0 0;
-    color: $t-site-footer-text-one;
-    background-color: $t-site-footer-one;
-
-    @include respond-to(tablet) {
-        padding: derived-dimension(5) 0 0;
-    }
-
-    @include respond-to(desktop) {
-        padding: derived-dimension(7) 0 0;
-    }
-
-    &_sub-nav-item {
-
-        margin-bottom: $spacer-sm;
-
-        @include respond-to(tablet) {
-
-            margin-bottom: $spacer-rg;
-
-            &:nth-child(2n+3) {
-                clear: left;
-            }
-
-        }
+    &_content {
+        margin: 52px 40px 39px;
 
         @include respond-to(desktop) {
-
-            &:nth-child(2n+3) {
-                clear: none;
-            }
-
-            &:nth-child(5n+5) {
-                clear: left;
-            }
-
+            margin: 68px 0 80px;
         }
-
     }
 
-    &_sub-nav-heading {
-        @include font-family-poppins-bold;
-        @include focus-outline;
-        @include very-large-text;
-        display: block;
-        margin: 0 0 derived-dimension(.75);
-        color: $aqua;
+    &_subtitle {
+        @include small-heading;
+        font-weight: $nhsuk-font-bold;
     }
 
-    &_sub-nav-link {
-
-        display: block;
-        margin: 0 0 derived-dimension(.75);
-        line-height: $large-text-line-height;
-        font-size: $large-text;
-        color: $t-text-two;
-        text-decoration: underline;
-
-        &:hover,
-        &:active,
-        &:focus {
-            color: $t-interaction-one-focus;
-            text-decoration: none;
+    &_nav-item {
+        @include respond-to(desktop) {
+            display: inline;
+            margin-right: 15px;
         }
-
-
     }
 
-    &_logo {
-
-        @include focus-outline-large;
-        width: $site-logo-tablet-width;
-        height: $site-logo-tablet-height;
-        margin: 0 0 $spacer-rg;
-        display: block;
-
-        @include respond-to(tablet) {
-            margin: 0 0 derived-dimension(7);
-        }
-
-    }
-
-    &_social-links {
-
-        border-top: 1px solid $t-site-footer-divider-one;
-        margin: derived-dimension(16) 0 0;
-        padding: $spacer-sm 0 $spacer-rg;
-
-        @include respond-to(tablet) {
-            margin: derived-dimension(26) 0 0;
-        }
+    &_nav {
+        background-color: $light-mid-grey;
+        padding: 32px 40px;
 
         @include respond-to(desktop) {
-            margin: derived-dimension(36) 0 0;
+            padding: 38px 0;
         }
-
-    }
-
-    &_social-links-list {
-
-        margin: 0 0 $spacer-xsm;
-
-        @include respond-to(tablet) {
-            margin: 0;
-        }
-
-    }
-
-    &_social-links-item {
-        display: inline-block;
-    }
-
-    &_social-links-link {
-
-        padding-right: derived-dimension(1);
-        height: 18px;
-        line-height: 0;
-        fill: $t-social-media-icon-one;
-
-        &:hover,
-        &:active,
-        &:focus {
-            fill: $t-interaction-one-focus;
-        }
-
-    }
-
-    &_social-links-icon {
-        @include inline-icon(18px);
     }
 
     &_copyright {
-        @include font-family-poppins-bold;
-        margin: 0;
-        line-height: $large-text-line-height;
-        font-size: $large-text;
-    }
+        @include small-text;
+        font-weight: $nhsuk-font-bold;
+        color: $t-copyright-color;
 
+        @include respond-to(desktop) {
+            text-align: right;
+        }
+    }
 }

@@ -498,12 +498,6 @@ pre span.tag { display: inline; line-height: normal; height: auto; -ms-border-ra
     &:hover { background: none; }
 }
 
-// Footer
-
-footer { background: $color-global-grey-blue; padding: 20px 0; margin: 0;
-    .licenceblock { font-weight: 400; font-size: 14px; padding: 14px 0 0 0; margin: 14px 0 0 0; text-align: center; border-top: 1px darken($color-global-grey-blue, 6%) solid; }
-    h3 { margin-bottom: 12px; }
-}
 
 // Stats Block
 

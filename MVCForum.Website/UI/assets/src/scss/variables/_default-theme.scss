@@ -98,6 +98,8 @@ $t-text-one: $nhsuk-text-color !default;
 $t-transparent_nhsuk-grey-4: transparentize($color_nhsuk-grey-4, .5);
 $t-shadow-one: $black-tint !default;
 
+$t-copyright-color: #425462;
+
 $t-utility-themes: (
     "1": $white,
     "2": $very-light-grey,

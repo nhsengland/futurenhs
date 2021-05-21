@@ -15,6 +15,7 @@
 }
 <!DOCTYPE html>
 <html lang="en">
+
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +30,8 @@
     @ViewBag.Canonical
     @Html.Partial("_StyleSheets", theme)
     <link rel="shortcut icon" href="@Url.Content($"~/UI/assets/dist/img/favicon/favicon.ico")">
-    <link rel="apple-touch-icon-precomposed" href="@Url.Content($"{theme.ThemePath}/content/images/apple-touch-icon-57-precomposed.png")">
+    <link rel="apple-touch-icon-precomposed"
+        href="@Url.Content($"{theme.ThemePath}/content/images/apple-touch-icon-57-precomposed.png")">
     @Html.Partial("_JavaScript", theme)
     @RenderSection("Header", false)
     @if (!string.IsNullOrEmpty(Html.Settings().CustomHeaderCode))
@@ -40,7 +42,7 @@
 
 <body class="loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
     @Html.Partial("_SVGSprite")
-    <div class="site-overlay"></div>    
+    <div class="site-overlay"></div>
 
 
     @{ Html.RenderAction("SiteHeader", "Layout"); }
@@ -62,20 +64,20 @@
                 </div>
 
                 <div class="collapse navbar-collapse" id="mvcforum-nav">
-    
+
                     <ul class="nav navbar-nav navbar-right">
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            if (Html.Settings().SuspendRegistration != true)
-                            {
-                                <li><a class="auto-register" href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
-                            }
-                            <li><a class="auto-logon" href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
-                        }                        
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            @Html.Action("SideAdminPanel", "Members", new { isDropDown = true })
-                        }
+    @if (!User.Identity.IsAuthenticated)
+    {
+        if (Html.Settings().SuspendRegistration != true)
+        {
+                                        <li><a class="auto-register" href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
+        }
+                                <li><a class="auto-logon" href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
+    }                        
+    @if (User.Identity.IsAuthenticated)
+    {
+        @Html.Action("SideAdminPanel", "Members", new { isDropDown = true })
+    }
                     </ul>
 
 
@@ -86,18 +88,18 @@
 
 
     @*
-    
-    <section class="content-strip content-strip-@(User.Identity.IsAuthenticated.ToString().ToLower())">
+
+        <section class="content-strip content-strip-@(User.Identity.IsAuthenticated.ToString().ToLower())">
         <div class="l-container sub-nav-container">
-            <div class="c-grid-block">
-                <div class="c-grid-block_item l-col-12">
-                    <ul>
-                        @Html.Partial("SubNavigation")
-                    </ul>
-                </div>
-            </div>
+        <div class="c-grid-block">
+        <div class="c-grid-block_item l-col-12">
+        <ul>
+        @Html.Partial("SubNavigation")
+        </ul>
         </div>
-    </section>
+        </div>
+        </div>
+        </section>
 
     *@
     <div id="main" class="mainbody">
@@ -109,43 +111,152 @@
         @RenderBody()
 
     </div>
-    <footer>
+    @* <footer>
         <h2 class="u-visually-hidden">Footer Navigation</h2>
         <div class="l-container">
             <div class="l-col-12">
 
-                @RenderSection("Footer", false)
+        @RenderSection("Footer", false)
 
-                <div class="c-grid-block">
-                    <div class="c-grid-block_item l-col-12 l-col-6-t">
-                        @Html.Action("GetMainStats", "Stats")
+        <div class="c-grid-block">
+        <div class="c-grid-block_item l-col-12 l-col-6-t">
+        @Html.Action("GetMainStats", "Stats")
+        </div>
+        <div class="c-grid-block_item l-col-12 l-col-6-t">
+        @Html.Action("GetCurrentActiveMembers", "Members")
+        </div>
+        </div>
+
+        <div class="c-grid-block">
+        <div class="c-grid-block_item l-col-12">
+        <div class="licenceblock">
+        <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
+
+        If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
+
+        <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow"
+        href="http://www.mvcforum.com">MvcForum.com</a></p>
+
+        <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
+        </div>
+        </div>
+        </div>
+
+        </div>
+        </footer> *@
+
+    <footer class="c-site-footer">
+        @RenderSection("Footer", false)
+        <h2 class="u-visually-hidden">Footer Navigation</h2>
+
+        <div class="c-site-footer_content">
+            <div class="l-container">
+
+
+                <div class="l-row">
+
+                    <div class="l-col-12 l-col-8-d ">
+
+                        <p class="c-site-footer_subtitle">
+                            Subtitle here
+                        </p>
+
+                        <p>
+                            Copy here from user story lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                            eiusmod tempor
+                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                            exercitation ullamco
+                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                            voluptate
+                            exercitation ullamco laboris nisi ut aliquip ex commodo.
+                        </p>
+
                     </div>
-                    <div class="c-grid-block_item l-col-12 l-col-6-t">
-                        @Html.Action("GetCurrentActiveMembers", "Members")
+
+                    <div class="l-col-12 l-col-4-d">
+
+                        <p id="content-nav-subtitle" class="c-site-footer_subtitle">
+                            Subtitle here
+                        </p>
+                        
+                        <nav aria-label="Footer content navigation">
+
+                            <ul role="menu" class="u-list-plain">
+                                <li role="none">
+                                    <a href="#">Link #1 lorem ipsum</a>
+                                </li>
+                                <li role="none">
+                                    <a href="#">Link #2 lorem ipsum</a>
+                                </li>
+                                <li role="none">
+                                    <a href="#">Link #3 lorem ipsum</a>
+                                </li>
+                                <li role="none">
+                                    <a href="#">Link #4 lorem ipsum</a>
+                                </li>
+                            </ul>
+
+                        </nav>
+                      
+
                     </div>
+
                 </div>
 
-                <div class="c-grid-block">
-                    <div class="c-grid-block_item l-col-12">
-                        <div class="licenceblock">
-                            <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
 
-                                If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
 
-                            <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MvcForum.com</a></p>
+            </div>
+        </div>
 
-                            <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
-                        </div>
+        <div class="c-site-footer_nav">
+            <div class="l-container">
+                <div class="l-row">
+
+                    <div class="l-col-12 l-col-10-d">
+
+                        <nav aria-label="Footer legal links">
+
+                            <ul role="menu" class="u-list-plain">
+                                <li role="none" class="c-site-footer_nav-item">
+                                    <a href="#">NHS sites</a>
+                                </li>
+                                <li role="none" class="c-site-footer_nav-item">
+                                    <a href="#">Privacy policy</a>
+                                </li>
+                                <li role="none" class="c-site-footer_nav-item">
+                                    <a href="#">Terms and conditions</a>
+                                </li>
+                                <li role="none" class="c-site-footer_nav-item">
+                                    <a href="#">Accessibility</a>
+                                </li>
+                            </ul>
+
+                        </nav>
+
+
                     </div>
+
+                   
+
+                    <div class="l-col-12 l-col-2-d">
+                        <p class="c-site-footer_copyright">
+                            &copy; FutureNHS
+                        </p>
+                    </div>
+
                 </div>
 
             </div>
         </div>
+
+
     </footer>
+
     @Html.Partial("_SlideOutPanel")
     @if (!string.IsNullOrEmpty(Html.Settings().CustomFooterCode))
     {
         @Html.Raw(Html.Settings().CustomFooterCode)
-    }    
+    }
 </body>
+
 </html>
