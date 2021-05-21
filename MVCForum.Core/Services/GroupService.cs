@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Core.Services
+﻿using MvcForum.Core.Models.Enums;
+
+namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
@@ -23,7 +25,7 @@
     {
         private readonly ICacheService _cacheService;
         private readonly INotificationService _notificationService;
-        private readonly IGroupPermissionForRoleService _GroupPermissionForRoleService;
+        private readonly IGroupPermissionForRoleService _groupPermissionForRoleService;
         private IMvcForumContext _context;
         private readonly IRoleService _roleService;
 
@@ -41,7 +43,7 @@
         {
             _roleService = roleService;
             _notificationService = notificationService;
-            _GroupPermissionForRoleService = GroupPermissionForRoleService;
+            _groupPermissionForRoleService = GroupPermissionForRoleService;
             _cacheService = cacheService;
             _context = context;
         }
@@ -52,7 +54,7 @@
             _context = context;
             _roleService.RefreshContext(context);
             _notificationService.RefreshContext(context);
-            _GroupPermissionForRoleService.RefreshContext(context);
+            _groupPermissionForRoleService.RefreshContext(context);
         }
 
         /// <inheritdoc />
@@ -65,7 +67,7 @@
         ///     Return all Groups
         /// </summary>
         /// <returns></returns>
-        public List<Group> GetAll()
+        public List<Group> GetAll(Guid? membershipId)
         {
             var cachedGroups = _cacheService.Get<List<Group>>("GroupList.GetAll");
             if (cachedGroups == null)
@@ -84,40 +86,55 @@
                     orderedGroups.Add(parentGroup);
 
                     // Add subGroups under this
-                    orderedGroups.AddRange(GetSubGroups(parentGroup, allCats));
+                    orderedGroups.AddRange(GetSubGroups(parentGroup, allCats, membershipId));
                 }
                 cachedGroups = orderedGroups;
             }
             return cachedGroups;
         }
 
-        public List<Group> GetSubGroups(Group Group, List<Group> allGroups, int level = 2)
+        public List<GroupUser> GetAllForUser(Guid? userId)
         {
+            var cachedGroups = _cacheService.Get<List<GroupUser>>($"GroupList.GetAll{userId}");
 
-                var catsToReturn = new List<Group>();
-                var cats = allGroups.Where(x => x.ParentGroup != null && x.ParentGroup.Id == Group.Id)
-                    .OrderBy(x => x.SortOrder);
-                foreach (var cat in cats)
-                {
-                    cat.Level = level;
-                    catsToReturn.Add(cat);
-                    catsToReturn.AddRange(GetSubGroups(cat, allGroups, level + 1));
-                }
+            if (cachedGroups != null)
+                return cachedGroups;
 
-                return catsToReturn;
-    
+            var allGroups = _context.GroupUser.Where(x => x.User.Id == userId)
+                .AsNoTracking()
+                .OrderBy(x => x.Group.Name).ToList();
+
+
+            return allGroups;
         }
 
-        public List<SelectListItem> GetBaseSelectListGroups(List<Group> allowedGroups)
+        public List<Group> GetSubGroups(Group Group, List<Group> allGroups, Guid? membershipId, int level = 2)
         {
-                var cats = new List<SelectListItem> {new SelectListItem {Text = "", Value = ""}};
-                foreach (var cat in allowedGroups)
-                {
-                    var catName = string.Concat(LevelDashes(cat.Level), cat.Level > 1 ? " " : "", cat.Name);
-                    cats.Add(new SelectListItem {Text = catName, Value = cat.Id.ToString()});
-                }
-                return cats;
-        
+
+            var catsToReturn = new List<Group>();
+            var cats = allGroups.Where(x => x.ParentGroup != null && x.ParentGroup.Id == Group.Id)
+                .OrderBy(x => x.SortOrder);
+            foreach (var cat in cats)
+            {
+                cat.Level = level;
+                catsToReturn.Add(cat);
+                catsToReturn.AddRange(GetSubGroups(cat, allGroups, membershipId, level + 1));
+            }
+
+            return catsToReturn;
+
+        }
+
+        public List<SelectListItem> GetBaseSelectListGroups(List<Group> allowedGroups, Guid? membershipId)
+        {
+            var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            foreach (var cat in allowedGroups)
+            {
+                var catName = string.Concat(LevelDashes(cat.Level), cat.Level > 1 ? " " : "", cat.Name);
+                cats.Add(new SelectListItem { Text = catName, Value = cat.Id.ToString() });
+            }
+            return cats;
+
         }
 
         /// <summary>
@@ -125,7 +142,7 @@
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        public IEnumerable<Group> GetAllSubGroups(Guid parentId)
+        public IEnumerable<Group> GetAllSubGroups(Guid parentId, Guid? membershipId)
         {
             return _context.Group.AsNoTracking()
                 .Where(x => x.ParentGroup.Id == parentId)
@@ -136,7 +153,7 @@
         ///     Get all main Groups (Groups with no parent Group)
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Group> GetAllMainGroups()
+        public IEnumerable<Group> GetAllMainGroups(Guid? membershipId)
         {
             return _context.Group.AsNoTracking()
                 .Include(x => x.ParentGroup)
@@ -146,7 +163,7 @@
         }
 
         /// <inheritdoc />
-        public IEnumerable<GroupSummary> GetAllMainGroupsInSummary()
+        public IEnumerable<GroupSummary> GetAllMainGroupsInSummary(Guid? membershipId)
         {
             return _context.Group.AsNoTracking()
                 .Include(x => x.ParentGroup)
@@ -155,7 +172,7 @@
                 .OrderBy(x => x.SortOrder)
                 .Select(x => new GroupSummary
                 {
-                    Group = x,
+                    Group = new GroupUserDTO() { Group = x },
                     TopicCount = x.Topics.Count,
                     PostCount = x.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
                     MostRecentTopic = x.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
@@ -164,22 +181,22 @@
         }
 
         /// <inheritdoc />
-        public ILookup<Guid, GroupSummary> GetAllMainGroupsInSummaryGroupedBySection()
+        public ILookup<Guid, GroupSummary> GetAllMainGroupsInSummaryGroupedBySection(Guid? membershipId)
         {
-            return _context.Group.AsNoTracking()
-                .Include(x => x.ParentGroup)
-                .Include(x => x.Section)
-                .Where(x => x.ParentGroup == null && x.Section != null)
-                .OrderBy(x => x.SortOrder)
+            return _context.GroupUser.AsNoTracking()
+                .Include(x => x.Group.ParentGroup)
+                .Include(x => x.Group.Section)
+                .Where(x => x.Group.ParentGroup == null && x.Group.Section != null)
+                .OrderBy(x => x.Group.SortOrder)
                 .Select(x => new GroupSummary
                 {
-                    Group = x,
-                    TopicCount = x.Topics.Count,
-                    PostCount = x.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
-                    MostRecentTopic = x.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                    Group = new GroupUserDTO() { Group = x.Group },
+                    TopicCount = x.Group.Topics.Count,
+                    PostCount = x.Group.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
+                    MostRecentTopic = x.Group.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
                 })
                 .ToList()
-                .ToLookup(x => x.Group.Section.Id);
+                .ToLookup(x => x.Group.Group.Section.Id);
         }
 
         /// <summary>
@@ -187,14 +204,22 @@
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public List<Group> GetAllowedGroups(MembershipRole role)
+        public List<Group> GetAllowedGroups(MembershipRole role, Guid? membershipId)
         {
-            return GetAllowedGroups(role, ForumConfiguration.Instance.PermissionDenyAccess);
+            if (role.RoleName == Constants.AdminRoleName)
+            {
+                return GetAllowedGroups(role, ForumConfiguration.Instance.PermissionDenyAccess, membershipId);
+            }
+
+            return _context.GroupUser.Where(x => x.User.Id == membershipId && (x.Approved && !x.Banned && !x.Locked && !x.Rejected)).Select(x => x.Group).ToList();
+
         }
 
-        public List<Group> GetAllowedGroups(MembershipRole role, string actionType)
+
+
+        public List<Group> GetAllowedGroups(MembershipRole role, string actionType, Guid? membershipId)
         {
-            return GetAllowedGroupsCode(role, actionType);
+            return GetAllowedGroupsCode(role, actionType, membershipId);
         }
 
         /// <summary>
@@ -302,7 +327,7 @@
         ///     Keep slug in line with name
         /// </summary>
         /// <param name="Group"></param>
-        public void UpdateSlugFromName(Group Group)
+        public void UpdateSlugFromName(Group Group, Guid MembershipId)
         {
             // Sanitize
             Group = SanitizeGroup(Group);
@@ -312,7 +337,7 @@
             // Check if slug has changed as this could be an update
             if (!string.IsNullOrWhiteSpace(Group.Slug))
             {
-                var GroupBySlug = GetBySlugWithSubGroups(Group.Slug);
+                var GroupBySlug = GetBySlugWithSubGroups(Group.Slug, MembershipId);
                 if (GroupBySlug.Group.Id == Group.Id)
                 {
                     updateSlug = false;
@@ -376,21 +401,20 @@
         /// </summary>
         /// <param name="slug"></param>
         /// <returns></returns>
-        public GroupWithSubGroups GetBySlugWithSubGroups(string slug)
+        public GroupWithSubGroups GetBySlugWithSubGroups(string slug, Guid? membershipId)
         {
             slug = StringUtils.SafePlainText(slug);
+            var group = (from Group in _context.Group.AsNoTracking()
+                         where Group.Slug == slug
+                         select new GroupWithSubGroups
+                         {
+                             Group = Group,
+                             SubGroups = from cats in _context.Group
+                                         where cats.ParentGroup.Id == Group.Id
+                                         select cats
+                         }).FirstOrDefault();
 
-            var cat = (from Group in _context.Group.AsNoTracking()
-                where Group.Slug == slug
-                select new GroupWithSubGroups
-                {
-                    Group = Group,
-                    SubGroups = from cats in _context.Group
-                        where cats.ParentGroup.Id == Group.Id
-                        select cats
-                }).FirstOrDefault();
-
-            return cat;
+            return group;
         }
 
         /// <summary>
@@ -493,8 +517,8 @@
         public void SortPath(Group Group, Group parentGroup)
         {
             // Append the path from the parent Group
-            var path = !string.IsNullOrWhiteSpace(parentGroup.Path) ? 
-                string.Concat(parentGroup.Path, ",", parentGroup.Id.ToString()) : 
+            var path = !string.IsNullOrWhiteSpace(parentGroup.Path) ?
+                string.Concat(parentGroup.Path, ",", parentGroup.Id.ToString()) :
                 parentGroup.Id.ToString();
 
             Group.Path = path;
@@ -537,10 +561,10 @@
             return string.Empty;
         }
 
-        private List<Group> GetAllowedGroupsCode(MembershipRole role, string actionType)
+        private List<Group> GetAllowedGroupsCode(MembershipRole role, string actionType, Guid? membershipId)
         {
             var filteredCats = new List<Group>();
-            var allCats = GetAll();
+            var allCats = GetAll(membershipId);
             foreach (var Group in allCats)
             {
                 var permissionSet = _roleService.GetPermissions(Group, role);
@@ -551,6 +575,178 @@
                 }
             }
             return filteredCats;
+        }
+
+        public bool JoinGroup(string slug, Guid membershipId)
+        {
+            var group = _context.Group.SingleOrDefault(x => x.Slug == slug);
+            group.GroupUsers = new List<GroupUser>();
+            var groupUser = new GroupUser();
+            groupUser.Approved = false;
+            groupUser.Rejected = false;
+            groupUser.Banned = false;
+            groupUser.Locked = false;
+            groupUser.Group = group;
+            groupUser.RequestToJoinDate = DateTime.UtcNow;
+            groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
+            groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
+            _context.GroupUser.Add(groupUser);
+            var result = _context.SaveChanges();
+            return true;
+        }
+
+        public bool AddGroupAdministrators(string slug, List<Guid> membershipIds, Guid approvingUserId)
+        {
+
+            var group = _context.Group.SingleOrDefault(x => x.Slug == slug);
+
+            foreach (var membershipId in membershipIds)
+            {
+                var groupUser = new GroupUser();
+                groupUser.Approved = true;
+                groupUser.Rejected = false;
+                groupUser.Banned = false;
+                groupUser.Locked = false;
+                groupUser.Group = group;
+                groupUser.RequestToJoinDate = DateTime.UtcNow;
+                groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.AdminRoleName);
+                groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
+                groupUser.ApprovedToJoinDate = DateTime.UtcNow;
+                groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
+                ;
+
+                if (@group != null && group.GroupUsers == null || !@group.GroupUsers.Any(x =>
+                    x.User.Id == membershipId && x.Group.Id == group.Id))
+                {
+                    _context.GroupUser.Add(groupUser);
+                }
+
+                if (group.GroupUsers == null || group.GroupUsers.Any(x =>
+                    x.User.Id == membershipId && x.Role.RoleName != Constants.AdminRoleName))
+                {
+                    var user = _context.GroupUser.FirstOrDefault(x => x.User.Id == membershipId && x.Group.Id == group.Id);
+                    if (user != null)
+                    {
+                        user.Approved = true;
+                        user.Rejected = false;
+                        user.Banned = false;
+                        user.Locked = false;
+                        user.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.AdminRoleName);
+                    }
+                }
+                var result = _context.SaveChanges();
+            }
+
+
+            if (group.GroupUsers != null)
+            {
+                var removedUsers = group.GroupUsers.Where(x =>
+                    x.Role.RoleName == Constants.AdminRoleName && x.Group.Id == group.Id && !membershipIds.Contains(x.User.Id));
+
+                _context.GroupUser.RemoveRange(removedUsers);
+
+                var result = _context.SaveChanges();
+            }
+
+
+            return true;
+        }
+
+        public bool ApproveJoinGroup(Guid groupUserId, Guid approvingUserId)
+        {
+            var groupUser = _context.GroupUser.SingleOrDefault(x => x.Id == groupUserId);
+            if (groupUser != null)
+            {
+                groupUser.Approved = true;
+                groupUser.Rejected = false;
+                groupUser.ApprovedToJoinDate = DateTime.UtcNow;
+                groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.StandardRoleName);
+                groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
+            }
+
+            var result = _context.SaveChanges();
+            return true;
+        }
+
+        public bool RejectJoinGroup(Guid groupUserId, Guid approvingUserId)
+        {
+            var groupUser = _context.GroupUser.SingleOrDefault(x => x.Id == groupUserId);
+            if (groupUser != null)
+            {
+                groupUser.Rejected = true;
+                groupUser.ApprovedToJoinDate = DateTime.UtcNow;
+                groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
+            }
+
+            var result = _context.SaveChanges();
+            return true;
+        }
+
+        public bool LeaveGroup(string slug, Guid membershipId)
+        {
+            var group = GetBySlug(slug);
+            var groupUser = _context.GroupUser.FirstOrDefault(x => x.Group.Id == group.Id && x.User.Id == membershipId);
+            if (groupUser != null)
+            {
+                _context.GroupUser.Remove(groupUser);
+                var result = _context.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
+
+        private GroupUserStatus GetUserStatusForGroup(GroupUser user)
+        {
+            if (user == null)
+                return GroupUserStatus.NotJoined;
+            if (user.Approved && !user.Banned && !user.Locked)
+                return GroupUserStatus.Joined;
+            if (!user.Approved && !user.Banned && !user.Locked && !user.Rejected)
+                return GroupUserStatus.Pending;
+            if (user.Approved && user.Banned && !user.Locked)
+                return GroupUserStatus.Banned;
+            if (user.Approved && !user.Banned && user.Locked)
+                return GroupUserStatus.Locked;
+
+            return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
+        }
+
+        public MembershipRole GetGroupRole(Guid groupId, Guid? membershipId)
+        {
+            if (membershipId == null)
+                return _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
+
+            var groupUser = _context.GroupUser.FirstOrDefault(x => x.Group.Id == groupId && x.User.Id == membershipId);
+
+            if (groupUser == null)
+                return _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
+
+
+            if (GetUserStatusForGroup(groupUser) != GroupUserStatus.Joined)
+                return _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
+
+
+            return groupUser?.Role;
+        }
+
+        public GroupUser GetGroupUser(Guid groupUserId)
+        {
+            var groupUser = _context.GroupUser.Include(x => x.Role).FirstOrDefault(x => x.Id == groupUserId);
+            return groupUser;
+        }
+
+        public async Task<GroupUser> UpdateGroupUser(GroupUser groupUser)
+        {
+            var user = _context.GroupUser.Include(x => x.Role).FirstOrDefault(x => x.Id == groupUser.Id);
+            if (user == null)
+                return null;
+            user.Approved = groupUser.Approved;
+            user.Locked = groupUser.Locked;
+            user.Banned = groupUser.Banned;
+            user.Role = _context.MembershipRole.FirstOrDefault(x => x.Id == groupUser.Role.Id);
+            await SaveChanges();
+            return user;
         }
     }
 }

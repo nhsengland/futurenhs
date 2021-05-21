@@ -19,7 +19,7 @@
     [Authorize]
     public partial class PostController : BaseController
     {
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly IPostEditService _postEditService;
         private readonly IPostService _postService;
         private readonly IReportService _reportService;
@@ -36,7 +36,7 @@
         {
             _topicService = topicService;
             _postService = postService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _reportService = reportService;
             _voteService = voteService;
             _postEditService = postEditService;
@@ -74,8 +74,8 @@
         [HttpPost]
         public virtual async Task<ActionResult> DeletePost(Guid id)
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
             // Got to get a lot of things here as we have to check permissions
             // Get the post
@@ -92,7 +92,7 @@
             // get the users permissions
             var permissions = RoleService.GetPermissions(topic.Group, loggedOnUsersRole);
 
-            if (post.User.Id == loggedOnReadOnlyUser.Id ||
+            if (post.User.Id == LoggedOnReadOnlyUser?.Id ||
                 permissions[ForumConfiguration.Instance.PermissionDeletePosts].IsTicked)
             {
                 try
@@ -199,14 +199,14 @@
         {
             if (SettingsService.GetSettings().EnableSpamReporting)
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                User.GetMembershipUser(MembershipService);
 
                 var post = _postService.Get(viewModel.PostId);
                 var report = new Report
                 {
                     Reason = viewModel.Reason,
                     ReportedPost = post,
-                    Reporter = loggedOnReadOnlyUser
+                    Reporter = LoggedOnReadOnlyUser
                 };
                 _reportService.PostReport(report);
 
@@ -235,13 +235,13 @@
         [AllowAnonymous]
         public virtual ActionResult GetAllPostLikes(Guid id)
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
             var post = _postService.Get(id);
             var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
             var votes = _voteService.GetVotesByPosts(new List<Guid> { id });
             var viewModel = ViewModelMapping.CreatePostViewModel(post, votes[id], permissions, post.Topic,
-                loggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
+                LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
             var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
             return View(upVotes);
         }
@@ -249,8 +249,8 @@
 
         public virtual ActionResult MovePost(Guid id)
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
             // Firstly check if this is a post and they are allowed to move it
             var post = _postService.Get(id);
@@ -260,7 +260,7 @@
             }
 
             var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
-            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+            var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
 
             // Does the user have permission to this posts Group
             var cat = allowedGroups.FirstOrDefault(x => x.Id == post.Topic.Group.Id);
@@ -283,7 +283,7 @@
             });
 
             var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic,
-                loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
             postViewModel.MinimalPost = true;
             var viewModel = new MovePostViewModel
             {
@@ -317,10 +317,9 @@
             ModelState.AddModelError("", moveResult.ProcessLog.FirstOrDefault());
 
             // Sort the view model before sending back
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
             var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
-            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+            var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
 
             // Repopulate the topics
             var topics = _topicService.GetAllSelectList(allowedGroups, 30);
@@ -332,7 +331,7 @@
 
             viewModel.LatestTopics = topics;
             viewModel.Post = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, 
-                            post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                            post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
             viewModel.Post.MinimalPost = true;
             viewModel.PostId = post.Id;
 
@@ -344,8 +343,8 @@
             var post = _postService.Get(id);
             if (post != null)
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
                 // Check permissions
                 var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);

@@ -1,93 +1,141 @@
 ﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Core.Models.Enums
 @using MvcForum.Core.Utilities
 @using MvcForum.Web.ViewModels.Group
 @using MvcForum.Web.ViewModels.Shared
 
 @model GroupViewModel
 @{
-    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
-    ViewBag.Title = Html.Raw(Model.Group.PageTitle ?? Model.Group.Name);
-    ViewBag.MetaDesc = Model.Group.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Group.Description);
-    var totalCount = Convert.ToInt32(Model.TotalCount);
-    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+	Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+	ViewBag.Title = Html.Raw(Model.Group.PageTitle ?? Model.Group.Name);
+	ViewBag.MetaDesc = Model.Group.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Group.Description);
+	var totalCount = Convert.ToInt32(Model.TotalCount);
+	ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
 
-    var subScribe = string.Empty;
-    var unSubscribe = string.Empty;
-    const string displayNone = "style='display:none;'";
-    if (Model.IsSubscribed)
-    {
-        subScribe = displayNone;
-    }
-    else
-    {
-        unSubscribe = displayNone;
-    }
-    //TempData[Constants.DefaultGroupViewBagName] = Model.Group.Id;
+	var subScribe = string.Empty;
+	var unSubscribe = string.Empty;
+	const string displayNone = "style='display:none;'";
+	if (Model.IsSubscribed)
+	{
+		subScribe = displayNone;
+	}
+	else
+	{
+		unSubscribe = displayNone;
+	}
+	//TempData[Constants.DefaultGroupViewBagName] = Model.Group.Id;
 }
 @section SocialMeta {
-    <meta property="og:title" content="@ViewBag.Title" />
-    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="@ViewBag.Title" />
-    <meta name="twitter:description" content="@ViewBag.MetaDesc" />
+	<meta property="og:title" content="@ViewBag.Title" />
+	<meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="@ViewBag.Title" />
+	<meta name="twitter:description" content="@ViewBag.MetaDesc" />
 }
 @section side
 {
-    @Html.Partial("_CommonSideNav")
+	@Html.Partial("_CommonSideNav")
 }
 
 @Html.Action("GetGroupBreadcrumb", "Group", new { Group = Model.Group })
 
 <div class="Group">
 
-    <div class="mainheading clearfix">
+	<div class="mainheading clearfix">
 
-        <div class="widgetright">
-            @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
-            {
-                <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Group.Id" data-type="Group">
-                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon c-ui-icon--large"));}
-                    @Html.LanguageString("Notification.Subscribe")
-                </a>
-                <a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Group.Id" data-type="Group">
-                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon c-ui-icon--large"));}
-                    @Html.LanguageString("Notification.UnSubscribe")
-                </a>
-            }
-        </div>
-        @if (!string.IsNullOrEmpty(Model.Group.Image))
-        {
-            <img src="@AppHelpers.GroupImage(Model.Group.Image, Model.Group.Id,110)" alt="@Model.Group" class="Groupimage" />
-        }
-        <h2>@Html.Raw(Model.Group.Name)</h2>
-        <p>@Html.Raw(Model.Group.Description.ConvertPostContent())</p>
-    </div>
+		<div class="widgetright">
+			@if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
+			{
+				<a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Group.Id" data-type="Group">
+					@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon c-ui-icon--large"));}
+					@Html.LanguageString("Notification.Subscribe")
+				</a>
+				<a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Group.Id" data-type="Group">
+					@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon c-ui-icon--large"));}
+					@Html.LanguageString("Notification.UnSubscribe")
+				</a>
+			}
+		</div>
+		@if (!string.IsNullOrEmpty(Model.Group.Image))
+		{
+			<img src="@AppHelpers.GroupImage(Model.Group.Image, Model.Group.Id,110)" alt="@Model.Group" class="Groupimage" />
+		}
+		<h2>@Html.Raw(Model.Group.Name)</h2>
+		<p>@Html.Raw(Model.Group.Description.ConvertPostContent())</p>
 
-    @if (Model.SubGroups != null)
-    {
-        Html.RenderPartial("_SubGroups", new SubGroupViewModel
-            {
-                AllPermissionSets = Model.SubGroups.AllPermissionSets,
-                ParentGroup = Model.Group
-            });
-    }
+		@if (Model.GroupUserStatus == GroupUserStatus.NotJoined)
+		{
+			<a @Html.Raw(subScribe) href="@Url.Action("Join", "Group", new {slug = @Model.Group.Slug })" class="btn-mvc-green btn-mvc-large">
+				@Html.LanguageString("Groups.Join")
+			</a>
+		}
+		@if (Model.GroupUserStatus == GroupUserStatus.Joined)
+		{
+			<a @Html.Raw(subScribe) href="@Url.Action("Leave", "Group", new {slug = @Model.Group.Slug })" class="btn-mvc-red btn-mvc-large">
+				@Html.LanguageString("Groups.Leave")
+			</a>
+		}
+		@if (Model.GroupUserRole.RoleName == Constants.AdminRoleName)
+		{
+			<a @Html.Raw(subScribe) href="@Url.Action("ManageUsers", "Group", new {slug = @Model.Group.Slug })" class="btn-mvc btn-mvc-large">
+				@Html.LanguageString("Groups.ManageUsers")
+			</a>
+		}
 
-    @if (Model.TotalCount > 0)
-    {
-        foreach (var topic in Model.Topics)
-        {
-            Html.RenderPartial("_Topic", topic);
-        }
+		@if (Model.GroupUserStatus == GroupUserStatus.Pending)
+		{
+			<a @Html.Raw(subScribe) href="#" class="btn-mvc btn-mvc-large">
+				@Html.LanguageString("Pending Approval")
+			</a>
+		}
+		@if (Model.GroupUserStatus == GroupUserStatus.Locked)
+		{
+			<a @Html.Raw(subScribe) href="#" class="btn-mvc-red btn-mvc-large">
+				@Html.LanguageString("Locked Out")
+			</a>
+		}
+		@if (Model.GroupUserStatus == GroupUserStatus.Banned)
+		{
+			<a @Html.Raw(subScribe) href="#" class="btn-mvc-red btn-mvc-large">
+				@Html.LanguageString("Banned")
+			</a>
+		}
+	</div>
 
-        if (Model.TotalPages > 1)
-        {
-            @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
-        }
-    }
-    else
-    {
-        <p>@Html.LanguageString("Group.NoDiscussions")</p>
-    }
+	@if (Model.SubGroups != null)
+	{
+		Html.RenderPartial("_SubGroups", new SubGroupViewModel
+		{
+			AllPermissionSets = Model.SubGroups.AllPermissionSets,
+			ParentGroup = Model.Group
+		});
+	}
+
+	@if (Model.TotalCount > 0)
+	{
+		foreach (var topic in Model.Topics)
+		{
+			Html.RenderPartial("_Topic", topic);
+		}
+
+		if (Model.TotalPages > 1)
+		{
+			@Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
+		}
+	}
+	else
+	{
+		if (Model.GroupUserStatus != GroupUserStatus.Joined)
+		{
+			<p>@Html.LanguageString("Group.PermissionDenied")</p>
+		}
+
+		else if (Model.GroupUserStatus == GroupUserStatus.Joined)
+		{
+			<p>@Html.LanguageString("Group.NoDiscussions")</p>
+		}
+
+	}
 
 </div>

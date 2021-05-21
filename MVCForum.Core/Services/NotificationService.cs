@@ -193,7 +193,7 @@
         }
 
         /// <inheritdoc />
-        public void Notify(Topic topic, MembershipUser loggedOnReadOnlyUser, NotificationType notificationType)
+        public void Notify(Topic topic, MembershipUser LoggedOnReadOnlyUser, NotificationType notificationType)
         {
             List<Guid> userIdsToNotify;
 
@@ -221,7 +221,7 @@
             {
                 // remove the current user from the notification, don't want to notify yourself that you 
                 // have just made a topic!
-                userIdsToNotify.Remove(loggedOnReadOnlyUser.Id);
+                userIdsToNotify.Remove(LoggedOnReadOnlyUser.Id);
 
                 if (userIdsToNotify.Count > 0)
                 {

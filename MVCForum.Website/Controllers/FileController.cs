@@ -11,7 +11,7 @@
 
     public partial class FileController : BaseController
     {
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly IUploadedFileService _uploadedFileService;
 
         public FileController(ILoggingService loggingService, IMembershipService membershipService,
@@ -22,7 +22,7 @@
                 settingsService, cacheService, context)
         {
             _uploadedFileService = uploadedFileService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
         }
 
         public virtual FileResult Download(Guid id)
@@ -30,12 +30,12 @@
             var uploadedFileById = _uploadedFileService.Get(id);
             if (uploadedFileById != null)
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
                 // Check the user has permission to download this file
                 var fileGroup = uploadedFileById.Post.Topic.Group;
-                var allowedGroupIds = _GroupService.GetAllowedGroups(loggedOnUsersRole).Select(x => x.Id);
+                var allowedGroupIds = _groupService.GetAllowedGroups(loggedOnUsersRole, loggedOnUsersRole.Id).Select(x => x.Id);
                 if (allowedGroupIds.Contains(fileGroup.Id))
                 {
                     //if(AppHelpers.FileIsImage(uploadedFileById.FilePath))

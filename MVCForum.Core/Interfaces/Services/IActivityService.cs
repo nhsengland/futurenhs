@@ -16,7 +16,7 @@
         /// <param name="pageSize"></param>
         /// <param name="usersRole"></param>
         /// <returns></returns>
-        Task<PaginatedList<ActivityBase>> GetPagedGroupedActivities(int pageIndex, int pageSize, MembershipRole usersRole);
+        Task<PaginatedList<ActivityBase>> GetPagedGroupedActivities(int pageIndex, int pageSize, MembershipUser membershipUser, MembershipRole usersRole);
 
         /// <summary>
         /// Post has been created

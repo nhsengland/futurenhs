@@ -1,0 +1,112 @@
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Core.Models.Enums
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.ViewModels.Group
+@using MvcForum.Web.ViewModels.Shared
+@using System.Web.UI.WebControls
+
+@model GroupUserViewModel
+@{
+	Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+	ViewBag.Title = "Manage User";
+	ViewBag.MetaDesc = Model.GroupUser.User.UserName;
+
+	const string displayNone = "style='display:none;'";
+
+}
+@section SocialMeta {
+	<meta property="og:title" content="@ViewBag.Title" />
+	<meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="@ViewBag.Title" />
+	<meta name="twitter:description" content="@ViewBag.MetaDesc" />
+}
+@section side
+{
+	@Html.Partial("_CommonSideNav")
+}
+
+
+@using (Html.BeginForm("ManageUser", "Group", FormMethod.Post, new { enctype = "multipart/form-data", @class = "editmemberform" }))
+{
+	@Html.HiddenFor(x => Model.GroupUser.Id)
+	<div class="memberprofilepublic">
+
+		<div class="c-grid-block">
+
+			<div class="c-grid-block_item l-col-12 l-col-3-t memberavatardetails">
+				<p class="memberavatar"><img src="@Model.GroupUser.User.MemberImage(ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.GroupUser.User.UserName"></p>
+			</div>
+
+			<div class="c-grid-block_item l-col-12 l-col-9-t membermaindetails">
+
+				<div class="membersection memberbio">
+					<div class="c-grid-block">
+						<div class="c-grid-block_item l-col-12 l-col-12-d">
+							<h2>@Model.GroupUser.User.UserName</h2>
+						</div>
+						<div class="c-grid-block_item l-col-12 l-col-6-d">
+							<p>@Html.LanguageString("Members.Profile.Joined") @DatesUi.GetPrettyDate(Model.GroupUser.User.CreateDate.ToString())</p>
+							@if (Model.GroupUser.User.LastActivityDate != null)
+							{
+								<p>@(Html.LanguageString("Members.Profile.LastOnline")): @DatesUi.GetPrettyDate(Model.GroupUser.User.LastActivityDate.ToString())</p>
+							}
+							<p>@Html.LanguageString("Members.Profile.Posts") @Model.GroupUser.User.Posts.Where(x => x.Topic.Group.Id == @Model.GroupUser.Id).ToList().Count</p>
+						</div>
+					</div>
+				</div>
+
+				@if (Model.MemberRole.RoleName == Constants.AdminRoleName)
+				{
+					if (Model.GroupUserStatus == GroupUserStatus.Pending)
+					{<div class="submit-holder">
+							<a href="@Url.Action("ApproveUser", "Group", new {groupUserId = Model.GroupUser.Id})" class="btn-mvc-green btn-mvc-large">
+								@Html.LanguageString("Buttons.Approve")
+							</a>
+							<a href="@Url.Action("RejectUser", "Group", new {groupUserId = Model.GroupUser.Id,slug = Model.GroupUser.Group.Slug})" class="btn-mvc-red btn-mvc-large">
+								@Html.LanguageString("Buttons.Reject")
+							</a>
+						</div>
+					}
+					if (Model.GroupUserStatus == GroupUserStatus.Rejected)
+					{
+						<div class="submit-holder">
+							<a href="@Url.Action("ApproveUser", "Group", new {groupUserId = Model.GroupUser.Id})" class="btn-mvc-green btn-mvc-large">
+								@Html.LanguageString("Buttons.Approve")
+							</a>
+							<a href="@Url.Action("ManageUsers", "Group", new {slug = Model.GroupUser.Group.Slug})" class="btn-mvc-red btn-mvc-large">
+								@Html.LanguageString("Buttons.Back")
+							</a>
+						</div>
+					}
+					if (Model.GroupUserStatus != GroupUserStatus.Pending && Model.GroupUserStatus != GroupUserStatus.Rejected)
+					{
+						@Html.HiddenFor(x=> x.GroupUser.Approved)
+						<p>@Html.LanguageString("GroupMembers.Users.Locked") @Html.EditorFor(x => x.GroupUser.Locked)</p>
+
+						<p>@Html.LanguageString("GroupMembers.Users.Banned") @Html.EditorFor(x => x.GroupUser.Banned)</p>
+
+
+
+						<p>@Html.LanguageString("GroupMembers.Users.Role")</p>
+						@Html.DropDownListFor(x => Model.GroupUser.Role.Id, Model.RoleSelectList)
+
+						<div class="submit-holder">
+							<button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Save")</button>
+
+							<a href="@Url.Action("ManageUsers", "Group", new {slug = Model.GroupUser.Group.Slug})" class="btn-mvc-red btn-mvc-large">
+								@Html.LanguageString("Buttons.Back")
+							</a>
+						</div>
+					}
+
+				}
+
+
+
+			</div>
+
+		</div>
+	</div>
+}

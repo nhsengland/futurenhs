@@ -95,7 +95,7 @@
                     var postIds = posts.Select(x => x.Id).ToList();
 
                     // Get all Groups
-                    var allGroups = _groupService.GetAll();
+                    var allGroups = _groupService.GetAll(input.EntityToProcess.Id);
 
                     // Need to see if any of these are last posts on Topics
                     // If so, need to swap out last post

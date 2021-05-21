@@ -7,13 +7,13 @@ namespace MvcForum.Core.Services.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class RemovePrivateMessaging : IMigrationMetadata
+    public sealed partial class ModifyGroupsToBeJoinable : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RemovePrivateMessaging));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ModifyGroupsToBeJoinable));
         
         string IMigrationMetadata.Id
         {
-            get { return "202105130631421_RemovePrivateMessaging"; }
+            get { return "202105112219033_ModifyGroupsToBeJoinable"; }
         }
         
         string IMigrationMetadata.Source

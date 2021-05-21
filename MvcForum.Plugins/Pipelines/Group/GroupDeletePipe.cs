@@ -12,7 +12,7 @@
 
     public class GroupDeletePipe : IPipe<IPipelineProcess<Group>>
     {
-        private readonly IGroupPermissionForRoleService _GroupPermissionForRoleService;
+        private readonly IGroupPermissionForRoleService _groupPermissionForRoleService;
         private readonly INotificationService _notificationService;
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
@@ -20,7 +20,7 @@
         public GroupDeletePipe(IGroupPermissionForRoleService GroupPermissionForRoleService, 
             INotificationService notificationService, ILoggingService loggingService, ICacheService cacheService)
         {
-            _GroupPermissionForRoleService = GroupPermissionForRoleService;
+            _groupPermissionForRoleService = GroupPermissionForRoleService;
             _notificationService = notificationService;
             _loggingService = loggingService;
             _cacheService = cacheService;
@@ -30,7 +30,7 @@
         public async Task<IPipelineProcess<Group>> Process(IPipelineProcess<Group> input,
             IMvcForumContext context)
         {
-            _GroupPermissionForRoleService.RefreshContext(context);
+            _groupPermissionForRoleService.RefreshContext(context);
             _notificationService.RefreshContext(context);
 
             try
@@ -41,11 +41,11 @@
                 if (okToDelete)
                 {
                     // Get any Grouppermissionforoles and delete these first
-                    var rolesToDelete = _GroupPermissionForRoleService.GetByGroup(input.EntityToProcess.Id);
+                    var rolesToDelete = _groupPermissionForRoleService.GetByGroup(input.EntityToProcess.Id);
 
                     foreach (var GroupPermissionForRole in rolesToDelete)
                     {
-                        _GroupPermissionForRoleService.Delete(GroupPermissionForRole);
+                        _groupPermissionForRoleService.Delete(GroupPermissionForRole);
                     }
 
                     var GroupNotificationsToDelete = new List<GroupNotification>();

@@ -14,12 +14,12 @@
     public partial class PermissionService : IPermissionService
     {
         private IMvcForumContext _context;
-        private readonly IGroupPermissionForRoleService _GroupPermissionForRoleService;
+        private readonly IGroupPermissionForRoleService _groupPermissionForRoleService;
         private readonly ICacheService _cacheService;
 
         public PermissionService(IGroupPermissionForRoleService GroupPermissionForRoleService, IMvcForumContext context, ICacheService cacheService)
         {
-            _GroupPermissionForRoleService = GroupPermissionForRoleService;
+            _groupPermissionForRoleService = GroupPermissionForRoleService;
             _cacheService = cacheService;
             _context = context;
         }
@@ -28,7 +28,7 @@
         public void RefreshContext(IMvcForumContext context)
         {
             _context = context;
-            _GroupPermissionForRoleService.RefreshContext(context);
+            _groupPermissionForRoleService.RefreshContext(context);
         }
 
         /// <inheritdoc />
@@ -71,10 +71,10 @@
         /// <param name="permission"></param>
         public void Delete(Permission permission)
         {
-            var catPermForRoles = _GroupPermissionForRoleService.GetByPermission(permission.Id);
+            var catPermForRoles = _groupPermissionForRoleService.GetByPermission(permission.Id);
             foreach (var GroupPermissionForRole in catPermForRoles)
             {
-                _GroupPermissionForRoleService.Delete(GroupPermissionForRole);
+                _groupPermissionForRoleService.Delete(GroupPermissionForRole);
             }
 
             _context.Permission.Remove(permission);

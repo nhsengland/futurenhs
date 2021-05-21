@@ -13,7 +13,7 @@
         var permissions = Model.AllPermissionSets[cat];
 
         @Html.Partial("_Group", new GroupViewModel {
-                                                           Group = cat.Group,
+                                                           Group = cat.Group.Group,
                                                            LatestTopic = cat.MostRecentTopic,
                                                            Permissions = permissions,
                                                            PostCount = cat.PostCount,

@@ -32,10 +32,10 @@
         [Authorize]
         public virtual ActionResult Index()
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+            User.GetMembershipUser(MembershipService);
 
             // Get the favourites
-            var favourites = _favouriteService.GetAllByMember(loggedOnReadOnlyUser.Id);
+            var favourites = _favouriteService.GetAllByMember(LoggedOnReadOnlyUser.Id);
 
             // Pull out the posts
             var posts = favourites.Select(x => x.Post);
@@ -48,9 +48,9 @@
             foreach (var post in posts)
             {
                 var permissions = RoleService.GetPermissions(post.Topic.Group,
-                    loggedOnReadOnlyUser.Roles.FirstOrDefault());
+                    LoggedOnReadOnlyUser.Roles.FirstOrDefault());
                 var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
-                    post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                    post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
                 postViewModel.ShowTopicName = true;
                 viewModel.Posts.Add(postViewModel);
             }
@@ -64,8 +64,8 @@
         public virtual JsonResult FavouritePost(EntityIdViewModel viewModel)
         {
             var returnValue = new FavouriteJsonReturnModel();
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            if (Request.IsAjaxRequest() && loggedOnReadOnlyUser != null)
+            User.GetMembershipUser(MembershipService);
+            if (Request.IsAjaxRequest() && LoggedOnReadOnlyUser != null)
             {
                 try
                 {
@@ -73,7 +73,17 @@
                     var topic = _topicService.Get(post.Topic.Id);
 
                     // See if this is a user adding or removing the favourite
-                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                    Guid? user;
+                    if (LoggedOnReadOnlyUser == null)
+                    {
+                        user = null;
+                    }
+                    else
+                    {
+                        user = LoggedOnReadOnlyUser.Id;
+                    }
+                    ;
+                    var loggedOnUser = MembershipService.GetUser(user);
                     var existingFavourite = _favouriteService.GetByMemberAndPost(loggedOnUser.Id, post.Id);
                     if (existingFavourite != null)
                     {

@@ -33,6 +33,8 @@
         // This is the role a non logged in user defaults to
         public const string GuestRoleName = "Guest";
 
+        public const string StandardRoleName = "Standard Members";
+
         //------------ End Permissions ----------
 
         /// <summary>

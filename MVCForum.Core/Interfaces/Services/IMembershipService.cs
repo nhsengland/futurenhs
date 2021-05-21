@@ -17,14 +17,14 @@
         MembershipUser SanitizeUser(MembershipUser membershipUser);
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);
         string[] GetRolesForUser(string username);
-        MembershipUser Get(Guid id);
+        MembershipUser Get(Guid? id);
         MembershipUser GetUser(string username, bool removeTracking = false);
         MembershipUser GetUserByEmail(string email, bool removeTracking = false);
         MembershipUser GetUserBySlug(string slug);
         IList<MembershipUser> GetUserBySlugLike(string slug);
         IList<MembershipUser> GetUsersById(List<Guid> guids);
         IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts);
-        MembershipUser GetUser(Guid id);
+        MembershipUser GetUser(Guid? id);
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);
         void UnlockUser(string username, bool resetPasswordAttempts);

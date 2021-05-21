@@ -7,7 +7,7 @@
     /// </summary>
     public class GroupSummary
     {
-        public Group Group { get; set; }
+        public GroupUserDTO Group { get; set; }
         public int TopicCount { get; set; }
         public int PostCount { get; set; }
         public Topic MostRecentTopic { get; set; }

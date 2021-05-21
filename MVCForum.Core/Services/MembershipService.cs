@@ -28,7 +28,7 @@
         private const int MaxHoursToResetPassword = 48;
         private readonly IActivityService _activityService;
         private readonly ICacheService _cacheService;
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private IMvcForumContext _context;
         private readonly IFavouriteService _favouriteService;
         private readonly ILocalizationService _localizationService;
@@ -80,7 +80,7 @@
             _favouriteService = favouriteService;
             _membershipUserPointsService = membershipUserPointsService;
             _topicService = topicService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _postService = postService;
             _notificationService = notificationService;
             _pollService = pollService;
@@ -98,7 +98,7 @@
             _favouriteService.RefreshContext(context);
             _membershipUserPointsService.RefreshContext(context);
             _topicService.RefreshContext(context);
-            _GroupService.RefreshContext(context);
+            _groupService.RefreshContext(context);
             _postService.RefreshContext(context);
             _notificationService.RefreshContext(context);
             _pollService.RefreshContext(context);
@@ -404,7 +404,8 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public MembershipUser Get(Guid id)
+        /// <returns></returns>
+        public MembershipUser Get(Guid? id)
         {
 
             return _context.MembershipUser
@@ -549,6 +550,11 @@
 
         }
 
+        public MembershipUser GetUser(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         ///     Return the roles found for this username
@@ -677,7 +683,7 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public MembershipUser GetUser(Guid id)
+        public MembershipUser GetUser(Guid? id)
         {
             return Get(id);
         }

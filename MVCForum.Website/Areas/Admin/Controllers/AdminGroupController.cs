@@ -17,8 +17,8 @@
     [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminGroupController : BaseAdminController
     {
-        private readonly IGroupService _GroupService;
-
+        private readonly IGroupService _groupService;
+        protected new MembershipUser LoggedOnReadOnlyUser;
         public AdminGroupController(ILoggingService loggingService,
             IMvcForumContext context,
             IMembershipService membershipService,
@@ -27,7 +27,8 @@
             ISettingsService settingsService)
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
-            _GroupService = GroupService;
+            _groupService = GroupService;
+            LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
         public ActionResult Index()
@@ -38,9 +39,10 @@
         [ChildActionOnly]
         public PartialViewResult GetMainGroups()
         {
+
             var viewModel = new ListGroupsViewModel
             {
-                Groups = _GroupService.GetAll().OrderBy(x => x.SortOrder)
+                Groups = _groupService.GetAll(LoggedOnReadOnlyUser?.Id).OrderBy(x => x.SortOrder)
             };
             return PartialView(viewModel);
         }
@@ -52,7 +54,7 @@
         /// <returns></returns>
         public ActionResult RemoveGroupImage(Guid id)
         {
-            var Group = _GroupService.Get(id);
+            var Group = _groupService.Get(id);
             Group.Image = string.Empty;
             Context.SaveChanges();
             return RedirectToAction("EditGroup", new {id});
@@ -62,8 +64,9 @@
         {
             var GroupViewModel = new GroupEditViewModel
             {
-                AllGroups = _GroupService.GetBaseSelectListGroups(_GroupService.GetAll()),
-                AllSections = _GroupService.GetAllSections().ToSelectList()
+                AllGroups = _groupService.GetBaseSelectListGroups(_groupService.GetAll(LoggedOnReadOnlyUser?.Id), LoggedOnReadOnlyUser?.Id),
+                AllSections = _groupService.GetAllSections().ToSelectList(),
+				Users = MembershipService.GetAll().ToSelectList()
             };
             return View(GroupViewModel);
         }
@@ -81,7 +84,9 @@
             {
                 var Group = GroupViewModel.ToGroup();
 
-                var GroupResult = await _GroupService.Create(Group, GroupViewModel.Files,
+                Group.GroupOwner = MembershipService.GetUser(GroupViewModel.GroupOwner);
+
+                var GroupResult = await _groupService.Create(Group, GroupViewModel.Files,
                     GroupViewModel.ParentGroup, GroupViewModel.Section);
                 if (!GroupResult.Successful)
                 {
@@ -89,6 +94,7 @@
                 }
                 else
                 {
+                    _groupService.AddGroupAdministrators(Group.Slug, GroupViewModel.GroupAdministrators.ToList(),LoggedOnReadOnlyUser.Id);
                     // We use temp data because we are doing a redirect
                     TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
@@ -104,18 +110,20 @@
                 ModelState.AddModelError("", "There was an error creating the Group");
             }
 
-            GroupViewModel.AllGroups = _GroupService.GetBaseSelectListGroups(_GroupService.GetAll());
-            GroupViewModel.AllSections = _GroupService.GetAllSections().ToSelectList();
+            GroupViewModel.AllGroups = _groupService.GetBaseSelectListGroups(_groupService.GetAll(LoggedOnReadOnlyUser?.Id), LoggedOnReadOnlyUser?.Id);
+            GroupViewModel.AllSections = _groupService.GetAllSections().ToSelectList();
+            GroupViewModel.Users = MembershipService.GetAll().ToSelectList();
 
             return View(GroupViewModel);
         }
 
         public ActionResult EditGroup(Guid id)
         {
-            var Group = _GroupService.Get(id);
-            var GroupViewModel = Group.ToEditViewModel(_GroupService.GetBaseSelectListGroups(_GroupService.GetAll().Where(x => x.Id != Group.Id).ToList()), _GroupService.GetAllSections().ToSelectList());
-
-            return View(GroupViewModel);
+            var group = _groupService.Get(id);
+            var groupViewModel = group.ToEditViewModel(_groupService.GetBaseSelectListGroups(_groupService.GetAll(LoggedOnReadOnlyUser?.Id).Where(x => x.Id != group.Id).ToList(), LoggedOnReadOnlyUser?.Id), _groupService.GetAllSections().ToSelectList());
+            groupViewModel.RowVersion = group.RowVersion;
+            groupViewModel.Users = MembershipService.GetAll().ToSelectList();
+            return View(groupViewModel);
         }
 
         [HttpPost]
@@ -123,20 +131,23 @@
         {
             if (ModelState.IsValid)
             {
+                var administrators = GroupViewModel.GroupAdministrators.ToList();
+                //_groupService.getg
                 // Reset the select list
-                GroupViewModel.AllGroups = _GroupService.GetBaseSelectListGroups(_GroupService.GetAll()
+                GroupViewModel.AllGroups = _groupService.GetBaseSelectListGroups(_groupService.GetAll(LoggedOnReadOnlyUser?.Id)
+
                     .Where(x => x.Id != GroupViewModel.Id)
-                    .ToList());
+                    .ToList(), LoggedOnReadOnlyUser?.Id);
 
-                var GroupToEdit = _GroupService.Get(GroupViewModel.Id);
+                var groupToEdit = _groupService.Get(GroupViewModel.Id);
 
-                var Group = GroupViewModel.ToGroup(GroupToEdit);
-
-                var GroupResult = await _GroupService.Edit(Group, GroupViewModel.Files,
+                var group = GroupViewModel.ToGroup(groupToEdit);
+                group.RowVersion = GroupViewModel.RowVersion;
+                var groupResult = await _groupService.Edit(group, GroupViewModel.Files,
                     GroupViewModel.ParentGroup, GroupViewModel.Section);
-                if (!GroupResult.Successful)
+                if (!groupResult.Successful)
                 {
-                    ModelState.AddModelError("", GroupResult.ProcessLog.FirstOrDefault());
+                    ModelState.AddModelError("", groupResult.ProcessLog.FirstOrDefault());
                 }
                 else
                 {
@@ -148,20 +159,23 @@
                     };
 
                     // Set the view model
-                    GroupViewModel = GroupResult.EntityToProcess.ToEditViewModel(
-                        _GroupService.GetBaseSelectListGroups(_GroupService.GetAll()
+                    GroupViewModel = groupResult.EntityToProcess.ToEditViewModel(
+                        _groupService.GetBaseSelectListGroups(_groupService.GetAll(LoggedOnReadOnlyUser?.Id)
                             .Where(x => x.Id != GroupViewModel.Id)
-                            .ToList()), _GroupService.GetAllSections().ToSelectList());
+                            .ToList(), LoggedOnReadOnlyUser?.Id), _groupService.GetAllSections().ToSelectList());
+
+                    _groupService.AddGroupAdministrators(group.Slug, administrators, LoggedOnReadOnlyUser.Id);
                 }
             }
+            GroupViewModel.Users = MembershipService.GetAll().ToSelectList();
 
             return View(GroupViewModel);
         }
 
         public ActionResult DeleteGroupConfirmation(Guid id)
         {
-            var cat = _GroupService.Get(id);
-            var subCats = _GroupService.GetAllSubGroups(id).ToList();
+            var cat = _groupService.Get(id);
+            var subCats = _groupService.GetAllSubGroups(id, LoggedOnReadOnlyUser?.Id).ToList();
             var viewModel = new DeleteGroupViewModel
             {
                 Id = cat.Id,
@@ -174,8 +188,8 @@
 
         public async Task<ActionResult> DeleteGroup(Guid id)
         {
-            var cat = _GroupService.Get(id);
-            var GroupResult = await _GroupService.Delete(cat);
+            var cat = _groupService.Get(id);
+            var GroupResult = await _groupService.Delete(cat);
 
             if (!GroupResult.Successful)
             {
@@ -201,8 +215,9 @@
         {
             try
             {
+               
                 // var all Groups
-                var all = _GroupService.GetAll();
+                var all = _groupService.GetAll(LoggedOnReadOnlyUser?.Id);
 
                 // Get all the Groups
                 var mainGroups = all.Where(x => x.ParentGroup == null).ToList();
@@ -304,7 +319,7 @@
         {
             var viewModel = new SectionListViewModel
             {
-                Sections = _GroupService.GetAllSections()
+                Sections = _groupService.GetAllSections()
             };
             return PartialView(viewModel);
         }
@@ -320,7 +335,7 @@
 
             if (id != null)
             {
-                var section = _GroupService.GetSection(id.Value);
+                var section = _groupService.GetSection(id.Value);
 
                 GroupViewModel.IsEdit = true;
                 GroupViewModel.Id = section.Id;
@@ -343,7 +358,7 @@
         {
             if (ModelState.IsValid)
             {
-                var section = sectionAddEditViewModel.IsEdit ? _GroupService.GetSection(sectionAddEditViewModel.Id) 
+                var section = sectionAddEditViewModel.IsEdit ? _groupService.GetSection(sectionAddEditViewModel.Id) 
                                                                 : new Section{DateCreated = DateTime.UtcNow};
 
                 section.Name = sectionAddEditViewModel.Name;
@@ -373,7 +388,7 @@
 
         public ActionResult DeleteSection(Guid id)
         {
-            _GroupService.DeleteSection(id);
+            _groupService.DeleteSection(id);
 
             TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {

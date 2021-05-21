@@ -28,7 +28,7 @@
             var permissions = new Dictionary<GroupSummary, PermissionSet>();
             foreach (var summary in Groups)
             {
-                var permissionSet = roleService.GetPermissions(summary.Group, usersRole);
+                var permissionSet = roleService.GetPermissions(summary.Group.Group, usersRole);
 
                 // Should we add if deny access is ticked
                 if (removeIfDenyAccess)

@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Plugins.Pipelines.Group
+﻿using System.Data.Entity.Infrastructure;
+
+namespace MvcForum.Plugins.Pipelines.Group
 {
     using System;
     using System.Data.Entity;
@@ -16,14 +18,14 @@
     {
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly ICacheService _cacheService;
 
         public GroupCreateEditPipe(ILocalizationService localizationService, ILoggingService loggingService, IGroupService GroupService, ICacheService cacheService)
         {
             _localizationService = localizationService;
             _loggingService = loggingService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _cacheService = cacheService;
         }
 
@@ -32,7 +34,7 @@
             IMvcForumContext context)
         {
             _localizationService.RefreshContext(context);
-            _GroupService.RefreshContext(context);
+            _groupService.RefreshContext(context);
 
             try
             {
@@ -48,7 +50,7 @@
                 {
                     if (input.ExtendedData[Constants.ExtendedDataKeys.Section] is Guid guid)
                     {
-                        section = _GroupService.GetSection(guid);
+                        section = _groupService.GetSection(guid);
                     }
                 }
 
@@ -65,7 +67,7 @@
                 {
 
                     var parentCat = parentGroupGuid != null
-                        ? _GroupService.Get(parentGroupGuid.Value)
+                        ? _groupService.Get(parentGroupGuid.Value)
                         : null;
 
                     // Check they are not trying to add a subGroup of this Group as the parent or it will break
@@ -83,11 +85,11 @@
                     if (parentGroupGuid != null)
                     {
                         // Set the parent Group
-                        var parentGroup = _GroupService.Get(parentGroupGuid.Value);
+                        var parentGroup = _groupService.Get(parentGroupGuid.Value);
                         input.EntityToProcess.ParentGroup = parentGroup;
 
                         // Append the path from the parent Group
-                        _GroupService.SortPath(input.EntityToProcess, parentGroup);
+                        _groupService.SortPath(input.EntityToProcess, parentGroup);
                     }
                     else
                     {
@@ -99,9 +101,16 @@
                         input.EntityToProcess.Path = null;
                     }
 
-                    _GroupService.UpdateSlugFromName(input.EntityToProcess);
-
-                    await context.SaveChangesAsync();
+                    Guid user = new Guid();
+                    _groupService.UpdateSlugFromName(input.EntityToProcess, user);
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
@@ -109,19 +118,26 @@
                     {
                         var parentGroup = await context.Group.FirstOrDefaultAsync(x => x.Id == parentGroupGuid.Value);
                         input.EntityToProcess.ParentGroup = parentGroup;
-                        _GroupService.SortPath(input.EntityToProcess, parentGroup);
+                        _groupService.SortPath(input.EntityToProcess, parentGroup);
                     }
 
 
                     // url slug generator
                     input.EntityToProcess.Slug = ServiceHelpers.GenerateSlug(input.EntityToProcess.Name,
-                        _GroupService.GetBySlugLike(ServiceHelpers.CreateUrl(input.EntityToProcess.Name)).Select(x => x.Slug).ToList(), null);
+                        _groupService.GetBySlugLike(ServiceHelpers.CreateUrl(input.EntityToProcess.Name)).Select(x => x.Slug).ToList(), null);
 
                     // Add the Group
                     context.Group.Add(input.EntityToProcess);
                 }
 
-                await context.SaveChangesAsync();
+                try
+                {
+                    await context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException  ex )
+                {
+                    return null;
+                }
 
                 _cacheService.ClearStartsWith("GroupList");
 

@@ -22,7 +22,7 @@
     public partial class HomeController : BaseController
     {
         private readonly IActivityService _activityService;
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly ITopicService _topicService;
 
         public HomeController(ILoggingService loggingService, IActivityService activityService,
@@ -33,7 +33,7 @@
                 settingsService, cacheService, context)
         {
             _topicService = topicService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _activityService = activityService;
         }
 
@@ -68,9 +68,9 @@
         {
             if (ModelState.IsValid)
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                User.GetMembershipUser(MembershipService);
 
-                var user = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                var user = MembershipService.GetUser(LoggedOnReadOnlyUser?.Id);
                 user.HasAgreedToTermsAndConditions = viewmodel.Agree;
                 try
                 {
@@ -90,8 +90,8 @@
 
         public virtual async Task<ActionResult> Activity(int? p)
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
             // Set the page index
             var pageIndex = p ?? 1;
@@ -99,7 +99,7 @@
             // Get the topics
             var activities = await
                 _activityService.GetPagedGroupedActivities(pageIndex,
-                    SettingsService.GetSettings().ActivitiesPerPage, loggedOnUsersRole);
+                    SettingsService.GetSettings().ActivitiesPerPage, LoggedOnReadOnlyUser, loggedOnUsersRole);
 
             // create the view model
             var viewModel = new AllRecentActivitiesViewModel
@@ -115,12 +115,11 @@
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
         public virtual ActionResult LatestRss()
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
             // Allowed Groups for a guest - As that's all we want latest RSS to show
             var guestRole = RoleService.GetRole(Constants.GuestRoleName);
-            var allowedGroups = _GroupService.GetAllowedGroups(guestRole);
+            var allowedGroups = _groupService.GetAllowedGroups(guestRole,LoggedOnReadOnlyUser?.Id);
 
             // get an rss lit ready
             var rssTopics = new List<RssItem>();
@@ -219,7 +218,7 @@
         {
             // Allowed Groups for a guest
             var guestRole = RoleService.GetRole(Constants.GuestRoleName);
-            var allowedGroups = _GroupService.GetAllowedGroups(guestRole);
+            var allowedGroups = _groupService.GetAllowedGroups(guestRole,LoggedOnReadOnlyUser?.Id);
 
             // Get all topics that a guest has access to
             var allTopics = _topicService.GetAll(allowedGroups);
@@ -275,7 +274,7 @@
         {
             // Allowed Groups for a guest
             var guestRole = RoleService.GetRole(Constants.GuestRoleName);
-            var allowedGroups = _GroupService.GetAllowedGroups(guestRole);
+            var allowedGroups = _groupService.GetAllowedGroups(guestRole, LoggedOnReadOnlyUser?.Id);
 
             // Sitemap holder
             var sitemap = new List<SitemapEntry>();

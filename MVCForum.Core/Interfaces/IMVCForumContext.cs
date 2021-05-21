@@ -38,6 +38,7 @@
         DbSet<Favourite> Favourite { get; set; }
         DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
         DbSet<PostEdit> PostEdit { get; set; }
+        DbSet<GroupUser> GroupUser { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();

@@ -12,7 +12,7 @@
 
     public partial class SearchController : BaseController
     {
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly IFavouriteService _favouriteService;
         private readonly IPostService _postService;
         private readonly IVoteService _voteService;
@@ -27,7 +27,7 @@
             _postService = postService;
             _voteService = voteService;
             _favouriteService = favouriteService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
         }
 
         [HttpGet]
@@ -40,14 +40,13 @@
                     term = term.Trim();
                 }
 
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
                 // Get the global settings
                 var settings = SettingsService.GetSettings();
 
                 // Get allowed Groups
-                var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+                var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
 
 
                 // Set the page index
@@ -76,7 +75,7 @@
 
                 // Create the post view models
                 var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions,
-                    loggedOnReadOnlyUser, settings, favs);
+                    LoggedOnReadOnlyUser, settings, favs);
 
                 // create the view model
                 var viewModel = new SearchViewModel

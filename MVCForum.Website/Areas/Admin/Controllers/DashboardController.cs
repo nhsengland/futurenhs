@@ -12,7 +12,7 @@
     public class DashboardController : BaseAdminController
     {
         private const int AmountToShow = 7;
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -30,7 +30,7 @@
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _membershipUserPointsService = membershipUserPointsService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _postService = postService;
             _topicService = topicService;
         }
@@ -39,8 +39,8 @@
         {
             
             var moderateCount = 0;
-            var topicsToModerate = _topicService.GetPendingTopicsCount(_GroupService.GetAll());
-            var postsToModerate = _postService.GetPendingPostsCount(_GroupService.GetAll());
+            var topicsToModerate = _topicService.GetPendingTopicsCount(_groupService.GetAll(LoggedOnReadOnlyUser?.Id));
+            var postsToModerate = _postService.GetPendingPostsCount(_groupService.GetAll(LoggedOnReadOnlyUser?.Id));
             if (topicsToModerate > 0 || postsToModerate > 0)
             {
                 moderateCount = topicsToModerate + postsToModerate;
@@ -57,7 +57,7 @@
         public PartialViewResult TodaysTopics()
         {
             // Get all cats as only admins can view this page
-            var allCats = _GroupService.GetAll();
+            var allCats = _groupService.GetAll(LoggedOnReadOnlyUser?.Id);
 
             if (Request.IsAjaxRequest())
             {
@@ -114,7 +114,7 @@
             if (Request.IsAjaxRequest())
             {
                 // Get all cats as only admins can view this page
-                var allCats = _GroupService.GetAll();
+                var allCats = _groupService.GetAll(LoggedOnReadOnlyUser?.Id);
 
                 return PartialView(new HighestViewedTopics
                 {

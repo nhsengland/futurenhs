@@ -51,7 +51,6 @@ window.jsConfig = {
         'dashboardlowestpointposts': 'LowestPointPosts',
         'dashboardtodaystopics': 'TodaysTopics',
         'dashboardhighestviewedtopics': 'HighestViewedTopics',
-        'mvcforumlatestnews': 'MvcForumLatestNews'
     },
     tagsInputAdditionalConfig: {
         minChars: 2,

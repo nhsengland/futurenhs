@@ -24,6 +24,13 @@
                 new {controller = "Group", action = "Show", slug = UrlParameter.Optional} // Parameter defaults
             );
 
+
+            routes.MapRoute(
+                "GroupMembersUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/ManageUsers/{slug}"), // URL with parameters
+                new { controller = "Group", action = "ManageUsers", slug = UrlParameter.Optional } // Parameter defaults
+            );
+
             routes.MapRoute(
                 "GroupRssUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/rss/{slug}"), // URL with parameters

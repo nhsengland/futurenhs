@@ -8,7 +8,7 @@
 
     public partial class StatsController : BaseController
     {
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
 
@@ -22,14 +22,14 @@
         {
             _topicService = topicService;
             _postService = postService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
         }
 
         [ChildActionOnly]
         [OutputCache(Duration = (int) CacheTimes.OneHour)]
         public virtual PartialViewResult GetMainStats()
         {
-            var allCats = _GroupService.GetAll();
+            var allCats = _groupService.GetAll(LoggedOnReadOnlyUser?.Id);
             var viewModel = new MainStatsViewModel
             {
                 LatestMembers = MembershipService.GetLatestUsers(10),

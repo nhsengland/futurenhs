@@ -11,7 +11,7 @@
 
     public partial class TagController : BaseController
     {
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly ITopicTagService _topicTagService;
 
         public TagController(ILoggingService loggingService, IMembershipService membershipService,
@@ -22,20 +22,19 @@
                 settingsService, cacheService, context)
         {
             _topicTagService = topicTagService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
         }
 
         [ChildActionOnly]
         public virtual PartialViewResult PopularTags(int amountToTake)
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
             var cacheKey = string.Concat("PopularTags", amountToTake, loggedOnUsersRole.Id);
             var viewModel = CacheService.Get<PopularTagViewModel>(cacheKey);
             if (viewModel == null)
             {
-                var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+                var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
                 var popularTags = _topicTagService.GetPopularTags(amountToTake, allowedGroups);
                 viewModel = new PopularTagViewModel {PopularTags = popularTags};
                 CacheService.Set(cacheKey, viewModel, CacheTimes.SixHours);

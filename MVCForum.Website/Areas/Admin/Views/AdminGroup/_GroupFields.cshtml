@@ -44,11 +44,19 @@
 </div>
 
 <div class="checkbox">
-    @using (Html.BeginLabelFor(m => m.IsLocked, new { @class = "checkbox" }))
+	@using (Html.BeginLabelFor(m => m.IsLocked, new { @class = "checkbox" }))
+	{
+		@Html.CheckBoxFor(m => m.IsLocked)
+	}
+	@Html.ValidationMessageFor(m => m.IsLocked)
+</div>
+
+<div class="checkbox">
+    @using (Html.BeginLabelFor(m => m.Public, new { @class = "checkbox" }))
     {
-        @Html.CheckBoxFor(m => m.IsLocked)
+        @Html.CheckBoxFor(m => m.Public)
     }
-    @Html.ValidationMessageFor(m => m.IsLocked)
+    @Html.ValidationMessageFor(m => m.Public)
 </div>
 
 <div class="checkbox">
@@ -86,6 +94,18 @@
     @Html.ValidationMessageFor(model => model.Section)
 </div>
 
+<div class="form-group">
+    @Html.LabelFor(model => model.GroupOwner)
+    @Html.DropDownListFor(model => model.GroupOwner, Model.Users, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.GroupOwner)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.GroupAdministrators)
+    @Html.ListBoxFor(model => model.GroupAdministrators, Model.Users, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.GroupAdministrators)
+</div>
+
 <hr />
 
 <div class="form-group">
@@ -95,8 +115,9 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.MetaDesc)
-    @Html.TextAreaFor(model => model.MetaDesc, new { @class = "form-control" })
-    @Html.ValidationMessageFor(model => model.MetaDesc)
+	@Html.LabelFor(model => model.MetaDesc)
+	@Html.TextAreaFor(model => model.MetaDesc, new { @class = "form-control" })
+	@Html.ValidationMessageFor(model => model.MetaDesc)
 </div>
+@Html.HiddenFor(x=> x.RowVersion)
 

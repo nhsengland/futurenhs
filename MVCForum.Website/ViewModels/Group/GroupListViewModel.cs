@@ -10,6 +10,11 @@
         public Dictionary<Group, PermissionSet> AllPermissionSets { get; set; }
     }
 
+    public class MyGroupListViewModel
+    {
+        public List<GroupUser> MyGroups { get; set; }
+    }
+
     public class GroupListSummaryViewModel
     {
         public Dictionary<GroupSummary, PermissionSet> AllPermissionSets { get; set; }

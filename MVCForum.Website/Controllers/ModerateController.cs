@@ -14,7 +14,7 @@
     [Authorize]
     public partial class ModerateController : BaseController
     {
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly IActivityService _activityService;
@@ -28,18 +28,17 @@
         {
             _postService = postService;
             _topicService = topicService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _activityService = activityService;
         }
 
         public virtual ActionResult Index()
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
             // Show both pending topics and also pending posts
             // Use ajax for paging too
-            var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+            var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
             var viewModel = new ModerateViewModel
             {
                 Posts = _postService.GetPendingPosts(allowedGroups, loggedOnUsersRole),
@@ -53,8 +52,8 @@
         {
             try
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
                 var topic = _topicService.Get(viewModel.TopicId);
                 var permissions = RoleService.GetPermissions(topic.Group, loggedOnUsersRole);
@@ -97,8 +96,8 @@
         {
             try
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
                 var post = _postService.Get(viewModel.PostId);
                 var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);

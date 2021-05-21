@@ -36,6 +36,6 @@
         TopicNotification Add(TopicNotification topicNotification);
         #endregion
 
-        void Notify(Topic topic, MembershipUser loggedOnReadOnlyUser, NotificationType notificationType);
+        void Notify(Topic topic, MembershipUser LoggedOnReadOnlyUser, NotificationType notificationType);
     }
 }

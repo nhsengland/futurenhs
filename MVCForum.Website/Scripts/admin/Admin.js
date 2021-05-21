@@ -62,7 +62,7 @@
 
         var isChecked = checkBox.is(':checked');
         var permission = checkBox.data('permisssion');
-        var group = checkBox.data('Group');
+        var group = checkBox.data('group');
         var role = checkBox.data('role');
 
         // Ajax call here

@@ -32,7 +32,7 @@
     /// </summary>
     public partial class MembersController : BaseController
     {
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly IEmailService _emailService;
         private readonly IFavouriteService _favouriteService;
         private readonly INotificationService _notificationService;
@@ -89,7 +89,7 @@
             _postService = postService;
             _reportService = reportService;
             _emailService = emailService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _topicService = topicService;
             _notificationService = notificationService;
             _pollService = pollService;
@@ -282,13 +282,11 @@
         public virtual ActionResult GetByName(string slug)
         {
             var member = MembershipService.GetUserBySlug(slug);
-            var loggedOnReadOnlyUser = User.Identity.IsAuthenticated
-                ? MembershipService.GetUser(User.Identity.Name, true)
-                : null;
-            var usersRole = loggedOnReadOnlyUser == null
+         
+            var usersRole = LoggedOnReadOnlyUser == null
                 ? RoleService.GetRole(Constants.GuestRoleName, true)
-                : loggedOnReadOnlyUser.Roles.FirstOrDefault();
-            var loggedonId = loggedOnReadOnlyUser?.Id ?? Guid.Empty;
+                : LoggedOnReadOnlyUser.Roles.FirstOrDefault();
+            var loggedonId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
             var permissions = RoleService.GetPermissions(null, usersRole);
 
             return View(new ViewMemberViewModel
@@ -733,14 +731,14 @@
         {
             if (Request.IsAjaxRequest())
             {
-                var loggedOnReadOnlyUser = User.Identity.IsAuthenticated
+                var loggedOnUser = User.Identity.IsAuthenticated
                     ? MembershipService.GetUser(User.Identity.Name, true)
                     : null;
-                var usersRole = loggedOnReadOnlyUser == null
+                var usersRole = loggedOnUser == null
                     ? RoleService.GetRole(Constants.GuestRoleName, true)
-                    : loggedOnReadOnlyUser.Roles.FirstOrDefault();
+                    : loggedOnUser.Roles.FirstOrDefault();
 
-                var allowedGroups = _GroupService.GetAllowedGroups(usersRole).ToList();
+                var allowedGroups = _groupService.GetAllowedGroups(usersRole, loggedOnUser.Id).ToList();
 
                 // Get the user discussions, only grab 100 posts
                 var posts = _postService.GetByMember(id, 100, allowedGroups);
@@ -751,7 +749,7 @@
 
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, usersRole,
-                    loggedOnReadOnlyUser, allowedGroups, SettingsService.GetSettings(), _postService,
+                    loggedOnUser, allowedGroups, SettingsService.GetSettings(), _postService,
                     _notificationService, _pollService, _voteService, _favouriteService);
 
                 // create the view model
@@ -774,9 +772,9 @@
         [Authorize]
         public virtual ActionResult Edit(Guid id)
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
-            var loggedOnUserId = loggedOnReadOnlyUser?.Id ?? Guid.Empty;
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
 
             var permissions = RoleService.GetPermissions(null, loggedOnUsersRole);
 
@@ -892,21 +890,20 @@
         {
             var moderateCount = 0;
             var settings = SettingsService.GetSettings();
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
-            if (loggedOnReadOnlyUser != null)
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            if (LoggedOnReadOnlyUser != null)
             {
-                var allowedGroups = _GroupService.GetAllowedGroups(loggedOnUsersRole);
+                var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
                 var pendingTopics = _topicService.GetPendingTopics(allowedGroups, loggedOnUsersRole);
                 var pendingPosts = _postService.GetPendingPosts(allowedGroups, loggedOnUsersRole);
                 moderateCount = pendingTopics.Count + pendingPosts.Count;
             }
 
-            var canViewPms = settings.EnablePrivateMessages && loggedOnReadOnlyUser != null &&
-                             loggedOnReadOnlyUser.DisablePrivateMessages != true;
+            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&
+                             LoggedOnReadOnlyUser.DisablePrivateMessages != true;
             var viewModel = new ViewAdminSidePanelViewModel
             {
-                CurrentUser = loggedOnReadOnlyUser,
+                CurrentUser = LoggedOnReadOnlyUser,
                 ModerateCount = moderateCount,
                 IsDropDown = isDropDown
             };
@@ -978,14 +975,14 @@
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                User.GetMembershipUser(MembershipService);
 
                 var user = MembershipService.GetUser(viewModel.Id);
                 var report = new Report
                 {
                     Reason = viewModel.Reason,
                     ReportedMember = user,
-                    Reporter = loggedOnReadOnlyUser
+                    Reporter = LoggedOnReadOnlyUser
                 };
                 _reportService.MemberReport(report);
 
@@ -1079,11 +1076,11 @@
         {
             var changePasswordSucceeded = true;
 
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+            User.GetMembershipUser(MembershipService);
             if (ModelState.IsValid)
             {
                 // ChangePassword will throw an exception rather than return false in certain failure scenarios.
-                var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser?.Id);
                 changePasswordSucceeded =
                     MembershipService.ChangePassword(loggedOnUser, model.OldPassword, model.NewPassword);
 

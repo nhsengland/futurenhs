@@ -14,8 +14,8 @@
     [Authorize(Roles = Constants.AdminRoleName)]
     public class PermissionsController : BaseAdminController
     {
-        private readonly IGroupPermissionForRoleService _GroupPermissionForRoleService;
-        private readonly IGroupService _GroupService;
+        private readonly IGroupPermissionForRoleService _groupPermissionForRoleService;
+        private readonly IGroupService _groupService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
         private readonly IRoleService _roleService;
@@ -29,8 +29,8 @@
         {
             _roleService = roleService;
             _permissionService = permissionService;
-            _GroupService = GroupService;
-            _GroupPermissionForRoleService = GroupPermissionForRoleService;
+            _groupService = GroupService;
+            _groupPermissionForRoleService = GroupPermissionForRoleService;
             _globalPermissionForRoleService = globalPermissionForRoleService;
         }
 
@@ -60,7 +60,7 @@
             {
                 MembershipRole = role,
                 Permissions = _permissionService.GetAll().ToList(),
-                Groups = _GroupService.GetAll(),
+                Groups = _groupService.GetAll(LoggedOnReadOnlyUser?.Id),
                 CurrentGlobalPermissions = _roleService.GetPermissions(null, role)
             };
 
@@ -69,7 +69,7 @@
 
         public ActionResult EditGroupPermissions(Guid id)
         {
-            var Group = _GroupService.Get(id);
+            var Group = _groupService.Get(id);
             var catPermissionViewModel = new EditGroupPermissionsViewModel
             {
                 Group = Group,
@@ -157,14 +157,14 @@
 
                         var mappedItem = new GroupPermissionForRole
                         {
-                            Group = _GroupService.Get(ajaxEditPermissionViewModel.Group),
+                            Group = _groupService.Get(ajaxEditPermissionViewModel.Group),
                             MembershipRole =
                                 _roleService.GetRole(ajaxEditPermissionViewModel.MembershipRole),
                             Permission =
                                 _permissionService.Get(ajaxEditPermissionViewModel.Permission),
                             IsTicked = ajaxEditPermissionViewModel.HasPermission
                         };
-                        _GroupPermissionForRoleService.UpdateOrCreateNew(mappedItem);
+                        _groupPermissionForRoleService.UpdateOrCreateNew(mappedItem);
                     }
                 }
                 Context.SaveChanges();

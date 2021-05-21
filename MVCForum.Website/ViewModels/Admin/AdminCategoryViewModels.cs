@@ -60,9 +60,23 @@
         [DisplayName("Section")]
         public Guid? Section { get; set; }
 
+        [DisplayName("Group Owner")]
+        public Guid? GroupOwner { get; set; }
+
+        [DisplayName("Group Administrators")]
+        public IEnumerable<Guid> GroupAdministrators { get; set; }
+
         public List<SelectListItem> AllGroups { get; set; }
 
         public IEnumerable<SelectListItem> AllSections { get; set; }
+
+        public IEnumerable<SelectListItem> Users { get; set; }
+        
+        public byte[] RowVersion { get; set; }
+
+        [DisplayName("Group is public")]
+        public bool Public { get; set; }
+
 
         [DisplayName("Page Title")]
         [MaxLength(80)]

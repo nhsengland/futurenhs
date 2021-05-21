@@ -39,6 +39,8 @@
   <ItemGroup>
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\CacheKeys.cs" />
+    <Compile Include="Data\Mapping\CategoryMapping.cs" />
+    <Compile Include="Data\Mapping\GroupUserMapping.cs" />
     <Compile Include="Data\Mapping\SectionMapping.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
     <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
@@ -62,6 +64,18 @@
     <Compile Include="Migrations\202104301420534_renamecategoriestogroups.Designer.cs">
       <DependentUpon>202104301420534_renamecategoriestogroups.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202105112219033_ModifyGroupsToBeJoinable.cs" />
+    <Compile Include="Migrations\202105112219033_ModifyGroupsToBeJoinable.Designer.cs">
+      <DependentUpon>202105112219033_ModifyGroupsToBeJoinable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202105121320242_AddUserListToGroup.cs" />
+    <Compile Include="Migrations\202105121320242_AddUserListToGroup.Designer.cs">
+      <DependentUpon>202105121320242_AddUserListToGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202105190921331_rowversion.cs" />
+    <Compile Include="Migrations\202105190921331_rowversion.Designer.cs">
+      <DependentUpon>202105190921331_rowversion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -74,10 +88,13 @@
     <Compile Include="Models\Attributes\DescriptionAttribute.cs" />
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
+    <Compile Include="Models\Entities\Category.cs" />
+    <Compile Include="Models\Entities\GroupPermissions.cs" />
+    <Compile Include="Models\Entities\GroupUser.cs" />
+    <Compile Include="Models\Enums\GroupUserStatus.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
     <Compile Include="Models\Entities\BannedEmail.cs" />
     <Compile Include="Models\Entities\Group.cs" />
-    <Compile Include="Models\Entities\GroupPermissions.cs" />
     <Compile Include="Models\Entities\GroupNotification.cs" />
     <Compile Include="Models\Activity\Activity.cs" />
     <Compile Include="Models\Entities\Block.cs" />
@@ -160,7 +177,7 @@
     <Compile Include="Interfaces\Services\IMembershipUserPointsService.cs" />
     <Compile Include="Interfaces\Services\ITopicTagService.cs" />
     <Compile Include="Interfaces\Services\ICategoryPermissionForRoleService.cs" />
-    <Compile Include="Interfaces\Services\ICategoryService.cs" />
+    <Compile Include="Interfaces\Services\IGroupService.cs" />
     <Compile Include="Interfaces\Services\ILocalizationService.cs" />
     <Compile Include="Interfaces\Services\IMembershipService.cs" />
     <Compile Include="Interfaces\Services\IPermissionService.cs" />
@@ -175,6 +192,7 @@
     <Compile Include="LocalizedString.cs" />
     <Compile Include="Models\Entities\PollAnswer.cs" />
     <Compile Include="Models\Entities\PollVote.cs" />
+    <Compile Include="Models\Groups\GroupUserDTO.cs" />
     <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
     <Compile Include="Models\PostType.cs" />
@@ -191,7 +209,9 @@
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
     <Compile Include="Services\CacheService.cs" />
+    <Compile Include="Services\GlobalPermissionForRoleService.cs" />
     <Compile Include="Services\GroupPermissionForRoleService.cs" />
+    <Compile Include="Services\GroupUserPermissions.cs" />
     <Compile Include="Services\GroupService.cs" />
     <Compile Include="Services\ConfigService.cs" />
     <Compile Include="Data\Context\MVCForumContext.cs" />
@@ -199,9 +219,9 @@
     <Compile Include="Data\Mapping\BannedEmailMapping.cs" />
     <Compile Include="Data\Mapping\BannedWordMapping.cs" />
     <Compile Include="Data\Mapping\BlockMapping.cs" />
-    <Compile Include="Data\Mapping\CategoryMapping.cs" />
-    <Compile Include="Data\Mapping\CategoryNotificationMapping.cs" />
-    <Compile Include="Data\Mapping\CategoryPermissionForRoleMapping.cs" />
+    <Compile Include="Data\Mapping\GroupMapping.cs" />
+    <Compile Include="Data\Mapping\GroupNotificationMapping.cs" />
+    <Compile Include="Data\Mapping\GroupPermissionForRoleMapping.cs" />
     <Compile Include="Data\Mapping\FavouriteMapping.cs" />
     <Compile Include="Data\Mapping\GlobalPermissionForRoleMapping.cs" />
     <Compile Include="Data\Mapping\LanguageMapping.cs" />
@@ -225,7 +245,6 @@
     <Compile Include="Data\Mapping\VoteMapping.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\FavouriteService.cs" />
-    <Compile Include="Services\GlobalPermissionForRoleService.cs" />
     <Compile Include="Services\LocalizationService.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\MembershipService.cs" />
@@ -367,7 +386,17 @@
     <EmbeddedResource Include="Migrations\202104301420534_renamecategoriestogroups.resx">
       <DependentUpon>202104301420534_renamecategoriestogroups.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105112219033_ModifyGroupsToBeJoinable.resx">
+      <DependentUpon>202105112219033_ModifyGroupsToBeJoinable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105121320242_AddUserListToGroup.resx">
+      <DependentUpon>202105121320242_AddUserListToGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105190921331_rowversion.resx">
+      <DependentUpon>202105190921331_rowversion.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

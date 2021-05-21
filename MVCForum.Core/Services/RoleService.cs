@@ -14,7 +14,7 @@
 
     public partial class RoleService : IRoleService
     {
-        private readonly IGroupPermissionForRoleService _GroupPermissionForRoleService;
+        private readonly IGroupPermissionForRoleService _groupPermissionForRoleService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
         private IMvcForumContext _context;
@@ -22,7 +22,7 @@
 
         public RoleService(IMvcForumContext context, IGroupPermissionForRoleService GroupPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService, ICacheService cacheService)
         {
-            _GroupPermissionForRoleService = GroupPermissionForRoleService;
+            _groupPermissionForRoleService = GroupPermissionForRoleService;
             _permissionService = permissionService;
             _globalPermissionForRoleService = globalPermissionForRoleService;
             _cacheService = cacheService;
@@ -33,7 +33,7 @@
         public void RefreshContext(IMvcForumContext context)
         {
             _context = context;
-            _GroupPermissionForRoleService.RefreshContext(context);
+            _groupPermissionForRoleService.RefreshContext(context);
             _permissionService.RefreshContext(context);
             _globalPermissionForRoleService.RefreshContext(context);
         }
@@ -118,11 +118,11 @@
             if (okToDelete)
             {
                 // Get any Grouppermissionforoles and delete these first
-                var rolesToDelete = _GroupPermissionForRoleService.GetByRole(role.Id);
+                var rolesToDelete = _groupPermissionForRoleService.GetByRole(role.Id);
 
                 foreach (var GroupPermissionForRole in rolesToDelete)
                 {
-                    _GroupPermissionForRoleService.Delete(GroupPermissionForRole);
+                    _groupPermissionForRoleService.Delete(GroupPermissionForRole);
                 }
 
                 _context.MembershipRole.Remove(role);
@@ -254,7 +254,7 @@
             if (Group != null)
             {
                 // Get the known permissions for this role and Group
-                var GroupRow = _GroupPermissionForRoleService.GetGroupRow(role, Group);
+                var GroupRow = _groupPermissionForRoleService.GetGroupRow(role, Group);
                 var GroupRowPermissions = GroupRow.ToDictionary(catRow => catRow.Key.Id);
 
                 // Load up the results with the permisions for this role / cartegory. A null entry for a permissions results in a new

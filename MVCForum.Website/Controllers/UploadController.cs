@@ -38,8 +38,8 @@
 
             try
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
                 // First this to do is get the post
                 var post = _postService.Get(attachFileToPostViewModel.UploadPostId);
@@ -58,7 +58,7 @@
                         // not trying to be a sneaky mofo
                         var permissions = RoleService.GetPermissions(Group, loggedOnUsersRole);
                         if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked == false ||
-                            loggedOnReadOnlyUser.DisableFileUploads == true)
+                            LoggedOnReadOnlyUser.DisableFileUploads == true)
                         {
                             TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                             {
@@ -72,7 +72,7 @@
                         // woot! User has permission and all seems ok
                         // Before we save anything, check the user already has an upload folder and if not create one
                         var uploadFolderPath = HostingEnvironment.MapPath(
-                            string.Concat(ForumConfiguration.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
+                            string.Concat(ForumConfiguration.Instance.UploadFolderPath, LoggedOnReadOnlyUser?.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -96,7 +96,7 @@
                                 }
 
                                 // Add the filename to the database
-                                var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser?.Id);
                                 var uploadedFile = new UploadedFile
                                 {
                                     Filename = uploadResult.UploadedFileName,
@@ -149,8 +149,8 @@
                 Topic topic = null;
                 try
                 {
-                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                    User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
 
                     // Get the file and associated objects we'll need
                     var uploadedFile = _uploadedFileService.Get(id);
@@ -158,7 +158,7 @@
                     topic = post.Topic;
 
                     if (loggedOnUsersRole.RoleName == Constants.AdminRoleName ||
-                        uploadedFile.MembershipUser.Id == loggedOnReadOnlyUser.Id)
+                        uploadedFile.MembershipUser.Id == LoggedOnReadOnlyUser?.Id)
                     {
                         // Ok to delete file
                         // Remove it from the post

@@ -26,6 +26,7 @@
             HasOptional(t => t.LastPost).WithOptionalDependent().Map(m => m.MapKey("Post_Id")).WillCascadeOnDelete(false);
             HasOptional(t => t.Poll).WithOptionalDependent().Map(m => m.MapKey("Poll_Id")).WillCascadeOnDelete(false);            
             HasRequired(t => t.Group).WithMany(t => t.Topics).Map(m => m.MapKey("Group_Id")).WillCascadeOnDelete(false);
+            HasOptional(t => t.Category).WithOptionalDependent().Map(m => m.MapKey("Category_Id")).WillCascadeOnDelete(false);
             HasRequired(t => t.User).WithMany(t => t.Topics).Map(m => m.MapKey("MembershipUser_Id")).WillCascadeOnDelete(false);
             HasMany(x => x.Posts).WithRequired(x => x.Topic).Map(x => x.MapKey("Topic_Id")).WillCascadeOnDelete(false);
             HasMany(x => x.TopicNotifications).WithRequired(x => x.Topic).Map(x => x.MapKey("Topic_Id")).WillCascadeOnDelete(false);

@@ -16,7 +16,7 @@
     public partial class ActivityService : IActivityService
     {
         private readonly ICacheService _cacheService;
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private IMvcForumContext _context;
         private readonly ILoggingService _loggingService;
         private readonly IPostService _postService;
@@ -33,7 +33,7 @@
             _cacheService = cacheService;
             _topicService = topicService;
             _postService = postService;
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _context = context;
         }
 
@@ -44,7 +44,7 @@
             _context = context;
             _topicService.RefreshContext(context);
             _postService.RefreshContext(context);
-            _GroupService.RefreshContext(context);
+            _groupService.RefreshContext(context);
         }
 
         /// <inheritdoc />
@@ -62,11 +62,11 @@
         /// <param name="usersRole"></param>
         /// <returns></returns>
         public async Task<PaginatedList<ActivityBase>> GetPagedGroupedActivities(int pageIndex, int pageSize,
-            MembershipRole usersRole)
+            MembershipUser membershipUser, MembershipRole usersRole)
         {
             // Read the database for all activities and convert each to a more specialised activity type
 
-            var allowedGroups = _GroupService.GetAllowedGroups(usersRole);
+            var allowedGroups = _groupService.GetAllowedGroups(usersRole, membershipUser?.Id);
             var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             var query =

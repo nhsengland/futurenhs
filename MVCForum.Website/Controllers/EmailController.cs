@@ -11,7 +11,7 @@
     public partial class EmailController : BaseController
     {
         private readonly INotificationService _notificationService;
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;
 
@@ -24,7 +24,7 @@
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _topicService = topicService;
             _topicTagService = topicTagService;
             _notificationService = notificationService;
@@ -47,7 +47,7 @@
                     if (isGroup)
                     {
                         // get the Group
-                        var cat = _GroupService.Get(id);
+                        var cat = _groupService.Get(id);
 
                         if (cat != null)
                         {
@@ -131,7 +131,7 @@
                     if (isGroup)
                     {
                         // get the Group
-                        var cat = _GroupService.Get(id);
+                        var cat = _groupService.Get(id);
 
                         if (cat != null)
                         {

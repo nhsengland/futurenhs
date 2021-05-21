@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Mvc;
     using Core.Models.Entities;
+    using MvcForum.Core.Constants;
     using ViewModels.Admin;
 
     public static class GroupViewModelExtensions
@@ -15,8 +17,7 @@
         /// <returns></returns>
         public static Group ToGroup(this GroupEditViewModel GroupViewModel)
         {
-            var Group = new Group
-            {
+            var Group = new Group {
                 Name = GroupViewModel.Name,
                 Description = GroupViewModel.Description,
                 IsLocked = GroupViewModel.IsLocked,
@@ -26,8 +27,9 @@
                 PageTitle = GroupViewModel.PageTitle,
                 MetaDescription = GroupViewModel.MetaDesc,
                 Colour = GroupViewModel.GroupColour,
-                DateCreated = DateTime.UtcNow
-            };
+                DateCreated = DateTime.UtcNow,
+                PublicGroup = GroupViewModel.Public
+        };
 
             return Group;
         }
@@ -49,6 +51,7 @@
             Group.PageTitle = GroupViewModel.PageTitle;
             Group.MetaDescription = GroupViewModel.MetaDesc;
             Group.Colour = GroupViewModel.GroupColour;
+            Group.PublicGroup = GroupViewModel.Public;
 
             return Group;
         }
@@ -78,7 +81,10 @@
                 ParentGroup = Group.ParentGroup?.Id ?? Guid.Empty,
                 Section = Group.Section?.Id ?? Guid.Empty,
                 AllGroups = allGroupSelectListItems,
-                AllSections = sections
+                AllSections = sections,
+                GroupOwner = Group.GroupOwner?.Id,
+                GroupAdministrators = Group.GroupUsers.Where(x => x.Role.RoleName == Constants.AdminRoleName).Select(x => x.User.Id),
+                Public = Group.PublicGroup
             };
             return GroupViewModel;
         }

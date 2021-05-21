@@ -109,6 +109,7 @@
     <Compile Include="ViewModels\Admin\AdminCategoryViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminLanguageViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
+    <Compile Include="ViewModels\Group\GroupUserViewModel.cs" />
     <Compile Include="ViewModels\Group\SectionListViewModel.cs" />
     <Compile Include="ViewModels\GenericMessageViewModel.cs" />
     <Compile Include="ViewModels\Admin\LogViewModels.cs" />
@@ -198,7 +199,7 @@
     <Compile Include="ViewModels\Topic\TopicViewModel.cs" />
     <Compile Include="ViewModels\UploadViewModels.cs" />
     <Compile Include="ViewModels\EntityIdViewModel.cs" />
-    <Compile Include="ViewModels\Group\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\Group\GroupViewModel.cs" />
     <Compile Include="ViewModels\Email\EmailSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\Language\LanguageListAllViewModel.cs" />
     <Compile Include="ViewModels\Mapping\ViewModelMapping.cs" />
@@ -1137,6 +1138,12 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Views\Group\ListSections.cshtml" />
+    <Content Include="Views\Group\ManageUsers.cshtml" />
+    <Content Include="Views\Group\ManageUser.cshtml" />
+    <Content Include="Views\Shared\_LayoutSideBar.cshtml" />
+    <Content Include="Views\Shared\_SiteHeader.cshtml" />
+    <Content Include="Views\Shared\_SVGIcon.cshtml" />
+    <Content Include="Views\Shared\_SVGSprite.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

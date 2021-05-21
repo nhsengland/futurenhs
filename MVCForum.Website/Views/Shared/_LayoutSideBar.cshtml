@@ -51,7 +51,7 @@
                             @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right", "c-main-nav_level-2-toggle-icon u-fill-theme-6")); }
                         </summary>
                         <div class="c-main-nav_level-2-content">
-                            MENU CONTENT
+	                        @Html.Action("ListGroupSideMenu", "Group")
                         </div>
                     </details>
                 </div>

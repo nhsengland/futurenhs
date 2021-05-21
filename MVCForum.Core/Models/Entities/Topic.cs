@@ -25,6 +25,7 @@
 
         public virtual Post LastPost { get; set; }
         public virtual Group Group { get; set; }
+        public virtual Category Category { get; set; }
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<TopicTag> Tags { get; set; }
         public virtual MembershipUser User { get; set; }

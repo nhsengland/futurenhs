@@ -28,12 +28,12 @@
         {
             try
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                User.GetMembershipUser(MembershipService);
 
                 // Fist need to check this user hasn't voted already and is trying to fudge the system
-                if (!_pollService.HasUserVotedAlready(updatePollViewModel.AnswerId, loggedOnReadOnlyUser.Id))
+                if (LoggedOnReadOnlyUser != null && !_pollService.HasUserVotedAlready(updatePollViewModel.AnswerId, LoggedOnReadOnlyUser.Id))
                 {
-                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser?.Id);
 
                     // Get the answer
                     var pollAnswer = _pollService.GetPollAnswer(updatePollViewModel.AnswerId);
@@ -51,7 +51,7 @@
                 // Create the view model and get ready return the poll partial view
                 var poll = _pollService.Get(updatePollViewModel.PollId);
                 var votes = poll.PollAnswers.SelectMany(x => x.PollVotes).ToList();
-                var alreadyVoted = votes.Count(x => x.User.Id == loggedOnReadOnlyUser.Id) > 0;
+                var alreadyVoted = votes.Count(x => x.User.Id == LoggedOnReadOnlyUser?.Id) > 0;
                 var viewModel = new PollViewModel
                 {
                     Poll = poll,

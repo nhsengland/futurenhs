@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Web.Areas.Admin.Controllers
+﻿using MvcForum.Core.ExtensionMethods;
+
+namespace MvcForum.Web.Areas.Admin.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +17,7 @@
     [Authorize(Roles = Constants.AdminRoleName)]
     public class BatchController : BaseAdminController
     {
-        private readonly IGroupService _GroupService;
+        private readonly IGroupService _groupService;
         private readonly ITopicService _topicService;
 
         public BatchController(ILoggingService loggingService, 
@@ -27,7 +29,7 @@
             IMvcForumContext context )
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
-            _GroupService = GroupService;
+            _groupService = GroupService;
             _topicService = topicService;
         }
 
@@ -84,7 +86,7 @@
         {
             var viewModel = new BatchMoveTopicsViewModel
             {
-                Groups = _GroupService.GetAll()
+                Groups = _groupService.GetAll(LoggedOnReadOnlyUser?.Id)
             };
             return View(viewModel);
         }
@@ -95,8 +97,8 @@
         {
             try
             {
-                var GroupFrom = _GroupService.Get((Guid)viewModel.FromGroup);
-                var GroupTo = _GroupService.Get((Guid)viewModel.ToGroup);
+                var GroupFrom = _groupService.Get((Guid)viewModel.FromGroup);
+                var GroupTo = _groupService.Get((Guid)viewModel.ToGroup);
 
                 var topicsToMove = _topicService.GetRssTopicsByGroup(int.MaxValue, GroupFrom.Id);
                 var count = topicsToMove.Count;
@@ -110,7 +112,7 @@
 
                 GroupFrom.Topics.Clear();
 
-                viewModel.Groups = _GroupService.GetAll();
+                viewModel.Groups = _groupService.GetAll(LoggedOnReadOnlyUser?.Id);
 
                 Context.SaveChanges();
 

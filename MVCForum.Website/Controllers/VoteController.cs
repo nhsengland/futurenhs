@@ -43,17 +43,17 @@
         {
             if (Request.IsAjaxRequest())
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                User.GetMembershipUser(MembershipService);
 
                 // Quick check to see if user is locked out, when logged in
-                if (loggedOnReadOnlyUser.IsLockedOut | !loggedOnReadOnlyUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
 
                 // Get a db user
-                var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser?.Id);
 
                 // Firstly get the post
                 var post = _postService.Get(voteUpViewModel.Id);
@@ -65,7 +65,7 @@
                 var postWriter = post.User;
 
                 // Mark the post up or down
-                await MarkPostUpOrDown(post, postWriter, voter, PostType.Positive, loggedOnReadOnlyUser);
+                await MarkPostUpOrDown(post, postWriter, voter, PostType.Positive, LoggedOnReadOnlyUser);
 
                 try
                 {
@@ -90,17 +90,17 @@
         {
             if (Request.IsAjaxRequest())
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                User.GetMembershipUser(MembershipService);
 
                 // Quick check to see if user is locked out, when logged in
-                if (loggedOnReadOnlyUser.IsLockedOut | !loggedOnReadOnlyUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
 
                 // Get a db user
-                var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser?.Id);
 
                 // Firstly get the post
                 var post = _postService.Get(voteDownViewModel.Id);
@@ -112,7 +112,7 @@
                 var postWriter = post.User;
 
                 // Mark the post up or down
-                await MarkPostUpOrDown(post, postWriter, voter, PostType.Negative, loggedOnReadOnlyUser);
+                await MarkPostUpOrDown(post, postWriter, voter, PostType.Negative, LoggedOnReadOnlyUser);
 
                 try
                 {
@@ -131,14 +131,14 @@
         }
 
         private async Task<bool> MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType,
-            MembershipUser loggedOnReadOnlyUser)
+            MembershipUser LoggedOnReadOnlyUser)
         {
             var settings = SettingsService.GetSettings();
             // Check this user is not the post owner
             if (voter.Id != postWriter.Id)
             {
                 // Not the same person, now check they haven't voted on this post before
-                var votes = post.Votes.Where(x => x.VotedByMembershipUser.Id == loggedOnReadOnlyUser.Id).ToList();
+                var votes = post.Votes.Where(x => x.VotedByMembershipUser.Id == LoggedOnReadOnlyUser?.Id).ToList();
                 if (votes.Any())
                 {
                     // Already voted, so delete the vote and remove the points
@@ -195,10 +195,10 @@
         {
             if (Request.IsAjaxRequest())
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                User.GetMembershipUser(MembershipService);
 
                 // Quick check to see if user is locked out, when logged in
-                if (loggedOnReadOnlyUser.IsLockedOut | !loggedOnReadOnlyUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -206,7 +206,7 @@
 
 
                 // Get a db user
-                var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser?.Id);
 
                 // Firstly get the post
                 var post = _postService.Get(markAsSolutionViewModel.Id);

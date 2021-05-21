@@ -1,10 +1,13 @@
-﻿namespace MvcForum.Web.Controllers
+﻿using System.Web.Security;
+using MembershipUser = MvcForum.Core.Models.Entities.MembershipUser;
+
+namespace MvcForum.Web.Controllers
 {
     using System.Globalization;
     using System.Threading;
     using System.Web.Mvc;
     using System.Web.Routing;
-    using System.Web.Security;
+
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -23,7 +26,7 @@
         protected readonly IRoleService RoleService;
         protected readonly ISettingsService SettingsService;
         protected readonly IMvcForumContext Context;
-
+        protected MembershipUser LoggedOnReadOnlyUser;
         /// <summary>
         ///     Constructor
         /// </summary>
@@ -45,6 +48,8 @@
             CacheService = cacheService;
             Context = context;
             LoggingService = loggingService;
+            
+            LoggedOnReadOnlyUser = MembershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
         protected override void Initialize(RequestContext requestContext)
@@ -85,15 +90,11 @@
                 }
             }
 
-
-            var loggedOnReadOnlyUser = User.Identity.IsAuthenticated
-                ? MembershipService.GetUser(User.Identity.Name, true)
-                : null;
      
 
             // Check if they need to agree to permissions
             if (SettingsService.GetSettings().AgreeToTermsAndConditions == true && !filterContext.IsChildAction &&
-                loggedOnReadOnlyUser != null && loggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
+                LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
             {
                 // Only redirect if its closed and user is NOT in the admin
                 if (action.ToString().ToLower() != "termsandconditions" && !area.ToString().ToLower().Contains("admin"))
@@ -108,7 +109,7 @@
             }
 
             // If the forum is new members need approving and the user is not approved, log them out
-            if (loggedOnReadOnlyUser != null && !loggedOnReadOnlyUser.IsApproved &&
+            if (LoggedOnReadOnlyUser != null && !LoggedOnReadOnlyUser.IsApproved &&
                 settings.NewMemberEmailConfirmation == true)
             {
                 FormsAuthentication.SignOut();
@@ -122,7 +123,7 @@
             }
 
             // If the user is banned - Log them out.
-            if (loggedOnReadOnlyUser != null && loggedOnReadOnlyUser.IsBanned)
+            if (LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.IsBanned)
             {
                 FormsAuthentication.SignOut();
                 TempData[Constants.MessageViewBagName] = new GenericMessageViewModel

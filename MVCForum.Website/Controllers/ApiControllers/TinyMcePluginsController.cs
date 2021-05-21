@@ -1,4 +1,7 @@
-﻿namespace MvcForum.Web.Controllers.ApiControllers
+﻿using MvcForum.Core.Models.Entities;
+using MvcForum.Core.Services;
+
+namespace MvcForum.Web.Controllers.ApiControllers
 {
     using System;
     using System.IO;
@@ -18,6 +21,9 @@
     [RoutePrefix("api/TinyMce")]
     public partial class TinyMcePluginsController : ApiController
     {
+        protected MembershipUser LoggedOnReadOnlyUser;
+
+        protected readonly IMembershipService MembershipService;
         //private void SetPrincipal(IPrincipal principal)
         //{
         //    Thread.CurrentPrincipal = principal;
@@ -27,6 +33,11 @@
         //    }
         //}
 
+        public TinyMcePluginsController(IMembershipService membershipService)
+        {
+            MembershipService = membershipService;
+            LoggedOnReadOnlyUser = MembershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+        }
         //GET api/TinyMce/UploadImage
         [Route("UploadImage")]
         [HttpPost]
@@ -53,17 +64,17 @@
                     if (httpPostedFile != null)
                     {
                         HttpPostedFileBase photo = new HttpPostedFileWrapper(httpPostedFile);
-                        var loggedOnReadOnlyUser = memberService.GetUser(HttpContext.Current.User.Identity.Name);
+                        memberService.GetUser(HttpContext.Current.User.Identity.Name);
                         var permissions =
-                            roleService.GetPermissions(null, loggedOnReadOnlyUser.Roles.FirstOrDefault());
+                            roleService.GetPermissions(null, LoggedOnReadOnlyUser.Roles.FirstOrDefault());
                         // Get the permissions for this Group, and check they are allowed to update
                         if (permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked &&
-                            loggedOnReadOnlyUser.DisableFileUploads != true)
+                            LoggedOnReadOnlyUser.DisableFileUploads != true)
                         {
                             // woot! User has permission and all seems ok
                             // Before we save anything, check the user already has an upload folder and if not create one
                             var uploadFolderPath = HostingEnvironment.MapPath(
-                                string.Concat(ForumConfiguration.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
+                                string.Concat(ForumConfiguration.Instance.UploadFolderPath, LoggedOnReadOnlyUser?.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
@@ -80,7 +91,7 @@
                             var uploadedFile = new UploadedFile
                             {
                                 Filename = uploadResult.UploadedFileName,
-                                MembershipUser = loggedOnReadOnlyUser
+                                MembershipUser = LoggedOnReadOnlyUser
                             };
                             uploadService.Add(uploadedFile);
 

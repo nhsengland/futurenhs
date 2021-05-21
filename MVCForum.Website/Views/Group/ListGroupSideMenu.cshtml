@@ -1,39 +1,69 @@
-﻿@model MvcForum.Web.ViewModels.Group.GroupListViewModel
+﻿@model MvcForum.Web.ViewModels.Group.MyGroupListViewModel
 @{
-    var allCats = Model.AllPermissionSets.Keys;
+	var myAdminGroups = Model.MyGroups.Where(x => x.Role?.RoleName == "Admin").Select(x => x.Group).ToList();
+	var myGroups = Model.MyGroups.Where(x => x.Role?.RoleName != "Admin").Select(x => x.Group).ToList();
 }
+
 <div class="side-box Group-box">
     <h3 class="side-box_title">@Html.LanguageString("Group.GroupsSideHeading")</h3>
 
     <ul>
-        <li><a href="@Url.Action("Index")">@Html.LanguageString("Group.AllGroups")</a></li>
-        @foreach (var Group in allCats.Where(x => x.ParentGroup == null))
+	    <li><a href="@Url.Action("Index")">@Html.LanguageString("Group.AllGroups")</a></li>
+        @if (myAdminGroups.Any())
         {
-            var currentcatId = Group.Id;
-            var permissions = Model.AllPermissionSets[Group];
-            var subCats = allCats.Where(x => x.ParentGroup != null && x.ParentGroup.Id == currentcatId).ToList();
-            if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
-            {
-                <li class="catitem">
-                    <a style="border-color: @(string.IsNullOrEmpty(Group.Colour) ? "#ced1d1" : Group.Colour)" href="@Html.Raw(Group.NiceUrl)">@Html.Raw(Group.Name)</a>
-                    @if (subCats.Any())
-                    {
-                        <ul>
-                            @foreach (var subCat in subCats)
-                            {
-                                var subPermissions = Model.AllPermissionSets[subCat];
-                                if (!subPermissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
-                                {
-                                    <li class="catitem">
-                                        <a style="border-color: @(string.IsNullOrEmpty(subCat.Colour) ? "#ced1d1" : subCat.Colour)" href="@Html.Raw(subCat.NiceUrl)">@Html.Raw(subCat.Name)</a>
-                                    </li>
-                                }
-                            }
-                        </ul>
-                    }
+	        <h3 class="side-box_title">Administrator</h3>
+	        foreach (var Group in @myAdminGroups.Where(x => x.ParentGroup == null))
+	        {
+		        var currentcatId = Group.Id;
+		        var subCats = @myAdminGroups.Where(x => x.ParentGroup != null && x.ParentGroup.Id == currentcatId).ToList();
 
-                </li>
-            }
+		        <li class="catitem">
+			        <a style="border-color: @(string.IsNullOrEmpty(Group.Colour) ? "#ced1d1" : Group.Colour)" href="@Html.Raw(Group.NiceUrl)">@Html.Raw(Group.Name)</a>
+			        @if (subCats.Any())
+			        {
+				        <ul>
+					        @foreach (var subCat in subCats)
+					        {
+
+						        <li class="catitem">
+							        <a style="border-color: @(string.IsNullOrEmpty(subCat.Colour) ? "#ced1d1" : subCat.Colour)" href="@Html.Raw(subCat.NiceUrl)">@Html.Raw(subCat.Name)</a>
+						        </li>
+
+					        }
+				        </ul>
+			        }
+
+		        </li>
+
+	        }
+        }
+        @if (myGroups.Any())
+        {
+	        <h3 class="side-box_title">My Groups</h3>
+	        foreach (var Group in myGroups.Where(x => x.ParentGroup == null))
+	        {
+		        var currentcatId = Group.Id;
+		        var subCats = myGroups.Where(x => x.ParentGroup != null && x.ParentGroup.Id == currentcatId).ToList();
+
+		        <li class="catitem">
+			        <a style="border-color: @(string.IsNullOrEmpty(Group.Colour) ? "#ced1d1" : Group.Colour)" href="@Html.Raw(Group.NiceUrl)">@Html.Raw(Group.Name)</a>
+			        @if (subCats.Any())
+			        {
+				        <ul>
+					        @foreach (var subCat in subCats)
+					        {
+
+						        <li class="catitem">
+							        <a style="border-color: @(string.IsNullOrEmpty(subCat.Colour) ? "#ced1d1" : subCat.Colour)" href="@Html.Raw(subCat.NiceUrl)">@Html.Raw(subCat.Name)</a>
+						        </li>
+
+					        }
+				        </ul>
+			        }
+
+		        </li>
+
+	        }
         }
     </ul>
 

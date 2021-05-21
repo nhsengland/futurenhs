@@ -54,6 +54,7 @@
 
         public virtual DbSet<PostEdit> PostEdit { get; set; }
 
+        public virtual DbSet<GroupUser> GroupUser { get; set; }
 
         public override int SaveChanges()
         {
