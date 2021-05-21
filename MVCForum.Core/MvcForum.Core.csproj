@@ -64,17 +64,13 @@
     <Compile Include="Migrations\202104301420534_renamecategoriestogroups.Designer.cs">
       <DependentUpon>202104301420534_renamecategoriestogroups.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202105112219033_ModifyGroupsToBeJoinable.cs" />
-    <Compile Include="Migrations\202105112219033_ModifyGroupsToBeJoinable.Designer.cs">
-      <DependentUpon>202105112219033_ModifyGroupsToBeJoinable.cs</DependentUpon>
+    <Compile Include="Migrations\202105211213383_FixMigrations.cs" />
+    <Compile Include="Migrations\202105211213383_FixMigrations.Designer.cs">
+      <DependentUpon>202105211213383_FixMigrations.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202105121320242_AddUserListToGroup.cs" />
-    <Compile Include="Migrations\202105121320242_AddUserListToGroup.Designer.cs">
-      <DependentUpon>202105121320242_AddUserListToGroup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202105190921331_rowversion.cs" />
-    <Compile Include="Migrations\202105190921331_rowversion.Designer.cs">
-      <DependentUpon>202105190921331_rowversion.cs</DependentUpon>
+    <Compile Include="Migrations\202105211220352_JoinableGroups.cs" />
+    <Compile Include="Migrations\202105211220352_JoinableGroups.Designer.cs">
+      <DependentUpon>202105211220352_JoinableGroups.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
@@ -386,14 +382,11 @@
     <EmbeddedResource Include="Migrations\202104301420534_renamecategoriestogroups.resx">
       <DependentUpon>202104301420534_renamecategoriestogroups.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202105112219033_ModifyGroupsToBeJoinable.resx">
-      <DependentUpon>202105112219033_ModifyGroupsToBeJoinable.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202105211213383_FixMigrations.resx">
+      <DependentUpon>202105211213383_FixMigrations.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202105121320242_AddUserListToGroup.resx">
-      <DependentUpon>202105121320242_AddUserListToGroup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202105190921331_rowversion.resx">
-      <DependentUpon>202105190921331_rowversion.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202105211220352_JoinableGroups.resx">
+      <DependentUpon>202105211220352_JoinableGroups.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

@@ -7,18 +7,18 @@ namespace MvcForum.Core.Services.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class ModifyGroupsToBeJoinable : IMigrationMetadata
+    public sealed partial class JoinableGroups : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(ModifyGroupsToBeJoinable));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(JoinableGroups));
         
         string IMigrationMetadata.Id
         {
-            get { return "202105112219033_ModifyGroupsToBeJoinable"; }
+            get { return "202105211220352_JoinableGroups"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return Resources.GetString("Source"); }
+            get { return null; }
         }
         
         string IMigrationMetadata.Target

@@ -7,13 +7,13 @@ namespace MvcForum.Core.Services.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class AddUserListToGroup : IMigrationMetadata
+    public sealed partial class FixMigrations : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddUserListToGroup));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(FixMigrations));
         
         string IMigrationMetadata.Id
         {
-            get { return "202105121320242_AddUserListToGroup"; }
+            get { return "202105211213383_FixMigrations"; }
         }
         
         string IMigrationMetadata.Source

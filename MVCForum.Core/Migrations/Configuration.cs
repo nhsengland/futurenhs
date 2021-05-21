@@ -20,8 +20,8 @@ namespace MvcForum.Core.Services.Migrations
 
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
-            AutomaticMigrationDataLossAllowed = true;
+            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationDataLossAllowed = false;
 
             // Check if there are migrations pending to run, this can happen if database doesn't exists or if there was any
             //  change in the schema
