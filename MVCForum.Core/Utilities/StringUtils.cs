@@ -96,13 +96,6 @@
         }
         #endregion
 
-        #region Social Helpers
-        public static string GetGravatarImage(string email, int size)
-        {
-            return IsValidEmail(email) ? $"https://www.gravatar.com/avatar/{md5HashString(email)}?s={size}&d=identicon&r=PG" : "";
-        }
-        #endregion
-
         #region Validation
 
         public static string md5HashString(string toHash)
