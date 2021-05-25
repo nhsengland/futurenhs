@@ -15,11 +15,17 @@
         background-color: inherit;
     }
 
+    @include respond-to(desktop) {
+        display: block;
+    }
+
     &_level-1 {
-        position: fixed;
+        // position: fixed;
         left: 0;
         margin: 72px 0 0;
         background-color: $very-light-grey;
+        list-style-type: none;
+        padding: 0;
     }
 
     &_level-1-link {
@@ -29,9 +35,11 @@
         width: 72px;
         padding: 16px 20px;
         border-left: 4px solid transparent;
+        margin-bottom: 10px;
 
         &--active {
             background-color: $white;
+            border-color: currentColor;
         }
 
     }
@@ -51,23 +59,17 @@
     &_level-1-icon {
         width: 100%;
     }
+    // &_level-2-toggle-trigger {
+    //     margin: 16px 16px 32px;
+    // }
 
-    &_level-2-toggle-trigger {
-        margin: 16px 16px 32px;
-    }
+    // &_level-2-toggle-icon {
+    //     height: 32px;
+    //     width: 24px;
+    // }
 
-    &_level-2-toggle-icon {
-        height: 32px;
-        width: 24px;
-    }
-
-    &_level-2-content {
-        width: 320px;
-        padding: 0 32px 32px 16px;
-    }
-
-    @include respond-to(desktop) {
-        display: block;
-    }
-
+    // &_level-2-content {
+    //     width: 320px;
+    //     padding: 0 32px 32px 16px;
+    // }
 }

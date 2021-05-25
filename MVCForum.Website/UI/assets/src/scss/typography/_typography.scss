@@ -4,117 +4,81 @@ h3,
 h4,
 h5,
 h6 {
-    @include font-family-poppins-bold;
     color: $t-heading-one;
     fill: $t-heading-one;
-    margin: 0 0 $spacer-xsm;
+    margin: 0 0 $base-font-margin-bottom;
+    font-weight: $nhsuk-font-bold;
+
+    @include respond-to(desktop) {
+        margin: 0 0 $base-font-margin-bottom-desktop;
+    }
 }
 
 h1 {
 
     line-height: $h1-line-height-mobile;
     font-size: $h1-font-size-mobile;
-
-    @include respond-to(tablet) {
-        line-height: $h1-line-height-tablet;
-        font-size: $h1-font-size-tablet;
-    }
+    margin-bottom: $h1-margin-bottom-mobile;
 
     @include respond-to(desktop) {
         line-height: $h1-line-height-desktop;
         font-size: $h1-font-size-desktop;
+        margin-bottom: $h1-margin-bottom-desktop;
     }
-
 }
 
 h2 {
-
     line-height: $h2-line-height-mobile;
     font-size: $h2-font-size-mobile;
-
-    @include respond-to(tablet) {
-        line-height: $h2-line-height-tablet;
-        font-size: $h2-font-size-tablet;
-    }
 
     @include respond-to(desktop) {
         line-height: $h2-line-height-desktop;
         font-size: $h2-font-size-desktop;
     }
-
 }
 
 h3 {
-
     line-height: $h3-line-height-mobile;
     font-size: $h3-font-size-mobile;
-
-    @include respond-to(tablet) {
-        line-height: $h3-line-height-tablet;
-        font-size: $h3-font-size-tablet;
-    }
 
     @include respond-to(desktop) {
         line-height: $h3-line-height-desktop;
         font-size: $h3-font-size-desktop;
     }
-
 }
 
 h4 {
-
     line-height: $h4-line-height-mobile;
     font-size: $h4-font-size-mobile;
-
-    @include respond-to(tablet) {
-        line-height: $h4-line-height-tablet;
-        font-size: $h4-font-size-tablet;
-    }
 
     @include respond-to(desktop) {
         line-height: $h4-line-height-desktop;
         font-size: $h4-font-size-desktop;
     }
-
 }
 
 h5 {
-
     line-height: $h5-line-height-mobile;
     font-size: $h5-font-size-mobile;
-
-    @include respond-to(tablet) {
-        line-height: $h5-line-height-tablet;
-        font-size: $h5-font-size-tablet;
-    }
 
     @include respond-to(desktop) {
         line-height: $h5-line-height-desktop;
         font-size: $h5-font-size-desktop;
     }
-
 }
 
 h6 {
-
     line-height: $h6-line-height-mobile;
     font-size: $h6-font-size-mobile;
-
-    @include respond-to(tablet) {
-        line-height: $h6-line-height-tablet;
-        font-size: $h6-font-size-tablet;
-    }
 
     @include respond-to(desktop) {
         line-height: $h6-line-height-desktop;
         font-size: $h6-font-size-desktop;
     }
-
 }
 
 p {
-    line-height: 1.4em;
-    margin: 0 0 $base-dimension-unit;
+    @include standard-text;
 }
 
 a {
@@ -124,5 +88,15 @@ a {
 
 ul,
 ol {
-    margin: 0 0 $base-dimension-unit $spacer-sm;
+    margin: 0 0 $base-font-margin-bottom;
+    padding-left: 20px;
+
+    @include respond-to(desktop) {
+        margin-bottom: $base-font-margin-bottom-desktop;
+    }
+}
+
+li {
+    @include standard-text(false);
+    margin-bottom: $base-dimension-unit;
 }

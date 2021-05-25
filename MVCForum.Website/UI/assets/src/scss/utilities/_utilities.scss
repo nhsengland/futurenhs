@@ -47,8 +47,8 @@
     clear: both;
 }
 
-.u-plain {
-    margin: 0;
+.u-list-plain {
+    padding: 0;
     list-style-type: none;
 }
 
@@ -60,40 +60,8 @@
     overflow: hidden;
 }
 
-.u-tal {
-    text-align: left;
-}
-
-.u-tac {
-    text-align: center;
-}
-
-.u-tar {
-    text-align: right;
-}
-
 .u-relative {
     position: relative;
-}
-
-.u-text-standard {
-    font-size: $base-font-size !important; // sass-lint:disable-line no-important
-}
-
-.u-text-large {
-    font-size: $large-text !important; // sass-lint:disable-line no-important
-}
-
-.u-text-very-large {
-    font-size: $very-large-text;
-}
-
-.u-bold {
-    @include font-family-poppins-bold;
-}
-
-.u-unbold {
-    @include font-family-poppins-regular;
 }
 
 .u-overflow-x {
@@ -101,16 +69,6 @@
 }
 
 .u-overflow-y {
-    overflow-y: auto;
-}
-
-.u-scroll-x {
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-.u-scroll-y {
-    overflow-x: hidden;
     overflow-y: auto;
 }
 
@@ -126,41 +84,55 @@
     }
 }
 
-.u-tablet-up {
-    display: none;
+// .u-tablet-up {
+//     display: none;
 
-    @include respond-to(tablet) {
-        display: block;
-    }
+//     @include respond-to(tablet) {
+//         display: block;
+//     }
+// }
+
+// .u-tablet-up-inline-block {
+//     display: none;
+
+//     @include respond-to(tablet) {
+//         display: inline-block;
+//     }
+// }
+
+// .u-desktop-up {
+//     display: none;
+
+//     @include respond-to(desktop) {
+//         display: block;
+//     }
+// }
+
+// .u-desktop-up-inline-block {
+//     display: none;
+
+//     @include respond-to(desktop) {
+//         display: inline-block;
+//     }
+// }
+
+//fonts
+.u-text-lead {
+    @include lead-text;
 }
 
-.u-tablet-up-inline-block {
-    display: none;
-
-    @include respond-to(tablet) {
-        display: inline-block;
-    }
+.u-text-small {
+    @include small-text;
 }
 
-.u-desktop-up {
-    display: none;
-
-    @include respond-to(desktop) {
-        display: block;
-    }
+.u-text-bold {
+    font-weight: $nhsuk-font-bold;
 }
 
-.u-desktop-up-inline-block {
-    display: none;
-
-    @include respond-to(desktop) {
-        display: inline-block;
-    }
+.u-text-unbold {
+    font-weight: $nhsuk-font-normal;
 }
 
-.u-no-outline {
-    outline: none;
-}
 
 .u-width-auto {
     width: auto;
@@ -168,94 +140,6 @@
 
 .u-width-zero {
     width: 0;
-}
-
-.u-padding-base {
-    padding: $base-dimension-unit;
-}
-
-.u-padding-xsm {
-    padding: $spacer-xsm;
-}
-
-.u-padding-sm {
-    padding: $spacer-sm;
-}
-
-.u-padding-rg {
-    padding: $spacer-rg;
-}
-
-.u-padding-lg {
-    padding: $spacer-lg;
-}
-
-.u-padding-xl {
-    padding: $spacer-xl;
-}
-
-.u-no-padding {
-    padding: 0;
-}
-
-.u-no-padding-top {
-    padding-top: 0;
-}
-
-.u-no-padding-right {
-    padding-right: 0;
-}
-
-.u-no-padding-bottom {
-    padding-bottom: 0;
-}
-
-.u-no-padding-left {
-    padding-left: 0;
-}
-
-.u-margin-base {
-    margin: $base-dimension-unit;
-}
-
-.u-margin-sm {
-    margin: $spacer-sm;
-}
-
-.u-margin-rg {
-    margin: $spacer-rg;
-}
-
-.u-margin-lg {
-    margin: $spacer-lg;
-}
-
-.u-margin-xl {
-    margin: $spacer-xl;
-}
-
-.u-no-margin-top {
-    margin-top: 0;
-}
-
-.u-no-margin-right {
-    margin-right: 0;
-}
-
-.u-no-margin-bottom {
-    margin-bottom: 0;
-}
-
-.u-no-margin-left {
-    margin-left: 0;
-}
-
-.u-heading-sm {
-    @include small-heading;
-}
-
-.u-heading-md {
-    @include medium-heading;
 }
 
 .u-icon-left {
@@ -274,59 +158,6 @@
     vertical-align: middle;
 }
 
-.u-no-shadow {
-    box-shadow: none;
-}
-
-.u-pointer-events-none {
-    pointer-events: none;
-}
-
-.u-pointer-events-all {
-    pointer-events: all;
-}
-
-.u-semi-transparent {
-    opacity: .5;
-}
-
-.u-anim--fade-in {
-    opacity: 0;
-    animation: fadeIn .4s ease-in-out 0ms forwards;
-}
-
-.u-anim--spin {
-    animation: spin .8s linear 0ms infinite;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(1turn);
-    }
-}
-
-.u-display-block {
-    display: block;
-}
-
-.u-display-inline {
-    display: block;
-}
-
 .u-max-height {
     height: 100%;
 }
@@ -339,6 +170,10 @@
 
     .u-fill-theme-#{$number} {
         fill: $theme;
+    }
+
+    .u-text-theme-#{$number} {
+        color: $theme;
     }
 
     .u-border-theme-#{$number} {

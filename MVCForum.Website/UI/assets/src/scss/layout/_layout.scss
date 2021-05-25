@@ -45,41 +45,30 @@
 @for $i from 0 through 12 {
 
     .l-col-#{$i}-lm {
-
         @include respond-to(mobile-large) {
-
             @include column($i);
-
         }
-
     }
 
     .l-col-fb-#{$i}-lm {
-        @include column($i, true);
+        @include respond-to(mobile-large) {
+            @include column($i, true);
+        }
     }
-
 }
 
 @for $i from 0 through 12 {
 
     .l-col-#{$i}-t {
-
         @include respond-to(tablet) {
-
             @include column($i);
-
         }
-
     }
 
     .l-col-fb-#{$i}-t {
-
         @include respond-to(tablet) {
-
             @include column($i, true);
-
         }
-
     }
 
 }
@@ -87,25 +76,31 @@
 @for $i from 0 through 12 {
 
     .l-col-#{$i}-d {
-
         @include respond-to(desktop) {
-
             @include column($i);
-
         }
-
     }
 
     .l-col-fb-#{$i}-d {
-
         @include respond-to(desktop) {
-
             @include column($i, true);
-
         }
+    }
+}
 
+@for $i from 0 through 12 {
+
+    .l-col-#{$i}-ld {
+        @include respond-to(desktop-large) {
+            @include column($i);
+        }
     }
 
+    .l-col-fb-#{$i}-ld {
+        @include respond-to(desktop-large) {
+            @include column($i, true);
+        }
+    }
 }
 
 .l-block {

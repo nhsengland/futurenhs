@@ -77,10 +77,27 @@
             @extend %toggle-button;
 
             @include respond-to(desktop) {
-                &:link {
+                &:link,
+                &:visited{
                     background-color: transparent;
                     border-color: $color_nhsuk-white;
                     color: $color_nhsuk-white;
+                }
+
+                &:hover {
+                    background-color: $color_shade_nhsuk-blue-35;
+                    border-color: $color_shade_nhsuk-blue-50;
+                    color: $color_nhsuk-white;
+                    box-shadow: none;
+                }
+
+                &:focus {
+                    background-color: $nhsuk-focus-color;
+                    color: $nhsuk-focus-text-color;
+                    outline: $nhsuk-focus-width solid transparent;
+                    outline-offset: $nhsuk-focus-width;
+                    border: 2px solid $nhsuk-focus-color;
+                    box-shadow: 0 0 0 2px $nhsuk-focus-color, 0 $nhsuk-focus-width 0 2px $nhsuk-focus-text-color;
                 }
             }
         }
@@ -222,7 +239,7 @@
     }
 
     &_root-nav-trigger {
-        @include font-family-poppins-bold;
+        // @include font-family-poppins-bold;
         @include small-heading;
         font-weight: bold;
         color: $t-text-one;
@@ -305,7 +322,8 @@
     }
 
     &_sub-nav-child {
-        @include large-text;
+        line-height: 24px;
+        font-size: 16px;
         display: block;
         font-weight: bold;
         margin: 0 0 $spacer-xsm;
@@ -319,8 +337,6 @@
         @include respond-to(desktop) {
             display: block;
             margin: 0 0 $base-dimension-unit;
-            line-height: $large-text-line-height;
-            font-size: $large-text;
         }
 
     }

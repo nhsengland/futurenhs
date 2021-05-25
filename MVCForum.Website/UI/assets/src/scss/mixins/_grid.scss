@@ -5,8 +5,8 @@
 /////////////////
 
 $columns: 12;
-$column-width: 80px;
-$gutter-width: $base-dimension-unit * 2;
+$column-width: 74px;
+$gutter-width: 46px;
 $total-width: 100%;
 
 @function gridsystem-width($columns:$columns) {

@@ -104,6 +104,41 @@ $no-js-style: false !default;
     }
 }
 
+@function nhsuk-font-url($filename) {
+  @return url($nhsuk-fonts-path + $filename);
+}
+
+
+@mixin _nhsuk-font-face-frutiger {
+    @at-root {
+      @font-face {
+        font-display: swap;
+        font-family: 'Frutiger W01';
+        font-style: normal;
+        font-weight: 400;
+        src: nhsuk-font-url('FrutigerLTW01-55Roman.eot?#iefix');
+        src: nhsuk-font-url('FrutigerLTW01-55Roman.eot?#iefix') format('eot'),
+             nhsuk-font-url('FrutigerLTW01-55Roman.woff2') format('woff2'),
+             nhsuk-font-url('FrutigerLTW01-55Roman.woff') format('woff'),
+             nhsuk-font-url('FrutigerLTW01-55Roman.ttf') format('truetype'),
+             nhsuk-font-url('FrutigerLTW01-55Roman.svg#7def0e34-f28d-434f-b2ec-472bde847115') format('svg');
+      }
+  
+      @font-face {
+        font-display: swap;
+        font-family: 'Frutiger W01';
+        font-style: normal;
+        font-weight: $nhsuk-font-bold;
+        src: nhsuk-font-url('FrutigerLTW01-65Bold.eot?#iefix');
+        src: nhsuk-font-url('FrutigerLTW01-65Bold.eot?#iefix') format('eot'),
+             nhsuk-font-url('FrutigerLTW01-65Bold.woff2') format('woff2'),
+             nhsuk-font-url('FrutigerLTW01-65Bold.woff') format('woff'),
+             nhsuk-font-url('FrutigerLTW01-65Bold.ttf') format('truetype'),
+             nhsuk-font-url('FrutigerLTW01-65Bold.svg#eae74276-dd78-47e4-9b27-dac81c3411ca') format('svg');
+      }
+    }
+  }
+
 @mixin font-face($font-family, $font-filename, $font-weight: normal, $font-style: normal, $font-stretch: normal) {
     @font-face {
         font-family: '#{$font-family}';
@@ -118,23 +153,23 @@ $font-poppins-regular: 'Poppins-Regular', Arial, sans-serif !default;
 $font-poppins-bold: 'Poppins-Bold', Arial, sans-serif !default;
 $font-verveine-regular: 'Verveine-Regular', 'Lucida handwriting', sans-serif !default;
 
-@mixin font-family-poppins-regular {
-    font-family: $font-poppins-regular;
-    font-style: normal;
-    font-weight: normal;
-}
+// @mixin font-family-poppins-regular {
+//     font-family: $font-poppins-regular;
+//     font-style: normal;
+//     font-weight: normal;
+// }
 
-@mixin font-family-poppins-bold {
-    font-family: $font-poppins-bold;
-    font-style: normal;
-    font-weight: normal;
-}
+// @mixin font-family-poppins-bold {
+//     font-family: $font-poppins-bold;
+//     font-style: normal;
+//     font-weight: normal;
+// }
 
-@mixin font-family-verveine-regular {
-    font-family: $font-verveine-regular;
-    font-style: normal;
-    font-weight: 400;
-}
+// @mixin font-family-verveine-regular {
+//     font-family: $font-verveine-regular;
+//     font-style: normal;
+//     font-weight: 400;
+// }
 
 @mixin clearfix() {
 
@@ -353,34 +388,93 @@ $font-verveine-regular: 'Verveine-Regular', 'Lucida handwriting', sans-serif !de
 }
 
 @mixin regular-heading() {
-    line-height: $regular-heading-line-height;
-    font-size: $regular-heading-font-size;
+    line-height: $h2-line-height-mobile;
+    font-size: $h2-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h2-line-height-desktop;
+        font-size: $h2-font-size-desktop;
+    }
 }
 
 @mixin medium-heading() {
-    line-height: $medium-heading-line-height;
-    font-size: $medium-heading-font-size;
+    line-height: $h3-line-height-mobile;
+    font-size: $h3-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h3-line-height-desktop;
+        font-size: $h3-font-size-desktop;
+    }
 }
 
 @mixin small-heading() {
-    line-height: $small-heading-line-height;
-    font-size: $small-heading-font-size;
+    line-height: $h5-line-height-mobile;
+    font-size: $h5-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h5-line-height-desktop;
+        font-size: $h5-font-size-desktop;
+    }
 }
 
-@mixin standard-text() {
-    line-height: $base-font-size-line-height;
+@mixin standard-text($margin: true) {
+    line-height: $base-font-line-height;
     font-size: $base-font-size;
+
+    @if ($margin) {
+        margin: 0 0 $base-font-margin-bottom;
+    }
+
+    @include respond-to(desktop) {
+        line-height: $base-font-line-height-desktop;
+        font-size: $base-font-size-desktop;
+
+        @if ($margin) {
+            margin: 0 0 $base-font-margin-bottom-desktop;
+        }
+    }
 }
 
-@mixin large-text() {
-    line-height: $large-text-line-height;
-    font-size: $large-text;
+@mixin lead-text($margin: true) {
+    line-height: $lead-text-line-height;
+    font-size: $lead-text-size;
+    
+    @if ($margin) {
+        margin: 0 0 $lead-text-margin-bottom;
+    }
+
+    @include respond-to(desktop) {
+        line-height: $lead-text-line-height-desktop;
+        font-size: $lead-text-size-desktop;
+
+        @if ($margin) {
+            margin: 0 0 $lead-text-margin-bottom-desktop;
+        }
+    }
 }
 
-@mixin very-large-text() {
-    line-height: $very-large-text-line-height;
-    font-size: $very-large-text;
+@mixin small-text($margin: true) {
+    line-height: $small-text-line-height;
+    font-size: $small-text-size;
+
+    @if ($margin) {
+        margin: 0 0 $small-text-margin-bottom;
+    }
+
+    @include respond-to(desktop) {
+        line-height: $small-text-line-height-desktop;
+        font-size: $small-text-size-desktop;
+
+        @if ($margin) {
+            margin: 0 0 $small-text-margin-bottom-desktop;
+        }
+    }
 }
+
+// @mixin large-text() { //SMALL
+//     line-height: $large-text-line-height;
+//     font-size: $large-text;
+// }
 
 @function derived-dimension($multiplier) {
     @return $multiplier * $base-dimension-unit;

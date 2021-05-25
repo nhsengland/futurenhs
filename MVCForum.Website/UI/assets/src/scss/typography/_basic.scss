@@ -36,17 +36,18 @@ html {
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
     overflow-y: scroll;
-    // font-size: .875em;
+    @include _nhsuk-font-face-frutiger;
+    font-family: $nhsuk-font, $nhsuk-font-fallback;
 }
 
 body,
 html {
-    font-family: Arial, Helvetica, sans-serif;
+    // font-family: Arial, Helvetica, sans-serif;
     height: 100%;
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    // font-family: Arial, Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
     color: $t-text-one;
@@ -93,10 +94,9 @@ button {
 
 }
 
-b,
-strong {
-    @include font-family-poppins-bold;
-}
+// b,
+// strong {
+// }
 
 input {
     @include focus-outline-large;

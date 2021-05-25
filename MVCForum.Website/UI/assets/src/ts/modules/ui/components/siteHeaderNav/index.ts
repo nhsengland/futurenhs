@@ -119,7 +119,7 @@ export class SiteHeaderNav extends UIComponentBase {
      */
     private getIsDesktop: Function = (): boolean => {
 
-        return window.innerWidth > this.css.breakPoints.desktop;
+        return window.innerWidth >= this.css.breakPoints.desktop;
 
     }
 
