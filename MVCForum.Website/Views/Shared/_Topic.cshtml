@@ -13,7 +13,15 @@
 
         <div class="rowcreater hidden-xs">
             <a href="@Model.Topic.User.NiceUrl">
-                <img src="@Model.Topic.User.MemberImage(ForumConfiguration.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
+                @if (!string.IsNullOrEmpty(Model.Topic.User.Avatar))
+                {
+                    <img src="@Model.Topic.User.MemberImage(ForumConfiguration.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
+                }
+                else
+                {
+                    @* TODO [FED]: The initials of the user (valiue in img tag alt) should be displayed if no image *@
+                    @Html.DisplayFor(x => Model.Topic.User.Initials)
+                }
             </a>
             @if (Model.MemberIsOnline)
             {
@@ -63,13 +71,21 @@
 
             <p class="topicrowfooterinfo">
                 <a href="@Html.Raw(Model.LastPostPermaLink)">
-                    <img src="@Model.Topic.LastPost.User.MemberImage(ForumConfiguration.Instance.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.LastPost.User.UserName">
+                    @if (!string.IsNullOrEmpty(Model.Topic.User.Avatar))
+                    {
+                        <img src="@Model.Topic.LastPost.User.MemberImage(ForumConfiguration.Instance.GravatarLatestBySize)" alt="@Model.Topic.LastPost.User.UserName">
+                    }
+                    else
+                    {
+                        @* TODO [FED]: The initials of the user (valiue in img tag alt) should be displayed if no image *@
+                        @Html.DisplayFor(x => Model.Topic.LastPost.User.Initials)
+                    }
                 </a> 
                 <a href="@Html.Raw(Model.LastPostPermaLink)">
                     @Html.LanguageString("Topic.LatestBy")
                 </a> 
                 <a href="@Model.Topic.LastPost.User.NiceUrl">
-                    @Model.Topic.LastPost.User.UserName
+                    @Model.Topic.LastPost.User.GetFullName()
                 </a> 
                 @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
                 <span class="stats topicanswers">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-speech-bubbles", "c-ui-icon"));} @Model.Answers.KiloFormat()</span>

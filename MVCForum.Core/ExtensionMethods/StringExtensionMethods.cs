@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
     using System.Net;
     using System.Text;
@@ -97,6 +98,23 @@
             }
 
             return post;
+        }
+
+        /// <summary>
+        /// Capitalises each word in a given string.
+        /// </summary>
+        /// <param name="sentence">The string to capitalise.</param>
+        /// <returns>The string with capitalised first letter of each word.</returns>
+        public static string CapitaliseEachWord(this string sentence)
+        {
+            string result = String.Empty;
+            string[] words = sentence.Split(null);
+            foreach (var word in words)
+            {
+                result += word.Replace(word[0].ToString(), word[0].ToString().ToUpper()) + " ";
+            }
+
+            return result.Trim();
         }
 
         #region Private Methods

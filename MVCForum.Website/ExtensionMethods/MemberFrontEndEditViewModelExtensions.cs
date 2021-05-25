@@ -18,6 +18,8 @@
         {
             user.Id = viewModel.Id;
             user.UserName = viewModel.UserName;
+            user.FirstName = viewModel.FirstName;
+            user.Surname = viewModel.Surname;
             user.Email = viewModel.Email;
             user.Signature = viewModel.Signature;
             user.Age = viewModel.Age;
@@ -25,6 +27,7 @@
             user.Website = viewModel.Website;
             user.Twitter = viewModel.Twitter;
             user.Facebook = viewModel.Facebook;
+            user.Initials = string.Format("{0}{1}", viewModel.FirstName[0], viewModel.Surname[0]).ToUpper();
             if (!string.IsNullOrWhiteSpace(viewModel.Avatar))
             {
                 user.Avatar = viewModel.Avatar;
@@ -44,6 +47,9 @@
             {
                 Id = user.Id,
                 UserName = user.UserName,
+                FirstName = user.FirstName,
+                Surname = user.Surname,
+                Initials = user.Initials,
                 Email = user.Email,
                 Signature = user.Signature,
                 Age = user.Age,

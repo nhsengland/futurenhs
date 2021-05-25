@@ -72,6 +72,10 @@
     <Compile Include="Migrations\202105211220352_JoinableGroups.Designer.cs">
       <DependentUpon>202105211220352_JoinableGroups.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202105241523294_AddMemebershipNameFields.cs" />
+    <Compile Include="Migrations\202105241523294_AddMemebershipNameFields.Designer.cs">
+      <DependentUpon>202105241523294_AddMemebershipNameFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -387,6 +391,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202105211220352_JoinableGroups.resx">
       <DependentUpon>202105211220352_JoinableGroups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105241523294_AddMemebershipNameFields.resx">
+      <DependentUpon>202105241523294_AddMemebershipNameFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

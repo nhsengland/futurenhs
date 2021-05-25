@@ -1,3 +1,4 @@
+@model MvcForum.Web.ViewModels.Shared.SiteHeaderViewModel
 @using MvcForum.Web.Application.ExtensionMethods
 @using MvcForum.Web.ViewModels.Shared
 @{
@@ -55,11 +56,20 @@
                                 <li role="none">
                                     <details class="c-site-header-nav_root-nav-item">
                                         <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger" data-open-icon="icon-minus" data-closed-icon="icon-plus">
-                                            <span class="c-site-header-nav_root-nav-image">
-                                                <img src="https://www.gravatar.com/avatar/b490a5811190aa9895f60265a3f7b0eb?s=50&d=identicon&r=PG" alt="">
-                                            </span>
-                                            ##USER NAME
-                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-site-header-nav_root-nav-icon js-svg"));} 
+
+                                            @if (!string.IsNullOrEmpty(Model.CurrentUser.Avatar))
+                                            {
+                                                <span class="c-site-header-nav_root-nav-image">
+                                                    <img src="@Model.CurrentUser.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.CurrentUser.UserName">
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                @* TODO [FED]: The initials of the user (valiue in img tag alt) should be displayed if no image *@
+                                                @Html.DisplayFor(x => Model.CurrentUser.Initials)
+                                            }
+                                            @Model.CurrentUser.GetFullName()
+                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-site-header-nav_root-nav-icon js-svg"));}
                                         </summary>
                                         <div class="c-site-header-nav_sub-nav">
                                             <div class="c-site-header-nav_sub-nav-content">

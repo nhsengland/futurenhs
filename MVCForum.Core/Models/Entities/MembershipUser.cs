@@ -1,5 +1,6 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
+    using MvcForum.Core.ExtensionMethods;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -20,6 +21,9 @@
 
         public Guid Id { get; set; }
         public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string Surname { get; set; }
+        public string Initials { get; set;}
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
         public string Email { get; set; }
@@ -92,6 +96,16 @@
         public int TotalPoints
         {
             get { return Points?.Select(x => x.Points).Sum() ?? 0; }
+        }
+
+        public string GetFullName()
+        {
+            if (!String.IsNullOrEmpty(this.FirstName) && !String.IsNullOrEmpty(this.Surname))
+            {
+                return String.Format("{0} {1}", this.FirstName, this.Surname).CapitaliseEachWord();
+            }
+
+            return this.UserName;
         }
 
         public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Member, Slug);

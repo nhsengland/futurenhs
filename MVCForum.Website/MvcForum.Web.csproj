@@ -88,6 +88,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Controllers\FedTestController.cs" />
     <Compile Include="Controllers\HealthCheckController.cs" />
+    <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
     <Compile Include="ExtensionMethods\GroupViewModelExtensions.cs" />
     <Compile Include="ViewModels\Admin\AjaxAdminViewModels.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="ViewModels\Moderate\ModerateActionViewModel.cs" />
     <Compile Include="ViewModels\Favourite\MyFavouritesViewModel.cs" />
     <Compile Include="ViewModels\Registration\ResetPasswordViewModel.cs" />
+    <Compile Include="ViewModels\Shared\SiteHeaderViewModel.cs" />
     <Compile Include="ViewModels\Shared\SVGIconViewModel.cs" />
     <Compile Include="ViewModels\Topic\ActiveTopicsViewModel.cs" />
     <Compile Include="ViewModels\Topic\CheckCreateTopicPermissions.cs" />

@@ -236,7 +236,7 @@
                     string.Format("?width={0}&crop=0,0,{0},{0}", size));
             }
 
-            return StringUtils.GetGravatarImage(email, size);
+            return null;
         }
 
         public static string GroupImage(string image, Guid GroupId, int size)

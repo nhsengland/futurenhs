@@ -312,6 +312,8 @@
                 {
                     UserName = user.UserName,
                     Email = user.Email,
+                    FirstName = user.FirstName,
+                    Surname = user.Surname,
                     Password = user.Password,
                     IsApproved = user.IsApproved,
                     Comment = user.Comment,

@@ -16,7 +16,17 @@
     <div class="rowcreater hidden-xs">
         <a id="comment-@postId"></a>
         <a href="@Model.Post.User.NiceUrl">
-            <img src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.Post.User.UserName">
+            @if (!string.IsNullOrEmpty(Model.Post.User.Avatar))
+            {
+                <span class="c-site-header-nav_root-nav-image">
+                    <img src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.Post.User.UserName">
+                </span>
+            }
+            else
+            {
+                @* TODO [FED]: The initials of the user (valiue in img tag alt) should be displayed if no image *@
+                @Html.DisplayFor(x => Model.Post.User.Initials)
+            }
         </a>
         @if (Model.Post.User.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
         {

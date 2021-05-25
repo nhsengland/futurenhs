@@ -17,6 +17,14 @@
         [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.FirstName")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.Surname")]
+        public string Surname { get; set; }
+
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
         [EmailAddress]
         [Required]
@@ -60,7 +68,7 @@
         [ForumMvcResourceDisplayName("Members.Label.DisableEmailNotifications")]
         public bool DisableEmailNotifications { get; set; }
 
-
+        public string Initials { get; set; }
         public int AmountOfPoints { get; set; }
     }
 }

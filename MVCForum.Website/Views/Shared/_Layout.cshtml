@@ -43,7 +43,7 @@
     <div class="site-overlay"></div>    
 
 
-    @Html.Partial("_SiteHeader")
+    @{ Html.RenderAction("SiteHeader", "Layout"); }
 
     <!-- <header>
 

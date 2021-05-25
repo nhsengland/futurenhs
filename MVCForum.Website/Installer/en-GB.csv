@@ -142,6 +142,8 @@ Members.Label.CurrentPassword,Current Password
 Members.Label.DateJoined,Date Joined
 Members.Label.DisableEmailNotifications,Disable Email Notifications
 Members.Label.EmailAddress,Email address (Used by Gravatar to show your Avatar image)
+Members.Label.FirstName,Firstname
+Members.Label.Surname,Surname
 Members.Label.EmailAddressBlank,Enter your email address
 Members.Label.Facebook,Facebook Page
 Members.Label.Location,Location
