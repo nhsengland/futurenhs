@@ -12,7 +12,7 @@ module.exports = {
     mode: 'production',
     context: sourcePath,
     entry: {
-        ['polyfills']: ['idempotent-babel-polyfill', 'whatwg-fetch', 'details-element-polyfill', './polyfills.ts'],
+        ['polyfills']: ['idempotent-babel-polyfill', './polyfills.ts'],
         ['global']: ['./global.ts']
     },
     output: {
