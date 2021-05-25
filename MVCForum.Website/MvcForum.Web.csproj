@@ -1146,6 +1146,7 @@
     <Content Include="Views\Shared\_SVGIcon.cshtml" />
     <Content Include="Views\Shared\_SVGSprite.cshtml" />
     <Content Include="Views\FedTest\Index.cshtml" />
+    <Content Include="Views\FedTest\_FedTestPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />
