@@ -27,7 +27,9 @@ const
     jest = require("gulp-jest").default,
     webpackConfig = require("./webpack.config.js"),
     workBoxCliConfig = require("./workbox.cli.config.js"),
-    jestConfig = require("./jest.config.js");
+    jestConfig = require("./jest.config.js"),
+    { AxePuppeteer } = require('@axe-core/puppeteer'),
+    puppeteer = require('puppeteer');
 
 const sequenceArgs = (list) => {
     return (done) => {
@@ -230,8 +232,7 @@ gulp.task('deactivate', sequence(
 ));
 
 gulp.task('test', sequence(
-    'test:accessibility',
-    'test:html',
+    'test:axe',
     'test:js',
     'terminate'
 ));
@@ -514,6 +515,103 @@ gulp.task('browserSync', () => {
     });
 
 });
+
+gulp.task("test:axe", (done) => {
+
+    const testURLs = require('./axeReports/testURLs');
+    const LOGIN_PAGE_URL = 'http://localhost:8888/members/logon/'; 
+    
+    let totalViolations = 0;
+
+    const getAxeReport = async (testURL) => {
+
+        const browser = await puppeteer.launch({
+            headless: true,
+            defaultViewport: null,
+        });
+
+        //creates login session
+        const loginPage = await browser.newPage();
+        await loginPage.setBypassCSP(true);
+        await loginPage.goto(LOGIN_PAGE_URL);
+
+        //gets username and passwords fields
+        const userNameInput = await loginPage.$("#UserName");
+        const passwordInput = await loginPage.$("#Password");
+        
+        //types credentials
+        await userNameInput.type("admin");
+        await passwordInput.type("ks2qlh89-mvc");
+
+        //submits form 
+        loginPage.$eval('.form-login', form => form.submit());
+        
+        //waits 1.5s , gives time to login session to complete before starting running reports  
+        await loginPage.waitForTimeout(1500);
+        await loginPage.close();
+
+        //test url after login
+        const testPage = await browser.newPage();
+        await testPage.setBypassCSP(true);
+        await testPage.goto(testURL);
+
+        //analyze url and trim result data
+        const rawReportResults = await new AxePuppeteer(testPage).analyze();       
+        const { violations, passes, timestamp, url } = rawReportResults;
+        const violationsCount = violations.length;
+        const passesCount = passes.length;
+        const reportResults = {
+            [url]: {    
+                timestamp,
+                passesCount,
+                violationsCount,
+                ...rawReportResults
+            }
+        };
+
+        //track violations count
+        totalViolations += violationsCount; 
+        
+        await testPage.close();
+        await browser.close();
+
+        return reportResults;
+
+    };
+
+    return Promise.all(testURLs.map((testURL) => {
+
+        return getAxeReport(testURL);
+
+    })).then((reportResults)=>{
+
+        fs.writeFileSync(
+            "./axeReports/reportResults.json",
+            JSON.stringify(reportResults, null, "  ")
+        );
+
+        if(Boolean(totalViolations)){
+            throw new Error('Accessbility issues founded');
+        }
+
+        return reportResults;
+
+    }).catch((error)=>{
+
+        console.error('Error: ' + error.message);
+        
+        console.error(`The accessbility testing has finished with ${totalViolations} violations`);
+
+        process.exit(-1);
+
+    }).finally(()=>{
+       
+        console.log(`The accessbility testing has finished with 0 violations`);
+
+    });
+
+});
+
 
 ////////////////////////////////////////////////////////////////////////
 // CALLING UI TASKS
