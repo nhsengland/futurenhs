@@ -94,7 +94,8 @@
                 }
                 else
                 {
-                    _groupService.AddGroupAdministrators(Group.Slug, GroupViewModel.GroupAdministrators.ToList(),LoggedOnReadOnlyUser.Id);
+                    if(GroupViewModel.GroupAdministrators != null && GroupViewModel.GroupAdministrators.Any())
+                        _groupService.AddGroupAdministrators(Group.Slug, GroupViewModel.GroupAdministrators.ToList(),LoggedOnReadOnlyUser.Id);
                     // We use temp data because we are doing a redirect
                     TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
@@ -131,7 +132,7 @@
         {
             if (ModelState.IsValid)
             {
-                var administrators = GroupViewModel.GroupAdministrators.ToList();
+                var administrators = GroupViewModel.GroupAdministrators;
                 //_groupService.getg
                 // Reset the select list
                 GroupViewModel.AllGroups = _groupService.GetBaseSelectListGroups(_groupService.GetAll(LoggedOnReadOnlyUser?.Id)
@@ -164,7 +165,15 @@
                             .Where(x => x.Id != GroupViewModel.Id)
                             .ToList(), LoggedOnReadOnlyUser?.Id), _groupService.GetAllSections().ToSelectList());
 
-                    _groupService.AddGroupAdministrators(group.Slug, administrators, LoggedOnReadOnlyUser.Id);
+                    if (administrators != null && administrators.Any())
+                    {
+              
+                        _groupService.AddGroupAdministrators(group.Slug, administrators.Where(x=> x != Guid.Empty).ToList(), LoggedOnReadOnlyUser.Id);
+                    }
+                    else
+                    {
+                        _groupService.AddGroupAdministrators(group.Slug, new List<Guid>(), LoggedOnReadOnlyUser.Id);
+                    }
                 }
             }
             GroupViewModel.Users = MembershipService.GetAll().ToSelectList();

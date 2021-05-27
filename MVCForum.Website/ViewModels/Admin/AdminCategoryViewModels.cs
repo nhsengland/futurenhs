@@ -60,6 +60,7 @@
         [DisplayName("Section")]
         public Guid? Section { get; set; }
 
+        [Required]
         [DisplayName("Group Owner")]
         public Guid? GroupOwner { get; set; }
 
