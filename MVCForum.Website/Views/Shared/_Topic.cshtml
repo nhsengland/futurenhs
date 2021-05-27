@@ -10,7 +10,7 @@
 {
 
     <div class="topicrow topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
-
+        <b>Created by <a href="@Model.Topic.User.NiceUrl">@Model.Topic.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</b>
         <div class="rowcreater hidden-xs">
             <a href="@Model.Topic.User.NiceUrl">
                 @if (!string.IsNullOrEmpty(Model.Topic.User.Avatar))
