@@ -111,6 +111,10 @@
     <Compile Include="ViewModels\Admin\AdminCategoryViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminLanguageViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
+    <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
+    <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
+    <Compile Include="ViewModels\Shared\Tab.cs" />
+    <Compile Include="ViewModels\Shared\TabViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupUserViewModel.cs" />
     <Compile Include="ViewModels\Group\SectionListViewModel.cs" />
     <Compile Include="ViewModels\GenericMessageViewModel.cs" />
@@ -1141,7 +1145,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Views\Group\ListSections.cshtml" />
-    <Content Include="Views\Group\ManageUsers.cshtml" />
+    <Content Include="Views\Group\_ManageUsers.cshtml" />
     <Content Include="Views\Group\ManageUser.cshtml" />
     <Content Include="Views\Shared\_LayoutSideBar.cshtml" />
     <Content Include="Views\Shared\_SiteHeader.cshtml" />
@@ -1149,6 +1153,9 @@
     <Content Include="Views\Shared\_SVGSprite.cshtml" />
     <Content Include="Views\FedTest\Index.cshtml" />
     <Content Include="Views\FedTest\_FedTestPartial.cshtml" />
+    <Content Include="Views\Shared\_TabsMenu.cshtml" />
+    <Content Include="Views\FedTest\_Typography.cshtml" />
+    <Content Include="Views\Group\_Forum.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

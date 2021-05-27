@@ -1,4 +1,6 @@
-﻿using MvcForum.Core.Models.Enums;
+﻿using System;
+using MvcForum.Core.Models.Enums;
+using MvcForum.Web.ViewModels.Shared;
 
 namespace MvcForum.Web.ViewModels.Group
 {
@@ -14,6 +16,8 @@ namespace MvcForum.Web.ViewModels.Group
         public Group Group { get; set; }
         public IEnumerable<GroupUserViewModel> GroupUsers { get; set; }
         public GroupListViewModel SubGroups { get; set; }
+        public TabViewModel Tabs { get; set; }
+        public string Tab { get; set; }
         public MembershipUser User { get; set; }
         public bool IsSubscribed { get; set; }
         public GroupUserStatus GroupUserStatus { get; set; }

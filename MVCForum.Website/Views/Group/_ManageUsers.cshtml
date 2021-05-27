@@ -1,0 +1,71 @@
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Core.Models.Enums
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.ViewModels.Group
+@using MvcForum.Web.ViewModels.Shared
+@using System.Diagnostics.Eventing.Reader
+
+@model GroupMembersViewModel
+@{
+
+}
+
+<div>
+		<h2>@Html.LanguageString("Group.Members")</h2>
+	
+@if ((Model.LoggedInUserRole == null && !Model.PublicGroup) || (Model.GroupUserStatus != GroupUserStatus.Joined && Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName != Constants.AdminRoleName && !Model.PublicGroup))
+{
+	<p>@Html.LanguageString("Group.PermissionDenied")</p>
+}
+
+else if (Model.GroupUserStatus == GroupUserStatus.Joined || Model.PublicGroup || Model.LoggedInUserRole.RoleName == Constants.AdminRoleName)
+{
+	if (Model.TotalCount > 0)
+	{
+		<table class="table table-bordered table-striped table-adaptive">
+			<thead>
+			<tr>
+				<th>@Html.LanguageString("Members.Users")</th>
+				<th>@Html.LanguageString("Members.Status")</th>
+				<th>@Html.LanguageString("Members.Role")</th>
+			</tr>
+			</thead>
+			<tbody>
+			@foreach (var groupUser in Model.GroupUsers)
+			{
+				<tr>
+					<td>
+						@if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName)
+						{
+							<a href="@Url.Action("ManageUser", new {groupUserId = groupUser.GroupUser.Id})">@groupUser.GroupUser.User.GetFullName()</a>
+						}
+						@if (Model.LoggedInUserRole == null || Model.LoggedInUserRole.RoleName != Constants.AdminRoleName)
+						{
+							@groupUser.GroupUser.User.GetFullName()
+						}
+					</td>
+					<td>
+
+						@groupUser.GroupUserStatus
+					</td>
+					<td>
+						@groupUser.GroupUser.Role.RoleName
+					</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+
+		if (Model.TotalPages > 1)
+		{
+			@Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, Model.MemberCount, null)
+		}
+
+	}
+	else if (Model.TotalCount == 0)
+	{
+		<p>@Html.LanguageString("Group.NoMembers")</p>
+	}
+}
+
+</div>

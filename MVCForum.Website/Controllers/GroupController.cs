@@ -1,5 +1,7 @@
 ﻿using System;
 using CommonServiceLocator;
+using Microsoft.Ajax.Utilities;
+using MvcForum.Web.ViewModels.Shared;
 using MvcForum.Web.ViewModels.Topic;
 using Constants = MvcForum.Core.Constants.Constants;
 
@@ -31,7 +33,7 @@ namespace MvcForum.Web.Controllers
         private readonly IRoleService _roleService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
- 
+
         /// <summary>
         ///     Constructor
         /// </summary>
@@ -158,7 +160,7 @@ namespace MvcForum.Web.Controllers
         public virtual PartialViewResult GetSubscribedGroups()
         {
             var viewModel = new List<GroupViewModel>();
-           
+
             var groups = LoggedOnReadOnlyUser.GroupNotifications.Select(x => x.Group);
             foreach (var group in groups)
             {
@@ -224,15 +226,115 @@ namespace MvcForum.Web.Controllers
 
         public virtual async Task<ActionResult> Leave(string slug, int? p)
         {
+
             _groupService.LeaveGroup(slug, LoggedOnReadOnlyUser.Id);
-            return RedirectToAction("show", new {slug = slug, p = p});
+            return RedirectToAction("show", new { slug = slug, p = p });
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int? p)
+        [ChildActionOnly]
+        public virtual PartialViewResult GetGroupTabs(string activeTab, string slug)
         {
-            
+            var activeTabFound = false;
+            var forumTab = new Tab { Name = "Tabs.Forum", Order = 2 };
+            if (activeTab == Constants.GroupForumTab)
+            {
+                forumTab.Active = true;
+                activeTabFound = true;
+            }
+
+            forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
+
+            var membersTab = new Tab { Name = "Tabs.Members", Order = 3 };
+            if (activeTab == Constants.GroupMembersTab)
+            {
+                membersTab.Active = true;
+                activeTabFound = true;
+            }
+
+            membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
+
+
+            var homeTab = new Tab { Name = "Tabs.Home", Order = 1 };
+            if (!activeTabFound)
+            {
+                homeTab.Active = true;
+            }
+
+            homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}";
+
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab } };
+
+            return PartialView("_TabsMenu", tabsViewModel);
+        }
+
+        [ChildActionOnly]
+        public virtual PartialViewResult GetGroupForum(Guid groupId, int? p)
+        {
+            var group = _groupService.Get(groupId);
+            var loggedOnUsersRole = GetGroupMembershipRole(groupId);
+
+            // Allowed Groups for this user
+            var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
+
+            // Set the page index
+            var pageIndex = p ?? 1;
+
+            // check the user has permission to this Group
+            var permissions = RoleService.GetPermissions(group, loggedOnUsersRole);
+            List<TopicViewModel> topicViewModels = new List<TopicViewModel>();
+            PaginatedList<Topic> topics = new PaginatedList<Topic>(new List<Topic>(), 0, 0, 0);
+
+            if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
+            {
+
+
+                if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName || group.PublicGroup)
+                {
+                    topics = _topicService.GetPagedTopicsByGroup(pageIndex,
+                        SettingsService.GetSettings().TopicsPerPage,
+                        int.MaxValue, group.Id);
+
+                    if (!allowedGroups.Contains(group))
+                    {
+                        allowedGroups.Add(group);
+                    }
+
+                    topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,
+                        loggedOnUsersRole, LoggedOnReadOnlyUser, allowedGroups, SettingsService.GetSettings(),
+                        _postService, _notificationService, _pollAnswerService, _voteService, _favouriteService);
+                }
+            }
+
+
+
+
+            var topicViewModel = new GroupTopicsViewModel
+            {
+                Topics = topicViewModels,
+                PageIndex = pageIndex,
+                TotalCount = topics.TotalCount,
+                TotalPages = topics.TotalPages,
+                PublicGroup = group.PublicGroup,
+                GroupId =  group.Id
+
+            };
+
+            if (LoggedOnReadOnlyUser != null)
+            {
+
+                var user = group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
+                topicViewModel.GroupUserStatus = GetUserStatusForGroup(user);
+                topicViewModel.LoggedInUserRole = loggedOnUsersRole;
+            }
+
+            return PartialView("_Forum", topicViewModel);
+        }
+
+        public virtual async Task<ActionResult> Show(string slug, int? p, string tab = null)
+        {
+
             // Get the Group
-            var group = _groupService.GetBySlugWithSubGroups(slug,LoggedOnReadOnlyUser?.Id);
+            var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
             var loggedOnUsersRole = GetGroupMembershipRole(group.Group.Id);
 
             // Allowed Groups for this user
@@ -246,56 +348,36 @@ namespace MvcForum.Web.Controllers
 
             if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
             {
-                PaginatedList<Topic> topics = new PaginatedList<Topic>(new List<Topic>(),0,0,0);
-                List<TopicViewModel> topicViewModels = new List<TopicViewModel>();
-                if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName || group.Group.PublicGroup)
-                {
-                         topics = await _topicService.GetPagedTopicsByGroup(pageIndex,
-                        SettingsService.GetSettings().TopicsPerPage,
-                        int.MaxValue, group.Group.Id);
-
-                         if (!allowedGroups.Contains(group.Group))
-                         {
-                             allowedGroups.Add(group.Group);
-                         }
-
-                         topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,
-                        loggedOnUsersRole, LoggedOnReadOnlyUser, allowedGroups, SettingsService.GetSettings(),
-                        _postService, _notificationService, _pollAnswerService, _voteService, _favouriteService);
-                }
-
                 // Create the main view model for the Group
                 var viewModel = new GroupViewModel
                 {
                     Permissions = permissions,
-                    Topics = topicViewModels,
                     Group = group.Group,
                     PageIndex = pageIndex,
-                    TotalCount = topics.TotalCount,
-                    TotalPages = topics.TotalPages,
                     User = LoggedOnReadOnlyUser,
                     GroupUserRole = GetGroupMembershipRole(group.Group.Id),
                     IsSubscribed = User.Identity.IsAuthenticated && _notificationService
-                                       .GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any()
+                                       .GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
+                    Tab = tab
                 };
 
-                if(loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName)
+                if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName)
 
-                // If there are subGroups then add then with their permissions
-                if (group.SubGroups.Any())
-                {
-                    var subCatViewModel = new GroupListViewModel
+                    // If there are subGroups then add then with their permissions
+                    if (group.SubGroups.Any())
                     {
-                        AllPermissionSets = new Dictionary<Group, PermissionSet>()
-                    };
-                    foreach (var subGroup in group.SubGroups)
-                    {
-                        var subGroupRole = GetGroupMembershipRole(subGroup.Id);
-                        var permissionSet = RoleService.GetPermissions(subGroup, subGroupRole);
-                        subCatViewModel.AllPermissionSets.Add(subGroup, permissionSet);
+                        var subCatViewModel = new GroupListViewModel
+                        {
+                            AllPermissionSets = new Dictionary<Group, PermissionSet>()
+                        };
+                        foreach (var subGroup in group.SubGroups)
+                        {
+                            var subGroupRole = GetGroupMembershipRole(subGroup.Id);
+                            var permissionSet = RoleService.GetPermissions(subGroup, subGroupRole);
+                            subCatViewModel.AllPermissionSets.Add(subGroup, permissionSet);
+                        }
+                        viewModel.SubGroups = subCatViewModel;
                     }
-                    viewModel.SubGroups = subCatViewModel;
-                }
 
 
                 if (LoggedOnReadOnlyUser != null)
@@ -311,11 +393,11 @@ namespace MvcForum.Web.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
-
-        public virtual async Task<ActionResult> ManageUsers(string slug, int? p)
+        [ChildActionOnly]
+        public virtual PartialViewResult GetGroupMembers(Guid groupId, int? p)
         {
             // Get the Group
-            var group = _groupService.GetBySlug(slug);
+            var group = _groupService.Get(groupId);
 
             var loggedOnUsersRole = GetGroupMembershipRole(group.Id);
 
@@ -327,43 +409,39 @@ namespace MvcForum.Web.Controllers
 
 
             // Create the main view model for the Group
-            var viewModel = new GroupViewModel
-                {
-                    Permissions = permissions,
-                    Group = group,
-                    PageIndex = pageIndex,
-                    TotalCount = group.GroupUsers.Count,
-                    TotalPages = (int)Math.Ceiling(group.GroupUsers.Count / (double)SettingsService.GetSettings().TopicsPerPage),
-                    User = LoggedOnReadOnlyUser,
-                    GroupUsers = group.GroupUsers.Select(x=> new GroupUserViewModel{GroupUser = x,GroupUserStatus = GetUserStatusForGroup(x)}),
-                    IsSubscribed = User.Identity.IsAuthenticated && _notificationService
-                                       .GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group).Any()
-                };
+            var viewModel = new GroupMembersViewModel
+            {
 
-                if (LoggedOnReadOnlyUser != null)
-                {
+                PageIndex = pageIndex,
+                TotalCount = group.GroupUsers.Count,
+                TotalPages = (int)Math.Ceiling(group.GroupUsers.Count / (double)SettingsService.GetSettings().TopicsPerPage),
+                GroupUsers = group.GroupUsers.Select(x => new GroupUserViewModel { GroupUser = x, GroupUserStatus = GetUserStatusForGroup(x) }),
+                PublicGroup = group.PublicGroup
+            };
 
-                    var user = viewModel.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
-                    viewModel.GroupUserStatus = GetUserStatusForGroup(user);
-                }
 
-                return View(viewModel);
-            
+            if (LoggedOnReadOnlyUser != null)
+            {
 
-            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+                var user = group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
+                viewModel.GroupUserStatus = GetUserStatusForGroup(user);
+                viewModel.LoggedInUserRole = loggedOnUsersRole;
+            }
+
+            return PartialView("_ManageUsers", viewModel);
         }
 
         public virtual ActionResult ManageUser(Guid groupUserId)
         {
             // Get the Group
             var groupUser = _groupService.GetGroupUser(groupUserId);
-            var roles = _roleService.AllRoles().Where(x=> x.RoleName != Constants.GuestRoleName);
+            var roles = _roleService.AllRoles().Where(x => x.RoleName != Constants.GuestRoleName);
             var selectList = new List<SelectListItem>(roles.Select(x => new SelectListItem { Text = x.RoleName, Value = x.Id.ToString() }));
-       
+
 
             var viewModel = new GroupUserViewModel
             {
-                GroupUser = groupUser, 
+                GroupUser = groupUser,
                 GroupUserStatus = GetUserStatusForGroup(groupUser),
                 RoleSelectList = selectList,
                 MemberRole = GetGroupMembershipRole(groupUser.Group.Id)
@@ -378,7 +456,7 @@ namespace MvcForum.Web.Controllers
         {
 
             _groupService.ApproveJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
-            return RedirectToAction("ManageUser", new {groupUserId = groupUserId});
+            return RedirectToAction("ManageUser", new { groupUserId = groupUserId });
         }
 
         public virtual ActionResult RejectUser(Guid groupUserId, string slug)
@@ -392,7 +470,7 @@ namespace MvcForum.Web.Controllers
         public virtual async Task<ActionResult> ManageUser(GroupUserViewModel model)
         {
             // Get the Group
-            
+
 
             var groupUser = await _groupService.UpdateGroupUser(model.GroupUser);
             var roles = _roleService.AllRoles();
@@ -414,11 +492,11 @@ namespace MvcForum.Web.Controllers
 
         private MembershipRole GetGroupMembershipRole(Guid groupId)
         {
-            
+
             var role = _groupService.GetGroupRole(groupId, LoggedOnReadOnlyUser?.Id);
             if (LoggedOnReadOnlyUser == null)
                 return role;
-            
+
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
             return loggedOnUsersRole.RoleName == MvcForum.Core.Constants.Constants.AdminRoleName ? loggedOnUsersRole : role;
         }

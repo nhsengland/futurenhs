@@ -82,6 +82,12 @@
         /// </summary>
         public const string ImageExtensions = "jpg,jpeg,png,gif";
 
+        /// <summary>
+        /// Group Tabs 
+        /// </summary>
+        public const string GroupForumTab = "forum";
+        public const string GroupMembersTab = "members";
+
         public class ExtendedDataKeys
         {
             /// <summary>
@@ -208,6 +214,9 @@
             /// Section 
             /// </summary>
             public const string Section = "Section";
+
+
+
         }
     }
 }

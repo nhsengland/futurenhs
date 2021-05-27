@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Core.Services
+﻿using MvcForum.Core.ExtensionMethods;
+
+namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
@@ -31,12 +33,13 @@
         private readonly IConfigService _configService;
         private IMvcForumContext _context;
         private readonly IPostEditService _postEditService;
+        private readonly IGroupService _groupService;
 
         public PostService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService,
-            IVoteService voteService, 
-            IUploadedFileService uploadedFileService, IFavouriteService favouriteService, 
-            IConfigService configService, IPostEditService postEditService)
+            IVoteService voteService,
+            IUploadedFileService uploadedFileService, IFavouriteService favouriteService,
+            IConfigService configService, IPostEditService postEditService, IGroupService groupService)
         {
             _roleService = roleService;
             _membershipUserPointsService = membershipUserPointsService;
@@ -46,6 +49,7 @@
             _favouriteService = favouriteService;
             _configService = configService;
             _postEditService = postEditService;
+            _groupService = groupService;
             _context = context;
         }
 
@@ -88,10 +92,13 @@
 
         public Post GetTopicStarterPost(Guid topicId)
         {
-            return _context.Post
-                            .Include(x => x.Topic.Group)
-                            .Include(x => x.User)
-                            .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
+            var post = _context.Post
+                .Include(x => x.Topic.Group)
+                .Include(x => x.User)
+                .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
+
+            return post;
+
         }
 
         /// <summary>
@@ -103,8 +110,8 @@
             // get the Group ids
             var allowedCatIds = allowedGroups.Select(x => x.Id);
             return _context.Post
-                    .Include(x => x.Topic.Group)
-                    .Where(x => allowedCatIds.Contains(x.Topic.Group.Id));
+                .Include(x => x.Topic.Group)
+                .Where(x => allowedCatIds.Contains(x.Topic.Group.Id));
 
         }
 
@@ -156,14 +163,14 @@
             // get the Group ids
             var allowedCatIds = allowedGroups.Select(x => x.Id);
             return _context.Post
-                    .Include(x => x.Topic.LastPost.User)
-                    .Include(x => x.Topic.Group)
-                    .Include(x => x.User)
-                    .Where(x => x.User.Id == memberId && x.Pending != true)
-                    .Where(x => allowedCatIds.Contains(x.Topic.Group.Id))
-                    .OrderByDescending(x => x.DateCreated)
-                    .Take(amountToTake)
-                    .ToList();
+                .Include(x => x.Topic.LastPost.User)
+                .Include(x => x.Topic.Group)
+                .Include(x => x.User)
+                .Where(x => x.User.Id == memberId && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Group.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .Take(amountToTake)
+                .ToList();
 
         }
 
@@ -177,7 +184,8 @@
 
             // We don't allow topic starters in the list OR solutions. As if it's marked as a solution, it's a solution for that topic
             // and moving it wouldn't make sense.
-            return _context.Post.Where(x => x.InReplyTo != null & x.InReplyTo == postId && !x.IsTopicStarter && !x.IsSolution).ToList();
+            return _context.Post
+                .Where(x => x.InReplyTo != null & x.InReplyTo == postId && !x.IsTopicStarter && !x.IsSolution).ToList();
 
         }
 
@@ -185,11 +193,12 @@
         {
 
             return _context.Post
-                   .Include(x => x.Topic.LastPost.User)
-                   .Include(x => x.Topic.Group)
-                   .Include(x => x.User)
-                   .Include(x => x.Favourites.Select(f => f.Member))
-                   .Where(x => x.User.Id == postsByMemberId && x.Favourites.Count(c => c.Member.Id != postsByMemberId) >= minAmountOfFavourites);
+                .Include(x => x.Topic.LastPost.User)
+                .Include(x => x.Topic.Group)
+                .Include(x => x.User)
+                .Include(x => x.Favourites.Select(f => f.Member))
+                .Where(x => x.User.Id == postsByMemberId &&
+                            x.Favourites.Count(c => c.Member.Id != postsByMemberId) >= minAmountOfFavourites);
 
         }
 
@@ -197,11 +206,11 @@
         {
 
             return _context.Post
-                        .Include(x => x.Topic.LastPost.User)
-                        .Include(x => x.Topic.Group)
-                        .Include(x => x.User)
-                        .Include(x => x.Favourites.Select(f => f.Member))
-                        .Where(x => x.User.Id == postsByMemberId && x.Favourites.Any(c => c.Member.Id != postsByMemberId));
+                .Include(x => x.Topic.LastPost.User)
+                .Include(x => x.Topic.Group)
+                .Include(x => x.User)
+                .Include(x => x.Favourites.Select(f => f.Member))
+                .Where(x => x.User.Id == postsByMemberId && x.Favourites.Any(c => c.Member.Id != postsByMemberId));
 
 
         }
@@ -215,7 +224,8 @@
         /// <param name="searchTerm"></param>
         /// <param name="allowedGroups"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<Post>> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Group> allowedGroups)
+        public async Task<PaginatedList<Post>> SearchPosts(int pageIndex, int pageSize, int amountToTake,
+            string searchTerm, List<Group> allowedGroups)
         {
             // Create search term
             var search = StringUtils.ReturnSearchString(searchTerm);
@@ -227,10 +237,10 @@
             var allowedCatIds = allowedGroups.Select(x => x.Id);
 
             var query = _context.Post
-                            .Include(x => x.Topic.Group)
-                            .Include(x => x.User)
-                            .Where(x => x.Pending != true)
-                            .Where(x => allowedCatIds.Contains(x.Topic.Group.Id));
+                .Include(x => x.Topic.Group)
+                .Include(x => x.User)
+                .Where(x => x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Group.Id));
 
             // Start the predicate builder
             var postFilter = PredicateBuilder.New<Post>(false);
@@ -240,7 +250,9 @@
             {
                 var sTerm = term.Trim();
                 //query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
-                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.IsTopicStarter && x.Topic.Name.ToUpper().Contains(sTerm));
+                postFilter = postFilter.Or(x =>
+                    x.PostContent.ToUpper().Contains(sTerm) ||
+                    x.IsTopicStarter && x.Topic.Name.ToUpper().Contains(sTerm));
             }
 
             // Add the predicate builder to the query
@@ -265,13 +277,15 @@
         /// <param name="topicId"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<Post>> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order)
+        public async Task<PaginatedList<Post>> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake,
+            Guid topicId, PostOrderBy order)
         {
             // Get the topics using an efficient
             var results = _context.Post
-                                  .Include(x => x.User)
-                                  .Include(x => x.Topic)
-                                  .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
+                .Include(x => x.User).AsNoTracking()
+                .Include(x => x.Topic)
+                .Include(x => x.Topic.Group)
+                .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
 
             // Sort what order the posts are sorted in
             switch (order)
@@ -292,7 +306,8 @@
             return await PaginatedList<Post>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public async Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Group> allowedGroups)
+        public async Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize,
+            List<Group> allowedGroups)
         {
             var allowedCatIds = allowedGroups.Select(x => x.Id);
             var query = _context.Post
@@ -306,7 +321,8 @@
         public IList<Post> GetPendingPosts(List<Group> allowedGroups, MembershipRole usersRole)
         {
             var allowedCatIds = allowedGroups.Select(x => x.Id);
-            var allPendingPosts = _context.Post.AsNoTracking().Include(x => x.Topic.Group).Where(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Group.Id)).ToList();
+            var allPendingPosts = _context.Post.AsNoTracking().Include(x => x.Topic.Group)
+                .Where(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Group.Id)).ToList();
             if (usersRole != null)
             {
                 var pendingPosts = new List<Post>();
@@ -328,15 +344,18 @@
                         }
                     }
                 }
+
                 return pendingPosts;
             }
+
             return allPendingPosts;
         }
 
         public int GetPendingPostsCount(List<Group> allowedGroups)
         {
             var allowedCatIds = allowedGroups.Select(x => x.Id);
-            return _context.Post.AsNoTracking().Include(x => x.Topic.Group).Count(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Group.Id));
+            return _context.Post.AsNoTracking().Include(x => x.Topic.Group)
+                .Count(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Group.Id));
 
         }
 
@@ -389,7 +408,8 @@
         /// <param name="isTopicStarter"></param>
         /// <param name="replyTo"></param>
         /// <returns></returns>
-        public async Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo)
+        public async Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user,
+            HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo)
         {
             var post = Initialise(postContent, topic, user);
             return await Create(post, files, isTopicStarter, replyTo);
@@ -403,7 +423,8 @@
         /// <param name="isTopicStarter"></param>
         /// <param name="replyTo"></param>
         /// <returns></returns>
-        public async Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo)
+        public async Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter,
+            Guid? replyTo)
         {
             // Get the pipelines
             var postCreatePipes = ForumConfiguration.Instance.PipelinesPostCreate;
@@ -421,7 +442,7 @@
             var piplineModel = new PipelineProcess<Post>(post);
 
             // Add the files for the post
-            if(files != null)
+            if (files != null)
             {
                 piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
             }
@@ -448,7 +469,8 @@
         }
 
         /// <inheritdoc />
-        public async Task<IPipelineProcess<Post>> Edit(Post post, HttpPostedFileBase[] files, bool isTopicStarter, string postedTopicName, string postedContent)
+        public async Task<IPipelineProcess<Post>> Edit(Post post, HttpPostedFileBase[] files, bool isTopicStarter,
+            string postedTopicName, string postedContent)
         {
             // Get the pipelines
             var postCreatePipes = ForumConfiguration.Instance.PipelinesPostUpdate;
@@ -485,7 +507,8 @@
         }
 
         /// <inheritdoc />
-        public async Task<IPipelineProcess<Post>> Move(Post post, Guid? newTopicId, string newTopicTitle, bool moveReplyToPosts)
+        public async Task<IPipelineProcess<Post>> Move(Post post, Guid? newTopicId, string newTopicTitle,
+            bool moveReplyToPosts)
         {
             // Get the pipelines
             var postPipes = ForumConfiguration.Instance.PipelinesPostMove;
@@ -498,10 +521,12 @@
             {
                 piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.TopicId, newTopicId);
             }
+
             if (!string.IsNullOrWhiteSpace(newTopicTitle))
             {
                 piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, newTopicTitle);
             }
+
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.MovePosts, moveReplyToPosts);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
@@ -673,8 +698,10 @@
             var floodWindow = timeNow.AddSeconds(-ForumConfiguration.Instance.PostSecondsWaitBeforeNewPost);
 
             return _context.Post.AsNoTracking()
-                    .Include(x => x.User)
-                    .Count(x => x.User.Id == user.Id && x.DateCreated >= floodWindow && !x.IsTopicStarter) <= 0;
+                .Include(x => x.User)
+                .Count(x => x.User.Id == user.Id && x.DateCreated >= floodWindow && !x.IsTopicStarter) <= 0;
         }
+
+
     }
 }

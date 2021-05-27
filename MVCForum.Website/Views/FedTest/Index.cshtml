@@ -1,10 +1,26 @@
-﻿@{
-    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
-    ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
-    ViewBag.MetaDesc = Html.Settings().MetaDesc;
+﻿@using MvcForum.Web.ViewModels.Group
+@using MvcForum.Web.ViewModels.Shared
+@{
+	Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+	ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
+	ViewBag.MetaDesc = Html.Settings().MetaDesc;
+	
+	var tabsMenu = new TabViewModel {Tabs = new List<Tab>()};
+
+	var homeTab = new Tab {Name = "Home", Order = 1 , Active = false, Url="#"};
+	var forumTab = new Tab {Name = "Forum", Order = 2 , Active = true, Url="#"};
+	var memberTab = new Tab { Name = "Members", Order = 3, Active = false, Url = "#" };
+
+	tabsMenu.Tabs.Add(homeTab);
+	tabsMenu.Tabs.Add(forumTab);
+	tabsMenu.Tabs.Add(memberTab);
 }
 
 <h1>FED Test Space</h1>
 
 
 @Html.Partial("_Typography")
+
+<br>
+<h2>Tabbed Menu</h2>
+@Html.Partial("_TabsMenu", tabsMenu)

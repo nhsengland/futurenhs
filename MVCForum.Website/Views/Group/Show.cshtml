@@ -57,49 +57,51 @@
 				</a>
 			}
 		</div>
-		@if (!string.IsNullOrEmpty(Model.Group.Image))
-		{
-			<img src="@AppHelpers.GroupImage(Model.Group.Image, Model.Group.Id,110)" alt="@Model.Group" class="Groupimage" />
-		}
-		<h2>@Html.Raw(Model.Group.Name)</h2>
-		<p>@Html.Raw(Model.Group.Description.ConvertPostContent())</p>
+		@Html.Action("GetGroupTabs", "Group", new { activeTab = Model.Tab, slug = Model.Group.Slug })
 
-		@if (Model.GroupUserStatus == GroupUserStatus.NotJoined)
+		@if (Model.Tab == null)
 		{
-			<a @Html.Raw(subScribe) href="@Url.Action("Join", "Group", new {slug = @Model.Group.Slug })" class="btn-mvc-green btn-mvc-large">
-				@Html.LanguageString("Groups.Join")
-			</a>
-		}
-		@if (Model.GroupUserStatus == GroupUserStatus.Joined)
-		{
-			<a @Html.Raw(subScribe) href="@Url.Action("Leave", "Group", new {slug = @Model.Group.Slug })" class="btn-mvc-red btn-mvc-large">
-				@Html.LanguageString("Groups.Leave")
-			</a>
-		}
-		@if (Model.GroupUserRole.RoleName == Constants.AdminRoleName)
-		{
-			<a @Html.Raw(subScribe) href="@Url.Action("ManageUsers", "Group", new {slug = @Model.Group.Slug })" class="btn-mvc btn-mvc-large">
-				@Html.LanguageString("Groups.ManageUsers")
-			</a>
-		}
 
-		@if (Model.GroupUserStatus == GroupUserStatus.Pending)
-		{
-			<a @Html.Raw(subScribe) href="#" class="btn-mvc btn-mvc-large">
-				@Html.LanguageString("Pending Approval")
-			</a>
-		}
-		@if (Model.GroupUserStatus == GroupUserStatus.Locked)
-		{
-			<a @Html.Raw(subScribe) href="#" class="btn-mvc-red btn-mvc-large">
-				@Html.LanguageString("Locked Out")
-			</a>
-		}
-		@if (Model.GroupUserStatus == GroupUserStatus.Banned)
-		{
-			<a @Html.Raw(subScribe) href="#" class="btn-mvc-red btn-mvc-large">
-				@Html.LanguageString("Banned")
-			</a>
+
+
+			if (!string.IsNullOrEmpty(Model.Group.Image))
+			{
+				<img src="@AppHelpers.GroupImage(Model.Group.Image, Model.Group.Id, 110)" alt="@Model.Group" class="Groupimage" />
+			}
+			<h2>@Html.Raw(Model.Group.Name)</h2>
+			<p>@Html.Raw(Model.Group.Description.ConvertPostContent())</p>
+
+			if (Model.GroupUserStatus == GroupUserStatus.NotJoined)
+			{
+				<a @Html.Raw(subScribe) href="@Url.Action("Join", "Group", new {slug = @Model.Group.Slug})" class="btn-mvc-green btn-mvc-large">
+					@Html.LanguageString("Groups.Join")
+				</a>
+			}
+			if (Model.GroupUserStatus == GroupUserStatus.Joined)
+			{
+				<a @Html.Raw(subScribe) href="@Url.Action("Leave", "Group", new {slug = @Model.Group.Slug})" class="btn-mvc-red btn-mvc-large">
+					@Html.LanguageString("Groups.Leave")
+				</a>
+			}
+	
+			if (Model.GroupUserStatus == GroupUserStatus.Pending)
+			{
+				<a @Html.Raw(subScribe) href="#" class="btn-mvc btn-mvc-large">
+					@Html.LanguageString("Pending Approval")
+				</a>
+			}
+			if (Model.GroupUserStatus == GroupUserStatus.Locked)
+			{
+				<a @Html.Raw(subScribe) href="#" class="btn-mvc-red btn-mvc-large">
+					@Html.LanguageString("Locked Out")
+				</a>
+			}
+			if (Model.GroupUserStatus == GroupUserStatus.Banned)
+			{
+				<a @Html.Raw(subScribe) href="#" class="btn-mvc-red btn-mvc-large">
+					@Html.LanguageString("Banned")
+				</a>
+			}
 		}
 	</div>
 
@@ -112,30 +114,16 @@
 		});
 	}
 
-	@if (Model.TotalCount > 0)
+	@if (Model.Tab == Constants.GroupForumTab)
 	{
-		foreach (var topic in Model.Topics)
-		{
-			Html.RenderPartial("_Topic", topic);
-		}
-
-		if (Model.TotalPages > 1)
-		{
-			@Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
-		}
-	}
-	else
-	{
-		if (Model.GroupUserStatus != GroupUserStatus.Joined)
-		{
-			<p>@Html.LanguageString("Group.PermissionDenied")</p>
-		}
-
-		else if (Model.GroupUserStatus == GroupUserStatus.Joined)
-		{
-			<p>@Html.LanguageString("Group.NoDiscussions")</p>
-		}
+		@Html.Action("GetGroupForum", new { groupId = Model.Group.Id })
 
 	}
+	@if (Model.Tab == Constants.GroupMembersTab)
+	{
+		@Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
+
+	}
+	
 
 </div>

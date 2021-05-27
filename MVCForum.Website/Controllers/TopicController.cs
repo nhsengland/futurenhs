@@ -137,9 +137,9 @@
             return PartialView("GetGroupBreadcrumb", viewModel);
         }
 
-        public virtual PartialViewResult CreateTopicButton()
+        public virtual PartialViewResult CreateTopicButton(Guid groupId)
         {
-            var loggedOnloggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            var loggedOnloggedOnUsersRole = GetGroupMembershipRole(groupId);
 
             var viewModel = new CreateTopicButtonViewModel
             {
@@ -160,6 +160,7 @@
                     if (permissionSet[ForumConfiguration.Instance.PermissionCreateTopics].IsTicked)
                     {
                         viewModel.UserCanPostTopics = true;
+                        viewModel.GroupId = groupId;
                         break;
                     }
                 }
@@ -272,15 +273,16 @@
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public virtual ActionResult Create()
+        public virtual ActionResult Create(Guid groupId)
         {
             User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            var loggedOnUsersRole = GetGroupMembershipRole(groupId);
             var allowedAccessGroups = AllowedCreateGroups(loggedOnUsersRole);
 
             if (allowedAccessGroups.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessGroups);
+                viewModel.Group = groupId;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -298,7 +300,7 @@
         {
             // Get the user and roles
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
-            var loggedOnUsersRole = loggedOnUser.GetRole(RoleService);
+            var loggedOnUsersRole = GetGroupMembershipRole(topicViewModel.Group);
 
             // Get the Group
             var Group = _groupService.Get(topicViewModel.Group);
@@ -581,13 +583,16 @@
             var pageIndex = p ?? 1;
 
             User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+           
 
             // Get the topic
             var topic = _topicService.GetTopicBySlug(slug);
 
+
+
             if (topic != null)
             {
+                var loggedOnUsersRole = GetGroupMembershipRole(topic.Group.Id);
                 var settings = SettingsService.GetSettings();
 
                 // Note: Don't use topic.Posts as its not a very efficient SQL statement
@@ -912,6 +917,18 @@
             }
 
             return PartialView(viewModel);
+        }
+
+
+        private MembershipRole GetGroupMembershipRole(Guid groupId)
+        {
+
+            var role = _groupService.GetGroupRole(groupId, LoggedOnReadOnlyUser?.Id);
+            if (LoggedOnReadOnlyUser == null)
+                return role;
+
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            return loggedOnUsersRole.RoleName == MvcForum.Core.Constants.Constants.AdminRoleName ? loggedOnUsersRole : role;
         }
     }
 }

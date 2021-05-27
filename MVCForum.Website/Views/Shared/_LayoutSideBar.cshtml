@@ -64,12 +64,8 @@
                             @RenderBody()
                         </main>
                     </div>
-                    <div class="c-grid-block_item l-col-12 l-col-3-d">        
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            @Html.Action("CreateTopicButton", "Topic")
-                        }
-                        @RenderSection("side", false)
+                    <div class="c-grid-block_item l-col-12 l-col-3-d">
+	                    @RenderSection("side", false)
                     </div>
                 </div>
             </div>

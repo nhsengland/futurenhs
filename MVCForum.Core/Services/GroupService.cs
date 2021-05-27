@@ -715,17 +715,16 @@ namespace MvcForum.Core.Services
         public MembershipRole GetGroupRole(Guid groupId, Guid? membershipId)
         {
             if (membershipId == null)
-                return _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
+                return _context.MembershipRole.AsNoTracking().FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
 
-            var groupUser = _context.GroupUser.FirstOrDefault(x => x.Group.Id == groupId && x.User.Id == membershipId);
+            var groupUser = _context.GroupUser.AsNoTracking().FirstOrDefault(x => x.Group.Id == groupId && x.User.Id == membershipId);
 
             if (groupUser == null)
-                return _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
+                return _context.MembershipRole.AsNoTracking().FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
 
 
             if (GetUserStatusForGroup(groupUser) != GroupUserStatus.Joined)
-                return _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
-
+                return _context.MembershipRole.AsNoTracking().FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
 
             return groupUser?.Role;
         }

@@ -20,8 +20,14 @@
 
             routes.MapRoute(
                 "GroupUrls", // Route name
-                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}"), // URL with parameters
-                new {controller = "Group", action = "Show", slug = UrlParameter.Optional} // Parameter defaults
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}"), // URL with parameters
+                new {controller = "Group", action = "Show", slug = UrlParameter.Optional,tab = UrlParameter.Optional} // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "TopicUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{group}/{tab}/{slug}"), // URL with parameters
+                new { controller = "Topic", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
             );
 
 
@@ -42,11 +48,11 @@
                 } // Parameter defaults
             );
 
-            routes.MapRoute(
-                "topicUrls", // Route name
-                string.Concat(ForumConfiguration.Instance.TopicUrlIdentifier, "/{slug}"), // URL with parameters
-                new {controller = "Topic", action = "Show", slug = UrlParameter.Optional} // Parameter defaults
-            );
+            //routes.MapRoute(
+            //    "topicUrls", // Route name
+            //    string.Concat(ForumConfiguration.Instance.TopicUrlIdentifier, "/{slug}"), // URL with parameters
+            //    new {controller = "Topic", action = "Show", slug = UrlParameter.Optional} // Parameter defaults
+            //);
 
             routes.MapRoute(
                 "memberUrls", // Route name

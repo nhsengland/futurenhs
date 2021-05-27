@@ -33,7 +33,7 @@
         public virtual IList<Favourite> Favourites { get; set; }
         public virtual Poll Poll { get; set; }
         public bool? Pending { get; set; }
-        public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Topic, Slug);
+        public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Group,Group.Slug,Constants.Constants.GroupForumTab, Slug);
 
         public int VoteCount
         {

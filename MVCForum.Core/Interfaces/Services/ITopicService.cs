@@ -30,7 +30,8 @@
         IList<Topic> GetRecentRssTopics(int amountToTake, List<Group> allowedGroups);
         IList<Topic> GetTopicsByUser(Guid memberId, List<Group> allowedGroups);
         IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Group> allowedGroups);
-        Task<PaginatedList<Topic>> GetPagedTopicsByGroup(int pageIndex, int pageSize, int amountToTake, Guid GroupId);
+        Task<PaginatedList<Topic>> GetPagedTopicsByGroupAsync(int pageIndex, int pageSize, int amountToTake, Guid GroupId);
+        PaginatedList<Topic> GetPagedTopicsByGroup(int pageIndex, int pageSize, int amountToTake, Guid GroupId);
         Task<PaginatedList<Topic>> GetPagedPendingTopics(int pageIndex, int pageSize, List<Group> allowedGroups);
         IList<Topic> GetPendingTopics(List<Group> allowedGroups, MembershipRole usersRole);
         int GetPendingTopicsCount(List<Group> allowedGroups);

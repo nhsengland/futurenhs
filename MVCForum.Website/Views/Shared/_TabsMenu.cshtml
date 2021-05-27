@@ -1,0 +1,12 @@
+﻿@model MvcForum.Web.ViewModels.Shared.TabViewModel
+@{
+
+}
+
+<ul class="nav nav-tabs">
+	@foreach (var tab in Model.Tabs.OrderBy(x=> x.Order))
+	{
+		<li class="@(tab.Active? "active" : "")"><a class="" href="@tab.Url">@tab.Name</a></li>
+	}
+	
+</ul>

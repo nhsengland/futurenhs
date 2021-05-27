@@ -398,7 +398,7 @@
         /// <param name="amountToTake"></param>
         /// <param name="GroupId"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<Topic>> GetPagedTopicsByGroup(int pageIndex, int pageSize, int amountToTake, Guid GroupId)
+        public async Task<PaginatedList<Topic>> GetPagedTopicsByGroupAsync(int pageIndex, int pageSize, int amountToTake, Guid GroupId)
         {
             // Get the topics using an efficient
             var query = _context.Topic
@@ -414,6 +414,32 @@
 
             // Return a paged list
             return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
+        }
+
+        /// <summary>
+        /// Returns a paged list of topics from a specified Group
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="amountToTake"></param>
+        /// <param name="GroupId"></param>
+        /// <returns></returns>
+        public PaginatedList<Topic> GetPagedTopicsByGroup(int pageIndex, int pageSize, int amountToTake, Guid GroupId)
+        {
+            // Get the topics using an efficient
+            var query = _context.Topic
+                .Include(x => x.Group)
+                .Include(x => x.LastPost.User)
+                .Include(x => x.User)
+                .Include(x => x.Poll)
+                .Include(x => x.Tags)
+                .Where(x => x.Group.Id == GroupId)
+                .Where(x => x.Pending != true)
+                .OrderByDescending(x => x.IsSticky)
+                .ThenByDescending(x => x.LastPost.DateCreated);
+
+            // Return a paged list
+            return PaginatedList<Topic>.Create(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>

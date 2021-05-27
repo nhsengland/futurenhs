@@ -75,7 +75,7 @@
 							<a href="@Url.Action("ApproveUser", "Group", new {groupUserId = Model.GroupUser.Id})" class="btn-mvc-green btn-mvc-large">
 								@Html.LanguageString("Buttons.Approve")
 							</a>
-							<a href="@Url.Action("ManageUsers", "Group", new {slug = Model.GroupUser.Group.Slug})" class="btn-mvc-red btn-mvc-large">
+							<a href="@Url.RouteUrl("GroupUrls", new { slug = Model.GroupUser.Group.Slug, tab = Constants.GroupMembersTab })" class="btn-mvc-red btn-mvc-large">
 								@Html.LanguageString("Buttons.Back")
 							</a>
 						</div>
@@ -95,7 +95,7 @@
 						<div class="submit-holder">
 							<button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Save")</button>
 
-							<a href="@Url.Action("ManageUsers", "Group", new {slug = Model.GroupUser.Group.Slug})" class="btn-mvc-red btn-mvc-large">
+							<a href="@Url.RouteUrl("GroupUrls", new { slug = Model.GroupUser.Group.Slug, tab = Constants.GroupMembersTab })" class="btn-mvc-red btn-mvc-large">
 								@Html.LanguageString("Buttons.Back")
 							</a>
 						</div>

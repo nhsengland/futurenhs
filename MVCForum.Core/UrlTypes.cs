@@ -27,6 +27,12 @@
                 $"~/{UrlTypeName(e)}/{HttpUtility.UrlEncode(HttpUtility.HtmlDecode(slug))}/");
         }
 
+        public static string GenerateUrl(UrlType e, string group, string tab, string slug)
+        {
+            return VirtualPathUtility.ToAbsolute(
+                $"~/{UrlTypeName(e)}/{group}/{tab}/{HttpUtility.UrlEncode(HttpUtility.HtmlDecode(slug))}/");
+        }
+
         public static string GenerateFileUrl(string filePath)
         {
             return VirtualPathUtility.ToAbsolute(filePath);

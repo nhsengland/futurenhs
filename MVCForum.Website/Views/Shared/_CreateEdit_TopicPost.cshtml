@@ -81,11 +81,8 @@
         </div>
     }
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Group)
-        @Html.DropDownListFor(model => model.Group, Model.Groups, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Group)
-    </div>
+        @Html.HiddenFor(x=> x.Group)
+
     <div class="form-group">
         <label for="Tags_tag">@Html.Lang("Topic.Label.Tags")</label>
         <div class="topictagholder">

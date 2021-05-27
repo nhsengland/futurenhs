@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Plugins.Pipelines.Topic
+﻿using System;
+
+namespace MvcForum.Plugins.Pipelines.Topic
 {
     using System.Data.Entity;
     using System.Linq;
@@ -19,14 +21,16 @@
         private readonly ILocalizationService _localizationService;
         private readonly ITopicTagService _topicTagService;
         private readonly ILoggingService _loggingService;
+        private readonly IGroupService _groupService;
 
-        public TopicPermissionsPipe(IRoleService roleService, ITopicService topicService, ILocalizationService localizationService, ITopicTagService topicTagService, ILoggingService loggingService)
+        public TopicPermissionsPipe(IRoleService roleService, ITopicService topicService, ILocalizationService localizationService, ITopicTagService topicTagService, ILoggingService loggingService, IGroupService groupService)
         {
             _roleService = roleService;
             _topicService = topicService;
             _localizationService = localizationService;
             _topicTagService = topicTagService;
             _loggingService = loggingService;
+            _groupService = groupService;
         }
 
         /// <inheritdoc />
@@ -61,7 +65,7 @@
                     if (loggedOnUser != null)
                     {
                         // Users role
-                        var loggedOnUsersRole = loggedOnUser.GetRole(_roleService);
+                        var loggedOnUsersRole = GetGroupMembershipRole(input.EntityToProcess.Group.Id, loggedOnUser);
 
                         // Get the permissions and add to extendeddata as we'll use it again
                         var permissions = _roleService.GetPermissions(input.EntityToProcess.Group, loggedOnUsersRole);
@@ -166,6 +170,16 @@
             }
 
             return input;
+        }
+
+        private MembershipRole GetGroupMembershipRole(Guid groupId,MembershipUser user)
+        {
+            var loggedOnUser = user;
+            var loggedOnUsersRole = loggedOnUser.GetRole(_roleService);
+            var role = _groupService.GetGroupRole(groupId, loggedOnUser?.Id);
+            if (loggedOnUser == null)
+                return role;
+            return loggedOnUsersRole.RoleName == MvcForum.Core.Constants.Constants.AdminRoleName ? loggedOnUsersRole : role;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Plugins.Pipelines.Post
+﻿using System;
+
+namespace MvcForum.Plugins.Pipelines.Post
 {
     using System.Data.Entity;
     using System.Threading.Tasks;
@@ -15,12 +17,14 @@
         private readonly IRoleService _roleService;
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
+        private readonly IGroupService _groupService;
 
-        public PostPermissionsPipe(IRoleService roleService, ILocalizationService localizationService, ILoggingService loggingService)
+        public PostPermissionsPipe(IRoleService roleService, ILocalizationService localizationService, ILoggingService loggingService, IGroupService groupService)
         {
             _roleService = roleService;
             _localizationService = localizationService;
             _loggingService = loggingService;
+            _groupService = groupService;
         }
 
         /// <inheritdoc />
@@ -48,7 +52,7 @@
                     if (loggedOnUser != null)
                     {
                         // Users role
-                        var loggedOnUsersRole = loggedOnUser.GetRole(_roleService);
+                        var loggedOnUsersRole = GetGroupMembershipRole(input.EntityToProcess.Topic.Group.Id, loggedOnUser);
 
                         // Get the permissions and add to extendeddata as we'll use it again
                         var permissions = _roleService.GetPermissions(input.EntityToProcess.Topic.Group, loggedOnUsersRole);
@@ -104,6 +108,16 @@
                 _loggingService.Error(ex);
             }
             return input;
+        }
+
+        private MembershipRole GetGroupMembershipRole(Guid groupId, MembershipUser user)
+        {
+            var loggedOnUser = user;
+            var loggedOnUsersRole = loggedOnUser.GetRole(_roleService);
+            var role = _groupService.GetGroupRole(groupId, loggedOnUser?.Id);
+            if (loggedOnUser == null)
+                return role;
+            return loggedOnUsersRole.RoleName == Constants.AdminRoleName ? loggedOnUsersRole : role;
         }
     }
 }
