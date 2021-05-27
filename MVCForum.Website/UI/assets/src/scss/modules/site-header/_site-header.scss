@@ -19,7 +19,6 @@
     }
 
     &_logo {
-        @include focus-outline-large;
         display: block;
         float: left;
         max-width: calc(100% - 85px);

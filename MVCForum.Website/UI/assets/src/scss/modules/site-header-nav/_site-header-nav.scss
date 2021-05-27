@@ -78,7 +78,7 @@
 
             @include respond-to(desktop) {
                 &:link,
-                &:visited{
+                &:visited {
                     background-color: transparent;
                     border-color: $color_nhsuk-white;
                     color: $color_nhsuk-white;

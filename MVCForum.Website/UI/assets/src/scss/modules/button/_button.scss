@@ -1,27 +1,21 @@
 .c-button {
     @extend %nhsuk-button;
 
-    // &:disabled {
-    //     @extend %button-disabled;
-    // }
-
     &--outline {
         @extend %toggle-button;
+    }
+
+    &--secondary {
+        @extend %nhsuk-button-secondary;
+    }
+
+    &--reverse {
+        @extend %nhsuk-button-reverse;
     }
 
     &--full-width {
         width: 100%;
     }
-
-    // &_icon {
-    //     &--before {
-    //         margin: 0 $spacer-xsm 0 0;
-    //     }
-
-    //     &--after {
-    //         margin: 0 0 0 $spacer-xsm;
-    //     }
-    // }
 }
 
 .c-button-outline {

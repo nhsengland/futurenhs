@@ -6,24 +6,6 @@ $ie-version: 20 !default;
 $print-style: false !default;
 $no-js-style: false !default;
 
-@mixin ie-lte($version) {
-
-    @if $is-ie {
-        @if $ie-version <= $version {
-            @content;
-        }
-    }
-}
-
-@mixin ie($version) {
-
-    @if $is-ie {
-        @if $ie-version == $version {
-            @content;
-        }
-    }
-}
-
 // Prevent long urls and text from breaking layouts
 // [originally from perishablepress.com](http://perishablepress.com/press/2010/06/01/wrapping-content/)
 @mixin force-wrap {
@@ -108,68 +90,35 @@ $no-js-style: false !default;
   @return url($nhsuk-fonts-path + $filename);
 }
 
-
 @mixin _nhsuk-font-face-frutiger {
     @at-root {
-      @font-face {
-        font-display: swap;
-        font-family: 'Frutiger W01';
-        font-style: normal;
-        font-weight: 400;
-        src: nhsuk-font-url('FrutigerLTW01-55Roman.eot?#iefix');
-        src: nhsuk-font-url('FrutigerLTW01-55Roman.eot?#iefix') format('eot'),
-             nhsuk-font-url('FrutigerLTW01-55Roman.woff2') format('woff2'),
-             nhsuk-font-url('FrutigerLTW01-55Roman.woff') format('woff'),
-             nhsuk-font-url('FrutigerLTW01-55Roman.ttf') format('truetype'),
-             nhsuk-font-url('FrutigerLTW01-55Roman.svg#7def0e34-f28d-434f-b2ec-472bde847115') format('svg');
-      }
-  
-      @font-face {
-        font-display: swap;
-        font-family: 'Frutiger W01';
-        font-style: normal;
-        font-weight: $nhsuk-font-bold;
-        src: nhsuk-font-url('FrutigerLTW01-65Bold.eot?#iefix');
-        src: nhsuk-font-url('FrutigerLTW01-65Bold.eot?#iefix') format('eot'),
-             nhsuk-font-url('FrutigerLTW01-65Bold.woff2') format('woff2'),
-             nhsuk-font-url('FrutigerLTW01-65Bold.woff') format('woff'),
-             nhsuk-font-url('FrutigerLTW01-65Bold.ttf') format('truetype'),
-             nhsuk-font-url('FrutigerLTW01-65Bold.svg#eae74276-dd78-47e4-9b27-dac81c3411ca') format('svg');
-      }
-    }
-  }
+        @font-face {
+            font-display: swap;
+            font-family: 'Frutiger W01';
+            font-style: normal;
+            font-weight: 400;
+            src: nhsuk-font-url('FrutigerLTW01-55Roman.eot?#iefix');
+            src: nhsuk-font-url('FrutigerLTW01-55Roman.eot?#iefix') format('eot'),
+                nhsuk-font-url('FrutigerLTW01-55Roman.woff2') format('woff2'),
+                nhsuk-font-url('FrutigerLTW01-55Roman.woff') format('woff'),
+                nhsuk-font-url('FrutigerLTW01-55Roman.ttf') format('truetype'),
+                nhsuk-font-url('FrutigerLTW01-55Roman.svg#7def0e34-f28d-434f-b2ec-472bde847115') format('svg');
+        }
 
-@mixin font-face($font-family, $font-filename, $font-weight: normal, $font-style: normal, $font-stretch: normal) {
-    @font-face {
-        font-family: '#{$font-family}';
-        src: url('#{$font-filename}.eot'); /* IE9 Compat Modes */
-        src: url('#{$font-filename}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-        url('#{$font-filename}.woff') format('woff'), /* Modern Browsers */
-        url('#{$font-filename}.ttf') format('truetype');
-        font-display: swap;
+        @font-face {
+            font-display: swap;
+            font-family: 'Frutiger W01';
+            font-style: normal;
+            font-weight: $nhsuk-font-bold;
+            src: nhsuk-font-url('FrutigerLTW01-65Bold.eot?#iefix');
+            src: nhsuk-font-url('FrutigerLTW01-65Bold.eot?#iefix') format('eot'),
+                nhsuk-font-url('FrutigerLTW01-65Bold.woff2') format('woff2'),
+                nhsuk-font-url('FrutigerLTW01-65Bold.woff') format('woff'),
+                nhsuk-font-url('FrutigerLTW01-65Bold.ttf') format('truetype'),
+                nhsuk-font-url('FrutigerLTW01-65Bold.svg#eae74276-dd78-47e4-9b27-dac81c3411ca') format('svg');
+        }
     }
 }
-$font-poppins-regular: 'Poppins-Regular', Arial, sans-serif !default;
-$font-poppins-bold: 'Poppins-Bold', Arial, sans-serif !default;
-$font-verveine-regular: 'Verveine-Regular', 'Lucida handwriting', sans-serif !default;
-
-// @mixin font-family-poppins-regular {
-//     font-family: $font-poppins-regular;
-//     font-style: normal;
-//     font-weight: normal;
-// }
-
-// @mixin font-family-poppins-bold {
-//     font-family: $font-poppins-bold;
-//     font-style: normal;
-//     font-weight: normal;
-// }
-
-// @mixin font-family-verveine-regular {
-//     font-family: $font-verveine-regular;
-//     font-style: normal;
-//     font-weight: 400;
-// }
 
 @mixin clearfix() {
 
@@ -184,110 +133,6 @@ $font-verveine-regular: 'Verveine-Regular', 'Lucida handwriting', sans-serif !de
         clear: both;
     }
     
-}
-
-@mixin border-radius($radius) {
-    -webkit-border-radius: $radius; // Chrome 4.0, Safari 3.1 to 4.0, Mobile Safari 3.2, Android Browser 2.1
-    -moz-border-radius: $radius; // Firefox 2.0 to 3.6
-    border-radius: $radius;
-}
-
-@mixin box-shadow($shadow) {
-    -webkit-box-shadow: $shadow; // Chrome 4.0 to 9.0, Safari 3.1 to 5.0, Mobile Safari 3.2 to 4.3, Android Browser 2.1 to 3.0
-    -moz-box-shadow: $shadow; // Firefox 3.5 to 3.6
-    box-shadow: $shadow;
-}
-
-@mixin scale($x, $y, $transform-origin: 50% 50% 0) {
-    // $x and $y should be numeric values without units
-    -webkit-transform: scale($x, $y); // Still in use now, started at: Chrome 4.0, Safari 3.1, Mobile Safari 3.2, Android 2.1
-    -moz-transform: scale($x, $y); // Firefox 3.5 to 15.0
-    -ms-transform: scale($x, $y); // IE9 only
-    transform: scale($x, $y);
-    -webkit-transform-origin: $transform-origin; // Chrome, Safari 3.1
-    -moz-transform-origin: $transform-origin; // Firefox 10 to 15.0
-    -ms-transform-origin: $transform-origin; // IE9
-    transform-origin: $transform-origin;
-}
-
-@mixin translate($x, $y) {
-    -webkit-transform: translate($x, $y); // Still in use now, started at: Chrome 4.0, Safari 3.1, Mobile Safari 3.2, Android 2.1
-    -moz-transform: translate($x, $y); // Firefox 3.5 to 15.0
-    -ms-transform: translate($x, $y); // IE9 only
-    -o-transform: translate($x, $y); // Opera 10.5 to 12.0
-    transform: translate($x, $y);
-}
-
-@mixin gradient($from, $to) {
-    // Creates a vertical gradient where $from is the colour at the top of the element
-    // and $to is the colour at the bottom. The top colour is used as a background-color
-    // for browsers that don't support gradients.
-    background-color: $from;
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to)); // Safari 4.0 to 5.1, Chrome 1.0 to 10.0, old deprecated syntax
-    background-image: -webkit-linear-gradient($from, $to); // Chrome 10.0 to 25.0, Safari 5.1 to 6.0, Mobile Safari 5.0 to 6.1, Android Browser 4.0 to 4.3
-    background-image: -moz-linear-gradient($from, $to); // Firefox 3.6 to 15.0
-    background-image: -o-linear-gradient($from, $to); // Opera 11.1 to 12.0
-    background-image: linear-gradient($from, $to);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$from}', endColorstr='#{$to}',GradientType=0 ); // IE6 to IE9
-}
-
-@mixin transition($property, $duration, $function, $delay: 0s) {
-    -webkit-transition: ($property $duration $function $delay); // Chrome 4.0 to 25.0, Safari 3.1 to 6.0, Mobile Safari 3.2 to 6.1, Android Browser 2.1 to 4.3
-    -moz-transition: ($property $duration $function $delay); // Firefox 4.0 to 15.0
-    -o-transition: ($property $duration $function $delay); // Opera 10.5 to 12.0
-    transition: ($property $duration $function $delay);
-}
-
-@mixin box-sizing($type) {
-    // http://www.w3.org/TR/css3-ui/#box-sizing
-    // $type can be one of: content-box | padding-box | border-box | inherit
-    -webkit-box-sizing: $type; // Chrome 4.0 to 9.0, Safari 3.1 to 5.0, Mobile Safari 3.2 to 4.3, Android Browser 2.1 to 3.0
-    -moz-box-sizing: $type; // Firefox 2.0 to 28.0, Firefox for Android 26.0 onwards
-    box-sizing: $type;
-}
-
-@mixin appearance($appearance) {
-    -webkit-appearance: $appearance;
-    -moz-appearance: $appearance;
-}
-
-@mixin calc($property, $calc) {
-    #{$property}: -webkit-calc(#{$calc}); // Chrome 19.0 to 25.0, Safari 6.0, Mobile Safari 6.0 to 6.1
-    #{$property}: calc(#{$calc});
-}
-
-@mixin opacity($trans) {
-    //zoom: 1;
-    filter: unquote('alpha(opacity=' + ($trans * 100) + ')'); // IE6 to IE8
-    opacity: $trans;
-}
-
-@mixin hover-primary() {
-    &:hover {
-        color: $t-interaction-one-hover;
-        text-decoration: underline;
-    }
-}
-
-@mixin hover-secondary() {
-    &:hover {
-        color: $t-interaction-two-hover;
-        text-decoration: none;
-    }
-}
-
-@mixin active-primary() {
-    &:hover {
-        color: $t-interaction-one-active;
-        text-decoration: underline;
-    }
-}
-
-@mixin active-secondary() {
-    &:hover {
-        color: $t-interaction-two-active;
-        text-decoration: none;
-    }
 }
 
 @mixin focus-outline($offset: true) {
@@ -349,34 +194,6 @@ $font-verveine-regular: 'Verveine-Regular', 'Lucida handwriting', sans-serif !de
     display: flex;
     flex-direction: column;
     height: 100%;
-}
-
-@mixin card-padding() {
-    padding: $spacer-sm $spacer-xsm;
-}
-
-@mixin card-padding-large() {
-
-    padding: $spacer-sm $spacer-xsm;
-
-    @include respond-to(tablet){
-        padding: $spacer-rg $spacer-rg;
-    }
-
-}
-
-@mixin card-padding-very-large() {
-
-    padding: $spacer-sm $spacer-xsm;
-
-    @include respond-to(tablet){
-        padding: $spacer-md $spacer-md;
-    }
-
-}
-
-@mixin card-shadow() {
-    box-shadow: 0 6px 10px 0 $black-tint;
 }
 
 @mixin no-margin-on-last-child() {
@@ -471,10 +288,80 @@ $font-verveine-regular: 'Verveine-Regular', 'Lucida handwriting', sans-serif !de
     }
 }
 
-// @mixin large-text() { //SMALL
-//     line-height: $large-text-line-height;
-//     font-size: $large-text;
-// }
+@mixin nhsuk-link-style-default {
+    color: $nhsuk-link-color;
+
+    &:visited {
+        color: $nhsuk-link-visited-color;
+    }
+
+    &:hover {
+        color: $nhsuk-link-hover-color;
+        text-decoration: none;
+    }
+
+    &:focus {
+        @extend %nhsuk-focused-text;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        &:visited {
+            color: $nhsuk-focus-text-color;
+        }
+    }
+
+    &:active {
+        color: $nhsuk-link-active-color;
+    }
+}
+
+@mixin nhsuk-link-style-white {
+    color: $color_nhsuk-white;
+
+    &:visited {
+        color: $color_nhsuk-white;
+    }
+
+    &:hover {
+        color: $color_nhsuk-white;
+        text-decoration: none;
+    }
+
+    &:focus {
+        color: $nhsuk-focus-text-color;
+        outline: $nhsuk-focus-width solid transparent;
+        outline-offset: $nhsuk-focus-width;
+        text-decoration: none;
+    }
+
+    &:active {
+        color: $nhsuk-link-active-color;
+    }
+}
+
+@mixin nhsuk-link-style-no-visited-state {
+    &:link {
+        color: $nhsuk-link-color;
+    }
+
+    &:visited {
+        color: $nhsuk-link-color;
+    }
+
+    &:hover {
+        color: $nhsuk-link-hover-color;
+    }
+
+    &:active {
+        color: $nhsuk-link-active-color;
+    }
+
+    &:focus {
+        color: $nhsuk-focus-text-color;
+    }
+}
 
 @function derived-dimension($multiplier) {
     @return $multiplier * $base-dimension-unit;

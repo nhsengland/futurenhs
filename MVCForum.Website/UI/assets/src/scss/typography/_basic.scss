@@ -60,11 +60,11 @@ body {
     min-height: 100%;
 }
 
-main {
-    display: flex;
-    flex: 1 0 auto;
-    flex-direction: column;
-}
+// main {
+//     display: flex;
+//     flex: 1 0 auto;
+//     flex-direction: column;
+// }
 
 em,
 i {
@@ -72,7 +72,6 @@ i {
 }
 
 a {
-
     @include focus-outline;
 
     &:hover,
@@ -83,8 +82,8 @@ a {
 }
 
 button {
-
     @include focus-outline-large;
+    font-family: inherit;
 
     &:hover,
     &:active {
@@ -101,11 +100,16 @@ button {
 input {
     @include focus-outline-large;
     border: 0;
+    font-family: inherit;
+}
+
+textarea {
+    font-family: inherit;
 }
 
 select {
-
     @include focus-outline-large;
+    font-family: inherit;
     -webkit-appearance: none; // sass-lint:disable-line no-vendor-prefixes
     -moz-appearance: none; // sass-lint:disable-line no-vendor-prefixes
 

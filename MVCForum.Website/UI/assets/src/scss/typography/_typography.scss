@@ -81,8 +81,16 @@ p {
 }
 
 a {
-    @extend %clear-button-styles;
+    text-decoration: underline; //remove this once bootstrap is gone
     @extend %link-base;
+
+    @include print {
+        &:after {
+            color: $color_nhsuk-black;
+            content: ' (Link: 'attr(href) ')';
+            font-size: 14pt;
+        }
+    }
 }
 
 ul,
@@ -98,4 +106,23 @@ ol {
 li {
     @include standard-text(false);
     margin-bottom: $base-dimension-unit;
+}
+
+hr {
+    @extend %nhsuk-section-break;
+    @extend %nhsuk-section-break-regular;
+    @extend %nhsuk-section-break--visible;
+}
+
+.c-section-break {
+    @extend %nhsuk-section-break;
+    @extend %nhsuk-section-break-regular;
+
+    &--small {
+        @extend %nhsuk-section-break-small;
+    }
+
+    &--visible {
+        @extend %nhsuk-section-break--visible;
+    }
 }

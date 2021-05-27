@@ -173,7 +173,7 @@
     }
 
     .u-text-theme-#{$number} {
-        color: $theme;
+        color: $theme !important;//sass-lint:disable-line no-important
     }
 
     .u-border-theme-#{$number} {

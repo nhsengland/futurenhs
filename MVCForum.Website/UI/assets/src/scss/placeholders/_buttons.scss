@@ -15,7 +15,8 @@
 $button-shadow-size: 4px;
 
 %nhsuk-button {
-    font-size: 16px;
+    font-size: $base-font-size;
+    line-height: $base-font-line-height;
     margin-bottom: 20px;
     background-color: $nhsuk-button-color;
     border: $nhsuk-border-width-form-element solid transparent;
@@ -33,8 +34,10 @@ $button-shadow-size: 4px;
     width: auto;
     padding: $nhsuk-spacing-point-2 $nhsuk-spacing-point-3;
 
-    @include respond-to(tablet) {
+    @include respond-to(desktop) {
         padding: 12px $nhsuk-spacing-point-3;
+        line-height: $base-font-line-height-desktop;
+        font-size: $base-font-size-desktop;
     }
 
     &:link,
@@ -102,6 +105,133 @@ $button-shadow-size: 4px;
         }
     }
 
+
+    &:disabled,
+    &.u-disabled {
+        background-color: $nhsuk-button-color;
+        opacity: (.5);
+        pointer-events: none;
+        text-decoration: none;
+
+        &:hover {
+            background-color: $nhsuk-button-color;
+            cursor: default;
+        }
+
+        &:focus {
+            background-color: $nhsuk-button-color;
+            outline: none;
+        }
+
+        &:active {
+            box-shadow: 0 $button-shadow-size 0 $nhsuk-button-shadow-color; // s0
+            top: 0;
+        }
+    }
+}
+
+%nhsuk-button-secondary {
+    background-color: $nhsuk-secondary-button-color;
+    box-shadow: 0 $button-shadow-size 0 $nhsuk-secondary-button-shadow-color;
+
+    &:hover {
+        background-color: darken($nhsuk-secondary-button-color, 10%);
+    }
+
+    &:focus {
+        background: $nhsuk-focus-color;
+        box-shadow: 0 $button-shadow-size 0 $nhsuk-focus-text-color;
+        color: $nhsuk-focus-text-color;
+        outline: $nhsuk-focus-width solid transparent;
+    }
+
+    &:active {
+        background: $nhsuk-secondary-button-active-color;
+        box-shadow: none;
+        color: $nhsuk-button-text-color;
+        top: $button-shadow-size;
+    }
+
+    &:disabled,
+    &.u-disabled { //sass-lint:disable-line 
+        background-color: $nhsuk-secondary-button-color;
+        opacity: (.5);
+
+        &:hover {
+            background-color: $nhsuk-secondary-button-color;
+            cursor: default;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &:active {
+            box-shadow: 0 $button-shadow-size 0 $nhsuk-secondary-button-shadow-color; // s0
+            top: 0;
+        }
+    }
+}
+
+%nhsuk-button-reverse {
+    background-color: $nhsuk-reverse-button-color;
+    box-shadow: 0 $button-shadow-size 0 $nhsuk-reverse-button-shadow-color;
+    color: $nhsuk-reverse-button-text-color;
+
+    &:link,
+    &:visited,
+    &:active,
+    &:hover {
+        color: $nhsuk-reverse-button-text-color;
+        text-decoration: none;
+    }
+
+    &:hover {
+        background-color: darken($nhsuk-reverse-button-color, 5%);
+        color: $nhsuk-reverse-button-text-color;
+    }
+
+    &:focus {
+        background: $nhsuk-focus-color;
+        box-shadow: 0 $button-shadow-size 0 $nhsuk-focus-text-color;
+        color: $nhsuk-focus-text-color;
+        outline: $nhsuk-focus-width solid transparent;
+    }
+
+    &:active {
+        background: $nhsuk-reverse-button-active-color;
+        box-shadow: none;
+        color: $color_nhsuk-white;
+        top: $button-shadow-size;
+    }
+
+    &:link {
+        color: $nhsuk-reverse-button-text-color;
+
+        &:active {
+            color: $color_nhsuk-white;
+        }
+    }
+
+    &:disabled,
+    &.u-disabled { //sass-lint:disable-line 
+        background-color: $nhsuk-reverse-button-color;
+        opacity: (.5);
+
+        &:hover {
+            background-color: $nhsuk-reverse-button-color;
+            cursor: default;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &:active {
+            box-shadow: 0 $button-shadow-size 0 $nhsuk-reverse-button-shadow-color; // s0
+            top: 0;
+        }
+    }
 }
 
 %toggle-button {
@@ -133,15 +263,43 @@ $button-shadow-size: 4px;
 
     &:focus {
         @extend %nhsuk-focused-button;
-        border: 2px solid $nhsuk-focus-color !important; // sass-lint:disable-line no-important /* [2] */
+        border: 2px solid $nhsuk-focus-color !important;//sass-lint:disable-line no-important
         box-shadow: 0 0 0 2px $nhsuk-focus-color, 0 $nhsuk-focus-width 0 2px $nhsuk-focus-text-color;
     }
 
     &:active {
         background-color: $color_shade_nhsuk-blue-50;
-        border-color: $color_shade_nhsuk-blue-35;
+        border-color: $color_shade_nhsuk-blue-35 !important;//sass-lint:disable-line no-important
         color: $color_nhsuk-grey-5;
         top: 0;
+
+        &:focus {
+            box-shadow: none;
+            background-color: $color_shade_nhsuk-blue-50;
+            color: $color_nhsuk-grey-5;
+        }
+    }
+
+    &:disabled,
+    &.u-disabled { //sass-lint:disable-line 
+        background-color: $color_nhsuk-white;
+        opacity: (.5);
+        border-color: $nhsuk-reverse-button-shadow-color;
+        color: $nhsuk-reverse-button-shadow-color;
+
+        &:hover {
+            background-color: $color_nhsuk-white;
+            cursor: default;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &:active {
+            // box-shadow: 0 $button-shadow-size 0 $nhsuk-reverse-button-shadow-color; // s0
+            top: 0;
+        }
     }
 }
 
@@ -159,182 +317,3 @@ $button-shadow-size: 4px;
     outline: $nhsuk-focus-width solid transparent;
     outline-offset: $nhsuk-focus-width;
 }
-
-// %button-base {
-//     @extend %clear-button-styles;
-//     @extend %button-transitions;
-//     // @include font-family-poppins-regular;
-//     @include border-radius($border-radius);
-//     background-color: $t-button-background-two;
-//     color: $t-button-text-two;
-//     fill: $t-button-text-two;
-//     position: relative;
-//     display: inline-block;
-//     margin: 0 $base-dimension-unit $base-dimension-unit 0;
-//     padding: $base-dimension-unit $spacer-xsm;
-//     min-width: $button-height;
-//     min-height: $button-height;
-//     line-height: $very-large-text;
-//     font-size: $large-text;
-//     text-align: center;
-//     text-decoration: none;
-//     vertical-align: top;
-//     outline: none;
-
-//     span {
-//         vertical-align: middle;
-//     }
-
-//     svg {
-//         height: $spacer-sm;
-//         width: $spacer-sm;
-//         vertical-align: middle;
-//     }
-// }
-
-// %button-primary {
-//     @include focus-outline-large;
-//     background-color: $t-button-background-one;
-//     color: $t-button-text-one;
-//     fill: $t-button-text-one;
-//     border: $focus-outline-width solid $t-button-background-one;
-
-//     &:hover {
-//         background-color: $t-button-background-hover-one;
-//         border: $focus-outline-width solid $t-button-background-hover-one;
-//         text-decoration: none;
-//     }
-
-//     &:active {
-//         background-color: $t-button-background-active-one;
-//         border: $focus-outline-width solid $t-button-background-active-one;
-//         text-decoration: none;
-//     }
-
-//     &:focus {
-//         background-color: $t-button-background-focus-one;
-//         border: $focus-outline-width solid $t-button-background-focus-one;
-//     }
-
-//     &:disabled {
-//         @extend %button-disabled;
-//     }
-// }
-
-// %button-primary-callout {
-//     @extend %button-primary;
-//     @include font-family-poppins-bold;
-//     @include focus-outline-large;
-//     @include very-large-text;
-//     position: relative;
-//     display: block;
-//     width: 100%;
-//     margin: 0;
-//     padding: #{derived-dimension(2.5) - 2} $spacer-md #{derived-dimension(2.5) - 2} $spacer-sm;
-// }
-
-// %button-secondary {
-//     @include focus-outline-large;
-//     background-color: $t-button-background-two;
-//     color: $t-button-text-two;
-//     fill: $t-button-text-two;
-//     border: $focus-outline-width solid $t-button-background-hover-two;
-
-//     &:hover {
-//         background-color: $t-button-background-hover-two;
-//         color: $t-button-text-one;
-//         fill: $t-text-two;
-//         text-decoration: none;
-//     }
-
-//     &:active {
-//         background-color: $t-button-background-active-two;
-//         text-decoration: none;
-//     }
-
-//     &:focus {
-//         color: $t-button-text-one;
-//         fill: $t-button-text-one;
-//         background-color: $t-button-background-focus-two;
-//     }
-
-//     &:disabled {
-//         @extend %button-disabled;
-//     }
-// }
-
-// %button-secondary-callout {
-//     @extend %button-secondary;
-//     @include font-family-poppins-bold;
-//     @include focus-outline-large;
-//     @include very-large-text;
-//     position: relative;
-//     display: block;
-//     width: 100%;
-//     margin: 0;
-//     padding: #{derived-dimension(2.5) - 2} $spacer-md #{derived-dimension(2.5) - 2} $spacer-sm;
-// }
-
-// %button-link {
-//     @extend %clear-button-styles;
-//     @extend %standard-link;
-//     margin: 0;
-//     padding: 0;
-//     min-height: auto;
-//     min-width: auto;
-//     background-color: transparent;
-//     color: $t-interaction-one;
-//     text-decoration: underline;
-//     cursor: pointer;
-
-//     &:disabled {
-//         cursor: default;
-//         color: $mid-grey;
-//         background-color: transparent;
-//         border-color: transparent;
-
-//         &:hover {
-//             cursor: default;
-//             color: $mid-grey;
-//             text-decoration: underline;
-//             background-color: transparent;
-//         }
-//     }
-// }
-
-// %button-disabled {
-//     background-color: $mid-grey;
-//     border-color: $mid-grey;
-//     color: $t-text-two;
-//     fill: $t-button-text-one;
-
-//     &:hover {
-//         cursor: default;
-//         background-color: $mid-grey;
-//         color: $white;
-//         fill: $t-button-text-one;
-//     }
-
-//     &:active {
-//         top: 0;
-//         background-color: $mid-grey;
-//         color: $white;
-//     }
-
-//     &:focus {
-//         background-color: $mid-grey;
-//         color: $white;
-//     }
-// }
-
-// %button-transitions {
-//     transition: color $button-transition, background-color $button-transition, border-color $button-transition,
-//     box-shadow $button-transition, fill $button-transition;
-// }
-
-// %button-icon {
-//     width: $spacer-xsm;
-//     height: $spacer-xsm;
-//     margin: 0 $base-dimension-unit 0 0;
-//     vertical-align: text-bottom;
-// }
