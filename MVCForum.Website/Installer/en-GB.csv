@@ -38,6 +38,7 @@ Badge.YourPostFavouritedTenTimes.Name,Recognised Post
 Badges.AwardsPoints,Awards {0} points
 Badges.PageTitle,Badges
 Badges.UnableToAward,Unable to award badges as badge collection is null for user {0}
+Buttons.Approve, Approve
 Buttons.ChangePassword,Change Password
 Buttons.Continue,Continue
 Buttons.CreatePost,Add Post
@@ -45,14 +46,10 @@ Buttons.Edit,Edit
 Buttons.LogOn,Log On
 Buttons.Report,Report
 Buttons.ResetPassword,Reset Password
+Buttons.Reject, Reject
 Buttons.Save,Save
 Buttons.Search,Search
 Buttons.Send,Send
-Group.AllGroups,All Groups
-Group.GroupsSideHeading,Groups
-Group.MostRecent,Most recent:
-Group.NoDiscussions,Currently no discussions in this Group
-Group.SubGroupsHeading,Sub Groups In
 Confirmation.DeleteMembersPosts,Are you sure? This will delete all the members posts and topics!
 Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
 Date.DaysAgo,{0} days ago
@@ -79,6 +76,13 @@ Following.Groups,Groups you are following
 Following.PageTitle,Topics & Groups
 Following.Topics,Topics you are following
 Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
+Groups.Leave,Leave Group
+Group.AllGroups,All Groups
+Group.GroupsSideHeading,Groups
+Group.MostRecent,Most recent:
+Group.Members,Group Members
+Group.NoDiscussions,Currently no discussions in this Group
+Group.SubGroupsHeading,Sub Groups In
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
 Language.Change,Change Language
@@ -101,6 +105,7 @@ LogOn.LogOn,Log On
 Member.HasNewPrivateMessages,You have new unread Private messages
 Member.ProfileUpdated,Profile Updated
 Members.Admin,Admin
+Members.Action,Action
 Members.AlreadyRegistered,You are already registered? Why would you want to do it again?
 Members.BanUser,Ban User
 Members.CantUnlock,User does not exist - cannot unlock.
@@ -109,6 +114,7 @@ Members.ChangePassword.Link,Click here if you want to {0}
 Members.ChangePassword.Success,Password Changed
 Members.ChangePassword.Text,New passwords are required to be a minimum of {0} characters in length.
 Members.ChangePassword.Title,Change Password
+Members.DateApplied,Date Applied
 Members.DateJoined,Date Joined
 Members.DeleteAllPosts,Delete All Posts
 Members.EditMember,Edit Member
@@ -191,7 +197,7 @@ Members.Profile.Points,Points:
 Members.Profile.Posts,Posts:
 Members.Profile.Twitter,Twitter
 Members.Profile.Website,Website
-Members.ProfileTitle, Profile
+Members.ProfileTitle,Profile
 Members.Register,Register
 Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
@@ -199,9 +205,14 @@ Members.ResetPassword.InvalidToken,This request is either invalid or has expired
 Members.ResetPassword.SuccessText,Your password has been changed.
 Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
 Members.ResetPassword.Title,Password reset request sent
+Members.Role,Role
 Members.SearchMembers,Search Members
 Members.SrubAndBan,Scrub Member
+Members.Status,Status
 Members.SuccessfulSrub,All done
+Members.Table.Pending,Pending members
+Members.Table.Admins,Group admins
+Members.Table.Users,Group members
 Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions
 Members.UnBanUser,Unban User
 Members.Users,Users

@@ -11,6 +11,9 @@ namespace MvcForum.Web.ViewModels.Group
     public class GroupMembersViewModel
     {
         public IEnumerable<GroupUserViewModel> GroupUsers { get; set; }
+        public IEnumerable<GroupUserViewModel> GroupUsersPending { get; set; }
+        public IEnumerable<GroupUserViewModel> GroupAdmins { get; set; }
+
         public MembershipRole LoggedInUserRole { get; set; }
         public int MemberCount { get; set; }
         public int? PageIndex { get; set; }

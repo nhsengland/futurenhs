@@ -407,15 +407,19 @@ namespace MvcForum.Web.Controllers
             // check the user has permission to this Group
             var permissions = RoleService.GetPermissions(group, loggedOnUsersRole);
 
+            var groupUsers = group.GroupUsers.Select(x => new GroupUserViewModel { GroupUser = x, GroupUserStatus = GetUserStatusForGroup(x) });
 
             // Create the main view model for the Group
-            var viewModel = new GroupMembersViewModel
-            {
+            var viewModel = new GroupMembersViewModel {
 
                 PageIndex = pageIndex,
                 TotalCount = group.GroupUsers.Count,
                 TotalPages = (int)Math.Ceiling(group.GroupUsers.Count / (double)SettingsService.GetSettings().TopicsPerPage),
-                GroupUsers = group.GroupUsers.Select(x => new GroupUserViewModel { GroupUser = x, GroupUserStatus = GetUserStatusForGroup(x) }),
+                GroupUsers = groupUsers.Where(x => x.GroupUserStatus != GroupUserStatus.Pending && 
+                                                   x.GroupUserStatus != GroupUserStatus.Rejected &&
+                                                   x.GroupUser.Role.RoleName != Constants.AdminRoleName).ToList(),
+                GroupUsersPending = groupUsers.Where(x => x.GroupUserStatus == GroupUserStatus.Pending).ToList(),
+                GroupAdmins = groupUsers.Where(x => x.GroupUser.Role.RoleName == Constants.AdminRoleName).ToList(),
                 PublicGroup = group.PublicGroup
             };
 
@@ -452,18 +456,15 @@ namespace MvcForum.Web.Controllers
             return View(viewModel);
         }
 
-        public virtual ActionResult ApproveUser(Guid groupUserId)
+       public virtual ActionResult ApproveUser(Guid groupUserId, string slug)
         {
-
             _groupService.ApproveJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
-            return RedirectToAction("ManageUser", new { groupUserId = groupUserId });
+            return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab });
         }
-
         public virtual ActionResult RejectUser(Guid groupUserId, string slug)
         {
-
             _groupService.RejectJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
-            return RedirectToAction("ManageUsers", new { slug = slug });
+            return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab });
         }
 
         [HttpPost]
