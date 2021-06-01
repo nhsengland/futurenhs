@@ -235,7 +235,7 @@ namespace MvcForum.Web.Controllers
         public virtual PartialViewResult GetGroupTabs(string activeTab, string slug)
         {
             var activeTabFound = false;
-            var forumTab = new Tab { Name = "Tabs.Forum", Order = 2 };
+            var forumTab = new Tab { Name = "GroupTabs.Forum", Order = 2 };
             if (activeTab == Constants.GroupForumTab)
             {
                 forumTab.Active = true;
@@ -244,7 +244,7 @@ namespace MvcForum.Web.Controllers
 
             forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
 
-            var membersTab = new Tab { Name = "Tabs.Members", Order = 3 };
+            var membersTab = new Tab { Name = "GroupTabs.Members", Order = 3 };
             if (activeTab == Constants.GroupMembersTab)
             {
                 membersTab.Active = true;
@@ -254,7 +254,7 @@ namespace MvcForum.Web.Controllers
             membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
 
 
-            var homeTab = new Tab { Name = "Tabs.Home", Order = 1 };
+            var homeTab = new Tab { Name = "GroupTabs.Home", Order = 1 };
             if (!activeTabFound)
             {
                 homeTab.Active = true;
