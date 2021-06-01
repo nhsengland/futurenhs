@@ -64,6 +64,7 @@
         [DisplayName("Group Owner")]
         public Guid? GroupOwner { get; set; }
 
+        [Required]
         [DisplayName("Group Administrators")]
         public IEnumerable<Guid> GroupAdministrators { get; set; }
 
