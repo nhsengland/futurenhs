@@ -1,5 +1,6 @@
 namespace MvcForum.Core.Ioc
 {
+    using System.Web.Http;
     using System.Web.Mvc;
     using Data.Context;
     using Interfaces;
@@ -28,11 +29,12 @@ namespace MvcForum.Core.Ioc
 
         public static IUnityContainer Container;
 
-        public static void InitialiseUnityContainer()
+        public static void InitialiseUnityContainer(HttpConfiguration config)
         {
             Container = new UnityContainer();
+            
             DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
-
+            config.DependencyResolver = new HttpDependencyResolver(Container);
             // Bit annoying having just this here but we need this early in the startup for seed method
             Container.BindInRequestScope<IConfigService, ConfigService>();
             Container.BindInRequestScope<ICacheService, CacheService>();

@@ -40,7 +40,7 @@ namespace MvcForum.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 
             // Start unity
-            UnityHelper.InitialiseUnityContainer();
+            UnityHelper.InitialiseUnityContainer(System.Web.Http.GlobalConfiguration.Configuration);
 
             // Make DB update to latest migration
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());

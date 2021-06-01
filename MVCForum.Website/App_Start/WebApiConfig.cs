@@ -2,7 +2,9 @@
 
 namespace MvcForum.Web
 {
+    using MvcForum.Core.Ioc;
     using System.Web.Http;
+    using Unity;
 
     public static class WebApiConfig
     {
@@ -15,7 +17,7 @@ namespace MvcForum.Web
 
             // Web API routes
             config.MapHttpAttributeRoutes();
-
+            
             config.Routes.MapHttpRoute(
                 "DefaultApi",
                 "api/{controller}/{id}",

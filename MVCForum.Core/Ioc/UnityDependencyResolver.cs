@@ -3,14 +3,15 @@
     using System;
     using System.Collections.Generic;
     using System.Web;
+    using System.Web.Http.Dependencies;
     using System.Web.Mvc;
     using Unity;
 
-    public class UnityDependencyResolver : IDependencyResolver
+    public class UnityDependencyResolver : System.Web.Mvc.IDependencyResolver
     {
-        private const string HttpContextKey = "perRequestContainer";
+        protected const string HttpContextKey = "perRequestContainer";
 
-        private readonly IUnityContainer _container;
+        protected readonly IUnityContainer _container;
 
         public UnityDependencyResolver(IUnityContainer container)
         {
@@ -82,6 +83,29 @@
             }
 
             return isRegistered;
+        }
+    }
+
+    public class HttpDependencyResolver : UnityDependencyResolver, System.Web.Http.Dependencies.IDependencyResolver
+    {
+
+        public HttpDependencyResolver(IUnityContainer container) : base(container)
+        {
+        }
+        public IDependencyScope BeginScope()
+        {
+            var child = _container.CreateChildContainer();
+            return new Unity.AspNet.WebApi.UnityDependencyResolver(child);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            _container.Dispose();
         }
     }
 }
