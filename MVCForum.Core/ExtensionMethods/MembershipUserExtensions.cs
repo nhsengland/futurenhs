@@ -17,7 +17,7 @@
             return user.Roles.Any(x => x.RoleName.Contains(Constants.Constants.AdminRoleName));
         }
 
-        public static IEnumerable<SelectListItem> ToSelectList(this IList<MembershipUser> users, bool addEmptyFirstItem = true)
+        public static IEnumerable<SelectListItem> ToSelectList(this IList<MembershipUser> users, bool addEmptyFirstItem = false)
         {
             var userList = users.Select(x => new SelectListItem {
                 Value = x.Id.ToString(),
