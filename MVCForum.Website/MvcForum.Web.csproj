@@ -1156,6 +1156,7 @@
     <Content Include="Views\Shared\_TabsMenu.cshtml" />
     <Content Include="Views\FedTest\_Typography.cshtml" />
     <Content Include="Views\Group\_Forum.cshtml" />
+    <Content Include="Views\FedTest\_Buttons.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

@@ -1,4 +1,5 @@
-﻿@model MvcForum.Web.ViewModels.Shared.TabViewModel
+﻿@using MvcForum.Web.ViewModels.Shared
+@model MvcForum.Web.ViewModels.Shared.TabViewModel
 @{
 
 }
@@ -6,7 +7,10 @@
 <ul class="nav nav-tabs">
 	@foreach (var tab in Model.Tabs.OrderBy(x=> x.Order))
 	{
-		<li class="@(tab.Active? "active" : "")"><a class="" href="@tab.Url">@tab.Name</a></li>
+	<li class="@(tab.Active ? "active" : "")">
+		@{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel(tab.Icon, "c-ui-icon")); }
+		<a class="" href="@tab.Url">@tab.Name</a>
+	</li>
 	}
 	
 </ul>

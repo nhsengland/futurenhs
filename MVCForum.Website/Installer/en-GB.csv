@@ -78,12 +78,15 @@ Following.Topics,Topics you are following
 Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
 Groups.Leave,Leave Group
 Group.AllGroups,All Groups
+Group.Forum,Latest Discussions
 Group.GroupsSideHeading,Groups
 Group.MostRecent,Most recent:
 Group.Members,Group Members
 Group.NoDiscussions,Currently no discussions in this Group
 Group.SubGroupsHeading,Sub Groups In
-Group.Forum,Latest Discussions
+GroupTabs.Home,Group home
+GroupTabs.Forum,Group forum
+
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
 Language.Change,Change Language
