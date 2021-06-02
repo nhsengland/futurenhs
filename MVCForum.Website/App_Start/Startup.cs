@@ -6,8 +6,14 @@ using Hangfire;
 namespace MvcForum.Web
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
+    using System.Data.Entity.Core.Objects;
+    using System.Data.Entity.Infrastructure;
+    using System.IO;
     using System.Linq;
+    using System.Text;
+    using System.Web.Hosting;
     using System.Web.Mvc;
     using System.Web.Routing;
     using Application.ViewEngine;
@@ -19,9 +25,11 @@ namespace MvcForum.Web
     using Core.Services.Migrations;
     using Core.Utilities;
     using Core.Interfaces.Services;
+    using Core.Models.General;
     using Core.Reflection;
     using Core.Services;
     using Unity;
+    using MvcForum.Core.Constants;
 
     public class Startup
     {
@@ -58,6 +66,11 @@ namespace MvcForum.Web
             var mvcForumContext = unityContainer.Resolve<IMvcForumContext>();
             var loggingService = unityContainer.Resolve<ILoggingService>();
             var assemblyProvider = unityContainer.Resolve<IAssemblyProvider>();
+            var localizationService = unityContainer.Resolve<ILocalizationService>();
+            var cacheService = unityContainer.Resolve<ICacheService>();
+            ((IObjectContextAdapter)mvcForumContext).ObjectContext.Refresh(RefreshMode.StoreWins, mvcForumContext.LocaleStringResource);
+            UpdateLanguages(mvcForumContext, localizationService);
+        
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -71,7 +84,7 @@ namespace MvcForum.Web
             var assemblies = assemblyProvider.GetAssemblies(ForumConfiguration.Instance.PluginSearchLocations).ToList();
             ImplementationManager.SetAssemblies(assemblies);
 
-            
+
             var theme = "Default";
             var settings = mvcForumContext.Setting.FirstOrDefault();
             if (settings != null)
@@ -87,7 +100,46 @@ namespace MvcForum.Web
             EventManager.Instance.Initialize(loggingService, assemblies);
 
             // Finally trigger any Cron jobs
-            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");            
+            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6),
+                queue: "solutionreminders");
+        }
+
+        private void UpdateLanguages(IMvcForumContext context, ILocalizationService localizationService)
+        {
+            var report = new CsvReport();
+            try
+            {
+                // Now add the default language strings
+                var file = HostingEnvironment.MapPath(@"~/Installer/en-GB.csv");
+                var commaSeparator = new[] {','};
+
+                // Unpack the data
+                var allLines = new List<string>();
+                if (file != null)
+                {
+
+                    using (var streamReader = new StreamReader(file, Encoding.UTF8, true))
+                    {
+                        while (streamReader.Peek() >= 0)
+                        {
+                            allLines.Add(streamReader.ReadLine());
+                        }
+                    }
+                }
+
+                // Read the CSV file and generate a language
+                report = localizationService.FromCsv("en-GB", allLines);
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                context.RollBack();
+                report.Errors.Add(new CsvErrorWarning
+                {
+                    ErrorWarningType = CsvErrorWarningType.GeneralError,
+                    Message = $"Unable to import language: {ex.Message}"
+                });
+            }
         }
     }
 }

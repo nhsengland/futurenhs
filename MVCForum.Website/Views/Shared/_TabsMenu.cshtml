@@ -9,7 +9,7 @@
 	{
 	<li class="@(tab.Active ? "active" : "")">
 		@{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel(tab.Icon, "c-ui-icon")); }
-		<a class="" href="@tab.Url">@tab.Name</a>
+		<a class="" href="@tab.Url">@Html.LanguageString(tab.Name)</a>
 	</li>
 	}
 	
