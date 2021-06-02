@@ -206,7 +206,7 @@ namespace MvcForum.Core.Services.Migrations
                         EnableEmailSubscriptions = true,
                         ManuallyAuthoriseNewMembers = false,
                         EmailAdminOnNewMemberSignUp = true,
-                        TopicsPerPage = 20,
+                        TopicsPerPage = 10,
                         PostsPerPage = 20,
                         EnablePrivateMessages = true,
                         MaxPrivateMessagesPerMember = 50,

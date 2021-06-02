@@ -77,6 +77,10 @@
     <Compile Include="Migrations\202105241523294_AddMemebershipNameFields.Designer.cs">
       <DependentUpon>202105241523294_AddMemebershipNameFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202106020930580_UpdatesTopicsPerPageValueOnSettings.cs" />
+    <Compile Include="Migrations\202106020930580_UpdatesTopicsPerPageValueOnSettings.Designer.cs">
+      <DependentUpon>202106020930580_UpdatesTopicsPerPageValueOnSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -395,6 +399,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202105241523294_AddMemebershipNameFields.resx">
       <DependentUpon>202105241523294_AddMemebershipNameFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106020930580_UpdatesTopicsPerPageValueOnSettings.resx">
+      <DependentUpon>202106020930580_UpdatesTopicsPerPageValueOnSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
