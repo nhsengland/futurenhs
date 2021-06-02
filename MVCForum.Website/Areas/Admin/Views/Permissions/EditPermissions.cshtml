@@ -17,7 +17,7 @@
         <h5>Group Permissions</h5>
     </div>
     <div class="panel-content">
-        
+
         <p>Group permissions are all permissions anyone in the @Model.MembershipRole.RoleName role is able to do (Or not do) within a specific Group.</p>
 
         <div class="tablescroll">
@@ -27,34 +27,30 @@
                 <thead>
                     <tr>
                         <th>Group</th>
-                        @foreach (var permissionType in Model.Permissions.Where(x => !x.IsGlobal))
-                        {
+                        @foreach (var permissionType in Model.Permissions.Where(x => !x.IsGlobal)) {
                             <th>@permissionType.Name</th>
                         }
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach (var cat in Model.Groups)
-                    {
+                    @foreach (var group in Model.Groups) {
 
                         <tr>
                             <td style="width:160px;">
-                                @cat.Name
+                                @group.Name
                             </td>
-                            @foreach (var permission in Model.Permissions.Where(x => !x.IsGlobal))
-                            {
+                            @foreach (var permission in Model.Permissions.Where(x => !x.IsGlobal)) {
                                 var isChecked = "";
                                 var isDisabled = DisableCheckBox(permission.Name);
                                 <td>
 
-                                    @if (allPermission.ContainsKey(cat.Id) && allPermission[cat.Id].ContainsKey(permission.Id))
-                                    {
+                                    @if (allPermission.ContainsKey(group.Id) && allPermission[group.Id].ContainsKey(permission.Id)) {
                                         // bingo we have this permission
-                                        isChecked = allPermission[cat.Id][permission.Id] ? " checked" : "";
+                                        isChecked = allPermission[group.Id][permission.Id] ? " checked" : "";
                                     }
                                     <span class="permissioncheckbox">
-                                        <input data-permisssion="@permission.Id" data-Group="@cat.Id" data-role="@Model.MembershipRole.Id" type="checkbox" id="@permission.Id-@cat.Id" @isChecked @isDisabled />
+                                        <input data-permisssion="@permission.Id" data-group="@group.Id" data-role="@Model.MembershipRole.Id" type="checkbox" id="@permission.Id-@group.Id" @isChecked @isDisabled />
                                     </span>
                                 </td>
                             }
