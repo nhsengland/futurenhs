@@ -1,5 +1,4 @@
 .l-container {
-
     @include clearfix;
     display: block;
     margin: 0 $mobile-gutter;
@@ -17,6 +16,12 @@
 
     &--plain {
         margin: 0;
+    }
+
+    &--large-desktop-only {
+        @include respond-to(desktop) {
+            margin: 0;
+        }
     }
 
     @include respond-to(desktop-large) {

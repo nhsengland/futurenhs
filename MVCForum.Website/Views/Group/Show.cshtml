@@ -40,10 +40,32 @@
 
 @Html.Action("GetGroupBreadcrumb", "Group", new { Group = Model.Group })
 
+@*
+<div class="c-page-header">
+
+	<div class="l-col-2">
+		<div class="c-page-header_image-wrapper">
+			@if (!string.IsNullOrEmpty(Model.Group.Image))
+			{
+				<img src="@AppHelpers.GroupImage(Model.Group.Image, Model.Group.Id, 110)" alt="@Model.Group" class="c-page-header_image" />
+			}
+		</div>
+	</div>
+	<div class="l-col-10">
+		<h2>@Html.Raw(Model.Group.Name)</h2>
+		<p class="u-text-lead">@Html.Raw(Model.Group.Description.ConvertPostContent())</p>
+
+		@Html.Action("GetGroupTabs", "Group", new { activeTab = Model.Tab, slug = Model.Group.Slug })
+	</div>
+</div>
+*@
+
+
 <div class="Group">
 
 	<div class="mainheading clearfix">
 
+		@*
 		<div class="widgetright">
 			@if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
 			{
@@ -57,19 +79,11 @@
 				</a>
 			}
 		</div>
-		@Html.Action("GetGroupTabs", "Group", new { activeTab = Model.Tab, slug = Model.Group.Slug })
+		*@
+
 
 		@if (Model.Tab == null)
 		{
-
-
-
-			if (!string.IsNullOrEmpty(Model.Group.Image))
-			{
-				<img src="@AppHelpers.GroupImage(Model.Group.Image, Model.Group.Id, 110)" alt="@Model.Group" class="Groupimage" />
-			}
-			<h2>@Html.Raw(Model.Group.Name)</h2>
-			<p>@Html.Raw(Model.Group.Description.ConvertPostContent())</p>
 
 			if (Model.GroupUserStatus == GroupUserStatus.NotJoined)
 			{
@@ -110,6 +124,7 @@
 			<hr class="c-section-break"/>
 		}
 	</div>
+
 
 	@if (Model.SubGroups != null)
 	{

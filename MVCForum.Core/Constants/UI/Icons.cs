@@ -5,17 +5,17 @@
         /// <summary>
         /// Key for the Forum icon
         /// </summary>
-        public const string Forum = "forum-fill";
+        public const string Forum = "icon-forum-fill";
 
         /// <summary>
         /// Key for the Forum icon
         /// </summary>
-        public const string Home = "home-fill";
+        public const string Home = "icon-home-fill";
 
         /// <summary>
         /// Key for the Forum icon
         /// </summary>
-        public const string Members = "user-fill";
+        public const string Members = "icon-members-fill";
 
     }
 }

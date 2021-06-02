@@ -60,11 +60,12 @@ body {
     min-height: 100%;
 }
 
-// main {
-//     display: flex;
-//     flex: 1 0 auto;
-//     flex-direction: column;
-// }
+.mainbody { //sass-lint:disable-line class-name-format
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    overflow-x: hidden;
+}
 
 em,
 i {

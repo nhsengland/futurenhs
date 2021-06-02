@@ -1,0 +1,38 @@
+.c-tabbed-nav {
+    display: none;
+
+    @include respond-to(desktop) {
+        display: block;
+        margin-top: auto;
+    }
+
+    &_list {
+        margin-bottom: 0;
+    }
+
+    &_item {
+        margin-bottom: 0;
+        margin-right: 30px;
+        display: inline-block;
+    }
+
+    &_item-icon {
+        width: 18px;
+        height: 19px;
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    &_link {
+        @include nhsuk-link-style-white;
+        text-decoration: none;
+        display: inline-block;
+        padding: 14px $nhsuk-spacing-point-3;
+        box-shadow: 0 5px transparent;
+        margin-bottom: 4px;
+
+        &--active {
+            box-shadow: 0 5px $white;
+        }
+    }
+}

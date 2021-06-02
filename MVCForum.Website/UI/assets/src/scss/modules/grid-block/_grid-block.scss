@@ -1,5 +1,4 @@
 .c-grid-block {
-
     @include row(true);
     display: flex;
     flex-wrap: wrap;
@@ -31,6 +30,10 @@
         //     flex-grow: 1;
         //     margin-bottom: $spacer-xsm;
         // }
+
+        &--flex-end {
+            justify-content: flex-end;
+        }
 
     }
 

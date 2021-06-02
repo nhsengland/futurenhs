@@ -27,6 +27,10 @@
     display: block;
 }
 
+.u-flex {
+    display: flex;
+}
+
 .u-fright {
     float: right;
 }
@@ -100,13 +104,13 @@
 //     }
 // }
 
-// .u-desktop-up {
-//     display: none;
+.u-desktop-up {
+    display: none;
 
-//     @include respond-to(desktop) {
-//         display: block;
-//     }
-// }
+    @include respond-to(desktop) {
+        display: block;
+    }
+}
 
 // .u-desktop-up-inline-block {
 //     display: none;
@@ -115,6 +119,12 @@
 //         display: inline-block;
 //     }
 // }
+
+.u-padded-left {
+    @include respond-to(desktop) {
+        padding-left: $nhsuk-spacing-point-3;
+    }
+}
 
 //fonts
 .u-text-lead {
@@ -129,8 +139,12 @@
     font-weight: $nhsuk-font-bold;
 }
 
-.u-text-unbold {
+.u-text-normal {
     font-weight: $nhsuk-font-normal;
+}
+
+.u-has-subheading {
+    margin-bottom: $nhsuk-spacing-point-1;
 }
 
 .u-width-auto {

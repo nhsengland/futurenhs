@@ -11,65 +11,160 @@
 @section Header {
     @RenderSection("Header", false)
 }
-<div class="u-bg-theme-3 u-max-height">
-    <div class="l-container u-max-height">
-        <div class="l-col-12 u-max-height">
-        <div class="c-grid-block u-max-height">
-            <div class="c-grid-block_item l-col-fb-0">
-                <div class="c-main-nav u-bg-theme-2">
-                    <nav id="main-nav" class="l-col-fb-3" aria-label="Main">
-                        <ul class="c-main-nav_level-1" role="menubar">
-                            <li role="none">
-                                <a href="/" aria-current="true" aria-label="Home" title="Home" class="c-main-nav_level-1-link u-text-theme-8 c-main-nav_level-1-link--active">
-                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-home", "c-main-nav_level-1-icon u-fill-theme-8")); }
-                                </a>
-                            </li>
-                            <li role="none">
-                                <a href="/" aria-label="Groups" title="Groups" class="c-main-nav_level-1-link u-text-theme-9">
-                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-group", "c-main-nav_level-1-icon u-fill-theme-11")); }
-                                </a>
-                            </li>
-                            <li role="none">
-                                <a href="/" aria-label="Discussions" aria-label="Discussions" class="c-main-nav_level-1-link u-text-theme-10">
-                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum", "c-main-nav_level-1-icon u-fill-theme-10")); }
-                                </a>
-                            </li>
-                            <li role="none">
-                                <a href="/" aria-label="Favourites" aria-label="Favourites" class="c-main-nav_level-1-link u-text-theme-11">
-                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-favourite", "c-main-nav_level-1-icon u-fill-theme-9")); }
-                                </a>
-                            </li>
-                            <li role="none">
-                                <a href="/" aria-label="Alerts" aria-label="Alerts (3)" class="c-main-nav_level-1-link u-text-theme-12">
-                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-notification", "c-main-nav_level-1-icon u-fill-theme-12")); }
-                                    <!-- <span aria-hidden="true" class="c-main-nav_level-1-link-meta u-bg-theme-12">3</span> -->
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- <details class="">
-                        <summary aria-label="Toggle the menu" aria-haspopup="true" class="c-main-nav_level-2-toggle-trigger" data-open-icon="icon-chevron-left" data-closed-icon="icon-chevron-right">
-                            @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right", "c-main-nav_level-2-toggle-icon u-fill-theme-6")); }
-                        </summary>
-                        <div class="c-main-nav_level-2-content">
-	                        @Html.Action("ListGroupSideMenu", "Group")
-                        </div>
-                    </details> -->
-                </div>
-            </div>
-            <div class="c-grid-block_item l-col-12 u-width-zero">
-                <div class="c-grid-block">
-                    <div class="c-grid-block_item l-col-12 l-col-9-d">
-                        <main>
-                            @RenderBody()
-                        </main>
-                    </div>
-                    <div class="c-grid-block_item l-col-12 l-col-3-d">
-	                    @RenderSection("side", false)
-                    </div>
+
+@* START BREADCRUMBS *@ 
+<div class="l-container u-desktop-up">
+    <div class="l-col-12">
+        <div class="c-grid-block">
+            <div class="c-grid-block_item l-col-12">
+                <div class="c-breadcrumb" style="height: 60px">
+                @* TODO *@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+@* END  BREADCRUMBS *@
+
+<div class="u-bg-theme-3 u-max-height">
+    <div class="l-container l-container--large-desktop-only u-max-height">
+        <div class="l-col-12-d u-max-height">
+            <div class="c-grid-block u-max-height">
+                <div class="c-grid-block_item l-col-fb-0">
+
+                    @* START LEFT NAV BLOCK *@
+                    <div class="c-main-nav u-bg-theme-2">
+                        <nav id="main-nav" class="l-col-fb-3" aria-label="Main">
+                            <ul class="c-main-nav_level-1" role="menubar">
+                                <li role="none">
+                                    <a href="/" role="menuitem" aria-current="true" aria-label="Home" title="Home" class="c-main-nav_level-1-link u-text-theme-8 c-main-nav_level-1-link--active">
+                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-home", "c-main-nav_level-1-icon u-fill-theme-8")); }
+                                    </a>
+                                </li>
+                                <li role="none">
+                                    <a href="/" role="menuitem" aria-label="Groups" title="Groups" class="c-main-nav_level-1-link u-text-theme-9">
+                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-group", "c-main-nav_level-1-icon u-fill-theme-11")); }
+                                    </a>
+                                </li>
+                                <li role="none">
+                                    <a href="/" role="menuitem" aria-label="Discussions" aria-label="Discussions" class="c-main-nav_level-1-link u-text-theme-10">
+                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum", "c-main-nav_level-1-icon u-fill-theme-10")); }
+                                    </a>
+                                </li>
+                                <li role="none">
+                                    <a href="/" role="menuitem" aria-label="Favourites" aria-label="Favourites" class="c-main-nav_level-1-link u-text-theme-11">
+                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-favourite", "c-main-nav_level-1-icon u-fill-theme-9")); }
+                                    </a>
+                                </li>
+                                <li role="none">
+                                    <a href="/" role="menuitem" aria-label="Alerts" aria-label="Alerts (3)" class="c-main-nav_level-1-link u-text-theme-12">
+                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-notification", "c-main-nav_level-1-icon u-fill-theme-12")); }
+                                        <!-- <span aria-hidden="true" class="c-main-nav_level-1-link-meta u-bg-theme-12">3</span> -->
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        @* TODO collapsible menu *@
+                        <!-- <details class="">
+                            <summary aria-label="Toggle the menu" aria-haspopup="true" class="c-main-nav_level-2-toggle-trigger" data-open-icon="icon-chevron-left" data-closed-icon="icon-chevron-right">
+                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right", "c-main-nav_level-2-toggle-icon u-fill-theme-6")); }
+                            </summary>
+                            <div class="c-main-nav_level-2-content">
+                                @Html.Action("ListGroupSideMenu", "Group")
+                            </div>
+                        </details> -->
+                    </div>
+                    @* END LEFT NAV BLOCK *@
+                </div>
+
+                <div class="c-grid-block_item l-col-fb-12 u-width-zero">
+
+                    @* START PAGE HEADER BLOCK *@
+                    <div class="c-page-header u-bg-theme-8 u-padded-left">
+                        <div class="l-col-12">
+                            <div class="u-flex">
+                                <div class="c-page-header_col-1">
+                                    <div class="c-page-header_image-wrapper">
+                                        <img src="/content/uploads/759df51c-b938-4de9-b094-ad3401130b90/sylwmhvc-test3.jpg?width=159" alt="System.Data.Entity.DynamicProxies.Group_2425EAD04E0559B152144C9BF64FAF42D48AAB193E849AB78C48BFC8DB5FBD37" class="c-page-header_image">
+                                    </div>
+                                </div>
+                                <div class="c-page-header_col-2">
+                                    <div class="c-page-header_heading">
+                                        <h2 class="u-has-subheading u-text-theme-1">Group Name Here</h2>
+                                        <p class="u-text-lead">Group description here lorem ipsum.</p>
+                                    </div>
+
+                                    @* tabbed nav partial content below *@
+                                    <nav class="c-tabbed-nav">
+                                        <ul role="menu" class="u-list-plain c-tabbed-nav_list">
+
+                                            <li class="c-tabbed-nav_item">
+                                                <a class="c-tabbed-nav_link--active c-tabbed-nav_link" href="/groups/parent-group/">
+                                                    <span class="c-tabbed-nav_item-icon ">
+                                                        <svg class="u-fill-theme-1" role="presentation" aria-hidden="true">
+                                                            <use xlink:href="#icon-home-fill"></use>
+                                                        </svg>
+
+                                                    </span>
+                                                    <span>
+                                                        Group home
+                                                    </span>
+                                                </a>
+
+                                            </li>
+                                            <li class="c-tabbed-nav_item">
+                                                <a class="c-tabbed-nav_link" href="/groups/parent-group/forum/">
+                                                    <span class="c-tabbed-nav_item-icon ">
+                                                        <svg class="u-fill-theme-1" role="presentation" aria-hidden="true">
+                                                            <use xlink:href="#icon-forum-fill"></use>
+                                                        </svg>
+
+                                                    </span>
+                                                    <span>
+                                                        Group forum
+                                                    </span>
+                                                </a>
+
+                                            </li>
+                                            <li class="c-tabbed-nav_item">
+                                                <a class="c-tabbed-nav_link" href="/groups/parent-group/members/">
+                                                    <span class="c-tabbed-nav_item-icon ">
+                                                        <svg class="u-fill-theme-1" role="presentation" aria-hidden="true">
+                                                            <use xlink:href="#icon-members-fill"></use>
+                                                        </svg>
+
+                                                    </span>
+                                                    <span>
+                                                        Members
+                                                    </span>
+                                                </a>
+
+                                            </li>
+                                        </ul>
+                                    </nav>
+
+                                    @* end tabbed nav partial *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*END PAGE HEADER BLOCK *@
+
+                    <div class="l-col-12 u-padded-left">
+                        <div class="c-grid-block c-grid-block--padded">
+                            <div class="c-grid-block_item l-col-12 l-col-fb-9-d">
+                                <main>
+                                    @RenderBody()
+                                </main>
+                            </div>
+                            <div class="c-grid-block_item l-col-12 l-col-fb-3-d">
+                                @RenderSection("side", false)
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 </div>

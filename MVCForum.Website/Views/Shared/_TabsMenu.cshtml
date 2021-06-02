@@ -1,16 +1,25 @@
 ﻿@using MvcForum.Web.ViewModels.Shared
 @model MvcForum.Web.ViewModels.Shared.TabViewModel
 @{
-
+    
 }
 
-<ul class="nav nav-tabs">
-	@foreach (var tab in Model.Tabs.OrderBy(x=> x.Order))
-	{
-	<li class="@(tab.Active ? "active" : "")">
-		@{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel(tab.Icon, "c-ui-icon")); }
-		<a class="" href="@tab.Url">@Html.LanguageString(tab.Name)</a>
-	</li>
-	}
-	
-</ul>
+<nav class="c-tabbed-nav">
+    <ul role="menu" class="u-list-plain c-tabbed-nav_list">
+        
+        @foreach (var tab in Model.Tabs.OrderBy(x=> x.Order))
+        {
+            <li class="c-tabbed-nav_item" role="none">
+                <a class="@(tab.Active? "c-tabbed-nav_link--active" : "") c-tabbed-nav_link" href="@tab.Url" role="menuitem">
+                    <span class="c-tabbed-nav_item-icon">
+                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel(tab.Icon, "u-fill-theme-1")); }
+                    </span>
+                    <span>
+                        @tab.Name
+                    </span>
+                </a>
+
+            </li>
+        }
+    </ul>
+</nav>
