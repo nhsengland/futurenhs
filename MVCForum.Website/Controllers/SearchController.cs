@@ -31,13 +31,13 @@
         }
 
         [HttpGet]
-        public virtual async Task<ActionResult> Index(int? p, string term)
+        public virtual async Task<ActionResult> Index(int? p, string siteSearch)
         {
-            if (!string.IsNullOrWhiteSpace(term))
+            if (!string.IsNullOrWhiteSpace(siteSearch))
             {
-                if (!string.IsNullOrWhiteSpace(term))
+                if (!string.IsNullOrWhiteSpace(siteSearch))
                 {
-                    term = term.Trim();
+                    siteSearch = siteSearch.Trim();
                 }
 
                 var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -56,7 +56,7 @@
                 var posts = await _postService.SearchPosts(pageIndex,
                     ForumConfiguration.Instance.SearchListSize,
                     int.MaxValue,
-                    term,
+                    siteSearch,
                     allowedGroups);
 
                 // Get all the permissions for these topics
@@ -84,7 +84,7 @@
                     PageIndex = pageIndex,
                     TotalCount = posts.TotalCount,
                     TotalPages = posts.TotalPages,
-                    Term = term
+                    Term = siteSearch
                 };
 
                 return View(viewModel);
