@@ -1,22 +1,30 @@
-﻿using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.OAuth;
-using MvcForum.Core.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace MvcForum.Web
+﻿namespace MvcForum.Web.Application.Providers
 {
-    internal class MembershipProvider : OAuthAuthorizationServerProvider
+    using Microsoft.Owin.Security;
+    using Microsoft.Owin.Security.OAuth;
+    using MvcForum.Core.Interfaces.Services;
+    using System;
+    using System.Collections.Generic;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+
+    internal class AuthorizationProvider : OAuthAuthorizationServerProvider
     {
+        /// <summary>
+        /// Gets or setsteh _membershipService.
+        /// </summary>
         private IMembershipService _membershipService { get; set; }
 
-        public MembershipProvider(IMembershipService membershipService)
+        /// <summary>
+        /// Constructs a new instance of the AuthorizationProvider.
+        /// </summary>
+        /// <param name="membershipService">Instance of the membershipService <see cref="IMembershipService"/></param>
+        public AuthorizationProvider(IMembershipService membershipService)
         {
             _membershipService = membershipService;
         }
 
+        /// <inheritdoc/>
         public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
             return Task.Factory.StartNew(() =>
@@ -64,6 +72,7 @@ namespace MvcForum.Web
             });
         }
 
+        /// <inheritdoc/>
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
             if (context.ClientId == null)
@@ -72,7 +81,7 @@ namespace MvcForum.Web
             return Task.FromResult<object>(null);
         }
 
-
+        /// <inheritdoc/>
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)
         {
             foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)

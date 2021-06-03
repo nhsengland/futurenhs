@@ -23,7 +23,6 @@ namespace MvcForum.Web
     using Core.Interfaces;
     using Core.Ioc;
     using Core.Services.Migrations;
-    using Core.Utilities;
     using Core.Interfaces.Services;
     using Core.Models.General;
     using Core.Reflection;
@@ -34,6 +33,7 @@ namespace MvcForum.Web
     using Microsoft.AspNet.Identity.Owin;
     using Microsoft.Owin.Security.OAuth;
     using MvcForum.Core.Constants;
+    using MvcForum.Web.Application.Providers;
 
     public class Startup
     {
@@ -67,7 +67,7 @@ namespace MvcForum.Web
             app.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
             {
                 TokenEndpointPath = new PathString("/oauth/token"),
-                Provider = new MembershipProvider(new UnityDependencyResolver(unityContainer).GetService<IMembershipService>()),
+                Provider = new AuthorizationProvider(new UnityDependencyResolver(unityContainer).GetService<IMembershipService>()),
                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
                 AllowInsecureHttp = true,
 
@@ -100,7 +100,6 @@ namespace MvcForum.Web
             // Find the plugin, pipeline and badge assemblies
             var assemblies = assemblyProvider.GetAssemblies(ForumConfiguration.Instance.PluginSearchLocations).ToList();
             ImplementationManager.SetAssemblies(assemblies);
-
 
             var theme = "Default";
             var settings = mvcForumContext.Setting.FirstOrDefault();

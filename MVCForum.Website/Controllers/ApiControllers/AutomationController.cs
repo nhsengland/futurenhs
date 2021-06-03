@@ -3,6 +3,7 @@
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Models.Entities;
     using MvcForum.Core.Models.Enums;
+    using Swashbuckle.Swagger.Annotations;
     using System;
     using System.Threading.Tasks;
     using System.Web.Http;
@@ -42,6 +43,9 @@
         /// <returns>List of MembershipUsers created. <see cref="MembershipUser"/></returns>
         [Route("CreateUsers")]
         [HttpPost]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(500)]
+        [SwaggerResponse(400)]
         public async Task<IHttpActionResult> CreateUsers(int numberOfUsers)
         {
             for (int i=0; i < numberOfUsers; i++)

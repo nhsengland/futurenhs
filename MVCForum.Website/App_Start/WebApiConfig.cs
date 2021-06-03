@@ -18,6 +18,7 @@ namespace MvcForum.Web
             // Web API routes
             config.MapHttpAttributeRoutes();
             
+
             config.Routes.MapHttpRoute(
                 "DefaultApi",
                 "api/{controller}/{id}",
@@ -37,6 +38,9 @@ namespace MvcForum.Web
                 defaults: new { id = RouteParameter.Optional, action = "Post" },
                 constraints: new { httpMethod = new HttpMethodConstraint("POST") }
             );
+
+            // Configures Swagger.
+            SwaggerUIConfig.Register(config);
         }
     }
 }
