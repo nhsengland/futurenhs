@@ -29,6 +29,10 @@ namespace MvcForum.Web
     using Core.Reflection;
     using Core.Services;
     using Unity;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.AspNet.Identity.Owin;
+    using Microsoft.Owin.Security.OAuth;
     using MvcForum.Core.Constants;
 
     public class Startup
@@ -56,6 +60,19 @@ namespace MvcForum.Web
 
             // Make hangfire use unity container
             GlobalConfiguration.Configuration.UseUnityActivator(unityContainer);
+
+            // Configure OWIN
+            app.CreatePerOwinContext<MvcForumContext>(() => new MvcForumContext());
+            app.CreatePerOwinContext<UserManager<IdentityUser>>(CreateManager);
+            app.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
+            {
+                TokenEndpointPath = new PathString("/oauth/token"),
+                Provider = new MembershipProvider(new UnityDependencyResolver(unityContainer).GetService<IMembershipService>()),
+                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
+                AllowInsecureHttp = true,
+
+            });
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
 
             // Add Hangfire
             // TODO - Do I need this dashboard?
@@ -104,6 +121,12 @@ namespace MvcForum.Web
                 queue: "solutionreminders");
         }
 
+        private static UserManager<IdentityUser> CreateManager(IdentityFactoryOptions<UserManager<IdentityUser>> options, IOwinContext context)
+        {
+            var userStore = new UserStore<IdentityUser>(context.Get<MvcForumContext>());
+            var owinManager = new UserManager<IdentityUser>(userStore);
+            return owinManager;
+        }
         private void UpdateLanguages(IMvcForumContext context, ILocalizationService localizationService)
         {
             var report = new CsvReport();

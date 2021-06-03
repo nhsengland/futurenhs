@@ -11,6 +11,7 @@
     /// Defines the AutomationController to expose api endpoint to aid automation testing.
     /// </summary>
     [RoutePrefix("api/automation")]
+    [Authorize(Roles = "Admin")]
     public class AutomationController : ApiController
     {
         /// <summary>
