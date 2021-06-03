@@ -204,6 +204,16 @@ $no-js-style: false !default;
     }
 }
 
+@mixin lead-heading() {
+    line-height: $h1-line-height-mobile;
+    font-size: $h1-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h1-line-height-desktop;
+        font-size: $h1-font-size-desktop;
+    }
+}
+
 @mixin regular-heading() {
     line-height: $h2-line-height-mobile;
     font-size: $h2-font-size-mobile;

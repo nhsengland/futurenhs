@@ -133,7 +133,6 @@
     font-weight: $nhsuk-font-normal;
 }
 
-
 .u-width-auto {
     width: auto;
 }
@@ -162,8 +161,11 @@
     height: 100%;
 }
 
-@each $number, $theme in $t-utility-themes {
+.u-lead-heading {
+    @include lead-heading;
+}
 
+@each $number, $theme in $t-utility-themes {
     .u-bg-theme-#{$number} {
         background-color: $theme;
     }
@@ -173,11 +175,10 @@
     }
 
     .u-text-theme-#{$number} {
-        color: $theme !important;//sass-lint:disable-line no-important
+        color: $theme !important; //sass-lint:disable-line no-important
     }
 
     .u-border-theme-#{$number} {
         border-color: $theme;
     }
-
 }

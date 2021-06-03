@@ -7,40 +7,71 @@
 
 @section Header
 {
-    <script type="text/javascript">
-        $(function () {
-            $.post(app_base + "Members/GetMemberDiscussions",
-                { "Id": '@Model.User.Id' },
-                function (data) {
-                    $(".memberdiscussions").html(data);
-                });
-            TimeBadges();
-        });
-        function TimeBadges() {
-            var timeBadgeViewModel = new Object();
-            timeBadgeViewModel.Id = '@Model.User.Id';
-            var strung = JSON.stringify(timeBadgeViewModel);
-            $.ajax({
-                url: app_base + 'Badge/Time',
-                type: 'POST',
-                dataType: 'html',
-                data: strung,
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-                }
-            });
-        }
-    </script>
 }
 
 @section side
 {
-    @Html.Partial("_CommonSideNav")
+    @* @Html.Partial("_CommonSideNav") *@
 }
+<div class="l-container">
+    <div class="l-row">
+        
+        <div class="l-col-6 l-col-4-t l-col-3-d">
+
+            <div class="c-avatar">
+                <div class="c-avatar-fallback">
+                     <p class="c-avatar-initials"><span class="u-visually-hidden">@Model.User.UserName initials:</span> @Model.User.Initials</p>
+                </div>
+                @if (!String.IsNullOrEmpty(Model.User.MemberImage(205))){
+                    <img alt="Profile picture member: @Model.User.UserName" class="c-avatar-image" src="@Model.User.MemberImage(205)"/>
+                } 
+            </div>
+
+                     
+        </div>
+
+        <div class="l-col-12 l-col-9-d">
+
+            <div class="l-container">
+                <div class="l-row">
+                    <div class="l-col-12">
+                        <h2 class="u-text-theme-8 u-lead-heading">Member Profile</h2>
+                        @* <h3>Your details...</h3> *@
+
+                        <div class="c-input-group">
+                            <label class="c-input-label" for="first-name-readonly-input">
+                                First name
+                            </label>
+                            <input class="c-input-control" id="first-name-readonly-input"
+                                name="first-name-readonly-input" type="text" value="@Model.User.FirstName" readonly>
+                        </div>
+
+                          <div class="c-input-group">
+                            <label class="c-input-label" for="surname-readonly-input">
+                                Surname
+                            </label>
+                            <input class="c-input-control" id="surname-readonly-input"
+                                name="surname-readonly-input" type="text" value="@Model.User.Surname" readonly>
+                        </div>
+
+                         <div class="c-input-group">
+                            <label class="c-input-label" for="email-readonly-input">
+                                Email address
+                            </label>
+                            <input class="c-input-control" id="email-readonly-input"
+                                name="email-readonly-input" type="text" value="@Model.User.Email" readonly>
+                        </div>
+
+                        @* <button class="c-button c-button--outline">
+                            Edit profile details
+                        </button> *@
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 <div class="memberprofilepublic">
@@ -69,40 +100,6 @@
         </div>
 
         <div class="c-grid-block_item l-col-12 l-col-9-t membermaindetails">
-
-            <div class="membersection memberbio">
-                <div class="c-grid-block">
-                    <div class="c-grid-block_item l-col-12 l-col-12-d">
-                        <h2>@Model.User.UserName</h2>
-                    </div>
-                    <div class="c-grid-block_item l-col-12 l-col-6-d">
-                        <p>@Html.LanguageString("Members.Profile.Joined") @DatesUi.GetPrettyDate(Model.User.CreateDate.ToString())</p>
-                        @if (Model.User.LastActivityDate != null)
-                        {
-                            <p>@(Html.LanguageString("Members.Profile.LastOnline")): @DatesUi.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
-                        }                        
-                        <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
-                        <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
-                        <p>@Html.LanguageString("Members.Profile.Age") @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>  
-                    </div>
-                    <div class="c-grid-block_item l-col-12 l-col-6-d">
-                        <p>@Html.LanguageString("Members.Profile.Location") @Html.Raw(string.IsNullOrEmpty(Model.User.Location) ? "" : Model.User.Location)</p>
-                        <p>@Html.LanguageString("Members.Profile.Website") @Html.Raw(string.IsNullOrEmpty(Model.User.Website) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Website))</p>
-                        <p>@Html.LanguageString("Members.Profile.Twitter") @Html.Raw(string.IsNullOrEmpty(Model.User.Twitter) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Twitter))</p>
-                        <p>@Html.LanguageString("Members.Profile.Facebook") @Html.Raw(string.IsNullOrEmpty(Model.User.Facebook) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Facebook))</p>  
-                    </div>
-                </div>
-            </div>
-
-            <div class="membersection memberlatesttopics">
-
-                <h3>@Html.LanguageString("Members.Profile.DiscussionActivity")</h3>
-                <div class="memberdiscussions">
-                    <span class="ajaxspinner" title="@Html.LanguageString("Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
-                </div>
-
-            </div>
-
 
             @if (User.IsInRole(Constants.AdminRoleName))
             {

@@ -81,8 +81,8 @@ p {
 }
 
 a {
-    text-decoration: underline; //remove this once bootstrap is gone
     @extend %link-base;
+    text-decoration: underline; //remove this once bootstrap is gone
 
     @include print {
         &:after {
