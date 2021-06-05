@@ -79,7 +79,6 @@
     <div class="c-grid-block">
 
         <div class="c-grid-block_item l-col-12 l-col-3-t memberavatardetails">
-            <p class="memberavatar"><img src="@Model.User.MemberImage(ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.User.UserName"></p>
 
             @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
             {

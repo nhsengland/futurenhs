@@ -113,6 +113,7 @@
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
+    <Compile Include="ViewModels\Shared\PageViewModel.cs" />
     <Compile Include="ViewModels\Shared\Tab.cs" />
     <Compile Include="ViewModels\Shared\TabViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupUserViewModel.cs" />

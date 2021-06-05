@@ -40,27 +40,6 @@
 
 @Html.Action("GetGroupBreadcrumb", "Group", new { Group = Model.Group })
 
-@*
-<div class="c-page-header">
-
-	<div class="l-col-2">
-		<div class="c-page-header_image-wrapper">
-			@if (!string.IsNullOrEmpty(Model.Group.Image))
-			{
-				<img src="@AppHelpers.GroupImage(Model.Group.Image, Model.Group.Id, 110)" alt="@Model.Group" class="c-page-header_image" />
-			}
-		</div>
-	</div>
-	<div class="l-col-10">
-		<h2>@Html.Raw(Model.Group.Name)</h2>
-		<p class="u-text-lead">@Html.Raw(Model.Group.Description.ConvertPostContent())</p>
-
-		@Html.Action("GetGroupTabs", "Group", new { activeTab = Model.Tab, slug = Model.Group.Slug })
-	</div>
-</div>
-*@
-
-
 <div class="Group">
 
 	<div class="mainheading clearfix">

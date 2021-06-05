@@ -1,7 +1,11 @@
 ﻿@using MvcForum.Web.ViewModels.Shared
+@using Microsoft.Ajax.Utilities
+@using MvcForum.Core.Utilities
 
 @{
     Layout = "_Layout.cshtml";
+	PageViewModel pageHeader = ViewBag.PageHeader;
+
 }
 
 @section SocialMeta{
@@ -78,76 +82,32 @@
                 </div>
 
                 <div class="c-grid-block_item l-col-fb-12 u-width-zero">
-
+                @if (pageHeader != null)
+                {
                     @* START PAGE HEADER BLOCK *@
-                    <div class="c-page-header u-bg-theme-8 u-padded-left">
-                        <div class="l-col-12">
-                            <div class="u-flex">
-                                <div class="c-page-header_col-1">
-                                    <div class="c-page-header_image-wrapper">
-                                        <img src="/content/uploads/759df51c-b938-4de9-b094-ad3401130b90/sylwmhvc-test3.jpg?width=159" alt="System.Data.Entity.DynamicProxies.Group_2425EAD04E0559B152144C9BF64FAF42D48AAB193E849AB78C48BFC8DB5FBD37" class="c-page-header_image">
-                                    </div>
-                                </div>
-                                <div class="c-page-header_col-2">
-                                    <div class="c-page-header_heading">
-                                        <h2 class="u-has-subheading u-text-theme-1">Group Name Here</h2>
-                                        <p class="u-text-lead">Group description here lorem ipsum.</p>
-                                    </div>
-
-                                    @* tabbed nav partial content below *@
-                                    <nav class="c-tabbed-nav">
-                                        <ul role="menu" class="u-list-plain c-tabbed-nav_list">
-
-                                            <li class="c-tabbed-nav_item">
-                                                <a class="c-tabbed-nav_link--active c-tabbed-nav_link" href="/groups/parent-group/">
-                                                    <span class="c-tabbed-nav_item-icon ">
-                                                        <svg class="u-fill-theme-1" role="presentation" aria-hidden="true">
-                                                            <use xlink:href="#icon-home-fill"></use>
-                                                        </svg>
-
-                                                    </span>
-                                                    <span>
-                                                        Group home
-                                                    </span>
-                                                </a>
-
-                                            </li>
-                                            <li class="c-tabbed-nav_item">
-                                                <a class="c-tabbed-nav_link" href="/groups/parent-group/forum/">
-                                                    <span class="c-tabbed-nav_item-icon ">
-                                                        <svg class="u-fill-theme-1" role="presentation" aria-hidden="true">
-                                                            <use xlink:href="#icon-forum-fill"></use>
-                                                        </svg>
-
-                                                    </span>
-                                                    <span>
-                                                        Group forum
-                                                    </span>
-                                                </a>
-
-                                            </li>
-                                            <li class="c-tabbed-nav_item">
-                                                <a class="c-tabbed-nav_link" href="/groups/parent-group/members/">
-                                                    <span class="c-tabbed-nav_item-icon ">
-                                                        <svg class="u-fill-theme-1" role="presentation" aria-hidden="true">
-                                                            <use xlink:href="#icon-members-fill"></use>
-                                                        </svg>
-
-                                                    </span>
-                                                    <span>
-                                                        Members
-                                                    </span>
-                                                </a>
-
-                                            </li>
-                                        </ul>
-                                    </nav>
-
-                                    @* end tabbed nav partial *@
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+	                <div class="c-page-header u-bg-theme-8 u-padded-left">
+		                <div class="l-col-12">
+			                <div class="u-flex">
+				                <div class="c-page-header_col-1">
+                                    @if (!pageHeader.Image.IsNullEmpty())
+                                    {
+	                                    <div class="c-page-header_image-wrapper">
+		                                    <img src="@AppHelpers.GroupImage(pageHeader.Image, pageHeader.Id, 159)" alt="System.Data.Entity.DynamicProxies.Group_2425EAD04E0559B152144C9BF64FAF42D48AAB193E849AB78C48BFC8DB5FBD37" class="c-page-header_image">
+	                                    </div>
+                                    }
+				                </div>
+				                <div class="c-page-header_col-2">
+					                <div class="c-page-header_heading">
+						                <h2 class="u-has-subheading u-text-theme-1">@pageHeader.Name</h2>
+						                <div class="u-text-lead">@Html.Raw(@pageHeader.Description)</div>
+					                </div>
+                                    @Html.Partial("_TabsMenu",@pageHeader.HeaderTabs)
+					              
+				                </div>
+			                </div>
+		                </div>
+	                </div>
+                }
                     @*END PAGE HEADER BLOCK *@
 
                     <div class="l-col-12 u-padded-left">
