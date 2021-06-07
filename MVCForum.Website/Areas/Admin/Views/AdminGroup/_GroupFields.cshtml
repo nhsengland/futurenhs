@@ -15,7 +15,7 @@
 
 <div class="form-group">
     @Html.LabelFor(model => model.Description)
-    @Html.EditorFor(model => model.Description)
+    @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
     @Html.ValidationMessageFor(model => model.Description)
 </div>
 

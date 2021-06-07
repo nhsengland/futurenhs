@@ -31,9 +31,9 @@
         public string Name { get; set; }
 
         [DisplayName("Group Description")]
+        [Required]
         [DataType(DataType.MultilineText)]
-        [UIHint(Constants.EditorType)]
-        [AllowHtml]
+        [StringLength(1800)]
         public string Description { get; set; }
 
         [DisplayName("Group Colour")]
