@@ -15,7 +15,7 @@
                         @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel(tab.Icon, "u-fill-theme-1")); }
                     </span>
                     <span>
-                        @tab.Name
+                        @Html.LanguageString(@tab.Name)
                     </span>
                 </a>
 
