@@ -233,7 +233,7 @@
                 // Has an avatar image
                 var storageProvider = StorageProvider.Current;
                 return storageProvider.BuildFileUrl(userId, "/", avatar,
-                    string.Format("?width={0}&crop=0,0,{0},{0}", size));
+                    string.Format("?width={0}", size));
             }
 
             return null;
@@ -241,7 +241,7 @@
 
         public static string GroupImage(string image, Guid GroupId, int size)
         {
-            var sizeFormat = string.Format("?width={0}&crop=0,0,{0},{0}", size);
+            var sizeFormat = string.Format("?width={0}", size);
             if (!string.IsNullOrWhiteSpace(image))
             {
                 var storageProvider = StorageProvider.Current;

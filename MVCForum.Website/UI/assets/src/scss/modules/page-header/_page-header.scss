@@ -50,12 +50,13 @@
 
     &_image {
         object-fit: cover;
-        width: 70px;
+        max-width: 70px;
         height: 70px;
+        word-break: break-all; //fixes issue of missing file text breaking layout
 
         @include respond-to(desktop) {
             margin-bottom: $nhsuk-spacing-point-6;
-            width: 159px;
+            max-width: 159px;
             height: 159px;
         }
     }
