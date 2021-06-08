@@ -306,7 +306,6 @@ gulp.task('fonts', () => {
 gulp.task('js', () => {
 
     return gulp.src([`${uiAssetsSrcPath}/ts/root/*.ts`])
-        .pipe(plumber())
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError())
