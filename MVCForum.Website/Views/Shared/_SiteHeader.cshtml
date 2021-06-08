@@ -20,7 +20,7 @@
             <img src="/UI/assets/dist/img/content/logo.svg" alt="Future NHS home page">
         </a>
         <div id="navigation" class="c-site-header_nav c-site-header-nav">
-            <details class="c-site-header-nav_content" open="">
+            <details class="c-site-header-nav_content">
                 <summary aria-haspopup="true" class="c-site-header-nav_mobile-trigger c-site-header-nav_mobile-trigger--right">
                     Menu
                 </summary>
@@ -55,7 +55,7 @@
                             {
                                 <li role="none">
                                     <details class="c-site-header-nav_root-nav-item">
-                                        <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger" data-open-icon="icon-minus" data-closed-icon="icon-plus">
+                                        <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
 
                                             @if (!string.IsNullOrEmpty(Model.CurrentUser.Avatar))
                                             {
@@ -69,7 +69,7 @@
                                                 @Html.DisplayFor(x => Model.CurrentUser.Initials)
                                             }
                                             @Model.CurrentUser.GetFullName()
-                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-site-header-nav_root-nav-icon js-svg"));}
+                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg"));}
                                         </summary>
                                         <div class="c-site-header-nav_sub-nav">
                                             <div class="c-site-header-nav_sub-nav-content">
@@ -84,13 +84,18 @@
                                 </li>
                                 
                             }
-
+                            <li role="none" class="u-desktop-hidden">
+                                <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger u-border-theme-8">
+                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-home", "c-site-header-nav_root-nav-content-icon u-fill-theme-8"));} 
+                                    Home
+                                </a>
+                            </li>
                             <li role="none" class="u-desktop-hidden">
                                 <details class="c-site-header-nav_root-nav-item">
-                                    <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger" data-open-icon="icon-minus" data-closed-icon="icon-plus">
-                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-home", "c-site-header-nav_root-nav-content-icon"));} 
+                                    <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger u-border-theme-11" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
+                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-group", "c-site-header-nav_root-nav-content-icon u-fill-theme-11"));} 
                                         Groups
-                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-site-header-nav_root-nav-icon js-svg"));} 
+                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg u-fill-theme-11"));} 
                                     </summary>
                                     <div class="c-site-header-nav_sub-nav">
                                         <div class="c-site-header-nav_sub-nav-content">
@@ -117,10 +122,38 @@
                                     </div>
                                 </details>
                             </li>
+                             <li role="none" class="u-desktop-hidden">
+                                <details class="c-site-header-nav_root-nav-item">
+                                    <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger u-border-theme-10" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
+                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum", "c-site-header-nav_root-nav-content-icon u-fill-theme-10"));} 
+                                        Forums
+                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg u-fill-theme-10"));} 
+                                    </summary>
+                                    <div class="c-site-header-nav_sub-nav">
+                                        <div class="c-site-header-nav_sub-nav-content">
+                                            <div class="l-row">
+                                                <ul class="u-list-plain" role="menu" aria-label="">
+                                                    <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+                                                        <a role="menuitem" href="/" class="c-site-header-nav_sub-nav-child">
+                                                            
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </li>
                             <li role="none" class="u-desktop-hidden">
-                                <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger">
-                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-site-header-nav_root-nav-content-icon"));} 
+                                <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger u-border-theme-9">
+                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-site-header-nav_root-nav-content-icon u-fill-theme-9"));} 
                                     Favourites
+                                </a>
+                            </li>
+                             <li role="none" class="u-desktop-hidden">
+                                <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger u-border-theme-12">
+                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-notification", "c-site-header-nav_root-nav-content-icon u-fill-theme-12"));} 
+                                    Notifications
                                 </a>
                             </li>
                         </ul>

@@ -219,10 +219,9 @@
 
     &_root-nav-item {
         @include clearfix;
-        margin: 0 0 $spacer-sm;
+        margin: 0;
 
         @include respond-to(desktop) {
-            margin: 0;
             float: left;
             width: 300px;
             padding: 8px 16px;
@@ -277,7 +276,7 @@
     }
 
     &_root-nav-icon {
-        @include inline-icon-half($spacer-sm);
+        @include inline-icon($spacer-sm);
         margin-left: auto;
 
         @include respond-to(desktop) {
