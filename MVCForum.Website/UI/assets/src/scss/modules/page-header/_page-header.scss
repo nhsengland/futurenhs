@@ -49,6 +49,7 @@
     }
 
     &_image {
+        display: block;
         object-fit: cover;
         max-width: 70px;
         height: 70px;
