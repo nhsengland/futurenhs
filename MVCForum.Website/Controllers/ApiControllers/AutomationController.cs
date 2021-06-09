@@ -3,8 +3,12 @@
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Models.Entities;
     using MvcForum.Core.Models.Enums;
+    using Newtonsoft.Json;
     using Swashbuckle.Swagger.Annotations;
     using System;
+    using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Web.Http;
 
@@ -46,20 +50,21 @@
         [SwaggerResponse(200)]
         [SwaggerResponse(500)]
         [SwaggerResponse(400)]
-        public async Task<IHttpActionResult> CreateUsers(int numberOfUsers)
+        public async Task<IHttpActionResult> CreateUsers(HttpRequestMessage request, int numberOfUsers, string prefix = "PF")
         {
+            List<MembershipUser> users = new List<MembershipUser>();
             for (int i=0; i < numberOfUsers; i++)
             {
                 MembershipUser user = new MembershipUser 
                 { 
-                    UserName = String.Format("PF{0}", i+1),
-                    Email=String.Format("PF{0}@test.com", i+1),
+                    UserName = String.Format("{0}{1}", prefix, i+1),
+                    Email=String.Format("{0}{1}@test.com", prefix, i+1),
                     Password = "Password"
                 };
                 try
                 {
                     var result = await _membershipService.CreateUser(user, LoginType.Standard);
-                    
+                    users.Add(user);
                     if (!result.Successful)
                     {
                         throw new Exception(String.Format("Failed to create user PF{0}.", i+1));
@@ -67,12 +72,15 @@
                     
                 } catch(Exception ex)
                 {
-                    _logger.Error(String.Format("Failed to create user PF{0}. {1}.", i+1, ex));
+                    _logger.Error(String.Format("Failed to create user {0}{1}. {2}.", prefix, i+1, ex));
                     return InternalServerError();
                 }
             }
 
-            return Ok();
+            var content = JsonConvert.SerializeObject(users, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            var response = request.CreateResponse(200);
+            response.Content = new StringContent(content, Encoding.UTF8, "application/json");
+            return await Task.FromResult(ResponseMessage(response)).ConfigureAwait(false);
         }
     }
 }
