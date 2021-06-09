@@ -29,62 +29,6 @@ $media-query-mobile: $break-point-mobile-max;
 
 @mixin standard-button() { display: inline-block; padding: 7px 20px; margin-bottom: 0; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; -ms-border-radius: 3px; border-radius: 3px; text-decoration: none; background-color: #efefef; color: #333; }
 
-span.label-success { background-color: $color-global-green; }
-.input-group { z-index: 0; }
-blockquote {font-style:italic;}
-.textarea {min-height:150px;}
-
-// Main
-main, .side-box, .createtopicbutton {
-    margin: 20px 0 0;
-}
-
-body {
-    &.loggedin-true {
-        @media (max-width: $media-query-medium) {
-            .main-section { position: relative; padding-top: 62px;
-                .createtopicbutton { position: absolute; top: 0; left: 0; right: 0;
-                    .btn-mvc-green { margin-left: 15px; margin-right: 15px; width: auto; }
-                }
-            }
-            .fullwidthlayout { margin-top: -50px; }
-        }
-    }
-
-    @media (max-width: $media-query-mobile) {
-        .btn-mvc-large { padding-left: 0; padding-right: 0; width: 100%; display: block; }
-    }
-}
-
-// General Table Styles
-
-table {
-    @media (max-width: $media-query-mobile) {
-        .table-adaptive {
-            caption { background-image: none; }
-            thead { display: none; }
-            tbody {
-                td { display: block;
-                    &:before { content: attr(data-th); font-weight: bold; display: inline-block; width: 6rem; }
-                }
-                tr {
-                    td {
-                        &:first-child { background: #e4e4e4; }
-                    }
-                }
-            }
-            > tbody > tr > td { border: none; border-top: 1px solid #ddd; }
-            > tbody > tr > td:first-child { border: none; }
-        }
-    }
-}
-
-// Colour Classes
-
-.green-colour { color: $color-global-green; }
-.red-colour { color: $color-global-red; }
-.blue-colour { color: $color-global-blue; }
-.orange-colour { color: #ef9b00 !important; }
 
 // Validation Errors
 
@@ -144,28 +88,10 @@ table {
     > .panel-heading { background: $color-global-grey-blue; color: $font-base-color; -ms-border-radius: 0; border-radius: 0; }
 }
 
-// Related Topics
-
-.relatedtopicsholder { padding-bottom: 12px; display: none;
-    .relatedtopicskey {
-        ul { padding: 0; margin: 0;
-            li { padding: 1px 0; display: block; margin: 0; list-style: none;
-                span.topicvotessmall { margin: 2px 0 0 5px; display: inline-block; padding: 0 7px; border-bottom: none; background-color: #efefef; -ms-border-radius: 50%; border-radius: 50%; }
-                a, a:visited { font-size: 16px; line-height: 25px; }
-            }
-        }
-    }
-}
 
 // My tools button
 .mytoolslink {
     span.badge { background-color: $color-global-grey-blue; color: #000; font-weight: normal; }
-}
-
-// Breadcrumb
-
-.breadcrumb { background: none; padding: 0 0 15px 0; margin: -12px 0 0 0;
-    a, a:visited { color: $font-lighter-base-color; }
 }
 
 // Side Boxes - Group
@@ -181,9 +107,9 @@ table {
 
 // Sub Group
 
-.subGroupholder { border-top: 1px $border-color solid; border-bottom: 1px $border-color solid; padding: 4px 0; margin: 4px 0;
+.subGroupholder {
     ul { padding: 0; margin: 0;
-        li { list-style: none; display: inline-block; padding: 7px 7px 7px 0;
+        li { list-style: none; padding: 7px 7px 7px 0;
             a, a:visited { border-left: 5px #83b6b9 solid; padding-left: 8px; }
         }
     }
@@ -220,33 +146,6 @@ table {
 }
 
 // Topic Rows
-
-.topicrow { padding: 15px;
-    p {
-        &.Group { line-height: 16px; color: #b3b3b3; padding: 0 0 0 10px; margin: 0; border-left: 3px solid #ccc;
-            a, a:visited { color: #727272;
-                &:hover, &:focus { color: $font-lighter-base-color; }
-            }
-            &.Groupsolvedtrue { border-left: 3px solid $color-global-green !important; }
-        }
-    }
-    .rowdetails {
-        h3, h4 { margin: 6px 0; padding: 0;
-            a, a:visited {  color: #494848; font-weight: 600; margin-top: 7px; line-height: 26px; text-decoration: none;
-                &:hover, &:focus { color: #373737; text-decoration: underline; }
-            }
-        }
-    }
-    .stats { color: #a1a0a0; margin: 0 0 0 5px; }
-}
-.topicrowfooterinfo { font-size: 14px; color: #b3b3b3; padding: 4px 0 0 0;
-    .latestby { -ms-border-radius: 50%; border-radius: 50%; }
-    a, a:visited { color: #727272; font-weight: 400;
-        &:hover, &:focus { color: #000; }
-    }
-}
-.topicstarterpostbeginpostsheading { padding-bottom: 3px; }
-.topicstarterpost { border-bottom: 2px #f2f2f2 solid; }
 
 // Topic Row Slim
 .topicrow-slim { padding: 8px;

@@ -88,6 +88,10 @@
     }
 }
 
+.u-inline-block {
+    display: inline-block;
+}
+
 // .u-tablet-up {
 //     display: none;
 
@@ -131,8 +135,16 @@
     @include lead-text;
 }
 
+.u-text-standard {
+    @include standard-text;
+}
+
 .u-text-small {
     @include small-text;
+}
+
+.u-heading-lead {
+    @include lead-heading;
 }
 
 .u-text-bold {
@@ -173,10 +185,6 @@
 
 .u-max-height {
     height: 100%;
-}
-
-.u-lead-heading {
-    @include lead-heading;
 }
 
 @each $number, $theme in $t-utility-themes {

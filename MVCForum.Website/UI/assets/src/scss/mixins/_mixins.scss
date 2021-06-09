@@ -224,13 +224,21 @@ $no-js-style: false !default;
     }
 }
 
-@mixin medium-heading() {
+@mixin medium-heading($margin: true) {
     line-height: $h3-line-height-mobile;
     font-size: $h3-font-size-mobile;
+    
+    @if ($margin) {
+        margin-bottom: $nhsuk-spacing-point-3;
+    }
 
     @include respond-to(desktop) {
         line-height: $h3-line-height-desktop;
         font-size: $h3-font-size-desktop;
+
+        @if ($margin) {
+            margin-bottom: $nhsuk-spacing-point-4;
+        }
     }
 }
 
@@ -376,3 +384,12 @@ $no-js-style: false !default;
 @function derived-dimension($multiplier) {
     @return $multiplier * $base-dimension-unit;
 }
+
+@mixin top-and-bottom() {
+    & > *:first-child {
+      margin-top: 0;
+    }
+    & > *:last-child {
+      margin-bottom: 0;
+    }
+  }

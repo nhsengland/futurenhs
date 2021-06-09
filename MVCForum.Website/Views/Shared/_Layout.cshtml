@@ -47,45 +47,6 @@
 
     @{ Html.RenderAction("SiteHeader", "Layout"); }
 
-    <!-- <header>
-
-        <nav class="navbar navbar-default">
-            <div class="l-container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle menu-btn">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                        <img src="@Url.Content("~/UI/assets/dist/img/content/logo.svg")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
-                    </a>
-                </div>
-
-                <div class="collapse navbar-collapse" id="mvcforum-nav">
-
-                    <ul class="nav navbar-nav navbar-right">
-    @if (!User.Identity.IsAuthenticated)
-    {
-        if (Html.Settings().SuspendRegistration != true)
-        {
-                                        <li><a class="auto-register" href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
-        }
-                                <li><a class="auto-logon" href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
-    }                        
-    @if (User.Identity.IsAuthenticated)
-    {
-        @Html.Action("SideAdminPanel", "Members", new { isDropDown = true })
-    }
-                    </ul>
-
-
-                </div>
-            </div>
-        </nav>
-    </header> -->
-
 
     @*
 

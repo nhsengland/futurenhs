@@ -19,11 +19,11 @@
         <div class="l-col-6 l-col-4-t l-col-3-d">
 
             <div class="c-avatar">
-                <div class="c-avatar-fallback">
-                     <p class="c-avatar-initials"><span class="u-visually-hidden">@Model.User.UserName initials:</span> @Model.User.Initials</p>
+                <div class="c-avatar_fallback">
+                     <p class="c-avatar_initials"><span class="u-visually-hidden">@Model.User.UserName initials:</span> @Model.User.Initials</p>
                 </div>
                 @if (!String.IsNullOrEmpty(Model.User.MemberImage(205))){
-                    <img alt="Profile picture member: @Model.User.UserName" class="c-avatar-image" src="@Model.User.MemberImage(205)"/>
+                    <img alt="Profile picture member: @Model.User.UserName" class="c-avatar_image" src="@Model.User.MemberImage(205)"/>
                 } 
             </div>
 
@@ -35,7 +35,7 @@
             <div class="l-container">
                 <div class="l-row">
                     <div class="l-col-12">
-                        <h2 class="u-text-theme-8 u-lead-heading">Member Profile</h2>
+                        <h2 class="u-text-theme-8 u-heading-lead">Member Profile</h2>
                         @* <h3>Your details...</h3> *@
 
                         <div class="c-input-group">

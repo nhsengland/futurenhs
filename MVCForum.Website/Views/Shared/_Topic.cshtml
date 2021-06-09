@@ -9,6 +9,48 @@
 @if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
 {
 
+    <div class="c-card u-border-theme-10">
+        <div class="c-card_content">
+            <div class="c-card_header">
+                <div class="c-card_header-img">
+                    <div class="c-avatar c-avatar--small">
+                        <div class="c-avatar_fallback">
+                             <p class="c-avatar_initials" aria-hidden="true">@Model.Topic.User.Initials</p>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Topic.User.Avatar)){
+                            <img role="presentation" alt="" class="c-avatar_image" src="@Model.Topic.User.MemberImage(50)"/>
+                        }
+                    </div>
+                </div>
+                <div class="c-card_header-content u-text-theme-7">
+                    <p class="u-text-small u-text-bold u-has-subheading">Created by <a href="@Model.Topic.User.NiceUrl">@Model.Topic.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</p>
+                    <p class="u-text-small"><a href="@Html.Raw(Model.LastPostPermaLink)">Last comment</a> by <a href="@Model.Topic.LastPost.User.NiceUrl">@Model.Topic.LastPost.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</p>
+                </div>
+                <div class="c-card_header-icons">
+                    @if (Model.Topic.IsSticky)
+                    {
+                        <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-pin", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is pinned</span> </p>
+                    }
+                    @if (Model.Topic.IsLocked)
+                    {
+                        <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-lock", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is locked</span> </p>
+                    }
+                    @* TODO - FAVOURITE 
+                    <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-favourite-fill", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is favourited</span> </p>
+                    *@
+                </div>
+            </div>
+            <h2 class="c-card_heading">
+                <a class="c-card_link" href="@Html.Raw(Model.Topic.NiceUrl)">@Html.Raw(Model.Topic.Name)</a>
+            </h2>
+            <div class="c-card_footer u-text-theme-7">
+                 <p class="c-card_footer-item">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_footer-icon u-fill-theme-10"));} @Model.Answers.KiloFormat() Comments</p>
+                 <p class="c-card_footer-item">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-view", "c-card_footer-icon u-fill-theme-10"));} @Model.Views.KiloFormat() Views</p>
+            </div>
+        </div>
+    </div>
+
+    @*
     <div class="topicrow topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
         <b>Created by <a href="@Model.Topic.User.NiceUrl">@Model.Topic.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</b>
         <div class="rowcreater hidden-xs">
@@ -16,11 +58,6 @@
                 @if (!string.IsNullOrEmpty(Model.Topic.User.Avatar))
                 {
                     <img src="@Model.Topic.User.MemberImage(ForumConfiguration.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
-                }
-                else
-                {
-                    @* TODO [FED]: The initials of the user (valiue in img tag alt) should be displayed if no image *@
-                    @Html.DisplayFor(x => Model.Topic.User.Initials)
                 }
             </a>
             @if (Model.MemberIsOnline)
@@ -75,11 +112,6 @@
                     {
                         <img src="@Model.Topic.LastPost.User.MemberImage(ForumConfiguration.Instance.GravatarLatestBySize)" alt="@Model.Topic.LastPost.User.UserName">
                     }
-                    else
-                    {
-                        @* TODO [FED]: The initials of the user (valiue in img tag alt) should be displayed if no image *@
-                        @Html.DisplayFor(x => Model.Topic.LastPost.User.Initials)
-                    }
                 </a> 
                 <a href="@Html.Raw(Model.LastPostPermaLink)">
                     @Html.LanguageString("Topic.LatestBy")
@@ -99,5 +131,5 @@
             </p>
 
         </div>
-    </div>
+    </div>*@
 }

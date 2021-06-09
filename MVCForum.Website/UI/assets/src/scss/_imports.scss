@@ -6,7 +6,6 @@
 @import 'placeholders/placeholders';
 @import 'typography/typography';
 @import 'layout/layout';
-// @import 'objects/objects';
 
 // Site furniture BEM modules
 @import 'modules/grid-block/grid-block';
@@ -21,7 +20,7 @@
 // @import 'modules/breadcrumb/breadcrumb';
 // @import 'modules/section/section';
 // @import 'modules/site-search/site-search';
-// @import 'modules/card/card';
+@import 'modules/card/card';
 // @import 'modules/forms/forms';
 // @import 'modules/date/date';
 // @import 'modules/table/table';

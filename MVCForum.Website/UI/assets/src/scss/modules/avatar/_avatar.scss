@@ -1,8 +1,13 @@
 .c-avatar {
     position: relative;
     padding-bottom: 100%;
+    font-size: $nhsuk-spacing-point-9;
 
-    &-fallback {
+    &--small {
+        font-size: $base-font-size;
+    }
+
+    &_fallback {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -11,17 +16,17 @@
         z-index: 1;
     }
 
-    &-initials {
+    &_initials {
         color: $white;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        font-size: 78px;
+        font-size: inherit;
         height: 100%;
     }
 
-    &-image {
+    &_image {
         position: absolute;
         width: 100%;
         height: 100%;

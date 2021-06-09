@@ -35,97 +35,106 @@
 }
 @section side
 {
-	@Html.Partial("_CommonSideNav")
+
+	@if (Model.Tab == Constants.GroupForumTab)
+	{
+		<h3>TODO: New discussion button needs to go here</h3>
+
+		@* if (User.Identity.IsAuthenticated)
+		{
+			@Html.Action("CreateTopicButton", "Topic", new{groupId = Model.GroupId})
+		} *@
+
+	} 
+	else 
+	{ 
+		@Html.Partial("_CommonSideNav")
+	}
 }
 
 @Html.Action("GetGroupBreadcrumb", "Group", new { Group = Model.Group })
 
-<div class="Group">
-
-	<div class="mainheading clearfix">
-
-		@*
-		<div class="widgetright">
-			@if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
-			{
-				<a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Group.Id" data-type="Group">
-					@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon c-ui-icon--large"));}
-					@Html.LanguageString("Notification.Subscribe")
-				</a>
-				<a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Group.Id" data-type="Group">
-					@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon c-ui-icon--large"));}
-					@Html.LanguageString("Notification.UnSubscribe")
-				</a>
-			}
-		</div>
-		*@
 
 
-		@if (Model.Tab == null)
-		{
-
-			if (Model.GroupUserStatus == GroupUserStatus.NotJoined)
-			{
-				<a @Html.Raw(subScribe) href="@Url.Action("Join", "Group", new {slug = @Model.Group.Slug})" class="c-button">
-					@Html.LanguageString("Groups.Join")
-				</a>
-			}
-			if (Model.GroupUserStatus == GroupUserStatus.Joined)
-			{
-				<a @Html.Raw(subScribe) href="@Url.Action("Leave", "Group", new {slug = @Model.Group.Slug})" class="c-button c-button--secondary">
-					@Html.LanguageString("Groups.Leave")
-				</a>
-			}
-	
-			if (Model.GroupUserStatus == GroupUserStatus.Pending)
-			{
-				<a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
-					@Html.LanguageString("Pending Approval")
-				</a>
-			}
-			if (Model.GroupUserStatus == GroupUserStatus.Locked)
-			{
-				<a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
-					@Html.LanguageString("Locked Out")
-				</a>
-			}
-			if (Model.GroupUserStatus == GroupUserStatus.Banned)
-			{
-				<a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
-					@Html.LanguageString("Banned")
-				</a>
-			}
-
-			<hr class="c-section-break c-section-break--small"/>
-			<h3>Hello, <br><br> The FutureNHS team has invited you to this testing workspace for unreleased features of the FutureNHS Platform.</h3>
-			<p>As a tester, you'll receive invitations to take part in user testing of new features before they are rolled out to the wider user base. Note: Not everything we beta test will make it to the final version of the product and testing slots will be limited so you may not get to test everything you volunteer for.</p>
-			<p>Thank you in advance for helping us make the FutureNHS platform better!</p>
-			<hr class="c-section-break"/>
-		}
-	</div>
-
-
-	@if (Model.SubGroups != null)
+@*
+<div class="widgetright">
+	@if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
 	{
-		Html.RenderPartial("_SubGroups", new SubGroupViewModel
-		{
-			AllPermissionSets = Model.SubGroups.AllPermissionSets,
-			ParentGroup = Model.Group
-		});
+		<a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Group.Id" data-type="Group">
+			@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon c-ui-icon--large"));}
+			@Html.LanguageString("Notification.Subscribe")
+		</a>
+		<a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Group.Id" data-type="Group">
+			@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon c-ui-icon--large"));}
+			@Html.LanguageString("Notification.UnSubscribe")
+		</a>
 	}
-
-	@if (Model.Tab == Constants.GroupForumTab)
-	{
-		@Html.Action("GetGroupForum", new { groupId = Model.Group.Id })
-
-	}
-	@if (Model.Tab == Constants.GroupMembersTab)
-	{
-		@Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
-
-	}
-
-
-	
-
 </div>
+*@
+
+
+@if (Model.Tab == null)
+{
+
+	if (Model.GroupUserStatus == GroupUserStatus.NotJoined)
+	{
+		<a @Html.Raw(subScribe) href="@Url.Action("Join", "Group", new {slug = @Model.Group.Slug})" class="c-button">
+			@Html.LanguageString("Groups.Join")
+		</a>
+	}
+	if (Model.GroupUserStatus == GroupUserStatus.Joined)
+	{
+		<a @Html.Raw(subScribe) href="@Url.Action("Leave", "Group", new {slug = @Model.Group.Slug})" class="c-button c-button--secondary">
+			@Html.LanguageString("Groups.Leave")
+		</a>
+	}
+
+	if (Model.GroupUserStatus == GroupUserStatus.Pending)
+	{
+		<a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
+			@Html.LanguageString("Pending Approval")
+		</a>
+	}
+	if (Model.GroupUserStatus == GroupUserStatus.Locked)
+	{
+		<a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
+			@Html.LanguageString("Locked Out")
+		</a>
+	}
+	if (Model.GroupUserStatus == GroupUserStatus.Banned)
+	{
+		<a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
+			@Html.LanguageString("Banned")
+		</a>
+	}
+
+	<hr class="c-section-break c-section-break--small"/>
+	<h3>Hello, <br><br> The FutureNHS team has invited you to this testing workspace for unreleased features of the FutureNHS Platform.</h3>
+	<p>As a tester, you'll receive invitations to take part in user testing of new features before they are rolled out to the wider user base. Note: Not everything we beta test will make it to the final version of the product and testing slots will be limited so you may not get to test everything you volunteer for.</p>
+	<p>Thank you in advance for helping us make the FutureNHS platform better!</p>
+	<hr class="c-section-break"/>
+}
+
+
+@if (Model.SubGroups != null)
+{
+Html.RenderPartial("_SubGroups", new SubGroupViewModel
+{
+	AllPermissionSets = Model.SubGroups.AllPermissionSets,
+	ParentGroup = Model.Group
+});
+}
+
+@if (Model.Tab == Constants.GroupForumTab)
+{
+@Html.Action("GetGroupForum", new { groupId = Model.Group.Id })
+
+}
+@if (Model.Tab == Constants.GroupMembersTab)
+{
+@Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
+
+}
+
+
+	

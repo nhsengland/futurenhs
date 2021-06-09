@@ -6,23 +6,23 @@ h5,
 h6 {
     color: $t-heading-one;
     fill: $t-heading-one;
-    margin: 0 0 $base-font-margin-bottom;
+    margin: 0 0 $nhsuk-spacing-point-3;
     font-weight: $nhsuk-font-bold;
 
     @include respond-to(desktop) {
-        margin: 0 0 $base-font-margin-bottom-desktop;
+        margin: 0 0 $nhsuk-spacing-point-4;
     }
 }
 
 h1 {
     line-height: $h1-line-height-mobile;
     font-size: $h1-font-size-mobile;
-    margin-bottom: $h1-margin-bottom-mobile;
+    margin-bottom: $nhsuk-spacing-point-6;
 
     @include respond-to(desktop) {
         line-height: $h1-line-height-desktop;
         font-size: $h1-font-size-desktop;
-        margin-bottom: $h1-margin-bottom-desktop;
+        margin-bottom: $nhsuk-spacing-point-7;
     }
 }
 
