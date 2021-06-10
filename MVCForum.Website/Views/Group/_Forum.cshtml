@@ -6,7 +6,6 @@
 <div>
 	<h2>@Html.LanguageString("Group.Forum")</h2>
 
-
 	@if ((Model.LoggedInUserRole == null && !Model.PublicGroup) || (Model.GroupUserStatus != GroupUserStatus.Joined && Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName != Constants.AdminRoleName && !Model.PublicGroup))
 	{
 		<p>@Html.LanguageString("Group.PermissionDenied")</p>
@@ -20,15 +19,30 @@
 		}
 
 		if (Model.TotalCount > 0)
-		{
-			foreach (var topic in Model.Topics)
-			{
-				Html.RenderPartial("_Topic", topic);
-			}
+		{   
+
+            <div id="topicsList">
+                @foreach (var topic in Model.Topics)
+                {   
+                    Html.RenderPartial("_Topic", topic);
+                }
+            </div>
 
 			if (Model.TotalPages > 1)
 			{
-				@Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, Model.TopicCount, null)
+                <button 
+                    data-target-id="topicsList"
+                    data-request-id="@Model.GroupId"
+                    data-endpoint-type="getLatestTopics"
+                    data-maxim-requests="@Model.TotalPages"
+                    data-request-index="@Model.PageIndex.Value"
+                    class="c-button c-button--secondary js-loadmore u-hidden">
+                        Load more
+                </button>
+
+                <noscript>
+				    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, Convert.ToInt32(Model.TotalCount), null)
+                </noscript>
 			}
 
 		}

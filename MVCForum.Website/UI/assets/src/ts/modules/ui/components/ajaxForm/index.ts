@@ -28,10 +28,10 @@ export class AjaxForm extends UIComponentBase {
 
             if (isValid) {
 
-                const { setFetchJSONOptions, fetchJSON } = dependencies.fetchHelpers;
-                const fetchOptions: FetchOptions = setFetchJSONOptions('POST', {}, '', $(this).serialize());
+                const { setFetchOptions, fetchData } = dependencies.fetchHelpers;
+                const fetchOptions: FetchOptions = setFetchOptions('POST', {}, '', $(this).serialize());
 
-                fetchJSON(this.apiUrl, fetchOptions, 60000)
+                fetchData(this.apiUrl, fetchOptions, 60000)
                     .then((data: any) => this.emit('success', data))
                     .catch((error: any) => this.emit('error', `Error: ${error}`));
 

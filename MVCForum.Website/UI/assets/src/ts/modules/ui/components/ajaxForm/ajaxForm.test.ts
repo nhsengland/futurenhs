@@ -8,8 +8,8 @@ beforeEach(() => {
     (jQuery.fn as any).valid = jest.fn(() => true);
 
     fetchHelpersMock = {
-        setFetchJSONOptions: jest.fn(),
-        fetchJSON: jest.fn(() => Promise.resolve({})),
+        setFetchOptions: jest.fn(),
+        fetchData: jest.fn(() => Promise.resolve({})),
         fetchWithTimeOut: jest.fn(),
         getErrorMessageString: jest.fn(() => 'Error')    
     }
@@ -54,8 +54,8 @@ describe('Ajax form', () => {
 
         submitButton.click();
 
-        expect(fetchHelpersMock.setFetchJSONOptions).toHaveBeenCalledTimes(1);
-        expect(fetchHelpersMock.fetchJSON).toHaveBeenCalledTimes(1);
+        expect(fetchHelpersMock.setFetchOptions).toHaveBeenCalledTimes(1);
+        expect(fetchHelpersMock.fetchData).toHaveBeenCalledTimes(1);
 
     });
 
@@ -89,7 +89,7 @@ describe('Ajax form', () => {
         const selector: HTMLFormElement = document.querySelector('.js-ajax-form');
         const submitButton: HTMLElement = document.querySelector('button');
 
-        fetchHelpersMock.fetchJSON = jest.fn(() => Promise.reject({}));
+        fetchHelpersMock.fetchData = jest.fn(() => Promise.reject({}));
 
         const ajaxForm: AjaxForm = new AjaxForm({
             wrapperSelector: selector
@@ -124,8 +124,8 @@ describe('Ajax form', () => {
 
         submitButton.click();
 
-        expect(fetchHelpersMock.setFetchJSONOptions).toHaveBeenCalledTimes(0);
-        expect(fetchHelpersMock.fetchJSON).toHaveBeenCalledTimes(0);
+        expect(fetchHelpersMock.setFetchOptions).toHaveBeenCalledTimes(0);
+        expect(fetchHelpersMock.fetchData).toHaveBeenCalledTimes(0);
 
     });
 

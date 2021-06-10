@@ -1,0 +1,11 @@
+﻿@using MvcForum.Core.Models.Enums
+@model List<MvcForum.Web.ViewModels.Topic.TopicViewModel>
+@{
+
+}
+<div>
+	@foreach (var topic in Model)
+	{
+		Html.RenderPartial("_Topic", topic);
+	}
+</div>

@@ -40,13 +40,13 @@ describe('Fetch helpers', () => {
         fetchAny.resetMocks();
     });
 
-    // fetchJSON
+    // fetchData
     it('Should return the correct data from a mocked api response', () => {
 
         const mockData: any = { data: '12345' }
         fetchAny.mockResponseOnce(JSON.stringify( mockData ));
 
-        fetchHelpers.fetchJSON('https://fake.com', {
+        fetchHelpers.fetchData('https://fake.com', {
             method: 'GET',
             credentials: 'omit',
             headers: new Headers()
@@ -60,12 +60,12 @@ describe('Fetch helpers', () => {
         fetchAny.resetMocks();
     });
 
-    // fetchJSON with error
+    // fetchData with error
     it('Should return an error from a mocked api response', () => {
 
         fetchAny.mockReject(new Error('Mock Error'));
 
-        fetchHelpers.fetchJSON('https://fake.com', {
+        fetchHelpers.fetchData('https://fake.com', {
             method: 'GET',
             credentials: 'omit',
             headers: new Headers()

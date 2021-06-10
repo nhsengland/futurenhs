@@ -343,9 +343,6 @@ namespace MvcForum.Web.Controllers
                 }
             }
 
-
-
-
             var topicViewModel = new GroupTopicsViewModel
             {
                 Topics = topicViewModels,
@@ -366,6 +363,46 @@ namespace MvcForum.Web.Controllers
             }
 
             return PartialView("_Forum", topicViewModel);
+        }
+
+        
+        public virtual PartialViewResult LoadMoreTopics(Guid groupId, int? p)
+        {
+            var group = _groupService.Get(groupId);
+            var loggedOnUsersRole = GetGroupMembershipRole(groupId);
+
+            // Allowed Groups for this user
+            var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
+
+            // Set the page index
+            var pageIndex = p ?? 1;
+
+            // check the user has permission to this Group
+            var permissions = RoleService.GetPermissions(group, loggedOnUsersRole);
+            var topicViewModels = new List<TopicViewModel>();
+
+            if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
+            {
+
+
+                if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName || group.PublicGroup)
+                {
+                    var topics = _topicService.GetPagedTopicsByGroup(pageIndex,
+                        SettingsService.GetSettings().TopicsPerPage,
+                        int.MaxValue, @group.Id);
+
+                    if (!allowedGroups.Contains(group))
+                    {
+                        allowedGroups.Add(group);
+                    }
+
+                    topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,
+                        loggedOnUsersRole, LoggedOnReadOnlyUser, allowedGroups, SettingsService.GetSettings(),
+                        _postService, _notificationService, _pollAnswerService, _voteService, _favouriteService);
+                }
+            }
+
+            return PartialView("_Topics", topicViewModels);
         }
 
         public virtual async Task<ActionResult> Show(string slug, int? p, string tab = null)

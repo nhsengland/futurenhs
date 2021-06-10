@@ -5,8 +5,8 @@ let fetchHelpersMock = undefined;
 beforeEach(() => {
 
     fetchHelpersMock = {
-        setFetchJSONOptions: jest.fn(),
-        fetchJSON: jest.fn(() => Promise.resolve({})),
+        setFetchOptions: jest.fn(),
+        fetchData: jest.fn(() => Promise.resolve({})),
         fetchWithTimeOut: jest.fn(),
         getErrorMessageString: jest.fn(() => 'Error')    
     }
@@ -48,8 +48,8 @@ describe('Language switcher', () => {
 
         setTimeout(() => {
 
-            expect(fetchHelpersMock.setFetchJSONOptions).toHaveBeenCalledTimes(1);
-            expect(fetchHelpersMock.fetchJSON).toHaveBeenCalledTimes(1);
+            expect(fetchHelpersMock.setFetchOptions).toHaveBeenCalledTimes(1);
+            expect(fetchHelpersMock.fetchData).toHaveBeenCalledTimes(1);
 
         }, 1);
 
@@ -82,7 +82,7 @@ describe('Language switcher', () => {
         const handleError: Function = jest.fn();
         const selector: HTMLSelectElement = document.querySelector('.js-language-switcher');
         
-        fetchHelpersMock.fetchJSON = jest.fn(() => Promise.reject({}));
+        fetchHelpersMock.fetchData = jest.fn(() => Promise.reject({}));
 
         const languageSwitcher: LanguageSwitcher = new LanguageSwitcher({
             wrapperSelector: selector

@@ -3,11 +3,11 @@ import { FetchOptions } from '@appTypes/fetch';
 /**
  * Returns a default options object to use for JSON fetch requests
  */
-export const setFetchJSONOptions = (method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', customHeaders: any = {}, etag?: string, body?: any): FetchOptions => {
+export const setFetchOptions = (method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', customHeaders: any = {}, etag?: string, body?: any, contentType?: string): FetchOptions => {
 
     const headers: Headers = new Headers(Object.assign({}, {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': contentType ?? 'application/json',
         'If-Match': etag ?? '*'
     }, customHeaders));
 
@@ -58,35 +58,38 @@ export const fetchWithTimeOut = (url: string, options: FetchOptions, timeOut: nu
 /**
  * Custom wrapper for Fetch to abstract error handling and JSON parsing
  */
-export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): Promise<any> => {
+export const fetchData = (url: string, options: FetchOptions, timeOut: number): Promise<any> => {
 
     return fetchWithTimeOut(url, options, timeOut)
         .then((response: any) => {
 
             /**
-             * Parse as JSON and return
+             * Parse and return
              */
-            return response?.text().then((text) => {
+            return response?.text().then((text: string) => {
+                
+                if(!text.trim()){
+                    return null;
+                }
 
-                if (text) {
+                if(options.contentType === 'text/html') {
+                    return text;
+                }
 
-                    let parsedResponse: string = '';
+                let parsedResponse: string = '';
 
-                    try {
+                try {
 
-                        parsedResponse = JSON.parse(text);
+                    parsedResponse = JSON.parse(text);
 
-                    } catch (error) {
+                } catch (error) {
 
-                        parsedResponse = null;
-
-                    }
-
-                    return parsedResponse;
+                    parsedResponse = null;
 
                 }
 
-                return null;
+                return parsedResponse;
+
 
             });
 
@@ -113,8 +116,8 @@ export const getErrorMessageString = (error: Error): string => {
 
 
 export default { 
-    fetchJSON,
+    fetchData,
     fetchWithTimeOut,
-    setFetchJSONOptions, 
+    setFetchOptions, 
     getErrorMessageString
 };

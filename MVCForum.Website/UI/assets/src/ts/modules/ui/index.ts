@@ -1,4 +1,5 @@
 import { ping } from '@utilities/routing';
+import * as fetchHelpers from '@utilities/fetch';
 import { TagsInputAPIInterface } from '@modules/ui/components/tagsInput';
 
 export const uiComponentsInit = (config: {
@@ -246,6 +247,48 @@ export const uiComponentsInit = (config: {
         });
 
     }
+
+
+    /**
+    * load more buttons
+    */
+     const loadMoreButtons: Array<Element> = Array.from(document.getElementsByClassName('js-loadmore'));
+
+     if (loadMoreButtons?.length > 0) {
+ 
+         import('@modules/ui/components/loadMoreButton').then(({ LoadMoreButton }) => {
+
+            loadMoreButtons.forEach((loadMoreButton: HTMLButtonElement) => {
+
+                const requestId = loadMoreButton.getAttribute('data-request-id');
+                const appendTargetId: string = loadMoreButton.getAttribute('data-target-id');
+                const endpointType: string = loadMoreButton.getAttribute('data-endpoint-type');
+                const appendTargetElement: HTMLElement = document.getElementById(appendTargetId);
+                const maximRequests = parseInt(loadMoreButton.getAttribute('data-maxim-requests'));
+                let requestIndex = parseInt(loadMoreButton.getAttribute('data-request-index')) + 1;
+
+                const endpoints = {
+                    'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
+                    'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
+                };
+
+                const fetchUrl = endpoints[endpointType];
+
+                 new LoadMoreButton({
+                    fetchUrl: fetchUrl,
+                    requestIndex: requestIndex,
+                    maximRequests: maximRequests,
+                    wrapperSelector: loadMoreButton,
+                    appendTargetElement: appendTargetElement
+                 }, {
+                     fetchHelpers: fetchHelpers 
+                 });
+ 
+             });
+ 
+         });
+ 
+     }
 
 
 

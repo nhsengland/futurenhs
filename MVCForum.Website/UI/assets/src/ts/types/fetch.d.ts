@@ -6,4 +6,5 @@ export interface FetchOptions {
     headers: Headers;
     mode?: 'cors' | 'no-cors' | 'same-origin';
     body?: string;
+    contentType?: string;
 }

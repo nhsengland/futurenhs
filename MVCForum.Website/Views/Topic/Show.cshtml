@@ -5,6 +5,7 @@
 @using MvcForum.Web.ViewModels.Post
 @model MvcForum.Web.ViewModels.Topic.TopicViewModel
 @using MvcForum.Web.ViewModels.Shared
+@using MvcForum.Web.ViewModels.Topic
 @{
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
@@ -141,22 +142,35 @@
         }
     </div>
 
-    @foreach (var post in Model.Posts)
-    {
-        Html.RenderPartial("_Post", post);
-    }
+    <div id="commentsList">
+        @foreach (var post in Model.Posts)
+        {
 
+            Html.RenderPartial("_Post", post);
+        }
+     </div>
+    
+    <div id="newpostmarker"></div>
+      
     @if (Model.TotalPages > 1)
     {
-        <a href="#" class="showmoreposts btn-mvc btn-mvc-large btn-mvc-fullwidth">
-            <span class="smpactive">@Html.LanguageString("Topic.ShowMorePosts")</span>
-            <span class="smploading" style="display: none;">@Html.LanguageString("Topic.ShowMorePostsLoading")</span>
-        </a>
+        <button 
+            data-target-id="commentsList"
+            data-request-id="@Model.Topic.Id"
+            data-endpoint-type="getPostComments"
+            data-maxim-requests="@Model.TotalPages"
+            data-request-index="@Model.PageIndex.Value"
+            class="c-button c-button--secondary js-loadmore u-hidden">
+                Load more
+        </button>
+
+        <noscript>
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, Convert.ToInt32(Model.TotalCount), null)
+        </noscript>
     }
 
     @if (!Model.Topic.IsLocked)
     {
-        <span id="newpostmarker"></span>
 
         if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Group.IsLocked)
         {
@@ -169,12 +183,6 @@
         <p class="topiclockedmessage">@Html.LanguageString("Topic.IsLocked")</p>
     }
 
-    @*
-        @if (Model.Posts.TotalPages > 1)
-        {
-            @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, totalCount, null)
-        }
-    *@
 
     <input type="hidden" id="pageIndex" value="@(Model.PageIndex + 1)" />
     <input type="hidden" id="topicId" value="@Model.Topic.Id" />
