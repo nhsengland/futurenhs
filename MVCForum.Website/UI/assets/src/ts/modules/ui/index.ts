@@ -21,16 +21,16 @@ export const uiComponentsInit = (config: {
      */
     const siteHeaderNavElement: HTMLElement = document.querySelector('.js-site-header-nav');
 
-    if(siteHeaderNavElement){
- 
+    if (siteHeaderNavElement) {
+
         import('@modules/ui/components/siteHeaderNav').then(({ SiteHeaderNav }) => {
- 
+
             new SiteHeaderNav({
                 wrapperSelector: siteHeaderNavElement
             });
- 
+
         });
- 
+
     }
 
     /**
@@ -204,7 +204,7 @@ export const uiComponentsInit = (config: {
     const createTopicHolders: Array<Element> = Array.from(document.getElementsByClassName('createtopicholder'));
     const editPostHolders: Array<Element> = Array.from(document.getElementsByClassName('editpostholder'));
 
-    const createAndEditHolders:  Array<Element> =  [...createTopicHolders, ...editPostHolders];
+    const createAndEditHolders: Array<Element> = [...createTopicHolders, ...editPostHolders];
 
     if (createAndEditHolders?.length > 0) {
 
@@ -218,6 +218,27 @@ export const uiComponentsInit = (config: {
                     components: {
                         toast: toast
                     }
+                });
+
+            });
+
+        });
+
+    }
+
+    /**
+    * Dialog 
+    */
+    const dialogTriggers: Array<Element> = Array.from(document.getElementsByClassName('js-dialog'));
+
+    if (dialogTriggers?.length > 0) {
+
+        import('@modules/ui/components/dialog').then(({ Dialog }) => {
+
+            dialogTriggers.forEach((dialogTrigger: HTMLElement) => {
+
+                new Dialog({
+                    wrapperSelector: dialogTrigger
                 });
 
             });

@@ -56,6 +56,34 @@ else
     }
 
     <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
-        @Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members", new { @class = "c-button c-button--outline c-site-header-nav_sub-nav-child" })
+        @Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members", new { @class = "c-button c-button--outline c-site-header-nav_sub-nav-child js-dialog", data_dialog_id="dialog-logout" })
+        
+        <dialog id="dialog-logout" class="c-dialog">
+
+            <div class="c-dialog_content">
+
+                <h3>Log out</h3>
+
+                <p class="u-text-bold">
+                    Are you sure you would like to log out?
+                </p>
+                
+                <div>
+                    <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+                        Cancel
+                    </button>
+                </div>
+
+                <div>
+                    <button class="js-dialog-confirm c-button c-button--full-width">
+                        Yes, Log Out
+                    </button>
+                </div>
+
+            </div>
+        
+        </dialog>
+        
     </li>
+   
 }

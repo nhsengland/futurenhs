@@ -6,6 +6,7 @@ const isFetchSupported = (): boolean => Boolean(window.fetch);
 const isPromiseSupported = (): boolean => Boolean(window.Promise);
 const isSymbolSupported = (): boolean => Boolean(window.Symbol);
 const isDetailsElementSupported = (): boolean => 'open' in document.createElement('details');
+const isDialogElementSupported = (): boolean => 'showModal' in document.createElement('dialog');
 
 /**
  * Check whether polyfills are required for current browser
@@ -14,7 +15,7 @@ const isDetailsElementSupported = (): boolean => 'open' in document.createElemen
  * Slightly older browsers may need to load the polyfills file but only require some of the contents, but this is the trade-off for being
  * able to keep the feature check very simple
  */
-const shouldLoadPolyFills = !isFetchSupported() || !isPromiseSupported() || !isSymbolSupported() || !isDetailsElementSupported();
+const shouldLoadPolyFills = !isFetchSupported() || !isPromiseSupported() || !isSymbolSupported() || !isDetailsElementSupported() || !isDialogElementSupported();
 
 /**
  * Load polyfills
