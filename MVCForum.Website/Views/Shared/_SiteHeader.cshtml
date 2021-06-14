@@ -37,7 +37,7 @@
                     </form>
                     <nav id="header-nav" class="c-site-header-nav_nav" aria-label="Navigation">
                         <ul class="c-site-header-nav_root-nav c-site-header-nav_root-nav--mobile-full-height" role="menubar">
-                            
+
                             @if (!User.Identity.IsAuthenticated)
                             {
                                 <li role="none">
@@ -50,7 +50,7 @@
                                         <a role="menuitem" class="c-button c-site-header-nav_header-button c-site-header-nav_header-button--outline" href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a>
                                     </li>
                                 }
-                            }                        
+                            }
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <li role="none">
@@ -82,81 +82,78 @@
                                         </div>
                                     </details>
                                 </li>
-                                
+
                             }
                             <li role="none" class="u-desktop-hidden">
                                 <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger u-border-theme-8">
-                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-home", "c-site-header-nav_root-nav-content-icon u-fill-theme-8"));} 
+                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-home", "c-site-header-nav_root-nav-content-icon u-fill-theme-8"));}
                                     Home
                                 </a>
                             </li>
-                            <li role="none" class="u-desktop-hidden">
-                                <details class="c-site-header-nav_root-nav-item">
-                                    <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger u-border-theme-11" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
-                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-group", "c-site-header-nav_root-nav-content-icon u-fill-theme-11"));} 
-                                        Groups
-                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg u-fill-theme-11"));} 
-                                    </summary>
-                                    <div class="c-site-header-nav_sub-nav">
-                                        <div class="c-site-header-nav_sub-nav-content">
-                                            <div class="l-row">
-                                                <ul class="u-list-plain" role="menu" aria-label="Your bill">
-                                                    <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
-                                                        <a role="menuitem" href="/" class="c-site-header-nav_sub-nav-child">
-                                                            Group home
-                                                        </a>
-                                                    </li>
-                                                    <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
-                                                        <a role="menuitem" href="@Url.Action("Activity", "Home")" class="c-site-header-nav_sub-nav-child">
-                                                             Group forum
-                                                        </a>
-                                                    </li>
-                                                    <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
-                                                        <a role="menuitem" href="" class="c-site-header-nav_sub-nav-child">
-                                                             Members
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                            @if (Model.PageHeader != null)
+                            {
+                                <li role="none" class="u-desktop-hidden">
+                                    <details class="c-site-header-nav_root-nav-item">
+                                        <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger u-border-theme-11" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
+                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-group", "c-site-header-nav_root-nav-content-icon u-fill-theme-11"));}
+                                            Groups
+                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg u-fill-theme-11"));}
+                                        </summary>
+                                        <div class="c-site-header-nav_sub-nav">
+                                            <div class="c-site-header-nav_sub-nav-content">
+                                                <div class="l-row">
+                                                    <ul class="u-list-plain" role="menu" aria-label="Your bill">
+                                                        @foreach (var tab in Model.PageHeader.HeaderTabs.Tabs.OrderBy(x => x.Order))
+                                                        {
+                                                            <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+                                                                @* FED : TODO - add modifier class on next line to set link as active *@
+                                                                <a class="c-site-header-nav_sub-nav-child @(tab.Active ? "link-active" : String.Empty)" href="@tab.Url" @(tab.Active ? "aria-current=page" : null) role="menuitem">
+                                                                        @Html.LanguageString(@tab.Name)
+                                                                </a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </details>
-                            </li>
-                             <li role="none" class="u-desktop-hidden">
-                                <details class="c-site-header-nav_root-nav-item">
-                                    <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger u-border-theme-10" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
-                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum", "c-site-header-nav_root-nav-content-icon u-fill-theme-10"));} 
-                                        Forums
-                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg u-fill-theme-10"));} 
-                                    </summary>
-                                    <div class="c-site-header-nav_sub-nav">
-                                        <div class="c-site-header-nav_sub-nav-content">
-                                            <div class="l-row">
-                                                <ul class="u-list-plain" role="menu" aria-label="">
-                                                    <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
-                                                        <a role="menuitem" href="/" class="c-site-header-nav_sub-nav-child">
-                                                            
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                    </details>
+                                </li>
+                                                }
+                                <li role="none" class="u-desktop-hidden">
+                                    <details class="c-site-header-nav_root-nav-item">
+                                        <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger u-border-theme-10" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
+                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum", "c-site-header-nav_root-nav-content-icon u-fill-theme-10"));}
+                                            Forums
+                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg u-fill-theme-10"));}
+                                        </summary>
+                                        <div class="c-site-header-nav_sub-nav">
+                                            <div class="c-site-header-nav_sub-nav-content">
+                                                <div class="l-row">
+                                                    <ul class="u-list-plain" role="menu" aria-label="">
+                                                        <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+                                                            <a role="menuitem" href="/" class="c-site-header-nav_sub-nav-child">
+
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </details>
-                            </li>
-                            <li role="none" class="u-desktop-hidden">
-                                <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger u-border-theme-9">
-                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-site-header-nav_root-nav-content-icon u-fill-theme-9"));} 
-                                    Favourites
-                                </a>
-                            </li>
-                             <li role="none" class="u-desktop-hidden">
-                                <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger u-border-theme-12">
-                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-notification", "c-site-header-nav_root-nav-content-icon u-fill-theme-12"));} 
-                                    Notifications
-                                </a>
-                            </li>
-                        </ul>
+                                    </details>
+                                </li>
+                                <li role="none" class="u-desktop-hidden">
+                                    <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger u-border-theme-9">
+                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-site-header-nav_root-nav-content-icon u-fill-theme-9"));}
+                                        Favourites
+                                    </a>
+                                </li>
+                                <li role="none" class="u-desktop-hidden">
+                                    <a role="menuitem" href="/" class="c-site-header-nav_root-nav-trigger u-border-theme-12">
+                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-notification", "c-site-header-nav_root-nav-content-icon u-fill-theme-12"));}
+                                        Notifications
+                                    </a>
+                                </li>
+                            </ul>
                     </nav>
                 </div>
             </details>

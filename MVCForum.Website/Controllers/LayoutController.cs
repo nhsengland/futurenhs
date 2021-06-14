@@ -27,11 +27,12 @@
         /// Renders the site header partial view.
         /// </summary>
         /// <returns>Partial view for the site header.</returns>
-        public ActionResult SiteHeader()
+        public ActionResult SiteHeader(PageViewModel pageHeader=null)
         {
             SiteHeaderViewModel model = new SiteHeaderViewModel()
             {
-                CurrentUser = _membershipService.GetUser(User.Identity.Name)
+                CurrentUser = _membershipService.GetUser(User.Identity.Name),
+                PageHeader = pageHeader
             };
 
             return PartialView("_SiteHeader", model);

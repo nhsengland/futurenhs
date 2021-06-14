@@ -12,5 +12,7 @@
         /// </summary>
         public MembershipUser CurrentUser { get; set; }
 
+        public PageViewModel PageHeader { get; set; }
+
     }
 }
