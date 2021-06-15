@@ -1,47 +1,5 @@
 ﻿@using MvcForum.Web.ViewModels.Shared
-
-
-
-
-<div class="c-grid-block">
-
-    <div class="c-grid-block_item c-grid-block_item--row l-col-12 l-col-6-lm l-col-12-d">
-
-        <div class="c-card c-card--img-left u-border-theme-8">
-            <div class="c-card_img-container"><img class="c-card_img" role="presentation"
-                    src="https://picsum.photos/350/200" alt=""></div>
-            <div class="c-card_content">
-                <h2 class="c-card_heading c-card_heading--small">
-                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum-fill", "c-card_heading-icon u-fill-theme-8"));}
-                    <a class="c-card_link" href="forum">Join in the conversation</a>
-                </h2>
-                <p class="c-card_description u-text-small">Contribute to our forum and help us build a better platform
-                </p>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="c-grid-block_item c-grid-block_item--row l-col-12 l-col-6-lm l-col-12-d">
-
-        <div class="c-card c-card--img-left u-border-theme-8">
-            <div class="c-card_img-container"><img class="c-card_img" role="presentation"
-                    src="https://picsum.photos/350/200" alt=""></div>
-            <div class="c-card_content">
-                <h2 class="c-card_heading c-card_heading--small">
-                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-members-fill", "c-card_heading-icon u-fill-theme-8"));}
-                    <a class="c-card_link" href="members">Meet the members</a>
-                </h2>
-                <p class="c-card_description u-text-small">Meet your colleagues who are getting involved</p>
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-
-@* @model MvcForum.Web.ViewModels.Group.MyGroupListViewModel
+@model MvcForum.Web.ViewModels.Group.MyGroupListViewModel
 @{
 	var myAdminGroups = Model.MyGroups.Where(x => x.Role?.RoleName == "Admin").Select(x => x.Group).ToList();
 	var myGroups = Model.MyGroups.Where(x => x.Role?.RoleName != "Admin").Select(x => x.Group).ToList();
@@ -115,4 +73,4 @@
 	}
 
 
-</div> *@
+</div>
