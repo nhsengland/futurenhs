@@ -215,8 +215,8 @@ Members.SrubAndBan,Scrub Member
 Members.Status,Status
 Members.SuccessfulSrub,All done
 Members.Table.Pending,Pending members
-Members.Table.Admins,Group admins
-Members.Table.Users,Group members
+Members.Table.Admins,Group Administrators
+Members.Table.Users,Group Members
 Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions
 Members.UnBanUser,Unban User
 Members.Users,Users

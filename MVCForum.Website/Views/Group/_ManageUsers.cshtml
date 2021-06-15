@@ -62,10 +62,8 @@
                         <th>@Html.LanguageString("Members.Users")</th>
                         <th>@Html.LanguageString("Members.DateJoined")</th>
                         <th>@Html.LanguageString("Members.Profile.LastOnline")</th>
-                        <th>@Html.LanguageString("Members.Status")</th>
-                        <th>@Html.LanguageString("Members.Role")</th>
                         @if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
-                            <th>@Html.LanguageString("Members.Action")</th>
+                            <th></th>
                         }
                     </tr>
                 </thead>
@@ -73,19 +71,13 @@
                     @foreach (var groupUser in Model.GroupAdmins) {
                     <tr>
                         <td>
-                            @groupUser.GroupUser.User.GetFullName()
+                            @Html.ActionLink(groupUser.GroupUser.User.GetFullName(), "GetByName", "Members", new { slug = groupUser.GroupUser.User.Slug }, new { })
                         </td>
                         <td>
                             @DatesUi.GetPrettyDate(groupUser.GroupUser.ApprovedToJoinDate.ToString())
                         </td>
                         <td>
                             @DatesUi.GetPrettyDate(groupUser.GroupUser.User.LastActivityDate.ToString())
-                        </td>
-                        <td>
-                            @groupUser.GroupUserStatus
-                        </td>
-                        <td>
-                            @groupUser.GroupUser.Role.RoleName
                         </td>
                         @if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
                             <td>
@@ -104,10 +96,8 @@
                         <th>@Html.LanguageString("Members.Users")</th>
                         <th>@Html.LanguageString("Members.DateJoined")</th>
                         <th>@Html.LanguageString("Members.Profile.LastOnline")</th>
-                        <th>@Html.LanguageString("Members.Status")</th>
-                        <th>@Html.LanguageString("Members.Role")</th>
                         @if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
-                            <th>@Html.LanguageString("Members.Action")</th>
+                            <th></th>
                         }
 
                     </tr>
@@ -116,19 +106,13 @@
                     @foreach (var groupUser in Model.GroupUsers) {
                         <tr>
                             <td>
-                                @groupUser.GroupUser.User.GetFullName()
+                                @Html.ActionLink(groupUser.GroupUser.User.GetFullName(), "GetByName", "Members", new { slug = groupUser.GroupUser.User.Slug }, new { }) 
                             </td>
                             <td>
                                 @DatesUi.GetPrettyDate(groupUser.GroupUser.ApprovedToJoinDate.ToString())
                             </td>
                             <td>
                                 @DatesUi.GetPrettyDate(groupUser.GroupUser.User.LastActivityDate.ToString())
-                            </td>
-                            <td>
-                                @groupUser.GroupUserStatus
-                            </td>
-                            <td>
-                                @groupUser.GroupUser.Role.RoleName
                             </td>
                             @if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
                                 <td>

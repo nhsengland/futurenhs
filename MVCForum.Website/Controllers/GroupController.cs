@@ -502,9 +502,10 @@ namespace MvcForum.Web.Controllers
                 TotalPages = (int)Math.Ceiling(group.GroupUsers.Count / (double)SettingsService.GetSettings().TopicsPerPage),
                 GroupUsers = groupUsers.Where(x => x.GroupUserStatus != GroupUserStatus.Pending && 
                                                    x.GroupUserStatus != GroupUserStatus.Rejected &&
-                                                   x.GroupUser.Role.RoleName != Constants.AdminRoleName).ToList(),
+                                                   x.GroupUser.Role.RoleName != Constants.AdminRoleName).ToList()
+                                                   .OrderBy(x => x.GroupUser.User.Surname),
                 GroupUsersPending = groupUsers.Where(x => x.GroupUserStatus == GroupUserStatus.Pending).ToList(),
-                GroupAdmins = groupUsers.Where(x => x.GroupUser.Role.RoleName == Constants.AdminRoleName).ToList(),
+                GroupAdmins = groupUsers.Where(x => x.GroupUser.Role.RoleName == Constants.AdminRoleName).ToList().OrderBy(x => x.GroupUser.User.Surname),
                 PublicGroup = group.PublicGroup
             };
 
