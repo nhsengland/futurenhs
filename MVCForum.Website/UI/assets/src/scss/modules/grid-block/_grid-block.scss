@@ -1,4 +1,5 @@
 .c-grid-block {
+    $self: &;
     @include row(true);
     display: flex;
     flex-wrap: wrap;
@@ -37,6 +38,14 @@
         &--row {
             flex-direction: row;
         }
+
+    }
+
+    &--no-flex-grow {
+
+        #{$self}_item > * {
+            flex-grow: 0;
+        } 
 
     }
 

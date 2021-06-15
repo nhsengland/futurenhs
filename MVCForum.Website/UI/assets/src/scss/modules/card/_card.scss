@@ -42,6 +42,8 @@ $card-border-hover-color: $color_nhsuk-grey-3;
         flex: 1 1 auto;
         position: relative;
         padding: $nhsuk-spacing-point-4;
+        width: 100%;
+        min-width: 60%;
     }
 
     &_heading {
