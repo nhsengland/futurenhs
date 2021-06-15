@@ -46,7 +46,7 @@ steps:
 - task: gulp@0
   inputs:
     gulpFile: 'gulpfile.js'
-    targets: 'build:web'
+    targets: 'buildWeb'
     gulpjs: 'node_modules/gulp/bin/gulp.js'
     enableCodeCoverage: false
     

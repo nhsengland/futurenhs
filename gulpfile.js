@@ -1,6 +1,5 @@
 const
     fs = require("fs"),
-    sequence = require("gulp-sequence"),
     childProcess = require("child_process"),
     path = require("path"),
     gulp = require("gulp"),
@@ -31,46 +30,6 @@ const
     { AxePuppeteer } = require('@axe-core/puppeteer'),
     puppeteer = require('puppeteer');
 
-const sequenceArgs = (list) => {
-    return (done) => {
-        const doNext = () => {
-            if (list.length === 0) {
-                return Promise.resolve();
-            }
-
-            const next = list.shift();
-
-            return new Promise((resolve, reject) => {
-                const proc = childProcess.spawn('node', [
-                    './node_modules/gulp/bin/gulp.js'
-                ].concat(next), {
-                    cwd: process.cwd()
-                });
-
-                proc.stdout.on('data', (data) => {
-                    console.log(data.toString().replace(/\n$/, ''));
-                });
-
-                proc.stderr.on('data', (data) => {
-                    console.log(data.toString().replace(/\n$/, ''));
-                });
-
-                proc.on('close', (code) => {
-                    if (code !== 0) {
-                        reject(new Error('None zero error code returned'));
-                        process.exit(code);
-                        return;
-                    }
-
-                    return resolve();
-                });
-            }).then(doNext);
-        };
-
-        doNext().then(done).catch(done);
-    };
-}
-
 ////////////////////////////////////////////////////////////////////////
 // APP BUILD TASKS
 ////////////////////////////////////////////////////////////////////////
@@ -80,43 +39,19 @@ const uiAssetsDistPath = `${uiPath}/assets/dist`;
 const uiProtoTypesSrcPath = `${uiPath}/prototypes/src`;
 const uiProtoTypesDistPath = `${uiPath}/prototypes/dist`;
 
-
 // Empties set folders in /dist
-gulp.task('clean', () => {
+const clean = () => {
 
     return del([
         `${uiAssetsDistPath}/**/*`
     ]);
 
-});
+};
 
-gulp.task('nuget:restore', (done) => {
-    const proc = childProcess.spawn('./.nuget/nuget.exe', [
-        'restore',
-        '-source',
-        'https://api.nuget.org/v3/index.json'
-    ], {
-        cwd: process.cwd()
-    });
+gulp.task(clean);
 
-    proc.stdout.on('data', (data) => {
-        console.log(data.toString());
-    });
-
-    proc.stderr.on('data', (data) => {
-        console.log(data.toString());
-    });
-
-    proc.on('close', (code) => {
-        if (code !== 0) {
-            return done(new Error('Error carrying out nuget restore'));
-        }
-
-        return done();
-    });
-});
-
-gulp.task('msbuild', (done) => {
+// Build .net solution
+const msbuild = (done) => {
 
     process.env.PATH = `${process.env.PATH};C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin`;
 
@@ -148,22 +83,23 @@ gulp.task('msbuild', (done) => {
 
         return done();
     });
-});
+};
 
-gulp.task('build', sequence(
-    //'nuget:restore', // TODO: Error - The request was aborted: Could not create SSL/TLS secure channel
-    'msbuild'
-));
+gulp.task(msbuild);
 
-gulp.task('build:nuget', (done) => {
-    const package = JSON.parse(fs.readFileSync('package.json'));
+// Generic back end build
+const build = (done) => {
+    
+    gulp.series(msbuild)();
+    done();
 
-    return sequenceArgs([
-        ['nuget:package', `--version=${package.version}`]
-    ])(done);
-});
+}
 
-gulp.task('start:site', (done) => {
+gulp.task(build);
+
+// Start the site
+const startSite = (done) => {
+
     process.env.PATH = `${process.env.PATH};C:\\Program Files\\IIS Express`;
 
     const proc = childProcess.spawn('node', [
@@ -193,9 +129,13 @@ gulp.task('start:site', (done) => {
 
         return done();
     });
-});
 
-gulp.task('stop:site', (done) => {
+};
+
+gulp.task(startSite);
+
+// Stop the site
+const stopSite = (done) => {
 
     const proc2 = childProcess.spawn('node', [
         './node_modules/pm2/bin/pm2',
@@ -216,38 +156,50 @@ gulp.task('stop:site', (done) => {
     proc2.on('close', (code) => {
         return done();
     });
-});
 
-gulp.task('activate', sequence(
-    //'db:build', <-- TODO how are we going to handle the DB?
-    'stop:site', // need to kill everything before build to avoid files being locked
-    'build',
-    'build:web',
-    'start:site'
-));
+};
 
-gulp.task('deactivate', sequence(
-    'stop:site',
-    //'db:remove' <-- TODO how are we going to handle the DB?
-));
+gulp.task(stopSite);
 
-gulp.task('test', sequence(
-    'test:axe',
-    'test:js',
-    'terminate'
-));
+// Activate
+const activate = (done) => {
 
-gulp.task('terminate', (done) => {
+    gulp.series(stopSite, build, buildWeb, startSite)();
+
+    done();
+
+};
+
+gulp.task(activate);
+
+// Deactivate
+const deactivate = (done) => {
+
+    gulp.series(stopSite)();
+
+    done();
+
+};
+
+gulp.task(deactivate);
+
+// End process
+const terminate = (done) => {
+
     console.log("terminating...");
+    done();
     process.exit(0);
-});
+
+};
+
+gulp.task(terminate);
 
 ////////////////////////////////////////////////////////////////////////
 // UI BUILD TASKS
 ////////////////////////////////////////////////////////////////////////
 
 // Scss/css minification & bundling
-gulp.task('scss', () => {
+const scss = (done) => {
 
     const postcssOpts = { // any options to supply to postcss plugins
         autoprefixer: {},
@@ -286,24 +238,25 @@ gulp.task('scss', () => {
         .pipe(rename({
             suffix: '.min'
         })) // and filename suffix
-        .pipe(gulp.dest(`${uiAssetsDistPath}/css/`)) // and put the compiled css files in the dist folder
-        // .pipe(browserSync.reload({ // reload any browsers displaying prototypes
-        //     stream: true
-        // }));
+        .pipe(gulp.dest(`${uiAssetsDistPath}/css/`)); // and put the compiled css files in the dist folder
 
-});
+};
+
+gulp.task(scss);
 
 // Copy fonts from src to dist folder
-gulp.task('fonts', () => {
+const fonts = () => {
 
     return gulp
         .src(`${uiAssetsSrcPath}/fonts/**/*`)
         .pipe(gulp.dest(`${uiAssetsDistPath}/fonts`));
 
-});
+};
+
+gulp.task(fonts);
 
 // JavaScript
-gulp.task('js', () => {
+const js = () => {
 
     return gulp.src([`${uiAssetsSrcPath}/ts/root/*.ts`])
         .pipe(eslint())
@@ -312,18 +265,22 @@ gulp.task('js', () => {
         .pipe(webpackStream(webpackConfig, webpack))
         .pipe(gulp.dest(`${uiAssetsDistPath}/js`));
 
-});
+};
+
+gulp.task(js);
 
 // JavaScript unit tests
-gulp.task('test:js', () => {
+const testJs = () => {
 
     return gulp.src([`${uiAssetsSrcPath}/ts/root/*`])
-        .pipe(jest(jestConfig));
+        .pipe(jest(jestConfig))
 
-});
+};
+
+gulp.task(testJs);
 
 // Service worker
-gulp.task('sw', () => {
+const sw = () => {
 
     return workbox.generateSW(
         workBoxCliConfig
@@ -337,10 +294,12 @@ gulp.task('sw', () => {
 
     });
 
-});
+};
+
+gulp.task(sw);
 
 // Html prototype template building using nunjucks: https://mozilla.github.io/nunjucks/
-gulp.task('templates', () => {
+const templates = () => {
 
     nunjucksRender.nunjucks.configure([`${uiProtoTypesSrcPath}/pages/`], {
         watch: false
@@ -355,10 +314,12 @@ gulp.task('templates', () => {
         }))
         .pipe(gulp.dest(`${uiProtoTypesDistPath}`));
 
-});
+};
+
+gulp.task(templates);
 
 // Compress image assets and copy to /dist
-gulp.task('images', () => {
+const images = () => {
 
     // all in images folder except sprite icons
     return gulp.src([`${uiAssetsSrcPath}/img/**/*`, `!${uiAssetsSrcPath}/img/svg-sprite/**/*}`])
@@ -374,15 +335,14 @@ gulp.task('images', () => {
             ],
             use: [pngquant()]
         }))
-        .pipe(gulp.dest(`${uiAssetsDistPath}/img/`))
-        // .pipe(browserSync.reload({
-        //     stream: true
-        // }));
+        .pipe(gulp.dest(`${uiAssetsDistPath}/img/`));
 
-});
+};
+
+gulp.task(images);
 
 // Generate favicon set
-gulp.task('favicon', () => {
+const favicon = () => {
 
     return gulp.src(`${uiAssetsSrcPath}/img/favicon/logo.png`)
         .pipe(favicons({
@@ -412,10 +372,12 @@ gulp.task('favicon', () => {
         }))
         .pipe(gulp.dest(`${uiAssetsDistPath}/img/favicon`));
 
-});
+};
+
+gulp.task(favicon);
 
 // Generate svg 'sprite'
-gulp.task('svgSprite', () => {
+const initSvgSprite = () => {
 
     const uiSrc = `${uiAssetsSrcPath}/img/svg-sprite/active/ui/**/*.svg`;
     const contentSrc = `${uiAssetsSrcPath}/img/svg-sprite/active/content/**/*.svg`;
@@ -499,10 +461,12 @@ gulp.task('svgSprite', () => {
 
     return merge(uiSvg, contentSvg, contentSvgLeft, contentSvgRight);
 
-});
+};
+
+gulp.task(initSvgSprite);
 
 // Start browserSync server
-gulp.task('browserSync', () => {
+const initBrowserSync = () => {
 
     browserSync({
         server: {
@@ -513,9 +477,12 @@ gulp.task('browserSync', () => {
         startPath: `${uiProtoTypesDistPath}/index.html`
     });
 
-});
+};
 
-gulp.task("test:axe", (done) => {
+gulp.task(initBrowserSync);
+
+// Front end accessibility testing
+const testAxe = (done) => {
 
     const testURLs = require('./axeReports/testURLs');
     const LOGIN_PAGE_URL = 'http://localhost:8888/members/logon/'; 
@@ -590,26 +557,29 @@ gulp.task("test:axe", (done) => {
         );
 
         if(Boolean(totalViolations)){
-            throw new Error('Accessbility issues founded');
+            throw new Error('Accessbility issues found');
         }
 
+        done();
         return reportResults;
 
     }).catch((error)=>{
 
         console.error('Error: ' + error.message);
         
-        console.error(`The accessbility testing has finished with ${totalViolations} violations`);
-
+        done(new Error(`The accessibility testing has finished with ${totalViolations} violations`));
         process.exit(-1);
 
     }).finally(()=>{
        
-        console.log(`The accessbility testing has finished with 0 violations`);
+        console.log(`The accessibility testing has finished with 0 violations`);
+        done();
 
     });
 
-});
+};
+
+gulp.task(testAxe);
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -617,30 +587,49 @@ gulp.task("test:axe", (done) => {
 ////////////////////////////////////////////////////////////////////////
 
 // Build task - runs all the web tasks
-gulp.task('build:web', sequence(
-    'clean',
-    'svgSprite',
-    'templates',
-    'fonts',
-    'images',
-    'favicon',
-    'scss',
-    'js',
-    'sw'
-));
+const buildWeb = (done) => { 
+
+    gulp.series(clean, initSvgSprite, templates, scss, js, fonts, images, favicon, sw)();
+
+    done();
+
+};
+
+gulp.task(buildWeb);
 
 // Watch task - runs all the web tasks then watches and re-runs tasks on subsequent changes - also hosts local prototyping server for prototyping
-gulp.task('watch:web', ['build:web', 'watch:basic']);
+const watchWeb = (done) => { 
+
+    gulp.series(buildWeb, watchBasic)();
+
+    done();
+
+};
+
+gulp.task(watchWeb);
 
 // Basic watch task - watches and re-runs tasks on subsequent changes
-gulp.task('watch:basic', () => {
+const watchBasic = () => {
 
     // gulp.watch(`${uiProtoTypesDistPath}/*.html`, browserSync.reload);
-    gulp.watch(`${uiAssetsSrcPath}/**/*.scss`, ['scss']);
-    gulp.watch([`${uiProtoTypesSrcPath}/pages/*.html`, `${uiProtoTypesSrcPath}/layouts/*.html`, `${uiProtoTypesSrcPath}/partials/**/*.html`], ['templates']);
-    gulp.watch([`${uiAssetsSrcPath}/ts/**/*.ts`], ['js']);
-    gulp.watch([`${uiAssetsSrcPath}/img/**/*`, `${uiAssetsSrcPath}/img/*`, `!${uiAssetsSrcPath}/img/{sprite,sprite/**/*,}`, `!${uiAssetsSrcPath}/img/favicon/**/*,}`], ['images']);
-    gulp.watch([`${uiAssetsSrcPath}/img/svg-icons/active/*`], ['svgSprite']);
-    gulp.watch('./workbox.cli.config.js', ['sw']);
+    gulp.watch(`${uiAssetsSrcPath}/**/*.scss`, gulp.series(scss));
+    gulp.watch([`${uiProtoTypesSrcPath}/pages/*.html`, `${uiProtoTypesSrcPath}/layouts/*.html`, `${uiProtoTypesSrcPath}/partials/**/*.html`], gulp.series(templates, browserSync.reload));
+    gulp.watch([`${uiAssetsSrcPath}/ts/**/*.ts`], gulp.series(js));
+    gulp.watch([`${uiAssetsSrcPath}/img/**/*`, `${uiAssetsSrcPath}/img/*`, `!${uiAssetsSrcPath}/img/{sprite,sprite/**/*,}`, `!${uiAssetsSrcPath}/img/favicon/**/*,}`], gulp.series(images));
+    gulp.watch([`${uiAssetsSrcPath}/img/svg-icons/active/*`], gulp.series(favicon));
+    gulp.watch('./workbox.cli.config.js', gulp.series(sw));
 
-});
+};
+
+gulp.task(watchBasic);
+
+// Run tests
+const test = (done) => {
+
+    gulp.series(testJs, testAxe)();
+
+    done();
+
+};
+
+gulp.task(test);

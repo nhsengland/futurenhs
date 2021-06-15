@@ -6,7 +6,7 @@ module.exports = {
     bail: true,
     clearMocks: true,
     preset: 'ts-jest/presets/js-with-ts',
-    testEnvironment: 'jest-environment-jsdom-fifteen',
+    testEnvironment: 'jsdom',
     testPathIgnorePatterns: [],
     setupFilesAfterEnv: [
         './setupTests.js'
