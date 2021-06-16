@@ -117,6 +117,9 @@
     <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
+    <Compile Include="ViewModels\Shared\Link.cs" />
+    <Compile Include="ViewModels\Shared\LinkGroup.cs" />
+    <Compile Include="ViewModels\Shared\NavItemBase.cs" />
     <Compile Include="ViewModels\Shared\PageViewModel.cs" />
     <Compile Include="ViewModels\Shared\Tab.cs" />
     <Compile Include="ViewModels\Shared\TabViewModel.cs" />
@@ -1162,6 +1165,7 @@
     <Content Include="Views\FedTest\_Typography.cshtml" />
     <Content Include="Views\Group\_Forum.cshtml" />
     <Content Include="Views\FedTest\_Buttons.cshtml" />
+    <Content Include="Views\Shared\_SideBar.cshtml" />
     <Content Include="Views\Shared\_UserAvatar.cshtml" />
     <Content Include="Views\Group\_Topics.cshtml" />
     <Content Include="Views\Group\_GroupHomeCards.cshtml" />

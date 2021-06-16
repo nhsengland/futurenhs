@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MvcForum.Web.ViewModels.Group;
+using MvcForum.Core.Models.General;
 
 namespace MvcForum.Web.ViewModels.Shared
 {

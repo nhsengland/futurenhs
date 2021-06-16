@@ -4,7 +4,7 @@
 
 @{
     Layout = "_Layout.cshtml";
-	PageViewModel pageHeader = ViewBag.PageHeader;
+    PageViewModel pageHeader = ViewBag.PageHeader;
 
 }
 
@@ -38,47 +38,7 @@
                 <div class="c-grid-block_item l-col-fb-0">
 
                     @* START LEFT NAV BLOCK *@
-                    <div class="c-main-nav u-bg-theme-2">
-                        <nav id="main-nav" class="l-col-fb-3" aria-label="Main">
-                            <ul class="c-main-nav_level-1" role="menubar">
-                                <li role="none">
-                                    <a href="/" role="menuitem" aria-current="true" aria-label="Home" title="Home" class="c-main-nav_level-1-link u-text-theme-8 c-main-nav_level-1-link--active">
-                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-home", "c-main-nav_level-1-icon u-fill-theme-8")); }
-                                    </a>
-                                </li>
-                                <li role="none">
-                                    <a href="/" role="menuitem" aria-label="Groups" title="Groups" class="c-main-nav_level-1-link u-text-theme-9">
-                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-group", "c-main-nav_level-1-icon u-fill-theme-11")); }
-                                    </a>
-                                </li>
-                                <li role="none">
-                                    <a href="/" role="menuitem" aria-label="Discussions" aria-label="Discussions" class="c-main-nav_level-1-link u-text-theme-10">
-                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum", "c-main-nav_level-1-icon u-fill-theme-10")); }
-                                    </a>
-                                </li>
-                                <li role="none">
-                                    <a href="/" role="menuitem" aria-label="Favourites" aria-label="Favourites" class="c-main-nav_level-1-link u-text-theme-11">
-                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-favourite", "c-main-nav_level-1-icon u-fill-theme-9")); }
-                                    </a>
-                                </li>
-                                <li role="none">
-                                    <a href="/" role="menuitem" aria-label="Alerts" aria-label="Alerts (3)" class="c-main-nav_level-1-link u-text-theme-12">
-                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-notification", "c-main-nav_level-1-icon u-fill-theme-12")); }
-                                        <!-- <span aria-hidden="true" class="c-main-nav_level-1-link-meta u-bg-theme-12">3</span> -->
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                        @* TODO collapsible menu *@
-                        <!-- <details class="">
-                            <summary aria-label="Toggle the menu" aria-haspopup="true" class="c-main-nav_level-2-toggle-trigger" data-open-icon="icon-chevron-left" data-closed-icon="icon-chevron-right">
-                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right", "c-main-nav_level-2-toggle-icon u-fill-theme-6")); }
-                            </summary>
-                            <div class="c-main-nav_level-2-content">
-                                @Html.Action("ListGroupSideMenu", "Group")
-                            </div>
-                        </details> -->
-                    </div>
+                    @{ Html.RenderAction("SideNavigation", "Layout"); }
                     @* END LEFT NAV BLOCK *@
                 </div>
 

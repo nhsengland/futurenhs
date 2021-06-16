@@ -1,12 +1,9 @@
 ﻿namespace MvcForum.Web.ViewModels.Shared
 {
-    public class Tab
+    /// <summary>
+    /// Defines the model for a tab <see cref="NavItemBase"/>.
+    /// </summary>
+    public class Tab : NavItemBase
     {
-        public string Name { get; set; }
-        public string Url { get; set; }
-        public bool Active { get; set; }
-
-        public int Order { get; set; }
-        public string Icon { get; set; }
     }
 }

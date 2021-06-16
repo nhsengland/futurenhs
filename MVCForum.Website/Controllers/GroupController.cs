@@ -232,35 +232,20 @@ namespace MvcForum.Web.Controllers
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 
-        public TabViewModel GetGroupTabsModel(string activeTab, string slug)
+        /// <summary>
+        /// Method to get the group tabs model.
+        /// </summary>
+        /// <param name="slug">The slug for the current group.</param>
+        /// <returns>View model for the group tabs <see cref="TabViewModel"/>.</returns>
+        public TabViewModel GetGroupTabsModel(string slug)
         {
-
-            var activeTabFound = false;
             var forumTab = new Tab { Name = "GroupTabs.Forum", Order = 2, Icon = Icons.Forum };
-            if (activeTab == Constants.GroupForumTab)
-            {
-                forumTab.Active = true;
-                activeTabFound = true;
-            }
-
             forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
 
             var membersTab = new Tab { Name = "GroupTabs.Members", Order = 3, Icon = Icons.Members };
-            if (activeTab == Constants.GroupMembersTab)
-            {
-                membersTab.Active = true;
-                activeTabFound = true;
-            }
-
             membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
 
-
             var homeTab = new Tab { Name = "GroupTabs.Home", Order = 1, Icon = Icons.Home };
-            if (!activeTabFound)
-            {
-                homeTab.Active = true;
-            }
-
             homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}";
 
             var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab } };
@@ -478,7 +463,7 @@ namespace MvcForum.Web.Controllers
                 pageHeader.Name = group.Group.Name;
                 pageHeader.Description = group.Group.Description;
                 pageHeader.Colour = group.Group.Colour;
-                pageHeader.HeaderTabs = GetGroupTabsModel(tab, slug);
+                pageHeader.HeaderTabs = GetGroupTabsModel(slug);
                 pageHeader.Image = group.Group.Image;
                 pageHeader.Id = group.Group.Id;
 

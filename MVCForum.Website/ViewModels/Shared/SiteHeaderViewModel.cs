@@ -1,6 +1,8 @@
 ﻿namespace MvcForum.Web.ViewModels.Shared
 {
     using MvcForum.Core.Models.Entities;
+    using System.Collections.Generic;
+    using MvcForum.Core.Models.General;
 
     /// <summary>
     /// Defines the SiteHeaderViewModel.
@@ -12,7 +14,7 @@
         /// </summary>
         public MembershipUser CurrentUser { get; set; }
 
-        public PageViewModel PageHeader { get; set; }
+        public List<NavItemBase> NavigationItems { get; set; }
 
     }
 }

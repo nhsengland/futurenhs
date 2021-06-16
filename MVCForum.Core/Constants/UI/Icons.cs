@@ -17,5 +17,25 @@
         /// </summary>
         public const string Members = "icon-members-fill";
 
+        /// <summary>
+        /// Key for the home outline icon.
+        /// </summary>
+        public const string HomeOutline = "icon-home";
+
+        /// <summary>
+        /// Key for the forum outline icon.
+        /// </summary>
+        public const string ForumOutline = "icon-forum";
+
+        /// <summary>
+        /// Key for the star icon.
+        /// </summary>
+        public const string Star = "icon-star";
+
+        /// <summary>
+        /// Key for the group icon.
+        /// </summary>
+        public const string Group = "icon-group";
+
     }
 }
