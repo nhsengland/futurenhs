@@ -114,6 +114,7 @@
     <Compile Include="ViewModels\Admin\AdminCategoryViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminLanguageViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
+    <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
     <Compile Include="ViewModels\Shared\PageViewModel.cs" />
@@ -1163,6 +1164,7 @@
     <Content Include="Views\FedTest\_Buttons.cshtml" />
     <Content Include="Views\Shared\_UserAvatar.cshtml" />
     <Content Include="Views\Group\_Topics.cshtml" />
+    <Content Include="Views\Group\_GroupHomeCards.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

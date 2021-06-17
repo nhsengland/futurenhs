@@ -268,6 +268,18 @@ namespace MvcForum.Web.Controllers
             return tabsViewModel;
         }
 
+        public PartialViewResult GetGroupHomeCards(string slug)
+        {
+            var viewModel = new GroupHomeCardsViewModel 
+            { 
+                ForumCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab }), Name = "Join in the conversation" },
+                MembersCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab }), Name = "Meet the members" }
+            };
+
+            return PartialView("_GroupHomeCards", viewModel);
+
+        }
+
         [ChildActionOnly]
         public virtual PartialViewResult GetGroupTabs(string activeTab, string slug)
         {
