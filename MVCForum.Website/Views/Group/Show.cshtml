@@ -38,12 +38,10 @@
 
 	@if (Model.Tab == Constants.GroupForumTab)
 	{
-		<h3>TODO: New discussion button needs to go here</h3>
-
-		@* if (User.Identity.IsAuthenticated)
+		if (User.Identity.IsAuthenticated)
 		{
-			@Html.Action("CreateTopicButton", "Topic", new{groupId = Model.GroupId})
-		} *@
+			@Html.Action("CreateTopicButton", "Topic", new{groupId = Model.Group.Id})
+		}
 
 	} else if(Model.Tab == Constants.GroupMembersTab){
         
@@ -148,16 +146,6 @@
 	<h3>Hello, <br><br> The FutureNHS team has invited you to this testing workspace for unreleased features of the FutureNHS Platform.</h3>
 	<p>As a tester, you'll receive invitations to take part in user testing of new features before they are rolled out to the wider user base. Note: Not everything we beta test will make it to the final version of the product and testing slots will be limited so you may not get to test everything you volunteer for.</p>
 	<p>Thank you in advance for helping us make the FutureNHS platform better!</p>
-}
-
-
-@if (Model.SubGroups != null)
-{
-Html.RenderPartial("_SubGroups", new SubGroupViewModel
-{
-	AllPermissionSets = Model.SubGroups.AllPermissionSets,
-	ParentGroup = Model.Group
-});
 }
 
 @if (Model.Tab == Constants.GroupForumTab)

@@ -1,8 +1,6 @@
 .c-grid-block {
     $self: &;
     @include row(true);
-    display: flex;
-    flex-wrap: wrap;
     justify-content: center;
 
     &--left {
@@ -11,6 +9,10 @@
 
     &--right {
         justify-content: flex-end;
+    }
+
+    &--reverse-row {
+        flex-direction: row-reverse;
     }
 
     & > .c-grid-block { // sass-lint:disable-line no-combinators

@@ -13,10 +13,12 @@
 
 	else if (Model.GroupUserStatus == GroupUserStatus.Joined || Model.PublicGroup || Model.LoggedInUserRole?.RoleName == Constants.AdminRoleName)
 	{
+		@*
 		if (User.Identity.IsAuthenticated)
 		{
 			@Html.Action("CreateTopicButton", "Topic", new{groupId = Model.GroupId})
 		}
+		*@
 
 		if (Model.TotalCount > 0)
 		{   

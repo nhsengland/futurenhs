@@ -113,14 +113,14 @@
                     
 	                <hr class="c-section-break c-section-break--small"/>
                     <div class="l-col-12 u-padded-left">
-                        <div class="c-grid-block c-grid-block--no-flex-grow">
+                        <div class="c-grid-block c-grid-block--reverse-row">
+                            <div class="c-grid-block_item l-col-12 l-col-4-d">
+                                @RenderSection("side", false)
+                            </div>
                             <div class="c-grid-block_item l-col-12 l-col-8-d">
                                 <main>
                                     @RenderBody()
                                 </main>
-                            </div>
-                            <div class="c-grid-block_item l-col-12 l-col-4-d">
-                                @RenderSection("side", false)
                             </div>
                         </div>
                     </div>
