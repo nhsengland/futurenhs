@@ -36,7 +36,11 @@
 		<div class="c-grid-block">
 
 			<div class="c-grid-block_item l-col-12 l-col-3-t memberavatardetails">
-				<p class="memberavatar"><img src="@Model.GroupUser.User.MemberImage(ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.GroupUser.User.UserName"></p>
+				@{
+					Model.GroupUser.User.MemberImageSize = 205;
+					Model.GroupUser.User.CustomClassName = "c-avatar--large";
+					Html.RenderPartial("_UserAvatar", @Model.GroupUser.User);
+				}
 			</div>
 
 			<div class="c-grid-block_item l-col-12 l-col-9-t membermaindetails">

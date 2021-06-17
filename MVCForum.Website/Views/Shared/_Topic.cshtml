@@ -13,14 +13,7 @@
         <div class="c-card_content">
             <div class="c-card_header">
                 <div class="c-card_header-img">
-                    <div class="c-avatar c-avatar--small">
-                        <div class="c-avatar_fallback">
-                             <p class="c-avatar_initials" aria-hidden="true">@Model.Topic.User.Initials</p>
-                        </div>
-                        @if (!string.IsNullOrEmpty(Model.Topic.User.Avatar)){
-                            <img role="presentation" alt="" class="c-avatar_image" src="@Model.Topic.User.MemberImage(50)"/>
-                        }
-                    </div>
+                    @{Html.RenderPartial("_UserAvatar", @Model.Topic.User);}
                 </div>
                 <div class="c-card_header-content u-text-theme-7">
                     <p class="u-text-small u-text-bold u-has-subheading">Created by <a href="@Model.Topic.User.NiceUrl">@Model.Topic.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</p>

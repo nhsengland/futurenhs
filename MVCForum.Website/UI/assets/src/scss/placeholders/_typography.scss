@@ -48,11 +48,16 @@
 
 
 %nhsuk-focused-item {
-    border: $nhsuk-focus-width solid $nhsuk-focus-text-color;
-    box-shadow: 0 0 0 $nhsuk-focus-width $nhsuk-focus-color;
-    outline: $nhsuk-focus-width solid transparent;
-    outline-offset: $nhsuk-focus-width;
+    border: $nhsuk-focus-width solid transparent;
+
+    &:focus {
+        border: $nhsuk-focus-width solid $nhsuk-focus-text-color;
+        box-shadow: 0 0 0 $nhsuk-focus-width $nhsuk-focus-color;
+        outline: $nhsuk-focus-width solid transparent;
+        outline-offset: $nhsuk-focus-width;
+    }
 }
+
 
 %nhsuk-link-style-default {
     color: $nhsuk-link-color;

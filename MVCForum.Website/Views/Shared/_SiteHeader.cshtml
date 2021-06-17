@@ -16,11 +16,11 @@
         </p>
     </div>
     <div class="l-container c-site-header_content">
-        <a href="/" class="c-site-header_logo">
+        <a href="/" class="c-site-header_logo u-focus-item">
             <img src="/UI/assets/dist/img/content/logo.svg" alt="Future NHS home page">
         </a>
         <div id="navigation" class="c-site-header_nav c-site-header-nav">
-            <details class="c-site-header-nav_content">
+            <details class="c-site-header-nav_content" open>
                 <summary aria-haspopup="true" class="c-site-header-nav_mobile-trigger c-site-header-nav_mobile-trigger--right">
                     Menu
                 </summary>
@@ -57,17 +57,9 @@
                                     <details class="c-site-header-nav_root-nav-item">
                                         <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
 
-                                            @if (!string.IsNullOrEmpty(Model.CurrentUser.Avatar))
-                                            {
-                                                <span class="c-site-header-nav_root-nav-image">
-                                                    <img src="@Model.CurrentUser.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.CurrentUser.UserName">
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                @* TODO [FED]: The initials of the user (valiue in img tag alt) should be displayed if no image *@
-                                                @Html.DisplayFor(x => Model.CurrentUser.Initials)
-                                            }
+                                            <span class="c-site-header-nav_root-nav-image">
+                                                @{Html.RenderPartial("_UserAvatar", @Model.CurrentUser);}
+                                            </span>
                                             @Model.CurrentUser.GetFullName()
                                             @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg"));}
                                         </summary>

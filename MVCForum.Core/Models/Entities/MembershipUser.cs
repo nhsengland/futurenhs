@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Core.Models.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MvcForum.Core.Models.Entities
 {
     using MvcForum.Core.ExtensionMethods;
     using System;
@@ -17,6 +19,9 @@
         public MembershipUser()
         {
             Id = GuidComb.GenerateComb();
+
+            // Default size of 100 for now, override with something else if required
+            MemberImageSize = 100;
         }
 
         public Guid Id { get; set; }
@@ -109,5 +114,10 @@
         }
 
         public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Member, Slug);
+
+        [NotMapped]
+        public string CustomClassName { get; set; }
+        [NotMapped]
+        public int MemberImageSize { get; set; }
     }
 }

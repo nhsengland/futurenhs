@@ -1161,6 +1161,7 @@
     <Content Include="Views\FedTest\_Typography.cshtml" />
     <Content Include="Views\Group\_Forum.cshtml" />
     <Content Include="Views\FedTest\_Buttons.cshtml" />
+    <Content Include="Views\Shared\_UserAvatar.cshtml" />
     <Content Include="Views\Group\_Topics.cshtml" />
   </ItemGroup>
   <ItemGroup>

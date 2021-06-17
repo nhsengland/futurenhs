@@ -23,6 +23,7 @@
         float: left;
         max-width: calc(100% - 85px);
         height: $site-logo-mobile-height;
+        box-sizing: content-box;
     }
 
     &_nav {

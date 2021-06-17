@@ -140,8 +140,7 @@ img {
 }
 
 summary {
-
-    @include focus-outline;
+    @extend %nhsuk-focused-item;
 
     &:before {
         display: none;

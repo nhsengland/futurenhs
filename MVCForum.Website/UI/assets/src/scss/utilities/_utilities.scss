@@ -130,6 +130,14 @@
     }
 }
 
+.u-focus-item {
+    @extend %nhsuk-focused-item;
+
+    &:focus {
+        background: none;
+    }
+}
+
 //fonts
 .u-text-lead {
     @include lead-text;

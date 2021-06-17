@@ -1,10 +1,10 @@
 .c-avatar {
     position: relative;
     padding-bottom: 100%;
-    font-size: $nhsuk-spacing-point-9;
+    font-size: $base-font-size;
 
-    &--small {
-        font-size: $base-font-size;
+    &--large {
+        font-size: $nhsuk-spacing-point-9;
     }
 
     &_fallback {
