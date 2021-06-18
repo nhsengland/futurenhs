@@ -214,13 +214,21 @@ $no-js-style: false !default;
     }
 }
 
-@mixin regular-heading() {
+@mixin regular-heading($margin: true) {
     line-height: $h2-line-height-mobile;
     font-size: $h2-font-size-mobile;
+
+    @if ($margin) {
+        margin-bottom: $nhsuk-spacing-point-3;
+    }
 
     @include respond-to(desktop) {
         line-height: $h2-line-height-desktop;
         font-size: $h2-font-size-desktop;
+        
+        @if ($margin) {
+            margin-bottom: $nhsuk-spacing-point-4;
+        } 
     }
 }
 
