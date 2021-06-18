@@ -37,7 +37,7 @@ steps:
 
 - task: Npm@1
   displayName: 'npm install'
-  condition: ne(variables.npm_cache_hit, 'true')
+  # condition: ne(variables.npm_cache_hit, 'true')
   inputs:
     command: 'install'
     workingDir: '$(Build.SourcesDirectory)'
