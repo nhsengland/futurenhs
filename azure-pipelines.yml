@@ -10,10 +10,6 @@ trigger:
 pool:
   vmImage: windows-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: 
@@ -27,9 +23,17 @@ steps:
 - task: NodeTool@0
   inputs:
     versionSpec: '12.22.1'
+    
+- task: Cache@2
+  displayName: npm Cache
+  inputs:
+    key: 'npm | "$(Agent.OS)" | package.json'
+    path: '$(Build.SourcesDirectory)/node_modules'
+    cacheHitVar: 'npm_cache_hit'
 
 - task: Npm@1
   displayName: 'npm install'
+  condition: ne(variables.npm_cache_hit, 'true')
   inputs:
     command: 'install'
     workingDir: '$(Build.SourcesDirectory)'
