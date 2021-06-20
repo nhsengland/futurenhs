@@ -89,6 +89,8 @@
         /// <returns></returns>
         public static UploadFileResult Upload(this Image image, string uploadFolderPath, string fileName)
         {
+            var extension = Path.GetExtension(fileName);
+            fileName = Guid.NewGuid().ToString();
             var upResult = new UploadFileResult { UploadSuccessful = true };
 
             try
@@ -102,8 +104,11 @@
                 // If no file name make one
                 if (string.IsNullOrWhiteSpace(fileName))
                 {
-                    fileName = "I".AppendUniqueIdentifier();
                     fileName = $"{fileName.ToLower()}.jpg";
+                }
+                else
+                {
+                    fileName = $"{fileName.ToLower()}{extension}";
                 }
 
                 using (var stream = new MemoryStream())

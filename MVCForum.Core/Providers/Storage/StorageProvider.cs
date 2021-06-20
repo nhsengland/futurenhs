@@ -1,4 +1,7 @@
-﻿namespace MvcForum.Core.Providers.Storage
+﻿using System.Linq;
+using MvcForum.Core.Utilities;
+
+namespace MvcForum.Core.Providers.Storage
 {
     using System;
     using Interfaces.Providers;
@@ -8,7 +11,7 @@
     {
         private static readonly Lazy<IStorageProvider> CurrentStorageProvider = new Lazy<IStorageProvider>(() =>
         {
-            var type = ForumConfiguration.Instance.StorageProviderType;
+            var type = ConfigUtils.GetAppSetting("StorageProvider");
             if (string.IsNullOrWhiteSpace(type))
             {
                 throw new Exception(

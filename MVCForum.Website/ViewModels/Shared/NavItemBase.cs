@@ -49,7 +49,7 @@ namespace MvcForum.Web.ViewModels.Shared
             } 
             set
             {
-                this.Active = value;
+                Active = value;
             }
         }
     }

@@ -228,12 +228,14 @@
 
         public static string MemberImage(string avatar, string email, Guid userId, int size)
         {
+            var sizeFormat = string.Format("?width={0}&crop=0,0,{0},{0}", size);
             if (!string.IsNullOrWhiteSpace(avatar))
             {
                 // Has an avatar image
                 var storageProvider = StorageProvider.Current;
-                return storageProvider.BuildFileUrl(userId, "/", avatar,
-                    string.Format("?width={0}&crop=0,0,{0},{0}", size));
+                //var fileUrl = storageProvider.BuildFileUrl("forum", avatar);
+                //return string.Format("{0}?width={1}&crop=0,0,{1},{1}", fileUrl, size);
+                return storageProvider.BuildFileUrl(userId, "/", avatar, sizeFormat);
             }
 
             return null;
@@ -245,6 +247,7 @@
             if (!string.IsNullOrWhiteSpace(image))
             {
                 var storageProvider = StorageProvider.Current;
+              
                 return storageProvider.BuildFileUrl(GroupId, "/", image, sizeFormat);
             }
             //TODO - Return default image for Group

@@ -97,6 +97,8 @@
         public static UploadFileResult UploadFile(this HttpPostedFileBase file, string uploadFolderPath,
             ILocalizationService localizationService, bool onlyImages = false)
         {
+            var extension = Path.GetExtension(file.FileName);
+            var fileName = $"{Guid.NewGuid().ToString()}{extension}";
             var upResult = new UploadFileResult {UploadSuccessful = true};
             var storageProvider = StorageProvider.Current;
 
@@ -109,7 +111,6 @@
                     Directory.CreateDirectory(uploadFolderPath);
                 }
 
-                var fileName = fileOkResult.FileName;
                 var fileExtension = fileOkResult.FileExtension;
 
                 // Store these here as we may change the values within the image manipulation
