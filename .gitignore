@@ -280,6 +280,7 @@ MVCForum.Website/sw.js.map
 MVCForum.Website/workbox*.js
 MVCForum.Website/workbox*.js.map
 .awcache
+.awcache/*
 yarn.lock
 package-lock.json
 *.orig
