@@ -8,7 +8,7 @@ import { FetchOptions } from '@appTypes/fetch';
 export class LoadMoreButton extends UIComponentBase {
 
     method: string = 'POST';
-    fetchUrl: string = undefined;
+    getFetchUrl: Function = undefined;
     requestIndex: number = undefined;
     contentType: string = 'text/html';
     maximRequests: number = undefined;
@@ -16,7 +16,7 @@ export class LoadMoreButton extends UIComponentBase {
 
     constructor(config: {
         method?: string;
-        fetchUrl: string;
+        getFetchUrl: Function;
         contentType?: string;
         requestIndex: number;
         maximRequests: number;
@@ -28,7 +28,7 @@ export class LoadMoreButton extends UIComponentBase {
 
         super(config, dependencies);
 
-        this.fetchUrl = config.fetchUrl;
+        this.getFetchUrl = config.getFetchUrl;
         this.method = config.method ?? this.method;
         this.contentType = config.contentType ?? this.contentType;
         this.requestIndex = config.requestIndex;
@@ -61,7 +61,7 @@ export class LoadMoreButton extends UIComponentBase {
             const { setFetchOptions, fetchData } = this.fetchHelpers;
             const fetchOptions: FetchOptions = setFetchOptions(this.method, {}, null, null, contentType);           
 
-            fetchData(this.fetchUrl, { ...fetchOptions, contentType }, 60000)
+            fetchData(this.getFetchUrl(requestIndex), { ...fetchOptions, contentType }, 60000)
                 .then((html: string) => {
                     
                     this.appendTargetElement.insertAdjacentHTML('beforeend', html);

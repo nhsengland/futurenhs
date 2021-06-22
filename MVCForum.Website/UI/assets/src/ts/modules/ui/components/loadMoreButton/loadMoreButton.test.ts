@@ -7,8 +7,6 @@ const requestId = 'someid123';
 const requestIndex = 1;
 const loadMoreButtonId = 'loadMoreId';
 const mockHtmlResponse  = '<div>some post</div>';
-const getPostCommentsURL = `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex + 1}`;
-const getLatestTopicsURL = `/group/LoadMoreTopics?groupid=${requestId}&p=${requestIndex + 1}`;
 
 beforeEach(() => {
 
@@ -48,7 +46,7 @@ describe('Load more button', () => {
         const buttonElement = <HTMLButtonElement>document.getElementById(loadMoreButtonId);
         
         new LoadMoreButton({
-            fetchUrl: '',
+            getFetchUrl: ()=>'',
             requestIndex: 1,
             maximRequests: 2,
             appendTargetElement: appendTargetElement,
@@ -68,7 +66,7 @@ describe('Load more button', () => {
         buttonElement.setAttribute('data-maxim-requests','1');
 
         new LoadMoreButton({
-            fetchUrl: '',
+            getFetchUrl: ()=>'',
             requestIndex: 2,
             maximRequests: 1,
             appendTargetElement: appendTargetElement,
@@ -87,7 +85,7 @@ describe('Load more button', () => {
         const buttonElement = <HTMLButtonElement>document.getElementById(loadMoreButtonId);
         
         new LoadMoreButton({
-            fetchUrl: '',
+            getFetchUrl: ()=>'',
             requestIndex: 1,
             maximRequests: 2,
             appendTargetElement: appendTargetElement,
@@ -118,7 +116,7 @@ describe('Load more button', () => {
         const buttonElement = <HTMLButtonElement>document.getElementById(loadMoreButtonId);
         
         new LoadMoreButton({
-            fetchUrl: testUrl,
+            getFetchUrl: () => testUrl,
             requestIndex: 1,
             maximRequests: 2,
             appendTargetElement: appendTargetElement,

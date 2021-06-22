@@ -265,17 +265,21 @@ export const uiComponentsInit = (config: {
                 const endpointType: string = loadMoreButton.getAttribute('data-endpoint-type');
                 const appendTargetElement: HTMLElement = document.getElementById(appendTargetId);
                 const maximRequests = parseInt(loadMoreButton.getAttribute('data-maxim-requests'));
-                let requestIndex = parseInt(loadMoreButton.getAttribute('data-request-index')) + 1;
+                const requestIndex = parseInt(loadMoreButton.getAttribute('data-request-index')) + 1;
 
-                const endpoints = {
-                    'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
-                    'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
-                };
+                const getFetchUrl = (requestIndex: number): string => {
 
-                const fetchUrl = endpoints[endpointType];
+                    const endpoints = {
+                        'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
+                        'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
+                    };
+
+                    return endpoints[endpointType];
+                    
+                } 
 
                  new LoadMoreButton({
-                    fetchUrl: fetchUrl,
+                    getFetchUrl: getFetchUrl,
                     requestIndex: requestIndex,
                     maximRequests: maximRequests,
                     wrapperSelector: loadMoreButton,
