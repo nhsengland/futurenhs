@@ -47,7 +47,7 @@ export class LoadMoreButton extends UIComponentBase {
 
         let requestIndex = this.requestIndex;
         
-        if( requestIndex > this.maximRequests) {
+        if( requestIndex >= this.maximRequests) {
             return;
         }
 
