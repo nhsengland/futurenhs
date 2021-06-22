@@ -87,7 +87,7 @@
                                     <details class="c-site-header-nav_root-nav-item">
                                         <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger @(navItem.BorderTheme != null ? navItem.BorderTheme : Themes.BORDER_1)" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
                                             @if (navItem.Icon != null) { Html.RenderPartial("_SVGIcon", new SVGIconViewModel(navItem.Icon, String.Format("c-site-header-nav_root-nav-content-icon {0}", navItem.IconTheme != null ? navItem.IconTheme : Themes.FILL_THEME_1))); }
-                                            @navItem.Name
+                                            <span>@navItem.Name</span>
                                             @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", String.Format("c-site-header-nav_root-nav-icon js-svg {0}", navItem.IconTheme != null ? navItem.IconTheme : Themes.FILL_THEME_1)));}
                                         </summary>
                                         <div class="c-site-header-nav_sub-nav">
