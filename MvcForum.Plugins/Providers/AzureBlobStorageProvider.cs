@@ -48,14 +48,16 @@ namespace MvcForum.Plugins.Providers
             return folder;
         }
 
-        public string SaveAs(string uploadFolderPath, string fileName, HttpPostedFileBase file)
+        public string SaveAs(string uploadFolderPath, string fileName, Stream file)
         {
             InitialiseConnection();
 
             // Get a reference to a blob
             var blobClient = _blobServiceClient.GetBlobContainerClient(_container);
 
-            var response = blobClient.UploadBlob(fileName, file.InputStream);
+            var response = blobClient.UploadBlob(fileName, file);
+
+            file.Dispose();
 
             return $"{blobClient.Uri}/{fileName}";
         }

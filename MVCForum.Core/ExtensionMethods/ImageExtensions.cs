@@ -87,6 +87,7 @@
         /// <param name="fileName"></param>
         /// <param name="uploadFolderPath"></param>
         /// <returns></returns>
+        [Obsolete]
         public static UploadFileResult Upload(this Image image, string uploadFolderPath, string fileName)
         {
             var extension = Path.GetExtension(fileName);
@@ -122,7 +123,7 @@
 
                     // Get the storage provider and save file
                     upResult.UploadedFileName = fileName;
-                    upResult.UploadedFileUrl = StorageProvider.Current.SaveAs(uploadFolderPath, fileName, file);
+                    upResult.UploadedFileUrl = StorageProvider.Current.SaveAs(uploadFolderPath, fileName, file.InputStream);
                 }
             }
             catch (Exception ex)
@@ -134,5 +135,33 @@
             return upResult;
         }
 
+        /// <summary>
+        /// Removes metadata from image
+        /// for full list of property item ids
+        /// https://docs.microsoft.com/en-us/dotnet/api/system.drawing.imaging.propertyitem.id?redirectedfrom=MSDN&view=net-5.0#System_Drawing_Imaging_PropertyItem_Id
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns>System.Drawing.Image with all metadata removed</returns>
+        public static Image StripMetaData(this Image img)
+        {
+            foreach (PropertyItem item in img.PropertyItems) {
+                PropertyItem modItem = item;
+                modItem.Value = new byte[] { 0 };
+                img.SetPropertyItem(modItem);
+            }
+            return img;
+        }
+
+        /// <summary>
+        /// converts image into MemoryStream
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns>Steam</returns>
+        public static Stream ToMemoryStream(this Image img)
+        {
+            MemoryStream myMemoryStream = new MemoryStream();
+            img.Save(myMemoryStream, img.RawFormat);
+            return myMemoryStream;
+        }
     }
 }

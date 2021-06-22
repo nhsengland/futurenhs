@@ -32,15 +32,20 @@
             return folder;
         }
 
-        public string SaveAs(string uploadFolderPath, string fileName, HttpPostedFileBase file)
+        public string SaveAs(string uploadFolderPath, string fileName, Stream file)
         {
-            if (!Directory.Exists(uploadFolderPath))
-            {
+            if (!Directory.Exists(uploadFolderPath)) {
                 Directory.CreateDirectory(uploadFolderPath);
             }
 
             var path = Path.Combine(uploadFolderPath, fileName);
-            file.SaveAs(path);
+
+            using (var fileStream = File.Create(path)) {
+                file.Seek(0, SeekOrigin.Begin);
+                file.CopyTo(fileStream);
+            }
+
+            file.Dispose();
 
             var hostingRoot = HostingEnvironment.MapPath("~/") ?? "";
             return path.Substring(hostingRoot.Length).Replace('\\', '/').Insert(0, "/");
