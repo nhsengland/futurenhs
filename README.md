@@ -1,67 +1,15 @@
-## Status ##
+# FutureNHS Sharing Platform 
+This repository contains artefacts pertinent to the development of the new FutureNHS sharing platform
 
-This project is no longer actively developed as I don't have the time. As and when I get time, I do occasionally go through the PR's. If you find a bug or want a new feature, then submit a PR and help out everyone else using the software.
+## What is FutureNHS?
+The FutureNHS Collaboration platform is the only virtual collaboration platform from the NHS that supports people working in health and social care to make change, improve and transform across organisations, places and professions.
 
-If you are interested in managing the project then let me know, happy to add a team of developers to this project.
+To learn more about this project, please visit https://future.nhs.uk/
 
-MVCForum - Fully Featured ASP.NET MVC Forum
-========
+## Copyright and License
 
-MVCForum is a fully featured and themeable enterprise level ASP.NET MVC discussion board/forum. The software has features similar to that seen on StackOverFlow plus LOTS more (See list below). Along with MVC it’s built using Unity & Entity Framework 6 code first and is super easy to extend and add your own features.
+Unless otherwise specified, all content in this repository and any copies are subject to [Crown Copyright](http://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/) under the [Open Government License v3](./OPEN-GOVERNMENT-LICENSE).
 
-**There are no plans to convert to .NET Core**
+Any code is dual licensed under the [MIT license](./LICENSE) and the [Open Government License v3](./OPEN-GOVERNMENT-LICENSE). 
 
-Current Features Include
-
-- Multi-Lingual / Localisation
-- Points System
-- Moderate Topics & Posts
-- Badge System (Like StackOverflow)
-- Permission System (Group based and global)
-- Roles
-- Tags
-- RSS Feeds
-- Emoticons
-- File Attachments
-- Post Moderation (Optional)
-- Mark Posts As Solution
-- Vote Up / Down Posts (View who voted up your posts)
-- Favourite Posts
-- Easy Logging
-- Global and Weekly points Leader board
-- Responsive (Bootstrap driven) Theme
-- Latest Activity
-- Custom Events (Hook into them easily)
-- Polls
-- Spam Prevention (Inc Akismet)
-- Facebook & Google Login
-- Private Messages
-- Member & Post Reporting 
-- Batch tools
-- Plus loads more
-
-## Documentation ##
-
-Most documentation can be found in the Wiki
-
-[Wiki](https://github.com/YodasMyDad/mvcforum/wiki)
-
-## Installing ##
-
-[Please see the Wiki page](https://github.com/leen3o/mvcforum/wiki/Installing)
-
-## Screenshots ##
-
-![Home Page Screenshot](https://cdn.pbrd.co/images/HrEWn8H.png)
-
-----------
-
-![Thread Screenshot](https://cdn.pbrd.co/images/HrEWIDA.png)
-
-----------
-
-![Badges Screenshot](https://cdn.pbrd.co/images/HrEWUbZ.png)
-
-----------
-
-![Activity Screenshot](https://cdn.pbrd.co/images/HrEX66J.png)
+Any new work added to this repository must conform to the conditions of these licenses. In particular this means that this project may not depend on GPL-licensed or AGPL-licensed libraries, as these would violate the terms of those libraries' licenses.
