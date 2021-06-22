@@ -1,0 +1,34 @@
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Topic.CreateEditTopicViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = Html.LanguageString("Post.Edit");
+}
+
+@section Header
+{
+    @(
+        Bundle.JavaScript().MvcRender("~/scripts/cache/topic-combined_#.js")
+    )
+    <script type="text/javascript">
+        counter = @(Model.PollAnswers != null ? Model.PollAnswers.Count : 0);
+    </script>
+}
+
+
+<div class="c-grid-block">
+
+    <div class="c-grid-block_item l-col-12 l-col-8-t">
+        <div class="editpostholder">
+
+            @using (Html.BeginForm())
+            {
+                @Html.ValidationSummary(false)
+                @Html.AntiForgeryToken()
+                @Html.Partial("_CreateEdit_TopicPost", Model)
+                @Html.HiddenFor(x => x.Id)
+            }
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+﻿@model MvcForum.Web.ViewModels.Admin.LocaleResourceKeyViewModel
+
+@{
+    ViewBag.Title = "Add Resource Key";
+}
+
+@Html.Partial("_LanguageOptions")
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("AddResourceKey", "AdminLanguage", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name)
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Notes)
+                @Html.TextAreaFor(model => model.Notes, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Notes)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Create" />
+            </div>
+
+        }
+
+    </div>
+</div>
+

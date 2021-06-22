@@ -1,0 +1,27 @@
+﻿@model MvcForum.Web.ViewModels.Admin.HighestViewedTopics
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Highest Viewed Topics</h5>
+    </div>
+    @if (Model.Topics.Any())
+    {
+        <ul class="list-group">
+            @foreach (var topic in Model.Topics)
+            {
+                <li class="list-group-item">
+                    <span class="badge">@topic.Views</span>
+                    <a href="@topic.NiceUrl">@Html.Raw(topic.Name)</a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="panel-content">No data</div>
+    }
+
+</div>
+
+
+

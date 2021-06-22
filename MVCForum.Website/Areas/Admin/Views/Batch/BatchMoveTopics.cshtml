@@ -1,0 +1,41 @@
+﻿@model MvcForum.Web.ViewModels.Admin.BatchMoveTopicsViewModel
+
+@{
+    ViewBag.Title = "Batch Move Topics";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        <p>Use this tool to move all topics from one Group to another one. As soon as you click the button the topics will be moved.</p>
+
+        @using (Html.BeginForm("BatchMoveTopics", "Batch", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FromGroup)
+                        @Html.DropDownListFor(m => m.FromGroup, new SelectList(Model.Groups, "Id", "Name"), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.FromGroup)
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ToGroup)
+                        @Html.DropDownListFor(m => m.ToGroup, new SelectList(Model.Groups, "Id", "Name"), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.ToGroup)
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Move Topics" />
+            </div>
+        }
+    </div>
+</div>

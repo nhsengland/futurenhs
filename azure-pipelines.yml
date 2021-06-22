@@ -1,0 +1,63 @@
+trigger:
+- SPRINT
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: 
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.22.1'
+    
+- task: Cache@2
+  displayName: npm Cache
+  inputs:
+    key: 'npmcache | "$(Agent.OS)" | package.json'
+    path: '$(Build.SourcesDirectory)/node_modules'
+    cacheHitVar: 'npm_cache_hit'
+
+- task: Npm@1
+  displayName: 'npm install'
+  condition: ne(variables.npm_cache_hit, 'true')
+  inputs:
+    command: 'install'
+    workingDir: '$(Build.SourcesDirectory)'
+    
+- task: gulp@0
+  inputs:
+    gulpFile: 'gulpfile.js'
+    targets: 'buildWeb'
+    gulpjs: 'node_modules/gulp/bin/gulp.js'
+    enableCodeCoverage: false
+    
+- task: MSBuild@1
+  inputs:
+    solution: 'MVCForum.sln'
+    msbuildArchitecture: 'x64'
+    configuration: 'Release'
+    createLogFile: true
+    logFileVerbosity: 'diagnostic'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/MVCForum.Website'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'FNHS'
+    publishLocation: 'pipeline'
+
+

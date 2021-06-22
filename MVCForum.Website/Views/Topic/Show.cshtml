@@ -1,0 +1,192 @@
+﻿@using MvcForum.Core.Models.Enums
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.Application.ExtensionMethods
+@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Post
+@model MvcForum.Web.ViewModels.Topic.TopicViewModel
+@using MvcForum.Web.ViewModels.Shared
+@using MvcForum.Web.ViewModels.Topic
+@{
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+    ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
+    ViewBag.MetaDesc = StringUtils.ReturnAmountWordsFromString(string.Concat(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), "..."), 20);
+
+    if (Request.QueryString.AllKeys.Any())
+    {
+        ViewBag.Canonical = Html.Raw(string.Format("<link rel=\"canonical\" href=\"{0}\"/>", Model.Topic.NiceUrl));
+    }
+
+    // Email subscription
+    var subScribe = string.Empty;
+    var unSubscribe = string.Empty;
+    const string displayNone = "style='display:none;'";
+    if (Model.IsSubscribed)
+    {
+        subScribe = displayNone;
+    }
+    else
+    {
+        unSubscribe = displayNone;
+    }
+
+    // Set a ViewBag for the Group
+    //TempData[Constants.DefaultGroupViewBagName] = Model.Topic.Group.Id;
+    var qs = Request.QueryString[Constants.PostOrderBy] ?? string.Empty;
+}
+@section SocialMeta {
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@ViewBag.Title" />
+    <meta name="twitter:description" content="@ViewBag.MetaDesc" />
+}
+
+@section Header
+{
+    <script>
+        var topicId = '@(Model.Topic.Id)';
+    </script>
+}
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+@Html.Action("GetTopicBreadcrumb", "Topic", new { topic = Model.Topic })
+<div class="topicshow">
+
+    <div class="topicheading">
+
+        <div class="widgetright">
+            @if (Html.CurrentMember() != null && Html.Settings().EnableEmailSubscriptions)
+            {
+                <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Topic.Id" data-type="topic">
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon"));}
+                    @Html.LanguageString("Topic.Subscribe")
+                </a>
+                <a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Topic.Id" data-type="topic">
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon"));}
+                    @Html.LanguageString("Topic.UnSubscribe")
+                </a>
+            }
+        </div>
+
+        <h2>@Html.Raw(Model.Topic.Name)</h2>
+
+
+        <ul class="topicinfo">
+
+            @if (Model.Topic.IsSticky)
+            {
+                <li>@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-important", "c-ui-icon"));} @Html.Lang("Topic.IsSticky")</li>
+            }
+            @if (Model.Topic.IsLocked)
+            {
+                <li>@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-close", "c-ui-icon"));}</li>
+            }
+
+            @if (Model.Topic.Poll != null)
+            {
+                <li>
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-document", "c-ui-icon"));} @Html.Lang("Topic.IsPoll") 
+                    @if (Model.Topic.Poll.IsClosed)
+                    {
+                        <text>(@Html.Lang("Topic.PollClosed"))</text>
+                    }
+                </li>
+            }
+            <li>
+                 @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
+            </li>
+
+            <li>@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-speech-bubbles", "c-ui-icon"));}  @Html.Lang("Topic.LastPost") @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
+
+            @if (Model.Topic.Solved)
+            {
+                <li>@{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon c-ui-icon--green")); } @Html.Lang("Topic.IsSolved")</li>
+            }
+
+        </ul>
+
+    </div>
+
+    @if (Html.Settings().EnablePolls == true && Model.Poll != null)
+    {
+        // Show the poll if there is one
+        Html.RenderPartial("_Poll", Model.Poll);
+    }
+
+    <div class="topicstarterpost">
+        @{
+            Html.RenderPartial("_Post", Model.StarterPost);
+        }
+        @if (Model.TotalCount > 0)
+        {
+            <div class="l-row topicstarterpostbeginpostsheading">
+                <div class="l-col-12 l-col-8-t hidden-xs topicstarterpostcomments">
+                    @(Model.TotalCount) @Html.LanguageString("Topic.CommentsDetails")
+                </div>
+                <div class="l-col-12 l-col-4-t topicpostorderfilter">
+                    @if ((Model.TotalCount - 1) > 0)
+                    {
+                        <text> @Html.LanguageString("PostFilter.OrderBy")
+                        <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> |
+                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@Constants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> |
+                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@Constants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>
+                        </text>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="commentsList">
+        @foreach (var post in Model.Posts)
+        {
+
+            Html.RenderPartial("_Post", post);
+        }
+     </div>
+    
+    <div id="newpostmarker"></div>
+      
+    @if (Model.TotalPages > 1)
+    {
+        <button 
+            data-target-id="commentsList"
+            data-request-id="@Model.Topic.Id"
+            data-endpoint-type="getPostComments"
+            data-maxim-requests="@Model.TotalPages"
+            data-request-index="@Model.PageIndex.Value"
+            class="c-button c-button--secondary js-loadmore u-hidden">
+                Load more
+        </button>
+
+        <noscript>
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, Convert.ToInt32(Model.TotalCount), null)
+        </noscript>
+    }
+
+    @if (!Model.Topic.IsLocked)
+    {
+
+        if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Group.IsLocked)
+        {
+            @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost, InReplyTo = Model.ReplyTo, ReplyToUsername = Model.ReplyToUsername})
+        }
+        <a id="createpost"></a>
+    }
+    else
+    {
+        <p class="topiclockedmessage">@Html.LanguageString("Topic.IsLocked")</p>
+    }
+
+
+    <input type="hidden" id="pageIndex" value="@(Model.PageIndex + 1)" />
+    <input type="hidden" id="topicId" value="@Model.Topic.Id" />
+    <input type="hidden" id="totalPages" value="@Model.TotalPages" />
+
+
+</div>

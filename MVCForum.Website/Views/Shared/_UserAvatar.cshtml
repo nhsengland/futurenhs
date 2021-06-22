@@ -1,0 +1,11 @@
+@model MvcForum.Core.Models.Entities.MembershipUser
+
+<div class="c-avatar @Model.CustomClassName">
+    @if (!String.IsNullOrEmpty(@Model.MemberImage(100))){
+        <img role="presentation" class="c-avatar_image" src="@Model.MemberImage(@Model.MemberImageSize)">
+    } else {
+        <div class="c-avatar_fallback">
+            <p class="c-avatar_initials" aria-hidden="true">@Model.Initials</p>
+        </div>
+    }
+</div>

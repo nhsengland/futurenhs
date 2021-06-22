@@ -1,0 +1,7 @@
+2021-05-12 20:36:26.099 +01:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.202\
+2021-05-12 20:36:26.142 +01:00 [INF] Registered 1 extensions:
+	Default extension
+2021-05-12 20:36:27.721 +01:00 [INF] Initializing upgrade step Select an entrypoint
+2021-05-12 20:36:27.724 +01:00 [INF] Setting entrypoint to user selected project: C:\Source\FNHSPipeline\MVCForum.Website\MvcForum.web.csproj
+2021-05-12 20:36:27.737 +01:00 [INF] Initializing upgrade step Select project to upgrade
+2021-05-12 20:36:27.909 +01:00 [INF] Initializing upgrade step Back up project

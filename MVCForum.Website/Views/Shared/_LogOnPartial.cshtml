@@ -1,0 +1,8 @@
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@if(Request.IsAuthenticated) {        
+    <text><strong>@User.Identity.Name</strong>
+    [ @Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members", new { area = "" }, null) ]</text>
+}
+else {
+    @:[ @Html.ActionLink(Html.LanguageString("LogOn.LogOn"), "LogOn", "Members", new { area = "" }, null) ]
+}

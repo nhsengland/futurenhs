@@ -1,0 +1,57 @@
+﻿@using MvcForum.Core.Models.Enums
+@model MvcForum.Web.ViewModels.Group.GroupTopicsViewModel
+@{
+
+}
+<div>
+	<h2>@Html.LanguageString("Group.Forum")</h2>
+
+	@if ((Model.LoggedInUserRole == null && !Model.PublicGroup) || (Model.GroupUserStatus != GroupUserStatus.Joined && Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName != Constants.AdminRoleName && !Model.PublicGroup))
+	{
+		<p>@Html.LanguageString("Group.PermissionDenied")</p>
+	}
+
+	else if (Model.GroupUserStatus == GroupUserStatus.Joined || Model.PublicGroup || Model.LoggedInUserRole?.RoleName == Constants.AdminRoleName)
+	{
+		@*
+		if (User.Identity.IsAuthenticated)
+		{
+			@Html.Action("CreateTopicButton", "Topic", new{groupId = Model.GroupId})
+		}
+		*@
+
+		if (Model.TotalCount > 0)
+		{   
+
+            <div id="topicsList">
+                @foreach (var topic in Model.Topics)
+                {   
+                    Html.RenderPartial("_Topic", topic);
+                }
+            </div>
+
+			if (Model.TotalPages > 1)
+			{
+                <button 
+                    data-target-id="topicsList"
+                    data-request-id="@Model.GroupId"
+                    data-endpoint-type="getLatestTopics"
+                    data-maxim-requests="@Model.TotalPages"
+                    data-request-index="@Model.PageIndex.Value"
+                    class="c-button c-button--secondary js-loadmore u-hidden">
+                        Load more
+                </button>
+
+                <noscript>
+				    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, Convert.ToInt32(Model.TotalCount), null)
+                </noscript>
+			}
+
+		}
+		else if (Model.TotalCount == 0)
+		{
+			<p>@Html.LanguageString("Group.NoDiscussions")</p>
+		}
+	}
+	
+</div>

@@ -1,0 +1,129 @@
+$card-border-width: 1px;
+$card-border-bottom-width: $nhsuk-spacing-point-1;
+$card-border-color: $color_nhsuk-grey-4;
+$card-border-hover-color: $color_nhsuk-grey-3;
+
+.c-card {
+    $self: &;
+    //sass-lint:disable-block nesting-depth force-element-nesting no-combinators no-important
+    background: $color_nhsuk-white;
+    border: $card-border-width solid $card-border-color;
+    border-left-color: $card-border-color !important;
+    border-right-color: $card-border-color !important;
+    border-top-color: $card-border-color !important;
+    border-bottom-width: $card-border-bottom-width;
+    position: relative;
+    width: 100%;
+    margin-bottom: $nhsuk-spacing-point-4;
+
+    // &:hover {
+    //     border-color: $card-border-hover-color;
+    // }
+
+    &--img-left {
+        @include respond-to(desktop) {
+            display: flex;
+        }
+    }
+
+    &_img-container {
+        flex: 1 1 auto;
+    }
+
+    &_img {
+        display: block;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    &_content {
+        @include top-and-bottom;
+        flex: 1 1 auto;
+        position: relative;
+        padding: $nhsuk-spacing-point-4;
+        width: 100%;
+        min-width: 60%;
+    }
+
+    &_heading {
+        @include medium-heading;
+
+        &--small {
+            @include standard-text;
+            margin-bottom: $nhsuk-spacing-point-1;
+        }
+    }
+
+    &_heading-icon {
+        width: $nhsuk-spacing-point-4;
+        height: $nhsuk-spacing-point-4;
+        display: block;
+        margin-bottom: $nhsuk-spacing-point-2;
+    }
+
+    &_heading,
+    &_metadata,
+    &_description {
+        margin-bottom: $nhsuk-spacing-point-3;
+    }
+
+    &_header {
+        display: block;
+        position: relative;
+
+        @include respond-to(desktop) {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    }
+
+    &_header-img {
+        width: 50px;
+        margin-right: $nhsuk-spacing-point-3;
+        flex: 0 0 auto;
+        margin-bottom: 12px;
+    }
+
+    &_header-content {
+        flex: 1 1 auto;
+    }
+
+    &_header-icons {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        @include respond-to(desktop) {
+            position: static;
+        }
+    }
+
+    &_header-icon {
+        width: $nhsuk-spacing-point-3;
+        height: $nhsuk-spacing-point-3;
+        margin-left: $nhsuk-spacing-point-3;
+
+        @include respond-to(desktop) {
+            margin-left: 20px;
+        }
+    }
+
+    &_footer-item {
+        // text small. bold
+        @include small-text(false);
+        font-weight: $nhsuk-font-bold;
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 20px;
+    }
+
+    &_footer-icon {
+        width: 21px;
+        height: 21px;
+        top: 5px;
+        position: relative;
+        margin-right: 4px;
+    }
+}

@@ -1,0 +1,14 @@
+﻿@if (ForumConfiguration.Instance.ChosenEditor == "tinymceeditor")
+{
+    @Html.Partial("customeditors/tinymceeditor")
+}
+
+@if (ForumConfiguration.Instance.ChosenEditor == "bbeditor")
+{
+    @Html.Partial("customeditors/bbeditor")
+}
+
+@if (ForumConfiguration.Instance.ChosenEditor == "markdowneditor")
+{
+    @Html.Partial("customeditors/markdowneditor")
+}

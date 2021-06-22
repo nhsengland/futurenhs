@@ -1,0 +1,125 @@
+@model MvcForum.Web.ViewModels.Shared.SiteHeaderViewModel
+@using MvcForum.Web.Application.ExtensionMethods
+@using MvcForum.Web.ViewModels.Shared
+@using MvcForum.Core.Models.General
+@using MvcForum.Core.Constants.UI
+@{
+    var searchFor = Html.Lang("Side.Search.SearchFor");
+}
+
+<header id="nav" class="c-site-header js-site-header-nav">
+    <h1 class="u-visually-hidden">Home</h1>
+    <div class="c-skip-links">
+        <p class="c-skip-links_item">
+            <a href="#main-nav" class="c-skip-links_link">Skip to main navigation</a>
+        </p>
+        <p class="c-skip-links_item">
+            <a href="#main" class="c-skip-links_link">Skip to main content</a>
+        </p>
+    </div>
+    <div class="l-container c-site-header_content">
+        <a href="/" class="c-site-header_logo u-focus-item">
+            <img src="/UI/assets/dist/img/content/logo.svg" alt="Future NHS home page">
+        </a>
+        <div id="navigation" class="c-site-header_nav c-site-header-nav">
+            <details class="c-site-header-nav_content" open>
+                <summary aria-haspopup="true" class="c-site-header-nav_mobile-trigger c-site-header-nav_mobile-trigger--right">
+                    Menu
+                </summary>
+                <div class="c-site-header-nav_desktop-container">
+                    <form method="get" action="/search/" class="c-site-header-nav_search-wrapper">
+                        <div class="c-site-header-nav_search-item">
+                            <label class="u-visually-hidden" for="siteSearch">Search the NHS website</label>
+                            <!-- INPUT NEEDS HOOKING UP TO SEARCH - WORKS WITH ID OF "term" BUT NEEDS TO WORK WITH THIS ID INSTEAD -->
+                            @Html.TextBox("siteSearch", null, new { @class = "c-site-header-nav_search-input", placeholder = searchFor, type = "search", aria_label = "Search site" })
+                            <button type="submit" aria-label="Site search button" class="c-site-header-nav_search-button">
+                                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-search", "c-site-header-nav_search-button-icon js-svg"));}
+                            </button>
+                        </div>
+                    </form>
+                    <nav id="header-nav" class="c-site-header-nav_nav" aria-label="Navigation">
+                        <ul class="c-site-header-nav_root-nav c-site-header-nav_root-nav--mobile-full-height" role="menubar">
+
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <li role="none">
+                                    <a role="menuitem" class="c-button c-site-header-nav_header-button" href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a>
+                                </li>
+
+                                if (Html.Settings().SuspendRegistration != true)
+                                {
+                                    <li role="none">
+                                        <a role="menuitem" class="c-button c-site-header-nav_header-button c-site-header-nav_header-button--outline" href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a>
+                                    </li>
+                                }
+                            }
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li role="none">
+                                    <details class="c-site-header-nav_root-nav-item">
+                                        <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
+
+                                            <span class="c-site-header-nav_root-nav-image">
+                                                @{Html.RenderPartial("_UserAvatar", @Model.CurrentUser);}
+                                            </span>
+                                            @Model.CurrentUser.GetFullName()
+                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg"));}
+                                        </summary>
+                                        <div class="c-site-header-nav_sub-nav">
+                                            <div class="c-site-header-nav_sub-nav-content">
+                                                <div class="l-row">
+                                                    <ul class="u-list-plain" role="menu" aria-label="Account navigation">
+                                                        @Html.Action("SideAdminPanel", "Members", new { isDropDown = false })
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                </li>
+
+                            }
+                            @foreach (var navItem in Model.NavigationItems.OrderBy(x => x.Order))
+                            {
+
+                                <li role="none" class="u-desktop-hidden">
+                                    @if (navItem is LinkGroup)
+                                    {
+                                    <details class="c-site-header-nav_root-nav-item">
+                                        <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger @(navItem.BorderTheme != null ? navItem.BorderTheme : Themes.BORDER_1)" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
+                                            @if (navItem.Icon != null) { Html.RenderPartial("_SVGIcon", new SVGIconViewModel(navItem.Icon, String.Format("c-site-header-nav_root-nav-content-icon {0}", navItem.IconTheme != null ? navItem.IconTheme : Themes.FILL_THEME_1))); }
+                                            @navItem.Name
+                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", String.Format("c-site-header-nav_root-nav-icon js-svg {0}", navItem.IconTheme != null ? navItem.IconTheme : Themes.FILL_THEME_1)));}
+                                        </summary>
+                                        <div class="c-site-header-nav_sub-nav">
+                                            <div class="c-site-header-nav_sub-nav-content">
+                                                <div class="l-row">
+                                                    <ul class="u-list-plain" role="menu" aria-label="Your bill">
+                                                        @foreach (var link in ((LinkGroup)navItem).ChildItems)
+                                                        {
+                                                            <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+                                                                <a role="menuitem" href="@link.Url" class="c-site-header-nav_sub-nav-child">
+                                                                    @link.Name
+                                                                </a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                    } else if (navItem is Link)
+                                    {
+                                    <a role="menuitem" href="@navItem.Url" class="c-site-header-nav_root-nav-trigger @(navItem.BorderTheme != null ? navItem.BorderTheme : Themes.BORDER_1)">
+                                        @if (navItem.Icon != null) {Html.RenderPartial("_SVGIcon", new SVGIconViewModel(navItem.Icon, String.Format("c-site-header-nav_root-nav-content-icon {0}", navItem.IconTheme != null ? navItem.IconTheme : Themes.FILL_THEME_1)));}
+                                        @navItem.Name
+                                    </a>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </details>
+        </div>
+    </div>
+</header>

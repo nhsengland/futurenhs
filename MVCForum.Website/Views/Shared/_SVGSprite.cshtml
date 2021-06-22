@@ -1,0 +1,9 @@
+﻿<div class="u-hidden">
+    @{
+        Layout = null;
+        string UiIconSvgPath = Server.MapPath("~/UI/assets/dist/img/svg-sprite/ui/symbols.svg");
+    }
+    @if (System.IO.File.Exists(UiIconSvgPath)){
+        @Html.Raw(System.IO.File.ReadAllText(UiIconSvgPath))
+    }
+</div>

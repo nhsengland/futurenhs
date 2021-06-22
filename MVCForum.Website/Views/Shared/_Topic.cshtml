@@ -1,0 +1,128 @@
+﻿@using MvcForum.Core.Utilities
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Topic.TopicViewModel
+@using MvcForum.Web.ViewModels.Shared
+
+@{
+    var postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
+}
+@if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
+{
+
+    <div class="c-card u-border-theme-10">
+        <div class="c-card_content">
+            <div class="c-card_header">
+                <div class="c-card_header-img">
+                    @{Html.RenderPartial("_UserAvatar", @Model.Topic.User);}
+                </div>
+                <div class="c-card_header-content u-text-theme-7">
+                    <p class="u-text-small u-text-bold u-has-subheading">Created by <a href="@Model.Topic.User.NiceUrl">@Model.Topic.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</p>
+                    <p class="u-text-small"><a href="@Html.Raw(Model.LastPostPermaLink)">Last comment</a> by <a href="@Model.Topic.LastPost.User.NiceUrl">@Model.Topic.LastPost.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</p>
+                </div>
+                <div class="c-card_header-icons">
+                    @if (Model.Topic.IsSticky)
+                    {
+                        <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-pin", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is pinned</span> </p>
+                    }
+                    @if (Model.Topic.IsLocked)
+                    {
+                        <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-lock", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is locked</span> </p>
+                    }
+                    @* TODO - FAVOURITE 
+                    <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-favourite-fill", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is favourited</span> </p>
+                    *@
+                </div>
+            </div>
+            <h2 class="c-card_heading">
+                <a class="c-card_link" href="@Html.Raw(Model.Topic.NiceUrl)">@Html.Raw(Model.Topic.Name)</a>
+            </h2>
+            <div class="c-card_footer u-text-theme-7">
+                 <p class="c-card_footer-item">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_footer-icon u-fill-theme-10"));} @Model.Answers.KiloFormat() Comments</p>
+                 <p class="c-card_footer-item">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-view", "c-card_footer-icon u-fill-theme-10"));} @Model.Views.KiloFormat() Views</p>
+            </div>
+        </div>
+    </div>
+
+    @*
+    <div class="topicrow topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
+        <b>Created by <a href="@Model.Topic.User.NiceUrl">@Model.Topic.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</b>
+        <div class="rowcreater hidden-xs">
+            <a href="@Model.Topic.User.NiceUrl">
+                @if (!string.IsNullOrEmpty(Model.Topic.User.Avatar))
+                {
+                    <img src="@Model.Topic.User.MemberImage(ForumConfiguration.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
+                }
+            </a>
+            @if (Model.MemberIsOnline)
+            {
+                <span class="label label-success">
+                    @Html.Lang("Post.MemberIsOnline")
+                </span>
+            }
+        </div>
+
+        <div class="rowdetails">
+            <p class="Group Groupsolved@(Model.Topic.Solved.ToString().ToLower())" style="border-color: @(string.IsNullOrEmpty(Model.Topic.Group.Colour) ? "#ced1d1" : Model.Topic.Group.Colour)">@Html.LanguageString("Topic.Group"): <a href="@Model.Topic.Group.NiceUrl">@Model.Topic.Group.Name</a></p>
+            <h3>
+                <a title="@postToolTip" href="@Html.Raw(Model.Topic.NiceUrl)">
+                    @if (Model.Topic.IsSticky)
+                    {
+                        {Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-important", "c-ui-icon"));}
+                    }
+                    @if (Model.Topic.IsLocked)
+                    {
+                        {Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-close", "c-ui-icon"));}
+                    }
+                    @if (Model.Topic.Poll != null)
+                    {
+                        {Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-document", "c-ui-icon"));}
+                    }
+                    @Html.Raw(Model.Topic.Name)
+                </a>
+            </h3>
+            @if (Model.ShowUnSubscribedLink)
+            {
+                <p>
+                    <a href="#" class="emailunsubscription" data-id="@Model.Topic.Id" data-type="topic">
+                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon"));}
+                        @Html.LanguageString("Topic.UnSubscribe")
+                    </a>
+                </p>
+            }
+            else if (Model.Topic.Tags.Any())
+            {
+                <div class="tagsinput clearfix">
+                    @foreach (var tag in Model.Topic.Tags)
+                    {
+                        <span class="tag"><span><a href="@Html.Raw(tag.NiceUrl)">@Html.Raw(tag.Tag)</a></span></span>
+                    }
+                </div>
+            }
+
+            <p class="topicrowfooterinfo">
+                <a href="@Html.Raw(Model.LastPostPermaLink)">
+                    @if (!string.IsNullOrEmpty(Model.Topic.User.Avatar))
+                    {
+                        <img src="@Model.Topic.LastPost.User.MemberImage(ForumConfiguration.Instance.GravatarLatestBySize)" alt="@Model.Topic.LastPost.User.UserName">
+                    }
+                </a> 
+                <a href="@Html.Raw(Model.LastPostPermaLink)">
+                    @Html.LanguageString("Topic.LatestBy")
+                </a> 
+                <a href="@Model.Topic.LastPost.User.NiceUrl">
+                    @Model.Topic.LastPost.User.GetFullName()
+                </a> 
+                @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
+                <span class="stats topicanswers">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-speech-bubbles", "c-ui-icon"));} @Model.Answers.KiloFormat()</span>
+                <span class="stats topicviews">Views: @Model.Views.KiloFormat()</span>
+                <span class="stats topicupvotes">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-thumbs-up", "c-ui-icon"));} @Model.VotesUp.KiloFormat()</span>
+                <span class="stats topicdownvotes">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-down", "c-ui-icon"));}  @Model.VotesDown.KiloFormat()</span>
+                @if (Model.Topic.Solved)
+                {
+                    <span class="stats topicsolved">@{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon c-ui-icon--green")); }</span>
+                }
+            </p>
+
+        </div>
+    </div>*@
+}

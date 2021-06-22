@@ -1,0 +1,42 @@
+﻿@model MvcForum.Web.ViewModels.Admin.LanguagesHomeViewModel
+
+@{
+    ViewBag.Title = "Languages";
+}
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h2>Export a Language</h2>
+        <p>Exports the language into CSV</p>
+        @using (Html.BeginForm("ExportLanguage", "ImportExport"))
+        {
+            <p>@Html.DropDownList("languageCulture", new SelectList(@Model.LanguageViewModel.ExportLanguages, "Name", "EnglishName"), new { @class = "form-control" })</p>
+            <div class="submit-holder">
+                <button type="submit" class="btn-mvc-green">Export</button>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h2>Import a Language</h2>
+        <p>Import a language from a CSV file, making sure you choose the correct language from the drop down. Use the export language option above to get a template for the import.</p>
+        @using (Html.BeginForm("ImportLanguage", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
+        {
+            <p>@Html.DropDownList("languageCulture", new SelectList(@Model.LanguageViewModel.ImportLanguages, "Name", "EnglishName"), new { @class = "form-control" })</p>
+            <div class="submit-holder form-group">
+                <p><input type="file" id="file" name="file" class="form-control" /></p>
+                <p><input type="submit" class="btn-mvc-green" value="Import" /></p>
+            </div>
+        }
+
+        @*Results of any import are displayed here:*@
+        <div id="ImportResults"></div>
+
+        @*This frame is displayed off the page and gets the results of the import (ie the success or fail messages) *@
+        <iframe id="UploadTarget" name="UploadTarget" onload="Import_Complete();" style="position: absolute; left: -999em; top: -999em;"></iframe>
+
+    </div>
+</div>

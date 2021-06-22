@@ -1,0 +1,8 @@
+﻿@model MvcForum.Core.Models.General.PaginatedList<MvcForum.Core.Models.Entities.Post>
+@{
+    Layout = null;
+}
+@foreach (var post in Model)
+{
+    @Html.Partial("_ModeratePost", post)
+}

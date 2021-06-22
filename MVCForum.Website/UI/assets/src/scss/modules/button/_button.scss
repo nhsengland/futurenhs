@@ -1,0 +1,23 @@
+.c-button {
+    @extend %nhsuk-button;
+
+    &--outline {
+        @extend %toggle-button;
+    }
+
+    &--secondary {
+        @extend %nhsuk-button-secondary;
+    }
+
+    &--reverse {
+        @extend %nhsuk-button-reverse;
+    }
+
+    &--full-width {
+        width: 100%;
+    }
+}
+
+.c-button-outline {
+    @extend %toggle-button;
+}

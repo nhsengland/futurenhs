@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 98.253244 130.00041"
+   version="1.1">
+  <g
+     id="Layer_10"
+     data-name="Layer 10"
+     transform="translate(-182.20338,-164.74)">
+    <path
+       class="cls-1"
+       d="m 231.32,164.74 c -9.65,0 -17.5,7.54 -17.5,16.82 V 235 l -2,-2 a 17.49,17.49 0 0 0 -24.73,24.73 L 219,289.62 a 17.49,17.49 0 0 0 24.73,0 l 31.84,-31.84 a 17.49,17.49 0 0 0 -24.73,-24.73 l -2,2 V 181.56 C 248.82,172.28 241,164.74 231.32,164.74 Z M 255.75,238 a 10.49,10.49 0 0 1 14.83,14.83 l -31.84,31.84 a 10.5,10.5 0 0 1 -14.83,0 L 192.07,252.83 A 10.49,10.49 0 0 1 206.9,238 l 7.95,7.95 a 3.5,3.5 0 0 0 6,-2.47 v -61.92 c 0,-5.42 4.71,-9.82 10.5,-9.82 5.79,0 10.5,4.4 10.5,9.82 v 61.92 a 3.5,3.5 0 0 0 6,2.47 z"
+       id="path2" />
+  </g>
+</svg>

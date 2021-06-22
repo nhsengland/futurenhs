@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="cache-control" content="max-age=0"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <meta http-equiv="expires" content="0"/>
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <title>Icon kit preview | gulp-svg-sprites</title>
+    <link href="css/sprite.css" rel="stylesheet" type="text/css" media="all"/>
+    <style type="text/css">@CHARSET "UTF-8";
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        padding: 0;
+        margin: 0;
+        color: #666;
+        background: #fafafa;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1em;
+        line-height: 1.4
+    }
+
+    header {
+        display: block;
+        padding: 3em 3em 2em 3em;
+        background-color: #fff
+    }
+
+    header p {
+        margin: 0 0 0 0;
+    }
+
+    nav {
+        font-size: .7em;
+        display: block;
+        width: 100%;
+        margin: 0 0 2em 0
+    }
+
+    nav a {
+        display: inline-block;
+        text-decoration: none;
+        margin-left: 2em;
+        color: #0f7595;
+        white-space: nowrap
+    }
+
+    nav a:hover {
+        text-decoration: underline
+    }
+
+    nav a.current {
+        font-weight: bold;
+        text-decoration: underline;
+        color: #666
+    }
+
+    section {
+        border-top: 1px solid #eee;
+        padding: 2em 3em 0 3em
+    }
+
+    ul {
+        margin: 0;
+        padding: 0
+    }
+
+    .icon-boxes li {
+        display: inline-block;
+        background-color: #fff;
+        position: relative;
+        margin: 0 2em 2em 0;
+        vertical-align: top;
+        border: 1px solid #ccc;
+        padding: 1em 1em 1em 1em;
+        cursor: default
+    }
+
+    .icon-box {
+        margin: 0;
+        width: 144px;
+        height: 144px;
+        position: relative;
+        background: #ccc url(data:image/gif;base64,R0lGODlhDAAMAIAAAMzMzP///yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjEgNjQuMTQwOTQ5LCAyMDEwLzEyLzA3LTEwOjU3OjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1LjEgV2luZG93cyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozQjk4OTI0MUY5NTIxMUUyQkJDMEI5NEFEM0Y1QTYwQyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozQjk4OTI0MkY5NTIxMUUyQkJDMEI5NEFEM0Y1QTYwQyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjNCOTg5MjNGRjk1MjExRTJCQkMwQjk0QUQzRjVBNjBDIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjNCOTg5MjQwRjk1MjExRTJCQkMwQjk0QUQzRjVBNjBDIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAAsAAAAAAwADAAAAhaEH6mHmmzcgzJAUG/NVGrfOZ8YLlABADs=) top left repeat;
+        border: 1px solid #ccc;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center
+    }
+    .icon-box.inverted {
+        background: black;
+    }
+
+    .icon {
+        display: inline;
+        display: inline-block
+    }
+
+    .snippet-popover {
+        position: absolute;
+        display: none;
+        opacity: 0;
+        bottom: 0;
+        left: 0;
+        background: white;
+        border: 1px solid #ccc;
+        padding: 16px;
+        z-index: 1;
+        transition: all .3s;
+    }
+    .snippet-popover.active {
+        display: block;
+        opacity: 1;
+    }
+
+    pre {
+        margin: 0;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        margin: 0;
+        padding: 5px 0;
+        font-size: 1em;
+        font-weight: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    h4 {
+        margin: 0;
+    }
+
+    footer {
+        display: block;
+        margin: 0;
+        padding: 0 3em 3em 3em
+    }
+
+    footer p {
+        margin: 0;
+        font-size: .7em
+    }
+
+    footer a {
+        color: #0f7595;
+        margin-left: 0
+    }
+    </style>
+
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="0" height="0" style="position:absolute">
+	
+		<symbol id="icon-account" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 510 510">
+			<title>Account</title><path d="M255 0C114.75 0 0 114.75 0 255s114.75 255 255 255 255-114.75 255-255S395.25 0 255 0zm0 76.5c43.35 0 76.5 33.15 76.5 76.5s-33.15 76.5-76.5 76.5-76.5-33.15-76.5-76.5 33.15-76.5 76.5-76.5zm0 362.1c-63.75 0-119.85-33.149-153-81.6 0-51 102-79.05 153-79.05S408 306 408 357c-33.15 48.45-89.25 81.6-153 81.6z"></path>
+		</symbol>
+	
+		<symbol id="icon-chevron-down" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 13.752 8.192">
+			<title>Chevron down</title><path d="M6.511 8.041L.152 1.733a.516.516 0 0 1 0-.73l.851-.851a.516.516 0 0 1 .73 0l5.143 5.094L12.019.154a.516.516 0 0 1 .73 0l.851.851a.516.516 0 0 1 0 .73L7.241 8.043a.516.516 0 0 1-.73-.002z"></path>
+		</symbol>
+	
+		<symbol id="icon-chevron-left" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 10.426 17.503">
+			<title>Chevron left</title><path d="M.193 8.287L8.221.193a.657.657 0 0 1 .93 0l1.083 1.083a.657.657 0 0 1 0 .93l-6.48 6.546 6.48 6.546a.657.657 0 0 1 0 .93l-1.083 1.083a.657.657 0 0 1-.93 0L.193 9.217a.657.657 0 0 1 0-.93z"></path>
+		</symbol>
+	
+		<symbol id="icon-chevron-right" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 10.426 17.503">
+			<title>Chevron right</title><path d="M10.233 9.216L2.205 17.31a.657.657 0 0 1-.93 0L.192 16.227a.657.657 0 0 1 0-.93l6.48-6.546L.193 2.203a.657.657 0 0 1 0-.93L1.276.19a.657.657 0 0 1 .93 0l8.028 8.094a.657.657 0 0 1-.001.932z"></path>
+		</symbol>
+	
+		<symbol id="icon-chevron-up" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 13.75 8.19">
+			<title>Chevron up</title><path d="M7.24.15l6.36 6.31a.52.52 0 0 1 0 .73l-.85.81A.52.52 0 0 1 12 8L6.88 3 1.73 8A.52.52 0 0 1 1 8l-.85-.81a.52.52 0 0 1 0-.73L6.51.15a.52.52 0 0 1 .73 0z"></path>
+		</symbol>
+	
+		<symbol id="icon-clock" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 161.3 161.3">
+			<path d="M80.7 161.3c-21.6 0-41.8-8.4-57.1-23.6C8.4 122.4 0 102.2 0 80.6s8.4-41.8 23.6-57c31.5-31.5 82.6-31.5 114.1 0 31.4 31.5 31.4 82.6 0 114.1-15.2 15.2-35.5 23.6-57 23.6zM80.7 7C61.8 7 43 14.2 28.6 28.5 14.7 42.5 7 61 7 80.6c0 19.7 7.7 38.2 21.6 52.1 13.9 13.9 32.4 21.6 52.1 21.6 19.7 0 38.2-7.7 52.1-21.6 28.7-28.7 28.7-75.4 0-104.2A73.85 73.85 0 0 0 80.7 7z"></path><path d="M61.2 103.6c-.9 0-1.8-.3-2.5-1-1.4-1.4-1.4-3.6 0-4.9l19.5-19.5c1.4-1.4 3.6-1.4 4.9 0 1.4 1.4 1.4 3.6 0 4.9l-19.5 19.5c-.6.7-1.5 1-2.4 1z"></path><path d="M80.7 84.1c-1.9 0-3.5-1.6-3.5-3.5V31.9c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5v48.7c0 2-1.6 3.5-3.5 3.5z"></path>
+		</symbol>
+	
+		<symbol id="icon-close" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 32 32">
+			<title>Close</title><path d="M31.25 4.875L19.937 16l11.125 11.125c.563.563.75 1.125.75 2.063 0 1.5-1.313 2.813-2.813 2.813-.75 0-1.5-.375-2.063-.75L15.998 19.938 4.873 31.063c-.563.563-1.125.75-2.063.75-1.5 0-2.813-1.313-2.813-2.813 0-.75.375-1.5.75-2.063l11.125-11.125L.747 4.687c-.375-.375-.75-1.125-.75-1.875 0-1.5 1.313-2.813 2.813-2.813.75 0 1.5.375 2.063.75l11.125 11.125L27.123.749c.563-.563 1.125-.75 2.063-.75 1.5 0 2.813 1.313 2.813 2.813 0 .75-.375 1.5-.75 2.063z"></path>
+		</symbol>
+	
+		<symbol id="icon-comments" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 21 20">
+			<path d="M19.174 0H1.826A1.826 1.826 0 0 0 0 1.826v11.87a1.826 1.826 0 0 0 1.826 1.826h3.652v2.739a.913.913 0 0 0 1.559.645l3.386-3.384h8.75A1.827 1.827 0 0 0 21 13.696V1.826A1.826 1.826 0 0 0 19.174 0zm0 13.466a.228.228 0 0 1-.228.228h-8.903a.913.913 0 0 0-.645.267l-2.094 2.094v-1.446a.913.913 0 0 0-.913-.913H2.054a.228.228 0 0 1-.228-.229V2.054a.228.228 0 0 1 .228-.228h16.892a.228.228 0 0 1 .228.228v11.412z"></path>
+		</symbol>
+	
+		<symbol id="icon-cross-circle" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 31 31">
+			<path clip-rule="evenodd" d="M5.28 5.28a15 15 0 1 0 21.214 21.214A15 15 0 0 0 5.281 5.28zM2.763 15.888a13.125 13.125 0 1 1 26.25 0 13.125 13.125 0 0 1-26.25 0zm8.485-4.64a.937.937 0 0 1 1.326 0l3.315 3.314 3.314-3.314a.937.937 0 0 1 1.326 1.326l-3.314 3.314 3.314 3.315a.937.937 0 0 1-1.326 1.325l-3.314-3.314-3.315 3.315a.937.937 0 1 1-1.326-1.326l3.315-3.315-3.315-3.314a.937.937 0 0 1 0-1.326z"></path>
+		</symbol>
+	
+		<symbol id="icon-document" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 140 180">
+			<path d="M121.5 180h-103C3.9 180 0 167.9 0 161.5v-143C0 3.9 12.1 0 18.5 0h103C136.1 0 140 12.1 140 18.5v143c0 14.6-12.1 18.5-18.5 18.5zM18.5 7C17.3 7 7 7.4 7 18.5v143c0 1.2.4 11.5 11.5 11.5h103c1.2 0 11.5-.4 11.5-11.5v-143c0-1.2-.4-11.5-11.5-11.5h-103z"></path><path d="M101.3 44.8h-73c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5h73c1.9 0 3.5 1.6 3.5 3.5s-1.6 3.5-3.5 3.5zM93.8 64.1H28.3c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5h65.5c1.9 0 3.5 1.6 3.5 3.5s-1.6 3.5-3.5 3.5zM101.3 83.4h-73c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5h73c1.9 0 3.5 1.6 3.5 3.5s-1.6 3.5-3.5 3.5zM101.3 102.7h-73c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5h73c1.9 0 3.5 1.6 3.5 3.5s-1.6 3.5-3.5 3.5zM93.8 122H28.3c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5h65.5c1.9 0 3.5 1.6 3.5 3.5s-1.6 3.5-3.5 3.5zM101.3 141.4h-73c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5h73c1.9 0 3.5 1.6 3.5 3.5s-1.6 3.5-3.5 3.5z"></path>
+		</symbol>
+	
+		<symbol id="icon-down" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 98.253244 130.00041">
+			<path class="cls-1" d="M49.117 0c-9.65 0-17.5 7.54-17.5 16.82v53.44l-2-2a17.49 17.49 0 0 0-24.73 24.73l31.91 31.89a17.49 17.49 0 0 0 24.73 0l31.84-31.84a17.49 17.49 0 0 0-24.73-24.73l-2 2V16.82C66.617 7.54 58.797 0 49.117 0zm24.43 73.26a10.49 10.49 0 0 1 14.83 14.83l-31.84 31.84a10.5 10.5 0 0 1-14.83 0L9.867 88.09a10.49 10.49 0 0 1 14.83-14.83l7.95 7.95a3.5 3.5 0 0 0 6-2.47V16.82c0-5.42 4.71-9.82 10.5-9.82s10.5 4.4 10.5 9.82v61.92a3.5 3.5 0 0 0 6 2.47z" data-name="Layer 10"></path>
+		</symbol>
+	
+		<symbol id="icon-favourite" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 28 28">
+			<path d="M5.837 27.997a.892.892 0 0 1-.633-.338.973.973 0 0 1-.2-.714l1.092-8.872L.238 11.56l.002-.002a.972.972 0 0 1-.196-.928.918.918 0 0 1 .68-.633L9.11 8.345l4.09-7.857.002.002a.891.891 0 0 1 .788-.49c.329 0 .632.188.79.49l4.09 7.857L27.276 10v-.002c.318.068.58.308.68.633.1.324.025.679-.196.928l-5.858 6.514 1.091 8.871.002.002c.04.342-.1.68-.369.88a.864.864 0 0 1-.913.081L14 24.06l-7.729 3.846a.878.878 0 0 1-.434.091zm1.16-2.54l6.62-3.266h.001a.864.864 0 0 1 .764 0l6.62 3.266-.937-7.584a.967.967 0 0 1 .244-.78l5.026-5.57-7.209-1.415-.002-.001a.901.901 0 0 1-.623-.472l-3.518-6.732-3.5 6.732a.897.897 0 0 1-.624.472l-7.192 1.415 5.026 5.57-.001.001c.19.206.28.494.243.78L7 25.457h-.002z"></path>
+		</symbol>
+	
+		<symbol id="icon-favourite-fill" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 17 16">
+			<path d="M13.458 15.993a.48.48 0 0 1-.221-.054l-4.738-2.457-4.738 2.457a.48.48 0 0 1-.502-.036.466.466 0 0 1-.189-.46l.906-5.194L.143 6.555a.465.465 0 0 1-.12-.48.473.473 0 0 1 .384-.32l5.297-.75L8.073.26c.08-.16.245-.26.426-.26.18 0 .346.1.426.26l2.37 4.73 5.297.752a.466.466 0 1 1 .265.8l-3.835 3.707.904 5.203a.468.468 0 0 1-.106.382.477.477 0 0 1-.362.166v-.007z"></path>
+		</symbol>
+	
+		<symbol id="icon-forum" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 33 30">
+			<path d="M32.995 3.283c0-.87-.344-1.705-.956-2.321A3.255 3.255 0 0 0 29.73 0H9.24a3.274 3.274 0 0 0-3.264 3.283v10.211H2.04c-1.127 0-2.04.92-2.04 2.053v8.438c0 .545.215 1.066.598 1.45.382.387.9.602 1.442.602h2.192l.759 3.325a.817.817 0 0 0 .588.61.808.808 0 0 0 .811-.242l3.335-3.693h5.43c.541 0 1.06-.215 1.443-.602.383-.384.598-.905.598-1.45v-4.568h.685l5.59 6.185a.815.815 0 0 0 1.4-.369l1.334-5.816h3.53c.866 0 1.697-.347 2.309-.962.612-.616.956-1.451.956-2.322l-.005-12.85zM15.563 23.984a.411.411 0 0 1-.408.41H9.361a.816.816 0 0 0-.604.272L6.231 27.46l-.555-2.43v.001a.82.82 0 0 0-.795-.636H2.024a.408.408 0 0 1-.408-.41v-8.438c0-.227.182-.41.408-.41h3.937v.996c0 .87.345 1.706.957 2.322a3.256 3.256 0 0 0 2.308.962h6.337v4.567zm15.8-7.85c0 .436-.172.852-.478 1.16-.306.308-.72.481-1.154.481h-4.178a.82.82 0 0 0-.797.637l-1.127 4.925-4.785-5.291a.811.811 0 0 0-.604-.266H9.242c-.9 0-1.633-.736-1.633-1.642V3.284c0-.908.732-1.642 1.633-1.642H29.73c.433 0 .848.173 1.154.48.306.309.478.725.478 1.162v12.85z"></path>
+		</symbol>
+	
+		<symbol id="icon-forum-fill" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 31 28">
+			<path clip-rule="evenodd" d="M30.996 2.985c0-.792-.313-1.55-.87-2.11A2.96 2.96 0 0 0 28.028 0H9.402a2.976 2.976 0 0 0-2.968 2.985v9.283l-.015 2.399c0 .791.313 1.55.87 2.11a2.96 2.96 0 0 0 2.098.875H17.256l5.081 5.622a.74.74 0 0 0 1.273-.335l1.213-5.288h3.21a2.96 2.96 0 0 0 2.098-.874c.556-.56.869-1.319.869-2.11l-.004-11.682zM4.918 12H1.855A1.86 1.86 0 0 0 0 13.866v7.67c0 .496.196.97.543 1.32.348.35.82.546 1.312.546h1.992l.69 3.023a.742.742 0 0 0 1.272.335l3.032-3.358h4.937c.491 0 .963-.195 1.311-.547a1.87 1.87 0 0 0 .544-1.319v-2.64L8 19c-.819 0-3.082-.5-3.082-3v-4z"></path>
+		</symbol>
+	
+		<symbol id="icon-group" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 35 26">
+			<path d="M26.133 0c3.792 0 6.875 3.106 6.875 6.926a6.933 6.933 0 0 1-3.128 5.804 11.062 11.062 0 0 1 4.93 3.604.91.91 0 0 1-.155 1.269.895.895 0 0 1-1.26-.156 9.19 9.19 0 0 0-7.262-3.56 9.194 9.194 0 0 0-7.26 3.558.893.893 0 0 1-1.26.156.908.908 0 0 1-.156-1.27 11.026 11.026 0 0 1 4.931-3.6 6.937 6.937 0 0 1-3.128-5.805C19.26 3.106 22.343 0 26.134 0zm0 1.816c-2.805 0-5.071 2.283-5.071 5.11 0 2.826 2.266 5.11 5.071 5.11 2.806 0 5.072-2.284 5.072-5.11 0-2.829-2.266-5.11-5.072-5.11z"></path><path d="M10.565 4.986c3.792 0 6.875 3.106 6.875 6.926a6.936 6.936 0 0 1-3.096 5.781 11.1 11.1 0 0 1 6.744 7.13.909.909 0 0 1-.59 1.135.9.9 0 0 1-1.127-.594c-1.199-3.884-4.772-6.527-8.806-6.527-4.037 0-7.608 2.64-8.806 6.527a.898.898 0 0 1-1.127.594.907.907 0 0 1-.59-1.135 11.096 11.096 0 0 1 6.743-7.13 6.937 6.937 0 0 1-3.095-5.781c0-3.82 3.083-6.926 6.874-6.926h.001zm0 1.816c-2.805 0-5.071 2.284-5.071 5.11 0 2.826 2.266 5.11 5.071 5.11 2.806 0 5.072-2.284 5.072-5.11 0-2.826-2.266-5.11-5.072-5.11z"></path>
+		</symbol>
+	
+		<symbol id="icon-home" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 28 30">
+			<path d="M13.483.17l-13.152 10a.842.842 0 0 0-.331.664v18.333c0 .436.404.833.849.833h8.909c.444 0 .848-.397.848-.833v-5.834c0-1.86 1.5-3.333 3.394-3.333 1.894 0 3.394 1.473 3.394 3.334v5.833c0 .436.404.833.848.833h8.91c.444 0 .848-.397.848-.833V10.834a.847.847 0 0 0-.331-.664L14.517.17a.872.872 0 0 0-1.034 0zM14 1.876l12.303 9.362v17.095h-7.212v-5c0-2.755-2.285-5-5.091-5s-5.09 2.245-5.09 5v5H1.696V11.238L14 1.876z"></path>
+		</symbol>
+	
+		<symbol id="icon-home-fill" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 28 30">
+			<path d="M.331 10.17l13.152-10a.872.872 0 0 1 1.034 0l13.152 10a.847.847 0 0 1 .331.664v18.333c0 .436-.404.833-.849.833h-8.909c-.444 0-.848-.397-.848-.833v-5.834c0-1.86-1.5-3.333-3.394-3.333-1.894 0-3.394 1.473-3.394 3.334v5.833c0 .436-.404.833-.848.833H.848C.404 30 0 29.603 0 29.167V10.834a.842.842 0 0 1 .331-.664z"></path>
+		</symbol>
+	
+		<symbol id="icon-important" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 32 120.03">
+			<g data-name="Layer 10" transform="translate(-215.365 -169.72)"><path class="cls-1" d="M231.32 253.27c8.5 0 14.67-6.84 14.67-16.28V186c0-9.43-6.17-16.28-14.67-16.28s-14.66 6.85-14.66 16.28v51c0 9.43 6.16 16.27 14.66 16.27zM223.66 186c0-4.62 2.37-9.28 7.66-9.28S239 181.4 239 186v51c0 4.62-2.37 9.28-7.67 9.28s-7.66-4.66-7.66-9.28zM231.32 289.75a16.09 16.09 0 0 0 16-16.17 16 16 0 1 0-31.91 0 16.09 16.09 0 0 0 15.91 16.17zm0-25.33a9.29 9.29 0 0 1 9 9.16 9 9 0 1 1-17.91 0 9.29 9.29 0 0 1 8.91-9.16z"></path></g>
+		</symbol>
+	
+		<symbol id="icon-left" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 129.99628 98.507523">
+			<path class="cls-1" d="M5.146 61.507l31.84 31.89a17.5 17.5 0 0 0 24.72-24.78l-2-2h53.47c9.27 0 16.82-7.85 16.82-17.5s-7.55-17.5-16.82-17.5h-53.47l2-2a17.49 17.49 0 0 0-24.73-24.73l-31.84 31.84a17.5 17.5 0 0 0 .01 24.78zm4.95-19.78l31.84-31.84a10.49 10.49 0 0 1 14.83 14.83l-7.95 8a3.5 3.5 0 0 0 2.48 6h61.92c5.41 0 9.82 4.71 9.82 10.5s-4.41 10.5-9.82 10.5h-61.92a3.5 3.5 0 0 0-2.48 6l7.95 7.95a10.49 10.49 0 0 1-14.83 14.73l-31.84-31.84a10.5 10.5 0 0 1 0-14.83z" data-name="Layer 10"></path>
+		</symbol>
+	
+		<symbol id="icon-lock" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 14 16">
+			<path d="M7 0C4.422 0 2.333 2.046 2.333 4.571v2.286H0V16h14V6.857h-2.333V4.571C11.667 2.046 9.578 0 7 0zm0 2.286c1.388 0 2.333.925 2.333 2.285v2.286H4.667V4.571c0-1.36.945-2.285 2.333-2.285z"></path>
+		</symbol>
+	
+		<symbol id="icon-megaphone" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 118 119.7">
+			<path d="M87.7 34l17.7-17.7c1.4-1.4 1.4-3.6 0-5s-3.6-1.4-5 0L82.7 29c-1.4 1.4-1.4 3.6 0 5 .7.7 1.6 1 2.5 1 .9 0 1.8-.4 2.5-1zM73.3 23.1c1.6 0 3-1.1 3.4-2.6l4.4-16.3c.4-1.9-.8-3.8-2.7-4.2-1.8-.4-3.5.6-4.1 2.3l-4.4 16.3c-.5 1.9.6 3.8 2.5 4.3.3.2.6.2.9.2zM117.9 39.2c-.5-1.9-2.4-3-4.3-2.5l-16.3 4.4c-1.9.5-3 2.4-2.5 4.3.4 1.5 1.8 2.6 3.4 2.6.3 0 .6 0 .9-.1l16.3-4.4c1.9-.5 3-2.4 2.5-4.3zM106.5 78.5c2.8-2.1 3.4-6 1.3-8.8-.2-.3-.4-.5-.7-.8L48.9 10.7c-2.4-2.5-6.4-2.6-8.9-.1-.2.2-.5.5-.7.8-.1.1-.2.2-.3.4L4.5 72.1c-6.8 9.1-5.9 23.1 2.2 31.1l8.2 8.2c4.6 4.4 10.7 6.8 17 6.8 5.1.1 10.1-1.5 14.2-4.5l2.3-1.3 1.4 2.4c1.4 2.3 3.6 4 6.3 4.7.8.2 1.7.3 2.6.3 1.8 0 3.6-.5 5.2-1.4l23.5-13.8c4.9-2.9 6.5-9.1 3.6-14l-1.3-2.2 16.5-9.6.3-.3zm-22 15.8c.7 1.3.3 2.9-1 3.7L60 111.8c-.6.3-1.3.4-2 .3-.7-.2-1.3-.6-1.7-1.2l-1.4-2.4 28.2-16.4 1.4 2.2zm-36.1 9.9l-.3.1c-.1 0-.1.1-.2.2l-5.5 3.2c-.1.1-.3.2-.4.2-6.8 4.9-16.1 4.3-22.1-1.5l-8.2-8.2c-5.7-6-6.4-15.3-1.4-22.1.1-.1.2-.3.3-.4l34.1-59.5 57.1 57.1-53.4 30.9z"></path>
+		</symbol>
+	
+		<symbol id="icon-members-fill" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 21 26">
+			<path clip-rule="evenodd" d="M17.687 7.677c0-4.064-3.01-7.677-7.15-7.677-4.214 0-7.225 3.613-7.225 7.677 0 3.99 3.01 7.678 7.225 7.678 4.139 0 7.15-3.688 7.15-7.678zM0 25.74v-1.581c0-3.99 3.312-7.301 7.301-7.301H13.7c4.064 0 7.301 3.312 7.301 7.301v1.581H0z"></path>
+		</symbol>
+	
+		<symbol id="icon-minus" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 16 4">
+			<path d="M0 0h16v4H0z"></path>
+		</symbol>
+	
+		<symbol id="icon-notification" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 23 30">
+			<path d="M20.342 20.467a.276.276 0 0 1-.075-.187v-8.342c0-4.73-3.488-8.63-7.93-9.068v-2c0-.48-.375-.87-.835-.87-.461 0-.837.39-.837.87v2c-4.441.44-7.929 4.339-7.929 9.068v8.343c0 .07-.03.14-.075.187L.565 22.647A2.035 2.035 0 0 0 0 24.065v.665c0 1.11.866 2.01 1.932 2.01h5.863C8.093 28.587 9.64 30 11.5 30c1.86 0 3.407-1.413 3.705-3.26h5.863c1.066 0 1.932-.9 1.932-2.01v-.665c0-.535-.2-1.04-.565-1.418l-2.093-2.18zm-8.84 7.791c-.933 0-1.716-.643-1.982-1.521h3.964c-.268.878-1.05 1.521-1.983 1.521zm9.826-3.53c0 .147-.117.27-.26.27H1.935a.267.267 0 0 1-.26-.27v-.666c0-.07.025-.14.075-.187l2.096-2.179c.364-.378.565-.883.565-1.418l-.001-8.34c0-4.065 3.182-7.373 7.092-7.373 3.91 0 7.093 3.308 7.093 7.373v8.343c0 .535.2 1.04.565 1.418l2.096 2.18c.05.047.075.116.075.186l-.002.663z"></path>
+		</symbol>
+	
+		<symbol id="icon-pin" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+			<path d="M15.737 5.597L10.405.262a.888.888 0 0 0-.966-.196.895.895 0 0 0-.563.788V3L5.884 6l-4.573.782a.89.89 0 0 0-.486 1.506l2.814 2.816-3.377 3.38a.882.882 0 0 0 0 1.256.888.888 0 0 0 1.256 0l3.377-3.38 2.814 2.817a.906.906 0 0 0 .628.26c.093-.002.184-.016.273-.04a.901.901 0 0 0 .592-.706l.753-4.577 2.997-2.993h2.157c.36-.001.685-.22.823-.552a.89.89 0 0 0-.195-.972zm-3.14-.26a.888.888 0 0 0-.628.26l-3.46 3.456a.894.894 0 0 0-.249.486l-.515 3.148-4.438-4.464 3.146-.515a.893.893 0 0 0 .486-.25l3.43-3.461a.867.867 0 0 0 .261-.629v-.367l2.31 2.312-.343.023z"></path>
+		</symbol>
+	
+		<symbol id="icon-plus" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+			<g transform="translate(-877 -1739.5)"><path d="M877 1745.5h16v4h-16z"></path><path d="M887 1739.5v16h-4v-16z"></path></g>
+		</symbol>
+	
+		<symbol id="icon-plus-circle" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 31 31">
+			<path clip-rule="evenodd" d="M15.063.063a15 15 0 1 0 0 30 15 15 0 0 0 0-30zM5.781 5.782a13.125 13.125 0 1 1 18.561 18.561A13.125 13.125 0 0 1 5.782 5.782zm9.28 2.718c.518 0 .938.42.938.938v4.687h4.688a.937.937 0 1 1 0 1.875H16v4.688a.937.937 0 1 1-1.875 0V16H9.437a.937.937 0 1 1 0-1.875h4.688V9.437c0-.517.42-.937.938-.937z"></path>
+		</symbol>
+	
+		<symbol id="icon-search" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 18.001 18.001">
+			<title>Search</title><path d="M17.877 16.485a.423.423 0 0 1 0 .6l-.795.795a.421.421 0 0 1-.6 0l-4.268-4.268a.429.429 0 0 1-.123-.3v-.464a7.292 7.292 0 0 1-4.782 1.779A7.311 7.311 0 0 1 0 7.312 7.311 7.311 0 0 1 7.312 0a7.311 7.311 0 0 1 7.313 7.312 7.3 7.3 0 0 1-1.779 4.781h.464a.416.416 0 0 1 .3.123zM7.312 12.938a5.623 5.623 0 0 0 5.625-5.625 5.623 5.623 0 0 0-5.625-5.625 5.624 5.624 0 0 0-5.625 5.625 5.624 5.624 0 0 0 5.625 5.624z" class="cls-1"></path>
+		</symbol>
+	
+		<symbol id="icon-speech-bubbles" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 119.69003 116.00002">
+			<path class="cls-1" d="M0 13.03v50.19a13 13 0 0 0 13 13h6.14c-.05 3.5-.13 8.74-.18 12 0 3.94 2.22 5.22 3.17 5.59a4.45 4.45 0 0 0 1.63.3 6.05 6.05 0 0 0 4.48-2.28l12-13.11v6.4a13 13 0 0 0 13 13h23.95l14.26 15.6a6 6 0 0 0 4.47 2.28 4.56 4.56 0 0 0 1.64-.3c.95-.37 3.17-1.65 3.17-5.64-.05-3.21-.13-8.45-.18-11.94h6.14a13 13 0 0 0 13-13V34.89a13 13 0 0 0-13-13H79.38V13a13 13 0 0 0-13-13H12.97A13 13 0 0 0 0 13.03zm106.6 15.89a6 6 0 0 1 6 6v50.15a6 6 0 0 1-6 6h-9.68a3.5 3.5 0 0 0-3.5 3.5c0 .91.09 6.88.15 11.14l-12.35-13.5a3.48 3.48 0 0 0-2.58-1.14H53.15a6 6 0 0 1-6-6v-8.89h19.31a13 13 0 0 0 13-13V28.92zM7 13.03a6 6 0 0 1 6-6h53.46a6 6 0 0 1 6 6v50.19a6 6 0 0 1-6 6H40.92a3.48 3.48 0 0 0-2.58 1.14L26 83.86c.06-4.28.15-10.24.15-11.14a3.5 3.5 0 0 0-3.5-3.5h-9.68a6 6 0 0 1-6-6z" data-name="Layer 10"></path>
+		</symbol>
+	
+		<symbol id="icon-star" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 115.43271 115.68015">
+			<path class="cls-1" d="M35.362 36.1l-29.63 3.91c-2.12.28-4.66 1.45-5.48 3.89-.48 1.43-.51 3.68 2.08 6.24l21.93 21.63a6.55 6.55 0 0 1 1.7 5.33l-5.7 31.33c-.19 1-.59 4.53 2.05 6.39a4.74 4.74 0 0 0 2.76.86 7.64 7.64 0 0 0 3.82-1.18l26.26-15.2a5.59 5.59 0 0 1 5.15 0l26.27 15.2c.9.52 4.06 2.09 6.7.23 1.24-.87 2.59-2.67 1.93-6.3l-5.7-31.29a6.61 6.61 0 0 1 1.67-5.35l22-21.65c1.51-1.49 2.84-4 2-6.4-.48-1.44-1.81-3.25-5.42-3.73l-29.68-3.91a6.1 6.1 0 0 1-4.26-3.18L62.942 4.1c-.43-1-2.08-4.1-5.31-4.1-1.52 0-3.64.71-5.16 4.1l-12.87 28.81a6.05 6.05 0 0 1-4.24 3.19zm10.65-.33l11.72-26.21 11.71 26.21a12.94 12.94 0 0 0 9.72 7.33l27.5 3.63-20.42 20.14a13.56 13.56 0 0 0-3.65 11.55l5.24 28.79-24-13.91a12.56 12.56 0 0 0-12.16 0l-24 13.91 5.24-28.79a13.57 13.57 0 0 0-3.65-11.55l-20.5-20.19 27.5-3.58a12.94 12.94 0 0 0 9.73-7.32z" data-name="Layer 10"></path>
+		</symbol>
+	
+		<symbol id="icon-thumbs-up" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 139.07175 118.17001">
+			<path class="cls-1" d="M12.11 52.81A12.19 12.19 0 0 0 0 65.06v32.16a12.2 12.2 0 0 0 12.11 12.25H44.2c.94.21 5.33 1.33 25.5 7a46.11 46.11 0 0 0 12.42 1.7h38.45a3.52 3.52 0 0 0 1.94-.59 12.4 12.4 0 0 0 6.5-3.53 12.92 12.92 0 0 0 1.86-15.64 12.86 12.86 0 0 0 4.23-21.28 12.87 12.87 0 0 0 .28-18.32 3.7 3.7 0 0 0-.28-.28 12.82 12.82 0 0 0-8.68-22.09H104.2l-.77-21.61A14.86 14.86 0 0 0 99.2 4.38 14.51 14.51 0 0 0 88.8 0h-2a14.8 14.8 0 0 0-14.69 14.89l.17 21.89c-10.23 5.9-25 14.37-28.22 16zm65.39-11a3.53 3.53 0 0 0 1.75-3.06l-.19-23.9a7.79 7.79 0 0 1 7.69-7.86h2a7.52 7.52 0 0 1 5.45 2.32 7.88 7.88 0 0 1 2.27 5.57v.13l.9 25a3.49 3.49 0 0 0 3.49 3.37h25.54a5.8 5.8 0 0 1 0 11.6h-14.84a3.5 3.5 0 0 0 0 7h14.84a5.53 5.53 0 0 1 4 1.68 5.82 5.82 0 0 1 1.68 4.12 5.73 5.73 0 0 1-5.65 5.79h-14.87a3.5 3.5 0 0 0 0 7h14.84a5.8 5.8 0 0 1 0 11.6h-14.76a3.5 3.5 0 1 0 0 7h8.38a5.53 5.53 0 0 1 4 1.68 5.92 5.92 0 0 1 0 8.24 5.56 5.56 0 0 1-4 1.67 3.49 3.49 0 0 0-1.51.35H82.1a39.18 39.18 0 0 1-10.54-1.45c-25.88-7.22-26.37-7.22-27.07-7.22H12.11A5.19 5.19 0 0 1 7 97.19V65.06a5.18 5.18 0 0 1 5.11-5.25h32.67c1.22 0 1.59 0 32.72-17.99z" data-name="Layer 10"></path>
+		</symbol>
+	
+		<symbol id="icon-tick" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 124.02921 95.306999">
+			<path class="cls-1" d="M.036 48.987a17.29 17.29 0 0 0 5.14 12.12l29 29a17.89 17.89 0 0 0 11.62 5.2h.94a17.3 17.3 0 0 0 12.12-5.14l60.08-60.16a17.64 17.64 0 0 0 0-24.8c-3.35-3.37-8.69-5.56-12.56-5.16a17.22 17.22 0 0 0-12.12 5.14l-47.7 47.73-16.56-16.5a17.65 17.65 0 0 0-24.8 0c-3.37 3.36-5.5 8.7-5.16 12.57zm10.09-7.59a10.65 10.65 0 0 1 14.94 0l19 19a3.49 3.49 0 0 0 5 0l50.19-50.26a10.31 10.31 0 0 1 7.36-3.07 3.55 3.55 0 0 0 .46 0c1.56-.21 4.92 1.11 6.91 3.12a10.64 10.64 0 0 1 0 14.94l-60.08 60.16a10.28 10.28 0 0 1-7.37 3.08 3.59 3.59 0 0 0-.47 0c-1.56.21-4.92-1.11-6.91-3.12l-29.05-29a10.3 10.3 0 0 1-3.08-7.37 3.71 3.71 0 0 0 0-.47c-.23-1.66 1.09-5.01 3.1-7.01z" data-name="Layer 10"></path>
+		</symbol>
+	
+		<symbol id="icon-view" preserveAspectRatio="xMidYMid" aria-hidden="true" focusable="false" viewBox="0 0 21 14">
+			<path clip-rule="evenodd" d="M11.01.01c3.51.165 6.894 2.414 9.195 4.947a3.025 3.025 0 0 1 .002 4.084C19.15 10.204 15.337 14 10.61 14h-.224C5.662 14 1.848 10.204.794 9.041a3.025 3.025 0 0 1 0-4.085l.131-.144C3.391 2.163 6.778.03 10.5 0c.175 0 .34 0 .511.01zm.34 12.2c2.907-.273 5.663-2.257 7.562-4.346a1.291 1.291 0 0 0 .002-1.732 15.83 15.83 0 0 0-2.161-1.975 13.342 13.342 0 0 0-2.975-1.73 8.23 8.23 0 0 0-3.279-.677c-3.21-.074-6.342 2.1-8.413 4.385a1.292 1.292 0 0 0 0 1.73c.095.105.19.208.288.31 2.14 2.229 4.95 4 8.125 4.075.284.004.568-.01.85-.04zm-1.195-8.693A3.5 3.5 0 1 1 6.998 7c.002-.239.031-.478.088-.711a.219.219 0 0 1 .35-.12 1.745 1.745 0 0 0 2.559-2.314.218.218 0 0 1 .16-.337z"></path>
+		</symbol>
+	
+</svg>
+<header>
+    <h1 id="logo">Gulp SVG Sprites <small>(34 icons in &lt;symbol&gt; mode)</small></h1>
+    <h4>Files Generated:</h4>
+    <ol>
+        <li><a href="ui/symbols.svg">ui/symbols.svg</a></li>
+    </ol>
+    <h4>Usage:</h4>
+    <ol>
+        <li>
+            Include the <strong>contents</strong> of the <a href="ui/symbols.svg">SVG file</a> just after the opening <code>&lt;body&gt;</code> tag.
+        </li>
+        <li>
+            Paste one of the snippets anywhere into your website.
+        </li>
+    </ol>
+
+</header>
+<section>
+    <ul class="icon-boxes">
+        
+
+        <li title="icon-account">
+            <div class="icon-box" id="icon-box-icon-account">
+                <svg class="c-svg-icon icon-account">
+                    <use xlink:href="#icon-account" />
+                </svg>
+            </div>
+            <h2>icon-account</h2>
+            <button onclick="showPopover('snippet-icon-account')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-account')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-account">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-account&quot;&gt;&lt;use xlink:href=&quot;#icon-account&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-chevron-down">
+            <div class="icon-box" id="icon-box-icon-chevron-down">
+                <svg class="c-svg-icon icon-chevron-down">
+                    <use xlink:href="#icon-chevron-down" />
+                </svg>
+            </div>
+            <h2>icon-chevron-down</h2>
+            <button onclick="showPopover('snippet-icon-chevron-down')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-chevron-down')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-chevron-down">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-chevron-down&quot;&gt;&lt;use xlink:href=&quot;#icon-chevron-down&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-chevron-left">
+            <div class="icon-box" id="icon-box-icon-chevron-left">
+                <svg class="c-svg-icon icon-chevron-left">
+                    <use xlink:href="#icon-chevron-left" />
+                </svg>
+            </div>
+            <h2>icon-chevron-left</h2>
+            <button onclick="showPopover('snippet-icon-chevron-left')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-chevron-left')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-chevron-left">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-chevron-left&quot;&gt;&lt;use xlink:href=&quot;#icon-chevron-left&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-chevron-right">
+            <div class="icon-box" id="icon-box-icon-chevron-right">
+                <svg class="c-svg-icon icon-chevron-right">
+                    <use xlink:href="#icon-chevron-right" />
+                </svg>
+            </div>
+            <h2>icon-chevron-right</h2>
+            <button onclick="showPopover('snippet-icon-chevron-right')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-chevron-right')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-chevron-right">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-chevron-right&quot;&gt;&lt;use xlink:href=&quot;#icon-chevron-right&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-chevron-up">
+            <div class="icon-box" id="icon-box-icon-chevron-up">
+                <svg class="c-svg-icon icon-chevron-up">
+                    <use xlink:href="#icon-chevron-up" />
+                </svg>
+            </div>
+            <h2>icon-chevron-up</h2>
+            <button onclick="showPopover('snippet-icon-chevron-up')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-chevron-up')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-chevron-up">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-chevron-up&quot;&gt;&lt;use xlink:href=&quot;#icon-chevron-up&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-clock">
+            <div class="icon-box" id="icon-box-icon-clock">
+                <svg class="c-svg-icon icon-clock">
+                    <use xlink:href="#icon-clock" />
+                </svg>
+            </div>
+            <h2>icon-clock</h2>
+            <button onclick="showPopover('snippet-icon-clock')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-clock')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-clock">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-clock&quot;&gt;&lt;use xlink:href=&quot;#icon-clock&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-close">
+            <div class="icon-box" id="icon-box-icon-close">
+                <svg class="c-svg-icon icon-close">
+                    <use xlink:href="#icon-close" />
+                </svg>
+            </div>
+            <h2>icon-close</h2>
+            <button onclick="showPopover('snippet-icon-close')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-close')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-close">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-close&quot;&gt;&lt;use xlink:href=&quot;#icon-close&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-comments">
+            <div class="icon-box" id="icon-box-icon-comments">
+                <svg class="c-svg-icon icon-comments">
+                    <use xlink:href="#icon-comments" />
+                </svg>
+            </div>
+            <h2>icon-comments</h2>
+            <button onclick="showPopover('snippet-icon-comments')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-comments')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-comments">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-comments&quot;&gt;&lt;use xlink:href=&quot;#icon-comments&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-cross-circle">
+            <div class="icon-box" id="icon-box-icon-cross-circle">
+                <svg class="c-svg-icon icon-cross-circle">
+                    <use xlink:href="#icon-cross-circle" />
+                </svg>
+            </div>
+            <h2>icon-cross-circle</h2>
+            <button onclick="showPopover('snippet-icon-cross-circle')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-cross-circle')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-cross-circle">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-cross-circle&quot;&gt;&lt;use xlink:href=&quot;#icon-cross-circle&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-document">
+            <div class="icon-box" id="icon-box-icon-document">
+                <svg class="c-svg-icon icon-document">
+                    <use xlink:href="#icon-document" />
+                </svg>
+            </div>
+            <h2>icon-document</h2>
+            <button onclick="showPopover('snippet-icon-document')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-document')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-document">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-document&quot;&gt;&lt;use xlink:href=&quot;#icon-document&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-down">
+            <div class="icon-box" id="icon-box-icon-down">
+                <svg class="c-svg-icon icon-down">
+                    <use xlink:href="#icon-down" />
+                </svg>
+            </div>
+            <h2>icon-down</h2>
+            <button onclick="showPopover('snippet-icon-down')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-down')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-down">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-down&quot;&gt;&lt;use xlink:href=&quot;#icon-down&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-favourite">
+            <div class="icon-box" id="icon-box-icon-favourite">
+                <svg class="c-svg-icon icon-favourite">
+                    <use xlink:href="#icon-favourite" />
+                </svg>
+            </div>
+            <h2>icon-favourite</h2>
+            <button onclick="showPopover('snippet-icon-favourite')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-favourite')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-favourite">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-favourite&quot;&gt;&lt;use xlink:href=&quot;#icon-favourite&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-favourite-fill">
+            <div class="icon-box" id="icon-box-icon-favourite-fill">
+                <svg class="c-svg-icon icon-favourite-fill">
+                    <use xlink:href="#icon-favourite-fill" />
+                </svg>
+            </div>
+            <h2>icon-favourite-fill</h2>
+            <button onclick="showPopover('snippet-icon-favourite-fill')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-favourite-fill')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-favourite-fill">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-favourite-fill&quot;&gt;&lt;use xlink:href=&quot;#icon-favourite-fill&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-forum">
+            <div class="icon-box" id="icon-box-icon-forum">
+                <svg class="c-svg-icon icon-forum">
+                    <use xlink:href="#icon-forum" />
+                </svg>
+            </div>
+            <h2>icon-forum</h2>
+            <button onclick="showPopover('snippet-icon-forum')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-forum')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-forum">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-forum&quot;&gt;&lt;use xlink:href=&quot;#icon-forum&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-forum-fill">
+            <div class="icon-box" id="icon-box-icon-forum-fill">
+                <svg class="c-svg-icon icon-forum-fill">
+                    <use xlink:href="#icon-forum-fill" />
+                </svg>
+            </div>
+            <h2>icon-forum-fill</h2>
+            <button onclick="showPopover('snippet-icon-forum-fill')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-forum-fill')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-forum-fill">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-forum-fill&quot;&gt;&lt;use xlink:href=&quot;#icon-forum-fill&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-group">
+            <div class="icon-box" id="icon-box-icon-group">
+                <svg class="c-svg-icon icon-group">
+                    <use xlink:href="#icon-group" />
+                </svg>
+            </div>
+            <h2>icon-group</h2>
+            <button onclick="showPopover('snippet-icon-group')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-group')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-group">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-group&quot;&gt;&lt;use xlink:href=&quot;#icon-group&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-home">
+            <div class="icon-box" id="icon-box-icon-home">
+                <svg class="c-svg-icon icon-home">
+                    <use xlink:href="#icon-home" />
+                </svg>
+            </div>
+            <h2>icon-home</h2>
+            <button onclick="showPopover('snippet-icon-home')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-home')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-home">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-home&quot;&gt;&lt;use xlink:href=&quot;#icon-home&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-home-fill">
+            <div class="icon-box" id="icon-box-icon-home-fill">
+                <svg class="c-svg-icon icon-home-fill">
+                    <use xlink:href="#icon-home-fill" />
+                </svg>
+            </div>
+            <h2>icon-home-fill</h2>
+            <button onclick="showPopover('snippet-icon-home-fill')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-home-fill')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-home-fill">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-home-fill&quot;&gt;&lt;use xlink:href=&quot;#icon-home-fill&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-important">
+            <div class="icon-box" id="icon-box-icon-important">
+                <svg class="c-svg-icon icon-important">
+                    <use xlink:href="#icon-important" />
+                </svg>
+            </div>
+            <h2>icon-important</h2>
+            <button onclick="showPopover('snippet-icon-important')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-important')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-important">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-important&quot;&gt;&lt;use xlink:href=&quot;#icon-important&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-left">
+            <div class="icon-box" id="icon-box-icon-left">
+                <svg class="c-svg-icon icon-left">
+                    <use xlink:href="#icon-left" />
+                </svg>
+            </div>
+            <h2>icon-left</h2>
+            <button onclick="showPopover('snippet-icon-left')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-left')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-left">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-left&quot;&gt;&lt;use xlink:href=&quot;#icon-left&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-lock">
+            <div class="icon-box" id="icon-box-icon-lock">
+                <svg class="c-svg-icon icon-lock">
+                    <use xlink:href="#icon-lock" />
+                </svg>
+            </div>
+            <h2>icon-lock</h2>
+            <button onclick="showPopover('snippet-icon-lock')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-lock')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-lock">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-lock&quot;&gt;&lt;use xlink:href=&quot;#icon-lock&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-megaphone">
+            <div class="icon-box" id="icon-box-icon-megaphone">
+                <svg class="c-svg-icon icon-megaphone">
+                    <use xlink:href="#icon-megaphone" />
+                </svg>
+            </div>
+            <h2>icon-megaphone</h2>
+            <button onclick="showPopover('snippet-icon-megaphone')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-megaphone')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-megaphone">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-megaphone&quot;&gt;&lt;use xlink:href=&quot;#icon-megaphone&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-members-fill">
+            <div class="icon-box" id="icon-box-icon-members-fill">
+                <svg class="c-svg-icon icon-members-fill">
+                    <use xlink:href="#icon-members-fill" />
+                </svg>
+            </div>
+            <h2>icon-members-fill</h2>
+            <button onclick="showPopover('snippet-icon-members-fill')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-members-fill')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-members-fill">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-members-fill&quot;&gt;&lt;use xlink:href=&quot;#icon-members-fill&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-minus">
+            <div class="icon-box" id="icon-box-icon-minus">
+                <svg class="c-svg-icon icon-minus">
+                    <use xlink:href="#icon-minus" />
+                </svg>
+            </div>
+            <h2>icon-minus</h2>
+            <button onclick="showPopover('snippet-icon-minus')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-minus')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-minus">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-minus&quot;&gt;&lt;use xlink:href=&quot;#icon-minus&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-notification">
+            <div class="icon-box" id="icon-box-icon-notification">
+                <svg class="c-svg-icon icon-notification">
+                    <use xlink:href="#icon-notification" />
+                </svg>
+            </div>
+            <h2>icon-notification</h2>
+            <button onclick="showPopover('snippet-icon-notification')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-notification')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-notification">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-notification&quot;&gt;&lt;use xlink:href=&quot;#icon-notification&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-pin">
+            <div class="icon-box" id="icon-box-icon-pin">
+                <svg class="c-svg-icon icon-pin">
+                    <use xlink:href="#icon-pin" />
+                </svg>
+            </div>
+            <h2>icon-pin</h2>
+            <button onclick="showPopover('snippet-icon-pin')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-pin')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-pin">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-pin&quot;&gt;&lt;use xlink:href=&quot;#icon-pin&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-plus">
+            <div class="icon-box" id="icon-box-icon-plus">
+                <svg class="c-svg-icon icon-plus">
+                    <use xlink:href="#icon-plus" />
+                </svg>
+            </div>
+            <h2>icon-plus</h2>
+            <button onclick="showPopover('snippet-icon-plus')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-plus')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-plus">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-plus&quot;&gt;&lt;use xlink:href=&quot;#icon-plus&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-plus-circle">
+            <div class="icon-box" id="icon-box-icon-plus-circle">
+                <svg class="c-svg-icon icon-plus-circle">
+                    <use xlink:href="#icon-plus-circle" />
+                </svg>
+            </div>
+            <h2>icon-plus-circle</h2>
+            <button onclick="showPopover('snippet-icon-plus-circle')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-plus-circle')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-plus-circle">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-plus-circle&quot;&gt;&lt;use xlink:href=&quot;#icon-plus-circle&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-search">
+            <div class="icon-box" id="icon-box-icon-search">
+                <svg class="c-svg-icon icon-search">
+                    <use xlink:href="#icon-search" />
+                </svg>
+            </div>
+            <h2>icon-search</h2>
+            <button onclick="showPopover('snippet-icon-search')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-search')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-search">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-search&quot;&gt;&lt;use xlink:href=&quot;#icon-search&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-speech-bubbles">
+            <div class="icon-box" id="icon-box-icon-speech-bubbles">
+                <svg class="c-svg-icon icon-speech-bubbles">
+                    <use xlink:href="#icon-speech-bubbles" />
+                </svg>
+            </div>
+            <h2>icon-speech-bubbles</h2>
+            <button onclick="showPopover('snippet-icon-speech-bubbles')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-speech-bubbles')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-speech-bubbles">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-speech-bubbles&quot;&gt;&lt;use xlink:href=&quot;#icon-speech-bubbles&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-star">
+            <div class="icon-box" id="icon-box-icon-star">
+                <svg class="c-svg-icon icon-star">
+                    <use xlink:href="#icon-star" />
+                </svg>
+            </div>
+            <h2>icon-star</h2>
+            <button onclick="showPopover('snippet-icon-star')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-star')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-star">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-star&quot;&gt;&lt;use xlink:href=&quot;#icon-star&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-thumbs-up">
+            <div class="icon-box" id="icon-box-icon-thumbs-up">
+                <svg class="c-svg-icon icon-thumbs-up">
+                    <use xlink:href="#icon-thumbs-up" />
+                </svg>
+            </div>
+            <h2>icon-thumbs-up</h2>
+            <button onclick="showPopover('snippet-icon-thumbs-up')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-thumbs-up')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-thumbs-up">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-thumbs-up&quot;&gt;&lt;use xlink:href=&quot;#icon-thumbs-up&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-tick">
+            <div class="icon-box" id="icon-box-icon-tick">
+                <svg class="c-svg-icon icon-tick">
+                    <use xlink:href="#icon-tick" />
+                </svg>
+            </div>
+            <h2>icon-tick</h2>
+            <button onclick="showPopover('snippet-icon-tick')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-tick')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-tick">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-tick&quot;&gt;&lt;use xlink:href=&quot;#icon-tick&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+
+        <li title="icon-view">
+            <div class="icon-box" id="icon-box-icon-view">
+                <svg class="c-svg-icon icon-view">
+                    <use xlink:href="#icon-view" />
+                </svg>
+            </div>
+            <h2>icon-view</h2>
+            <button onclick="showPopover('snippet-icon-view')">Show Snippet</button>
+            <br/>
+            <button onclick="invertBackground('icon-box-icon-view')">Invert Background</button>
+            <div class="snippet-popover" id="snippet-icon-view">
+                <pre><code>&lt;svg class=&quot;c-svg-icon icon-view&quot;&gt;&lt;use xlink:href=&quot;#icon-view&quot;&gt;&lt;/use&gt;&lt;/svg&gt;</code></pre>
+                <button onclick="hidePopover()">Close</button>
+            </div>
+        </li>
+        
+    </ul>
+</section>
+<footer>
+    <p>Generated by <a href="https://github.com/shakyshane/gulp-svg-sprites">Gulp Svg Sprites</a> - Preview page courtesy of <a href="http://iconizr.com" target="_blank">iconizr</a>.</p>
+</footer>
+<script type="text/javascript">
+    var openSnippet;
+    function showPopover(id) {
+        openSnippet = document.getElementById(id);
+        openSnippet.classList.add("active");
+    }
+    function hidePopover() {
+
+        openSnippet.classList.remove("active");
+    }
+    function invertBackground(id) {
+        var elem = document.getElementById(id);
+        elem.classList.toggle("inverted");
+    }
+</script>
+</body>
+</html>
