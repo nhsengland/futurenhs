@@ -11,70 +11,70 @@
 }
 
 @section SocialMeta{
-    @RenderSection("SocialMeta", false)
+	@RenderSection("SocialMeta", false)
 }
 
 @section Header {
-    @RenderSection("Header", false)
+	@RenderSection("Header", false)
 }
 
-@* START BREADCRUMBS *@ 
+@* START BREADCRUMBS *@
 <div class="l-container u-desktop-up">
-    <div class="l-col-12">
-        <div class="c-grid-block">
-            <div class="c-grid-block_item l-col-12">
-                <div class="c-breadcrumb" style="height: 60px">
-                @* TODO : BREADCRUMBS *@
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="l-col-12">
+		<div class="c-grid-block">
+			<div class="c-grid-block_item l-col-12">
+				<div class="c-breadcrumb" style="height: 60px">
+					@* TODO : BREADCRUMBS *@
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 @* END  BREADCRUMBS *@
 
 <div class="u-bg-theme-3 u-max-height">
-    <div class="l-container l-container--large-desktop-only u-max-height">
-        <div class="l-col-12-d u-max-height">
-            <div class="c-grid-block u-max-height">
-                <div class="c-grid-block_item l-col-fb-0">
+	<div class="l-container l-container--large-desktop-only u-max-height">
+		<div class="l-col-12-d u-max-height">
+			<div class="c-grid-block u-max-height">
+				<div class="c-grid-block_item l-col-fb-0">
 
-                    @* START LEFT NAV BLOCK *@
-                    @{ Html.RenderAction("SideNavigation", "Layout"); }
-                    @* END LEFT NAV BLOCK *@
-                </div>
+					@* START LEFT NAV BLOCK *@
+					@{ Html.RenderAction("SideNavigation", "Layout"); }
+					@* END LEFT NAV BLOCK *@
+				</div>
 
-                <div class="c-grid-block_item l-col-fb-12 u-width-zero">
-                @if (pageHeader != null)
-                {
-                    @* START PAGE HEADER BLOCK *@
-	                <div class="c-page-header u-bg-theme-8 u-padded-left">
-		                <div class="l-col-12">
-			                <div class="u-flex">
-                                @if (!pageHeader.Image.IsNullEmpty())
-                                {
-                                        <div class="c-page-header_col-1">
-                                            <div class="c-page-header_image-wrapper">
-                                                <img src="@AppHelpers.GroupImage(pageHeader.Image, pageHeader.Id, 159)" alt="System.Data.Entity.DynamicProxies.Group_2425EAD04E0559B152144C9BF64FAF42D48AAB193E849AB78C48BFC8DB5FBD37" class="c-page-header_image">
-                                            </div>
-	                                    </div>
-                                    }
-				                <div class="c-page-header_col-2">
-					                <div class="c-page-header_heading">
-						                <h2 class="u-has-subheading u-text-theme-1">@pageHeader.Name</h2>
-						                <p class="u-text-lead">@Html.Raw(@pageHeader.Description)</p>
-					                </div>
-                                    @Html.Partial("_TabsMenu",@pageHeader.HeaderTabs)
-					              
-				                </div>
-			                </div>
-		                </div>
-	                </div>
-                }
-                    @*END PAGE HEADER BLOCK *@
-                    
-	                <hr class="c-section-break c-section-break--small"/>
-                    <div class="l-col-12 u-padded-left">
+				<div class="c-grid-block_item l-col-fb-12 u-width-zero">
+					@if (pageHeader != null)
+					{
+						@* START PAGE HEADER BLOCK *@
+						<div class="c-page-header u-bg-theme-8 u-padded-left">
+							<div class="l-col-12">
+								<div class="u-flex">
+									@if (!pageHeader.Image.IsNullEmpty())
+									{
+										<div class="c-page-header_col-1">
+											<div class="c-page-header_image-wrapper">
+												<img src="@AppHelpers.GroupImage(pageHeader.Image, pageHeader.Id, 159)" alt="System.Data.Entity.DynamicProxies.Group_2425EAD04E0559B152144C9BF64FAF42D48AAB193E849AB78C48BFC8DB5FBD37" class="c-page-header_image">
+											</div>
+										</div>
+									}
+									<div class="c-page-header_col-2">
+										<div class="c-page-header_heading">
+											<h2 class="u-has-subheading u-text-theme-1">@pageHeader.Name</h2>
+											<p class="u-text-lead">@Html.Raw(@pageHeader.Description)</p>
+										</div>
+										@Html.Partial("_TabsMenu", @pageHeader.HeaderTabs)
+
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+					@*END PAGE HEADER BLOCK *@
+
+					<hr class="c-section-break c-section-break--small" />
+					<div class="l-col-12 u-padded-left">
 						<div class="c-grid-block c-grid-block--reverse-row">
 							@if (!hideSideBar)
 							{
@@ -82,7 +82,7 @@
 									@RenderSection("side", false)
 								</div>
 								<div class="c-grid-block_item l-col-12 l-col-8-d">
-									<main>
+									<main id="main">
 										@RenderBody()
 									</main>
 								</div>
@@ -90,22 +90,22 @@
 							@if (hideSideBar)
 							{
 								@RenderSection("side", false)
-							<div class="c-grid-block_item l-col-12">
-								<main>
-									@RenderBody()
-								</main>
-							</div>
-						}
+								<div class="c-grid-block_item l-col-12">
+									<main id="main">
+										@RenderBody()
+									</main>
+								</div>
+							}
 
 						</div>
-                    </div>
+					</div>
 
-                </div>
-            </div>
-        </div>
-    </div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Footer {
-    @RenderSection("Footer", false)
+	@RenderSection("Footer", false)
 }   
