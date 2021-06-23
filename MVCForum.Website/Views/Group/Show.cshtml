@@ -45,7 +45,7 @@
 
 	} else if(Model.Tab == Constants.GroupMembersTab){
         
-		@Html.Partial("_CommonSideNav")
+		@*@Html.Partial("_CommonSideNav")*@
 
     } else {
         Html.RenderAction("GetGroupHomeCards", new { slug = Model.Group.Slug });

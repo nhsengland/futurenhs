@@ -468,6 +468,10 @@ namespace MvcForum.Web.Controllers
                 pageHeader.Id = group.Group.Id;
 
                 ViewBag.PageHeader =  pageHeader;
+                if (tab == Constants.GroupMembersTab)
+                {
+                    ViewBag.HideSideBar = true;
+                }
 
                 return View(viewModel);
             }

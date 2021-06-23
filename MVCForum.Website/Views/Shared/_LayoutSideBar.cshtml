@@ -3,8 +3,10 @@
 @using MvcForum.Core.Utilities
 
 @{
-    Layout = "_Layout.cshtml";
-    PageViewModel pageHeader = ViewBag.PageHeader;
+	Layout = "_Layout.cshtml";
+	PageViewModel pageHeader = ViewBag.PageHeader;
+	var hideSideBar = ViewBag.HideSideBar == null ? false : ViewBag.HideSideBar;
+
 
 }
 
@@ -73,16 +75,29 @@
                     
 	                <hr class="c-section-break c-section-break--small"/>
                     <div class="l-col-12 u-padded-left">
-                        <div class="c-grid-block c-grid-block--reverse-row">
-                            <div class="c-grid-block_item l-col-12 l-col-4-d">
-                                @RenderSection("side", false)
-                            </div>
-                            <div class="c-grid-block_item l-col-12 l-col-8-d">
-                                <main id="main">
-                                    @RenderBody()
-                                </main>
-                            </div>
-                        </div>
+						<div class="c-grid-block c-grid-block--reverse-row">
+							@if (!hideSideBar)
+							{
+								<div class="c-grid-block_item l-col-12 l-col-4-d">
+									@RenderSection("side", false)
+								</div>
+								<div class="c-grid-block_item l-col-12 l-col-8-d">
+									<main>
+										@RenderBody()
+									</main>
+								</div>
+							}
+							@if (hideSideBar)
+							{
+								@RenderSection("side", false)
+							<div class="c-grid-block_item l-col-12">
+								<main>
+									@RenderBody()
+								</main>
+							</div>
+						}
+
+						</div>
                     </div>
 
                 </div>
