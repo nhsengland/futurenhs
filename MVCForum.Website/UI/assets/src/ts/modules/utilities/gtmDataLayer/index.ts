@@ -33,6 +33,6 @@ export const pushgtmDataLayerEvent: Function = (eventName: string, id: string, m
 
     }
 
-    window.dataLayer?.push(payload);
+    window.dataLayer.push(payload);
 
 }

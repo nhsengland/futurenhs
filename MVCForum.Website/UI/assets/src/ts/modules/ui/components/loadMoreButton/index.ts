@@ -59,37 +59,41 @@ export class LoadMoreButton extends UIComponentBase {
 
             const contentType = this.contentType;
             const { setFetchOptions, fetchData } = this.fetchHelpers;
-            const fetchOptions: FetchOptions = setFetchOptions(this.method, {}, null, null, contentType);           
+            const fetchOptions: FetchOptions = setFetchOptions({
+                method: this.method,
+                contentType: contentType
+            });
+                
+            fetchData({
+                url: this.getFetchUrl(requestIndex),
+                options: { ...fetchOptions, contentType },
+                timeOut: 60000 
+            })
+            .then((html: string) => {
+                
+                this.appendTargetElement.insertAdjacentHTML('beforeend', html);
 
-            fetchData(this.getFetchUrl(requestIndex), { ...fetchOptions, contentType }, 60000)
-                .then((html: string) => {
+                if(this.maximRequests === requestIndex) {
                     
-                    this.appendTargetElement.insertAdjacentHTML('beforeend', html);
+                    this.wrapperSelector.classList.add('u-hidden');
 
-                    if(this.maximRequests === requestIndex) {
-                        
-                        this.wrapperSelector.classList.add('u-hidden');
+                    return;
+                    
+                }
 
-                        return;
-                        
-                    }
+                requestIndex++;
 
-                    requestIndex++;
+            })
+            .catch((error: any) => {
 
-                })
-                .catch((error: any) => {
+                console.error(`Error: ${error}`);
+                return null;
 
-                    console.error(`Error: ${error}`);
-                    return null;
-
-                });
+            });
 
 
         })
 
     }
-
-
-
 
 }

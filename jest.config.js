@@ -28,7 +28,7 @@ module.exports = {
         './node_modules/',
         'MVCForum.Website/UI/assets/src/ts/modules/utilities/index',
         'MVCForum.Website/UI/assets/src/ts/modules/ui/index',
-        'MVCForum.Website/UI/assets/src/ts/modules/polyfills/svg',
+        'MVCForum.Website/UI/assets/src/ts/modules/polyfills/*',
         'MVCForum.Website/UI/assets/src/ts/root/global',
         'MVCForum.Website/UI/assets/src/ts/root/polyfills',
         'MVCForum.Website/UI/assets/src/ts/types/*',

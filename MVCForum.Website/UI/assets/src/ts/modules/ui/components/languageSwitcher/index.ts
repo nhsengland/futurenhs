@@ -34,13 +34,22 @@ export class LanguageSwitcher extends UIComponentBase {
 
         const selectedLanguage: string = this.wrapperSelector.value;            
         const { setFetchOptions, fetchData } = this.fetchHelpers;
-        const fetchOptions: FetchOptions = setFetchOptions('POST', {}, '', { 
-            lang: selectedLanguage 
+        const fetchOptions: FetchOptions = setFetchOptions({
+            method: 'POST',
+            customHeaders: {},
+            etag: null,
+            body: { 
+                lang: selectedLanguage 
+            }
         });
 
-        fetchData(this.apiUrl, fetchOptions, 60000)
-            .then(() => this.emit('success'))
-            .catch((error: any) => this.emit('error', `Error: ${error}`));
+        fetchData({
+            url: this.apiUrl,
+            options: fetchOptions,
+            timeOut: 60000 
+        })
+        .then(() => this.emit('success'))
+        .catch((error: any) => this.emit('error', `Error: ${error}`));
 
     }
 

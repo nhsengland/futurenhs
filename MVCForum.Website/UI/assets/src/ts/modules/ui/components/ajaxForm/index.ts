@@ -7,10 +7,12 @@ import { FetchOptions } from '@appTypes/fetch';
  */
 export class AjaxForm extends UIComponentBase {
 
+    apiUrl: string = undefined;
     wrapperSelector: HTMLFormElement = undefined;
 
     constructor(config: {
         wrapperSelector: HTMLFormElement,
+        apiUrl?: string;
     }, dependencies = {
         fetchHelpers: fetchHelpers
     }) {
@@ -18,6 +20,8 @@ export class AjaxForm extends UIComponentBase {
         super(config, dependencies);
 
         this.wrapperSelector = config.wrapperSelector;
+        this.apiUrl = config.apiUrl;
+
         this.wrapperSelector.addEventListener('submit', (event: any) => {
 
             event.preventDefault();
@@ -29,11 +33,20 @@ export class AjaxForm extends UIComponentBase {
             if (isValid) {
 
                 const { setFetchOptions, fetchData } = dependencies.fetchHelpers;
-                const fetchOptions: FetchOptions = setFetchOptions('POST', {}, '', $(this).serialize());
+                const fetchOptions: FetchOptions = setFetchOptions({
+                    method: 'POST',
+                    customHeaders: {},
+                    etag: '',
+                    body: $(this).serialize()
+                });
 
-                fetchData(this.apiUrl, fetchOptions, 60000)
-                    .then((data: any) => this.emit('success', data))
-                    .catch((error: any) => this.emit('error', `Error: ${error}`));
+                fetchData({
+                    url: this.apiUrl,
+                    options: fetchOptions,
+                    timeOut: 60000 
+                })
+                .then((data: any) => this.emit('success', data))
+                .catch((error: any) => this.emit('error', `Error: ${error}`));
 
             }
 

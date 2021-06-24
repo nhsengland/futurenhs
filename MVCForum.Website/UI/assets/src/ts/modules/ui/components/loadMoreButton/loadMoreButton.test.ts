@@ -129,7 +129,13 @@ describe('Load more button', () => {
 
         setTimeout(() => {
 
-            expect(fetchHelpersMock.fetchData).toBeCalledWith(testUrl, expect.anything(),expect.anything());
+            expect(fetchHelpersMock.fetchData).toBeCalledWith({
+                options: {
+                    contentType: 'text/html'
+                },
+                timeOut: 60000,
+                url: testUrl
+            });
 
             done();
 
