@@ -74,6 +74,5 @@
             List<Group> allowedGroups);
 
         IList<Topic> GetTopicBySlugLike(string slug);
-        bool PassedTopicFloodTest(string topicTitle, MembershipUser user);
     }
 }
