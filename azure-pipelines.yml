@@ -68,3 +68,12 @@ steps:
     searchFolder: '$(System.DefaultWorkingDirectory)/js-report'
     testRunTitle: 'Front End Test Run'
   continueOnError: true
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish Code Coverage from Front End Unit Tests'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/js-report/cobertura-coverage.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/js-report/*.htm'
+    failIfCoverageEmpty: true
