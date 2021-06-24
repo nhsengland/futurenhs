@@ -42,6 +42,7 @@
 		"jest-environment-jsdom-fifteen": "^1.0.2",
 		"jest-fetch-mock": "^3.0.3",
 		"jest-google-maps-mock": "^1.0.3",
+		"jest-junit": "^12.2.0",
 		"jquery": "^3.5.1",
 		"nhsuk-frontend": "^5.0.0",
 		"pm2": "^4.5.0",

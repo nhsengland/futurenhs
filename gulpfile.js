@@ -589,7 +589,7 @@ gulp.task(testAxe);
 // Build task - runs all the web tasks
 const buildWeb = (done) => { 
 
-    gulp.series(clean, initSvgSprite, templates, scss, js, fonts, images, favicon, sw)();
+    gulp.series(clean, initSvgSprite, templates, scss, js, fonts, images, favicon, sw, testJs)();
 
     done();
 
