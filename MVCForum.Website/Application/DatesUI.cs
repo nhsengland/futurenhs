@@ -69,5 +69,14 @@
             }
             return date;
         }
+
+        public static string GetLongDate(string date)
+        {
+            DateTime time;
+            if (DateTime.TryParse(date, out time)) {
+                    return DateUtils.FormatDateTime(date, "dd MMMM yyyy");               
+            }
+            return date;
+        }
     }
 }
