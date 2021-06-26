@@ -83,9 +83,10 @@ export const fetchData = (config: {
     url: string; 
     options: FetchOptions; 
     timeOut: number;
+    dataType?: string;
 }): Promise<any> => {
 
-    const { options } = config;
+    const { options, dataType } = config;
 
     return fetchWithTimeOut(config)
         .then((response: any) => {
@@ -99,7 +100,8 @@ export const fetchData = (config: {
                     return null;
                 }
 
-                if(options.contentType === 'text/html') {
+                if(dataType === 'html') {
+                    
                     return text;
                 }
 

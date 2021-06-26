@@ -73,6 +73,26 @@ const jsInit = (): void => {
 
     });
 
+    import('./globalNamespaces').then((nameSpaces) => {        
+
+        for (const key in nameSpaces) {
+
+            const globalNamespaces = {};
+
+            if (Object.prototype.hasOwnProperty.call(nameSpaces, key)) {
+
+                const namespace = nameSpaces[key];
+                
+                globalNamespaces[key] = namespace;
+                
+            }
+
+            window.globalNamespaces = globalNamespaces;
+
+        }
+
+    });
+
     import('@modules/utilities/index').then(({ utilitiesInit }) => {
 
         utilitiesInit();

@@ -16,12 +16,13 @@ export class LoadMoreButton extends UIComponentBase {
 
     constructor(config: {
         method?: string;
-        getFetchUrl: Function;
         contentType?: string;
         requestIndex: number;
         maximRequests: number;
-        wrapperSelector: HTMLButtonElement;
+        getFetchUrl: Function;
         appendTargetElement: Element
+        requestSuccessCallback?: Function;
+        wrapperSelector: HTMLButtonElement;
     }, dependencies = {
         fetchHelpers: fetchHelpers
     }) {
@@ -36,6 +37,7 @@ export class LoadMoreButton extends UIComponentBase {
         this.fetchHelpers = dependencies.fetchHelpers;
         this.wrapperSelector = config.wrapperSelector;
         this.appendTargetElement = config.appendTargetElement;
+        this.requestSuccessCallback = config.requestSuccessCallback;
 
         this.init();
 
@@ -46,6 +48,7 @@ export class LoadMoreButton extends UIComponentBase {
     public init = (): void => {
 
         let requestIndex = this.requestIndex;
+        const requestSuccessCallback = this.requestSuccessCallback;
         
         if( requestIndex > this.maximRequests) {
             return;
@@ -72,6 +75,8 @@ export class LoadMoreButton extends UIComponentBase {
             .then((html: string) => {
                 
                 this.appendTargetElement.insertAdjacentHTML('beforeend', html);
+                
+                requestSuccessCallback?.();
 
                 if(this.maximRequests === requestIndex) {
                     

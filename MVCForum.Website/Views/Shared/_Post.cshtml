@@ -162,7 +162,7 @@
                                 #@Html.Lang("Post.Permalink")
                             </a>
                         </li>
-                        <li>
+                        <li class="votelink-container">
                             @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-thumbs-up", "c-ui-icon")); }
                             @if (Html.Settings().EnablePoints)
                             {
@@ -178,7 +178,7 @@
 
                         @if (!Html.Settings().DisableDislikeButton)
                         {
-                            <li>
+                            <li class="votelink-container">
                                 @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-down", "c-ui-icon")); }
                                 @if (Html.Settings().EnablePoints)
                                 {
@@ -192,7 +192,7 @@
                                 }
                             </li>
                         }
-                        <li>
+                        <li class="favourite-container">
                             @if (Model.MemberHasFavourited) {
                                 { Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-ui-icon c-ui-icon--yellow" )); }
                             } else {
@@ -218,7 +218,7 @@
                             else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Html.CurrentMember() != null && (Model.ParentTopic.User.Id == loggedOnUserId || User.IsInRole(Constants.AdminRoleName)))
                             {
                                 <li>
-                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon")); }
+                                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon solution-icon")); }
                                     <a class="solutionlink" data-id="@postId">
                                         @Html.LanguageString("Post.IsSolution")
                                     </a>
