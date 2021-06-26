@@ -198,6 +198,35 @@ export const uiComponentsInit = (config: {
 
     }
 
+    /**
+    * Init topic post features
+    */
+    const topicForumContainers: Array<Element> = Array.from(document.getElementsByClassName('topicshow'));
+    
+    if (topicForumContainers?.length > 0) {
+        
+        import('@modules/ui/components/topicPost').then(({ TopicPost }) => {
+
+            topicForumContainers.forEach((topicForumContainer: HTMLElement) => {
+    
+                new TopicPost({
+                    wrapperSelector: topicForumContainer,
+                }, {
+                    fetchHelpers: fetchHelpers,
+                    components: {
+                        toast: toast
+                    }
+                });
+    
+            });
+    
+        });
+
+    }
+    
+
+
+
 
     /**
     * Init tags input
@@ -252,11 +281,15 @@ export const uiComponentsInit = (config: {
     /**
     * load more buttons
     */
-     const loadMoreButtons: Array<Element> = Array.from(document.getElementsByClassName('js-loadmore'));
+    const loadMoreButtons: Array<Element> = Array.from(document.getElementsByClassName('js-loadmore'));
 
-     if (loadMoreButtons?.length > 0) {
- 
-         import('@modules/ui/components/loadMoreButton').then(({ LoadMoreButton }) => {
+    if (loadMoreButtons?.length > 0) {
+
+        Promise.all([
+            import('@modules/ui/components/loadMoreButton'),
+            import('@modules/ui/components/topicPost')
+        ])
+        .then(([{ LoadMoreButton }, { TopicPost } ]) => {
 
             loadMoreButtons.forEach((loadMoreButton: HTMLButtonElement) => {
 
@@ -275,24 +308,40 @@ export const uiComponentsInit = (config: {
                     };
 
                     return endpoints[endpointType];
-                    
-                } 
 
-                 new LoadMoreButton({
+                }
+
+                const topicPostPlaceholder = new TopicPost({
+                    wrapperSelector: (document as any)
+                }, {
+                    fetchHelpers: fetchHelpers,
+                    components: {
+                        toast: toast
+                    }
+                });
+
+                const requestSuccesCallbacks = {
+                    'getPostComments': topicPostPlaceholder.bindFeaturesToPost
+                }
+
+                const requestSuccessCallback = requestSuccesCallbacks[endpointType];
+
+                new LoadMoreButton({
                     getFetchUrl: getFetchUrl,
                     requestIndex: requestIndex,
                     maximRequests: maximRequests,
                     wrapperSelector: loadMoreButton,
-                    appendTargetElement: appendTargetElement
-                 }, {
-                     fetchHelpers: fetchHelpers 
-                 });
- 
-             });
- 
-         });
- 
-     }
+                    appendTargetElement: appendTargetElement,
+                    requestSuccessCallback: requestSuccessCallback
+                }, {
+                    fetchHelpers: fetchHelpers
+                });
+
+            });
+
+        });
+
+    }
 
 
 
