@@ -71,7 +71,7 @@
                     {
                         new Link { Name = "Group home", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional }) },
                         new Link { Name = "Group forum", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupForumTab }) },
-                        new Link { Name = "Members", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupMembersTab }) }
+                        new Link { Name = "Group members", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupMembersTab }) }
                         
                     }
                 });
