@@ -36,6 +36,8 @@ export class LanguageSwitcher extends UIComponentBase {
         const { setFetchOptions, fetchData } = this.fetchHelpers;
         const fetchOptions: FetchOptions = setFetchOptions({
             method: 'POST',
+            customHeaders: {},
+            etag: null,
             body: { 
                 lang: selectedLanguage 
             }

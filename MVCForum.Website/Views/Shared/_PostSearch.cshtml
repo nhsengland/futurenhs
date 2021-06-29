@@ -54,7 +54,7 @@
                 <ul>
                     @if (Html.Settings().EnablePoints)
                     {
-                        <li class="votelink-container">
+                        <li>
                             @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-thumbs-up", "c-ui-icon")); }
                             <span class="count">@upVotes.Count().KiloFormat()</span>
                             @if (Model.AllowedToVote)
@@ -67,7 +67,7 @@
 
                         if (!Html.Settings().DisableDislikeButton)
                         {
-                            <li class="votelink-container">
+                            <li>
                                 @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-down", "c-ui-icon")); }
                                 <span class="count">@downVotes.Count().KiloFormat()</span>
                                 @if (Model.AllowedToVote)
@@ -80,7 +80,7 @@
                         }
                     }
                     
-                    <li class="favourite-container">
+                    <li>
                         @if (Model.MemberHasFavourited) {
                                 { Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-star", "c-ui-icon c-ui-icon--yellow" )); }
                             } else {
@@ -106,7 +106,7 @@
                         else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Model.ParentTopic.User.Id == loggedOnUserId)
                         {
                             <li>
-                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon solution-icon" )); }
+                                @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-tick", "c-ui-icon " )); }
                                 <a class="solutionlink" data-id="@postId">
                                     @Html.LanguageString("Post.IsSolution")
                                 </a>
