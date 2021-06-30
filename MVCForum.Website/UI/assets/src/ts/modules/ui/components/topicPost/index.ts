@@ -404,8 +404,6 @@ export class TopicPost extends UIComponentBase {
                 const countIndicator = <HTMLElement>voteLinkContainer.getElementsByClassName('count')[0];
                 const voteUrl: string = isUpVote ? "/Vote/VoteUpPost" : "/Vote/VoteDownPost";
                 const hasVoted: boolean = voteLink.getAttribute('data-hasvoted') === "true";
-                const toVoteText: string = voteLink.getAttribute('data-votetext');
-                const votedText: string = voteLink.getAttribute('data-votedtext');
                 const postId: string = voteLink.getAttribute('data-id');
                 const oppositeType: string = isUpVote ? 'down' : 'up';
                 const oppositeVoteLink: HTMLElement = containerParent.querySelector(`.votelink[data-votetype="${oppositeType}"]`);
@@ -416,16 +414,18 @@ export class TopicPost extends UIComponentBase {
 
                     if (hasVoted) {
 
-                        $(oppositeVoteLink).show();
+                        $(oppositeVoteLink)?.show();
                         countIndicator.innerText = (count - 1).toString();
-                        voteLink.innerText = toVoteText;
+                        voteLink.classList.add('u-fill-theme-5');
+                        voteLink.classList.remove('u-fill-theme-8');
                         voteLink.setAttribute('data-hasvoted', 'false');
 
                     } else {
 
-                        $(oppositeVoteLink).hide();
+                        $(oppositeVoteLink)?.hide();
                         countIndicator.innerText = (count + 1).toString();
-                        voteLink.innerText = votedText;
+                        voteLink.classList.remove('u-fill-theme-5');
+                        voteLink.classList.add('u-fill-theme-8');
                         voteLink.setAttribute('data-hasvoted', 'true');
 
                     }

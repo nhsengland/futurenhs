@@ -1,5 +1,5 @@
 $card-border-width: 1px;
-$card-border-bottom-width: $nhsuk-spacing-point-1;
+$card-border-highlight-width: $nhsuk-spacing-point-1;
 $card-border-color: $color_nhsuk-grey-4;
 $card-border-hover-color: $color_nhsuk-grey-3;
 
@@ -8,10 +8,7 @@ $card-border-hover-color: $color_nhsuk-grey-3;
     //sass-lint:disable-block nesting-depth force-element-nesting no-combinators no-important
     background: $color_nhsuk-white;
     border: $card-border-width solid $card-border-color;
-    border-left-color: $card-border-color !important;
-    border-right-color: $card-border-color !important;
-    border-top-color: $card-border-color !important;
-    border-bottom-width: $card-border-bottom-width;
+    border-bottom-width: $card-border-highlight-width;
     position: relative;
     width: 100%;
     margin-bottom: $nhsuk-spacing-point-4;
@@ -125,5 +122,35 @@ $card-border-hover-color: $color_nhsuk-grey-3;
         top: 5px;
         position: relative;
         margin-right: 4px;
+    }
+
+    &_replies-list {
+        margin: $nhsuk-spacing-point-4 0;
+        border-top: 1px solid $black;
+    }
+
+    &_replies-item {
+        border-bottom: 1px solid $black;
+    }
+
+    &--reply,
+    &--comment {
+        border-bottom-width: $card-border-width;
+        border-left-width: $card-border-highlight-width;
+
+        #{$self}_header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    }
+
+    &--reply {
+        border-color: $white;
+        margin-top: $nhsuk-spacing-point-4;
+
+        #{$self}_content {
+            padding: 0 0 0 $nhsuk-spacing-point-4;
+        }
     }
 }

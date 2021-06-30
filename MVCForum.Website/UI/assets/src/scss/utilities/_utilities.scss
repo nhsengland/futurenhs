@@ -211,4 +211,12 @@
     .u-border-theme-#{$number} {
         border-color: $theme;
     }
+
+    .u-border-left-theme-#{$number} {
+        border-left-color: $theme;
+    }
+
+    .u-border-bottom-theme-#{$number} {
+        border-bottom-color: $theme;
+    }
 }
