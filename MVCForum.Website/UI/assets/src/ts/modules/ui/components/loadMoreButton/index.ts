@@ -7,15 +7,18 @@ import { FetchOptions } from '@appTypes/fetch';
  */
 export class LoadMoreButton extends UIComponentBase {
 
-    method: string = 'POST';
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = 'POST';
+    dataType: string = 'html';
     getFetchUrl: Function = undefined;
     requestIndex: number = undefined;
     contentType: string = 'text/html';
     maximRequests: number = undefined;
+    fetchHelpers: typeof fetchHelpers = undefined;
     wrapperSelector: HTMLButtonElement = undefined;
+    
 
     constructor(config: {
-        method?: string;
+        dataType?: string; 
         contentType?: string;
         requestIndex: number;
         maximRequests: number;
@@ -23,6 +26,7 @@ export class LoadMoreButton extends UIComponentBase {
         appendTargetElement: Element
         requestSuccessCallback?: Function;
         wrapperSelector: HTMLButtonElement;
+        method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     }, dependencies = {
         fetchHelpers: fetchHelpers
     }) {
@@ -31,6 +35,7 @@ export class LoadMoreButton extends UIComponentBase {
 
         this.getFetchUrl = config.getFetchUrl;
         this.method = config.method ?? this.method;
+        this.dataType = config.dataType ?? this.dataType;
         this.contentType = config.contentType ?? this.contentType;
         this.requestIndex = config.requestIndex;
         this.maximRequests = config.maximRequests;
@@ -60,6 +65,7 @@ export class LoadMoreButton extends UIComponentBase {
 
             e?.preventDefault();
 
+            const dataType = this.dataType;
             const contentType = this.contentType;
             const { setFetchOptions, fetchData } = this.fetchHelpers;
             const fetchOptions: FetchOptions = setFetchOptions({
@@ -69,8 +75,9 @@ export class LoadMoreButton extends UIComponentBase {
                 
             fetchData({
                 url: this.getFetchUrl(requestIndex),
-                options: { ...fetchOptions, contentType },
-                timeOut: 60000 
+                options: fetchOptions,
+                timeOut: 60000,
+                dataType: dataType
             })
             .then((html: string) => {
                 

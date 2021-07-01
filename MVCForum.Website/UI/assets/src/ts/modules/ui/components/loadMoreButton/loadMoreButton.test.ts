@@ -7,11 +7,12 @@ const requestId = 'someid123';
 const requestIndex = 1;
 const loadMoreButtonId = 'loadMoreId';
 const mockHtmlResponse  = '<div>some post</div>';
+const mockSetFetchOptionsResponse = { contentType: 'text/html' };  
 
 beforeEach(() => {
 
     fetchHelpersMock = {
-        setFetchOptions: jest.fn(),
+        setFetchOptions: jest.fn(() => mockSetFetchOptionsResponse ),
         fetchData: jest.fn(() => Promise.resolve(mockHtmlResponse)),
         fetchWithTimeOut: jest.fn(),
         getErrorMessageString: jest.fn(() => 'Error')    
@@ -130,6 +131,7 @@ describe('Load more button', () => {
         setTimeout(() => {
 
             expect(fetchHelpersMock.fetchData).toBeCalledWith({
+                dataType: 'html',
                 options: {
                     contentType: 'text/html'
                 },
