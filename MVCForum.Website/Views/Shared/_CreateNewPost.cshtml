@@ -20,12 +20,21 @@
 }
 @if (!Model.DisablePosting)
 {
-    if (Model.InReplyTo != null && !string.IsNullOrEmpty(Model.ReplyToUsername))
-    {
-        <div class="showreplyto">
-            @Html.Lang("Post.ReplyingTo") <strong>@Model.ReplyToUsername</strong>
-        </div>
-    }
+    
+    <div class="u-margin-top-spacing-3 u-margin-bottom-spacing-5">
+        <p class="u-regular-heading u-text-bold u-margin-bottom-spacing-3">
+            Join in the conversation
+        </p>
+        <p class="u-text-bold u-margin-bottom-spacing-1">
+            You're signed in, <a href="@Html.Raw(@Model.CurrentUserUrl)">@Model.CurrentUser</a>
+        </p>
+        @if (Model.InReplyTo != null && !string.IsNullOrEmpty(Model.ReplyToUsername)){
+            <p class="u-text-bold u-margin-bottom-spacing-1">
+                You’re replying to <a href="@Html.Raw(@Model.ReplyToUsernameUrl)">@Model.ReplyToUsername</a>
+            </p>
+        }
+        
+    </div>
     <div id="createpostholder">
         @using (Ajax.BeginForm("CreatePost", "Post", null, new AjaxOptions
         {   
@@ -42,10 +51,13 @@
                 @Html.EditorFor(x => x.PostContent, new { @class = "createpost required form-control rte" })
                 @Html.ValidationMessageFor(x => x.PostContent)
             </div>
-            <input type="submit" id="createpostbutton" class="c-button" value="@Html.LanguageString("Buttons.CreatePost")" />
-            <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
-            @Html.HiddenFor(x => x.Topic)
-            @Html.HiddenFor(x => x.InReplyTo)
+            <div class="u-margin-top-spacing-5">
+                <button class="c-button c-button--reverse">@Html.LanguageString("Buttons.ClearPost")</button>
+                <input type="submit" id="createpostbutton" class="c-button u-margin-left-spacing-5" value="@Html.LanguageString("Buttons.CreatePost")" />
+                <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
+                @Html.HiddenFor(x => x.Topic)
+                @Html.HiddenFor(x => x.InReplyTo)
+            </div>
         }
 
     </div>

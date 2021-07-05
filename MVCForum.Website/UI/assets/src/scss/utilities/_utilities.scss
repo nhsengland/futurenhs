@@ -155,6 +155,11 @@
     @include lead-heading;
 }
 
+
+.u-regular-heading {
+    @include regular-heading;
+}
+
 .u-text-bold {
     font-weight: $nhsuk-font-bold;
 }
@@ -218,5 +223,19 @@
 
     .u-border-bottom-theme-#{$number} {
         border-bottom-color: $theme;
+    }
+}
+
+@each $number, $spaceing in $t-utility-spacing {
+    .u-margin-top-spacing-#{$number} {
+        margin-top: $spaceing;
+    }
+
+    .u-margin-bottom-spacing-#{$number} {
+        margin-bottom: $spaceing;
+    }
+
+    .u-margin-left-spacing-#{$number} {
+        margin-left: $spaceing;
     }
 }

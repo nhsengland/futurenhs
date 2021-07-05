@@ -16,5 +16,12 @@
         public bool DisablePosting { get; set; }
         public Guid? InReplyTo { get; set; }
         public string ReplyToUsername { get; set; }
+        public string ReplyToUsernameUrl { get; set; }
+        public string CurrentUser { get; set; }
+        
+        public string CurrentUserUrl { get; set; }
+
+        public string ReplyUserUrl { get; set; }
+
     }
 }

@@ -133,6 +133,37 @@ $card-border-hover-color: $color_nhsuk-grey-3;
         border-bottom: 1px solid $black;
     }
 
+    &_header-social {
+        display: flex;
+        align-items: flex-end;
+        @include respond-to(desktop) {
+            margin-bottom: $nhsuk-spacing-point-4;
+        }
+    }
+
+    &_header-social-item {
+        @include small-text(false);
+        font-weight: $nhsuk-font-bold;
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 20px;
+    }
+
+    &_header-social-icon {
+        width: 21px;
+        height: 21px;
+        top: 5px;
+        position: relative;
+        margin-right: 4px;
+    }
+
+    &_header-social-copy {
+        display: none;
+        @include respond-to(desktop) {
+            display: inline;
+        }
+    }
+
     &--reply,
     &--comment {
         border-bottom-width: $card-border-width;
@@ -151,6 +182,27 @@ $card-border-hover-color: $color_nhsuk-grey-3;
 
         #{$self}_content {
             padding: 0 0 0 $nhsuk-spacing-point-4;
+        }
+    }
+
+    &--post {
+        border: 0;
+        background: transparent;
+        border-bottom: 1px solid $black;
+
+        #{$self}_heading {
+            @include lead-heading;
+        }
+
+        #{$self}_content {
+            padding: $nhsuk-spacing-point-4 0;
+        }
+
+        #{$self}_header-img {
+            float: left;
+            @include respond-to(desktop) {
+                float: none;
+            }
         }
     }
 }

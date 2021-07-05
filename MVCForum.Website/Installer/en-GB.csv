@@ -41,7 +41,8 @@ Badges.UnableToAward,Unable to award badges as badge collection is null for user
 Buttons.Approve, Approve
 Buttons.ChangePassword,Change Password
 Buttons.Continue,Continue
-Buttons.CreatePost,Add Post
+Buttons.CreatePost,Add comment
+Buttons.ClearPost,Clear
 Buttons.Edit,Edit
 Buttons.LogOn,Log On
 Buttons.Report,Report

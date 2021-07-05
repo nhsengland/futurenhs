@@ -41,6 +41,7 @@
 
         public Guid? ReplyTo { get; set; }
         public string ReplyToUsername { get; set; }
+        public string ReplyToUsernameUrl { get; set; }
 
         // Stats
         public int Answers { get; set; }

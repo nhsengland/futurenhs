@@ -659,6 +659,7 @@
                         viewModel.QuotedPost = postToQuote.PostContent;
                         viewModel.ReplyTo = postToQuote.Id;
                         viewModel.ReplyToUsername = postToQuote.User.UserName;
+                        viewModel.ReplyToUsernameUrl = postToQuote.User.NiceUrl;
                     }
                     catch (Exception ex)
                     {
@@ -675,6 +676,7 @@
                         var toReply = _postService.Get(new Guid(reply));
                         viewModel.ReplyTo = toReply.Id;
                         viewModel.ReplyToUsername = toReply.User.UserName;
+                        viewModel.ReplyToUsernameUrl = toReply.User.NiceUrl;
                     }
                     catch (Exception ex)
                     {
