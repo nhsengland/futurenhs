@@ -214,6 +214,7 @@
     <Compile Include="Services\BannedEmailService.cs" />
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
+    <Compile Include="Services\NoCacheService.cs" />
     <Compile Include="Services\CacheService.cs" />
     <Compile Include="Services\GlobalPermissionForRoleService.cs" />
     <Compile Include="Services\GroupPermissionForRoleService.cs" />
