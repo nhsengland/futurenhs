@@ -200,6 +200,11 @@
     height: 100%;
 }
 
+.u-has-error {
+    padding-left: $nhsuk-spacing-point-3;
+    border-left: 3px solid $red;
+}
+
 @each $number, $theme in $t-utility-themes {
     .u-bg-theme-#{$number} {
         background-color: $theme;
@@ -237,5 +242,9 @@
 
     .u-margin-left-spacing-#{$number} {
         margin-left: $spaceing;
+    }
+
+    .u-margin-right-spacing-#{$number} {
+        margin-right: $spaceing;
     }
 }

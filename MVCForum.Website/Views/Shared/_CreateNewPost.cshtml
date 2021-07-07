@@ -35,7 +35,8 @@
         }
         
     </div>
-    <div id="createpostholder">
+
+    <div id="createpostholder" class="js-tinyMCE-container">
         @using (Ajax.BeginForm("CreatePost", "Post", null, new AjaxOptions
         {   
             @* existing bug: the comment gets posted but on FE the load process is never finished, needs a 'finally' handle   *@
@@ -47,13 +48,14 @@
             OnBegin = "globalNamespaces.topics.postRequestInitiate()"
         }, new { @id = "postcodeform" }))
         {
-            <div class="editorholder">
+            <div class="editorholder js-tinyMCE-holder">
+                <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden u-text-theme-13">Please provide a comment.</p>
                 @Html.EditorFor(x => x.PostContent, new { @class = "createpost required form-control rte" })
                 @Html.ValidationMessageFor(x => x.PostContent)
             </div>
             <div class="u-margin-top-spacing-5">
-                <button class="c-button c-button--reverse">@Html.LanguageString("Buttons.ClearPost")</button>
-                <input type="submit" id="createpostbutton" class="c-button u-margin-left-spacing-5" value="@Html.LanguageString("Buttons.CreatePost")" />
+                <button class="c-button c-button--reverse js-tinyMCE-clear u-margin-right-spacing-5">@Html.LanguageString("Buttons.ClearPost")</button>
+                <input type="submit" id="createpostbutton" class="c-button js-tinyMCE-submit" data-mce-requirements="notEmpty" value="@Html.LanguageString("Buttons.CreatePost")" />
                 <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
                 @Html.HiddenFor(x => x.Topic)
                 @Html.HiddenFor(x => x.InReplyTo)

@@ -202,16 +202,16 @@ export const uiComponentsInit = (config: {
     * Init topic post features
     */
     const topicForumContainers: Array<Element> = Array.from(document.getElementsByClassName('topicshow'));
-    
+
     if (topicForumContainers?.length > 0) {
-        
+
         import('@modules/ui/components/topicPost').then(({ TopicPost }) => {
 
             topicForumContainers.forEach((topicForumContainer: HTMLElement) => {
 
                 const fancyBoxTargetTypes: Array<string> = ['gif', 'jpg', 'png', 'bmp', 'jpeg'];
                 const pollId: string = (<HTMLInputElement>document.getElementById('Poll_Id'))?.value;
-    
+
                 new TopicPost({
                     pollId: pollId,
                     fancyBoxTargetTypes: fancyBoxTargetTypes,
@@ -222,13 +222,13 @@ export const uiComponentsInit = (config: {
                         toast: toast
                     }
                 });
-    
+
             });
-    
+
         });
 
     }
-    
+
 
 
 
@@ -294,52 +294,85 @@ export const uiComponentsInit = (config: {
             import('@modules/ui/components/loadMoreButton'),
             import('@modules/ui/components/topicPost')
         ])
-        .then(([{ LoadMoreButton }, { TopicPost } ]) => {
+            .then(([{ LoadMoreButton }, { TopicPost }]) => {
 
-            loadMoreButtons.forEach((loadMoreButton: HTMLButtonElement) => {
+                loadMoreButtons.forEach((loadMoreButton: HTMLButtonElement) => {
 
-                const requestId = loadMoreButton.getAttribute('data-request-id');
-                const appendTargetId: string = loadMoreButton.getAttribute('data-target-id');
-                const endpointType: string = loadMoreButton.getAttribute('data-endpoint-type');
-                const appendTargetElement: HTMLElement = document.getElementById(appendTargetId);
-                const maximRequests = parseInt(loadMoreButton.getAttribute('data-maxim-requests'));
-                const requestIndex = parseInt(loadMoreButton.getAttribute('data-request-index')) + 1;
+                    const requestId = loadMoreButton.getAttribute('data-request-id');
+                    const appendTargetId: string = loadMoreButton.getAttribute('data-target-id');
+                    const endpointType: string = loadMoreButton.getAttribute('data-endpoint-type');
+                    const appendTargetElement: HTMLElement = document.getElementById(appendTargetId);
+                    const maximRequests = parseInt(loadMoreButton.getAttribute('data-maxim-requests'));
+                    const requestIndex = parseInt(loadMoreButton.getAttribute('data-request-index')) + 1;
 
-                const getFetchUrl = (requestIndex: number): string => {
+                    const getFetchUrl = (requestIndex: number): string => {
 
-                    const endpoints = {
-                        'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
-                        'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
-                    };
+                        const endpoints = {
+                            'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
+                            'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
+                        };
 
-                    return endpoints[endpointType];
+                        return endpoints[endpointType];
 
-                }
-
-                const topicPostPlaceholder = new TopicPost({
-                    wrapperSelector: (document as any)
-                }, {
-                    fetchHelpers: fetchHelpers,
-                    components: {
-                        toast: toast
                     }
+
+                    const topicPostPlaceholder = new TopicPost({
+                        wrapperSelector: (document as any)
+                    }, {
+                        fetchHelpers: fetchHelpers,
+                        components: {
+                            toast: toast
+                        }
+                    });
+
+                    const requestSuccesCallbacks = {
+                        'getPostComments': topicPostPlaceholder.bindFeaturesToPost
+                    }
+
+                    const requestSuccessCallback = requestSuccesCallbacks[endpointType];
+
+                    new LoadMoreButton({
+                        getFetchUrl: getFetchUrl,
+                        requestIndex: requestIndex,
+                        maximRequests: maximRequests,
+                        wrapperSelector: loadMoreButton,
+                        appendTargetElement: appendTargetElement,
+                        requestSuccessCallback: requestSuccessCallback
+                    }, {
+                        fetchHelpers: fetchHelpers
+                    });
+
                 });
 
-                const requestSuccesCallbacks = {
-                    'getPostComments': topicPostPlaceholder.bindFeaturesToPost
+            });
+
+    }
+
+
+    /**
+    * tinyMCE components
+    */
+    const tinyMCEContainers: Array<Element> = Array.from(document.getElementsByClassName('js-tinyMCE-container'));
+
+    if (tinyMCEContainers?.length > 0) {
+
+        import('@modules/ui/components/tinyMCE').then(({ TinyMCE }) => {
+
+            tinyMCEContainers.forEach((tinyMCEContainer: HTMLElement) => {
+
+                const tinyMceTextarea = <HTMLTextAreaElement>tinyMCEContainer.getElementsByClassName('js-tinyMCE')[0];
+                const tinyMceId : string = tinyMceTextarea.getAttribute('id');
+                const tinyMceAPI: any = window.tinyMCE.get(tinyMceId);
+                const notEmpty = (value: string): boolean => Boolean(value);
+
+                const validators = {
+                    'notEmpty' :  notEmpty
                 }
 
-                const requestSuccessCallback = requestSuccesCallbacks[endpointType];
-
-                new LoadMoreButton({
-                    getFetchUrl: getFetchUrl,
-                    requestIndex: requestIndex,
-                    maximRequests: maximRequests,
-                    wrapperSelector: loadMoreButton,
-                    appendTargetElement: appendTargetElement,
-                    requestSuccessCallback: requestSuccessCallback
-                }, {
-                    fetchHelpers: fetchHelpers
+                new TinyMCE({
+                    validators: validators,
+                    tinyMceAPI: tinyMceAPI,
+                    wrapperSelector: tinyMCEContainer,
                 });
 
             });
