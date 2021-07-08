@@ -11,6 +11,9 @@
 
     <div class="c-card u-border-bottom-theme-10">
         <div class="c-card_content">
+            <h2 class="c-card_heading">
+                <a class="c-card_link" href="@Html.Raw(Model.Topic.NiceUrl)">@Html.Raw(Model.Topic.Name)</a>
+            </h2>
             <div class="c-card_header">
                 <div class="c-card_header-img">
                     @{Html.RenderPartial("_UserAvatar", @Model.Topic.User);}
@@ -19,26 +22,31 @@
                     <p class="u-text-small u-text-bold u-has-subheading">Created by <a href="@Model.Topic.User.NiceUrl">@Model.Topic.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</p>
                     <p class="u-text-small"><a href="@Html.Raw(Model.LastPostPermaLink)">Last comment</a> by <a href="@Model.Topic.LastPost.User.NiceUrl">@Model.Topic.LastPost.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</p>
                 </div>
-                <div class="c-card_header-icons">
+            </div>
+            <div class="c-card_footer u-text-theme-7">
+                 <p class="c-card_footer-item">
+                     @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_footer-icon u-fill-theme-10"));} 
+                     <span> @Model.Answers.KiloFormat() </span>
+                     <span class="u-desktop-up-inline-block">  Comments </span>
+                 </p>
+                 <p class="c-card_footer-item">
+                     @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-view", "c-card_footer-icon u-fill-theme-10"));}
+                      <span> @Model.Views.KiloFormat() </span>
+                      <span class="u-desktop-up-inline-block">Views </span>
+                </p>
+                 <div class="c-card_footer-tags">
                     @if (Model.Topic.IsSticky)
                     {
-                        <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-pin", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is pinned</span> </p>
+                        <p class="u-inline-block u-margin-bottom-spacing-1">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-pin", "c-card_footer-tag-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is pinned</span> </p>
                     }
                     @if (Model.Topic.IsLocked)
                     {
-                        <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-lock", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is locked</span> </p>
+                        <p class="u-inline-block u-margin-bottom-spacing-1">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-lock", "c-card_footer-tag-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is locked</span> </p>
                     }
                     @* TODO - FAVOURITE 
-                    <p class="u-inline-block">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-favourite-fill", "c-card_header-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is favourited</span> </p>
+                    <p class="u-inline-block u-margin-bottom-spacing-1">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-favourite-fill", "c-card_footer-tag-icon u-fill-theme-7"));} <span class="u-visually-hidden">Discussion is favourited</span> </p>
                     *@
-                </div>
-            </div>
-            <h2 class="c-card_heading">
-                <a class="c-card_link" href="@Html.Raw(Model.Topic.NiceUrl)">@Html.Raw(Model.Topic.Name)</a>
-            </h2>
-            <div class="c-card_footer u-text-theme-7">
-                 <p class="c-card_footer-item">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_footer-icon u-fill-theme-10"));} @Model.Answers.KiloFormat() Comments</p>
-                 <p class="c-card_footer-item">@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-view", "c-card_footer-icon u-fill-theme-10"));} @Model.Views.KiloFormat() Views</p>
+                 </div>
             </div>
         </div>
     </div>

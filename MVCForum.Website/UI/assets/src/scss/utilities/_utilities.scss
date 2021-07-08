@@ -116,13 +116,13 @@
     }
 }
 
-// .u-desktop-up-inline-block {
-//     display: none;
+.u-desktop-up-inline-block {
+    display: none;
 
-//     @include respond-to(desktop) {
-//         display: inline-block;
-//     }
-// }
+    @include respond-to(desktop) {
+        display: inline-block;
+    }
+}
 
 .u-padded-left {
     @include respond-to(desktop) {

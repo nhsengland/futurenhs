@@ -66,14 +66,9 @@ $card-border-hover-color: $color_nhsuk-grey-3;
     }
 
     &_header {
-        display: block;
-        position: relative;
-
-        @include respond-to(desktop) {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
     &_header-img {
@@ -122,6 +117,18 @@ $card-border-hover-color: $color_nhsuk-grey-3;
         top: 5px;
         position: relative;
         margin-right: 4px;
+    }
+
+    &_footer-tags {
+        float: right;
+    }
+
+    &_footer-tag-icon {
+        width: $nhsuk-spacing-point-3;
+        height: $nhsuk-spacing-point-3;
+        top: 5px;
+        position: relative;
+        margin-left: $nhsuk-spacing-point-3;
     }
 
     &_replies-list {
@@ -189,6 +196,17 @@ $card-border-hover-color: $color_nhsuk-grey-3;
         border: 0;
         background: transparent;
         border-bottom: 1px solid $black;
+
+        #{$self}_header {
+            display: block;
+            position: relative;
+
+            @include respond-to(desktop) {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
 
         #{$self}_heading {
             @include lead-heading;
