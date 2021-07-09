@@ -125,7 +125,7 @@ export const svgPolyFill = function(rawopts) {
     polyfill = "polyfill" in opts ? opts.polyfill : newerIEUA.test(navigator.userAgent) || ((navigator.userAgent.match(olderEdgeUA) || [])[1] as unknown) < 10547 || ((navigator.userAgent.match(webkitUA) || [])[1]  as unknown) < 537 || edgeUA.test(navigator.userAgent) && inIframe;
     
     // create xhr requests object
-    var requests = {}, requestAnimationFrame = window.requestAnimationFrame || setTimeout, uses = document.getElementsByTagName("use"), numberOfSvgUseElementsToBypass = 0;
+    var requests = {}, requestAnimationFrame = (window as any).requestAnimationFrame || setTimeout, uses = document.getElementsByTagName("use"), numberOfSvgUseElementsToBypass = 0;
     
     // conditionally start the interval if the polyfill is active
     polyfill && oninterval();
