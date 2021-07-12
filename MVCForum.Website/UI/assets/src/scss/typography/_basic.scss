@@ -82,6 +82,11 @@ a {
 
 }
 
+.c-link {
+    @extend %clear-button-styles;
+    @extend %link-base;
+}
+
 button {
     @include focus-outline-large;
     font-family: inherit;

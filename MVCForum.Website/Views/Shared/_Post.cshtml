@@ -79,14 +79,14 @@
 						}
 					</noscript>
 				</div>
-				<a data-target-id="replies-@Model.Post.Id"
+				<button data-target-id="replies-@Model.Post.Id"
 				   data-request-id="@Model.Post.Id"
 				   data-endpoint-type="getThreadComments"
 				   data-maxim-requests="@(Model.Replies.TotalPages)"
 				   data-request-index="@Model.Replies.PageIndex"
-				   class="u-text-bold u-text-small js-loadmore">
+				   class="u-text-bold u-text-small c-link js-loadmore u-hidden">
 					Load more replies
-				</a>
+				</button>
 			}
             </div>
 		</div>
