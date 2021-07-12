@@ -10,6 +10,7 @@
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
     ViewBag.MetaDesc = StringUtils.ReturnAmountWordsFromString(string.Concat(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), "..."), 20);
+	var hideSideBar = ViewBag.HideSideBar == null ? false : ViewBag.HideSideBar;
 
     if (Request.QueryString.AllKeys.Any())
     {
@@ -51,7 +52,11 @@
 
 @section side
 {
-    @Html.Partial("_CommonSideNav")
+
+@if (hideSideBar == false)
+{
+	@Html.Partial("_CommonSideNav")
+}
 }
 
 @Html.Action("GetTopicBreadcrumb", "Topic", new { topic = Model.Topic })
@@ -102,7 +107,7 @@
                                 <p class="u-text-theme-7 c-card_header-social-item">
                                     @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_header-social-icon u-fill-theme-8"));}
                                     <span>
-                                        @(Model.TotalCount) 
+                                        @(Model.TotalComments) 
                                     </span>
                                     <span class="c-card_header-social-copy">
                                         @Html.LanguageString("Topic.CommentsDetails")
@@ -130,7 +135,7 @@
         <div class="c-grid-block">
             <div class="c-grid-block_item l-col-12">
                 <p class="u-text-lead u-text-bold">
-                        @(Model.TotalCount) @Html.LanguageString("Topic.CommentsDetails")
+                        @(Model.TotalComments) @Html.LanguageString("Topic.CommentsDetails")
                     </p>
             </div>
         </div>

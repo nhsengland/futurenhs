@@ -4,17 +4,17 @@
 	var myAdminGroups = Model.MyGroups.Where(x => x.Role?.RoleName == "Admin").Select(x => x.Group).ToList();
 	var myGroups = Model.MyGroups.Where(x => x.Role?.RoleName != "Admin").Select(x => x.Group).ToList();
 }
-@if (ViewBag.HideSideBar == false) {
-	<div class="side-box Group-box">
-	    <h3 class="side-box_title">@Html.LanguageString("Group.GroupsSideHeading")</h3>
-		<p><a href="@Url.Action("Index")">View @Html.LanguageString("Group.AllGroups")</a></p>
+
+<div class="side-box Group-box">
+	<h3 class="side-box_title">@Html.LanguageString("Group.GroupsSideHeading")</h3>
+	<p><a href="@Url.Action("Index")">View @Html.LanguageString("Group.AllGroups")</a></p>
 
 
-		@if (myAdminGroups.Any())
-		{
-			<h3 class="side-box_title">Admin Groups</h3>
+	@if (myAdminGroups.Any())
+	{
+		<h3 class="side-box_title">Admin Groups</h3>
 
-			<ul>
+		<ul>
 			@foreach (var Group in @myAdminGroups.Where(x => x.ParentGroup == null))
 			{
 				var currentcatId = Group.Id;
@@ -39,39 +39,36 @@
 				</li>
 
 			}
-			</ul>
-		}
-		@if (myGroups.Any())
-		{
-			<h3 class="side-box_title">My Groups</h3>
-			<ul>
-				@foreach (var Group in myGroups.Where(x => x.ParentGroup == null))
-				{
-					var currentcatId = Group.Id;
-					var subCats = myGroups.Where(x => x.ParentGroup != null && x.ParentGroup.Id == currentcatId).ToList();
+		</ul>
+	}
+	@if (myGroups.Any())
+	{
+		<h3 class="side-box_title">My Groups</h3>
+		<ul>
+			@foreach (var Group in myGroups.Where(x => x.ParentGroup == null))
+			{
+				var currentcatId = Group.Id;
+				var subCats = myGroups.Where(x => x.ParentGroup != null && x.ParentGroup.Id == currentcatId).ToList();
 
-					<li class="catitem">
-						<a style="border-color: @(string.IsNullOrEmpty(Group.Colour) ? "#ced1d1" : Group.Colour)" href="@Html.Raw(Group.NiceUrl)">@Html.Raw(Group.Name)</a>
-						@if (subCats.Any())
-						{
-							<ul>
-								@foreach (var subCat in subCats)
-								{
+				<li class="catitem">
+					<a style="border-color: @(string.IsNullOrEmpty(Group.Colour) ? "#ced1d1" : Group.Colour)" href="@Html.Raw(Group.NiceUrl)">@Html.Raw(Group.Name)</a>
+					@if (subCats.Any())
+					{
+						<ul>
+							@foreach (var subCat in subCats)
+							{
 
-									<li class="catitem">
-										<a style="border-color: @(string.IsNullOrEmpty(subCat.Colour) ? "#ced1d1" : subCat.Colour)" href="@Html.Raw(subCat.NiceUrl)">@Html.Raw(subCat.Name)</a>
-									</li>
+								<li class="catitem">
+									<a style="border-color: @(string.IsNullOrEmpty(subCat.Colour) ? "#ced1d1" : subCat.Colour)" href="@Html.Raw(subCat.NiceUrl)">@Html.Raw(subCat.Name)</a>
+								</li>
 
-								}
-							</ul>
-						}
+							}
+						</ul>
+					}
 
-					</li>
+				</li>
 
-				}
-			</ul>
-		}
-
-
-	</div>
-}
+			}
+		</ul>
+	}
+</div>

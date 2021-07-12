@@ -3,8 +3,8 @@
 @if (Model.Groups.Any())
 {
     <p>
-        <a href="@(Model.Groups[0].NiceUrl + "forum/")" class="u-text-small u-text-theme-0">
-            &lsaquo; Back to discussions
-        </a>
+	    <a href=@Url.RouteUrl("GroupUrls", new { slug = Model.Groups[0].Slug, tab = Constants.GroupForumTab }) class="u-text-small u-text-theme-0">
+		    &lsaquo; Back to discussions
+	    </a>
     </p>
 }
