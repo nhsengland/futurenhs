@@ -3,7 +3,7 @@
 @if (Model.Groups.Any())
 {
     <p>
-        <a href="@Model.Groups[0].NiceUrl" class="u-text-small u-text-theme-0">
+        <a href="@(Model.Groups[0].NiceUrl + "forum/")" class="u-text-small u-text-theme-0">
             &lsaquo; Back to discussions
         </a>
     </p>

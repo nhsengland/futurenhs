@@ -587,8 +587,8 @@
 
             // Get the topic
             var topic = _topicService.GetTopicBySlug(slug);
-
-
+            
+            ViewBag.HideSideBar = true;
 
             if (topic != null)
             {
