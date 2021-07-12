@@ -44,7 +44,8 @@
             LoadingElementId = "createpostwait",
             OnSuccess = "globalNamespaces.topics.postRequestSuccess()",
             OnFailure = "globalNamespaces.topics.postRequestError('Error creating post')",
-            UpdateTargetId = "newpostmarker",
+            UpdateTargetId = Model.InReplyTo != null && Model.Thread != null ? string.Concat("replies-", Model.Thread) : "newpostmarker",
+            InsertionMode = Model.InReplyTo != null ? InsertionMode.InsertAfter : InsertionMode.Replace,
             OnBegin = "globalNamespaces.topics.postRequestInitiate()"
         }, new { @id = "postcodeform" }))
         {

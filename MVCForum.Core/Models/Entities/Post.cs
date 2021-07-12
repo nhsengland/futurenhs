@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using General;
     using Interfaces;
     using Utilities;
@@ -12,7 +14,6 @@
         {
             Id = GuidComb.GenerateComb();
         }
-
         public Guid Id { get; set; }
         public string PostContent { get; set; }
         public DateTime DateCreated { get; set; }
@@ -23,7 +24,8 @@
         public bool? FlaggedAsSpam { get; set; }
         public string IpAddress { get; set; }
         public bool? Pending { get; set; }
-        public Guid? InReplyTo { get; set; }
+        public Guid? InReplyTo { get; set; }        
+        public Guid? ThreadId { get; set; }
         public virtual Topic Topic { get; set; }
         public virtual MembershipUser User { get; set; }
         public virtual IList<Vote> Votes { get; set; }

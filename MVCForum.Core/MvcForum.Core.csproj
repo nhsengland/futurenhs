@@ -82,6 +82,10 @@
     <Compile Include="Migrations\202106020930580_UpdatesTopicsPerPageValueOnSettings.Designer.cs">
       <DependentUpon>202106020930580_UpdatesTopicsPerPageValueOnSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202106300922297_addsThreadIdToPostModel.cs" />
+    <Compile Include="Migrations\202106300922297_addsThreadIdToPostModel.Designer.cs">
+      <DependentUpon>202106300922297_addsThreadIdToPostModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -413,6 +417,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202106020930580_UpdatesTopicsPerPageValueOnSettings.resx">
       <DependentUpon>202106020930580_UpdatesTopicsPerPageValueOnSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106300922297_addsThreadIdToPostModel.resx">
+      <DependentUpon>202106300922297_addsThreadIdToPostModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

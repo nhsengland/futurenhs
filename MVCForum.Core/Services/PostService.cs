@@ -285,7 +285,8 @@ namespace MvcForum.Core.Services
                 .Include(x => x.User).AsNoTracking()
                 .Include(x => x.Topic)
                 .Include(x => x.Topic.Group)
-                .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
+                .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true && x.ThreadId == null);
+
 
             // Sort what order the posts are sorted in
             switch (order)
@@ -398,6 +399,12 @@ namespace MvcForum.Core.Services
 
         }
 
+        public int TopicPostCount(Guid topicId)
+        {
+            return _context.Post
+                .Count(x => x.Topic.Id == topicId && !x.IsTopicStarter);
+        }
+
         /// <summary>
         /// Create a new post
         /// </summary>
@@ -435,7 +442,9 @@ namespace MvcForum.Core.Services
             // If this is a reply to someone
             if (replyTo != null)
             {
+                var replyingTo = Get((Guid)replyTo);
                 post.InReplyTo = replyTo;
+                post.ThreadId = replyingTo.ThreadId != null ? replyingTo.ThreadId : post.InReplyTo;
             }
 
             // The model to process
@@ -596,6 +605,83 @@ namespace MvcForum.Core.Services
                 .OrderByDescending(x => x.DateCreated)
                 .ToList();
 
+        }
+        /// <summary>
+        /// Method to get the replies to a thread.
+        /// </summary>
+        /// <param name="threadId">The id of the thread.</param>
+        /// <returns>List of thread replies.</returns>
+        public IList<Post> GetPostsByThread(Guid threadId)
+        {
+            return _context.Post
+                .Include(x => x.Topic.Group)
+                .Include(x => x.Topic.LastPost)
+                .Include(x => x.User)
+                .Where(x => x.ThreadId == threadId && x.Pending != true)
+                .ToList();
+        }
+
+        public async Task<PaginatedList<Post>> GetPagedPostsByThread(int pageIndex, int pageSize, int amountToTake,
+            Guid threadId, PostOrderBy order)
+        {
+            // Get the topics using an efficient
+            var results = _context.Post
+                .Include(x => x.User).AsNoTracking()
+                .Include(x => x.Topic)
+                .Include(x => x.Topic.Group)
+                .Where(x => x.ThreadId == threadId && x.Pending != true);
+
+
+            // Sort what order the posts are sorted in
+            switch (order)
+            {
+                case PostOrderBy.Newest:
+                    results = results.OrderByDescending(x => x.DateCreated);
+                    break;
+
+                case PostOrderBy.Votes:
+                    results = results.OrderByDescending(x => x.VoteCount).ThenBy(x => x.DateCreated);
+                    break;
+
+                default:
+                    results = results.OrderBy(x => x.DateCreated);
+                    break;
+            }
+
+            return  await PaginatedList<Post>.CreateAsync(results.AsNoTracking().Skip(1), pageIndex, pageSize);
+        }
+
+        public Post GetLatestPostForThread(Guid threadId, PostOrderBy order)
+        {
+            var results = _context.Post
+                .Include(x => x.User).AsNoTracking()
+                .Include(x => x.Topic)
+                .Include(x => x.Topic.Group)
+                .Where(x => x.ThreadId == threadId && x.Pending != true);
+
+
+            // Sort what order the posts are sorted in
+            switch (order)
+            {
+                case PostOrderBy.Newest:
+                    results = results.OrderByDescending(x => x.DateCreated);
+                    break;
+
+                case PostOrderBy.Votes:
+                    results = results.OrderByDescending(x => x.VoteCount).ThenBy(x => x.DateCreated);
+                    break;
+
+                default:
+                    results = results.OrderBy(x => x.DateCreated);
+                    break;
+            }
+
+            return results.FirstOrDefault();
+        }
+
+        public int GetPostCountForThread(Guid threadId)
+        {
+            return _context.Post.Where(m => m.ThreadId == threadId).Count();
         }
 
         /// <summary>

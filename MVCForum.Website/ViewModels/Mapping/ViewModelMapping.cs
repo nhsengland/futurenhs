@@ -11,6 +11,7 @@
     using Core.Models;
     using Core.Models.Entities;
     using Core.Models.General;
+    using MvcForum.Core.Ioc;
     using Poll;
     using Post;
     using Topic;
@@ -434,6 +435,7 @@
         public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission,
             Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
+            IPostService postService = (IPostService) new UnityDependencyResolver(UnityHelper.Container).GetService(typeof(IPostService));
             var allowedToVote = loggedOnUser != null && loggedOnUser.Id != post.User.Id;
             if (allowedToVote && settings.EnablePoints)
             {
@@ -471,7 +473,8 @@
                 MemberIsOnline = post.User.LastActivityDate > date,
                 HasVotedDown = hasVotedDown,
                 HasVotedUp = hasVotedUp,
-                IsTrustedUser = post.User.IsTrustedUser
+                IsTrustedUser = post.User.IsTrustedUser,
+                ReplyingTo = post.InReplyTo != null ? postService.Get((Guid)post.InReplyTo) : null
             };
         }
 

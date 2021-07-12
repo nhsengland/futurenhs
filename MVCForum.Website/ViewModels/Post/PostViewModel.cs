@@ -7,6 +7,7 @@
     public class PostViewModel
     {
         public Post Post { get; set; }
+        public Post ReplyingTo { get; set; }
         public string PermaLink { get; set; }
         public List<Vote> Votes { get; set; }
         public List<Favourite> Favourites { get; set; }
@@ -20,5 +21,7 @@
         public bool ShowTopicName { get; set; }
         public bool MinimalPost { get; set; }
         public bool IsTrustedUser { get; set; }
+        public PaginatedList<Post> Replies { get; set; }
+        public PostViewModel LatestReply { get; set; }
     }
 }

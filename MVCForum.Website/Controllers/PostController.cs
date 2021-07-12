@@ -12,6 +12,7 @@
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using Core.Models.General;
+    using MvcForum.Core.Models.Enums;
     using ViewModels;
     using ViewModels.Mapping;
     using ViewModels.Post;
@@ -66,9 +67,21 @@
             // Create the view model
             var viewModel = ViewModelMapping.CreatePostViewModel(postPipelineResult.EntityToProcess, new List<Vote>(), permissions, topic,
                 loggedOnUser, SettingsService.GetSettings(), new List<Favourite>());
+            var replies = await _postService.GetPagedPostsByThread(1, SettingsService.GetSettings().PostsPerPage, int.MaxValue, viewModel.Post.Id, PostOrderBy.Standard);
+            viewModel.Replies = replies;
+            viewModel.LatestReply = null;
 
-            // Return view
-            return PartialView("_Post", viewModel);
+            if (post.InReplyTo != null)
+            {   // Return view
+                return PartialView("_PostReply", viewModel);
+            }
+            else
+            {
+                // Return view
+                return PartialView("_Post", viewModel);
+            }
+
+         
         }
 
         [HttpPost]
@@ -361,6 +374,16 @@
             }
 
             return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
+        }
+
+        public PartialViewResult GetPost(Post post)
+        {
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            var permissions = RoleService.GetPermissions(post.Topic.Group, loggedOnUsersRole);
+
+            var viewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+
+            return PartialView("_post", viewModel);
         }
     }
 }

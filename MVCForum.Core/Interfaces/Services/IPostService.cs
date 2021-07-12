@@ -27,6 +27,12 @@
 
         Task<PaginatedList<Post>> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId,
             PostOrderBy order);
+        IList<Post> GetPostsByThread(Guid threadId);
+        Task<PaginatedList<Post>> GetPagedPostsByThread(int pageIndex, int pageSize, int amountToTake,
+            Guid threadId, PostOrderBy order);
+        Post GetLatestPostForThread(Guid threadId, PostOrderBy order);
+        int GetPostCountForThread(Guid threadId);
+        int TopicPostCount(Guid topicId);
 
         Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Group> allowedGroups);
         IList<Post> GetPendingPosts(List<Group> allowedGroups, MembershipRole usersRole);

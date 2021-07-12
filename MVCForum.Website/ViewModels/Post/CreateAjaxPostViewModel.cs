@@ -14,6 +14,7 @@
 
         public Guid Topic { get; set; }
         public bool DisablePosting { get; set; }
+        public Guid? Thread { get; set; }
         public Guid? InReplyTo { get; set; }
         public string ReplyToUsername { get; set; }
         public string ReplyToUsernameUrl { get; set; }

@@ -1,10 +1,5 @@
 ﻿namespace MvcForum.Web.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Web.Mvc;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
@@ -14,6 +9,11 @@
     using Core.Models.Enums;
     using Core.Models.General;
     using Core.Utilities;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
     using ViewModels;
     using ViewModels.Breadcrumb;
     using ViewModels.ExtensionMethods;
@@ -647,6 +647,19 @@
                 var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts, postIds,
                     starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser,
                     settings, _notificationService, _pollService, votes, favourites, true);
+                viewModel.TotalComments = _postService.TopicPostCount(viewModel.Topic.Id);
+                foreach (var post in viewModel.Posts) {
+
+                    post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
+
+                    var latestPost = _postService.GetLatestPostForThread(post.Post.Id, orderBy);
+                    if (latestPost != null)
+                    {
+                        post.LatestReply = ViewModelMapping.CreatePostViewModel(latestPost, latestPost.Votes.ToList(),
+                            permissions, topic, LoggedOnReadOnlyUser,
+                            settings, new List<Favourite>());
+                    }
+                }
 
                 // If there is a quote querystring
                 var quote = Request["quote"];
@@ -677,6 +690,7 @@
                         viewModel.ReplyTo = toReply.Id;
                         viewModel.ReplyToUsername = toReply.User.UserName;
                         viewModel.ReplyToUsernameUrl = toReply.User.NiceUrl;
+                        viewModel.Thread = toReply.ThreadId != null ? toReply.ThreadId : toReply.Id;
                     }
                     catch (Exception ex)
                     {
@@ -735,7 +749,7 @@
         }
 
         [HttpPost]
-        public virtual PartialViewResult AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
+        public virtual async Task<PartialViewResult> AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
         {
             User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -770,7 +784,76 @@
                 Permissions = permissions
             };
 
+            foreach (var post in viewModel.Posts)
+            {
+                post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
+                var latestPost = _postService.GetLatestPostForThread(post.Post.Id, orderBy);
+                if (latestPost != null)
+                {
+                    post.LatestReply = ViewModelMapping.CreatePostViewModel(latestPost, latestPost.Votes.ToList(),
+                        permissions, topic, LoggedOnReadOnlyUser,
+                        settings, new List<Favourite>());
+                }
+            }
+
             return PartialView(viewModel);
+        }
+
+        [HttpPost]
+        public virtual PartialViewResult AjaxMorePostsForThread(GetMorePostsViewModel getMorePostsViewModel)
+        {
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+
+            // Get the topic
+            var thread = _postService.Get(getMorePostsViewModel.TopicId);
+            var settings = SettingsService.GetSettings();
+
+            // Get the permissions for the Group that this topic is in
+            var permissions = RoleService.GetPermissions(thread.Topic.Group, loggedOnUsersRole);
+
+            // If this user doesn't have access to this topic then just return nothing
+            if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
+            {
+                return null;
+            }
+
+            var orderBy = !string.IsNullOrWhiteSpace(getMorePostsViewModel.Order)
+                ? EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order)
+                : PostOrderBy.Standard;
+
+            var posts = Task.Run(() => _postService.GetPagedPostsByThread(getMorePostsViewModel.PageIndex,
+                settings.PostsPerPage, int.MaxValue, getMorePostsViewModel.TopicId, orderBy)).Result;
+            var postIds = posts.Select(x => x.Id).ToList();
+            var votes = _voteService.GetVotesByPosts(postIds);
+            var favs = _favouriteService.GetAllPostFavourites(postIds);
+            var viewModel = new ShowMorePostsViewModel
+            {
+                Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, thread.Topic,
+                    LoggedOnReadOnlyUser, settings, favs),
+                Topic = thread.Topic,
+                Permissions = permissions
+            };
+
+            return PartialView("AjaxMorePosts", viewModel);
+        }
+
+        public PartialViewResult GetNoScriptRepliesForThread(Post thread)
+        {
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            List<Post> posts = _postService.GetPostsByThread(thread.Id).Take(ForumConfiguration.Instance.NoScriptReplyCount).ToList();
+            var permissions = RoleService.GetPermissions(thread.Topic.Group, loggedOnUsersRole);
+            var postIds = posts.Select(x => x.Id).ToList();
+            var votes = _voteService.GetVotesByPosts(postIds);
+            var favs = _favouriteService.GetAllPostFavourites(postIds);
+            var viewModel = new ShowMorePostsViewModel
+            {
+                Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, thread.Topic,
+                    LoggedOnReadOnlyUser, SettingsService.GetSettings(), favs),
+            };
+
+            return PartialView("AjaxMorePosts", viewModel);
         }
 
         public virtual async Task<ActionResult> TopicsByTag(string tag, int? p)

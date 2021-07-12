@@ -24,7 +24,7 @@
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
         public string LastPostPermaLink { get; set; }
-
+        public int? TotalComments { get; set; }
         // Permissions
         public bool DisablePosting { get; set; }
 
@@ -43,6 +43,7 @@
         public string ReplyToUsername { get; set; }
         public string ReplyToUsernameUrl { get; set; }
 
+        public Guid? Thread { get; set; }
         // Stats
         public int Answers { get; set; }
 

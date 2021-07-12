@@ -307,10 +307,11 @@ export const uiComponentsInit = (config: {
 
                     const getFetchUrl = (requestIndex: number): string => {
 
-                        const endpoints = {
-                            'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
-                            'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
-                        };
+                    const endpoints = {
+                        'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
+                        'getThreadComments': `/topic/ajaxmorepostsforthread/?TopicId=${requestId}&PageIndex=${requestIndex}`,
+                        'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
+                    };
 
                         return endpoints[endpointType];
 
