@@ -178,7 +178,7 @@
 
         if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Group.IsLocked)
         {
-	        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost, InReplyTo = Model.ReplyTo, ReplyToUsername = Model.ReplyToUsername, CurrentUser = (Model.Topic.User.FirstName  + " " + Model.Topic.User.Surname), CurrentUserUrl = Model.Topic.User.NiceUrl, ReplyToUsernameUrl = Model.ReplyToUsernameUrl, Thread = Model.Thread })
+	        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost, InReplyTo = Model.ReplyTo, ReplyToUsername = Model.ReplyToUsername, CurrentUser = (Model.LoggedInUsersName), CurrentUserUrl = Model.LoggedInUsersUrl, ReplyToUsernameUrl = Model.ReplyToUsernameUrl, Thread = Model.Thread })
         }
         <a id="createpost"></a>
     }

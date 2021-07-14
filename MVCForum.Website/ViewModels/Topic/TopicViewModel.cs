@@ -51,5 +51,15 @@
 
         // Misc
         public bool ShowUnSubscribedLink { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the logged in user.
+        /// </summary>
+        public string LoggedInUsersName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the profile Url of the logged in user.
+        /// </summary>
+        public string LoggedInUsersUrl { get; set; }
     }
 }

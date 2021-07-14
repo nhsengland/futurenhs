@@ -582,9 +582,6 @@
             // Set the page index
             var pageIndex = p ?? 1;
 
-            User.GetMembershipUser(MembershipService);
-           
-
             // Get the topic
             var topic = _topicService.GetTopicBySlug(slug);
             
@@ -647,6 +644,19 @@
                 var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts, postIds,
                     starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser,
                     settings, _notificationService, _pollService, votes, favourites, true);
+
+                // Set the details for the logged in user.
+                var currentUser = User.GetMembershipUser(MembershipService);
+
+                viewModel.LoggedInUsersName = "Unknown";
+                viewModel.LoggedInUsersUrl = string.Empty;
+
+                if (currentUser != null)
+                {
+                    viewModel.LoggedInUsersName = currentUser.GetFullName();
+                    viewModel.LoggedInUsersUrl = currentUser.NiceUrl;
+                }
+
                 viewModel.TotalComments = _postService.TopicPostCount(viewModel.Topic.Id);
                 foreach (var post in viewModel.Posts) {
 
