@@ -716,6 +716,13 @@
                     viewModel.LoggedInUsersUrl = currentUser.NiceUrl;
                 }
 
+                viewModel.CanViewTopic = topic.Group.PublicGroup;
+                if (!viewModel.CanViewTopic && LoggedOnReadOnlyUser != null) {
+                    var user = topic.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
+                    viewModel.CanViewTopic = loggedOnUsersRole.RoleName == Constants.AdminRoleName
+                        || (GetUserStatusForGroup(user) == GroupUserStatus.Joined); 
+                }
+                
                 viewModel.TotalComments = _postService.TopicPostCount(viewModel.Topic.Id);
                 foreach (var post in viewModel.Posts) 
                 {
@@ -1152,5 +1159,31 @@
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
             return loggedOnUsersRole.RoleName == MvcForum.Core.Constants.Constants.AdminRoleName ? loggedOnUsersRole : role;
         }
+
+        private GroupUserStatus GetUserStatusForGroup(GroupUser user)
+        {
+            if (user == null) {
+                return GroupUserStatus.NotJoined;
+            }
+
+            if (user.Approved && !user.Banned && !user.Locked) {
+                return GroupUserStatus.Joined;
+            }
+
+            if (!user.Approved && !user.Banned && !user.Locked && !user.Rejected) {
+                    return GroupUserStatus.Pending;
+            }
+
+            if (user.Approved && user.Banned && !user.Locked) {
+                return GroupUserStatus.Banned;
+            }
+
+            if (user.Approved && !user.Banned && user.Locked) {
+                return GroupUserStatus.Locked;
+            }
+
+            return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
+        }
+
     }
 }
