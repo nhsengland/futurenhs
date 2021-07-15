@@ -47,16 +47,19 @@
         public virtual async Task<ActionResult> CreatePost(CreateAjaxPostViewModel post)
         {
             var topic = _topicService.Get(post.Topic);
+
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
-            var loggedOnUsersRole = loggedOnUser.GetRole(RoleService);
-            var permissions = RoleService.GetPermissions(topic.Group, loggedOnUsersRole);
 
             var postPipelineResult = await _postService.Create(post.PostContent, topic, loggedOnUser, null, false, post.InReplyTo);
+
             if (!postPipelineResult.Successful)
             {
-                // TODO - This is shit. We need to return an object to process
-                throw new Exception(postPipelineResult.ProcessLog.FirstOrDefault());
+                // TODO - review how this is doene
+                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
+
+            // Post id so we know where to 'jump' to when redirecting, when replying Id of replying to otherwise new post Id
+            var postId = post.InReplyTo == null ? postPipelineResult.EntityToProcess.Id : post.InReplyTo;
 
             //Check for moderation
             if (postPipelineResult.EntityToProcess.Pending == true)
@@ -64,24 +67,36 @@
                 return PartialView("_PostModeration");
             }
 
-            // Create the view model
-            var viewModel = ViewModelMapping.CreatePostViewModel(postPipelineResult.EntityToProcess, new List<Vote>(), permissions, topic,
-                loggedOnUser, SettingsService.GetSettings(), new List<Favourite>());
-            var replies = await _postService.GetPagedPostsByThread(1, SettingsService.GetSettings().PostsPerPage, int.MaxValue, viewModel.Post.Id, PostOrderBy.Standard);
-            viewModel.Replies = replies;
-            viewModel.LatestReply = null;
+            // Get posts per page so we can calculate page to redirect to
+            var postsPerPage = SettingsService.GetSettings().PostsPerPage;
 
+            // Calculate the page to redirect to
+            // First get all 'root' posts, i.e. no replies and not topic starter
+            var rootPosts = topic.Posts.Where(x => x.InReplyTo == null).ToList().Where(x => !x.IsTopicStarter);
+
+            // Default the post index to count of root posts
+            var postIndex = rootPosts.Count();
+
+            // If replying get the index of post replying to
             if (post.InReplyTo != null)
-            {   // Return view
-                return PartialView("_PostReply", viewModel);
-            }
-            else
             {
-                // Return view
-                return PartialView("_Post", viewModel);
+                // Zero based so add one to get correct value
+                postIndex = rootPosts.OrderBy(x => x.DateCreated).ToList().FindIndex(x => x.Id == post.InReplyTo) + 1;
+
+                if (postIndex == 0)
+                {
+                    // would be 0 if reply to a reply etc, so go up the heirarchy until we get to root post
+                    var rootInReplyTo = GetRootPostId(topic.Posts.ToList(), (Guid)post.InReplyTo);
+
+                    // Set index of root post or default to 1 if not found
+                    postIndex = rootInReplyTo != null ? rootPosts.OrderBy(x => x.DateCreated).ToList().FindIndex(x => x.Id == rootInReplyTo) + 1 : 1;
+                }
             }
 
-         
+            // Calculate the page should redirect to based on postIndex and number of posts per page
+            var page = (int)Math.Ceiling((double)postIndex / postsPerPage);
+
+            return Redirect($"{topic.NiceUrl}?p={page}#{postId}");
         }
 
         [HttpPost]
@@ -384,6 +399,25 @@
             var viewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
 
             return PartialView("_post", viewModel);
+        }
+
+        /// <summary>
+        /// Get root post Id from a list using in reply to. Recurses up until in reply
+        /// to is null, at this point it's the root post.
+        /// </summary>
+        /// <param name="posts">List of posts.</param>
+        /// <param name="inReplyTo">Guid InReplyTo.</param>
+        /// <returns></returns>
+        private Guid GetRootPostId(List<Post> posts, Guid inReplyTo)
+        {
+            if (posts == null)
+            {
+                return Guid.Empty;
+            }
+
+            var parent = posts.Where(x => x.Id == inReplyTo).FirstOrDefault();
+
+            return parent.InReplyTo == null ? parent.Id : GetRootPostId(posts, (Guid)parent.InReplyTo);
         }
     }
 }

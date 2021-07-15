@@ -637,10 +637,10 @@ namespace MvcForum.Web.Controllers
             return View(editPostViewModel);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int? p)
+        public virtual async Task<ActionResult> Show(string slug, int p = 1)
         {
             // Set the page index
-            var pageIndex = p ?? 1;
+            var pageIndex = p <= 0 ? 1 : p;
 
             // Get the topic
             var topic = _topicService.GetTopicBySlug(slug);
@@ -718,9 +718,12 @@ namespace MvcForum.Web.Controllers
                 }
 
                 viewModel.TotalComments = _postService.TopicPostCount(viewModel.Topic.Id);
-                foreach (var post in viewModel.Posts) {
-
+                foreach (var post in viewModel.Posts) 
+                {
+                    post.PageIndex = pageIndex;
                     post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
+
+                    // TODO set the page index on the other replies when show more button is working (non JS already done)
 
                     var latestPost = _postService.GetLatestPostForThread(post.Post.Id, orderBy);
                     if (latestPost != null)
@@ -728,6 +731,8 @@ namespace MvcForum.Web.Controllers
                         post.LatestReply = ViewModelMapping.CreatePostViewModel(latestPost, latestPost.Votes.ToList(),
                             permissions, topic, LoggedOnReadOnlyUser,
                             settings, new List<Favourite>());
+
+                        post.LatestReply.PageIndex = pageIndex;
                     }
                 }
 
@@ -908,11 +913,14 @@ namespace MvcForum.Web.Controllers
             return PartialView(viewModel);
         }
 
-        public PartialViewResult GetNoScriptRepliesForThread(Post thread)
+        public PartialViewResult GetNoScriptRepliesForThread(Post thread, int p = 1)
         {
             User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
-            List<Post> posts = _postService.GetPostsByThread(thread.Id).Take(ForumConfiguration.Instance.NoScriptReplyCount).ToList();
+
+            // Skip the first one as we already get this as a latest post
+            List<Post> posts = _postService.GetPostsByThread(thread.Id).Skip(1).Take(ForumConfiguration.Instance.NoScriptReplyCount).ToList();
+
             var permissions = RoleService.GetPermissions(thread.Topic.Group, loggedOnUsersRole);
             var postIds = posts.Select(x => x.Id).ToList();
             var votes = _voteService.GetVotesByPosts(postIds);
@@ -921,7 +929,13 @@ namespace MvcForum.Web.Controllers
             {
                 Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, thread.Topic,
                     LoggedOnReadOnlyUser, SettingsService.GetSettings(), favs),
+                PageIndex = p,
             };
+
+            foreach (var post in viewModel.Posts)
+            {
+                post.PageIndex = p;
+            }
 
             return PartialView("AjaxMorePosts", viewModel);
         }

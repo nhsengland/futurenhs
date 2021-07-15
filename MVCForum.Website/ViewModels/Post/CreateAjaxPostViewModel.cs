@@ -23,6 +23,5 @@
         public string CurrentUserUrl { get; set; }
 
         public string ReplyUserUrl { get; set; }
-
     }
 }

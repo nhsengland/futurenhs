@@ -37,17 +37,7 @@
     </div>
 
     <div id="createpostholder" class="js-tinyMCE-container">
-        @using (Ajax.BeginForm("CreatePost", "Post", null, new AjaxOptions
-        {   
-            @* existing bug: the comment gets posted but on FE the load process is never finished, needs a 'finally' handle   *@
-            HttpMethod = "POST",
-            LoadingElementId = "createpostwait",
-            OnSuccess = "globalNamespaces.topics.postRequestSuccess()",
-            OnFailure = "globalNamespaces.topics.postRequestError('Error creating post')",
-            UpdateTargetId = Model.InReplyTo != null && Model.Thread != null ? string.Concat("replies-", Model.Thread) : "newpostmarker",
-            InsertionMode = Model.InReplyTo != null ? InsertionMode.InsertAfter : InsertionMode.Replace,
-            OnBegin = "globalNamespaces.topics.postRequestInitiate()"
-        }, new { @id = "postcodeform" }))
+        @using (Html.BeginForm("CreatePost", "Post", FormMethod.Post))
         {
             <div class="editorholder js-tinyMCE-holder">
                 <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden c-error-message">Please provide a comment.</p>
@@ -64,5 +54,4 @@
         }
 
     </div>
-
 }

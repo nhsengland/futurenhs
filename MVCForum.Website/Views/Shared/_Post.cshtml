@@ -12,84 +12,82 @@
     var upVotes = Model.Votes.Where(x => x.Amount > 0).ToList();
 }
 <div class="c-grid-block">
+    <a id="@postId"></a>
 	<div class="c-grid-block_item l-col-12">
 		<div class="c-card c-card--comment u-border-left-theme-8">
-			<div class="c-card_content">
-				<div class="c-card_header">
-					<div class="c-card_header-img">
-						<div class="c-avatar c-avatar--small">
-							<div class="c-avatar_fallback">
-								<p class="c-avatar_initials u-text-bold" aria-hidden="true">@Html.DisplayFor(x => Model.Post.User.Initials)</p>
-							</div>
-							@if (!string.IsNullOrEmpty(Model.Post.User.Avatar))
-							{
+            <div class="c-card_content">
+                <div class="c-card_header">
+                    <div class="c-card_header-img">
+                        <div class="c-avatar c-avatar--small">
+                            <div class="c-avatar_fallback">
+                                <p class="c-avatar_initials u-text-bold" aria-hidden="true">@Html.DisplayFor(x => Model.Post.User.Initials)</p>
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model.Post.User.Avatar))
+                            {
 
-								<img role="presentation" class="c-avatar_image" src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="Avatar image of member: @Model.Post.User.FirstName @Model.Post.User.Surname">
+                                <img role="presentation" class="c-avatar_image" src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="Avatar image of member: @Model.Post.User.FirstName @Model.Post.User.Surname">
 
-							}
-						</div>
-					</div>
-					<div class="c-card_header-content u-text-theme-7">
-						<p class="u-text-small u-text-bold u-has-subheading u-text-theme-8">
-							<a href="@Html.Raw(Model.Post.User.NiceUrl)">@Model.Post.User.FirstName @Model.Post.User.Surname</a>
-						</p>
-						<p class="u-text-small u-text-bold">
-							@DatesUi.GetPrettyDate(Model.Post.DateCreated.ToString())
-						</p>
-					</div>
-				</div>
-				<div class="c-card_description">
-					@Html.Raw(Model.Post.PostContent.ConvertPostContent())
-				</div>
-				<div class="c-card_footer">
-					<p class="c-card_footer-item votelink-container">
-						<a href="#" aria-label="Like button" class="votelink u-no-js-hidden @(Model.HasVotedUp ? "u-fill-theme-8":"u-fill-theme-5")" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()">
-							@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-like-fill", "c-card_footer-icon"));}
-						</a>
-						<span class="count">@upVotes.Count.KiloFormat()</span> likes
-					</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="c-card_header-content u-text-theme-7">
+                        <p class="u-text-small u-text-bold u-has-subheading u-text-theme-8">
+                            <a href="@Html.Raw(Model.Post.User.NiceUrl)">@Model.Post.User.FirstName @Model.Post.User.Surname</a>
+                        </p>
+                        <p class="u-text-small u-text-bold">
+                            @DatesUi.GetPrettyDate(Model.Post.DateCreated.ToString())
+                        </p>
+                    </div>
+                </div>
+                <div class="c-card_description">
+                    @Html.Raw(Model.Post.PostContent.ConvertPostContent())
+                </div>
+                <div class="c-card_footer">
+                    <p class="c-card_footer-item votelink-container">
+                        <a href="#" aria-label="Like button" class="votelink u-no-js-hidden @(Model.HasVotedUp ? "u-fill-theme-8":"u-fill-theme-5")" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()">
+                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-like-fill", "c-card_footer-icon"));}
+                        </a>
+                        <span class="count">@upVotes.Count.KiloFormat()</span> likes
+                    </p>
 
-					@if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId && !Model.Post.IsTopicStarter)
-					{
-						<p class="c-card_footer-item u-text-theme-10">
-							<a href="?reply=@Model.Post.Id" class="u-text-theme-8">
-								@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-reply", "c-card_footer-icon u-fill-theme-8"));}
-								<span>
-									Reply
-								</span>
-							</a>
-						</p>
-					}
-				</div>
+                    @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId && !Model.Post.IsTopicStarter)
+                    {
+                        <p class="c-card_footer-item u-text-theme-10">
+                            <a href="?reply=@Model.Post.Id&p=@Model.PageIndex#createpost" class="u-text-theme-8">
+                                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-reply", "c-card_footer-icon u-fill-theme-8"));}
+                                <span>
+                                    Reply
+                                </span>
+                            </a>
+                        </p>
+                    }
+                </div>
 
-			
 
-			@if (Model.Post.ThreadId == null && !Model.Post.IsTopicStarter)
-			{
-                if (Model.LatestReply != null)
+
+                @if (Model.Post.ThreadId == null && !Model.Post.IsTopicStarter)
                 {
-    				<div id="replies-@Model.Post.Id" class="c-card_replies-list">
-    					
-    						@* This needs hiding when js is disabled *@
-    						@{Html.RenderPartial("_PostReply", Model.LatestReply);}
-    					
+                    @if (Model.LatestReply != null)
+                    {
+                        <div id="replies-@Model.Post.Id" class="c-card_replies-list">
 
+                            @* This doesn't need hiding when js is disabled, skip the first one in noscript method *@
+                            Html.RenderPartial("_PostReply", Model.LatestReply);
 
-    					<noscript>
-    						@{Html.RenderAction("GetNoScriptRepliesForThread", "Topic", Model.Post);
-    						}
-    					</noscript>
-    				</div>
+                            <noscript>
+                                @{Html.RenderAction("GetNoScriptRepliesForThread", "Topic", new { thread = Model.Post, p = Model.PageIndex });}
+                            </noscript>
+                        </div>
+                    }
+                    <button data-target-id="replies-@Model.Post.Id"
+                            data-request-id="@Model.Post.Id"
+                            data-endpoint-type="getThreadComments"
+                            data-maxim-requests="@(Model.Replies.TotalPages)"
+                            data-request-index="@Model.Replies.PageIndex"
+                            class="u-text-bold u-text-small c-link js-loadmore u-hidden">
+                        Load more replies
+                    </button>
                 }
-				<button data-target-id="replies-@Model.Post.Id"
-				   data-request-id="@Model.Post.Id"
-				   data-endpoint-type="getThreadComments"
-				   data-maxim-requests="@(Model.Replies.TotalPages)"
-				   data-request-index="@Model.Replies.PageIndex"
-				   class="u-text-bold u-text-small c-link js-loadmore u-hidden">
-					Load more replies
-				</button>
-			}
             </div>
 		</div>
 	</div>

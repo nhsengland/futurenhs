@@ -23,5 +23,10 @@
         public bool IsTrustedUser { get; set; }
         public PaginatedList<Post> Replies { get; set; }
         public PostViewModel LatestReply { get; set; }
+
+        /// <summary>
+        /// Gets or sets the page that the post is on.
+        /// </summary>
+        public int PageIndex { get; set; }
     }
 }
