@@ -130,6 +130,30 @@
     }
 }
 
+.u-padded-top {
+    @include respond-to(desktop) {
+        padding-top: $nhsuk-spacing-point-3;
+    }
+
+    &-large {
+        @include respond-to(desktop) {
+            padding-top: $nhsuk-spacing-point-6;
+        }
+    }
+}
+
+.u-padded-bottom {
+    @include respond-to(desktop) {
+        padding-bottom: $nhsuk-spacing-point-3;
+    }
+
+    &-large {
+        @include respond-to(desktop) {
+            padding-bottom: $nhsuk-spacing-point-6;
+        }
+    }
+}
+
 .u-focus-item {
     @extend %nhsuk-focused-item;
 

@@ -1,0 +1,29 @@
+.c-input {
+    @include standard-text(false);
+    appearance: none;
+    border: $nhsuk-border-width-form-element solid $nhsuk-form-border-color;
+    border-radius: 0;
+    box-sizing: border-box;
+    height: 40px;
+    margin-top: 0;
+    padding: $nhsuk-spacing-point-1;
+    width: 100%;
+
+    &:focus {
+        @include nhsuk-focused-input;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        appearance: none;
+        margin: 0;
+    }
+
+    &[type="number"] { // sass-lint:disable-line no-attribute-selectors
+        -moz-appearance: textfield;
+    }
+
+    &--error {
+        border: $nhsuk-border-width-form-element-error solid $nhsuk-error-color;
+    }
+}

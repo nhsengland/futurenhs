@@ -18,7 +18,6 @@
     }
 
     &_input {
-        @extend %input-base;
         width: 100%;
         min-height: $spacer-rg;
         padding: $spacer-xsm;

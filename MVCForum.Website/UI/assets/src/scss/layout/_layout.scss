@@ -108,6 +108,15 @@
     }
 }
 
+@for $i from 0 through 12 {
+
+    .l-col-push-#{$i} {
+        @include respond-to(desktop) {
+            @include push($i);
+        }
+    }
+}
+
 .l-block {
     @include clearfix;
     margin: 0;

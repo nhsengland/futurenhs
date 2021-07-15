@@ -1,7 +1,7 @@
 ﻿@using MvcForum.Web.Application.ExtensionMethods
 @model MvcForum.Web.ViewModels.Topic.CreateEditTopicViewModel
 @{
-    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
     ViewBag.Title = Html.LanguageString("Topic.CreateDiscussion");
 }
 
@@ -15,18 +15,14 @@
     </script>
 }
 
-<div class="c-grid-block">
 
-    <div class="c-grid-block_item l-col-12 l-col-8-t">
         <div class="createtopicholder">
 
             @using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-                @Html.ValidationSummary(false)
                 @Html.AntiForgeryToken()
                 @Html.Partial("_CreateEdit_TopicPost", Model)
             }
 
         </div>
-    </div>
-</div>
+

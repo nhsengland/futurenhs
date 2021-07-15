@@ -18,18 +18,19 @@
 	@RenderSection("Header", false)
 }
 
-@* START BREADCRUMBS *@
+@* START BREADCRUMBS 
 <div class="l-container u-desktop-up">
 	<div class="l-col-12">
 		<div class="c-grid-block">
 			<div class="c-grid-block_item l-col-12">
 				<div class="c-breadcrumb" style="height: 60px">
-					@* TODO : BREADCRUMBS *@
+					 TODO : BREADCRUMBS
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+*@
 
 @* END  BREADCRUMBS *@
 
@@ -48,7 +49,7 @@
 					@if (pageHeader != null)
 					{
 						@* START PAGE HEADER BLOCK *@
-						<div class="c-page-header u-bg-theme-8 u-padded-left">
+						<div class="c-page-header u-bg-theme-8 u-padded-left u-padded-top-large">
 							<div class="l-col-12">
 								<div class="u-flex">
 									@if (!pageHeader.Image.IsNullEmpty())
@@ -73,8 +74,7 @@
 					}
 					@*END PAGE HEADER BLOCK *@
 
-					<hr class="c-section-break c-section-break--small" />
-					<div class="l-col-12 u-padded-left">
+					<div class="l-col-12 u-padded-left u-padded-top-large u-padded-bottom-large">
 						<div class="c-grid-block c-grid-block--reverse-row">
 							@if (!hideSideBar)
 							{
