@@ -67,12 +67,12 @@
 
                 @if (Model.Post.ThreadId == null && !Model.Post.IsTopicStarter)
                 {
-                    @if (Model.LatestReply != null)
+                    if (Model.LatestReply != null)
                     {
                         <div id="replies-@Model.Post.Id" class="c-card_replies-list">
 
                             @* This doesn't need hiding when js is disabled, skip the first one in noscript method *@
-                            Html.RenderPartial("_PostReply", Model.LatestReply);
+                            @{Html.RenderPartial("_PostReply", Model.LatestReply);}
 
                             <noscript>
                                 @{Html.RenderAction("GetNoScriptRepliesForThread", "Topic", new { thread = Model.Post, p = Model.PageIndex });}
