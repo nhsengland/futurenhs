@@ -15,7 +15,7 @@
 	var contentErrors = contentErrorMessage != null && contentErrorMessage.Errors.Any();
 }
 
-<fieldset class="c-fieldset">
+<fieldset class="c-fieldset js-tinyMCE-container">
 	<legend class="c-fieldset_legend">
 		<h2>
 			@ViewBag.Title
@@ -28,23 +28,34 @@
 	{
 		@*TODO We need to come up with generic components here so we can re use this code without having to copy and paste it around everywhere*@
 		@*TODO Once the models are refactored to contain a simple error list this needs implementing in this code*@
-		<div class="c-form-group @(nameErrors ? "c-form-group--error" : "")">
-			@Html.LabelFor(model => model.Name, new { @class = "c-label" })
+        <div class="js-input-container">
+            
+            <div class="c-form-group  js-input-holder @(nameErrors ? "c-form-group--error" : "")">
+                @Html.LabelFor(model => model.Name, new { @class = "c-label" })
+                @if (nameErrors)
+                {
+                    foreach (var error in nameErrorMessage.Errors)
+                    {
+                        <span class="c-error-message" id="MODEL.NAME-error">
+                            <span class="u-visually-hidden">Error:</span> 
+                            @* FOR DEMO we are using the notEmpty for all erros
+                            
+                            we need unique class for each error
+                            error mapping required
+                            *@
+                            <span class="js-input-error-notEmpty">@error.ErrorMessage</span>
+                        </span>
+                    }
+                }else {
+                    <p role="alert" class="js-input-error-notEmpty u-hidden c-error-message">Please provide a discussion title.</p>
+                }
 
-			@if (nameErrors)
-			{
-				foreach (var error in nameErrorMessage.Errors)
-				{
-					<span class="c-error-message" id="MODEL.NAME-error">
-						<span class="u-visually-hidden">Error:</span> @error.ErrorMessage
-					</span>
-				}
-			}
-
-			@Html.TextBoxFor(model => model.Name, new { @class = $"c-input {(nameErrors ? "c-input--error" : "")}" })
+                @Html.TextBoxFor(model => model.Name, new {data_focus_requirements="notEmpty" ,  @class = $"c-input  js-input {(nameErrors ? "c-input--error" : "")}" })
 
 
-		</div>
+            </div>
+        
+        </div>
 	}
 	else
 	{
@@ -54,8 +65,9 @@
 
 	@*TODO We need to come up with generic components here so we can re use this code without having to copy and paste it around everywhere*@
 	@*TODO Once the models are refactored to contain a simple error list this needs implementing in this code*@
-	<div class="c-form-group @(contentErrors ? "c-form-group--error" : "")">
+	<div class="c-form-group js-tinyMCE-holder @(contentErrors ? "u-has-error" : "")">
 		@Html.LabelFor(model => model.Content, new { @class = "c-label" })
+        <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden c-error-message">Please provide a comment.</p>
 		@if (contentErrors)
 		{
 
@@ -97,7 +109,7 @@
 	*@
 
 
-	<button type="submit" class="c-button u-fright">
+	<button type="submit" class="c-button u-fright js-tinyMCE-submit" data-mce-requirements="notEmpty">
 		@if (Model.Id == Guid.Empty)
 		{
 			@Html.LanguageString("Topic.CreateDiscussion")
@@ -108,9 +120,37 @@
 		}
 	</button>
 
-	<a href="@Url.RouteUrl("GroupUrls", new { slug = Model.GroupSlug, tab = Constants.GroupForumTab })" class="c-button c-button--outline">
+	<a href="@Url.RouteUrl("GroupUrls", new { slug = Model.GroupSlug, tab = Constants.GroupForumTab })" class="c-button c-button--outline js-dialog" data-dialog-id="dialog-cancel-create">
 		Cancel
 	</a>
+    
+    <dialog id="dialog-cancel-create" class="c-dialog">
+
+            <div class="c-dialog_content">
+
+                <h3>Entered Data will be lost</h3>
+
+                <p class="u-text-bold">
+                    The discussion details will be discarded. <br> 
+                    Are you sure you wish to proceed?
+                </p>
+                
+                <div>
+                    <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+                        Cancel
+                    </button>
+                </div>
+
+                <div>
+                    <button class="js-dialog-confirm c-button c-button--full-width">
+                        Yes, discard
+                    </button>
+                </div>
+
+            </div>
+        
+    </dialog>
+    
 	@*
 		@if (Model.IsTopicStarter)
 		{

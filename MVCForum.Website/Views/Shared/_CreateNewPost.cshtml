@@ -50,7 +50,7 @@
         }, new { @id = "postcodeform" }))
         {
             <div class="editorholder js-tinyMCE-holder">
-                <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden u-text-theme-13">Please provide a comment.</p>
+                <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden c-error-message">Please provide a comment.</p>
                 @Html.EditorFor(x => x.PostContent, new { @class = "createpost required form-control rte" })
                 @Html.ValidationMessageFor(x => x.PostContent)
             </div>

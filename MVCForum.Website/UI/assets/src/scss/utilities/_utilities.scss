@@ -226,7 +226,7 @@
 
 .u-has-error {
     padding-left: $nhsuk-spacing-point-3;
-    border-left: 3px solid $red;
+    border-left: 4px solid $red;
 }
 
 @each $number, $theme in $t-utility-themes {

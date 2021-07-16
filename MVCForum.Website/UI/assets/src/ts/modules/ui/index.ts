@@ -382,6 +382,34 @@ export const uiComponentsInit = (config: {
 
     }
 
+    /**
+    * input components
+    */
+     const inputContainers: Array<Element> = Array.from(document.getElementsByClassName('js-input-container'));
+
+     if (inputContainers?.length > 0) {
+ 
+         import('@modules/ui/components/input').then(({ Input }) => {
+ 
+            inputContainers.forEach((inputContainer: HTMLElement) => {
+
+                 const notEmpty = (value: string): boolean => Boolean(value);
+ 
+                 const focusValidators = {
+                     'notEmpty' :  notEmpty
+                 }
+ 
+                 new Input({
+                    focusValidators: focusValidators,
+                    wrapperSelector: inputContainer,
+                 });
+ 
+             });
+ 
+         });
+ 
+     }
+
 
 
 }

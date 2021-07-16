@@ -41,6 +41,7 @@
 }
 
 // non js error styles
+.u-has-error,
 .c-form-group--error {
     .tinymceholder {
         .mce-panel,
@@ -53,7 +54,7 @@
 
 .u-has-error .mce-edit-area {
 
-    border: 2px solid $nhsuk-error-color !important;
+    border: 4px solid $nhsuk-error-color !important;
     
 }
 // sass-lint:enable-all
