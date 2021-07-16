@@ -4,111 +4,133 @@
 @using MvcForum.Web.ViewModels.Shared
 
 @{
-    var count = 0;
-    const string displayNone = "style=\"display: none;\"";
-    ViewBag.ImageUploadType = Model.OptionalPermissions.CanInsertImages ? "forumimageinsert" : "image";    
+	var count = 0;
+	const string displayNone = "style=\"display: none;\"";
+	ViewBag.ImageUploadType = Model.OptionalPermissions.CanInsertImages ? "forumimageinsert" : "image";
+
+	@*TODO This is a temporary fix to get it working for a demo, this logic needs moving into the controller and an error list adding to the view model to remove the need for logic in the view*@
+	ViewContext.ViewData.ModelState.TryGetValue("Name", out var nameErrorMessage);
+	var nameErrors = nameErrorMessage != null && nameErrorMessage.Errors.Any();
+	ViewContext.ViewData.ModelState.TryGetValue("Content", out var contentErrorMessage);
+	var contentErrors = contentErrorMessage != null && contentErrorMessage.Errors.Any();
 }
 
 <fieldset class="c-fieldset">
-    <legend class="c-fieldset_legend">
-        <h2>
-        @ViewBag.Title
-        </h2>
-    </legend>
+	<legend class="c-fieldset_legend">
+		<h2>
+			@ViewBag.Title
+		</h2>
+	</legend>
 
-    @Html.HiddenFor(x => x.TopicId)
-    @Html.HiddenFor(x => x.Group)
-    @if (Model.IsTopicStarter)
-    {
-        <div class="c-form-group">
-            @Html.LabelFor(model => model.Name, new { @class = "c-label" })
-            @* TODO conditionally display on error. ID needs to be the input id with -error appended. class names on group and input need to be added conditionally on error too - see fedtest for implementation
-            <span class="c-error-message" id="MODEL.NAME-error">
-                <span class="u-visually-hidden">Error:</span> @Html.ValidationMessageFor(model => model.Name)
-            </span>
-            *@
-            @Html.TextBoxFor(model => model.Name, new { @class = "c-input"})
-        </div>
-    }
-    else
-    {
+	@Html.HiddenFor(x => x.TopicId)
+	@Html.HiddenFor(x => x.Group)
+	@if (Model.IsTopicStarter)
+	{
+		@*TODO We need to come up with generic components here so we can re use this code without having to copy and paste it around everywhere*@
+		@*TODO Once the models are refactored to contain a simple error list this needs implementing in this code*@
+		<div class="c-form-group @(nameErrors ? "c-form-group--error" : "")">
+			@Html.LabelFor(model => model.Name, new { @class = "c-label" })
 
-        @Html.HiddenFor(x => x.Name)
-    }
+			@if (nameErrors)
+			{
+				foreach (var error in nameErrorMessage.Errors)
+				{
+					<span class="c-error-message" id="MODEL.NAME-error">
+						<span class="u-visually-hidden">Error:</span> @error.ErrorMessage
+					</span>
+				}
+			}
+
+			@Html.TextBoxFor(model => model.Name, new { @class = $"c-input {(nameErrors ? "c-input--error" : "")}" })
 
 
-    <div class="c-form-group">
-        @Html.LabelFor(model => model.Content, new { @class = "c-label" })
-        @* TODO conditionally display on error. ID needs to be the input id with -error appended. class names on group and input need to be added conditionally on error too - see fedtest for implementation
-            <span class="c-error-message" id="MODEL.NAME-error">
-                <span class="u-visually-hidden">Error:</span> @Html.ValidationMessageFor(model => model.Content)
-            </span>
-        *@
-        @Html.EditorFor(model => model.Content)
-    </div>
-        
-    @*
-    @if (Model.IsTopicStarter)
-    {
-        <div class="c-grid-block">
-            <div class="c-grid-block_item l-col-12 topicGroup">
-                
-                @if (Model.Id == Guid.Empty)
-                {
-                    <div class="form-group createuploadfiles" @Html.Raw(Model.OptionalPermissions.CanUploadFiles ? "" : displayNone)>
-                        @Html.LabelFor(x => x.Files)
-                        <div class="input-group">
-                            <span class="input-group-btn">
-                                <span class="btn btn-default btn-file">
-                                    @Html.LanguageString("Post.Browse") <input type="file" name="files" id="Files" multiple="multiple" value="">
-                                </span>
-                            </span>
-                            <label for="fileReadOnly" class="u-hidden">File Name</label>
-                            <input id="fileReadOnly" type="text" class="form-control" readonly="">
-                        </div>
-                        @Html.ValidationMessageFor(x => x.Files)
-                    </div>
-                }
-            </div>
-        </div>
-    }
-    *@
-        
+		</div>
+	}
+	else
+	{
 
-    <button type="submit" class="c-button u-fright">
-        @if (Model.Id == Guid.Empty)
-        {
-            @Html.LanguageString("Topic.CreateDiscussion")
-        }
-        else
-        {
-            @Html.LanguageString("Post.Edit")
-        }
-    </button>
+		@Html.HiddenFor(x => x.Name)
+	}
 
-    <a href="#" class="c-button c-button--outline">
-        Cancel
-    </a>
-    @*
-    @if (Model.IsTopicStarter)
-    {
-        <div class="checkbox createsticky" @Html.Raw(Model.OptionalPermissions.CanStickyTopic ? "" : displayNone)>
-            @using (Html.BeginLabelFor(m => m.IsSticky, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.IsSticky)
-            }
-            @Html.ValidationMessageFor(m => m.IsSticky)
-        </div>
-        <div class="checkbox createlocked" @Html.Raw(Model.OptionalPermissions.CanLockTopic ? "" : displayNone)>
-            @using (Html.BeginLabelFor(m => m.IsLocked, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.IsLocked)
-            }
-            @Html.ValidationMessageFor(m => m.IsLocked)
-        </div>
-    }
-    *@
+	@*TODO We need to come up with generic components here so we can re use this code without having to copy and paste it around everywhere*@
+	@*TODO Once the models are refactored to contain a simple error list this needs implementing in this code*@
+	<div class="c-form-group @(contentErrors ? "c-form-group--error" : "")">
+		@Html.LabelFor(model => model.Content, new { @class = "c-label" })
+		@if (contentErrors)
+		{
 
-    @Html.HiddenFor(x => x.IsPostEdit)
+			foreach (var error in contentErrorMessage.Errors)
+			{
+				<span class="c-error-message" id="MODEL.CONTENT-error">
+					<span class="u-visually-hidden">Error:</span> @error.ErrorMessage
+				</span>
+			}
+		}
+		@Html.EditorFor(model => model.Content)
+	</div>
+
+	@*
+		@if (Model.IsTopicStarter)
+		{
+			<div class="c-grid-block">
+				<div class="c-grid-block_item l-col-12 topicGroup">
+
+					@if (Model.Id == Guid.Empty)
+					{
+						<div class="form-group createuploadfiles" @Html.Raw(Model.OptionalPermissions.CanUploadFiles ? "" : displayNone)>
+							@Html.LabelFor(x => x.Files)
+							<div class="input-group">
+								<span class="input-group-btn">
+									<span class="btn btn-default btn-file">
+										@Html.LanguageString("Post.Browse") <input type="file" name="files" id="Files" multiple="multiple" value="">
+									</span>
+								</span>
+								<label for="fileReadOnly" class="u-hidden">File Name</label>
+								<input id="fileReadOnly" type="text" class="form-control" readonly="">
+							</div>
+							@Html.ValidationMessageFor(x => x.Files)
+						</div>
+					}
+				</div>
+			</div>
+		}
+	*@
+
+
+	<button type="submit" class="c-button u-fright">
+		@if (Model.Id == Guid.Empty)
+		{
+			@Html.LanguageString("Topic.CreateDiscussion")
+		}
+		else
+		{
+			@Html.LanguageString("Post.Edit")
+		}
+	</button>
+
+	<a href="@Url.RouteUrl("GroupUrls", new { slug = Model.GroupSlug, tab = Constants.GroupForumTab })" class="c-button c-button--outline">
+		Cancel
+	</a>
+	@*
+		@if (Model.IsTopicStarter)
+		{
+			<div class="checkbox createsticky" @Html.Raw(Model.OptionalPermissions.CanStickyTopic ? "" : displayNone)>
+				@using (Html.BeginLabelFor(m => m.IsSticky, new { @class = "checkbox" }))
+				{
+					@Html.CheckBoxFor(m => m.IsSticky)
+				}
+				@Html.ValidationMessageFor(m => m.IsSticky)
+			</div>
+			<div class="checkbox createlocked" @Html.Raw(Model.OptionalPermissions.CanLockTopic ? "" : displayNone)>
+				@using (Html.BeginLabelFor(m => m.IsLocked, new { @class = "checkbox" }))
+				{
+					@Html.CheckBoxFor(m => m.IsLocked)
+				}
+				@Html.ValidationMessageFor(m => m.IsLocked)
+			</div>
+		}
+	*@
+
+	@Html.HiddenFor(x => x.IsPostEdit)
 </fieldset>
-    
+

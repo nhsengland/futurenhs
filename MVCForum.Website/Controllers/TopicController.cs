@@ -1,4 +1,7 @@
-﻿namespace MvcForum.Web.Controllers
+﻿using MvcForum.Core.Constants.UI;
+using MvcForum.Web.ViewModels.Shared;
+
+namespace MvcForum.Web.Controllers
 {
     using Core;
     using Core.Constants;
@@ -268,6 +271,39 @@
             return allowedAccessGroups;
         }
 
+        // TODO Duplicated code from groups, we need to refactor all of this into one place.
+        public TabViewModel GetGroupTabsModel(string slug)
+        {
+            var forumTab = new Tab
+            {
+                Name = "GroupTabs.Forum",
+                Order = 2,
+                Icon = Icons.Forum,
+                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupForumTab})}",
+                Active = true
+            };
+
+            var membersTab = new Tab
+            {
+                Name = "GroupTabs.Members",
+                Order = 3,
+                Icon = Icons.Members,
+                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupMembersTab})}"
+            };
+
+            var homeTab = new Tab
+            {
+                Name = "GroupTabs.Home",
+                Order = 1,
+                Icon = Icons.Home,
+                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = UrlParameter.Optional})}"
+            };
+
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab } };
+
+            return tabsViewModel;
+        }
+
         /// <summary>
         ///     Create topic view
         /// </summary>
@@ -279,10 +315,22 @@
             var loggedOnUsersRole = GetGroupMembershipRole(groupId);
             var allowedAccessGroups = AllowedCreateGroups(loggedOnUsersRole);
 
+            var group = _groupService.Get(groupId);
+            var pageHeader = new PageViewModel();
+            pageHeader.Name = group.Name;
+            pageHeader.Description = group.Description;
+            pageHeader.Colour = group.Colour;
+            pageHeader.HeaderTabs = GetGroupTabsModel(group.Slug);
+            pageHeader.Image = group.Image;
+            pageHeader.Id = group.Id;
+
+            ViewBag.PageHeader = pageHeader;
+
             if (allowedAccessGroups.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessGroups);
                 viewModel.Group = groupId;
+                viewModel.GroupSlug = group.Slug;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -303,16 +351,28 @@
             var loggedOnUsersRole = GetGroupMembershipRole(topicViewModel.Group);
 
             // Get the Group
-            var Group = _groupService.Get(topicViewModel.Group);
+            var group = _groupService.Get(topicViewModel.Group);
 
             // First check this user is allowed to create topics in this Group
-            var permissions = RoleService.GetPermissions(Group, loggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(group, loggedOnUsersRole);
+
+
+
+            var pageHeader = new PageViewModel();
+            pageHeader.Name = group.Name;
+            pageHeader.Description = group.Description;
+            pageHeader.Colour = group.Colour;
+            pageHeader.HeaderTabs = GetGroupTabsModel(group.Slug);
+            pageHeader.Image = group.Image;
+            pageHeader.Id = group.Id;
+
+            ViewBag.PageHeader = pageHeader;
 
             // Now we have the Group and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedGroups
             topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            topicViewModel.Groups =
-                _groupService.GetBaseSelectListGroups(AllowedCreateGroups(loggedOnUsersRole), LoggedOnReadOnlyUser?.Id);
+            topicViewModel.Groups = _groupService.GetBaseSelectListGroups(AllowedCreateGroups(loggedOnUsersRole), LoggedOnReadOnlyUser?.Id);
+            topicViewModel.GroupSlug = group.Slug;
             topicViewModel.IsTopicStarter = true;
             if (topicViewModel.PollAnswers == null)
             {
@@ -324,13 +384,13 @@
                 // See if the user has actually added some content to the topic
                 if (string.IsNullOrWhiteSpace(topicViewModel.Content))
                 {
-                    ModelState.AddModelError(string.Empty,
-                        LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    ModelState.AddModelError("Content",
+                        LocalizationService.GetResourceString("This field is required"));
                 }
                 else
                 {
                     // Map the new topic (Pass null for new topic)
-                    var topic = topicViewModel.ToTopic(Group, loggedOnUser, null);
+                    var topic = topicViewModel.ToTopic(group, loggedOnUser, null);
 
                     // Run the create pipeline
                     var createPipeLine = await _topicService.Create(topic, topicViewModel.Files, topicViewModel.Tags,

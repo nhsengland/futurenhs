@@ -35,6 +35,7 @@
         [Required]
         [ForumMvcResourceDisplayName("Topic.Label.Group")]
         public Guid Group { get; set; }
+        public string GroupSlug { get; set; }
 
         public string Tags { get; set; }
 
