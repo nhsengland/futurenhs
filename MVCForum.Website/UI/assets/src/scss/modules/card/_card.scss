@@ -60,9 +60,16 @@ $card-border-hover-color: $color_nhsuk-grey-3;
     }
 
     &_heading,
-    &_metadata,
+    &_metadata {
+        margin-bottom: $nhsuk-spacing-point-3;
+    }
+
     &_description {
         margin-bottom: $nhsuk-spacing-point-3;
+
+        &--spaced {
+            margin-bottom: $nhsuk-spacing-point-8;
+        }
     }
 
     &_header {
