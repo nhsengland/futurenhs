@@ -17,6 +17,7 @@
     </legend>
 
     @Html.HiddenFor(x => x.TopicId)
+    @Html.HiddenFor(x => x.Group)
     @if (Model.IsTopicStarter)
     {
         <div class="c-form-group">
@@ -31,10 +32,11 @@
     }
     else
     {
-        @Html.HiddenFor(x => x.Group)
+
         @Html.HiddenFor(x => x.Name)
     }
-        
+
+
     <div class="c-form-group">
         @Html.LabelFor(model => model.Content, new { @class = "c-label" })
         @* TODO conditionally display on error. ID needs to be the input id with -error appended. class names on group and input need to be added conditionally on error too - see fedtest for implementation
@@ -110,4 +112,3 @@
     @Html.HiddenFor(x => x.IsPostEdit)
 </fieldset>
     
-</div>
