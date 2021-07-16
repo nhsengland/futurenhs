@@ -60,6 +60,7 @@
         public int MembersActivityListSize => Convert.ToInt32(GetConfig("MembersActivityListSize"));
         public int PrivateMessageListSize => Convert.ToInt32(GetConfig("PrivateMessageListSize"));
         public int SimilarTopicsListSize => Convert.ToInt32(GetConfig("SimilarTopicsListSize"));
+        public int PagingRepliesSize => Convert.ToInt32(GetConfig("PagingRepliesSize"));
 
         /// <summary>
         ///     Post Settings

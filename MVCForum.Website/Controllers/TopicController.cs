@@ -1,10 +1,8 @@
-﻿using MvcForum.Core.Constants.UI;
-using MvcForum.Web.ViewModels.Shared;
-
-namespace MvcForum.Web.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using Core;
     using Core.Constants;
+    using Core.Constants.UI;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -22,6 +20,7 @@ namespace MvcForum.Web.Controllers
     using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;
     using ViewModels.Post;
+    using ViewModels.Shared;
     using ViewModels.Topic;
 
     public partial class TopicController : BaseController
@@ -723,6 +722,8 @@ namespace MvcForum.Web.Controllers
                     post.PageIndex = pageIndex;
                     post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
 
+                    post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
+                    post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, ForumConfiguration.Instance.PagingRepliesSize);
                     // TODO set the page index on the other replies when show more button is working (non JS already done)
 
                     var latestPost = _postService.GetLatestPostForThread(post.Post.Id, orderBy);
@@ -861,7 +862,7 @@ namespace MvcForum.Web.Controllers
 
             foreach (var post in viewModel.Posts)
             {
-                post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
+                post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, ForumConfiguration.Instance.PagingRepliesSize);
                 var latestPost = _postService.GetLatestPostForThread(post.Post.Id, orderBy);
                 if (latestPost != null)
                 {
@@ -898,7 +899,7 @@ namespace MvcForum.Web.Controllers
                 : PostOrderBy.Standard;
 
             var posts = Task.Run(() => _postService.GetPagedPostsByThread(getMorePostsViewModel.PageIndex,
-                settings.PostsPerPage, int.MaxValue, getMorePostsViewModel.TopicId, orderBy)).Result;
+                ForumConfiguration.Instance.PagingRepliesSize, int.MaxValue, getMorePostsViewModel.TopicId, orderBy)).Result;
             var postIds = posts.Select(x => x.Id).ToList();
             var votes = _voteService.GetVotesByPosts(postIds);
             var favs = _favouriteService.GetAllPostFavourites(postIds);
