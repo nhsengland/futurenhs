@@ -905,7 +905,7 @@ namespace MvcForum.Web.Controllers
                 Permissions = permissions
             };
 
-            return PartialView("AjaxMorePosts", viewModel);
+            return PartialView(viewModel);
         }
 
         public PartialViewResult GetNoScriptRepliesForThread(Post thread)

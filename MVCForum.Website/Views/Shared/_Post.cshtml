@@ -66,19 +66,21 @@
 
 			@if (Model.Post.ThreadId == null && !Model.Post.IsTopicStarter)
 			{
-				<div id="replies-@Model.Post.Id" class="c-card_replies-list">
-					@if (Model.LatestReply != null)
-					{
-						@* This needs hiding when js is disabled *@
-						Html.RenderPartial("_PostReply", Model.LatestReply);
-					}
+                if (Model.LatestReply != null)
+                {
+    				<div id="replies-@Model.Post.Id" class="c-card_replies-list">
+    					
+    						@* This needs hiding when js is disabled *@
+    						@{Html.RenderPartial("_PostReply", Model.LatestReply);}
+    					
 
 
-					<noscript>
-						@{Html.RenderAction("GetNoScriptRepliesForThread", "Topic", Model.Post);
-						}
-					</noscript>
-				</div>
+    					<noscript>
+    						@{Html.RenderAction("GetNoScriptRepliesForThread", "Topic", Model.Post);
+    						}
+    					</noscript>
+    				</div>
+                }
 				<button data-target-id="replies-@Model.Post.Id"
 				   data-request-id="@Model.Post.Id"
 				   data-endpoint-type="getThreadComments"

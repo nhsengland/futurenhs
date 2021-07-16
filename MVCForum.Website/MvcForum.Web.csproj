@@ -1172,6 +1172,7 @@
     <Content Include="Views\Group\_Topics.cshtml" />
     <Content Include="Views\Group\_GroupHomeCards.cshtml" />
     <Content Include="Views\Shared\_PostReply.cshtml" />
+    <Content Include="Views\Topic\AjaxMorePostsForThread.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />
