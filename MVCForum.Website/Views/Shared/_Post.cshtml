@@ -43,7 +43,7 @@
 				</div>
 				<div class="c-card_footer">
 					<p class="c-card_footer-item votelink-container">
-						<a href="#" aria-label="Like button" class="votelink @(Model.HasVotedUp ? "u-fill-theme-8":"u-fill-theme-5")" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()">
+						<a href="#" aria-label="Like button" class="votelink u-no-js-hidden @(Model.HasVotedUp ? "u-fill-theme-8":"u-fill-theme-5")" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()">
 							@{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-like-fill", "c-card_footer-icon"));}
 						</a>
 						<span class="count">@upVotes.Count.KiloFormat()</span> likes

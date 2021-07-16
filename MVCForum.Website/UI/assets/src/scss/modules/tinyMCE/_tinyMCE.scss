@@ -40,10 +40,20 @@
     }
 }
 
+// non js error styles
+.c-form-group--error {
+    .tinymceholder {
+        .mce-panel,
+        .c-textarea {
+            border-color: $nhsuk-error-color !important;
+        }
+    }
+}
+
 
 .u-has-error .mce-edit-area {
 
-    border: 2px solid #d5281b!important;
+    border: 2px solid $nhsuk-error-color !important;
     
 }
 // sass-lint:enable-all
