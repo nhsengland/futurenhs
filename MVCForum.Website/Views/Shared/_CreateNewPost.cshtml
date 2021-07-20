@@ -45,7 +45,7 @@
                 @Html.ValidationMessageFor(x => x.PostContent)
             </div>
             <div class="u-margin-top-spacing-5">
-                <button class="c-button c-button--outline js-tinyMCE-clear u-margin-right-spacing-5">@Html.LanguageString("Buttons.ClearPost")</button>
+                <button class="c-button c-button--outline js-tinyMCE-clear u-margin-right-spacing-5 u-no-js-hidden">@Html.LanguageString("Buttons.ClearPost")</button>
                 <input type="submit" id="createpostbutton" class="c-button js-tinyMCE-submit u-fright" data-mce-requirements="notEmpty" value="@Html.LanguageString("Buttons.CreatePost")" />
                 <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
                 @Html.HiddenFor(x => x.Topic)
