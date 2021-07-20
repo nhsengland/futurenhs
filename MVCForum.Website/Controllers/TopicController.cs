@@ -818,6 +818,27 @@
                     }
                 }
 
+                // Create the view model for new post here rather than in view so we can set error if any (also nicer from a view perspective)
+                viewModel.NewPostViewModel = 
+                    new CreateAjaxPostViewModel()
+                    {
+                        Topic = viewModel.Topic.Id,
+                        DisablePosting = viewModel.DisablePosting,
+                        PostContent = viewModel.QuotedPost,
+                        InReplyTo = viewModel.ReplyTo,
+                        ReplyToUsername = viewModel.ReplyToUsername,
+                        CurrentUser = viewModel.LoggedInUsersName,
+                        CurrentUserUrl = viewModel.LoggedInUsersUrl,
+                        ReplyToUsernameUrl = viewModel.ReplyToUsernameUrl,
+                        Thread = viewModel.Thread
+                    };
+
+                if (TempData["NewPostError"] != null && !string.IsNullOrWhiteSpace(TempData["NewPostError"].ToString()))
+                {
+                    viewModel.NewPostViewModel.Error = TempData["NewPostError"].ToString();
+                    TempData["NewPostError"] = null;
+                }
+
                 return View(viewModel);
             }
 

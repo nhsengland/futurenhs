@@ -52,11 +52,10 @@
 
 @section side
 {
-
-@if (hideSideBar == false)
-{
-	@Html.Partial("_CommonSideNav")
-}
+    @if (hideSideBar == false)
+    {
+	    @Html.Partial("_CommonSideNav")
+    }
 }
 
 @Html.Action("GetTopicBreadcrumb", "Topic", new { topic = Model.Topic })
@@ -175,10 +174,9 @@
 
     @if (!Model.Topic.IsLocked)
     {
-        <a id="createpost"></a>
-        if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Group.IsLocked)
+        if (Model.CanAddComment())
         {
-            @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost, InReplyTo = Model.ReplyTo, ReplyToUsername = Model.ReplyToUsername, CurrentUser = (Model.LoggedInUsersName), CurrentUserUrl = Model.LoggedInUsersUrl, ReplyToUsernameUrl = Model.ReplyToUsernameUrl, Thread = Model.Thread })
+            @Html.Partial("_CreateNewPost", Model.NewPostViewModel)
         }
     }
     else

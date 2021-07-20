@@ -20,7 +20,7 @@
 }
 @if (!Model.DisablePosting)
 {
-    
+    <a id="createpost"></a>
     <div class="u-margin-top-spacing-3 u-margin-bottom-spacing-5">
         <p class="u-regular-heading u-text-bold u-margin-bottom-spacing-3">
             Join in the conversation
@@ -28,18 +28,23 @@
         <p class="u-text-bold u-margin-bottom-spacing-1">
             You're signed in, <a href="@Html.Raw(@Model.CurrentUserUrl)">@Model.CurrentUser</a>
         </p>
-        @if (Model.InReplyTo != null && !string.IsNullOrEmpty(Model.ReplyToUsername)){
+        @if (Model.InReplyTo != null && !string.IsNullOrEmpty(Model.ReplyToUsername))
+        {
             <p class="u-text-bold u-margin-bottom-spacing-1">
                 You’re replying to <a href="@Html.Raw(@Model.ReplyToUsernameUrl)">@Model.ReplyToUsername</a>
             </p>
         }
-        
+
     </div>
 
     <div id="createpostholder" class="js-tinyMCE-container">
         @using (Html.BeginForm("CreatePost", "Post", FormMethod.Post))
         {
             <div class="editorholder js-tinyMCE-holder">
+                @if (Model.HasError)
+                {
+                    <p role="alert" class="js-tinyMCE-error-notEmpty c-error-message">@Model.Error</p>
+                }
                 <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden c-error-message">Please provide a comment.</p>
                 @Html.EditorFor(x => x.PostContent, new { @class = "createpost required form-control rte" })
                 @Html.ValidationMessageFor(x => x.PostContent)
@@ -52,6 +57,5 @@
                 @Html.HiddenFor(x => x.InReplyTo)
             </div>
         }
-
     </div>
 }

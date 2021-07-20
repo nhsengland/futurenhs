@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Core.Models.Entities;
     using Core.Models.General;
+    using MvcForum.Core;
     using Poll;
     using Post;
 
@@ -61,5 +62,19 @@
         /// Gets or sets the profile Url of the logged in user.
         /// </summary>
         public string LoggedInUsersUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the view model to create a post
+        /// </summary>
+        public CreateAjaxPostViewModel NewPostViewModel { get; set; }
+
+        /// <summary>
+        /// Determine if the add comment view should be shown.
+        /// </summary>
+        /// <returns></returns>
+        public bool CanAddComment()
+        {
+            return !Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Topic.Group.IsLocked;
+        }
     }
 }

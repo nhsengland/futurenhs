@@ -48,6 +48,14 @@
         {
             var topic = _topicService.Get(post.Topic);
 
+            // Server side validation for JS turned off.
+            if (string.IsNullOrWhiteSpace(post.PostContent))
+            {
+                //Use TempData as ModelState doesn't persist with a redirect, we use redirect to keep thread and go to new comment box.
+                TempData["NewPostError"] = "Please enter a comment";
+                return Redirect($"{topic.NiceUrl}#createpost");
+            }
+
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
 
             var postPipelineResult = await _postService.Create(post.PostContent, topic, loggedOnUser, null, false, post.InReplyTo);
