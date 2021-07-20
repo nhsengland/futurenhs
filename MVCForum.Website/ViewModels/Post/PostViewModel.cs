@@ -14,8 +14,10 @@
         public Topic ParentTopic { get; set; }
         public PermissionSet Permissions { get; set; }
         public bool AllowedToVote { get; set; }
+        public bool AllowedToReply { get; set; }
         public bool HasVotedUp { get; set; }
         public bool HasVotedDown { get; set; }
+        public int VoteCount { get; set; }
         public bool MemberHasFavourited { get; set; }
         public bool MemberIsOnline { get; set; }
         public bool ShowTopicName { get; set; }
