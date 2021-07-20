@@ -51,7 +51,7 @@
         {
             List<NavItemBase> navItems = new List<NavItemBase>() {
                 new Link { IconTheme=Themes.FILL_THEME_8, Icon = Icons.HomeOutline, Name = "Home", Url="/", Order = 1, BorderTheme = Themes.BORDER_8 },
-                new LinkGroup { IconTheme = Themes.FILL_THEME_10, Icon=Icons.ForumOutline, Name = "Forum", Order = 10, BorderTheme=Themes.BORDER_10 , ChildItems = new List<Link> { new Link { Url="/" } } },
+                new LinkGroup { IconTheme = Themes.FILL_THEME_10, Icon=Icons.ForumOutline, Name = "Forums", Order = 10, BorderTheme=Themes.BORDER_10 , ChildItems = new List<Link> { new Link { Url="/" } } },
                 new Link { IconTheme=Themes.FILL_THEME_9, Icon = Icons.Star, Order = 15, Name = "Favourites", Url = "/", BorderTheme=Themes.BORDER_9 }
             };
 
@@ -62,7 +62,7 @@
 
                 navItems.Add(new LinkGroup()
                 {
-                    Name = "Group",
+                    Name = "Groups",
                     Icon = Icons.Group,
                     IconTheme = Themes.FILL_THEME_11,
                     BorderTheme = Themes.BORDER_11,
