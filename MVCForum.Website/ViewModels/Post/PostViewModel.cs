@@ -25,6 +25,7 @@
         public bool IsTrustedUser { get; set; }
         public PaginatedList<Post> Replies { get; set; }
         public PostViewModel LatestReply { get; set; }
+        public bool IsFocusThread { get; set; }
 
         /// <summary>
         /// Gets or sets the page that the post is on.

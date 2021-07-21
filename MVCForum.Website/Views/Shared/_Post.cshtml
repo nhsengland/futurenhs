@@ -46,30 +46,41 @@
                 @{Html.RenderPartial("_PostFooter", Model);}
 
                 @if (Model.Post.ThreadId == null && !Model.Post.IsTopicStarter)
-                 {
-                    if (Model.LatestReply != null) {
-                         <div id="replies-@Model.Post.Id" class="c-card_replies-list">
+                {
+                    if (Model.IsFocusThread)
+                    {
 
-                            @* This doesn't need hiding when js is disabled, skip the first one in noscript method *@
-                            @{Html.RenderPartial("_PostReply", Model.LatestReply);}
+                        @* If thread is focus thread, all replies must be shown *@
+                            @{
+                                Html.RenderAction("GetAllRepliesForThread", "Topic", new { thread = Model.Post });
+                            }
 
-                            <noscript>
-                                @{Html.RenderAction("GetNoScriptRepliesForThread", "Topic", new { thread = Model.Post, p = Model.PageIndex });}
-                             </noscript>
-                         </div>
+                        </div>
                     }
-                    if (Model.Replies.TotalCount > 0) {
+                    else
+                    {
+                        if (Model.LatestReply != null)
+                        {
+                            <div id="replies-@Model.Post.Id" class="c-card_replies-list">
+
+                                @* This doesn't need hiding when js is disabled, skip the first one in noscript method *@
+                                @{Html.RenderPartial("_PostReply", Model.LatestReply);}
+
+                                <noscript>
+                                    @{Html.RenderAction("GetNoScriptRepliesForThread", "Topic", new { thread = Model.Post, p = Model.PageIndex });}
+                                </noscript>
+                            </div>
+                        }
                         <button data-target-id="replies-@Model.Post.Id"
                                 data-request-id="@Model.Post.Id"
                                 data-endpoint-type="getThreadComments"
                                 data-maxim-requests="@(Model.Replies.TotalPages)"
                                 data-request-index="@Model.Replies.PageIndex"
-                                class="u-text-bold u-text-small c-link js-loadmore">
+                                class="u-text-bold u-text-small c-link js-loadmore u-hidden">
                             Load more replies
-                        </button> 
-                        
+                        </button>
                     }
-                 }
+                }
             </div>
 		</div>
 	</div>

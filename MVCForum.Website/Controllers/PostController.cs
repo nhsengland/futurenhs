@@ -67,7 +67,7 @@
             }
 
             // Post id so we know where to 'jump' to when redirecting, when replying Id of replying to otherwise new post Id
-            var postId = post.InReplyTo == null ? postPipelineResult.EntityToProcess.Id : post.InReplyTo;
+            var postId = postPipelineResult.EntityToProcess.Id;
 
             //Check for moderation
             if (postPipelineResult.EntityToProcess.Pending == true)
@@ -85,17 +85,19 @@
             // Default the post index to count of root posts
             var postIndex = rootPosts.Count();
 
+            Guid threadId = Guid.Empty;
+
             // If replying get the index of post replying to
             if (post.InReplyTo != null)
             {
                 // Zero based so add one to get correct value
                 postIndex = rootPosts.OrderBy(x => x.DateCreated).ToList().FindIndex(x => x.Id == post.InReplyTo) + 1;
-
+                threadId = (Guid)post.InReplyTo;
                 if (postIndex == 0)
                 {
                     // would be 0 if reply to a reply etc, so go up the heirarchy until we get to root post
                     var rootInReplyTo = GetRootPostId(topic.Posts.ToList(), (Guid)post.InReplyTo);
-
+                    threadId = rootInReplyTo;
                     // Set index of root post or default to 1 if not found
                     postIndex = rootInReplyTo != null ? rootPosts.OrderBy(x => x.DateCreated).ToList().FindIndex(x => x.Id == rootInReplyTo) + 1 : 1;
                 }
@@ -103,6 +105,11 @@
 
             // Calculate the page should redirect to based on postIndex and number of posts per page
             var page = (int)Math.Ceiling((double)postIndex / postsPerPage);
+
+            if (threadId != Guid.Empty)
+            {
+                return Redirect($"{topic.NiceUrl}?p={page}&threadId={threadId}#{postId}");
+            }
 
             return Redirect($"{topic.NiceUrl}?p={page}#{postId}");
         }

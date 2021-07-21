@@ -636,7 +636,7 @@
             return View(editPostViewModel);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int p = 1)
+        public virtual async Task<ActionResult> Show(string slug, int p = 1, Guid? threadId = null)
         {
             // Set the page index
             var pageIndex = p <= 0 ? 1 : p;
@@ -720,8 +720,20 @@
                 foreach (var post in viewModel.Posts) 
                 {
                     post.PageIndex = pageIndex;
+                    post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
 
-                    post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, ForumConfiguration.Instance.PagingRepliesSize);
+                    if (threadId.HasValue && post.Post.Id == threadId.Value)
+                    {
+                        var replyCount = _postService.GetPostCountForThread(post.Post.Id);
+                        post.Replies = new PaginatedList<Post>(new List<Post>(), replyCount, (int)Math.Ceiling(replyCount/(double)ForumConfiguration.Instance.PagingRepliesSize), ForumConfiguration.Instance.PagingRepliesSize);
+                        post.IsFocusThread = true;
+                    }
+                    else
+                    {
+                        post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, ForumConfiguration.Instance.PagingRepliesSize);
+                        post.IsFocusThread = false;
+                    }
+
                     // TODO set the page index on the other replies when show more button is working (non JS already done)
 
                     var latestPost = _postService.GetLatestPostForThread(post.Post.Id, orderBy);
@@ -956,6 +968,27 @@
             {
                 post.PageIndex = p;
             }
+
+            return PartialView("AjaxMorePosts", viewModel);
+        }
+
+        public PartialViewResult GetAllRepliesForThread(Post thread)
+        {
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+
+            // Skip the first one as we already get this as a latest post
+            List<Post> posts = _postService.GetPostsByThread(thread.Id).ToList();
+
+            var permissions = RoleService.GetPermissions(thread.Topic.Group, loggedOnUsersRole);
+            var postIds = posts.Select(x => x.Id).ToList();
+            var votes = _voteService.GetVotesByPosts(postIds);
+            var favs = _favouriteService.GetAllPostFavourites(postIds);
+            var viewModel = new ShowMorePostsViewModel
+            {
+                Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, thread.Topic,
+                    LoggedOnReadOnlyUser, SettingsService.GetSettings(), favs)
+            };
 
             return PartialView("AjaxMorePosts", viewModel);
         }
