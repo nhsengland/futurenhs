@@ -327,7 +327,8 @@ export const uiComponentsInit = (config: {
                     });
 
                     const requestSuccesCallbacks = {
-                        'getPostComments': topicPostPlaceholder.bindFeaturesToPost
+                        'getPostComments': topicPostPlaceholder.bindFeaturesToPost,
+                        'getThreadComments': topicPostPlaceholder.bindFeaturesToPost
                     }
 
                     const requestSuccessCallback = requestSuccesCallbacks[endpointType];

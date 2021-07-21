@@ -59,7 +59,6 @@ export class LoadMoreButton extends UIComponentBase {
             return;
         }
 
-        this.wrapperSelector.classList.remove('u-hidden');
 
         this.wrapperSelector.addEventListener('click', (e: Event) => {
 
