@@ -273,32 +273,20 @@
         // TODO Duplicated code from groups, we need to refactor all of this into one place.
         public TabViewModel GetGroupTabsModel(string slug)
         {
-            var forumTab = new Tab
-            {
-                Name = "GroupTabs.Forum",
-                Order = 2,
-                Icon = Icons.Forum,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupForumTab})}",
-                Active = true
-            };
+            var homeTab = new Tab { Name = "GroupTabs.Home", Order = 1, Icon = Icons.Home };
+            homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}";
 
-            var membersTab = new Tab
-            {
-                Name = "GroupTabs.Members",
-                Order = 3,
-                Icon = Icons.Members,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupMembersTab})}"
-            };
+            var forumTab = new Tab { Name = "GroupTabs.Forum", Order = 2, Icon = Icons.Forum };
+            forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
 
-            var homeTab = new Tab
-            {
-                Name = "GroupTabs.Home",
-                Order = 1,
-                Icon = Icons.Home,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = UrlParameter.Optional})}"
-            };
+            var filesTab = new Tab { Name = "GroupTabs.Files", Order = 3, Icon = Icons.File };
+            filesTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupFilesTab })}";
 
-            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab } };
+            var membersTab = new Tab { Name = "GroupTabs.Members", Order = 4, Icon = Icons.Members };
+            membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
+
+
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
 
             return tabsViewModel;
         }

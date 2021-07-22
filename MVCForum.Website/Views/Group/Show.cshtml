@@ -115,13 +115,17 @@
 
 @if (Model.Tab == Constants.GroupForumTab)
 {
-@Html.Action("GetGroupForum", new { groupId = Model.Group.Id })
-
+	@Html.Action("GetGroupForum", new { groupId = Model.Group.Id })
 }
+
+@if (Model.Tab == Constants.GroupFilesTab)
+{
+	@Html.Action("GetGroupFiles", new { groupId = Model.Group.Id })
+}
+
 @if (Model.Tab == Constants.GroupMembersTab)
 {
-@Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
-
+	@Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
 }
 
 

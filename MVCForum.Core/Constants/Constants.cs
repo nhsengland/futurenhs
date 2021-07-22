@@ -87,6 +87,7 @@
         /// </summary>
         public const string GroupForumTab = "forum";
         public const string GroupMembersTab = "members";
+        public const string GroupFilesTab = "files";
 
         public class ExtendedDataKeys
         {

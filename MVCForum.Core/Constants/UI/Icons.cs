@@ -37,5 +37,10 @@
         /// </summary>
         public const string Group = "icon-group";
 
+        /// <summary>
+        /// Key for the file icon.
+        /// </summary>
+        public const string File =  "icon-file";
+
     }
 }

@@ -16,5 +16,10 @@
         /// Gets or sets the Member Card tab.
         /// </summary>
         public Tab MembersCard { get; set; }
+
+        /// <summary>
+        /// Gets or sets the File Card tab.
+        /// </summary>
+        public Tab FilesCard { get; set; }
     }
 }
