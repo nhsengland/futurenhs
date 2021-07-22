@@ -41,25 +41,6 @@ beforeEach(() => {
 
 describe('Load more button', () => {
 
-    it('When JS is enabled displays the button by removing the hidden utility class', () => {
-
-        const appendTargetElement = document.getElementById(mockAppendTargetId); 
-        const buttonElement = <HTMLButtonElement>document.getElementById(loadMoreButtonId);
-        
-        new LoadMoreButton({
-            getFetchUrl: ()=>'',
-            requestIndex: 1,
-            maximRequests: 2,
-            appendTargetElement: appendTargetElement,
-            wrapperSelector: buttonElement
-        }, {
-            fetchHelpers: fetchHelpersMock
-        });
-
-        expect(buttonElement.classList.contains('u-hidden')).toBeFalsy();
-        
-    });
-
     it('Hides the button when there are no more posts to fetch', () => {
 
         const appendTargetElement = document.getElementById(mockAppendTargetId); 
