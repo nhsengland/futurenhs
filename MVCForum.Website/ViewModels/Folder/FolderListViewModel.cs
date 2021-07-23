@@ -1,0 +1,18 @@
+﻿//-----------------------------------------------------------------------
+// <copyright file="FolderListViewModel.cs" company="CDS">
+// Copyright (c) CDS. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace MvcForum.Web.ViewModels.Folder
+{
+    using MvcForum.Core.Repositories.Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web;
+
+    public class FolderListViewModel
+    {
+        public List<Folder> Folders { get; set; }
+    }
+}

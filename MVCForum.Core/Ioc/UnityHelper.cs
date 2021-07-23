@@ -1,5 +1,8 @@
 namespace MvcForum.Core.Ioc
 {
+    using System;
+    using System.Configuration;
+    //using System.Data.Entity.Infrastructure;
     using System.Web.Http;
     using System.Web.Mvc;
     using Data.Context;
@@ -9,6 +12,14 @@ namespace MvcForum.Core.Ioc
     using Services;
     using Unity;
     using Unity.Lifetime;
+
+    using MvcForum.Core.Interfaces.Providers;
+    using MvcForum.Core.Repositories.Groups.Repository.Database;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
+    using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
+    using MvcForum.Core.Repositories.Database.DatabaseProviders;
+    using MvcForum.Core.Repositories.Database.RetryPolicy;
+    using MvcForum.Core.Providers;
 
     /// <summary>
     ///     Bind the given interface in request scope
@@ -81,6 +92,12 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IPostEditService, PostEditService>();
             Container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
             Container.BindInRequestScope<ISpamService, SpamService>();
+
+            // Repositories
+            Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString, ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString, Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"])));
+            Container.BindInRequestScope<IDbRetryPolicy, DbRetryPolicy>();
+            Container.BindInRequestScope<IDbConnectionFactory, DbConnectionFactory>();
+            Container.BindInRequestScope<IFolderRepository, FolderRepository>();
         }
     }
 

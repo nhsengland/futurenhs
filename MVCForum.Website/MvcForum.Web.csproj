@@ -90,6 +90,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Controllers\ApiControllers\AutomationController.cs" />
     <Compile Include="Controllers\FedTestController.cs" />
+    <Compile Include="Controllers\FolderController.cs" />
     <Compile Include="Controllers\HealthCheckController.cs" />
     <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="ViewModels\Admin\AdminCategoryViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminLanguageViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
+    <Compile Include="ViewModels\Folder\FolderListViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
@@ -1174,6 +1176,7 @@
     <Content Include="Views\Shared\_PostReply.cshtml" />
     <Content Include="Views\Topic\AjaxMorePostsForThread.cshtml" />
     <Content Include="Views\Shared\_PostFooter.cshtml" />
+    <Content Include="Views\Folder\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />
