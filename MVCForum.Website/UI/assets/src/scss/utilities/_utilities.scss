@@ -271,4 +271,20 @@
     .u-margin-right-spacing-#{$number} {
         margin-right: $spaceing;
     }
+
+    .u-padding-top-spacing-#{$number} {
+        padding-top: $spaceing;
+    }
+
+    .u-padding-bottom-spacing-#{$number} {
+        padding-bottom: $spaceing;
+    }
+
+    .u-padding-left-spacing-#{$number} {
+        padding-left: $spaceing;
+    }
+
+    .u-padding-right-spacing-#{$number} {
+        padding-right: $spaceing;
+    }
 }

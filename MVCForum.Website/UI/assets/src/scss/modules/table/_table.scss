@@ -1,4 +1,5 @@
 .c-table {
+    $self: &;
     @include standard-text;
     width: 100%;
     margin-bottom: $spacer-xsm;
@@ -87,5 +88,58 @@
             display: block;
             text-align: left;
         }
+    }
+
+    &--files {
+
+        margin-bottom: 0;
+        background-color: $white;
+
+        #{$self}_body,
+        #{$self}_head {
+            border-width: 0;
+        }
+
+        #{$self}_row {
+            background-color: $white;
+            border-top: 1px solid $color_nhsuk-grey-4;
+            border-left: $spacer-md solid transparent;
+            border-right: $spacer-md solid transparent;
+
+            @include respond-to(desktop) {
+
+                &:first-of-type {
+                    border-top: 2px solid $color_nhsuk-grey-4;
+                }
+            }
+
+            &:last-of-type {
+                border-bottom: 1px solid $color_nhsuk-grey-4;
+            }
+
+        }
+
+        #{$self}_th {
+
+            padding-top: $spacer-xsm;
+
+        }
+
+        #{$self}_cell {
+
+            background-color: $white;
+            padding-left: 0;
+
+            @include respond-to(desktop) {
+
+                padding-left: $spacer-rg;
+
+                &:first-of-type {
+                    padding-left: $nhsuk-spacing-point-2;
+                }
+            }
+
+        }
+
     }
 }
