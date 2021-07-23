@@ -681,7 +681,7 @@ namespace MvcForum.Core.Services
 
         public int GetPostCountForThread(Guid threadId)
         {
-            return _context.Post.Where(m => m.ThreadId == threadId).Count();
+            return _context.Post.Count(m => m.ThreadId == threadId);            
         }
 
         /// <summary>

@@ -720,9 +720,7 @@
                 foreach (var post in viewModel.Posts) 
                 {
                     post.PageIndex = pageIndex;
-                    post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
 
-                    post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
                     post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, ForumConfiguration.Instance.PagingRepliesSize);
                     // TODO set the page index on the other replies when show more button is working (non JS already done)
 
