@@ -49,8 +49,8 @@
                 {
                     if (Model.IsFocusThread)
                     {
-
-                        @* If thread is focus thread, all replies must be shown *@
+                        <div id="replies-@Model.Post.Id" class="c-card_replies-list">
+                            @* If thread is focus thread, all replies must be shown *@
                             @{
                                 Html.RenderAction("GetAllRepliesForThread", "Topic", new { thread = Model.Post });
                             }
