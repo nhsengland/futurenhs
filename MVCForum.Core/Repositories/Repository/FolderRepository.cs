@@ -61,7 +61,7 @@ namespace MvcForum.Core.Repositories.Groups.Repository.Database
         /// </summary>
         /// <param name="parentId">Nullable parent Id to get folders.</param>
         /// <returns></returns>
-        public async Task<List<Folder>> GetFolders(Guid? parentId = null)
+        public async Task<List<Folder>> GetChildFolders(Guid folderId)
         {
             //var dbConnection = _connectionFactory.CreateReadOnlyConnection();
 
@@ -69,28 +69,52 @@ namespace MvcForum.Core.Repositories.Groups.Repository.Database
 
             List<Folder> folderList = new List<Folder>();
 
-            if (parentId.HasValue)
+            if (folderId == new Guid())
             {
                 folderList.AddRange(new List<Folder>
                 {
-                    new Folder() { FolderId = Guid.NewGuid(), FolderName = "Child folder 1", Description = "Child folder 1 description", DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = parentId, Status = 1 },
-                    new Folder() { FolderId = Guid.NewGuid(), FolderName = "Child folder 2", Description = "Child folder 2 description", DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = parentId, Status = 1 },
-                    new Folder() { FolderId = Guid.NewGuid(), FolderName = "Child folder 3", Description = "Child folder 3 description", DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = parentId, Status = 1 },
-                    new Folder() { FolderId = Guid.NewGuid(), FolderName = "Child folder 4", Description = "Child folder 4 description", DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = parentId, Status = 1 }
+                    new Folder() { FolderId = new Guid(), FolderName = "Child folder 1", Description = "Child folder 1 description", FileCount = 15, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = Guid.NewGuid(), Status = 1 },
+                    new Folder() { FolderId = new Guid(), FolderName = "Child folder 2", Description = "Child folder 2 description", FileCount = 72, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = Guid.NewGuid(), Status = 1 },
+                    new Folder() { FolderId = new Guid(), FolderName = "Child folder 3", Description = "Child folder 3 description", FileCount = 1, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = Guid.NewGuid(), Status = 1 },
+                    new Folder() { FolderId = new Guid(), FolderName = "Child folder 4", Description = "Child folder 4 description", FileCount = 0, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = Guid.NewGuid(), Status = 1 }
                 });
             }
             else
             {
                 folderList.AddRange(new List<Folder>
                 {
-                    new Folder() { FolderId = Guid.NewGuid(), FolderName = "Root folder 1", Description = "Root folder 1 description", DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = parentId, Status = 1 },
-                    new Folder() { FolderId = Guid.NewGuid(), FolderName = "Root folder 2", Description = "Root folder 2 description", DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = parentId, Status = 1 },
-                    new Folder() { FolderId = Guid.NewGuid(), FolderName = "Root folder 3", Description = "Root folder 3 description", DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = parentId, Status = 1 },
-                    new Folder() { FolderId = Guid.NewGuid(), FolderName = "Root folder 4", Description = "Root folder 4 description", DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = parentId, Status = 1 }
+                    new Folder() { FolderId = new Guid(), FolderName = "Root folder 1", Description = "Root folder 1 description", FileCount = 28, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = folderId, Status = 1 },
+                    new Folder() { FolderId = new Guid(), FolderName = "Root folder 2", Description = "Root folder 2 description", FileCount = 6, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = folderId, Status = 1 },
+                    new Folder() { FolderId = new Guid(), FolderName = "Root folder 3", Description = "Root folder 3 description", FileCount = 4, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = folderId, Status = 1 },
+                    new Folder() { FolderId = new Guid(), FolderName = "Root folder 4", Description = "Root folder 4 description", FileCount = 6, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = folderId, Status = 1 }
                 });
             }
 
             return folderList;
+        }
+
+        public async Task<Folder> GetFolder(Guid folderId)
+        {
+            //var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+
+            // Hard coded for now, need to hook up to DB and use Dapper to convert.
+
+            if (folderId != new Guid())
+            {
+                return null;
+            }
+
+            return new Folder()
+            {
+                FolderId = new Guid(),
+                FolderName = "Root folder 1",
+                Description = "Root folder 1 description",
+                DateAdded = DateTime.Now,
+                AddedBy = Guid.NewGuid(),
+                ParentId = Guid.NewGuid(),
+                Status = 1
+            };
+
         }
 
         /*

@@ -1,0 +1,58 @@
+﻿@using System.Activities.Statements
+@model MvcForum.Web.ViewModels.Folder.FolderListViewModel
+
+<div>
+	@if (Model.Folder != null)
+	{
+		<a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab})" class="btn-mvc-green btn-mvc-large">
+			Back
+		</a>
+		<div>
+			<h2>@Model.Folder.FolderName</h2>
+			<p>@Model.Folder.Description</p>
+		</div>
+
+		<a href="" class="btn-mvc-large btn-mvc-blue">
+			Add folder
+		</a>
+	}
+
+	@if (Model.Folder == null)
+	{
+		<div>
+			<h2>Files</h2>
+		</div>
+
+		<a href="" class="btn-mvc-large btn-mvc-blue">
+			Add folder
+		</a>
+	}
+
+
+	@if (Model.ChildFolders.Any())
+	{
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Number of Files</th>
+			</tr>
+			@foreach (var folder in Model.ChildFolders)
+			{
+				<tr>
+					<td>
+						<a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId})" class="">
+							@folder.FolderName
+						</a>
+
+					</td>
+					<td>@folder.FileCount</td>
+
+				</tr>
+			}
+		</table>
+	}
+</div>
+
+
+
+

@@ -1176,7 +1176,7 @@
     <Content Include="Views\Shared\_PostReply.cshtml" />
     <Content Include="Views\Topic\AjaxMorePostsForThread.cshtml" />
     <Content Include="Views\Shared\_PostFooter.cshtml" />
-    <Content Include="Views\Folder\Index.cshtml" />
+    <Content Include="Views\Folder\_Folders.cshtml" />
     <Content Include="Views\Group\_Files.cshtml" />
   </ItemGroup>
   <ItemGroup>

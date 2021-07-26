@@ -1,6 +1,7 @@
 ﻿@using MvcForum.Core.ExtensionMethods
 @using MvcForum.Core.Models.Enums
 @using MvcForum.Core.Utilities
+@using MvcForum.Web.Controllers
 @using MvcForum.Web.ViewModels.Group
 @using MvcForum.Web.ViewModels.Shared
 
@@ -120,7 +121,7 @@
 
 @if (Model.Tab == Constants.GroupFilesTab)
 {
-	@Html.Action("GetGroupFiles", new { groupId = Model.Group.Id })
+	@Html.Action("GetFolder","Folder", new { slug = Model.Group.Slug, folderId = Model.Folder})
 }
 
 @if (Model.Tab == Constants.GroupMembersTab)

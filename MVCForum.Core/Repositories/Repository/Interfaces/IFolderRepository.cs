@@ -25,12 +25,21 @@ namespace MvcForum.Core.Repositories.Repository.Interfaces
         /// <param name="folder">Folder to update.</param>
         /// <returns></returns>
         Task<Folder> Update(Folder folder);
- 
+
+        /// <summary>
+        /// Gets folder based on Id.
+        /// </summary>
+        /// <param name="folderId">Id to get folder.</param>
+        /// <returns></returns>
+        Task<Folder> GetFolder(Guid folderId);
+
         /// <summary>
         /// Gets folders based on parent Id. If parent Id is null then they are rot folders.
         /// </summary>
-        /// <param name="parentId">Nullable parent Id to get folders.</param>
+        /// <param name="folderId">parent Id to get folders.</param>
         /// <returns></returns>
-        Task<List<Folder>> GetFolders(Guid? parentId = null);
+        Task<List<Folder>> GetChildFolders(Guid folderId);
+
+
     }
 }

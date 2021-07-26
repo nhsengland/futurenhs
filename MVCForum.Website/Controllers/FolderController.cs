@@ -22,13 +22,12 @@ namespace MvcForum.Web.Controllers
             _folderRepository = folderRepository;
         }
 
-        public ActionResult Index(Guid? parent = null)
+        [ChildActionOnly]
+        public PartialViewResult GetFolder(string slug, Guid folderId)
         {
-            var model = new FolderListViewModel();
+            var model = new FolderListViewModel {Slug = slug,Folder = _folderRepository.GetFolder(folderId).Result, ChildFolders = _folderRepository.GetChildFolders(folderId).Result};
 
-            model.Folders = _folderRepository.GetFolders(parent).Result;
-
-            return View(model);
+            return PartialView("_Folders", model);
         }
     }
 }

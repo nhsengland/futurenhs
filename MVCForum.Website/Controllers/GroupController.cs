@@ -408,7 +408,7 @@ namespace MvcForum.Web.Controllers
             return PartialView("_Topics", topicViewModels);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int? p, string tab = null)
+        public virtual async Task<ActionResult> Show(string slug, int? p, string tab = null, Guid? folder = null)
         {
 
             // Get the Group
@@ -424,6 +424,19 @@ namespace MvcForum.Web.Controllers
             // check the user has permission to this Group
             var permissions = RoleService.GetPermissions(group.Group, loggedOnUsersRole);
 
+            if(tab == Constants.GroupFilesTab)
+            {
+                if (folder == null)
+                {
+                    folder = group.Group.Id;
+                }
+                else
+                {
+                    folder = new Guid();
+                }
+                
+            }
+
             if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
             {
                 // Create the main view model for the Group
@@ -436,7 +449,8 @@ namespace MvcForum.Web.Controllers
                     GroupUserRole = GetGroupMembershipRole(group.Group.Id),
                     IsSubscribed = User.Identity.IsAuthenticated && _notificationService
                                        .GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
-                    Tab = tab
+                    Tab = tab,
+                    Folder = folder
                 };
 
                 if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName)

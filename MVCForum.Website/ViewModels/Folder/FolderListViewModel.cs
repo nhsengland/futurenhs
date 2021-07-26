@@ -13,6 +13,8 @@ namespace MvcForum.Web.ViewModels.Folder
 
     public class FolderListViewModel
     {
-        public List<Folder> Folders { get; set; }
+        public string Slug { get; set; }
+        public Folder Folder { get; set; }
+        public List<Folder> ChildFolders { get; set; }
     }
 }

@@ -27,6 +27,8 @@ namespace MvcForum.Core.Repositories.Models
         /// </summary>
         public string Description { get; set; }
 
+        public int FileCount { get; set; }
+
         /// <summary>
         /// Gets or sets who added the folder.
         /// </summary>
