@@ -3,6 +3,10 @@
 // Copyright (c) CDS. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+
+using MvcForum.Core.Constants;
+using MvcForum.Core.Interfaces;
+
 namespace MvcForum.Web.Controllers
 {
     using MvcForum.Core.Repositories.Repository.Interfaces;
@@ -16,18 +20,29 @@ namespace MvcForum.Web.Controllers
     public class FolderController : Controller
     {
         private readonly IFolderRepository _folderRepository;
+        private readonly IFeatureManager _featureManager;
 
-        public FolderController(IFolderRepository folderRepository)
+        public FolderController(IFolderRepository folderRepository, IFeatureManager featureManager)
         {
             _folderRepository = folderRepository;
+            _featureManager = featureManager;
         }
 
         [ChildActionOnly]
         public PartialViewResult GetFolder(string slug, Guid folderId)
         {
-            var model = new FolderListViewModel {Slug = slug,Folder = _folderRepository.GetFolder(folderId).Result, ChildFolders = _folderRepository.GetChildFolders(folderId).Result};
+            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                var model = new FolderListViewModel
+                {
+                    Slug = slug, Folder = _folderRepository.GetFolder(folderId).Result,
+                    ChildFolders = _folderRepository.GetChildFolders(folderId).Result
+                };
 
-            return PartialView("_Folders", model);
+                return PartialView("_Folders", model);
+            }
+
+            return null;
         }
     }
 }

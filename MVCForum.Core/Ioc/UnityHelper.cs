@@ -92,6 +92,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IPostEditService, PostEditService>();
             Container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
             Container.BindInRequestScope<ISpamService, SpamService>();
+            Container.BindInRequestScope<IFeatureManager, FeatureManager>();
 
             // Repositories
             Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString, ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString, Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"])));

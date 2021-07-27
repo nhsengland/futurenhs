@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\CacheKeys.cs" />
+    <Compile Include="Constants\Features.cs" />
     <Compile Include="Constants\UI\Icons.cs" />
     <Compile Include="Constants\UI\Themes.cs" />
     <Compile Include="Data\Mapping\CategoryMapping.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
     <Compile Include="ExtensionMethods\SectionExtentions.cs" />
     <Compile Include="ExternalServices\AkismetValidator.cs" />
+    <Compile Include="FeatureManager.cs" />
     <Compile Include="ForumConfiguration.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
     <Compile Include="ExtensionMethods\HttpExtensionMethods.cs" />
@@ -56,6 +58,7 @@
     <Compile Include="ExtensionMethods\StringExtensionMethods.cs" />
     <Compile Include="ExtensionMethods\VersionExtensionMethods.cs" />
     <Compile Include="Interfaces\IAssemblyProvider.cs" />
+    <Compile Include="Interfaces\IFeatureManager.cs" />
     <Compile Include="Interfaces\Pipeline\IPipe.cs" />
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
     <Compile Include="Interfaces\Providers\IConfigurationProvider.cs" />
@@ -222,7 +225,9 @@
     <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbCommand.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbConnection.cs" />
+    <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Repositories\Database\DatabaseProviders\SqlServerConnectionFactory.cs" />
     <Compile Include="Repositories\Repository\FolderRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFolderRepository.cs" />
