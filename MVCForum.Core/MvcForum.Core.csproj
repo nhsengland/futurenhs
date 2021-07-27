@@ -63,6 +63,7 @@
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
     <Compile Include="Interfaces\Providers\IConfigurationProvider.cs" />
     <Compile Include="Interfaces\Services\IBaseService.cs" />
+    <Compile Include="Interfaces\Services\IFileService.cs" />
     <Compile Include="Interfaces\Services\INotificationService.cs" />
     <Compile Include="Interfaces\Services\ISpamService.cs" />
     <Compile Include="MemoryFile.cs" />
@@ -89,6 +90,10 @@
     <Compile Include="Migrations\202106300922297_addsThreadIdToPostModel.cs" />
     <Compile Include="Migrations\202106300922297_addsThreadIdToPostModel.Designer.cs">
       <DependentUpon>202106300922297_addsThreadIdToPostModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107272011039_AddsFilesEntity.cs" />
+    <Compile Include="Migrations\202107272011039_AddsFilesEntity.Designer.cs">
+      <DependentUpon>202107272011039_AddsFilesEntity.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
@@ -219,6 +224,9 @@
     <Compile Include="Providers\Storage\StorageProvider.cs" />
     <Compile Include="Reflection\AssemblyProvider.cs" />
     <Compile Include="Reflection\ImplementationManager.cs" />
+    <Compile Include="Repositories\Command\FileCommand.cs" />
+    <Compile Include="Repositories\Command\Interfaces\IFileCommand.cs" />
+    <Compile Include="Repositories\Database\Models\File.cs" />
     <Compile Include="Repositories\Database\Models\Folder.cs" />
     <Compile Include="Repositories\Database\Context.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\Interfaces\IDbConnectionFactory.cs" />
@@ -229,7 +237,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Repositories\Database\DatabaseProviders\SqlServerConnectionFactory.cs" />
+    <Compile Include="Repositories\Models\File.cs" />
+    <Compile Include="Repositories\Models\FilesAndFolders\FileWriteViewModel.cs" />
+    <Compile Include="Repositories\Repository\FileRepository.cs" />
     <Compile Include="Repositories\Repository\FolderRepository.cs" />
+    <Compile Include="Repositories\Repository\Interfaces\IFileRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFolderRepository.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\DbRetryPolicy.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\IDbRetryPolicy.cs" />
@@ -238,6 +250,7 @@
     <Compile Include="Services\BannedEmailService.cs" />
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\NoCacheService.cs" />
     <Compile Include="Services\CacheService.cs" />
     <Compile Include="Services\GlobalPermissionForRoleService.cs" />
@@ -446,6 +459,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202106300922297_addsThreadIdToPostModel.resx">
       <DependentUpon>202106300922297_addsThreadIdToPostModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107272011039_AddsFilesEntity.resx">
+      <DependentUpon>202107272011039_AddsFilesEntity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

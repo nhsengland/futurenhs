@@ -6,6 +6,7 @@
     using Models.Activity;
     using Models.Entities;
     using Models.General;
+    using MvcForum.Core.Repositories.Database.Models;
 
     public partial interface IMvcForumContext : IDisposable
     {
@@ -39,6 +40,7 @@
         DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
         DbSet<PostEdit> PostEdit { get; set; }
         DbSet<GroupUser> GroupUser { get; set; }
+        DbSet<File> Files { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();

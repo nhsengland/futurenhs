@@ -12,6 +12,7 @@
     using Models.Activity;
     using Models.Entities;
     using Models.General;
+    using MvcForum.Core.Repositories.Database.Models;
 
     public partial class MvcForumContext : DbContext, IMvcForumContext
     {
@@ -45,6 +46,7 @@
         public virtual DbSet<TopicNotification> TopicNotification { get; set; }
         public virtual DbSet<TagNotification> TagNotification { get; set; }
         public virtual DbSet<Vote> Vote { get; set; }
+        public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<TopicTag> TopicTag { get; set; }
         public virtual DbSet<BannedEmail> BannedEmail { get; set; }
         public virtual DbSet<BannedWord> BannedWord { get; set; }

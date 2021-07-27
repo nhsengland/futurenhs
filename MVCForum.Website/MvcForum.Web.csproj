@@ -91,6 +91,7 @@
     <Compile Include="Controllers\ApiControllers\AutomationController.cs" />
     <Compile Include="Controllers\FedTestController.cs" />
     <Compile Include="Controllers\FolderController.cs" />
+    <Compile Include="Controllers\GroupFileController.cs" />
     <Compile Include="Controllers\HealthCheckController.cs" />
     <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="ViewModels\Admin\AdminLanguageViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
     <Compile Include="ViewModels\Folder\FolderListViewModel.cs" />
+    <Compile Include="ViewModels\GroupFile\CreateGroupFileViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
@@ -1178,6 +1180,8 @@
     <Content Include="Views\Shared\_PostFooter.cshtml" />
     <Content Include="Views\Folder\_Folders.cshtml" />
     <Content Include="Views\Group\_Files.cshtml" />
+    <Content Include="Views\GroupFile\Create.cshtml" />
+    <Content Include="Views\GroupFile\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

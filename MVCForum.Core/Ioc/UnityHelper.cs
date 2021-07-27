@@ -15,11 +15,14 @@ namespace MvcForum.Core.Ioc
 
     using MvcForum.Core.Interfaces.Providers;
     using MvcForum.Core.Repositories.Groups.Repository.Database;
+    using MvcForum.Core.Repositories.Repository;
     using MvcForum.Core.Repositories.Repository.Interfaces;
     using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
     using MvcForum.Core.Repositories.Database.DatabaseProviders;
     using MvcForum.Core.Repositories.Database.RetryPolicy;
     using MvcForum.Core.Providers;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Command;
 
     /// <summary>
     ///     Bind the given interface in request scope
@@ -99,6 +102,9 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IDbRetryPolicy, DbRetryPolicy>();
             Container.BindInRequestScope<IDbConnectionFactory, DbConnectionFactory>();
             Container.BindInRequestScope<IFolderRepository, FolderRepository>();
+            Container.BindInRequestScope<IFileRepository, FileRepository>();
+            Container.BindInRequestScope<IFileCommand, FileCommand>();
+            Container.BindInRequestScope<IFileService, FileService>();
         }
     }
 
