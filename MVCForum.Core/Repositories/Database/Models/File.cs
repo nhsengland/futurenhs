@@ -4,12 +4,13 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using MvcForum.Core.Utilities;
-
-namespace MvcForum.Core.Models.Entities
+namespace MvcForum.Core.Repositories.Database.Models
 {
+    using MvcForum.Core.Models.Entities;
+    using MvcForum.Core.Utilities;
+    using System;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     /// <summary>
     /// Defines the file entity to store file meta-data.
     /// </summary>
@@ -83,10 +84,10 @@ namespace MvcForum.Core.Models.Entities
         /// Gets or sets the file modified date.
         /// </summary>
         public DateTime ModifiedDate { get; set; }
-        
+
         /// <summary>
-        /// Gets or sets the upload status of the file.
+        /// Gets or sets the file status.
         /// </summary>
-        public int UploadStatus { get; internal set; }
+        public int Status { get; set; }
     }
 }

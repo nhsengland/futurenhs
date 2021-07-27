@@ -73,5 +73,10 @@ namespace MvcForum.Core.Repositories.Models
         /// Gets or sets the file modified date.
         /// </summary>
         public DateTime ModifiedDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status. Relates to UploadStatus Id.
+        /// </summary>
+        public int Status { get; set; }
     }
 }

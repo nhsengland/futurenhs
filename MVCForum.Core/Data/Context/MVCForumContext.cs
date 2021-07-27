@@ -58,6 +58,8 @@
 
         public virtual DbSet<GroupUser> GroupUser { get; set; }
 
+        public virtual DbSet<UploadStatus> FileUploadStatus { get; set; }
+
         public override int SaveChanges()
         {
             try

@@ -43,8 +43,6 @@
     <Compile Include="Constants\UI\Icons.cs" />
     <Compile Include="Constants\UI\Themes.cs" />
     <Compile Include="Data\Mapping\CategoryMapping.cs" />
-    <Compile Include="Data\Mapping\FileMapping.cs" />
-    <Compile Include="Data\Mapping\FolderMapping.cs" />
     <Compile Include="Data\Mapping\GroupUserMapping.cs" />
     <Compile Include="Data\Mapping\SectionMapping.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
@@ -102,6 +100,10 @@
     <Compile Include="Migrations\202107312007168_FoldersAndFiles.Designer.cs">
       <DependentUpon>202107312007168_FoldersAndFiles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202108031032394_modifiesForeignKeysInFileEntity.cs" />
+    <Compile Include="Migrations\202108031032394_modifiesForeignKeysInFileEntity.Designer.cs">
+      <DependentUpon>202108031032394_modifiesForeignKeysInFileEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -115,10 +117,12 @@
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
     <Compile Include="Models\Entities\Category.cs" />
+    <Compile Include="Models\Entities\File.cs" />
     <Compile Include="Models\Entities\Folder.cs" />
     <Compile Include="Models\Entities\GroupPermissions.cs" />
     <Compile Include="Models\Entities\GroupUser.cs" />
     <Compile Include="Models\Enums\GroupUserStatus.cs" />
+    <Compile Include="Models\Enums\UploadStatus.cs" />
     <Compile Include="Models\FilesAndFolders\FolderViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderWriteViewModel.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
@@ -235,10 +239,10 @@
     <Compile Include="Reflection\AssemblyProvider.cs" />
     <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Repositories\Command\FileCommand.cs" />
-    <Compile Include="Repositories\Command\Interfaces\IFileCommand.cs" />
-    <Compile Include="Models\Entities\File.cs" />
     <Compile Include="Repositories\Command\FolderCommand.cs" />
+    <Compile Include="Repositories\Command\Interfaces\IFileCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IFolderCommand.cs" />
+    <Compile Include="Repositories\Database\Models\File.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\Interfaces\IDbConnectionFactory.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbCommand.cs">
       <SubType>Component</SubType>
@@ -247,6 +251,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Repositories\Database\DatabaseProviders\SqlServerConnectionFactory.cs" />
+    <Compile Include="Models\Entities\UploadStatus.cs" />
     <Compile Include="Repositories\Models\BreadCrumbItem.cs" />
     <Compile Include="Repositories\Models\File.cs" />
     <Compile Include="Repositories\Models\FilesAndFolders\FileWriteViewModel.cs" />
@@ -478,10 +483,11 @@
     <EmbeddedResource Include="Migrations\202107312007168_FoldersAndFiles.resx">
       <DependentUpon>202107312007168_FoldersAndFiles.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108031032394_modifiesForeignKeysInFileEntity.resx">
+      <DependentUpon>202108031032394_modifiesForeignKeysInFileEntity.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repositories\Database\Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

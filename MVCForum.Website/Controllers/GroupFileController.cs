@@ -5,6 +5,7 @@ namespace MvcForum.Web.Controllers
     using MvcForum.Core.Interfaces;
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Models.Entities;
     using MvcForum.Core.Repositories.Repository.Interfaces;
     using MvcForum.Web.ViewModels.GroupFile;
     using System;
@@ -20,19 +21,16 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         private IFileService _fileService { get; set; }
 
-        /// <summary>
-        /// Instance of the <see cref="IMvcForumContext"/>.
-        /// </summary>
-        private IMvcForumContext _context { get; set; }
+        private MembershipUser LoggedOnReadOnlyUser;
 
         /// <summary>
         /// Constructs a new instance of the <see cref="GroupFileController"/>.
         /// </summary>
         /// <param name="fileRepository"></param>
-        public GroupFileController(IFileService fileService, IMvcForumContext context)
+        public GroupFileController(IFileService fileService, IMembershipService membershipService)
         {
             _fileService = fileService;
-            _context = context;
+            LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
         /// <summary>
@@ -70,18 +68,25 @@ namespace MvcForum.Web.Controllers
         [HttpPost]
         public ActionResult Create(CreateGroupFileViewModel file)
         {
-            var fileCreate = new File
+            if (ModelState.IsValid)
             {
-                FileName = file.Name,
-                Description = file.Description,
-                CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now
-                // TODO: When folder work committed, can add ParentFolder value.
-            };
+                var fileCreate = new File
+                {
+                    FileName = file.Name,
+                    Title = file.Name,
+                    Description = file.Description,
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    ParentFolder = file.FolderId,
+                    CreatedBy = LoggedOnReadOnlyUser.Id
+                };
 
-            Guid id = _fileService.Create(fileCreate);
+                Guid id = _fileService.Create(fileCreate);
 
-            return RedirectToAction("Show", new { id = id });
+                return RedirectToAction("Show", new { id = id });
+            }
+
+            return View();
         }
     }
 }

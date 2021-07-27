@@ -41,6 +41,7 @@
         DbSet<PostEdit> PostEdit { get; set; }
         DbSet<GroupUser> GroupUser { get; set; }
         DbSet<File> Files { get; set; }
+        DbSet<UploadStatus> FileUploadStatus { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();

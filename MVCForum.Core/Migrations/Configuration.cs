@@ -12,6 +12,7 @@ namespace MvcForum.Core.Services.Migrations
     using Data.Context;
     using ExtensionMethods;
     using Models.Entities;
+    using MvcForum.Core.Repositories.Database.Models;
     using Utilities;
 
     public class Configuration : DbMigrationsConfiguration<MvcForumContext>
@@ -450,6 +451,8 @@ namespace MvcForum.Core.Services.Migrations
             // Version 2.0 Upgrades
 
             AddPermissionCreateTags(context);
+
+            AddFileUploadStatuses(context);
         }
 
 
@@ -486,6 +489,55 @@ namespace MvcForum.Core.Services.Migrations
                     IsGlobal = false
                 };
                 context.Permission.Add(p);
+            }
+        }
+
+        private void AddFileUploadStatuses(MvcForumContext context)
+        {
+            if (!context.FileUploadStatus.Any())
+            {
+                context.FileUploadStatus.AddRange(
+                    new List<UploadStatus>()
+                    {
+                            new UploadStatus
+                            {
+                                Id = 1,
+                                Name = "Uploading"
+                            },
+                            new UploadStatus
+                            {
+                                Id = 2,
+                                Name = "Uploaded"
+                            },
+                            new UploadStatus
+                            {
+                                Id = 3,
+                                Name = "Failed"
+                            },
+                            new UploadStatus
+                            {
+                                Id = 4,
+                                Name = "Verified"
+                            },
+                            new UploadStatus
+                            {
+                                Id = 5,
+                                Name = "Quarantined"
+                            },
+                            new UploadStatus
+                            {
+                                Id = 6,
+                                Name = "Recycled"
+                            },
+                            new UploadStatus
+                            {
+                                Id = 7,
+                                Name = "Deleted"
+                            }
+                    }
+                );
+
+                context.SaveChanges();
             }
         }
     }

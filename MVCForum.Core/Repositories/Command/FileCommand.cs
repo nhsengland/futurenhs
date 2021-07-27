@@ -1,16 +1,13 @@
-﻿using MvcForum.Core.Data.Context;
-using MvcForum.Core.Interfaces;
-using MvcForum.Core.Repositories.Command.Interfaces;
-using MvcForum.Core.Repositories.Models.FilesAndFolders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MvcForum.Core.Models.Entities;
-
-namespace MvcForum.Core.Repositories.Command
+﻿namespace MvcForum.Core.Repositories.Command
 {
+    using MvcForum.Core.Data.Context;
+    using MvcForum.Core.Interfaces;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using System;
+    using MvcForum.Core.Models.Entities;
+    using System.Data.Entity;
+    using Status = MvcForum.Core.Models.Enums.UploadStatus;
+
     /// <summary>
     /// Implements the <see cref="IFileCommand"/> to process write operations of <see cref="File"/>.
     /// </summary>
@@ -37,10 +34,23 @@ namespace MvcForum.Core.Repositories.Command
         /// <returns>The file Id.</returns>
         public Guid Create(File file)
         {
+            file.UploadStatus = (int)Status.Uploading;
             var createdFile = _context.Files.Add(file);
             _context.SaveChanges();
             return createdFile.Id;
         }
 
+        /// <summary>
+        /// Method to update a <see cref="File"/>.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public Guid Update(File file)
+        {
+            var dbFile = _context.Files.Find(file.Id);
+            ((DbContext)_context).Entry(dbFile).State = EntityState.Modified;
+            _context.SaveChanges();
+            return file.Id;
+        }
     }
 }
