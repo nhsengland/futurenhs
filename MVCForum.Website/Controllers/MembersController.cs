@@ -341,38 +341,43 @@
         [ValidateAntiForgeryToken]
         public virtual async Task<ActionResult> Register(MemberAddViewModel userModel)
         {
-            var settings = SettingsService.GetSettings();
-            if (settings.SuspendRegistration != true &&
-                settings.DisableStandardRegistration != true)
+            if (ModelState.IsValid)
             {
-                // First see if there is a spam question and if so, the answer matches
-                if (!string.IsNullOrWhiteSpace(settings.SpamQuestion))
+                var settings = SettingsService.GetSettings();
+                if (settings.SuspendRegistration != true &&
+                    settings.DisableStandardRegistration != true)
                 {
-                    // There is a spam question, if answer is wrong return with error
-                    if (userModel.SpamAnswer == null ||
-                        userModel.SpamAnswer.Trim() != settings.SpamAnswer)
+                    // First see if there is a spam question and if so, the answer matches
+                    if (!string.IsNullOrWhiteSpace(settings.SpamQuestion))
                     {
-                        // POTENTIAL SPAMMER!
-                        ModelState.AddModelError(string.Empty,
-                            LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
+                        // There is a spam question, if answer is wrong return with error
+                        if (userModel.SpamAnswer == null ||
+                            userModel.SpamAnswer.Trim() != settings.SpamAnswer)
+                        {
+                            // POTENTIAL SPAMMER!
+                            ModelState.AddModelError(string.Empty,
+                                LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
+                            return View();
+                        }
+                    }
+
+                    // Get the user model
+                    var user = userModel.ToMembershipUser();
+
+                    var pipeline = await MembershipService.CreateUser(user, LoginType.Standard);
+                    if (!pipeline.Successful)
+                    {
+                        ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
                         return View();
                     }
+
+                    // Do the register logic
+                    return MemberRegisterLogic(pipeline);
                 }
-
-                // Get the user model
-                var user = userModel.ToMembershipUser();
-
-                var pipeline = await MembershipService.CreateUser(user, LoginType.Standard);
-                if (!pipeline.Successful)
-                {
-                    ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
-                    return View();
-                }
-
-                // Do the register logic
-                return MemberRegisterLogic(pipeline);
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+
+            return View();
         }
 
         /// <summary>
