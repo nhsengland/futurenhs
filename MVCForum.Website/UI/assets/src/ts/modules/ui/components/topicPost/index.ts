@@ -393,11 +393,18 @@ export class TopicPost extends UIComponentBase {
 
             const containerParent: HTMLElement = voteLinkContainer.parentElement;
             const voteLink = <HTMLElement>voteLinkContainer.getElementsByClassName('votelink')[0];
+            let isVotePending = false;
 
             const handleVoteClick = (e: Event) => {
 
                 e.preventDefault();
                 e.stopImmediatePropagation();
+
+                if(isVotePending){
+                    return;
+                }
+                
+                isVotePending = true;
 
                 const voteType: string = voteLink.getAttribute('data-votetype');
                 const isUpVote: boolean = voteType === 'up';
@@ -455,6 +462,10 @@ export class TopicPost extends UIComponentBase {
 
                         this.toast.show(`Error: ${error}`);
 
+                    }).finally(()=>{
+                        
+                        isVotePending = false;
+                    
                     });
             }
 
