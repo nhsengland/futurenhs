@@ -66,7 +66,7 @@
 	@*TODO We need to come up with generic components here so we can re use this code without having to copy and paste it around everywhere*@
 	@*TODO Once the models are refactored to contain a simple error list this needs implementing in this code*@
 	<div class="c-form-group js-tinyMCE-holder @(contentErrors ? "u-has-error" : "")">
-		@Html.LabelFor(model => model.Content, new { @class = "c-label" })
+		@Html.LabelFor(model => model.Content, "Comment", new { @class = "c-label" })
         <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden c-error-message">Please provide a comment.</p>
 		@if (contentErrors)
 		{
