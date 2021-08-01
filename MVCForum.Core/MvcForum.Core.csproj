@@ -43,6 +43,8 @@
     <Compile Include="Constants\UI\Icons.cs" />
     <Compile Include="Constants\UI\Themes.cs" />
     <Compile Include="Data\Mapping\CategoryMapping.cs" />
+    <Compile Include="Data\Mapping\FileMapping.cs" />
+    <Compile Include="Data\Mapping\FolderMapping.cs" />
     <Compile Include="Data\Mapping\GroupUserMapping.cs" />
     <Compile Include="Data\Mapping\SectionMapping.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="Interfaces\Providers\IConfigurationProvider.cs" />
     <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\IFileService.cs" />
+    <Compile Include="Interfaces\Services\IFolderService.cs" />
     <Compile Include="Interfaces\Services\INotificationService.cs" />
     <Compile Include="Interfaces\Services\ISpamService.cs" />
     <Compile Include="MemoryFile.cs" />
@@ -95,6 +98,10 @@
     <Compile Include="Migrations\202107272011039_AddsFilesEntity.Designer.cs">
       <DependentUpon>202107272011039_AddsFilesEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107312007168_FoldersAndFiles.cs" />
+    <Compile Include="Migrations\202107312007168_FoldersAndFiles.Designer.cs">
+      <DependentUpon>202107312007168_FoldersAndFiles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -108,9 +115,12 @@
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
     <Compile Include="Models\Entities\Category.cs" />
+    <Compile Include="Models\Entities\Folder.cs" />
     <Compile Include="Models\Entities\GroupPermissions.cs" />
     <Compile Include="Models\Entities\GroupUser.cs" />
     <Compile Include="Models\Enums\GroupUserStatus.cs" />
+    <Compile Include="Models\FilesAndFolders\FolderViewModel.cs" />
+    <Compile Include="Models\FilesAndFolders\FolderWriteViewModel.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
     <Compile Include="Models\Entities\BannedEmail.cs" />
     <Compile Include="Models\Entities\Group.cs" />
@@ -226,9 +236,9 @@
     <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Repositories\Command\FileCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IFileCommand.cs" />
-    <Compile Include="Repositories\Database\Models\File.cs" />
-    <Compile Include="Repositories\Database\Models\Folder.cs" />
-    <Compile Include="Repositories\Database\Context.cs" />
+    <Compile Include="Models\Entities\File.cs" />
+    <Compile Include="Repositories\Command\FolderCommand.cs" />
+    <Compile Include="Repositories\Command\Interfaces\IFolderCommand.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\Interfaces\IDbConnectionFactory.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbCommand.cs">
       <SubType>Component</SubType>
@@ -237,20 +247,22 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Repositories\Database\DatabaseProviders\SqlServerConnectionFactory.cs" />
+    <Compile Include="Repositories\Models\BreadCrumbItem.cs" />
     <Compile Include="Repositories\Models\File.cs" />
     <Compile Include="Repositories\Models\FilesAndFolders\FileWriteViewModel.cs" />
+    <Compile Include="Repositories\Models\FolderReadViewModel.cs" />
     <Compile Include="Repositories\Repository\FileRepository.cs" />
     <Compile Include="Repositories\Repository\FolderRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFileRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFolderRepository.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\DbRetryPolicy.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\IDbRetryPolicy.cs" />
-    <Compile Include="Repositories\Models\Folder.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\BannedEmailService.cs" />
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\FolderService.cs" />
     <Compile Include="Services\NoCacheService.cs" />
     <Compile Include="Services\CacheService.cs" />
     <Compile Include="Services\GlobalPermissionForRoleService.cs" />
@@ -463,8 +475,13 @@
     <EmbeddedResource Include="Migrations\202107272011039_AddsFilesEntity.resx">
       <DependentUpon>202107272011039_AddsFilesEntity.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107312007168_FoldersAndFiles.resx">
+      <DependentUpon>202107312007168_FoldersAndFiles.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Repositories\Database\Models\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

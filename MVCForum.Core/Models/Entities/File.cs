@@ -4,12 +4,12 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace MvcForum.Core.Repositories.Database.Models
-{
-    using MvcForum.Core.Utilities;
-    using System;
-    using System.ComponentModel.DataAnnotations.Schema;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using MvcForum.Core.Utilities;
 
+namespace MvcForum.Core.Models.Entities
+{
     /// <summary>
     /// Defines the file entity to store file meta-data.
     /// </summary>
@@ -37,7 +37,7 @@ namespace MvcForum.Core.Repositories.Database.Models
         /// <summary>
         /// Gets or sets the parent folder.
         /// </summary>
-        public Folder ParentFolder { get; set; }
+        public Guid ParentFolder { get; set; }
 
         /// <summary>
         /// Gets or sets the file description.

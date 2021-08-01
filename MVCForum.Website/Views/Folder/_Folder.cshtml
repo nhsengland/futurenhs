@@ -1,0 +1,45 @@
+﻿@using System.Activities.Statements
+@model MvcForum.Core.Repositories.Models.Folder
+
+<div>
+	@if (Model != null)
+	{
+		<a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab})" class="btn-mvc-green btn-mvc-large">
+			Back
+		</a>
+		<div>
+			<h2>@Model.FolderName</h2>
+			<p>@Model.Description</p>
+		</div>
+
+		
+	}
+
+
+	@if (Model.ChildFolders.Any())
+	{
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Number of Files</th>
+			</tr>
+			@foreach (var folder in Model.ChildFolders)
+			{
+				<tr>
+					<td>
+						<a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId})" class="">
+							@folder.FolderName
+						</a>
+
+					</td>
+					<td>@folder.FileCount</td>
+
+				</tr>
+			}
+		</table>
+	}
+</div>
+
+
+
+

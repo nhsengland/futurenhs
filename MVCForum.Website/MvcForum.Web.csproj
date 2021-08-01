@@ -117,6 +117,7 @@
     <Compile Include="ViewModels\Admin\AdminCategoryViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminLanguageViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
+    <Compile Include="ViewModels\Folder\BreadCrumbItemViewModel.cs" />
     <Compile Include="ViewModels\Folder\FolderListViewModel.cs" />
     <Compile Include="ViewModels\GroupFile\CreateGroupFileViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
@@ -1182,6 +1183,8 @@
     <Content Include="Views\Group\_Files.cshtml" />
     <Content Include="Views\GroupFile\Create.cshtml" />
     <Content Include="Views\GroupFile\Show.cshtml" />
+    <Content Include="Views\Folder\_Folder.cshtml" />
+    <Content Include="Views\Folder\_CreateFolder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

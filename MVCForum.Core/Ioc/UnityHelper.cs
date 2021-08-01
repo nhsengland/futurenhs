@@ -1,28 +1,36 @@
 namespace MvcForum.Core.Ioc
 {
-    using System;
-    using System.Configuration;
-    //using System.Data.Entity.Infrastructure;
-    using System.Web.Http;
-    using System.Web.Mvc;
     using Data.Context;
     using Interfaces;
     using Interfaces.Services;
+    using MvcForum.Core.Interfaces.Providers;
+    using MvcForum.Core.Providers;
+    using MvcForum.Core.Repositories.Command;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Database.DatabaseProviders;
+    using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
+    using MvcForum.Core.Repositories.Database.RetryPolicy;
+    using MvcForum.Core.Repositories.Repository;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
     using Reflection;
     using Services;
+    using System;
+    using System.Configuration;
+    using System.Web.Http;
+    using System.Web.Mvc;
     using Unity;
     using Unity.Lifetime;
 
-    using MvcForum.Core.Interfaces.Providers;
-    using MvcForum.Core.Repositories.Groups.Repository.Database;
-    using MvcForum.Core.Repositories.Repository;
-    using MvcForum.Core.Repositories.Repository.Interfaces;
-    using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
-    using MvcForum.Core.Repositories.Database.DatabaseProviders;
-    using MvcForum.Core.Repositories.Database.RetryPolicy;
-    using MvcForum.Core.Providers;
-    using MvcForum.Core.Repositories.Command.Interfaces;
-    using MvcForum.Core.Repositories.Command;
+    //using MvcForum.Core.Interfaces.Providers;
+    //using MvcForum.Core.Repositories.Groups.Repository.Database;
+    //using MvcForum.Core.Repositories.Repository;
+    //using MvcForum.Core.Repositories.Repository.Interfaces;
+    //using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
+    //using MvcForum.Core.Repositories.Database.DatabaseProviders;
+    //using MvcForum.Core.Repositories.Database.RetryPolicy;
+    //using MvcForum.Core.Providers;
+    //using MvcForum.Core.Repositories.Command.Interfaces;
+    //using MvcForum.Core.Repositories.Command;
 
     /// <summary>
     ///     Bind the given interface in request scope
@@ -96,6 +104,8 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
             Container.BindInRequestScope<ISpamService, SpamService>();
             Container.BindInRequestScope<IFeatureManager, FeatureManager>();
+            Container.BindInRequestScope<IFolderCommand, FolderCommand>();
+            Container.BindInRequestScope<IFolderService, FolderService>();
 
             // Repositories
             Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString, ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString, Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"])));

@@ -12,7 +12,6 @@
     using Models.Activity;
     using Models.Entities;
     using Models.General;
-    using MvcForum.Core.Repositories.Database.Models;
 
     public partial class MvcForumContext : DbContext, IMvcForumContext
     {
@@ -27,6 +26,7 @@
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<Block> Block { get; set; }
         public virtual DbSet<Group> Group { get; set; }
+        public virtual DbSet<Folder> Folder { get; set; }
         public virtual DbSet<Section> Section { get; set; }
         public virtual DbSet<GroupNotification> GroupNotification { get; set; }
         public virtual DbSet<GroupPermissionForRole> GroupPermissionForRole { get; set; }

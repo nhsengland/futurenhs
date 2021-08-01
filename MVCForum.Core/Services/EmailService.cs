@@ -129,7 +129,7 @@
 
         public string EmailTemplate(string to, string content, Settings settings)
         {
-            using (var sr = File.OpenText(HostingEnvironment.MapPath(@"~/Content/Emails/EmailNotification.htm")))
+            using (var sr = System.IO.File.OpenText(HostingEnvironment.MapPath(@"~/Content/Emails/EmailNotification.htm")))
             {
                 var sb = sr.ReadToEnd();
                 sr.Close();

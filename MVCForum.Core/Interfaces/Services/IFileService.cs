@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="file">The <see cref="File"/> to create.</param>
         /// <returns>The id of the file.</returns>
-        Guid Create(Repositories.Database.Models.File file);
+        Guid Create(Models.Entities.File file);
 
         /// <summary>
         /// Method to get a <see cref="File"/> by id.

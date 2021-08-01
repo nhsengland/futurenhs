@@ -3,21 +3,19 @@
 // Copyright (c) CDS. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Groups.Repository.Database
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Dapper;
+using MvcForum.Core.Models.General;
+using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
+using MvcForum.Core.Repositories.Models;
+using MvcForum.Core.Repositories.Repository.Interfaces;
+
+namespace MvcForum.Core.Repositories.Repository
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Configuration;
-    using System.Data;
-    using System.Data.SqlClient;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Dapper;
-    using MvcForum.Core.Models.General;
-    using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
-    using MvcForum.Core.Repositories.Repository.Interfaces;
     //using DbFolder = MvcForum.Core.Repositories.Database.Models.Folder;
-    using Folder = MvcForum.Core.Repositories.Models.Folder;
 
     public class FolderRepository : IFolderRepository
     {
@@ -28,124 +26,198 @@ namespace MvcForum.Core.Repositories.Groups.Repository.Database
             _connectionFactory = connectionFactory;
         }
 
-        /// <summary>
-        /// Create a folder.
-        /// </summary>
-        /// <param name="folder">Folder to create.</param>
-        /// <returns></returns>
-        public async Task<Folder> Create(Folder folder)
-        {
-            var dbConnection = _connectionFactory.CreateWriteConnection();
-
-            //Create the folder
-
-            return null;
-        }
-
-        /// <summary>
-        /// Update a folder. This is also used to delete (change status).
-        /// </summary>
-        /// <param name="folder">Folder to update.</param>
-        /// <returns></returns>
-        public async Task<Folder> Update(Folder folder)
-        {
-            var dbConnection = _connectionFactory.CreateWriteConnection();
-
-            //Update the folder
-
-            return null;
-        }
-
-        /// <summary>
-        /// Gets folders based on parent Id. If parent Id is null then they are rot folders.
-        /// </summary>
-        /// <param name="parentId">Nullable parent Id to get folders.</param>
-        /// <returns></returns>
-        public async Task<List<Folder>> GetChildFolders(Guid folderId)
-        {
-            //var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-
-            // Hard coded for now, need to hook up to DB and use Dapper to convert.
-
-            List<Folder> folderList = new List<Folder>();
-
-            if (folderId == new Guid())
-            {
-                folderList.AddRange(new List<Folder>
-                {
-                    new Folder() { FolderId = new Guid(), FolderName = "Child folder 1", Description = "Child folder 1 description", FileCount = 15, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = Guid.NewGuid(), Status = 1 },
-                    new Folder() { FolderId = new Guid(), FolderName = "Child folder 2", Description = "Child folder 2 description", FileCount = 72, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = Guid.NewGuid(), Status = 1 },
-                    new Folder() { FolderId = new Guid(), FolderName = "Child folder 3", Description = "Child folder 3 description", FileCount = 1, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = Guid.NewGuid(), Status = 1 },
-                    new Folder() { FolderId = new Guid(), FolderName = "Child folder 4", Description = "Child folder 4 description", FileCount = 0, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = Guid.NewGuid(), Status = 1 }
-                });
-            }
-            else
-            {
-                folderList.AddRange(new List<Folder>
-                {
-                    new Folder() { FolderId = new Guid(), FolderName = "Root folder 1", Description = "Root folder 1 description", FileCount = 28, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = folderId, Status = 1 },
-                    new Folder() { FolderId = new Guid(), FolderName = "Root folder 2", Description = "Root folder 2 description", FileCount = 6, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = folderId, Status = 1 },
-                    new Folder() { FolderId = new Guid(), FolderName = "Root folder 3", Description = "Root folder 3 description", FileCount = 4, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = folderId, Status = 1 },
-                    new Folder() { FolderId = new Guid(), FolderName = "Root folder 4", Description = "Root folder 4 description", FileCount = 6, DateAdded = DateTime.Now, AddedBy = Guid.NewGuid(), ParentId = folderId, Status = 1 }
-                });
-            }
-
-            return folderList;
-        }
-
-        public async Task<Folder> GetFolder(Guid folderId)
-        {
-            //var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-
-            // Hard coded for now, need to hook up to DB and use Dapper to convert.
-
-            if (folderId != new Guid())
-            {
-                return null;
-            }
-
-            return new Folder()
-            {
-                FolderId = new Guid(),
-                FolderName = "Root folder 1",
-                Description = "Root folder 1 description",
-                DateAdded = DateTime.Now,
-                AddedBy = Guid.NewGuid(),
-                ParentId = Guid.NewGuid(),
-                Status = 1
-            };
-
-        }
-
-        /*
-        public async Task<PaginatedList<Folder>> GetFolders(int page = 1, int pageSize = 10)
+        public PaginatedList<FolderReadViewModel> GetRootFoldersForGroup(string groupSlug, int page = 1, int pageSize = 10)
         {
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-            PaginatedList<Folder> groupsList;
+            PaginatedList<FolderReadViewModel> folders;
             const string query =
-                @"SELECT groups.Name, groups.Description, groups.Slug FROM [group] groups
-                 WHERE groups.HiddenGroup = 0
-                 ORDER BY groups.Name
-                 OFFSET @Offset ROWS
-                 FETCH NEXT @PageSize ROWS ONLY;
+                @"SELECT folders.Id AS FolderId, folders.Name AS FolderName, folders.FileCount 
+                FROM Folder folders
+                JOIN [Group] groups ON groups.Id = folders.ParentGroup
+                WHERE groups.Slug = @GroupSlug 
+                AND folders.ParentFolder IS NULL AND folders.IsDeleted = 0
+                ORDER BY folders.Name
+                OFFSET @Offset ROWS
+                FETCH NEXT @PageSize ROWS ONLY;
 
-                 SELECT COUNT(*)
-                 FROM [group] groups 
-                 WHERE groups.HiddenGroup = 0";
+                SELECT COUNT(*)
+                FROM Folder folders
+                JOIN [Group] groups ON groups.Id = folders.ParentGroup
+                WHERE groups.Slug = @GroupSlug
+                AND folders.ParentFolder IS NULL AND folders.IsDeleted = 0";
 
-            using (var multipleResults = await dbConnection.QueryMultipleAsync(query, new
+            using (var multipleResults = dbConnection.QueryMultiple(query, new
             {
                 Offset = (page - 1) * pageSize,
-                PageSize = pageSize
+                PageSize = pageSize,
+                GroupSlug = groupSlug
             }))
             {
 
-                var results = await multipleResults.ReadAsync<Folder>();
+                var results = multipleResults.Read<FolderReadViewModel>();
                 var totalCount = multipleResults.ReadFirst<int>();
-                groupsList = new PaginatedList<Folder>(results.ToList(), totalCount, page, pageSize);
+                folders = new PaginatedList<FolderReadViewModel>(results.ToList(), totalCount, page, pageSize);
             }
 
-            return groupsList;
-        }*/
+            return folders;
+        }
+
+        public IEnumerable<BreadCrumbItem> GenerateBreadcrumbTrail(Guid folderId)
+        {
+            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+
+            const string query =
+                @";WITH BreadCrumbs
+                AS
+                (
+                SELECT Id, Name, ParentFolder AS ParentFolder
+                FROM Folder
+                WHERE Id = @FolderId
+                UNION ALL
+                SELECT F.Id AS PK, F.[Name] AS Name, F.ParentFolder AS ParentFK
+                FROM Folder F
+                INNER JOIN BreadCrumbs BC
+                    ON BC.ParentFolder = F.Id
+                )
+                SELECT Id, Name FROM BreadCrumbs";
+
+            using (var multipleResults = dbConnection.QueryMultiple(query, new
+            {
+                FolderId = folderId,
+            }))
+            {
+
+                var results = multipleResults.Read<BreadCrumbItem>().Reverse();
+                return results;
+            }
+
+       
+        }
+
+        public PaginatedList<FolderReadViewModel> GetChildFoldersForFolder(Guid parentFolderId, int page = 1, int pageSize = 10)
+        {
+            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+            PaginatedList<FolderReadViewModel> folders;
+            const string query =
+                @"SELECT Id AS FolderId, Name AS FolderName, FileCount 
+                FROM Folder
+                WHERE ParentFolder = @ParentFolder 
+                AND IsDeleted = 0
+                ORDER BY Name
+                OFFSET @Offset ROWS
+                FETCH NEXT @PageSize ROWS ONLY;
+
+                SELECT COUNT(*)
+                FROM Folder
+                WHERE ParentFolder = @ParentFolder  
+                AND IsDeleted = 0";
+
+            using (var multipleResults = dbConnection.QueryMultiple(query, new
+            {
+                Offset = (page - 1) * pageSize,
+                PageSize = pageSize,
+                ParentFolder = parentFolderId
+            }))
+            {
+
+                var results = multipleResults.Read<FolderReadViewModel>();
+                var totalCount = multipleResults.ReadFirst<int>();
+                folders = new PaginatedList<FolderReadViewModel>(results.ToList(), totalCount, page, pageSize);
+            }
+
+            return folders;
+        }
+
+        public FolderReadViewModel GetFolder(Guid folderId)
+        {
+            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+            
+            const string query =
+                @"SELECT Id AS FolderId, Name AS FolderName, Description, FileCount 
+                FROM Folder folders
+                WHERE folders.Id = @FolderId;";
+
+            var result = dbConnection.QueryFirstOrDefault<FolderReadViewModel>(query, new {FolderId = folderId});
+            return result;
+        }
+
+        public bool UserIsAdmin(string groupSlug, Guid userId)
+        {
+            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+
+            const string query =
+                @"
+                    SELECT rolename AS MemberRole
+                    FROM   membershiprole
+                           JOIN membershipusersinroles m
+                             ON m.roleidentifier = id
+                    WHERE  m.useridentifier = @userId
+
+                    SELECT mr.rolename AS GroupRole
+                    FROM   groupuser gu
+                           JOIN membershiprole mr
+                             ON gu.membershiprole_id = mr.id
+                           JOIN membershipusersinroles mur
+                             ON mur.useridentifier = gu.membershipuser_id
+                           JOIN [group] g
+                             ON gu.group_id = g.id
+                    WHERE  g.slug = @groupSlug
+                           AND gu.membershipuser_id = @userId
+                           AND gu.approved = 1
+                           AND gu.banned = 0
+                           AND gu.locked = 0
+                ";
+
+            using (var result = dbConnection.QueryMultiple(query, new { groupSlug, userId }))
+            {
+                var membershipRole = result.Read<string>().FirstOrDefault();
+                var groupRole = result.Read<string>().FirstOrDefault();
+
+                return membershipRole?.ToLower() == "admin" || groupRole?.ToLower() == "admin";
+            }
+        }
+
+        //public async Task<PaginatedList<Folder>> GetFolders(int page = 1, int pageSize = 10)
+        //{
+        //    var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+        //    PaginatedList<Folder> groupsList;
+        //    const string query =
+        //    @"SELECT groups.Name, groups.Description, groups.Slug FROM [group] groups
+        // WHERE groups.HiddenGroup = 0
+        // ORDER BY groups.Name
+        // OFFSET @Offset ROWS
+        // FETCH NEXT @PageSize ROWS ONLY;
+
+        //public PaginatedList<Folder> GetFolders(int page = 1, int pageSize = 10)
+        //{
+        //    var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+        //    PaginatedList<Folder> groupsList;
+        //    const string query =
+        //        @"SELECT groups.Name, groups.Description, groups.Slug FROM[group] groups
+        //         WHERE groups.HiddenGroup = 0
+        //         ORDER BY groups.Name
+        //         OFFSET @Offset ROWS
+        //         FETCH NEXT @PageSize ROWS ONLY;
+
+        //    SELECT COUNT(*)
+        //             FROM[group] groups
+        //            WHERE groups.HiddenGroup = 0";
+
+        //        using (var multipleResults = dbConnection.QueryMultipleAsync(query, new
+        //        {
+        //            Offset = (page - 1) * pageSize,
+        //            PageSize = pageSize
+        //        }))
+        //    {
+
+        //        var results = await multipleResults.ReadAsync<Folder>();
+        //        var totalCount = multipleResults.ReadFirst<int>();
+        //        groupsList = new PaginatedList<Folder>(results.ToList(), totalCount, page, pageSize);
+        //    }
+
+        //    return groupsList;
+        //}
     }
 }
+
+

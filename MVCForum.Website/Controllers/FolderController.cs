@@ -4,45 +4,95 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using MvcForum.Core.Constants;
-using MvcForum.Core.Interfaces;
+
+using System.Collections.Generic;
+using System.Linq;
+using MvcForum.Core.Repositories.Models;
+using MvcForum.Web.ViewModels.Folder;
 
 namespace MvcForum.Web.Controllers
 {
-    using MvcForum.Core.Repositories.Repository.Interfaces;
-    using MvcForum.Web.ViewModels.Folder;
+    using MvcForum.Core.Constants;
+    using MvcForum.Core.Interfaces;
+    using MvcForum.Core.Interfaces.Services;
+    using MvcForum.Core.Models.FilesAndFolders;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using System.Web.Mvc;
 
     public class FolderController : Controller
     {
-        private readonly IFolderRepository _folderRepository;
+        private readonly IFolderService _folderService;
         private readonly IFeatureManager _featureManager;
+        private readonly IMembershipService _membershipService;
 
-        public FolderController(IFolderRepository folderRepository, IFeatureManager featureManager)
+        public FolderController(IFolderService folderService, IFeatureManager featureManager, IMembershipService membershipService)
         {
-            _folderRepository = folderRepository;
+            _folderService = folderService;
             _featureManager = featureManager;
+            _membershipService = membershipService;
         }
 
-        [ChildActionOnly]
-        public PartialViewResult GetFolder(string slug, Guid folderId)
+        [HttpGet]
+        public ViewResult CreateFolder(string slug, Guid? parentId, Guid groupId)
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                var model = new FolderListViewModel
+                var WriteFolder = new FolderWriteViewModel
                 {
-                    Slug = slug, Folder = _folderRepository.GetFolder(folderId).Result,
-                    ChildFolders = _folderRepository.GetChildFolders(folderId).Result
+                    ParentFolder = parentId,
+                    Slug = slug,
+                    ParentGroup = groupId
                 };
+
+                return View("_CreateFolder", WriteFolder);
+            }
+            return null;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateFolder(FolderWriteViewModel folder)
+        {
+            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                if (ModelState.IsValid) {
+                    folder.AddedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
+                    var newId = _folderService.CreateFolder(folder);
+
+                    return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = newId });
+                }
+                return View("_CreateFolder", folder);
+            }
+
+            return null;
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult GetFolder(string slug, Guid? folderId, Guid groupId)
+        {
+            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                var model = _folderService.GetFolder(slug, folderId);
+                model.GroupId = groupId;
+                model.IsAdmin = _folderService.UserIsAdmin(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id);
+                model.BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug);
 
                 return PartialView("_Folders", model);
             }
 
             return null;
+        }
+
+        private IEnumerable<BreadCrumbItem> BuildBreadCrumbTrail(Guid? folderId, string slug)
+        {
+            var list = new List<BreadCrumbItem> { new BreadCrumbItem { Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "Files" }};
+            if (folderId.HasValue)
+            {
+                var bc = _folderService.GenerateBreadcrumbTrail(folderId.Value);
+                list.AddRange(bc.Select(b => new BreadCrumbItem {Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupFilesTab, folder = b.Id})}));
+            }
+
+            return list;
         }
     }
 }

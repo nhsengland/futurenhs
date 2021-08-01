@@ -1,10 +1,10 @@
-﻿using MvcForum.Core.Repositories.Database.Models;
-using MvcForum.Core.Repositories.Models.FilesAndFolders;
+﻿using MvcForum.Core.Repositories.Models.FilesAndFolders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MvcForum.Core.Models.Entities;
 
 namespace MvcForum.Core.Repositories.Command.Interfaces
 {

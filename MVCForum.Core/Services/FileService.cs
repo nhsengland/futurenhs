@@ -38,7 +38,7 @@
         /// </summary>
         /// <param name="file">The file to create.</param>
         /// <returns>The file id.</returns>
-        public Guid Create(Repositories.Database.Models.File file)
+        public Guid Create(Models.Entities.File file)
         {
             return _fileCommand.Create(file);
         }

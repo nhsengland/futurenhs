@@ -416,19 +416,6 @@ namespace MvcForum.Web.Controllers
             // check the user has permission to this Group
             var permissions = RoleService.GetPermissions(group.Group, loggedOnUsersRole);
 
-            if(tab == Constants.GroupFilesTab)
-            {
-                if (folder == null)
-                {
-                    folder = group.Group.Id;
-                }
-                else
-                {
-                    folder = new Guid();
-                }
-                
-            }
-
             if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
             {
                 // Create the main view model for the Group

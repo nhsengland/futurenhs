@@ -1,13 +1,33 @@
 ﻿@using System.Activities.Statements
-@model MvcForum.Web.ViewModels.Folder.FolderListViewModel
+@model MvcForum.Web.ViewModels.Folder.FolderViewModel
 
 <div>
+	@{
+		var count = 1;
+		if (Model.BreadCrumbTrail.Count() != count)
+		{
+			foreach (var breadCrumb in Model.BreadCrumbTrail)
+			{
+				var lastEntry = count == Model.BreadCrumbTrail.Count();
+				if (!lastEntry)
+				{
+
+					<a href=@breadCrumb.Url class="u-text-small u-text-theme-0">
+						@breadCrumb.Name &rsaquo;
+					</a>
+				}
+				else
+				{
+					<a class="u-text-small u-text-theme-0">
+						@breadCrumb.Name
+					</a>
+				}
+				count++;
+			}
+		}
+	}
 	@if (Model.Folder != null)
 	{
-		<a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab})" class="c-button">
-			Back
-		</a>
-
 		<h2>@Model.Folder.FolderName</h2>
         
         <hr>
@@ -15,7 +35,7 @@
         <p>@Model.Folder.Description</p>
         
         <button class="c-button c-button--outline">
-            Add folder
+            Upload File
         </button>
 	}
 
@@ -25,11 +45,12 @@
 
         <hr>
         
-        <button class="c-button c-button--outline">
-            Upload file
-        </button>
+        
 	}
-
+    @if (Model.IsAdmin)
+    {
+        @Html.ActionLink("Add folder", "CreateFolder", new { slug = Model.Slug, parentId = Model.Folder?.FolderId, groupId = Model.GroupId } , new { @class = "c-button c-button--outline" });                
+    }
 
 	@if (Model.ChildFolders.Any())
 	{

@@ -1,9 +1,10 @@
-﻿namespace MvcForum.Web.Controllers
+﻿using MvcForum.Core.Models.Entities;
+
+namespace MvcForum.Web.Controllers
 {
     using MvcForum.Core.Interfaces;
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Repositories.Command.Interfaces;
-    using MvcForum.Core.Repositories.Database.Models;
     using MvcForum.Core.Repositories.Repository.Interfaces;
     using MvcForum.Web.ViewModels.GroupFile;
     using System;

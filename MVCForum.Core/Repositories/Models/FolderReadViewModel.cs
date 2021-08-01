@@ -10,8 +10,12 @@ namespace MvcForum.Core.Repositories.Models
     /// <summary>
     /// Represents a folder object.
     /// </summary>
-    public class Folder
-    {
+    public class FolderReadViewModel
+    { 
+        /// <summary>
+        /// Gets or sets the Slug for the Group.
+        /// </summary>
+        public string Slug { get; set; }
         /// <summary>
         /// Gets or sets the folder Id.
         /// </summary>

@@ -6,13 +6,13 @@
     using Models.Activity;
     using Models.Entities;
     using Models.General;
-    using MvcForum.Core.Repositories.Database.Models;
 
     public partial interface IMvcForumContext : IDisposable
     {
         DbSet<Activity> Activity { get; set; }
         DbSet<Block> Block { get; set; }
         DbSet<Group> Group { get; set; }
+        DbSet<Folder> Folder { get; set; }
         DbSet<Section> Section { get; set; }
         DbSet<GroupNotification> GroupNotification { get; set; }
         DbSet<GroupPermissionForRole> GroupPermissionForRole { get; set; }
