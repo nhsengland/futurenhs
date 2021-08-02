@@ -37,5 +37,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folder = Model.FolderId})"> back </a>
 </div>

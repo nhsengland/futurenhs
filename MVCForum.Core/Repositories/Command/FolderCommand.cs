@@ -36,5 +36,23 @@ namespace MvcForum.Core.Repositories.Command
             _context.SaveChanges();
             return newFolder.Id;
         }
+
+        public void UpdateFolder(FolderWriteViewModel folder)
+        {
+            var result = _context.Folder.FirstOrDefault(x => x.Id == folder.FolderId);
+
+            if (result != null)
+            {
+                if (result.Name != folder.FolderName
+                    || result.IsDeleted != folder.IsDeleted
+                    || result.Description != folder.Description)
+                {
+                    result.Name = folder.FolderName;
+                    result.Description = folder.Description;
+                    result.IsDeleted = folder.IsDeleted;
+                    _context.SaveChanges();
+                }
+            }
+        }
     }
 }

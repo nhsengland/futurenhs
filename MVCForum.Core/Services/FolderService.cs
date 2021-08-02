@@ -57,6 +57,11 @@ namespace MvcForum.Core.Services
             return _folderCommand.CreateFolder(model);
         }
 
+        public void UpdateFolder(FolderWriteViewModel model)
+        {
+            if (model.FolderId != null) _folderCommand.UpdateFolder(model);
+        }
+
         public IEnumerable<BreadCrumbItem> GenerateBreadcrumbTrail(Guid folderId)
         {
             return _folderRepository.GenerateBreadcrumbTrail(folderId);

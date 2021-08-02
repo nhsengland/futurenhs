@@ -19,5 +19,7 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public Guid? ParentFolder { get; set; }
         [Required]
         public Guid ParentGroup { get; set; }
+
+        public  bool IsDeleted { get; set; }
     }
 }

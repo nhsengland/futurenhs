@@ -49,7 +49,12 @@
 	}
     @if (Model.IsAdmin)
     {
-        @Html.ActionLink("Add folder", "CreateFolder", new { slug = Model.Slug, parentId = Model.Folder?.FolderId, groupId = Model.GroupId } , new { @class = "c-button c-button--outline" });                
+        @Html.ActionLink("Add folder", "CreateFolder", new { slug = Model.Slug, parentId = Model.Folder?.FolderId, groupId = Model.GroupId } , new { @class = "c-button c-button--outline" });
+        if (Model.Folder != null)
+        {
+            @Html.ActionLink("Edit folder", "UpdateFolder", new { slug = Model.Slug, folderId = Model.Folder?.FolderId }, new {@class = "c-button c-button--outline"});
+            @Html.ActionLink("Delete folder", "DeleteFolder", new { slug = Model.Slug, folderId = Model.Folder?.FolderId }, new {@class = "c-button c-button--outline"});
+        }
     }
 
 	@if (Model.ChildFolders.Any())

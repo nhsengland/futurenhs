@@ -1185,6 +1185,8 @@
     <Content Include="Views\GroupFile\Show.cshtml" />
     <Content Include="Views\Folder\_Folder.cshtml" />
     <Content Include="Views\Folder\_CreateFolder.cshtml" />
+    <Content Include="Views\Folder\_UpdateFolder.cshtml" />
+    <Content Include="Views\Folder\_DeleteFolder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

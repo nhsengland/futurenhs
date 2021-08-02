@@ -16,6 +16,7 @@ namespace MvcForum.Web.ViewModels.Folder
         public IEnumerable<BreadCrumbItem> BreadCrumbTrail { get; set; }
         public string Slug { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsDeleted { get; set; }
         public Guid GroupId { get; set; }
     }
 }

@@ -10,5 +10,6 @@ namespace MvcForum.Core.Repositories.Command.Interfaces
     public interface IFolderCommand
     {
         Guid CreateFolder(FolderWriteViewModel folder);
+        void UpdateFolder(FolderWriteViewModel folder);
     }
 }

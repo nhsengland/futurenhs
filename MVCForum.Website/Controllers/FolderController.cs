@@ -67,6 +67,94 @@ namespace MvcForum.Web.Controllers
             return null;
         }
 
+        [HttpGet]
+        public ViewResult UpdateFolder(string slug, Guid? folderId)
+        {
+            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                var result = _folderService.GetFolder(slug, folderId);
+
+                var WriteFolder = new FolderWriteViewModel
+                {
+                    FolderId = folderId,
+                    Slug = slug,
+                    FolderName =  result.Folder.FolderName,
+                    Description = result.Folder.Description
+                };
+
+                return View("_UpdateFolder", WriteFolder);
+            }
+            return null;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateFolder(FolderWriteViewModel folder)
+        {
+            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _folderService.GetFolder(folder.Slug, folder.FolderId);
+
+                    if (folder.FolderId == result.Folder.FolderId)
+                    {
+                        folder.IsDeleted = folder.IsDeleted;
+                        _folderService.UpdateFolder(folder);
+
+                        return RedirectToRoute("GroupUrls", new {slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId});
+                    }
+                }
+                return View("_UpdateFolder", folder);
+            }
+
+            return null;
+        }
+
+        [HttpGet]
+        public ViewResult DeleteFolder(string slug, Guid? folderId)
+        {
+            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                var result = _folderService.GetFolder(slug, folderId);
+
+                var WriteFolder = new FolderWriteViewModel
+                {
+                    FolderId = folderId,
+                    Slug = slug,
+                    FolderName = result.Folder.FolderName,
+                    Description = result.Folder.Description
+                };
+
+                return View("_DeleteFolder", WriteFolder);
+            }
+            return null;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteFolder(FolderWriteViewModel folder)
+        {
+            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _folderService.GetFolder(folder.Slug, folder.FolderId);
+
+                    if (folder.FolderId == result.Folder.FolderId)
+                    {
+                        folder.IsDeleted = true;
+                        _folderService.UpdateFolder(folder);
+
+                        return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
+                    }
+                }
+                return View("_DeleteFolder", folder);
+            }
+
+            return null;
+        }
+
         [ChildActionOnly]
         public PartialViewResult GetFolder(string slug, Guid? folderId, Guid groupId)
         {
