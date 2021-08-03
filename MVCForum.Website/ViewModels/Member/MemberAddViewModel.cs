@@ -30,6 +30,7 @@
         [ForumMvcResourceDisplayName("Members.Label.Password")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Compare("Password")]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
