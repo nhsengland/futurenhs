@@ -51,7 +51,7 @@ namespace MvcForum.Core.Ioc
             config.DependencyResolver = new HttpDependencyResolver(Container);
             // Bit annoying having just this here but we need this early in the startup for seed method
             Container.BindInRequestScope<IConfigService, ConfigService>();
-            Container.BindInRequestScope<ICacheService, NoCacheService>();
+            Container.BindInRequestScope<ICacheService, CacheService>();
         }
 
 
