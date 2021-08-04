@@ -79,6 +79,8 @@ File.Error.InvalidSize,The file above was not uploaded because the file size is 
 File.Error.NullFile,Please select to upload a file.
 File.Error.NullName,The file must have a name.
 File.Error.NameLength,The name of the file cannot be more than 100 characters.
+Folder.Error.NullTitle,Please provide a folder title.
+Folder.Error.DuplicateTitle,This folder already exists.
 Following.Groups,Groups you are following
 Following.PageTitle,Topics & Groups
 Following.Topics,Topics you are following
