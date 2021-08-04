@@ -104,6 +104,10 @@
     <Compile Include="Migrations\202108031032394_modifiesForeignKeysInFileEntity.Designer.cs">
       <DependentUpon>202108031032394_modifiesForeignKeysInFileEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202108041053595_makesFilePropertiesNullable.cs" />
+    <Compile Include="Migrations\202108041053595_makesFilePropertiesNullable.Designer.cs">
+      <DependentUpon>202108041053595_makesFilePropertiesNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -485,6 +489,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108031032394_modifiesForeignKeysInFileEntity.resx">
       <DependentUpon>202108031032394_modifiesForeignKeysInFileEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108041053595_makesFilePropertiesNullable.resx">
+      <DependentUpon>202108041053595_makesFilePropertiesNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

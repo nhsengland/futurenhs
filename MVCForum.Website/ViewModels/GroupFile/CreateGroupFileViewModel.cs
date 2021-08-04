@@ -15,5 +15,7 @@ namespace MvcForum.Web.ViewModels.GroupFile
         public string Description { get; set; }
 
         public Guid FolderId { get; set; }
+
+        public string Slug { get; set; }
     }
 }

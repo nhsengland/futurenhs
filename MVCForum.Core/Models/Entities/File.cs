@@ -72,7 +72,7 @@ namespace MvcForum.Core.Models.Entities
         /// <summary>
         /// Gets or sets the file modified by.
         /// </summary>
-        public Guid ModifiedBy { get; set; }
+        public Guid? ModifiedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the file created date.
@@ -82,7 +82,7 @@ namespace MvcForum.Core.Models.Entities
         /// <summary>
         /// Gets or sets the file modified date.
         /// </summary>
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         
         /// <summary>
         /// Gets or sets the upload status of the file.

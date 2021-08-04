@@ -10,6 +10,7 @@ namespace MvcForum.Web.Controllers
     using MvcForum.Web.ViewModels.GroupFile;
     using System;
     using System.Web.Mvc;
+    using MvcForum.Core.Constants;
 
     /// <summary>
     /// Defines methods and routes for the GroupFIles.
@@ -50,11 +51,12 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         /// <param name="folderId"></param>
         /// <returns></returns>
-        public ActionResult Create(Guid folderId)
+        public ActionResult Create(Guid folderId, string slug)
         {
             var viewmodel = new CreateGroupFileViewModel
             {
-                FolderId = folderId
+                FolderId = folderId,
+                Slug = slug
             };
 
             return View(viewmodel);
@@ -76,14 +78,13 @@ namespace MvcForum.Web.Controllers
                     Title = file.Name,
                     Description = file.Description,
                     CreatedDate = DateTime.Now,
-                    ModifiedDate = DateTime.Now,
                     ParentFolder = file.FolderId,
                     CreatedBy = LoggedOnReadOnlyUser.Id
                 };
 
                 Guid id = _fileService.Create(fileCreate);
 
-                return RedirectToAction("Show", new { id = id });
+                return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
             }
 
             return View();

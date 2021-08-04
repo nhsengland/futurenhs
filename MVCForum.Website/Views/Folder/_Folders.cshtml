@@ -34,7 +34,7 @@
 
         <p>@Model.Folder.Description</p>
 
-        @Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId }, new { @class = "c-button c-button-outline" })
+        @Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug }, new { @class = "c-button c-button-outline" })
 
     }
 
