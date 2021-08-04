@@ -5,7 +5,6 @@
     using MvcForum.Core.Repositories.Command.Interfaces;
     using System;
     using MvcForum.Core.Models.Entities;
-    using System.Data.Entity;
     using Status = MvcForum.Core.Models.Enums.UploadStatus;
 
     /// <summary>
@@ -48,7 +47,10 @@
         public Guid Update(File file)
         {
             var dbFile = _context.Files.Find(file.Id);
-            ((DbContext)_context).Entry(dbFile).State = EntityState.Modified;
+            dbFile.Title = file.Title;
+            dbFile.Description = file.Description;
+            dbFile.ModifiedBy = file.ModifiedBy;
+            dbFile.ModifiedDate = DateTime.Now;
             _context.SaveChanges();
             return file.Id;
         }

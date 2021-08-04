@@ -15,6 +15,6 @@ namespace MvcForum.Web.ViewModels.Folder
         public List<FolderReadViewModel> ChildFolders { get; set; }
         public bool IsAdmin { get; set; }
 
-        public List<File> Files { get; set; }
+        public List<FileReadViewModel> Files { get; set; }
     }
 }

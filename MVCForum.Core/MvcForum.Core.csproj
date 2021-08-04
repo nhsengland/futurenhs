@@ -127,6 +127,7 @@
     <Compile Include="Models\Entities\GroupUser.cs" />
     <Compile Include="Models\Enums\GroupUserStatus.cs" />
     <Compile Include="Models\Enums\UploadStatus.cs" />
+    <Compile Include="Models\FilesAndFolders\CreateGroupFileViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderWriteViewModel.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
@@ -246,7 +247,6 @@
     <Compile Include="Repositories\Command\FolderCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IFileCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IFolderCommand.cs" />
-    <Compile Include="Repositories\Database\Models\File.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\Interfaces\IDbConnectionFactory.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbCommand.cs">
       <SubType>Component</SubType>
@@ -257,8 +257,7 @@
     <Compile Include="Repositories\Database\DatabaseProviders\SqlServerConnectionFactory.cs" />
     <Compile Include="Models\Entities\UploadStatus.cs" />
     <Compile Include="Repositories\Models\BreadCrumbItem.cs" />
-    <Compile Include="Repositories\Models\File.cs" />
-    <Compile Include="Repositories\Models\FilesAndFolders\FileWriteViewModel.cs" />
+    <Compile Include="Repositories\Models\FileReadViewModel.cs" />
     <Compile Include="Repositories\Models\FolderReadViewModel.cs" />
     <Compile Include="Repositories\Repository\FileRepository.cs" />
     <Compile Include="Repositories\Repository\FolderRepository.cs" />

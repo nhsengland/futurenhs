@@ -18,14 +18,14 @@ namespace MvcForum.Core.Repositories.Repository.Interfaces
         /// Method to get all files for a folder.
         /// </summary>
         /// <param name="folderId">Folder to get files for.</param>
-        /// <returns>List of <see cref="File"/>.</returns>
-        List<File> GetFiles(Guid folderId);
+        /// <returns>List of <see cref="FileReadViewModel"/>.</returns>
+        List<FileReadViewModel> GetFiles(Guid folderId);
 
         /// <summary>
         /// Method to get a file by fileId.
         /// </summary>
         /// <param name="fileId">File to get.</param>
-        /// <returns>Requested <see cref="File"/>.</returns>
-        File GetFile(Guid fileId);
+        /// <returns>Requested <see cref="FileReadViewModel"/>.</returns>
+        FileReadViewModel GetFile(Guid fileId);
     }
 }

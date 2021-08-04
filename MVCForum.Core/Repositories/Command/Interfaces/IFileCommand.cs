@@ -1,13 +1,8 @@
-﻿using MvcForum.Core.Repositories.Models.FilesAndFolders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MvcForum.Core.Models.Entities;
-
-namespace MvcForum.Core.Repositories.Command.Interfaces
+﻿namespace MvcForum.Core.Repositories.Command.Interfaces
 {
+    using System;
+    using MvcForum.Core.Models.Entities;
+
     /// <summary>
     /// Defines the interface for write interactions for files.
     /// </summary>

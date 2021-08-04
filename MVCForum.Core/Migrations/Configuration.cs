@@ -12,7 +12,6 @@ namespace MvcForum.Core.Services.Migrations
     using Data.Context;
     using ExtensionMethods;
     using Models.Entities;
-    using MvcForum.Core.Repositories.Database.Models;
     using Utilities;
 
     public class Configuration : DbMigrationsConfiguration<MvcForumContext>

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace MvcForum.Web.ViewModels.GroupFile
+namespace MvcForum.Core.Models.FilesAndFolders
 {
     public class CreateGroupFileViewModel
     {

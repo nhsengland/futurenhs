@@ -119,7 +119,6 @@
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
     <Compile Include="ViewModels\Folder\BreadCrumbItemViewModel.cs" />
     <Compile Include="ViewModels\Folder\FolderListViewModel.cs" />
-    <Compile Include="ViewModels\GroupFile\CreateGroupFileViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />

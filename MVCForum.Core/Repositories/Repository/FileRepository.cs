@@ -36,15 +36,15 @@ namespace MvcForum.Core.Repositories.Repository
         /// <summary>
         /// Method to get a file by Id.
         /// </summary>
-        /// <param name="fileId">Id of the <see cref="File"/>.</param>
-        /// <returns>The requested <see cref="File"/>.</returns>
-        public File GetFile(Guid fileId)
+        /// <param name="fileId">Id of the <see cref="FileReadViewModel"/>.</param>
+        /// <returns>The requested <see cref="FileReadViewModel"/>.</returns>
+        public FileReadViewModel GetFile(Guid fileId)
         {
             try
             {
                 var conn = _connectionFactory.CreateReadOnlyConnection();
                 var query = @"SELECT * FROM [File] WHERE Id = @fileId";
-                return conn.Query<File>(query, new { fileId = fileId }).FirstOrDefault();
+                return conn.Query<FileReadViewModel>(query, new { fileId = fileId }).FirstOrDefault();
             }
             catch (Exception) { }
             return null;
@@ -55,13 +55,13 @@ namespace MvcForum.Core.Repositories.Repository
         /// </summary>
         /// <param name="folderId">Id of the parent folder.</param>
         /// <returns>List of files <see cref="List{File}"/>.</returns>
-        public List<File> GetFiles(Guid folderId)
+        public List<FileReadViewModel> GetFiles(Guid folderId)
         {
             try
             {
                 var conn = _connectionFactory.CreateReadOnlyConnection();
                 var query = @"SELECT * FROM [File] WHERE FolderId = @folderId";
-                return conn.Query<File>(query, new { folderId = folderId }).ToList();
+                return conn.Query<FileReadViewModel>(query, new { folderId = folderId }).ToList();
             }
             catch (Exception) { }
             return null;

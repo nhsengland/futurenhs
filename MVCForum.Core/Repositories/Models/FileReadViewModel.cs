@@ -4,31 +4,20 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace MvcForum.Core.Repositories.Database.Models
+namespace MvcForum.Core.Repositories.Models
 {
-    using MvcForum.Core.Models.Entities;
-    using MvcForum.Core.Utilities;
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
     /// Defines the file entity to store file meta-data.
     /// </summary>
-    [Table("File")]
-    public class File
+    public class FileReadViewModel
     {
-        /// <summary>
-        /// Constructs a new instance of the <see cref="File"/> class.
-        /// </summary>
-        public File()
-        {
-            this.Id = GuidComb.GenerateComb();
-        }
-
         /// <summary>
         /// Gets or sets the file id.
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid FileId { get; set; }
 
         /// <summary>
         /// Gets or sets the file title.
@@ -54,7 +43,7 @@ namespace MvcForum.Core.Repositories.Database.Models
         /// Gets or sets the file size.
         /// </summary>
         public string FileSize { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the file extension.
         /// </summary>
@@ -86,7 +75,7 @@ namespace MvcForum.Core.Repositories.Database.Models
         public DateTime ModifiedDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the file status.
+        /// Gets or sets the status. Relates to UploadStatus Id.
         /// </summary>
         public int Status { get; set; }
     }
