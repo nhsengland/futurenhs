@@ -71,7 +71,7 @@
                                     data-endpoint-type="getThreadComments"
                                     data-maxim-requests="@(Model.Replies.TotalPages)"
                                     data-request-index="@Model.Replies.PageIndex"
-                                    class="u-text-bold u-text-small c-link js-loadmore">
+                                    class="u-text-bold u-text-small c-link js-loadmore u-no-js-hidden">
                                 Load more replies
                             </button>
                         }
@@ -411,7 +411,7 @@
                  data-endpoint-type="getThreadComments"
                  data-maxim-requests="@(Model.Replies.TotalPages)"
                  data-request-index="@Model.Replies.PageIndex"
-                 class="c-button js-loadmore u-hidden">
+                 class="c-button js-loadmore u-no-js-hidden">
                   Load more posts
               </a>
           }
