@@ -69,10 +69,10 @@
                     Order = 5,
                     ChildItems = new List<Link>()
                     {
-                        new Link { Name = "Group home", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional }) },
-                        new Link { Name = "Group forum", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupForumTab }) },
-                        new Link { Name = "Group files", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupFilesTab }) },                        
-                        new Link { Name = "Group members", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupMembersTab }) }
+                        new Link { Name = "Home", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional }) },
+                        new Link { Name = "Forum", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupForumTab }) },
+                        new Link { Name = "Files", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupFilesTab }) },                        
+                        new Link { Name = "Members", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupMembersTab }) }
                         
                     }
                 });

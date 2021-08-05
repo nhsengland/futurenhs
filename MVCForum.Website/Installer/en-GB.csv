@@ -85,10 +85,10 @@ Group.MostRecent,Most recent:
 Group.Members,Group Members
 Group.NoDiscussions,Currently no discussions in this Group
 Group.SubGroupsHeading,Sub Groups In
-GroupTabs.Home,Group home
-GroupTabs.Forum,Group forum
-GroupTabs.Files,Group files
-GroupTabs.Members,Group members
+GroupTabs.Home,Home
+GroupTabs.Forum,Forum
+GroupTabs.Files,Files
+GroupTabs.Members,Members
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
 Language.Change,Change Language
