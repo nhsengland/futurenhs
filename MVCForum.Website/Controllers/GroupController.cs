@@ -467,7 +467,7 @@ namespace MvcForum.Web.Controllers
                 pageHeader.Id = group.Group.Id;
 
                 ViewBag.PageHeader =  pageHeader;
-                if (tab == Constants.GroupMembersTab)
+                if (tab == Constants.GroupMembersTab || tab ==  Constants.GroupFilesTab)
                 {
                     ViewBag.HideSideBar = true;
                 }

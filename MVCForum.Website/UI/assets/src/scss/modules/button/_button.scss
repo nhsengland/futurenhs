@@ -16,6 +16,15 @@
     &--full-width {
         width: 100%;
     }
+
+    &--min-width {
+        width: 100%;
+
+        @include respond-to(tablet) {
+            width: auto;
+            min-width: 274px;
+        }
+    }
 }
 
 .c-button-outline {

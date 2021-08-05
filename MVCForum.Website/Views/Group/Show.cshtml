@@ -44,7 +44,7 @@
 			@Html.Action("CreateTopicButton", "Topic", new{groupId = Model.Group.Id})
 		}
 
-	} else if(Model.Tab == Constants.GroupMembersTab){
+	} else if(Model.Tab == Constants.GroupMembersTab || Model.Tab ==  Constants.GroupFilesTab){
         
 		@*@Html.Partial("_CommonSideNav")*@
 

@@ -172,6 +172,17 @@ const activate = (done) => {
 
 gulp.task(activate);
 
+// Activate
+const activateLight = (done) => {
+
+    gulp.series(stopSite, build, buildWebLight, startSite)();
+
+    done();
+
+};
+
+gulp.task(activateLight);
+
 // Deactivate
 const deactivate = (done) => {
 
@@ -596,6 +607,17 @@ const buildWeb = (done) => {
 };
 
 gulp.task(buildWeb);
+
+// Build task - runs all the web tasks
+const buildWebLight = (done) => { 
+
+    gulp.series(scss, js)();
+
+    done();
+
+};
+
+gulp.task(buildWebLight);
 
 // Watch task - runs all the web tasks then watches and re-runs tasks on subsequent changes - also hosts local prototyping server for prototyping
 const watchWeb = (done) => { 
