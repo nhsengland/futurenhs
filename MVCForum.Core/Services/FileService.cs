@@ -43,29 +43,28 @@
         /// </summary>
         /// <param name="file">The file to create.</param>
         /// <returns>The file id.</returns>
-        public Guid Create(CreateGroupFileViewModel file)
+        public Guid Create(FileWriteViewModel file)
         {
+            return _fileCommand.Create(file);
+        }
 
-            var fileCreate = new File
-            {
-                FileName = file.Name,
-                Title = file.Name,
-                Description = file.Description,
-                CreatedDate = DateTime.Now,
-                ParentFolder = file.FolderId,
-                CreatedBy = LoggedOnReadOnlyUser.Id
-            };
-
-            return _fileCommand.Create(fileCreate);
+        // <summary>
+        /// Method to create a new <see cref="FileReadViewModel"/> in the database.
+        /// </summary>
+        /// <param name="file">The file to create.</param>
+        /// <returns>The file id.</returns>
+        public Guid Update(FileWriteViewModel file)
+        {
+            return _fileCommand.Update(file);
         }
 
         /// <summary>
         /// Method set the soft delete flag on a file.
         /// </summary>
         /// <param name="id">The id of the file.</param>
-        public void Delete(Guid id)
+        public void Delete(FileWriteViewModel file)
         {
-            throw new NotImplementedException();
+            _fileCommand.Delete(file);
         }
 
         /// <summary>

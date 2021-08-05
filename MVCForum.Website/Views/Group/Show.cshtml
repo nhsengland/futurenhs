@@ -53,6 +53,12 @@
 	}
 }
 
+@section GroupHeader {
+	@{ 
+		Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Group.Slug });
+    }
+}
+
 @Html.Action("GetGroupBreadcrumb", "Group", new { Group = Model.Group })
 
 

@@ -6,6 +6,7 @@
     using System;
     using MvcForum.Core.Models.Entities;
     using Status = MvcForum.Core.Models.Enums.UploadStatus;
+    using MvcForum.Core.Models.FilesAndFolders;
 
     /// <summary>
     /// Implements the <see cref="IFileCommand"/> to process write operations of <see cref="File"/>.
@@ -31,10 +32,20 @@
         /// </summary>
         /// <param name="file">The <see cref="File"/> to add.</param>
         /// <returns>The file Id.</returns>
-        public Guid Create(File file)
+        public Guid Create(FileWriteViewModel file)
         {
-            file.UploadStatus = (int)Status.Uploading;
-            var createdFile = _context.Files.Add(file);
+            var fileCreate = new File
+            {
+                FileName = file.Name,
+                Title = file.Name,
+                Description = file.Description,
+                CreatedBy = (Guid)file.CreatedBy,
+                CreatedDate = DateTime.Now,
+                ParentFolder = file.FolderId,
+                UploadStatus = (int)Status.Uploading,
+            };
+
+            var createdFile = _context.Files.Add(fileCreate);
             _context.SaveChanges();
             return createdFile.Id;
         }
@@ -44,15 +55,22 @@
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public Guid Update(File file)
+        public Guid Update(FileWriteViewModel file)
         {
-            var dbFile = _context.Files.Find(file.Id);
-            dbFile.Title = file.Title;
+            var dbFile = _context.Files.Find(file.FileId);
+            dbFile.Title = file.Name;
             dbFile.Description = file.Description;
             dbFile.ModifiedBy = file.ModifiedBy;
             dbFile.ModifiedDate = DateTime.Now;
             _context.SaveChanges();
-            return file.Id;
+            return (Guid)file.FileId;
+        }
+
+        public void Delete(FileWriteViewModel file)
+        {
+            var dbFile = _context.Files.Find(file.FileId);
+            dbFile.UploadStatus = (int)Status.Recycled;
+            _context.SaveChanges();
         }
     }
 }

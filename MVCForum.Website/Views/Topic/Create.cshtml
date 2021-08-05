@@ -14,6 +14,9 @@
         counter = @(Model.PollAnswers != null ? Model.PollAnswers.Count : 0);
     </script>
 }
+@section GroupHeader{
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.GroupSlug }); }    
+}
 
 
         <div class="createtopicholder">

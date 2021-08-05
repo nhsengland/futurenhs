@@ -17,7 +17,8 @@ namespace MvcForum.Core.Repositories.Models
         /// <summary>
         /// Gets or sets the file id.
         /// </summary>
-        public Guid FileId { get; set; }
+        [Column(name: "Id")]
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the file title.

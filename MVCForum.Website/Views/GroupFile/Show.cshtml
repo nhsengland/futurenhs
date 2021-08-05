@@ -1,8 +1,12 @@
-﻿@model MvcForum.Core.Repositories.Models.File
+﻿@model MvcForum.Core.Models.FilesAndFolders.FileViewModel
 
 @{
     ViewBag.Title = "Show";
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+}
+
+@section GroupHeader {
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }
 }
 
 <h2>Show</h2>
@@ -12,83 +16,83 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.File.Title)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.File.Title)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.File.Description)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.File.Description)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.FileName)
+            @Html.DisplayNameFor(model => model.File.FileName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.FileName)
+            @Html.DisplayFor(model => model.File.FileName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.FileSize)
+            @Html.DisplayNameFor(model => model.File.FileSize)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.FileSize)
+            @Html.DisplayFor(model => model.File.FileSize)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.FileExtension)
+            @Html.DisplayNameFor(model => model.File.FileExtension)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.FileExtension)
+            @Html.DisplayFor(model => model.File.FileExtension)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.FileUrl)
+            @Html.DisplayNameFor(model => model.File.FileUrl)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.FileUrl)
+            @Html.DisplayFor(model => model.File.FileUrl)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.CreatedBy)
+            @Html.DisplayNameFor(model => model.File.CreatedBy)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.CreatedBy)
+            @Html.DisplayFor(model => model.File.CreatedBy)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ModifiedBy)
+            @Html.DisplayNameFor(model => model.File.ModifiedBy)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ModifiedBy)
+            @Html.DisplayFor(model => model.File.ModifiedBy)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
+            @Html.DisplayNameFor(model => model.File.CreatedDate)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
+            @Html.DisplayFor(model => model.File.CreatedDate)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
+            @Html.DisplayNameFor(model => model.File.ModifiedDate)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ModifiedDate)
+            @Html.DisplayFor(model => model.File.ModifiedDate)
         </dd>
 
     </dl>

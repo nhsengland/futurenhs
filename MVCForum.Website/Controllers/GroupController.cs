@@ -458,16 +458,7 @@ namespace MvcForum.Web.Controllers
                     viewModel.GroupUserStatus = GetUserStatusForGroup(user);
                 }
 
-                var pageHeader = new PageViewModel();
-                pageHeader.Name = group.Group.Name;
-                pageHeader.Description = group.Group.Description;
-                pageHeader.Colour = group.Group.Colour;
-                pageHeader.HeaderTabs = GetGroupTabsModel(slug);
-                pageHeader.Image = group.Group.Image;
-                pageHeader.Id = group.Group.Id;
-
-                ViewBag.PageHeader =  pageHeader;
-                if (tab == Constants.GroupMembersTab || tab ==  Constants.GroupFilesTab)
+                if (tab == Constants.GroupMembersTab)
                 {
                     ViewBag.HideSideBar = true;
                 }

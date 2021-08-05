@@ -3,6 +3,7 @@
     using MvcForum.Core.Constants;
     using MvcForum.Core.Constants.UI;
     using MvcForum.Core.Interfaces.Services;
+    using MvcForum.Core.Models.Entities;
     using MvcForum.Core.Models.General;
     using MvcForum.Web.ViewModels.Shared;
     using System.Collections.Generic;
@@ -19,13 +20,20 @@
         /// </summary>
         private IMembershipService _membershipService { get; set; }
 
+        private IGroupService _groupService { get; set; }
+
+        private MembershipUser LoggedOnReadOnlyUser;
+
         /// <summary>
         /// Constructs a new instance of the layout controller.
         /// </summary>
         /// <param name="membershipService"></param>
-        public LayoutController(IMembershipService membershipService)
+        public LayoutController(IMembershipService membershipService, IGroupService groupService)
         {
             _membershipService = membershipService;
+            _groupService = groupService;
+            LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
         }
 
         /// <summary>
@@ -90,6 +98,44 @@
 
 
             return PartialView("_SideBar", model);
+        }
+
+        public PartialViewResult GroupHeader(string slug)
+        {
+            var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
+
+            var viewModel = new GroupHeaderViewModel()
+            {
+                Name = group.Group.Name,
+                Description = group.Group.Description,
+                Colour = group.Group.Colour,
+                HeaderTabs = GetGroupTabsModel(slug),
+                Image = group.Group.Image,
+                Id = group.Group.Id
+            };
+
+            return PartialView("_GroupHeader", viewModel);
+        }
+
+        // TODO Duplicated code from groups, we need to refactor all of this into one place.
+        public TabViewModel GetGroupTabsModel(string slug)
+        {
+            var homeTab = new Tab { Name = "GroupTabs.Home", Order = 1, Icon = Icons.Home };
+            homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}";
+
+            var forumTab = new Tab { Name = "GroupTabs.Forum", Order = 2, Icon = Icons.Forum };
+            forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
+
+            var filesTab = new Tab { Name = "GroupTabs.Files", Order = 3, Icon = Icons.File };
+            filesTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupFilesTab })}";
+
+            var membersTab = new Tab { Name = "GroupTabs.Members", Order = 4, Icon = Icons.Members };
+            membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
+
+
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
+
+            return tabsViewModel;
         }
     }
 }

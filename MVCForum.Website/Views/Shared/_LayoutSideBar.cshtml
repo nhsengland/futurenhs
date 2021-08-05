@@ -4,7 +4,7 @@
 
 @{
 	Layout = "_Layout.cshtml";
-	PageViewModel pageHeader = ViewBag.PageHeader;
+	//PageViewModel pageHeader = ViewBag.PageHeader;
 	var hideSideBar = ViewBag.HideSideBar == null ? false : ViewBag.HideSideBar;
 
 
@@ -46,32 +46,9 @@
 				</div>
 
 				<div class="c-grid-block_item l-col-fb-12 u-width-zero">
-					@if (pageHeader != null)
-					{
+					
 						@* START PAGE HEADER BLOCK *@
-						<div class="c-page-header u-bg-theme-8 u-padded-left u-padded-top-large">
-							<div class="l-col-12">
-								<div class="u-flex">
-									@if (!pageHeader.Image.IsNullEmpty())
-									{
-										<div class="c-page-header_col-1">
-											<div class="c-page-header_image-wrapper">
-												<img role="presentation" src="@AppHelpers.GroupImage(pageHeader.Image, pageHeader.Id, 159)" alt="" class="c-page-header_image">
-											</div>
-										</div>
-									}
-									<div class="c-page-header_col-2">
-										<div class="c-page-header_heading">
-											<h1 class="u-has-subheading u-text-theme-1">@pageHeader.Name</h1>
-											<p class="u-text-lead">@Html.Raw(@pageHeader.Description)</p>
-										</div>
-										@Html.Partial("_TabsMenu", @pageHeader.HeaderTabs)
-
-									</div>
-								</div>
-							</div>
-						</div>
-					}
+						@RenderSection("GroupHeader", false)
 					@*END PAGE HEADER BLOCK *@
 
 					<div class="l-col-12 u-padded-left u-padded-top-large u-padded-bottom-large">

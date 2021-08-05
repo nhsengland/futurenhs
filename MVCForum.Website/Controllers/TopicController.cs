@@ -270,27 +270,6 @@
             return allowedAccessGroups;
         }
 
-        // TODO Duplicated code from groups, we need to refactor all of this into one place.
-        public TabViewModel GetGroupTabsModel(string slug)
-        {
-            var homeTab = new Tab { Name = "GroupTabs.Home", Order = 1, Icon = Icons.Home };
-            homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}";
-
-            var forumTab = new Tab { Name = "GroupTabs.Forum", Order = 2, Icon = Icons.Forum };
-            forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
-
-            var filesTab = new Tab { Name = "GroupTabs.Files", Order = 3, Icon = Icons.File };
-            filesTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupFilesTab })}";
-
-            var membersTab = new Tab { Name = "GroupTabs.Members", Order = 4, Icon = Icons.Members };
-            membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
-
-
-            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
-
-            return tabsViewModel;
-        }
-
         /// <summary>
         ///     Create topic view
         /// </summary>
@@ -303,15 +282,6 @@
             var allowedAccessGroups = AllowedCreateGroups(loggedOnUsersRole);
 
             var group = _groupService.Get(groupId);
-            var pageHeader = new PageViewModel();
-            pageHeader.Name = group.Name;
-            pageHeader.Description = group.Description;
-            pageHeader.Colour = group.Colour;
-            pageHeader.HeaderTabs = GetGroupTabsModel(group.Slug);
-            pageHeader.Image = group.Image;
-            pageHeader.Id = group.Id;
-
-            ViewBag.PageHeader = pageHeader;
 
             if (allowedAccessGroups.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
             {
@@ -342,18 +312,6 @@
 
             // First check this user is allowed to create topics in this Group
             var permissions = RoleService.GetPermissions(group, loggedOnUsersRole);
-
-
-
-            var pageHeader = new PageViewModel();
-            pageHeader.Name = group.Name;
-            pageHeader.Description = group.Description;
-            pageHeader.Colour = group.Colour;
-            pageHeader.HeaderTabs = GetGroupTabsModel(group.Slug);
-            pageHeader.Image = group.Image;
-            pageHeader.Id = group.Id;
-
-            ViewBag.PageHeader = pageHeader;
 
             // Now we have the Group and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedGroups

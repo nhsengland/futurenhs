@@ -5,7 +5,7 @@ using System.Web;
 
 namespace MvcForum.Web.ViewModels.Shared
 {
-    public class PageViewModel
+    public class GroupHeaderViewModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

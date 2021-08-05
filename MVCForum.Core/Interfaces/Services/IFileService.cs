@@ -11,17 +11,24 @@
     public interface IFileService
     {
         /// <summary>
-        /// Method Create a new <see cref="FileReadViewModel"/> in the db.
+        /// Method Create a new File in the db.
         /// </summary>
-        /// <param name="file">The <see cref="CreateGroupFileViewModel"/> to create.</param>
+        /// <param name="file">The File to create.</param>
         /// <returns>The id of the file.</returns>
-        Guid Create(CreateGroupFileViewModel file);
+        Guid Create(FileWriteViewModel file);
 
         /// <summary>
-        /// Method to get a <see cref="FileReadViewModel"/> by id.
+        /// Method to update an existing File in the db.
         /// </summary>
-        /// <param name="id">The id of the <see cref="FileReadViewModel"/>.</param>
-        /// <returns>The requested <see cref="FileReadViewModel"/>.</returns>
+        /// <param name="file">The updated file.</param>
+        /// <returns>The id of the file.</returns>
+        Guid Update(FileWriteViewModel file);
+
+        /// <summary>
+        /// Method to get a File by id.
+        /// </summary>
+        /// <param name="id">The id of the File.</param>
+        /// <returns>The requested File.</returns>
         FileReadViewModel GetFile(Guid id);
 
         /// <summary>
@@ -34,7 +41,7 @@
         /// <summary>
         /// Method to perform soft delete of a <see cref="File"/>.
         /// </summary>
-        /// <param name="id">The id of the <see cref="FileReadViewModel"/>.</param>
-        void Delete(Guid id);
+        /// <param name="id">The id of the File.</param>
+        void Delete(FileWriteViewModel id);
     }
 }

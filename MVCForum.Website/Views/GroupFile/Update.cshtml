@@ -1,23 +1,22 @@
 ﻿@model MvcForum.Core.Models.FilesAndFolders.FileWriteViewModel
 
 @{
-    ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
 }
 
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }    
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }
 }
 
-<h2>Create</h2>
+<h2>Update</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
 <div class="form-horizontal">
-    @Html.HiddenFor(model => model.FolderId)
-    @Html.HiddenFor(model => model.Slug)
+    <h4>FileWriteViewModel</h4>
+    <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="form-group">
         @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -34,9 +33,15 @@
             @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    @Html.HiddenFor(model => model.FolderId)
+    @Html.HiddenFor(model => model.FileId)
+
+    @Html.HiddenFor(model => model.Slug)
+
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
+            <input type="submit" value="Save" class="btn btn-default" />
         </div>
     </div>
 </div>

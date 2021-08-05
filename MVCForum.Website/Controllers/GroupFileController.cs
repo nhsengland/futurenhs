@@ -5,6 +5,9 @@
     using System;
     using System.Web.Mvc;
     using MvcForum.Core.Constants;
+    using MvcForum.Web.ViewModels.Shared;
+    using System.Collections.Generic;
+    using MvcForum.Core.Constants.UI;
 
     /// <summary>
     /// Defines methods and routes for the GroupFIles.
@@ -16,13 +19,16 @@
         /// </summary>
         private IFileService _fileService { get; set; }
 
+        private IMembershipService _membershipService { get; set; }
+
         /// <summary>
         /// Constructs a new instance of the <see cref="GroupFileController"/>.
         /// </summary>
         /// <param name="fileRepository"></param>
-        public GroupFileController(IFileService fileService)
+        public GroupFileController(IFileService fileService, IMembershipService membershipService)
         {
             _fileService = fileService;
+            _membershipService = membershipService;
         }
 
         /// <summary>
@@ -30,9 +36,13 @@
         /// </summary>
         /// <param name="id">Id of the file to show.</param>
         /// <returns>The show view.</returns>
-        public ActionResult Show(Guid id)
+        public ActionResult Show(Guid id, string slug)
         {
-            var file = _fileService.GetFile(id);
+            FileViewModel file = new FileViewModel
+            {
+                File = _fileService.GetFile(id),
+                Slug = slug
+            };
 
             return View(file);
         }
@@ -42,9 +52,9 @@
         /// </summary>
         /// <param name="folderId"></param>
         /// <returns></returns>
-        public ActionResult Create(Guid folderId, string slug)
+        public ActionResult Create(Guid folderId, Guid groupId, string slug)
         {
-            var viewmodel = new CreateGroupFileViewModel
+            var viewmodel = new FileWriteViewModel
             {
                 FolderId = folderId,
                 Slug = slug
@@ -59,16 +69,73 @@
         /// <param name="file"></param>
         /// <returns>The detail view for the new file.</returns>
         [HttpPost]
-        public ActionResult Create(CreateGroupFileViewModel file)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(FileWriteViewModel file)
         {
             if (ModelState.IsValid)
             {
+                file.CreatedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
                 Guid id = _fileService.Create(file);
 
                 return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
             }
 
             return View();
+        }
+
+        public ActionResult Update(Guid id, string slug)
+        {
+            var file = _fileService.GetFile(id);
+
+            var viewModel = new FileWriteViewModel
+            {
+                FileId = file.Id,
+                Name = file.Title,
+                Description = file.Description,
+                FolderId = file.ParentFolder,
+                Slug = slug
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update(FileWriteViewModel file)
+        {
+            if (ModelState.IsValid)
+            {
+                file.ModifiedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
+                Guid id = _fileService.Update(file);
+
+                return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
+            }
+
+            return View();
+        }
+
+        public ActionResult Delete(Guid id, string slug)
+        {
+            var file = _fileService.GetFile(id);
+
+            var viewModel = new FileWriteViewModel
+            {
+                FileId = file.Id,
+                Name = file.Title,
+                Description = file.Description,
+                FolderId = file.ParentFolder,
+                Slug = slug
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(FileWriteViewModel file)
+        {
+            _fileService.Delete(file);
+            return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
         }
     }
 }

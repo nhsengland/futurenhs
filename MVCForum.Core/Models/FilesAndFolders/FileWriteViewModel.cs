@@ -6,8 +6,10 @@ using System.Web;
 
 namespace MvcForum.Core.Models.FilesAndFolders
 {
-    public class CreateGroupFileViewModel
+    public class FileWriteViewModel
     {
+        public Guid FileId { get; set; }
+
         [Required]
         public string Name { get; set; }
 
@@ -17,5 +19,9 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public Guid FolderId { get; set; }
 
         public string Slug { get; set; }
+
+        public Guid? CreatedBy { get; set; }
+
+        public Guid? ModifiedBy { get; set; }
     }
 }

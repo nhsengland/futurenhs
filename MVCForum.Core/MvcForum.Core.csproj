@@ -127,7 +127,8 @@
     <Compile Include="Models\Entities\GroupUser.cs" />
     <Compile Include="Models\Enums\GroupUserStatus.cs" />
     <Compile Include="Models\Enums\UploadStatus.cs" />
-    <Compile Include="Models\FilesAndFolders\CreateGroupFileViewModel.cs" />
+    <Compile Include="Models\FilesAndFolders\FileWriteViewModel.cs" />
+    <Compile Include="Models\FilesAndFolders\FileViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderWriteViewModel.cs" />
     <Compile Include="Models\GroupsSummary.cs" />

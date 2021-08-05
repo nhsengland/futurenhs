@@ -125,7 +125,7 @@
     <Compile Include="ViewModels\Shared\Link.cs" />
     <Compile Include="ViewModels\Shared\LinkGroup.cs" />
     <Compile Include="ViewModels\Shared\NavItemBase.cs" />
-    <Compile Include="ViewModels\Shared\PageViewModel.cs" />
+    <Compile Include="ViewModels\Shared\GroupHeaderViewModel.cs" />
     <Compile Include="ViewModels\Shared\Tab.cs" />
     <Compile Include="ViewModels\Shared\TabViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupUserViewModel.cs" />
@@ -1182,10 +1182,12 @@
     <Content Include="Views\Group\_Files.cshtml" />
     <Content Include="Views\GroupFile\Create.cshtml" />
     <Content Include="Views\GroupFile\Show.cshtml" />
-    <Content Include="Views\Folder\_Folder.cshtml" />
     <Content Include="Views\Folder\_CreateFolder.cshtml" />
     <Content Include="Views\Folder\_UpdateFolder.cshtml" />
     <Content Include="Views\Folder\_DeleteFolder.cshtml" />
+    <Content Include="Views\Shared\_GroupHeader.cshtml" />
+    <Content Include="Views\GroupFile\Update.cshtml" />
+    <Content Include="Views\GroupFile\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

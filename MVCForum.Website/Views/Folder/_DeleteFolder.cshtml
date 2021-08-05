@@ -1,6 +1,10 @@
 ﻿@model MvcForum.Core.Models.FilesAndFolders.FolderWriteViewModel
 @{
-	Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+}
+
+@section GroupHeader {
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }
 }
 
 <div>

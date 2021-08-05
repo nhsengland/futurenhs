@@ -1,11 +1,15 @@
 ﻿@model MvcForum.Core.Models.FilesAndFolders.FolderWriteViewModel
-@{
-	Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+@{ 
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
 }
-@using (Html.BeginForm()) 
+@section GroupHeader {
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }
+}
+
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Create a folder</h4>
         <hr />
