@@ -31,12 +31,20 @@ namespace MvcForum.Core.Repositories.Repository
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
             PaginatedList<FolderReadViewModel> folders;
             const string query =
-                @"SELECT folders.Id AS FolderId, folders.Name AS FolderName, folders.FileCount 
-                FROM Folder folders
-                JOIN [Group] groups ON groups.Id = folders.ParentGroup
-                WHERE groups.Slug = @GroupSlug 
-                AND folders.ParentFolder IS NULL AND folders.IsDeleted = 0
-                ORDER BY folders.Name
+                @"SELECT    folders.Id AS FolderId, 
+                            folders.Name AS FolderName, 
+                            (
+				                SELECT	COUNT(*)
+    				            FROM	[File]
+    				            WHERE	ParentFolder = folders.Id
+    			            ) AS FileCount
+                FROM        Folder folders
+                JOIN        [Group] groups 
+                    ON      groups.Id = folders.ParentGroup
+                WHERE       groups.Slug = @GroupSlug 
+                AND         folders.ParentFolder IS NULL 
+                AND         folders.IsDeleted = 0
+                ORDER BY    folders.Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @PageSize ROWS ONLY;
 
@@ -99,11 +107,17 @@ namespace MvcForum.Core.Repositories.Repository
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
             PaginatedList<FolderReadViewModel> folders;
             const string query =
-                @"SELECT Id AS FolderId, Name AS FolderName, FileCount 
-                FROM Folder
-                WHERE ParentFolder = @ParentFolder 
-                AND IsDeleted = 0
-                ORDER BY Name
+                @"SELECT    Id AS FolderId, 
+                            Name AS FolderName, 
+                            (
+				                SELECT	COUNT(*)
+    				            FROM	[File]
+    				            WHERE	ParentFolder = Id
+    			            ) AS FileCount
+                FROM        Folder
+                WHERE       ParentFolder = @ParentFolder 
+                AND         IsDeleted = 0
+                ORDER BY    Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @PageSize ROWS ONLY;
 

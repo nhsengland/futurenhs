@@ -1,9 +1,12 @@
 ﻿namespace MvcForum.Core.Interfaces.Services
 {
     using MvcForum.Core.Models.FilesAndFolders;
+    using MvcForum.Core.Models.General;
     using MvcForum.Core.Repositories.Models;
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System.Web;
 
     /// <summary>
     /// Defines methods for interacting with files.
@@ -43,5 +46,19 @@
         /// </summary>
         /// <param name="id">The id of the File.</param>
         void Delete(FileWriteViewModel id);
+
+        /// Upload a file to blob storage.
+        /// </summary>
+        /// <param name="file">Posted file to upload.</param>
+        /// <param name="containerName">Container to upload to.</param>
+        /// <returns></returns>
+        Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file, string containerName);
+
+        /// <summary>
+        /// Perform simple file validation. Use this before saving to DB and performing file upload.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        Task<UploadBlobResult> SimpleFileValidation(HttpPostedFileBase file);
     }
 }

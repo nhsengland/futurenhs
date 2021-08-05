@@ -34,9 +34,11 @@
         <hr>
         <p>@Model.Folder.Description</p>
 
-        @Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug }, new { @class = "c-button c-button-outline c-button--min-width" })
-    
-    } else {
+        @Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug, groupId = Model.GroupId }, new { @class = "c-button c-button-outline c-button--min-width" })
+
+    }
+    else
+    {
         <h2>
             Files
         </h2>
@@ -46,14 +48,14 @@
     @if (Model.IsAdmin)
     {
         <span>&nbsp;</span>
-        @Html.ActionLink("Add folder", "CreateFolder", new { slug = Model.Slug, parentId = Model.Folder?.FolderId, groupId = Model.GroupId } , new { @class = "c-button c-button--outline" });
+        @Html.ActionLink("Add folder", "CreateFolder", new { slug = Model.Slug, parentId = Model.Folder?.FolderId, groupId = Model.GroupId }, new { @class = "c-button c-button--outline" });
         <span>&nbsp;</span>
 
         if (Model.Folder != null)
         {
-            @Html.ActionLink("Edit folder", "UpdateFolder", new { slug = Model.Slug, folderId = Model.Folder?.FolderId }, new {@class = "c-button c-button--outline"});
+            @Html.ActionLink("Edit folder", "UpdateFolder", new { slug = Model.Slug, folderId = Model.Folder?.FolderId }, new { @class = "c-button c-button--outline" });
             <span>&nbsp;</span>
-            @Html.ActionLink("Delete folder", "DeleteFolder", new { slug = Model.Slug, folderId = Model.Folder?.FolderId }, new {@class = "c-button c-button--outline"});
+            @Html.ActionLink("Delete folder", "DeleteFolder", new { slug = Model.Slug, folderId = Model.Folder?.FolderId }, new { @class = "c-button c-button--outline" });
         }
     }
 
@@ -89,16 +91,55 @@
 
                                     </td>
                                     <td role="cell" class="c-table_cell">
-
                                         <span class="c-table_heading">Number of files</span>
                                         <span>@folder.FileCount</span>
-
                                     </td>
-
                                 </tr>
                             }
                         </tbody>
 
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.Files.Any())
+    {
+        <div class="c-grid-block">
+            <div class="c-grid-block_item l-col-12">
+                <div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
+                    <table role="table" class="c-table c-table--files">
+                        <caption class="c-table_caption u-visually-hidden">
+                            Group Files
+                        </caption>
+                        <thead role="rowgroup" class="c-table_head">
+                            <tr role="row">
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Name
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Uploaded by
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Uploaded date
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="c-table_body">
+                            @foreach (var file in Model.Files)
+                            {
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
+                                        @file.Title
+                                    </a>
+                                </td>
+                                <td>@Model.GetFullNameForUserId(file.CreatedBy)</td>
+                                <td>@file.CreatedDate</td>
+                            </tr>
+                            }
+                        </tbody>
                     </table>
                 </div>
             </div>

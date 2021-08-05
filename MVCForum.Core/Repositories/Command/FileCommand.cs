@@ -62,6 +62,7 @@
             dbFile.Description = file.Description;
             dbFile.ModifiedBy = file.ModifiedBy;
             dbFile.ModifiedDate = DateTime.Now;
+            dbFile.UploadStatus = file.UploadStatus;
             _context.SaveChanges();
             return (Guid)file.FileId;
         }

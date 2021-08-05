@@ -60,7 +60,7 @@ namespace MvcForum.Core.Repositories.Repository
             try
             {
                 var conn = _connectionFactory.CreateReadOnlyConnection();
-                var query = @"SELECT * FROM [File] WHERE FolderId = @folderId";
+                var query = @"SELECT * FROM [File] WHERE ParentFolder = @folderId";
                 return conn.Query<FileReadViewModel>(query, new { folderId = folderId }).ToList();
             }
             catch (Exception) { }

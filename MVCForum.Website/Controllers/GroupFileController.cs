@@ -8,27 +8,49 @@
     using MvcForum.Web.ViewModels.Shared;
     using System.Collections.Generic;
     using MvcForum.Core.Constants.UI;
+    using System.Threading.Tasks;
+    using System.Linq;
+    using Status = MvcForum.Core.Models.Enums.UploadStatus;
+    using System.Configuration;
 
     /// <summary>
     /// Defines methods and routes for the GroupFIles.
     /// </summary>
-    public class GroupFileController : Controller
+    public class GroupFileController : AsyncController
     {
         /// <summary>
         /// Instance of the <see cref="IFileService"/>.
         /// </summary>
         private IFileService _fileService { get; set; }
 
+        /// <summary>
+        /// Instance of the <see cref="IMembershipService"/>.
+        /// </summary>
         private IMembershipService _membershipService { get; set; }
+
+        /// <summary>
+        /// Instance of the <see cref="ILocalizationService"/>.
+        /// </summary>
+        private readonly ILocalizationService _localizationService;
+
+        /// <summary>
+        /// Instance of the <see cref="IFolderService"/>.
+        /// </summary>
+        private readonly IFolderService _folderService;
 
         /// <summary>
         /// Constructs a new instance of the <see cref="GroupFileController"/>.
         /// </summary>
-        /// <param name="fileRepository"></param>
-        public GroupFileController(IFileService fileService, IMembershipService membershipService)
+        /// <param name="fileService"></param>
+        /// <param name="membershipService"></param>
+        /// <param name="folderService"></param>
+        /// <param name="localizationService"></param>
+        public GroupFileController(IFileService fileService, IMembershipService membershipService, IFolderService folderService, ILocalizationService localizationService)
         {
             _fileService = fileService;
             _membershipService = membershipService;
+            _folderService = folderService;
+            _localizationService = localizationService;
         }
 
         /// <summary>
@@ -70,17 +92,78 @@
         /// <returns>The detail view for the new file.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(FileWriteViewModel file)
+        public async Task<ActionResult> Create(FileWriteViewModel file)
         {
             if (ModelState.IsValid)
             {
-                file.CreatedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-                Guid id = _fileService.Create(file);
+                try
+                {
+                    // Check that the folder Id passed in is valid (folder exists).
+                    if (!FolderIsValid(file.FolderId))
+                    {
+                        ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("File.Error.InvalidFolder"));
+                    }
+                    else
+                    {
+                        // Perform simple validation prior to actual upload attempt
+                        var simpleValidation = await _fileService.SimpleFileValidation(file.PostedFile);
 
-                return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
+                        // Simple validation passed, attempt upload and save to DB
+                        if (!simpleValidation.ValidationErrors.Any())
+                        {
+                            file.CreatedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
+                            Guid id = _fileService.Create(file);
+
+                            // Only continue if file meta data added to DB
+                            if (id != null && id != Guid.Empty)
+                            {
+                                file.FileId = id;
+
+                                // Validate and attempt to upload the file to blob storage
+                                var fileUploadResult = await _fileService.UploadFileAsync(file.PostedFile, ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"]);
+
+                                // Update the status of the file depending on upload result.
+                                file.UploadStatus = fileUploadResult.UploadSuccessful ? (int)Status.Uploaded : (int)Status.Failed;
+                                file.FileUrl = fileUploadResult.UploadSuccessful ? fileUploadResult.UploadedFileName : null;
+                                _fileService.Update(file);
+
+                                if (fileUploadResult.UploadSuccessful)
+                                {
+                                    // Success, show the file
+                                    return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
+                                }
+                                else
+                                {
+                                    // Not successful surface the errors
+                                    foreach(var error in fileUploadResult.ValidationErrors)
+                                    {
+                                        ModelState.AddModelError(string.Empty, error);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Error saving file data surface the error.
+                                ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("File.Error.FileSaveError"));
+                            }
+                        }
+                        else
+                        {
+                            // Not successful surface the errors
+                            foreach (var error in simpleValidation.ValidationErrors)
+                            {
+                                ModelState.AddModelError(string.Empty, error);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // TODO - deal with any unhandled exceptions.
+                }
             }
 
-            return View();
+            return View(file);
         }
 
         public ActionResult Update(Guid id, string slug)
@@ -136,6 +219,16 @@
         {
             _fileService.Delete(file);
             return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
+        }
+
+        /// <summary>
+        /// Verify that the Folder Id is for a valid folder.
+        /// </summary>
+        /// <param name="folderId"></param>
+        /// <returns></returns>
+        private bool FolderIsValid(Guid folderId)
+        {
+            return _folderService.GetFolder(string.Empty, folderId).Folder != null;
         }
     }
 }

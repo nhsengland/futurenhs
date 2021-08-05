@@ -16,14 +16,16 @@ namespace MvcForum.Core.Services
     public class FolderService : IFolderService
     {
         private readonly IFolderRepository _folderRepository;
+        private readonly IFileRepository _fileRepository;
         private readonly IFolderCommand _folderCommand;
         private readonly IFeatureManager _featureManager;
 
-        public FolderService(IFolderRepository folderRepository, IFeatureManager featureManager, IFolderCommand folderCommand)
+        public FolderService(IFolderRepository folderRepository, IFeatureManager featureManager, IFolderCommand folderCommand, IFileRepository fileRepository)
         {
             _folderRepository = folderRepository;
             _featureManager = featureManager;
             _folderCommand = folderCommand;
+            _fileRepository = fileRepository;
         }
         
         public FolderViewModel GetFolder(string groupSlug, Guid? folderId)
@@ -36,7 +38,8 @@ namespace MvcForum.Core.Services
                 {
                     Slug = groupSlug,
                     Folder = null,
-                    ChildFolders = _folderRepository.GetRootFoldersForGroup(groupSlug)
+                    ChildFolders = _folderRepository.GetRootFoldersForGroup(groupSlug),
+                    Files = new List<FileReadViewModel>()
                 };
             }
             else
@@ -45,7 +48,8 @@ namespace MvcForum.Core.Services
                 {
                     Slug = groupSlug,
                     Folder = _folderRepository.GetFolder(folderId.Value),
-                    ChildFolders = _folderRepository.GetChildFoldersForFolder(folderId.Value)
+                    ChildFolders = _folderRepository.GetChildFoldersForFolder(folderId.Value),
+                    Files = _fileRepository.GetFiles(folderId.Value)
                 };
             }
 

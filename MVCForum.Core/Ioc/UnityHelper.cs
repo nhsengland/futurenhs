@@ -96,6 +96,8 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IFeatureManager, FeatureManager>();
             Container.BindInRequestScope<IFolderCommand, FolderCommand>();
             Container.BindInRequestScope<IFolderService, FolderService>();
+            Container.BindInRequestScope<IFileService, FileService>();
+            Container.BindInRequestScope<IFileUploadValidationService, FileUploadValidationService>();
 
             // Repositories
             Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString, ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString, Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"])));
@@ -104,7 +106,6 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IFolderRepository, FolderRepository>();
             Container.BindInRequestScope<IFileRepository, FileRepository>();
             Container.BindInRequestScope<IFileCommand, FileCommand>();
-            Container.BindInRequestScope<IFileService, FileService>();
         }
     }
 

@@ -23,5 +23,12 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public Guid? CreatedBy { get; set; }
 
         public Guid? ModifiedBy { get; set; }
+
+        [Required]
+        public HttpPostedFileBase PostedFile { get; set; }
+
+        public int UploadStatus { get; set; }
+
+        public string FileUrl { get; set; }
     }
 }

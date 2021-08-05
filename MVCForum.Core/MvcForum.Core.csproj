@@ -64,6 +64,7 @@
     <Compile Include="Interfaces\Providers\IConfigurationProvider.cs" />
     <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\IFileService.cs" />
+    <Compile Include="Interfaces\Services\IFileUploadValidationService.cs" />
     <Compile Include="Interfaces\Services\IFolderService.cs" />
     <Compile Include="Interfaces\Services\INotificationService.cs" />
     <Compile Include="Interfaces\Services\ISpamService.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Models\FilesAndFolders\FileViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderWriteViewModel.cs" />
+    <Compile Include="Models\General\UploadBlobResult.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
     <Compile Include="Models\Entities\BannedEmail.cs" />
     <Compile Include="Models\Entities\Group.cs" />
@@ -271,6 +273,7 @@
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\FileUploadValidationService.cs" />
     <Compile Include="Services\FolderService.cs" />
     <Compile Include="Services\NoCacheService.cs" />
     <Compile Include="Services\CacheService.cs" />
@@ -460,6 +463,9 @@
     </PackageReference>
     <PackageReference Include="Unity.AspNet.WebApi">
       <Version>5.0.11</Version>
+    </PackageReference>
+    <PackageReference Include="WindowsAzure.Storage">
+      <Version>9.3.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
