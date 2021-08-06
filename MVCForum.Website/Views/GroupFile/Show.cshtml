@@ -1,7 +1,9 @@
 ﻿@model MvcForum.Core.Models.FilesAndFolders.FileViewModel
+@using MvcForum.Web.ViewModels.Shared
+
 
 @{
-    ViewBag.Title = "Show";
+    ViewBag.HideSideBar = true;
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
 }
 
@@ -9,91 +11,63 @@
     @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }
 }
 
-<h2>Show</h2>
+<h2>@Html.DisplayFor(model => model.File.Title)</h2>
+<hr>
 
-<div>
-    <h4>File</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.File.Title)
-        </dt>
+<p>@Html.DisplayFor(model => model.File.Description)</p>
 
-        <dd>
-            @Html.DisplayFor(model => model.File.Title)
-        </dd>
+<p>
+    <span class="">@Html.DisplayNameFor(model => model.File.CreatedBy)</span> 
+    <a href="#" class="">@Html.DisplayFor(model => model.File.CreatedBy)</a>
+</p>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.File.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.Description)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.File.FileName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.FileName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.File.FileSize)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.FileSize)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.File.FileExtension)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.FileExtension)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.File.FileUrl)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.FileUrl)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.File.CreatedBy)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.CreatedBy)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.File.ModifiedBy)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.ModifiedBy)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.File.CreatedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.CreatedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.File.ModifiedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.File.ModifiedDate)
-        </dd>
-
-    </dl>
+<div class="c-grid-block">
+    <div class="c-grid-block_item l-col-12">
+        <div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
+            <table role="table" class="c-table c-table--files">
+                <caption class="c-table_caption u-visually-hidden">
+                    File details
+                </caption>
+                <thead role="rowgroup" class="c-table_head">
+                    <tr role="row">
+                        <th role="columnheader" class="c-table_th" scope="col">
+                            @Html.DisplayNameFor(model => model.File.FileName)
+                        </th>
+                        <th role="columnheader" class="c-table_th" scope="col">
+                            @Html.DisplayNameFor(model => model.File.ModifiedBy)
+                        </th>
+                        <th role="columnheader" class="c-table_th" scope="col">
+                            @Html.DisplayNameFor(model => model.File.ModifiedDate)
+                        </th>
+                        <th role="columnheader" class="c-table_th" scope="col">
+                            Download 
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="c-table_body">
+                    <tr role="row" class="c-table_row">
+                        <td role="cell" class="c-table_cell">
+                            <span class="c-table_heading">N@Html.DisplayNameFor(model => model.File.FileName)ame </span>
+                            <a href="#" class="">@Html.DisplayFor(model => model.File.FileName)</a>
+                        </td>
+                        <td role="cell" class="c-table_cell">
+                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedBy)</span>
+                            <a href="#" class="">@Html.DisplayFor(model => model.File.ModifiedBy)</a>
+                        </td>
+                        <td role="cell" class="c-table_cell">
+                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedDate)</span>
+                            <span>@Html.DisplayFor(model => model.File.ModifiedDate)</span>
+                        </td>
+                        <td role="cell" class="c-table_cell">
+                            <span class="c-table_heading">Download</span>
+                            <a href="#" class="">
+                                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));}
+                                <span>Download</span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

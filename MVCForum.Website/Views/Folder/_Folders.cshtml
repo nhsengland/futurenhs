@@ -129,15 +129,22 @@
                         <tbody class="c-table_body">
                             @foreach (var file in Model.Files)
                             {
-                            <tr>
-                                <td>
-                                    <a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
-                                        @file.Title
-                                    </a>
-                                </td>
-                                <td>@Model.GetFullNameForUserId(file.CreatedBy)</td>
-                                <td>@file.CreatedDate</td>
-                            </tr>
+                                <tr role="row" class="c-table_row">
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Name </span>
+                                        <a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
+                                            @file.Title
+                                        </a>
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Uploaded by </span>
+                                        @Model.GetFullNameForUserId(file.CreatedBy)
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Uploaded date </span>
+                                        @file.CreatedDate
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>
