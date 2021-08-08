@@ -26,7 +26,7 @@ namespace MvcForum.Core.Repositories.Repository
             _connectionFactory = connectionFactory;
         }
 
-        public PaginatedList<FolderReadViewModel> GetRootFoldersForGroup(string groupSlug, int page = 1, int pageSize = 10)
+        public PaginatedList<FolderReadViewModel> GetRootFoldersForGroup(string groupSlug, int page = 1, int pageSize = 999)
         {
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
             PaginatedList<FolderReadViewModel> folders;
@@ -100,7 +100,7 @@ namespace MvcForum.Core.Repositories.Repository
             }
         }
 
-        public PaginatedList<FolderReadViewModel> GetChildFoldersForFolder(Guid parentFolderId, int page = 1, int pageSize = 10)
+        public PaginatedList<FolderReadViewModel> GetChildFoldersForFolder(Guid parentFolderId, int page = 1, int pageSize = 999)
         {
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
             PaginatedList<FolderReadViewModel> folders;
