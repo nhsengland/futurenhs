@@ -12,5 +12,7 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public FileReadViewModel File { get; set; }
 
         public string Slug { get; set; }
+
+        public IEnumerable<BreadCrumbItem> BreadCrumbTrail { get; set; }
     }
 }

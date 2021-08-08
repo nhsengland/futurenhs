@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MvcForum.Core.Repositories.Models;
 
 namespace MvcForum.Core.Models.FilesAndFolders
 {
@@ -21,5 +22,6 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public Guid ParentGroup { get; set; }
 
         public  bool IsDeleted { get; set; }
+        public IEnumerable<BreadCrumbItem> BreadCrumbTrail { get; set; }
     }
 }

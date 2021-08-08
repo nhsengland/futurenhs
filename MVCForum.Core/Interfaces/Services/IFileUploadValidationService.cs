@@ -15,6 +15,6 @@ namespace MvcForum.Core.Interfaces.Services
 
     public interface IFileUploadValidationService
     {
-        Task<UploadBlobResult> ValidateUploadedFile(HttpPostedFileBase file, bool simpleValidation);
+        UploadBlobResult ValidateUploadedFile(HttpPostedFileBase file, bool simpleValidation);
     }
 }

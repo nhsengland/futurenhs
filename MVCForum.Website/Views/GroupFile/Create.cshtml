@@ -6,7 +6,24 @@
 }
 
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }    
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }    
+}
+
+@{
+	if (Model.BreadCrumbTrail.Count() > 0)
+	{
+		foreach (var breadCrumb in Model.BreadCrumbTrail)
+		{
+
+			<a href=@breadCrumb.Url class="u-text-small">
+				@breadCrumb.Name &rsaquo;
+			</a>
+	
+		}
+		<a class="u-text-small u-text-theme-0">
+			Create file
+		</a>
+	}
 }
 
 <h2>Create</h2>

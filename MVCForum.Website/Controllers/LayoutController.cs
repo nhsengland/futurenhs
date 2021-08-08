@@ -100,7 +100,7 @@
             return PartialView("_SideBar", model);
         }
 
-        public PartialViewResult GroupHeader(string slug)
+        public PartialViewResult GroupHeader(string slug, string tab = null)
         {
             var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
 
@@ -109,7 +109,7 @@
                 Name = group.Group.Name,
                 Description = group.Group.Description,
                 Colour = group.Group.Colour,
-                HeaderTabs = GetGroupTabsModel(slug),
+                HeaderTabs = GetGroupTabsModel(slug,tab),
                 Image = group.Group.Image,
                 Id = group.Group.Id
             };
@@ -118,20 +118,35 @@
         }
 
         // TODO Duplicated code from groups, we need to refactor all of this into one place.
-        public TabViewModel GetGroupTabsModel(string slug)
+        public TabViewModel GetGroupTabsModel(string slug, string tab)
         {
             var homeTab = new Tab { Name = "GroupTabs.Home", Order = 1, Icon = Icons.Home };
-            homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}";
+            homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional})}";
 
             var forumTab = new Tab { Name = "GroupTabs.Forum", Order = 2, Icon = Icons.Forum };
-            forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
+            forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab})}";
 
-            var filesTab = new Tab { Name = "GroupTabs.Files", Order = 3, Icon = Icons.File };
+            var filesTab = new Tab { Name = "GroupTabs.Files", Order = 3, Icon = Icons.File};
             filesTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupFilesTab })}";
 
             var membersTab = new Tab { Name = "GroupTabs.Members", Order = 4, Icon = Icons.Members };
-            membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
+            membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab})}";
 
+            if (tab != null)
+            {
+                switch (tab)
+                {
+                    case Constants.GroupFilesTab:
+                        filesTab.Active = true;
+                        break;
+                    case Constants.GroupForumTab:
+                        forumTab.Active = true;
+                        break;
+                    case Constants.GroupMembersTab:
+                        membersTab.Active = true;
+                        break;
+                }
+            }
 
             var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
 

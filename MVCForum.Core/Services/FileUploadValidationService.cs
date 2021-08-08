@@ -10,12 +10,8 @@ namespace MvcForum.Core.Services
     using MvcForum.Core.Utilities;
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.IO;
     using System.Linq;
-    using System.Net.Mime;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Web;
 
     public class FileUploadValidationService : IFileUploadValidationService
@@ -37,13 +33,13 @@ namespace MvcForum.Core.Services
         /// <param name="file">HttpPostedFileBase to validate</param>
         /// <param name="simpleValidation">bool - perform simple or complex validation.</param>
         /// <returns></returns>
-        public async Task<UploadBlobResult> ValidateUploadedFile(HttpPostedFileBase file, bool simpleValidation)
+        public UploadBlobResult ValidateUploadedFile(HttpPostedFileBase file, bool simpleValidation)
         {
-            UploadBlobResult result = new UploadBlobResult
+            var result = new UploadBlobResult
             {
-                ValidationErrors = await GetFileValidationErrors(file, simpleValidation)
+                ValidationErrors = GetFileValidationErrors(file, simpleValidation)
             };
-            return await Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -52,20 +48,21 @@ namespace MvcForum.Core.Services
         /// <param name="file">File to validate</param>
         /// <param name="simpleValidation">Determine if we need to perform complex validation i.e. using MIME DEtective.</param>
         /// <returns></returns>
-        private async Task<List<string>> GetFileValidationErrors(HttpPostedFileBase file, bool simpleValidation = true)
+        private List<string> GetFileValidationErrors(HttpPostedFileBase file, bool simpleValidation = true)
         {
-            List<string> validationErrors = new List<string>();
-
-            validationErrors.Add(ValidateActualMimeType(file, simpleValidation));
-            validationErrors.Add(ValidateFileTypeAllowed(Path.GetExtension(file.FileName)));
-            validationErrors.Add(ValidateFileSize(file.ContentLength));
-            validationErrors.Add(ValidateFilenameSet(Path.GetFileNameWithoutExtension(file.FileName)));
-            validationErrors.Add(ValidateFilenameLength(file.FileName));
+            var validationErrors = new List<string>
+            {
+                ValidateActualMimeType(file, simpleValidation),
+                ValidateFileTypeAllowed(Path.GetExtension(file.FileName)),
+                ValidateFileSize(file.ContentLength),
+                ValidateFilenameSet(Path.GetFileNameWithoutExtension(file.FileName)),
+                ValidateFilenameLength(file.FileName)
+            };
 
             // Remove empty values, if any of the above valid empty entries will be added
             validationErrors = validationErrors.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-            return await Task.FromResult(validationErrors);
+            return validationErrors;
         }
 
         /// <summary>
@@ -126,18 +123,12 @@ namespace MvcForum.Core.Services
         /// <summary>
         /// Get maximum file size allowed from config file.
         /// </summary>
-        private int MaxFileSize
-        {
-            get { return ConfigUtils.GetAppSettingInt32("FileUpload_FileLimitBytes", 250000000); }
-        }
+        private int MaxFileSize => ConfigUtils.GetAppSettingInt32("FileUpload_FileLimitBytes", 250000000);
 
         /// <summary>
         /// Get maximum file name length allowed from config file.
         /// </summary>
-        private int MaxFilenameLength
-        {
-            get { return ConfigUtils.GetAppSettingInt32("FileUpload_MaxFilenameLength", 100); }
-        }
+        private int MaxFilenameLength => ConfigUtils.GetAppSettingInt32("FileUpload_MaxFilenameLength", 100);
 
         /// <summary>
         /// Get allowed file types from config file.
@@ -146,7 +137,7 @@ namespace MvcForum.Core.Services
         {
             get
             {
-                List<string> allowedTypes = new List<string>();
+                var allowedTypes = new List<string>();
                 var configValue = ConfigUtils.GetAppSetting("FileUpload_ValidFileTypes", string.Empty);
 
                 if (!string.IsNullOrWhiteSpace(configValue))

@@ -58,13 +58,21 @@
         public Guid Update(FileWriteViewModel file)
         {
             var dbFile = _context.Files.Find(file.FileId);
-            dbFile.Title = file.Name;
-            dbFile.Description = file.Description;
-            dbFile.ModifiedBy = file.ModifiedBy;
-            dbFile.ModifiedDate = DateTime.Now;
-            dbFile.UploadStatus = file.UploadStatus;
+            if (dbFile != null)
+            {
+                dbFile.Title = file.Name;
+                dbFile.Description = file.Description;
+                dbFile.ModifiedBy = file.ModifiedBy;
+                dbFile.ModifiedDate = DateTime.Now;
+                dbFile.UploadStatus = file.UploadStatus;
+                dbFile.FileName = file.FileName;
+                dbFile.FileExtension = file.FileExtension;
+                dbFile.FileSize = file.FileSize;
+                dbFile.FileUrl = file.FileUrl;
+            }
+
             _context.SaveChanges();
-            return (Guid)file.FileId;
+            return file.FileId;
         }
 
         public void Delete(FileWriteViewModel file)

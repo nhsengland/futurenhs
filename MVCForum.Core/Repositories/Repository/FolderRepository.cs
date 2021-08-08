@@ -98,8 +98,6 @@ namespace MvcForum.Core.Repositories.Repository
                 var results = multipleResults.Read<BreadCrumbItem>().Reverse();
                 return results;
             }
-
-       
         }
 
         public PaginatedList<FolderReadViewModel> GetChildFoldersForFolder(Guid parentFolderId, int page = 1, int pageSize = 10)

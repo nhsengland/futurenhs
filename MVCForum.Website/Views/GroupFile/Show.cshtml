@@ -1,5 +1,6 @@
 ﻿@model MvcForum.Core.Models.FilesAndFolders.FileViewModel
 @using MvcForum.Web.ViewModels.Shared
+@using Microsoft.Ajax.Utilities
 
 
 @{
@@ -8,7 +9,24 @@
 }
 
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug , tab = Constants.GroupFilesTab}); }
+}
+
+@{
+	if (Model.BreadCrumbTrail.Count() > 0)
+	{
+		foreach (var breadCrumb in Model.BreadCrumbTrail)
+		{
+
+				<a href=@breadCrumb.Url class="u-text-small">
+					@breadCrumb.Name &rsaquo;
+				</a>
+	
+		}
+		<a class="u-text-small u-text-theme-0">
+			@Model.File.Title
+		</a>
+	}
 }
 
 <h2>@Html.DisplayFor(model => model.File.Title)</h2>
@@ -17,8 +35,11 @@
 <p>@Html.DisplayFor(model => model.File.Description)</p>
 
 <p>
-    <span class="">@Html.DisplayNameFor(model => model.File.CreatedBy)</span> 
-    <a href="#" class="">@Html.DisplayFor(model => model.File.CreatedBy)</a>
+    <span class="u-text-bold">Owner</span> 
+    
+	<a href="@Url.Action("GetByName", "Members", new { slug = Model.File.UserSlug })" class="">
+		@Model.File.UserName
+	</a>
 </p>
 
 <div class="c-grid-block">
@@ -31,13 +52,13 @@
                 <thead role="rowgroup" class="c-table_head">
                     <tr role="row">
                         <th role="columnheader" class="c-table_th" scope="col">
-                            @Html.DisplayNameFor(model => model.File.FileName)
+                           Name
                         </th>
                         <th role="columnheader" class="c-table_th" scope="col">
-                            @Html.DisplayNameFor(model => model.File.ModifiedBy)
+                           Modified by
                         </th>
                         <th role="columnheader" class="c-table_th" scope="col">
-                            @Html.DisplayNameFor(model => model.File.ModifiedDate)
+                            Last updated
                         </th>
                         <th role="columnheader" class="c-table_th" scope="col">
                             Download 
@@ -47,23 +68,31 @@
                 <tbody class="c-table_body">
                     <tr role="row" class="c-table_row">
                         <td role="cell" class="c-table_cell">
-                            <span class="c-table_heading">N@Html.DisplayNameFor(model => model.File.FileName)ame </span>
+                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.FileName) </span>
                             <a href="#" class="">@Html.DisplayFor(model => model.File.FileName)</a>
                         </td>
                         <td role="cell" class="c-table_cell">
-                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedBy)</span>
-                            <a href="#" class="">@Html.DisplayFor(model => model.File.ModifiedBy)</a>
+	                        <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedBy)</span>
+	                        <a href="@Url.Action("GetByName", "Members", new { slug = Model.File.ModifiedUserSlug })" class="">
+		                        @Model.File.ModifiedUserName
+	                        </a>
                         </td>
                         <td role="cell" class="c-table_cell">
                             <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedDate)</span>
-                            <span>@Html.DisplayFor(model => model.File.ModifiedDate)</span>
+							<span>@DatesUi.GetPrettyDate(Model.File.ModifiedDate.ToString())</span>
                         </td>
                         <td role="cell" class="c-table_cell">
                             <span class="c-table_heading">Download</span>
-                            <a href="#" class="">
-                                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));}
-                                <span>Download</span>
-                            </a>
+	                     
+                                @if (@Model.File.FileUrl != null)
+                                {   
+	                                Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));
+             
+                                <a href="@Model.File.FileUrl" class="">
+		                                Download
+	                                </a>
+                                }
+                        
                         </td>
                     </tr>
                 </tbody>

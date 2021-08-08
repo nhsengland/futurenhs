@@ -100,7 +100,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IFileUploadValidationService, FileUploadValidationService>();
 
             // Repositories
-            Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString, ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString, Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"])));
+            Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString,  Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"]), ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString, ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"], ConfigurationManager.AppSettings["AzureBlobStorage:FilesPrimaryEndpoint_TO_BE_RETIRED"]));
             Container.BindInRequestScope<IDbRetryPolicy, DbRetryPolicy>();
             Container.BindInRequestScope<IDbConnectionFactory, DbConnectionFactory>();
             Container.BindInRequestScope<IFolderRepository, FolderRepository>();

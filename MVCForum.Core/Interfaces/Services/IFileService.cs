@@ -47,18 +47,18 @@
         /// <param name="id">The id of the File.</param>
         void Delete(FileWriteViewModel id);
 
+        /// <summary>
         /// Upload a file to blob storage.
         /// </summary>
         /// <param name="file">Posted file to upload.</param>
-        /// <param name="containerName">Container to upload to.</param>
         /// <returns></returns>
-        Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file, string containerName);
+        Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file);
 
         /// <summary>
         /// Perform simple file validation. Use this before saving to DB and performing file upload.
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        Task<UploadBlobResult> SimpleFileValidation(HttpPostedFileBase file);
+        UploadBlobResult SimpleFileValidation(HttpPostedFileBase file);
     }
 }

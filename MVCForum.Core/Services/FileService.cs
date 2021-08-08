@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Core.Services
+﻿using MvcForum.Core.Interfaces.Providers;
+
+namespace MvcForum.Core.Services
 {
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -21,6 +23,8 @@
     /// </summary>
     public class FileService : IFileService
     {
+        private readonly IConfigurationProvider _configurationProvider;
+
         /// <summary>
         /// Instance of the <see cref="IFileCommand"/> for file write operations.
         /// </summary>
@@ -43,12 +47,13 @@
         /// </summary>
         /// <param name="fileCommand">Instance of <see cref="IFileCommand"/>.</param>
         /// <param name="fileRepository">Instance of <see cref="IFileRepository"/>.</param>
-        public FileService(IFileCommand fileCommand, IFileRepository fileRepository, IMembershipService membershipService, IFileUploadValidationService fileUploadValidationService)
+        public FileService(IFileCommand fileCommand, IFileRepository fileRepository, IMembershipService membershipService, IFileUploadValidationService fileUploadValidationService, IConfigurationProvider configurationProvider)
         {
             _fileCommand = fileCommand;
             _fileRepository = fileRepository;
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
             _fileUploadValidationService = fileUploadValidationService;
+            _configurationProvider = configurationProvider;
         }
 
         /// <summary>
@@ -87,7 +92,25 @@
         /// <returns>The requested <see cref="FileReadViewModel"/>.</returns>
         public FileReadViewModel GetFile(Guid id)
         {
-            return _fileRepository.GetFile(id);
+            var file = _fileRepository.GetFile(id);
+
+            if (string.IsNullOrWhiteSpace(file.ModifiedUserName) || string.IsNullOrWhiteSpace(file.ModifiedUserSlug))
+            {
+                file.ModifiedUserName = file.UserName;
+                file.ModifiedUserSlug = file.UserSlug;
+            }
+
+            if (!file.ModifiedDate.HasValue)
+            {
+                file.ModifiedDate = file.CreatedDate;
+            }
+
+            if (file.FileUrl != null)
+            {
+                file.FileUrl = $"{_configurationProvider.GetFileDownloadEndpoint()}/{file.FileUrl}";
+            }
+
+            return file;
         }
 
         /// <summary>
@@ -104,31 +127,30 @@
         /// Upload a file to blob storage.
         /// </summary>
         /// <param name="file">Posted file to upload.</param>
-        /// <param name="containerName">Container to upload to.</param>
         /// <returns></returns>
-        public async Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file, string containerName)
+        public async Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file)
         {
             var result = new UploadBlobResult();
             try
             {
                 // TODO - implement validation including of type (MIME detective), possibly add FileValidationService?
-                result = await _fileUploadValidationService.ValidateUploadedFile(file, false);
+                result = _fileUploadValidationService.ValidateUploadedFile(file, false);
 
                 if (!result.ValidationErrors.Any())
                 {
-                    var storageAccount = CloudStorageAccount.Parse(
-                        ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString);
+ 
+                    var storageAccount = CloudStorageAccount.Parse(_configurationProvider.GetFileUploadConnectionString());
 
                     var blobStorage = storageAccount.CreateCloudBlobClient();
-                    CloudBlobContainer container = blobStorage.GetContainerReference(containerName);
+                    var container = blobStorage.GetContainerReference(_configurationProvider.GetFileContainerName());
 
-                    string uniqueBlobName = $"{Guid.NewGuid()}{System.IO.Path.GetExtension(file.FileName)}";
+                    var uniqueBlobName = $"{Guid.NewGuid()}{System.IO.Path.GetExtension(file.FileName)}";
 
                     result.UploadedFileName = uniqueBlobName;
 
                     var blob = container.GetBlockBlobReference(uniqueBlobName);
                     blob.Properties.ContentType = file.ContentType;
-                    blob.UploadFromStream(file.InputStream);
+                    await blob.UploadFromStreamAsync(file.InputStream);
 
                     // set the attributes required to be saved in the DB?
                     // Question, are the values from Posted file 'safe' enough or should we get from uploaded blob?
@@ -140,7 +162,7 @@
             {
                 // TODO Deal with any unhandled exception...
             }
-            return await Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -148,18 +170,18 @@
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<UploadBlobResult> SimpleFileValidation(HttpPostedFileBase file)
+        public UploadBlobResult SimpleFileValidation(HttpPostedFileBase file)
         {
             var result = new UploadBlobResult();
             try
             {
-                result = await _fileUploadValidationService.ValidateUploadedFile(file, true);
+                result =  _fileUploadValidationService.ValidateUploadedFile(file, true);
             }
             catch (Exception ex)
             {
                 // TODO Deal with any exception...
             }
-            return await Task.FromResult(result);
+            return result;
         }
     }
 }

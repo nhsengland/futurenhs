@@ -63,7 +63,7 @@ namespace MvcForum.Core.Repositories.Models
         /// <summary>
         /// Gets or sets the file modified by.
         /// </summary>
-        public Guid ModifiedBy { get; set; }
+        public Guid? ModifiedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the file created date.
@@ -73,11 +73,17 @@ namespace MvcForum.Core.Repositories.Models
         /// <summary>
         /// Gets or sets the file modified date.
         /// </summary>
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the status. Relates to UploadStatus Id.
         /// </summary>
         public int Status { get; set; }
+
+        public string UserName { get; set; }
+        public string UserSlug { get; set; }
+
+        public string ModifiedUserName { get; set; }
+        public string ModifiedUserSlug { get; set; }
     }
 }

@@ -41,9 +41,9 @@ namespace MvcForum.Web.Controllers
                 {
                     ParentFolder = parentId,
                     Slug = slug,
-                    ParentGroup = groupId
-                };
-
+                    ParentGroup = groupId,
+                    BreadCrumbTrail = BuildBreadCrumbTrail(parentId, slug)
+            };
                 return View("_CreateFolder", WriteFolder);
             }
             return null;
@@ -79,7 +79,8 @@ namespace MvcForum.Web.Controllers
                     FolderId = folderId,
                     Slug = slug,
                     FolderName =  result.Folder.FolderName,
-                    Description = result.Folder.Description
+                    Description = result.Folder.Description,
+                    BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug)
                 };
 
                 return View("_UpdateFolder", WriteFolder);
@@ -105,6 +106,8 @@ namespace MvcForum.Web.Controllers
                         return RedirectToRoute("GroupUrls", new {slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId});
                     }
                 }
+
+                folder.BreadCrumbTrail = BuildBreadCrumbTrail(folder.FolderId, folder.Slug);
                 return View("_UpdateFolder", folder);
             }
 
@@ -123,7 +126,8 @@ namespace MvcForum.Web.Controllers
                     FolderId = folderId,
                     Slug = slug,
                     FolderName = result.Folder.FolderName,
-                    Description = result.Folder.Description
+                    Description = result.Folder.Description,
+                    BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug)
                 };
 
                 return View("_DeleteFolder", WriteFolder);

@@ -34,8 +34,10 @@
         <hr>
         <p>@Model.Folder.Description</p>
 
-        @Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug, groupId = Model.GroupId }, new { @class = "c-button c-button-outline c-button--min-width" })
-
+        @*@Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug, groupId = Model.GroupId }, new { @class = "c-button c-button-outline c-button--min-width" })*@
+	    <a href="@Url.RouteUrl("GroupFileUploadUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId})" class="c-button c-button-outline c-button--min-width">
+		    Upload file
+	    </a>
     }
     else
     {
@@ -131,18 +133,27 @@
                             {
                                 <tr role="row" class="c-table_row">
                                     <td role="cell" class="c-table_cell">
-                                        <span class="c-table_heading">Name </span>
-                                        <a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
+	                                    <span class="c-table_heading">Name </span>
+
+										<a href="@Url.RouteUrl("GroupFileUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, id = file.Id})" class="">
+											@file.Title
+										</a>
+
+	                                    @*<a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
                                             @file.Title
-                                        </a>
+                                        </a>*@
                                     </td>
                                     <td role="cell" class="c-table_cell">
-                                        <span class="c-table_heading">Uploaded by </span>
-                                        @Model.GetFullNameForUserId(file.CreatedBy)
+	                                    <span class="c-table_heading">Uploaded by </span>
+                          
+	                                    <a href="@Url.Action("GetByName", "Members", new { slug = @file.UserSlug })" class="">
+		                                    @file.UserName
+	                                    </a>
                                     </td>
                                     <td role="cell" class="c-table_cell">
-                                        <span class="c-table_heading">Uploaded date </span>
-                                        @file.CreatedDate
+	                                    <span class="c-table_heading">Uploaded date </span>
+	                                    @DatesUi.GetPrettyDate(@file.CreatedDate.ToString())
+                                        
                                     </td>
                                 </tr>
                             }

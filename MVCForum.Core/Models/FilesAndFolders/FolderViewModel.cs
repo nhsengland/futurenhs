@@ -22,17 +22,5 @@ namespace MvcForum.Web.ViewModels.Folder
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
         public Guid GroupId { get; set; }
-
-        /// <summary>
-        /// Get the full name for a user Id.
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public string GetFullNameForUserId(Guid userId)
-        {
-            // TODO - review this, not overly happy with it...
-            var user = UnityHelper.Container.Resolve<IMembershipService>().Get(userId);
-            return user != null ? $"{user.FirstName} {user.Surname}" : "unknown";
-        }
     }
 }

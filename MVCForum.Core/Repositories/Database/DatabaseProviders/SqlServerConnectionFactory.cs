@@ -25,10 +25,5 @@ namespace MvcForum.Core.Repositories.Database.DatabaseProviders
         {
             return new ReliableSqlDbConnection(_configurationProvider.GetReadOnlyConnectionString(), _retryPolicy);
         }
-
-        public IDbConnection CreateWriteConnection()
-        {
-            return new ReliableSqlDbConnection(_configurationProvider.GetWriteConnectionString(), _retryPolicy);
-        }
     }
 }

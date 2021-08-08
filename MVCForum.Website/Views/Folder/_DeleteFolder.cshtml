@@ -1,12 +1,36 @@
 ﻿@model MvcForum.Core.Models.FilesAndFolders.FolderWriteViewModel
 @{
-    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+	Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
 }
 
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }
+	@{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
 }
 
+@{
+	var count = 1;
+	if (Model.BreadCrumbTrail.Count() != count)
+	{
+		foreach (var breadCrumb in Model.BreadCrumbTrail)
+		{
+			var lastEntry = count == Model.BreadCrumbTrail.Count();
+			if (!lastEntry)
+			{
+
+				<a href=@breadCrumb.Url class="u-text-small">
+					@breadCrumb.Name &rsaquo;
+				</a>
+			}
+			else
+			{
+				<a class="u-text-small u-text-theme-0">
+					@breadCrumb.Name
+				</a>
+			}
+			count++;
+		}
+	}
+}
 <div>
 	<h4>Delete Folder - @Model.FolderName</h4>
 	<p>Are you sure you want to delete this?</p>

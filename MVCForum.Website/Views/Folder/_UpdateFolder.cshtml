@@ -4,7 +4,32 @@
 }
 
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug }); }
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
+}
+
+@{
+	var count = 1;
+	if (Model.BreadCrumbTrail.Count() != count)
+	{
+		foreach (var breadCrumb in Model.BreadCrumbTrail)
+		{
+			var lastEntry = count == Model.BreadCrumbTrail.Count();
+			if (!lastEntry)
+			{
+
+				<a href=@breadCrumb.Url class="u-text-small">
+					@breadCrumb.Name &rsaquo;
+				</a>
+			}
+			else
+			{
+				<a class="u-text-small u-text-theme-0">
+					@breadCrumb.Name
+				</a>
+			}
+			count++;
+		}
+	}
 }
 
 @using (Html.BeginForm())
@@ -12,7 +37,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>FolderWriteViewModel</h4>
+		<h4>Update - @Model.FolderName</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 

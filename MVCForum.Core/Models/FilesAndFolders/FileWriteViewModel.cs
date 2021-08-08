@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using MvcForum.Core.Repositories.Models;
 
 namespace MvcForum.Core.Models.FilesAndFolders
 {
@@ -29,6 +30,17 @@ namespace MvcForum.Core.Models.FilesAndFolders
 
         public int UploadStatus { get; set; }
 
+        /// <summary>
+        /// Original filename of uploaded file (rather than meta title entered in form).
+        /// </summary>
+        public string FileName { get; set; }
+        
+        public string FileSize { get; set; }
+         
+        public string FileExtension { get; set; }
+
         public string FileUrl { get; set; }
+
+        public IEnumerable<BreadCrumbItem> BreadCrumbTrail { get; set; }
     }
 }

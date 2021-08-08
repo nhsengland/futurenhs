@@ -8,7 +8,9 @@ namespace MvcForum.Core.Interfaces.Providers
     public interface IConfigurationProvider
     {
         string GetReadOnlyConnectionString();
-        string GetWriteConnectionString();
+        string GetFileUploadConnectionString();
+        string GetFileContainerName();
+        string GetFileDownloadEndpoint();
         int GetRetryAttempts();
         int GetRetryDelay();
     }

@@ -25,6 +25,19 @@
             );
 
             routes.MapRoute(
+                "GroupFileUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/file/{id}"), // URL with parameters
+                new { controller = "GroupFile", action = "Show", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "GroupFileUploadUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/Upload/{folderId}"), // URL with parameters
+                new { controller = "GroupFile", action = "Create", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
+            );
+
+
+            routes.MapRoute(
                 "TopicUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{group}/{tab}/{slug}"), // URL with parameters
                 new { controller = "Topic", action = "Show", slug = UrlParameter.Optional } // Parameter defaults

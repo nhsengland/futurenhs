@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Web.Controllers
+﻿using MvcForum.Core.Repositories.Models;
+
+namespace MvcForum.Web.Controllers
 {
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Models.FilesAndFolders;
@@ -60,10 +62,13 @@
         /// <returns>The show view.</returns>
         public ActionResult Show(Guid id, string slug)
         {
-            FileViewModel file = new FileViewModel
+            var dbFile = _fileService.GetFile(id);
+
+            var file = new FileViewModel
             {
-                File = _fileService.GetFile(id),
-                Slug = slug
+                File = dbFile,
+                Slug = slug,
+                BreadCrumbTrail = BuildBreadCrumbTrail(dbFile.ParentFolder, slug)
             };
 
             return View(file);
@@ -74,12 +79,13 @@
         /// </summary>
         /// <param name="folderId"></param>
         /// <returns></returns>
-        public ActionResult Create(Guid folderId, Guid groupId, string slug)
+        public ActionResult Create(Guid folderId, string slug)
         {
             var viewmodel = new FileWriteViewModel
             {
                 FolderId = folderId,
-                Slug = slug
+                Slug = slug,
+                BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug)
             };
 
             return View(viewmodel);
@@ -106,25 +112,29 @@
                     else
                     {
                         // Perform simple validation prior to actual upload attempt
-                        var simpleValidation = await _fileService.SimpleFileValidation(file.PostedFile);
+                        var simpleValidation = _fileService.SimpleFileValidation(file.PostedFile);
 
                         // Simple validation passed, attempt upload and save to DB
                         if (!simpleValidation.ValidationErrors.Any())
                         {
                             file.CreatedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-                            Guid id = _fileService.Create(file);
+                            var id = _fileService.Create(file);
 
                             // Only continue if file meta data added to DB
-                            if (id != null && id != Guid.Empty)
+                            if (id != Guid.Empty)
                             {
                                 file.FileId = id;
 
                                 // Validate and attempt to upload the file to blob storage
-                                var fileUploadResult = await _fileService.UploadFileAsync(file.PostedFile, ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"]);
+                                var fileUploadResult = await _fileService.UploadFileAsync(file.PostedFile);
 
                                 // Update the status of the file depending on upload result.
                                 file.UploadStatus = fileUploadResult.UploadSuccessful ? (int)Status.Uploaded : (int)Status.Failed;
                                 file.FileUrl = fileUploadResult.UploadSuccessful ? fileUploadResult.UploadedFileName : null;
+                                file.FileName = file.PostedFile.FileName;
+                                file.FileSize = file.PostedFile.ContentLength.ToString();
+                                file.FileExtension = System.IO.Path.GetExtension(file.PostedFile.FileName);
+
                                 _fileService.Update(file);
 
                                 if (fileUploadResult.UploadSuccessful)
@@ -163,6 +173,7 @@
                 }
             }
 
+            file.BreadCrumbTrail = BuildBreadCrumbTrail(file.FolderId, file.Slug);
             return View(file);
         }
 
@@ -229,6 +240,18 @@
         private bool FolderIsValid(Guid folderId)
         {
             return _folderService.GetFolder(string.Empty, folderId).Folder != null;
+        }
+
+        private IEnumerable<BreadCrumbItem> BuildBreadCrumbTrail(Guid? folderId, string slug)
+        {
+            var list = new List<BreadCrumbItem> { new BreadCrumbItem { Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "Files" } };
+            if (folderId.HasValue)
+            {
+                var bc = _folderService.GenerateBreadcrumbTrail(folderId.Value);
+                list.AddRange(bc.Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
+            }
+
+            return list;
         }
     }
 }
