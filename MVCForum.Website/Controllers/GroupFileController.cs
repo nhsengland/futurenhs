@@ -70,7 +70,7 @@ namespace MvcForum.Web.Controllers
                 Slug = slug,
                 BreadCrumbTrail = BuildBreadCrumbTrail(dbFile.ParentFolder, slug)
             };
-
+            ViewBag.HideSideBar = true;
             return View(file);
         }
 
@@ -87,7 +87,7 @@ namespace MvcForum.Web.Controllers
                 Slug = slug,
                 BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug)
             };
-
+            ViewBag.HideSideBar = true;
             return View(viewmodel);
         }
 
@@ -172,7 +172,7 @@ namespace MvcForum.Web.Controllers
                     // TODO - deal with any unhandled exceptions.
                 }
             }
-
+            ViewBag.HideSideBar = true;
             file.BreadCrumbTrail = BuildBreadCrumbTrail(file.FolderId, file.Slug);
             return View(file);
         }

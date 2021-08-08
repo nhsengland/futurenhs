@@ -44,6 +44,7 @@ namespace MvcForum.Web.Controllers
                     ParentGroup = groupId,
                     BreadCrumbTrail = BuildBreadCrumbTrail(parentId, slug)
             };
+                ViewBag.HideSideBar = true;
                 return View("_CreateFolder", WriteFolder);
             }
             return null;
@@ -61,6 +62,7 @@ namespace MvcForum.Web.Controllers
 
                     return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = newId });
                 }
+                ViewBag.HideSideBar = true;
                 return View("_CreateFolder", folder);
             }
 
@@ -82,7 +84,7 @@ namespace MvcForum.Web.Controllers
                     Description = result.Folder.Description,
                     BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug)
                 };
-
+                ViewBag.HideSideBar = true;
                 return View("_UpdateFolder", WriteFolder);
             }
             return null;
@@ -106,7 +108,7 @@ namespace MvcForum.Web.Controllers
                         return RedirectToRoute("GroupUrls", new {slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId});
                     }
                 }
-
+                ViewBag.HideSideBar = true;
                 folder.BreadCrumbTrail = BuildBreadCrumbTrail(folder.FolderId, folder.Slug);
                 return View("_UpdateFolder", folder);
             }
@@ -129,7 +131,7 @@ namespace MvcForum.Web.Controllers
                     Description = result.Folder.Description,
                     BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug)
                 };
-
+                ViewBag.HideSideBar = true;
                 return View("_DeleteFolder", WriteFolder);
             }
             return null;
@@ -153,6 +155,7 @@ namespace MvcForum.Web.Controllers
                         return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
                     }
                 }
+                ViewBag.HideSideBar = true;
                 return View("_DeleteFolder", folder);
             }
 

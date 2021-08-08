@@ -463,6 +463,11 @@ namespace MvcForum.Web.Controllers
                     ViewBag.HideSideBar = true;
                 }
 
+                if (tab == Constants.GroupFilesTab)
+                {
+                    ViewBag.HideSideBar = true;
+                }
+
                 return View(viewModel);
             }
 
