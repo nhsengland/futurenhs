@@ -9,7 +9,7 @@
 
 @{
 	var count = 1;
-	if (Model.BreadCrumbTrail.Count() != count)
+	if (Model.BreadCrumbTrail != null && Model.BreadCrumbTrail.Count() != count)
 	{
 		foreach (var breadCrumb in Model.BreadCrumbTrail)
 		{

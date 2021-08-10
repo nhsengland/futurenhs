@@ -4,7 +4,7 @@
 <div>
     @{
         var count = 1;
-        if (Model.BreadCrumbTrail.Count() != count)
+        if (Model.BreadCrumbTrail != null && Model.BreadCrumbTrail.Count() != count)
         {
             foreach (var breadCrumb in Model.BreadCrumbTrail)
             {
@@ -35,9 +35,9 @@
         <p>@Model.Folder.Description</p>
 
         @*@Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug, groupId = Model.GroupId }, new { @class = "c-button c-button-outline c-button--min-width" })*@
-	    <a href="@Url.RouteUrl("GroupFileUploadUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId})" class="c-button c-button-outline c-button--min-width">
-		    Upload file
-	    </a>
+        <a href="@Url.RouteUrl("GroupFileUploadUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId})" class="c-button c-button-outline c-button--min-width">
+            Upload file
+        </a>
     }
     else
     {
@@ -50,14 +50,20 @@
     @if (Model.IsAdmin)
     {
         <span>&nbsp;</span>
-        @Html.ActionLink("Add folder", "CreateFolder", new { slug = Model.Slug, parentId = Model.Folder?.FolderId, groupId = Model.GroupId }, new { @class = "c-button c-button--outline" });
+        <a href="@Url.RouteUrl("GroupFileNewFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, parentId = Model.Folder?.FolderId, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
+            Add folder
+        </a>
         <span>&nbsp;</span>
 
         if (Model.Folder != null)
         {
-            @Html.ActionLink("Edit folder", "UpdateFolder", new { slug = Model.Slug, folderId = Model.Folder?.FolderId }, new { @class = "c-button c-button--outline" });
+            <a href="@Url.RouteUrl("GroupFileEditFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
+                Edit folder
+            </a>
             <span>&nbsp;</span>
-            @Html.ActionLink("Delete folder", "DeleteFolder", new { slug = Model.Slug, folderId = Model.Folder?.FolderId }, new { @class = "c-button c-button--outline" });
+            <a href="@Url.RouteUrl("GroupFileDeleteFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
+                Delete folder
+            </a>
         }
     }
 
@@ -133,27 +139,27 @@
                             {
                                 <tr role="row" class="c-table_row">
                                     <td role="cell" class="c-table_cell">
-	                                    <span class="c-table_heading">Name </span>
+                                        <span class="c-table_heading">Name </span>
 
-										<a href="@Url.RouteUrl("GroupFileUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, id = file.Id})" class="">
-											@file.Title
-										</a>
-
-	                                    @*<a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
+                                        <a href="@Url.RouteUrl("GroupFileUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, id = file.Id})" class="">
                                             @file.Title
-                                        </a>*@
+                                        </a>
+
+                                        @*<a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
+                                                @file.Title
+                                            </a>*@
                                     </td>
                                     <td role="cell" class="c-table_cell">
-	                                    <span class="c-table_heading">Uploaded by </span>
-                          
-	                                    <a href="@Url.Action("GetByName", "Members", new { slug = @file.UserSlug })" class="">
-		                                    @file.UserName
-	                                    </a>
+                                        <span class="c-table_heading">Uploaded by </span>
+
+                                        <a href="@Url.Action("GetByName", "Members", new { slug = @file.UserSlug })" class="">
+                                            @file.UserName
+                                        </a>
                                     </td>
                                     <td role="cell" class="c-table_cell">
-	                                    <span class="c-table_heading">Uploaded date </span>
-	                                    @DatesUi.GetPrettyDate(@file.CreatedDate.ToString())
-                                        
+                                        <span class="c-table_heading">Uploaded date </span>
+                                        @DatesUi.GetPrettyDate(@file.CreatedDate.ToString())
+
                                     </td>
                                 </tr>
                             }

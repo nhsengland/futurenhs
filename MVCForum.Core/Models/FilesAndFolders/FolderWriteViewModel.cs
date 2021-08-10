@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,11 @@ namespace MvcForum.Core.Models.FilesAndFolders
     {
         public string Slug { get; set; }
         public Guid? FolderId { get; set; }
+
         [Required]
+        [DisplayName("Folder name")]
         public string FolderName { get; set; }
-        [Required]
+
         public string Description { get; set; }
         public Guid AddedBy { get; set; }
         public Guid? ParentFolder { get; set; }

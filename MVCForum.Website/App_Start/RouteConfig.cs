@@ -36,6 +36,23 @@
                 new { controller = "GroupFile", action = "Create", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
             );
 
+            routes.MapRoute(
+                "GroupFileNewFolderUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/CreateFolder"), // URL with parameters
+                new { controller = "Folder", action = "CreateFolder", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "GroupFileEditFolderUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/UpdateFolder/{folderId}"), // URL with parameters
+                new { controller = "Folder", action = "UpdateFolder", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "GroupFileDeleteFolderUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/DeleteFolder/{folderId}"), // URL with parameters
+                new { controller = "Folder", action = "DeleteFolder", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
+            );
 
             routes.MapRoute(
                 "TopicUrls", // Route name

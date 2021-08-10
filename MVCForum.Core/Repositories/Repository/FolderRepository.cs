@@ -105,17 +105,17 @@ namespace MvcForum.Core.Repositories.Repository
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
             PaginatedList<FolderReadViewModel> folders;
             const string query =
-                @"SELECT    Id AS FolderId, 
-                            Name AS FolderName, 
+                @"SELECT    f.Id AS FolderId, 
+                            f.Name AS FolderName, 
                             (
 				                SELECT	COUNT(*)
     				            FROM	[File]
-    				            WHERE	ParentFolder = Id
+    				            WHERE	ParentFolder = f.Id
     			            ) AS FileCount
-                FROM        Folder
-                WHERE       ParentFolder = @ParentFolder 
-                AND         IsDeleted = 0
-                ORDER BY    Name
+                FROM        Folder f
+                WHERE       f.ParentFolder = @ParentFolder 
+                AND         f.IsDeleted = 0
+                ORDER BY    f.Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @PageSize ROWS ONLY;
 

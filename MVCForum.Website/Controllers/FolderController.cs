@@ -56,13 +56,15 @@ namespace MvcForum.Web.Controllers
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                if (ModelState.IsValid) {
+                if (ModelState.IsValid) 
+                {
                     folder.AddedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
                     var newId = _folderService.CreateFolder(folder);
 
                     return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = newId });
                 }
                 ViewBag.HideSideBar = true;
+                folder.BreadCrumbTrail = BuildBreadCrumbTrail(folder.FolderId, folder.Slug);
                 return View("_CreateFolder", folder);
             }
 
