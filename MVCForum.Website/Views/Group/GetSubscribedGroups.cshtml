@@ -1,0 +1,13 @@
+﻿@model List<MvcForum.Web.ViewModels.Group.GroupViewModel>
+        
+@if (Model.Any())
+{
+    foreach (var catModel in Model)
+    {
+        @Html.Partial("_Group", catModel)
+    }
+}
+else
+{
+    <p>@Html.Lang("SubscribedCats.NothingToShow")</p>
+}

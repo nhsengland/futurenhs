@@ -1,0 +1,23 @@
+﻿@model MvcForum.Web.ViewModels.Admin.LanguageDisplayViewModel
+
+@{
+    ViewBag.Title = "Delete Language";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Delete Language?</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("DeleteLanguage", "AdminLanguage", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <p>Are you sure you want to delete the language '@Model.Name'?</p>
+            @Html.HiddenFor(x => x.Id)
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Yes" name="ButtonYes" />
+                <input type="submit" class="btn-mvc-red btn-mvc-large" value="No" name="ButtonNo" />
+            </div>
+        }
+    </div>
+</div>

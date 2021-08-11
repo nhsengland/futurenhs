@@ -1,0 +1,33 @@
+.c-callout-block {
+
+    @include card-padding-large;
+    background-color: $t-callout-background-one;
+    border-left: $base-dimension-unit solid $t-callout-border-info-one;
+
+    &--info {
+        border-left: $base-dimension-unit solid $t-callout-border-info-one;
+    }
+
+    &--success {
+        border-left: $base-dimension-unit solid $t-callout-border-success-one;
+    }
+
+    &--warning {
+        border-left: $base-dimension-unit solid $t-callout-border-warning-one;
+    }
+
+    &--error {
+        border-left: $base-dimension-unit solid $t-callout-border-error-one;
+    }
+
+    &_heading {
+        @include font-family-poppins-bold;
+        @include small-heading;
+        margin: 0 0 derived-dimension(.5);
+    }
+
+    &_content {
+        @include very-large-text;
+    }
+
+}

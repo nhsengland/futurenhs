@@ -1,0 +1,54 @@
+.c-grid-block {
+    $self: &;
+    @include row(true);
+    justify-content: center;
+
+    &--left {
+        justify-content: flex-start;
+    }
+
+    &--right {
+        justify-content: flex-end;
+    }
+
+    &--reverse-row {
+        flex-direction: row-reverse;
+    }
+
+    & > .c-grid-block { // sass-lint:disable-line no-combinators
+
+        width: 100%;
+
+        &:last-child {
+            margin: 0;
+        }
+
+    }
+
+    &_item {
+        display: flex;
+        flex-direction: column;
+
+        // & > * { // sass-lint:disable-line no-combinators no-universal-selectors
+        //     flex-grow: 1;
+        // }
+
+        &--flex-end {
+            justify-content: flex-end;
+        }
+
+        &--row {
+            flex-direction: row;
+        }
+
+    }
+
+    // &--flex-grow {
+
+    //     #{$self}_item > * {
+    //         flex-grow: 1;
+    //     } 
+
+    // }
+
+}

@@ -1,0 +1,233 @@
+$card-border-width: 1px;
+$card-border-highlight-width: $nhsuk-spacing-point-1;
+$card-border-color: $color_nhsuk-grey-4;
+$card-border-hover-color: $color_nhsuk-grey-3;
+
+.c-card {
+    $self: &;
+    //sass-lint:disable-block nesting-depth force-element-nesting no-combinators no-important
+    background: $color_nhsuk-white;
+    border: $card-border-width solid $card-border-color;
+    border-bottom-width: $card-border-highlight-width;
+    position: relative;
+    width: 100%;
+    margin-bottom: $nhsuk-spacing-point-4;
+
+    // &:hover {
+    //     border-color: $card-border-hover-color;
+    // }
+
+    &--img-left {
+        @include respond-to(desktop) {
+            display: flex;
+        }
+    }
+
+    &_img-container {
+        flex: 1 1 auto;
+    }
+
+    &_img {
+        display: block;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    &_content {
+        @include top-and-bottom;
+        flex: 1 1 auto;
+        position: relative;
+        padding: $nhsuk-spacing-point-4;
+        width: 100%;
+        min-width: 60%;
+    }
+
+    &_heading {
+        @include medium-heading;
+
+        &--small {
+            @include standard-text;
+            margin-bottom: $nhsuk-spacing-point-1;
+        }
+    }
+
+    &_heading-icon {
+        width: $nhsuk-spacing-point-4;
+        height: $nhsuk-spacing-point-4;
+        display: block;
+        margin-bottom: $nhsuk-spacing-point-2;
+    }
+
+    &_heading,
+    &_metadata {
+        margin-bottom: $nhsuk-spacing-point-3;
+    }
+
+    &_description {
+        margin-bottom: $nhsuk-spacing-point-3;
+
+        &--spaced {
+            margin-bottom: $nhsuk-spacing-point-8;
+        }
+    }
+
+    &_header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    &_header-img {
+        width: 50px;
+        margin-right: $nhsuk-spacing-point-3;
+        flex: 0 0 auto;
+        margin-bottom: 12px;
+    }
+
+    &_header-content {
+        flex: 1 1 auto;
+    }
+
+    &_header-icons {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        @include respond-to(desktop) {
+            position: static;
+        }
+    }
+
+    &_header-icon {
+        width: $nhsuk-spacing-point-3;
+        height: $nhsuk-spacing-point-3;
+        margin-left: $nhsuk-spacing-point-3;
+
+        @include respond-to(desktop) {
+            margin-left: 20px;
+        }
+    }
+
+    &_footer-item {
+        // text small. bold
+        @include small-text(false);
+        font-weight: $nhsuk-font-bold;
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 20px;
+    }
+
+    &_footer-icon {
+        width: 21px;
+        height: 21px;
+        top: 5px;
+        position: relative;
+        margin-right: 4px;
+    }
+
+    &_footer-tags {
+        float: right;
+    }
+
+    &_footer-tag-icon {
+        width: $nhsuk-spacing-point-3;
+        height: $nhsuk-spacing-point-3;
+        top: 5px;
+        position: relative;
+        margin-left: $nhsuk-spacing-point-3;
+    }
+
+    &_replies-list {
+        margin: $nhsuk-spacing-point-4 0;
+        border-top: 1px solid $black;
+    }
+
+    &_replies-item {
+        border-bottom: 1px solid $black;
+    }
+
+    &_header-social {
+        display: flex;
+        align-items: flex-end;
+        @include respond-to(desktop) {
+            margin-bottom: $nhsuk-spacing-point-4;
+        }
+    }
+
+    &_header-social-item {
+        @include small-text(false);
+        font-weight: $nhsuk-font-bold;
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 20px;
+    }
+
+    &_header-social-icon {
+        width: 21px;
+        height: 21px;
+        top: 5px;
+        position: relative;
+        margin-right: 4px;
+    }
+
+    &_header-social-copy {
+        display: none;
+        @include respond-to(desktop) {
+            display: inline;
+        }
+    }
+
+    &--reply,
+    &--comment {
+        border-bottom-width: $card-border-width;
+        border-left-width: $card-border-highlight-width;
+
+        #{$self}_header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    }
+
+    &--reply {
+        border-color: $white;
+        margin-top: $nhsuk-spacing-point-4;
+
+        #{$self}_content {
+            padding: 0 0 0 $nhsuk-spacing-point-4;
+        }
+    }
+
+    &--post {
+        border: 0;
+        background: transparent;
+        border-bottom: 1px solid $black;
+
+        #{$self}_header {
+            display: block;
+            position: relative;
+
+            @include respond-to(desktop) {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        #{$self}_heading {
+            @include lead-heading;
+        }
+
+        #{$self}_content {
+            padding: $nhsuk-spacing-point-4 0;
+        }
+
+        #{$self}_header-img {
+            float: left;
+            @include respond-to(desktop) {
+                float: none;
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+    ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
+    ViewBag.MetaDesc = Html.Settings().MetaDesc;
+}
+
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+
+@* Check forum.config to change this *@
+
+@{
+    switch (ForumConfiguration.Instance.ForumIndexView)
+    {
+        case "Groups":
+            @Html.Action("ListMainGroups", "Group")
+            break;
+        case "Sections":
+            @Html.Action("ListSections", "Group")
+            break;
+        case "Topics":
+            @Html.Action("LatestTopics", "Topic")
+            break;
+    }
+}

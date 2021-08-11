@@ -1,0 +1,202 @@
+﻿@using MvcForum.Core.Models.Enums
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.Application.ExtensionMethods
+@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Post
+@model MvcForum.Web.ViewModels.Topic.TopicViewModel
+@using MvcForum.Web.ViewModels.Shared
+@using MvcForum.Web.ViewModels.Topic
+@{
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+    ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
+    ViewBag.MetaDesc = StringUtils.ReturnAmountWordsFromString(string.Concat(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), "..."), 20);
+	var hideSideBar = ViewBag.HideSideBar == null ? false : ViewBag.HideSideBar;
+
+    if (Request.QueryString.AllKeys.Any())
+    {
+        ViewBag.Canonical = Html.Raw(string.Format("<link rel=\"canonical\" href=\"{0}\"/>", Model.Topic.NiceUrl));
+    }
+
+    // Email subscription
+    var subScribe = string.Empty;
+    var unSubscribe = string.Empty;
+    const string displayNone = "style='display:none;'";
+    if (Model.IsSubscribed)
+    {
+        subScribe = displayNone;
+    }
+    else
+    {
+        unSubscribe = displayNone;
+    }
+
+    // Set a ViewBag for the Group
+    //TempData[Constants.DefaultGroupViewBagName] = Model.Topic.Group.Id;
+    var qs = Request.QueryString[Constants.PostOrderBy] ?? string.Empty;
+}
+@section SocialMeta {
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@ViewBag.Title" />
+    <meta name="twitter:description" content="@ViewBag.MetaDesc" />
+}
+
+@section Header
+{
+    <script>
+        var topicId = '@(Model.Topic.Id)';
+    </script>
+}
+
+@section side
+{
+    @if (hideSideBar == false)
+    {
+	    @Html.Partial("_CommonSideNav")
+    }
+}
+
+@Html.Action("GetTopicBreadcrumb", "Topic", new { topic = Model.Topic })
+
+@if (!Model.CanViewTopic) {
+
+    <p>@Html.LanguageString("Group.PermissionDenied")</p>
+
+}
+else
+{
+
+
+    <div class="topicshow">
+
+        @if (Html.Settings().EnablePolls == true && Model.Poll != null)
+        {
+            // Show the poll if there is one
+            Html.RenderPartial("_Poll", Model.Poll);
+        }
+
+        <div class="topicstarterpost">
+            <div class="c-grid-block">
+                <div class="c-grid-block_item l-col-12">
+
+
+                    <div class="c-card c-card--post u-border-left-theme-8">
+                        <div class="c-card_content">
+
+                            <h1 class="c-card_heading">
+                                @Html.Raw(Model.Topic.Name)
+                            </h1>
+
+
+
+
+                            <div class="c-card_description">
+                                @Html.Raw(Model.StarterPost.Post.PostContent)
+                            </div>
+
+
+                            <div class="c-card_header">
+                                <div class="c-card_header-img">
+                                    <div class="c-avatar c-avatar--small">
+                                        <div class="c-avatar_fallback">
+                                            <p class="c-avatar_initials u-text-bold" aria-hidden="true">@Html.DisplayFor(x => Model.StarterPost.Post.User.Initials)</p>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(Model.StarterPost.Post.User.Avatar))
+                                        {
+                                            <img role="presentation" class="c-avatar_image" src="@Model.StarterPost.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.StarterPost.Post.User.UserName">
+                                        }
+                                    </div>
+                                </div>
+                                <div class="c-card_header-content u-text-theme-7">
+                                    <p class="u-text-small u-text-bold u-has-subheading">Created by <a href="#">@Model.Topic.User.FirstName @Model.Topic.User.Surname</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</p>
+                                    <p class="u-text-small">Last comment by <a href="#">@Model.Topic.LastPost.User.FirstName @Model.Topic.LastPost.User.Surname </a> @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</p>
+                                </div>
+                                <div class="c-card_header-social">
+                                    <p class="u-text-theme-7 c-card_header-social-item">
+                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_header-social-icon u-fill-theme-8")); }
+                                        <span>
+                                            @(Model.TotalComments)
+                                        </span>
+                                        <span class="c-card_header-social-copy">
+                                            @Html.LanguageString("Topic.CommentsDetails")
+                                        </span>
+                                    </p>
+                                    <p class="u-text-theme-7 c-card_header-social-item">
+                                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-view", "c-card_header-social-icon u-fill-theme-8")); }
+                                        <span>
+                                            @Model.Views.KiloFormat()
+                                        </span>
+                                        <span class="c-card_header-social-copy">
+                                            @Html.Lang("Topic.Views")
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (Model.TotalCount > 0)
+            {
+                <div class="c-grid-block">
+                    <div class="c-grid-block_item l-col-12">
+                        <p class="u-text-lead u-text-bold">
+                            @(Model.TotalComments) @Html.LanguageString("Topic.CommentsDetails")
+                        </p>
+                    </div>
+                </div>
+
+            }
+        </div>
+
+        <div id="commentsList">
+            @foreach (var post in Model.Posts)
+            {
+                <div class="c-grid-block">
+                    <div class="c-grid-block_item l-col-12">
+                        @{ Html.RenderPartial("_Post", post); }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div id="newpostmarker"></div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <button data-target-id="commentsList"
+                    data-request-id="@Model.Topic.Id"
+                    data-endpoint-type="getPostComments"
+                    data-maxim-requests="@Model.TotalPages"
+                    data-request-index="@Model.PageIndex.Value"
+                    class="c-button c-button--secondary js-loadmore u-no-js-hidden">
+                Load more
+            </button>
+
+            <noscript>
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, Convert.ToInt32(Model.TotalCount), null)
+            </noscript>
+        }
+
+        @if (!Model.Topic.IsLocked)
+        {
+            if (Model.CanAddComment())
+            {
+                @Html.Partial("_CreateNewPost", Model.NewPostViewModel)
+            }
+        }
+        else
+        {
+            <p class="topiclockedmessage">@Html.LanguageString("Topic.IsLocked")</p>
+        }
+
+        <input type="hidden" id="pageIndex" value="@(Model.PageIndex + 1)"/>
+        <input type="hidden" id="topicId" value="@Model.Topic.Id"/>
+        <input type="hidden" id="totalPages" value="@Model.TotalPages"/>
+    </div>
+
+}

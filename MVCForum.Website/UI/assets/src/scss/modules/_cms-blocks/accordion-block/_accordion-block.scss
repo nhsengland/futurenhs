@@ -1,0 +1,51 @@
+.c-accordion-block {
+
+    &_trigger {
+        @include focus-outline-large;
+        @include hover-primary;
+        @include active-primary;
+        @include font-family-poppins-bold;
+        display: block;
+        position: relative;
+        margin: 0 0 $base-dimension-unit;
+        padding: $spacer-rg derived-dimension(7) $spacer-rg $spacer-xsm;
+        background-color: $t-site-background-one;
+        border: 1px solid $t-accordion-background-one;
+        box-shadow: 0 derived-dimension(.75) $base-dimension-unit 0 $black-tint;
+        overflow: hidden;
+
+        &--has-content-icon {
+            padding: $spacer-rg derived-dimension(7);
+        }
+    }
+
+    &_trigger-title-text {
+        @include small-heading;
+        display: block;
+    }
+
+    &_trigger-sub-title-text {
+        @include very-large-text;
+        display: block;
+    }
+
+    &_trigger-icon {
+        position: absolute;
+        display: block;
+        right: $spacer-xsm;
+        top: 50%;
+        width: $spacer-sm;
+        height: $spacer-sm;
+        margin: -#{$spacer-sm / 2} 0 0;
+        fill: $t-icon-three;
+
+        &--content {
+            left: $spacer-xsm;
+            fill: $t-icon-one;
+        }
+    }
+
+    &_slot {
+        margin: 0 0 $spacer-xsm;
+    }
+}

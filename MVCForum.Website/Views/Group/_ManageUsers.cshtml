@@ -1,0 +1,197 @@
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Core.Models.Enums
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.ViewModels.Group
+@using MvcForum.Web.ViewModels.Shared
+@using System.Diagnostics.Eventing.Reader
+
+@model GroupMembersViewModel
+@{
+
+}
+
+<div>
+    @if ((Model.LoggedInUserRole == null && !Model.PublicGroup) || (Model.GroupUserStatus != GroupUserStatus.Joined && Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName != Constants.AdminRoleName && !Model.PublicGroup)) {
+        <p>@Html.LanguageString("Group.PermissionDenied")</p>
+    } else if (Model.GroupUserStatus == GroupUserStatus.Joined || Model.PublicGroup || Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
+        if (Model.TotalCount > 0) {
+            if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
+
+                if(Model.GroupUsersPending != null & Model.GroupUsersPending.Count() != 0){
+                    <table id="group-table-pending" role="table" class="c-table">
+                        <caption class="c-table_caption">
+                            @Html.LanguageString("Members.Table.Pending")
+                        </caption>
+                        <thead role="rowgroup" class="c-table_head">
+                            <tr role="row">
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Name 
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Date joined
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Status
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="c-table_body">
+                            @foreach (var groupUser in Model.GroupUsersPending) {
+                                <tr role="row" class="c-table_row">
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Name  </span> 
+                                        <span class="u-text-theme-8 u-text-bold">@groupUser.GroupUser.User.GetFullName()</span> 
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Date joined </span>  
+                                        <span>@DatesUi.GetLongDate(groupUser.GroupUser.RequestToJoinDate.ToString())</span> 
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Status </span> 
+                                        <span>@groupUser.GroupUserStatus</span>
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Action </span> 
+                                        
+                                        <a href="@Url.Action("ApproveUser", "Group", new {groupUserId = groupUser.GroupUser.Id, slug = groupUser.GroupUser.Group.Slug})" class="c-button u-text-small">
+                                            Approve
+                                        </a>
+
+                                        <a href="@Url.Action("RejectUser", "Group", new {groupUserId = groupUser.GroupUser.Id, slug = groupUser.GroupUser.Group.Slug})" class="c-button c-button--secondary u-text-small">
+                                            Reject
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        
+                        </tbody>
+                    </table>
+                }
+            }
+                
+                if(Model.GroupAdmins != null & Model.GroupAdmins.Count() != 0){
+                    <table id="group-table-admins" role="table" class="c-table">
+                        <caption class="c-table_caption">
+                            @Html.LanguageString("Members.Table.Admins")
+                        </caption>
+                        <thead role="rowgroup" class="c-table_head">
+                            <tr role="row">
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Name 
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Date joined
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Last logged in
+                                </th>
+                                @if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
+                                    <th role="columnheader" class="c-table_th" scope="col"></th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="c-table_body">
+                            @foreach (var groupUser in Model.GroupAdmins) {
+                                <tr role="row" class="c-table_row">
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Name  </span> 
+                                        <span class="u-text-theme-8 u-text-bold">
+                                            @Html.ActionLink(groupUser.GroupUser.User.GetFullName(), "GetByName", "Members", new { slug = groupUser.GroupUser.User.Slug }, new { })
+                                        </span>
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Date joined </span>
+                                        <span>
+                                            @DatesUi.GetLongDate(groupUser.GroupUser.ApprovedToJoinDate.ToString())
+                                        </span>
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Last logged in </span>
+                                        <span>
+                                            @DatesUi.GetPrettyDate(groupUser.GroupUser.User.LastActivityDate.ToString())
+                                        </span>
+                                    </td>
+                                    @if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
+                                        <td role="cell" class="c-table_cell c-table_cell--edit">
+                                            <a class="u-text-theme-8 u-text-bold" href="@Url.Action("ManageUser", new { groupUserId = groupUser.GroupUser.Id })">
+                                                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-edit", "c-ui-icon c-ui-icon--large"));}
+                                                    Edit
+                                            </a>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                
+                
+                if(Model.GroupUsers != null & Model.GroupUsers.Count() != 0){
+                    <table id="group-table-members" role="table" class="c-table">
+                        <caption class="c-table_caption">
+                            @Html.LanguageString("Members.Table.Users")
+                        </caption>
+                        <thead role="rowgroup" class="c-table_head">
+                            <tr role="row">
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Name 
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Date joined
+                                </th>
+                                <th role="columnheader" class="c-table_th" scope="col">
+                                    Last logged in
+                                </th>
+                                @if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
+                                    <th role="columnheader" class="c-table_th" scope="col"></th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="c-table_body">
+                            @foreach (var groupUser in Model.GroupUsers) {
+                                <tr role="row" class="c-table_row">
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Name  </span> 
+                                        <span class="u-text-theme-8 u-text-bold">
+                                            @Html.ActionLink(groupUser.GroupUser.User.GetFullName(), "GetByName", "Members", new { slug = groupUser.GroupUser.User.Slug }, new { })
+                                        </span>
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Date joined </span>
+                                        <span>
+                                            @DatesUi.GetLongDate(groupUser.GroupUser.ApprovedToJoinDate.ToString())
+                                        </span>
+                                    </td>
+                                    <td role="cell" class="c-table_cell">
+                                        <span class="c-table_heading">Last logged in </span>
+                                        <span>
+                                            @DatesUi.GetPrettyDate(groupUser.GroupUser.User.LastActivityDate.ToString())
+                                        </span>
+                                    </td>
+                                    @if (Model.LoggedInUserRole != null && Model.LoggedInUserRole.RoleName == Constants.AdminRoleName) {
+                                        <td role="cell" class="c-table_cell c-table_cell--edit">
+                                            <a class="u-text-theme-8 u-text-bold" href="@Url.Action("ManageUser", new { groupUserId = groupUser.GroupUser.Id })">
+                                                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-edit", "c-ui-icon c-ui-icon--large"));}
+                                                    Edit
+                                            </a>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+            if (Model.TotalPages > 1) {
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, Model.MemberCount, null)
+            }
+
+        } else if (Model.TotalCount == 0) {
+            <p>@Html.LanguageString("Group.NoMembers")</p>
+        }
+    }
+
+</div>

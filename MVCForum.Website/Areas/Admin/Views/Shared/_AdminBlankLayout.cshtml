@@ -1,0 +1,31 @@
+﻿@using MvcForum.Web.Application
+@using SquishIt.Framework
+@using SquishIt.Mvc
+@{
+    var globalClass = Context.IsMobileDevice() ? "mobile" : "desktop";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    @Html.Partial("_AdminScripts")
+    @RenderSection("AdminHeader", false)
+</head>
+
+<body class="@globalClass">
+
+    <div class="container blankcontainer">
+
+        @Html.Partial("_GenericMessage")
+
+        <div class="row">
+            @RenderBody()
+        </div>
+
+    </div>
+
+</body>
+</html>

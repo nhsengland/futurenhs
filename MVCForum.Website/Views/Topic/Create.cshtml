@@ -1,0 +1,31 @@
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Topic.CreateEditTopicViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+    ViewBag.Title = Html.LanguageString("Topic.CreateDiscussion");
+}
+
+@section Header
+{
+    @(
+ Bundle.JavaScript().MvcRender("~/scripts/cache/topic-combined_#.js")
+    )
+    <script type="text/javascript">
+        counter = @(Model.PollAnswers != null ? Model.PollAnswers.Count : 0);
+    </script>
+}
+@section GroupHeader{
+    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.GroupSlug }); }    
+}
+
+
+        <div class="createtopicholder">
+
+            @using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Partial("_CreateEdit_TopicPost", Model)
+            }
+
+        </div>
+
