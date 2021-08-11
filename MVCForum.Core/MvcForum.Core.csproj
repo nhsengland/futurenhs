@@ -260,6 +260,7 @@
     <Compile Include="Repositories\Database\DatabaseProviders\SqlServerConnectionFactory.cs" />
     <Compile Include="Models\Entities\UploadStatus.cs" />
     <Compile Include="Repositories\Models\BreadCrumbItem.cs" />
+    <Compile Include="Repositories\Models\BreadcrumbsViewModel.cs" />
     <Compile Include="Repositories\Models\FileReadViewModel.cs" />
     <Compile Include="Repositories\Models\FolderReadViewModel.cs" />
     <Compile Include="Repositories\Repository\FileRepository.cs" />

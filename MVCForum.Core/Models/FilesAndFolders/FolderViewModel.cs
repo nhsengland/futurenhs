@@ -17,7 +17,7 @@ namespace MvcForum.Web.ViewModels.Folder
         public FolderReadViewModel Folder { get; set; }
         public List<FolderReadViewModel> ChildFolders { get; set; }
         public List<FileReadViewModel> Files { get; set; }
-        public IEnumerable<BreadCrumbItem> BreadCrumbTrail { get; set; }
+        public BreadcrumbsViewModel Breadcrumbs { get; set; }
         public string Slug { get; set; }
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }

@@ -13,6 +13,6 @@ namespace MvcForum.Core.Models.FilesAndFolders
 
         public string Slug { get; set; }
 
-        public IEnumerable<BreadCrumbItem> BreadCrumbTrail { get; set; }
+        public BreadcrumbsViewModel Breadcrumbs { get; set; }
     }
 }

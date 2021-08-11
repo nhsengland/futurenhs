@@ -25,6 +25,7 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public Guid ParentGroup { get; set; }
 
         public  bool IsDeleted { get; set; }
-        public IEnumerable<BreadCrumbItem> BreadCrumbTrail { get; set; }
+        public BreadcrumbsViewModel Breadcrumbs { get; set; }
+
     }
 }

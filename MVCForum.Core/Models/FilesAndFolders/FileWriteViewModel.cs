@@ -40,7 +40,7 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public string FileExtension { get; set; }
 
         public string FileUrl { get; set; }
-
-        public IEnumerable<BreadCrumbItem> BreadCrumbTrail { get; set; }
+        
+        public BreadcrumbsViewModel Breadcrumbs { get; set; }
     }
 }

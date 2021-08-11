@@ -42,8 +42,8 @@ namespace MvcForum.Web.Controllers
                     ParentFolder = parentId,
                     Slug = slug,
                     ParentGroup = groupId,
-                    BreadCrumbTrail = BuildBreadCrumbTrail(parentId, slug)
-            };
+                    Breadcrumbs = GetBreadcrumbs(parentId, slug, "Create folder")
+                };
                 ViewBag.HideSideBar = true;
                 return View("_CreateFolder", WriteFolder);
             }
@@ -64,7 +64,8 @@ namespace MvcForum.Web.Controllers
                     return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = newId });
                 }
                 ViewBag.HideSideBar = true;
-                folder.BreadCrumbTrail = BuildBreadCrumbTrail(folder.FolderId, folder.Slug);
+                folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug, "Create folder");
+
                 return View("_CreateFolder", folder);
             }
 
@@ -84,7 +85,7 @@ namespace MvcForum.Web.Controllers
                     Slug = slug,
                     FolderName =  result.Folder.FolderName,
                     Description = result.Folder.Description,
-                    BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug)
+                    Breadcrumbs = GetBreadcrumbs(folderId, slug)
                 };
                 ViewBag.HideSideBar = true;
                 return View("_UpdateFolder", WriteFolder);
@@ -111,7 +112,7 @@ namespace MvcForum.Web.Controllers
                     }
                 }
                 ViewBag.HideSideBar = true;
-                folder.BreadCrumbTrail = BuildBreadCrumbTrail(folder.FolderId, folder.Slug);
+                folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug);
                 return View("_UpdateFolder", folder);
             }
 
@@ -131,7 +132,7 @@ namespace MvcForum.Web.Controllers
                     Slug = slug,
                     FolderName = result.Folder.FolderName,
                     Description = result.Folder.Description,
-                    BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug)
+                    Breadcrumbs = GetBreadcrumbs(folderId, slug)
                 };
                 ViewBag.HideSideBar = true;
                 return View("_DeleteFolder", WriteFolder);
@@ -158,6 +159,7 @@ namespace MvcForum.Web.Controllers
                     }
                 }
                 ViewBag.HideSideBar = true;
+                folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug);
                 return View("_DeleteFolder", folder);
             }
 
@@ -172,7 +174,7 @@ namespace MvcForum.Web.Controllers
                 var model = _folderService.GetFolder(slug, folderId);
                 model.GroupId = groupId;
                 model.IsAdmin = _folderService.UserIsAdmin(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id);
-                model.BreadCrumbTrail = BuildBreadCrumbTrail(folderId, slug);
+                model.Breadcrumbs = GetBreadcrumbs(folderId, slug);
 
                 return PartialView("_Folders", model);
             }
@@ -180,16 +182,40 @@ namespace MvcForum.Web.Controllers
             return null;
         }
 
-        private IEnumerable<BreadCrumbItem> BuildBreadCrumbTrail(Guid? folderId, string slug)
+        /// <summary>
+        /// Generate the breadcrumbs for the folder view/create.
+        /// </summary>
+        /// <param name="folderId">Folder Id to get folder heirarchy.</param>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        private BreadcrumbsViewModel GetBreadcrumbs(Guid? folderId, string slug, string lastEntry = null)
         {
-            var list = new List<BreadCrumbItem> { new BreadCrumbItem { Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "Files" }};
+            var breadCrumbs = new BreadcrumbsViewModel() { BreadcrumbLinks = new List<BreadCrumbItem>() };
+
             if (folderId.HasValue)
             {
-                var bc = _folderService.GenerateBreadcrumbTrail(folderId.Value);
-                list.AddRange(bc.Select(b => new BreadCrumbItem {Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupFilesTab, folder = b.Id})}));
-            }
+                // Only add the root item if there is a folder Id, if it's null then we're at the root folder and no need to show breadcrumbs
+                breadCrumbs.BreadcrumbLinks.Add(new BreadCrumbItem() { Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "Files" });
 
-            return list;
+                var bc = _folderService.GenerateBreadcrumbTrail(folderId.Value);
+
+                if(bc != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(lastEntry))
+                    {
+                        // Last entry not passed in use all the folder heirarchy as links with last entry - add only
+                        breadCrumbs.BreadcrumbLinks.AddRange(bc.Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
+                        breadCrumbs.LastEntry = lastEntry;
+                    }
+                    else
+                    {
+                        // Exclude the last folder as this is the folder being viewed and should not be clickable, add last folder as non clickable
+                        breadCrumbs.BreadcrumbLinks.AddRange(bc.Take(bc.Count() - 1).Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
+                        breadCrumbs.LastEntry = bc.Last().Name;
+                    }
+                }
+            }
+            return breadCrumbs;
         }
     }
 }

@@ -2,30 +2,8 @@
 @model MvcForum.Web.ViewModels.Folder.FolderViewModel
 
 <div>
-    @{
-        var count = 1;
-        if (Model.BreadCrumbTrail != null && Model.BreadCrumbTrail.Count() != count)
-        {
-            foreach (var breadCrumb in Model.BreadCrumbTrail)
-            {
-                var lastEntry = count == Model.BreadCrumbTrail.Count();
-                if (!lastEntry)
-                {
+    @{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
 
-                    <a href=@breadCrumb.Url class="u-text-small">
-                        @breadCrumb.Name &rsaquo;
-                    </a>
-                }
-                else
-                {
-                    <a class="u-text-small u-text-theme-0">
-                        @breadCrumb.Name
-                    </a>
-                }
-                count++;
-            }
-        }
-    }
     <div class="c-section-break"></div>
 
     @if (Model.Folder != null)

@@ -1188,6 +1188,7 @@
     <Content Include="Views\Shared\_GroupHeader.cshtml" />
     <Content Include="Views\GroupFile\Update.cshtml" />
     <Content Include="Views\GroupFile\Delete.cshtml" />
+    <Content Include="Views\Shared\_Breadcrumbs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

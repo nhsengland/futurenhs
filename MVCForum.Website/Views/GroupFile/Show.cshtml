@@ -11,22 +11,7 @@
     @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
 }
 
-@{
-    if (Model.BreadCrumbTrail.Count() > 0)
-    {
-        foreach (var breadCrumb in Model.BreadCrumbTrail)
-        {
-
-				<a href=@breadCrumb.Url class="u-text-small">
-					@breadCrumb.Name &rsaquo;
-				</a>
-
-        }
-		<a class="u-text-small u-text-theme-0">
-			@Model.File.Title
-		</a>
-    }
-}
+@{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
 
 <h2>@Html.DisplayFor(model => model.File.Title)</h2>
 <hr>
