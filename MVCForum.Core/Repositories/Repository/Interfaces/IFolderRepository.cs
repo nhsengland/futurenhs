@@ -30,7 +30,7 @@ namespace MvcForum.Core.Repositories.Repository.Interfaces
         /// <param name="page">page number to get results for</param>
         /// <param name="pageSize">number of results per page</param>
         /// <returns>A paginated list of folder meta data</returns>
-        PaginatedList<FolderReadViewModel> GetRootFoldersForGroup(string groupSlug, int page = 1, int pageSize = 10);
+        PaginatedList<FolderReadViewModel> GetRootFoldersForGroup(string groupSlug, int page = 1, int pageSize = 999);
 
         /// <summary>
         /// Gets folders based on parent Id
@@ -39,7 +39,7 @@ namespace MvcForum.Core.Repositories.Repository.Interfaces
         /// <param name="page">page number to get results for</param>
         /// <param name="pageSize">number of results per page</param>
         /// <returns>A paginated list of folder meta data</returns>
-        PaginatedList<FolderReadViewModel> GetChildFoldersForFolder(Guid parentFolderId, int page = 1, int pageSize = 10);
+        PaginatedList<FolderReadViewModel> GetChildFoldersForFolder(Guid parentFolderId, int page = 1, int pageSize = 999);
 
         /// <summary>
         /// Returns a boolean indicating if the user is either a Site Admin or Group Admin
