@@ -1,6 +1,7 @@
 ﻿using System;
 using CommonServiceLocator;
 using Microsoft.Ajax.Utilities;
+using MvcForum.Core.Constants;
 using MvcForum.Web.ViewModels.Shared;
 using MvcForum.Web.ViewModels.Topic;
 using Constants = MvcForum.Core.Constants.Constants;
@@ -34,6 +35,7 @@ namespace MvcForum.Web.Controllers
         private readonly IRoleService _roleService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
+        private readonly IFeatureManager _featureManager;
 
         /// <summary>
         ///     Constructor
@@ -58,7 +60,7 @@ namespace MvcForum.Web.Controllers
             ICacheService cacheService,
             IPostService postService,
             IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
-            IMvcForumContext context, INotificationService notificationService)
+            IMvcForumContext context, INotificationService notificationService, IFeatureManager featureManager)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
@@ -70,6 +72,7 @@ namespace MvcForum.Web.Controllers
             _notificationService = notificationService;
             _postService = postService;
             _roleService = roleService;
+            _featureManager = featureManager;
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
@@ -239,16 +242,48 @@ namespace MvcForum.Web.Controllers
         /// <returns>View model for the group tabs <see cref="TabViewModel"/>.</returns>
         public TabViewModel GetGroupTabsModel(string slug)
         {
-            var forumTab = new Tab { Name = "GroupTabs.Forum", Order = 2, Icon = Icons.Forum };
-            forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab>( )};
 
-            var membersTab = new Tab { Name = "GroupTabs.Members", Order = 3, Icon = Icons.Members };
-            membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
+            var homeTab = new Tab
+            {
+                Name = "GroupTabs.Home",
+                Order = 1,
+                Icon = Icons.Home,
+                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = UrlParameter.Optional})}"
+            };
+            tabsViewModel.Tabs.Add(homeTab);
 
-            var homeTab = new Tab { Name = "GroupTabs.Home", Order = 1, Icon = Icons.Home };
-            homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}";
+            var forumTab = new Tab
+            {
+                Name = "GroupTabs.Forum",
+                Order = 2,
+                Icon = Icons.Forum,
+                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupForumTab})}"
+            };
+            tabsViewModel.Tabs.Add(forumTab);
 
-            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab } };
+            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                var filesTab = new Tab
+                {
+                    Name = "GroupTabs.Files",
+                    Order = 3,
+                    Icon = Icons.File,
+                    Url = $"{Url.RouteUrl("GroupUrls", new {slug, tab = Constants.GroupFilesTab})}"
+                };
+                tabsViewModel.Tabs.Add(filesTab);
+            }
+
+            var membersTab = new Tab
+            {
+                Name = "GroupTabs.Members",
+                Order = 4,
+                Icon = Icons.Members,
+                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupMembersTab})}"
+            };
+            tabsViewModel.Tabs.Add(membersTab);
+
+
 
             return tabsViewModel;
         }
@@ -258,48 +293,11 @@ namespace MvcForum.Web.Controllers
             var viewModel = new GroupHomeCardsViewModel 
             { 
                 ForumCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab }), Name = "Join in the conversation" },
-                MembersCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab }), Name = "Meet the members" }
+                MembersCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab }), Name = "Meet the members" },
+                FilesCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "View Files" },
             };
 
             return PartialView("_GroupHomeCards", viewModel);
-
-        }
-
-        [ChildActionOnly]
-        public virtual PartialViewResult GetGroupTabs(string activeTab, string slug)
-        {
-
-            var activeTabFound = false;
-            var forumTab = new Tab { Name = "GroupTabs.Forum", Order = 2 ,Icon = Icons.Forum};
-            if (activeTab == Constants.GroupForumTab)
-            {
-                forumTab.Active = true;
-                activeTabFound = true;
-            }
-
-            forumTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}";
-
-            var membersTab = new Tab { Name = "GroupTabs.Members", Order = 3, Icon = Icons.Members };
-            if (activeTab == Constants.GroupMembersTab)
-            {
-                membersTab.Active = true;
-                activeTabFound = true;
-            }
-
-            membersTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}";
-
-
-            var homeTab = new Tab { Name = "GroupTabs.Home", Order = 1, Icon = Icons.Home };
-            if (!activeTabFound)
-            {
-                homeTab.Active = true;
-            }
-
-            homeTab.Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}";
-
-            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab } };
-
-            return PartialView("_TabsMenu", tabsViewModel);
         }
 
         [ChildActionOnly]
@@ -402,7 +400,7 @@ namespace MvcForum.Web.Controllers
             return PartialView("_Topics", topicViewModels);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int? p, string tab = null)
+        public virtual async Task<ActionResult> Show(string slug, int? p, string tab = null, Guid? folder = null)
         {
 
             // Get the Group
@@ -430,7 +428,8 @@ namespace MvcForum.Web.Controllers
                     GroupUserRole = GetGroupMembershipRole(group.Group.Id),
                     IsSubscribed = User.Identity.IsAuthenticated && _notificationService
                                        .GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
-                    Tab = tab
+                    Tab = tab,
+                    Folder = folder
                 };
 
                 if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName)
@@ -459,20 +458,26 @@ namespace MvcForum.Web.Controllers
                     viewModel.GroupUserStatus = GetUserStatusForGroup(user);
                 }
 
-                var pageHeader = new PageViewModel();
-                pageHeader.Name = group.Group.Name;
-                pageHeader.Description = group.Group.Description;
-                pageHeader.Colour = group.Group.Colour;
-                pageHeader.HeaderTabs = GetGroupTabsModel(slug);
-                pageHeader.Image = group.Group.Image;
-                pageHeader.Id = group.Group.Id;
+                if (tab == Constants.GroupMembersTab)
+                {
+                    ViewBag.HideSideBar = true;
+                }
 
-                ViewBag.PageHeader =  pageHeader;
+                if (tab == Constants.GroupFilesTab)
+                {
+                    ViewBag.HideSideBar = true;
+                }
 
                 return View(viewModel);
             }
 
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+        }
+
+        [ChildActionOnly]
+        public virtual PartialViewResult GetGroupFiles(Guid groupId, int? p)
+        {
+            return PartialView("_Files", null);
         }
 
         [ChildActionOnly]

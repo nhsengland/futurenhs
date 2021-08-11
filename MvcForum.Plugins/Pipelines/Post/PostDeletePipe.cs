@@ -117,7 +117,7 @@
                             var mapped = HostingEnvironment.MapPath(filePath);
                             if (mapped != null)
                             {
-                                File.Delete(mapped);
+                                System.IO.File.Delete(mapped);
                             }
                         }
                     }

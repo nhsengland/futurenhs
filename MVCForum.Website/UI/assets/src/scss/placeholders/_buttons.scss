@@ -235,7 +235,7 @@ $button-shadow-size: 4px;
 }
 
 %toggle-button {
-    background-color: transparent;
+    background-color: $nhsuk-reverse-button-color;
     color: $color_nhsuk-blue;
     border: 2px solid $color_nhsuk-blue;
     border-radius: $nhsuk-border-radius;

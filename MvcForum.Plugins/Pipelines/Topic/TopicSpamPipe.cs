@@ -125,15 +125,7 @@
                     // Get the Current user from ExtendedData
                     var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
                     var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
-                    if (loggedOnUser != null)
-                    {
-                        if (!_topicService.PassedTopicFloodTest(input.EntityToProcess.Name, loggedOnUser))
-                        {
-                            input.AddError(_localizationService.GetResourceString("Spam.FloodTestFailed"));
-                            return input;
-                        }
-                    }
-                    else
+                    if (loggedOnUser == null)
                     {
                         input.AddError("Unable to get user from username");
                         return input;

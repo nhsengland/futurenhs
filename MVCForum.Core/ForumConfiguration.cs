@@ -53,13 +53,14 @@
         ///     Paging options - Amount per page on different pages.
         /// </summary>
         public int PagingGroupSize => Convert.ToInt32(GetConfig("PagingGroupSize"));
-
+        public int NoScriptReplyCount => Convert.ToInt32(GetConfig("NoScriptReplyCount"));
         public int AdminListPageSize => Convert.ToInt32(GetConfig("AdminListPageSize"));
         public int ActiveTopicsListSize => Convert.ToInt32(GetConfig("ActiveTopicsListSize"));
         public int SearchListSize => Convert.ToInt32(GetConfig("SearchListSize"));
         public int MembersActivityListSize => Convert.ToInt32(GetConfig("MembersActivityListSize"));
         public int PrivateMessageListSize => Convert.ToInt32(GetConfig("PrivateMessageListSize"));
         public int SimilarTopicsListSize => Convert.ToInt32(GetConfig("SimilarTopicsListSize"));
+        public int PagingRepliesSize => Convert.ToInt32(GetConfig("PagingRepliesSize"));
 
         /// <summary>
         ///     Post Settings

@@ -8,6 +8,36 @@ beforeEach(() => {
 
 describe('GTM data layer helper', () => {
 
+    it('Throws if the event name is not provided', () => {
+
+        expect(() => { pushgtmDataLayerEvent('', 'mockId', {
+            'mockMetaProperty': 'mock'
+        })}).toThrowError();
+
+    });
+
+    it('Throws if the event id is not provided', () => {
+
+        expect(() => { pushgtmDataLayerEvent('mockEvent', undefined, {
+            'mockMetaProperty': 'mock'
+        })}).toThrowError();
+
+    });
+
+    it('Creates an empty dataLayer of it doesn\'t already exist', () => {
+
+        window.dataLayer = undefined;
+
+        pushgtmDataLayerEvent('mockEvent', 'mockId');
+
+        expect(window.dataLayer).toHaveLength(1);
+        expect(window.dataLayer[0]).toStrictEqual({
+            event: 'mockEvent',
+            id: 'mockId'
+        });
+
+    });
+
     it('Pushes an event to the data layer', () => {
 
         expect(window.dataLayer).toStrictEqual([]);
@@ -18,6 +48,19 @@ describe('GTM data layer helper', () => {
         expect(window.dataLayer[0]).toStrictEqual({
             event: 'mockEvent',
             id: 'mockId'
+        });
+
+    });
+
+    it('Omits the id from the event if not supplied', () => {
+
+        expect(window.dataLayer).toStrictEqual([]);
+
+        pushgtmDataLayerEvent('mockEvent', '');
+
+        expect(window.dataLayer).toHaveLength(1);
+        expect(window.dataLayer[0]).toStrictEqual({
+            event: 'mockEvent'
         });
 
     });

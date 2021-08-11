@@ -1,12 +1,8 @@
 ﻿namespace MvcForum.Web.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Web.Mvc;
     using Core;
     using Core.Constants;
+    using Core.Constants.UI;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -14,11 +10,17 @@
     using Core.Models.Enums;
     using Core.Models.General;
     using Core.Utilities;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
     using ViewModels;
     using ViewModels.Breadcrumb;
     using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;
     using ViewModels.Post;
+    using ViewModels.Shared;
     using ViewModels.Topic;
 
     public partial class TopicController : BaseController
@@ -279,10 +281,13 @@
             var loggedOnUsersRole = GetGroupMembershipRole(groupId);
             var allowedAccessGroups = AllowedCreateGroups(loggedOnUsersRole);
 
+            var group = _groupService.Get(groupId);
+
             if (allowedAccessGroups.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessGroups);
                 viewModel.Group = groupId;
+                viewModel.GroupSlug = group.Slug;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -303,16 +308,16 @@
             var loggedOnUsersRole = GetGroupMembershipRole(topicViewModel.Group);
 
             // Get the Group
-            var Group = _groupService.Get(topicViewModel.Group);
+            var group = _groupService.Get(topicViewModel.Group);
 
             // First check this user is allowed to create topics in this Group
-            var permissions = RoleService.GetPermissions(Group, loggedOnUsersRole);
+            var permissions = RoleService.GetPermissions(group, loggedOnUsersRole);
 
             // Now we have the Group and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedGroups
             topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            topicViewModel.Groups =
-                _groupService.GetBaseSelectListGroups(AllowedCreateGroups(loggedOnUsersRole), LoggedOnReadOnlyUser?.Id);
+            topicViewModel.Groups = _groupService.GetBaseSelectListGroups(AllowedCreateGroups(loggedOnUsersRole), LoggedOnReadOnlyUser?.Id);
+            topicViewModel.GroupSlug = group.Slug;
             topicViewModel.IsTopicStarter = true;
             if (topicViewModel.PollAnswers == null)
             {
@@ -324,13 +329,13 @@
                 // See if the user has actually added some content to the topic
                 if (string.IsNullOrWhiteSpace(topicViewModel.Content))
                 {
-                    ModelState.AddModelError(string.Empty,
-                        LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    ModelState.AddModelError("Content",
+                        LocalizationService.GetResourceString("This field is required"));
                 }
                 else
                 {
                     // Map the new topic (Pass null for new topic)
-                    var topic = topicViewModel.ToTopic(Group, loggedOnUser, null);
+                    var topic = topicViewModel.ToTopic(group, loggedOnUser, null);
 
                     // Run the create pipeline
                     var createPipeLine = await _topicService.Create(topic, topicViewModel.Files, topicViewModel.Tags,
@@ -577,18 +582,15 @@
             return View(editPostViewModel);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int? p)
+        public virtual async Task<ActionResult> Show(string slug, int p = 1, Guid? threadId = null)
         {
             // Set the page index
-            var pageIndex = p ?? 1;
-
-            User.GetMembershipUser(MembershipService);
-           
+            var pageIndex = p <= 0 ? 1 : p;
 
             // Get the topic
             var topic = _topicService.GetTopicBySlug(slug);
-
-
+            
+            ViewBag.HideSideBar = true;
 
             if (topic != null)
             {
@@ -648,6 +650,56 @@
                     starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser,
                     settings, _notificationService, _pollService, votes, favourites, true);
 
+                // Set the details for the logged in user.
+                var currentUser = User.GetMembershipUser(MembershipService);
+
+                viewModel.LoggedInUsersName = "Unknown";
+                viewModel.LoggedInUsersUrl = string.Empty;
+
+                if (currentUser != null)
+                {
+                    viewModel.LoggedInUsersName = currentUser.GetFullName();
+                    viewModel.LoggedInUsersUrl = currentUser.NiceUrl;
+                }
+
+                viewModel.CanViewTopic = topic.Group.PublicGroup;
+                if (!viewModel.CanViewTopic && LoggedOnReadOnlyUser != null) {
+                    var user = topic.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
+                    viewModel.CanViewTopic = loggedOnUsersRole.RoleName == Constants.AdminRoleName
+                        || (GetUserStatusForGroup(user) == GroupUserStatus.Joined); 
+                }
+                
+                viewModel.TotalComments = _postService.TopicPostCount(viewModel.Topic.Id);
+                foreach (var post in viewModel.Posts) 
+                {
+                    post.PageIndex = pageIndex;
+                    post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, SettingsService.GetSettings().PostsPerPage);
+
+                    if (threadId.HasValue && post.Post.Id == threadId.Value)
+                    {
+                        var replyCount = _postService.GetPostCountForThread(post.Post.Id);
+                        post.Replies = new PaginatedList<Post>(new List<Post>(), replyCount, (int)Math.Ceiling(replyCount/(double)ForumConfiguration.Instance.PagingRepliesSize), ForumConfiguration.Instance.PagingRepliesSize);
+                        post.IsFocusThread = true;
+                    }
+                    else
+                    {
+                        post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, ForumConfiguration.Instance.PagingRepliesSize);
+                        post.IsFocusThread = false;
+                    }
+
+                    // TODO set the page index on the other replies when show more button is working (non JS already done)
+
+                    var latestPost = _postService.GetLatestPostForThread(post.Post.Id, orderBy);
+                    if (latestPost != null)
+                    {
+                        post.LatestReply = ViewModelMapping.CreatePostViewModel(latestPost, latestPost.Votes.ToList(),
+                            permissions, topic, LoggedOnReadOnlyUser,
+                            settings, new List<Favourite>());
+
+                        post.LatestReply.PageIndex = pageIndex;
+                    }
+                }
+
                 // If there is a quote querystring
                 var quote = Request["quote"];
                 if (!string.IsNullOrWhiteSpace(quote))
@@ -659,6 +711,7 @@
                         viewModel.QuotedPost = postToQuote.PostContent;
                         viewModel.ReplyTo = postToQuote.Id;
                         viewModel.ReplyToUsername = postToQuote.User.UserName;
+                        viewModel.ReplyToUsernameUrl = postToQuote.User.NiceUrl;
                     }
                     catch (Exception ex)
                     {
@@ -675,6 +728,8 @@
                         var toReply = _postService.Get(new Guid(reply));
                         viewModel.ReplyTo = toReply.Id;
                         viewModel.ReplyToUsername = toReply.User.UserName;
+                        viewModel.ReplyToUsernameUrl = toReply.User.NiceUrl;
+                        viewModel.Thread = toReply.ThreadId != null ? toReply.ThreadId : toReply.Id;
                     }
                     catch (Exception ex)
                     {
@@ -726,6 +781,27 @@
                     }
                 }
 
+                // Create the view model for new post here rather than in view so we can set error if any (also nicer from a view perspective)
+                viewModel.NewPostViewModel = 
+                    new CreateAjaxPostViewModel()
+                    {
+                        Topic = viewModel.Topic.Id,
+                        DisablePosting = viewModel.DisablePosting,
+                        PostContent = viewModel.QuotedPost,
+                        InReplyTo = viewModel.ReplyTo,
+                        ReplyToUsername = viewModel.ReplyToUsername,
+                        CurrentUser = viewModel.LoggedInUsersName,
+                        CurrentUserUrl = viewModel.LoggedInUsersUrl,
+                        ReplyToUsernameUrl = viewModel.ReplyToUsernameUrl,
+                        Thread = viewModel.Thread
+                    };
+
+                if (TempData["NewPostError"] != null && !string.IsNullOrWhiteSpace(TempData["NewPostError"].ToString()))
+                {
+                    viewModel.NewPostViewModel.Error = TempData["NewPostError"].ToString();
+                    TempData["NewPostError"] = null;
+                }
+
                 return View(viewModel);
             }
 
@@ -733,7 +809,7 @@
         }
 
         [HttpPost]
-        public virtual PartialViewResult AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
+        public virtual async Task<PartialViewResult> AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
         {
             User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -768,7 +844,106 @@
                 Permissions = permissions
             };
 
+            foreach (var post in viewModel.Posts)
+            {
+                post.Replies = new PaginatedList<Post>(new List<Post>(), _postService.GetPostCountForThread(post.Post.Id) - 1, 0, ForumConfiguration.Instance.PagingRepliesSize);
+                var latestPost = _postService.GetLatestPostForThread(post.Post.Id, orderBy);
+                if (latestPost != null)
+                {
+                    post.LatestReply = ViewModelMapping.CreatePostViewModel(latestPost, latestPost.Votes.ToList(),
+                        permissions, topic, LoggedOnReadOnlyUser,
+                        settings, new List<Favourite>());
+                }
+            }
+
             return PartialView(viewModel);
+        }
+
+        [HttpPost]
+        public virtual PartialViewResult AjaxMorePostsForThread(GetMorePostsViewModel getMorePostsViewModel)
+        {
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+
+            // Get the topic
+            var thread = _postService.Get(getMorePostsViewModel.TopicId);
+            var settings = SettingsService.GetSettings();
+
+            // Get the permissions for the Group that this topic is in
+            var permissions = RoleService.GetPermissions(thread.Topic.Group, loggedOnUsersRole);
+
+            // If this user doesn't have access to this topic then just return nothing
+            if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
+            {
+                return null;
+            }
+
+            var orderBy = !string.IsNullOrWhiteSpace(getMorePostsViewModel.Order)
+                ? EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order)
+                : PostOrderBy.Standard;
+
+            var posts = Task.Run(() => _postService.GetPagedPostsByThread(getMorePostsViewModel.PageIndex,
+                ForumConfiguration.Instance.PagingRepliesSize, int.MaxValue, getMorePostsViewModel.TopicId, orderBy)).Result;
+            var postIds = posts.Select(x => x.Id).ToList();
+            var votes = _voteService.GetVotesByPosts(postIds);
+            var favs = _favouriteService.GetAllPostFavourites(postIds);
+            var viewModel = new ShowMorePostsViewModel
+            {
+                Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, thread.Topic,
+                    LoggedOnReadOnlyUser, settings, favs),
+                Topic = thread.Topic,
+                Permissions = permissions
+            };
+
+            return PartialView(viewModel);
+        }
+
+        public PartialViewResult GetNoScriptRepliesForThread(Post thread, int p = 1)
+        {
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+
+            // Skip the first one as we already get this as a latest post
+            List<Post> posts = _postService.GetPostsByThread(thread.Id).Skip(1).Take(ForumConfiguration.Instance.NoScriptReplyCount).ToList();
+
+            var permissions = RoleService.GetPermissions(thread.Topic.Group, loggedOnUsersRole);
+            var postIds = posts.Select(x => x.Id).ToList();
+            var votes = _voteService.GetVotesByPosts(postIds);
+            var favs = _favouriteService.GetAllPostFavourites(postIds);
+            var viewModel = new ShowMorePostsViewModel
+            {
+                Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, thread.Topic,
+                    LoggedOnReadOnlyUser, SettingsService.GetSettings(), favs),
+                PageIndex = p,
+            };
+
+            foreach (var post in viewModel.Posts)
+            {
+                post.PageIndex = p;
+            }
+
+            return PartialView("AjaxMorePosts", viewModel);
+        }
+
+        public PartialViewResult GetAllRepliesForThread(Post thread)
+        {
+            User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+
+            // Skip the first one as we already get this as a latest post
+            List<Post> posts = _postService.GetPostsByThread(thread.Id).ToList();
+
+            var permissions = RoleService.GetPermissions(thread.Topic.Group, loggedOnUsersRole);
+            var postIds = posts.Select(x => x.Id).ToList();
+            var votes = _voteService.GetVotesByPosts(postIds);
+            var favs = _favouriteService.GetAllPostFavourites(postIds);
+            var viewModel = new ShowMorePostsViewModel
+            {
+                Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, thread.Topic,
+                    LoggedOnReadOnlyUser, SettingsService.GetSettings(), favs)
+            };
+
+            return PartialView("AjaxMorePosts", viewModel);
         }
 
         public virtual async Task<ActionResult> TopicsByTag(string tag, int? p)
@@ -930,5 +1105,31 @@
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
             return loggedOnUsersRole.RoleName == MvcForum.Core.Constants.Constants.AdminRoleName ? loggedOnUsersRole : role;
         }
+
+        private GroupUserStatus GetUserStatusForGroup(GroupUser user)
+        {
+            if (user == null) {
+                return GroupUserStatus.NotJoined;
+            }
+
+            if (user.Approved && !user.Banned && !user.Locked) {
+                return GroupUserStatus.Joined;
+            }
+
+            if (!user.Approved && !user.Banned && !user.Locked && !user.Rejected) {
+                    return GroupUserStatus.Pending;
+            }
+
+            if (user.Approved && user.Banned && !user.Locked) {
+                return GroupUserStatus.Banned;
+            }
+
+            if (user.Approved && !user.Banned && user.Locked) {
+                return GroupUserStatus.Locked;
+            }
+
+            return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
+        }
+
     }
 }

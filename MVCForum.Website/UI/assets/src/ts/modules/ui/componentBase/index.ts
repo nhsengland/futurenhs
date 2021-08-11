@@ -2,7 +2,6 @@
 import fetchHelpers from '@utilities/fetch';
 const EventEmitter = require('events');
 
-
 EventEmitter.defaultMaxListeners = 100;
 
 /**

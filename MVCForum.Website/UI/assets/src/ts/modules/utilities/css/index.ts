@@ -3,9 +3,9 @@
  */
 export const hasPrefersReducedMotionEnabled: Function = (): boolean => {
 
-    const query: MediaQueryList = window?.matchMedia('(prefers-reduced-motion: reduce)');
+    const query: MediaQueryList = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    return Boolean(query?.matches);
+    return Boolean(query.matches);
 
 }
 
@@ -21,9 +21,15 @@ export const isSmoothScrollSupported: Function = (): boolean => {
 /**
  * Scrolls to a page position, using animation when appropriate
  */
-export const fancyScrollTo: Function = (offSet: number): void => {
+export const fancyScrollTo: Function = (offSet: number, dependencies?: {
+    isSmoothScrollSupported: () => Boolean;
+    hasPrefersReducedMotionEnabled: () => Boolean;
+}): void => {
 
-    if(isSmoothScrollSupported() && !hasPrefersReducedMotionEnabled()){
+    const isSmoothScrollSupportedToUse = dependencies?.isSmoothScrollSupported ?? isSmoothScrollSupported;
+    const hasPrefersReducedMotionEnabledToUse = dependencies?.hasPrefersReducedMotionEnabled ?? hasPrefersReducedMotionEnabled;
+
+    if(isSmoothScrollSupportedToUse() && !hasPrefersReducedMotionEnabledToUse()){
 
         window.scrollTo({
             top: offSet,

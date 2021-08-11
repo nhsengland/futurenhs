@@ -3,12 +3,24 @@ import { FetchOptions } from '@appTypes/fetch';
 /**
  * Returns a default options object to use for JSON fetch requests
  */
-export const setFetchOptions = (method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', customHeaders: any = {}, etag?: string, body?: any, contentType?: string): FetchOptions => {
+export const setFetchOptions = (config: {
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'; 
+    customHeaders?: any; 
+    etag?: string; 
+    body?: any; 
+    contentType?: string;
+}): FetchOptions => {
+
+    const method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = config.method;
+    const customHeaders: any = config.customHeaders ?? {};
+    const etag: string = config.etag ?? '*';
+    const body: any = config.body;
+    const contentType: string = config.contentType ?? 'application/json';
 
     const headers: Headers = new Headers(Object.assign({}, {
         'Accept': 'application/json',
-        'Content-Type': contentType ?? 'application/json',
-        'If-Match': etag ?? '*'
+        'Content-Type': contentType,
+        'If-Match': etag
     }, customHeaders));
 
     if (method !== 'GET') {
@@ -36,7 +48,16 @@ export const setFetchOptions = (method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELE
 /**
  * Generic wrapper for Fetch which will reject on timeOut
  */
-export const fetchWithTimeOut = (url: string, options: FetchOptions, timeOut: number): Promise<any> => {
+export const fetchWithTimeOut = (config: {
+    url: string; 
+    options: FetchOptions; 
+    timeOut: number;
+}, dependencies?: {
+    fetch: any
+}): Promise<any> => {
+
+    const { url, options, timeOut } = config;
+    const fetch: any = dependencies?.fetch ?? window.fetch;
 
     return Promise.race([
         fetch(url, options).then((response: any) => {
@@ -58,21 +79,29 @@ export const fetchWithTimeOut = (url: string, options: FetchOptions, timeOut: nu
 /**
  * Custom wrapper for Fetch to abstract error handling and JSON parsing
  */
-export const fetchData = (url: string, options: FetchOptions, timeOut: number): Promise<any> => {
+export const fetchData = (config: {
+    url: string; 
+    options: FetchOptions; 
+    timeOut: number;
+    dataType?: string;
+}): Promise<any> => {
 
-    return fetchWithTimeOut(url, options, timeOut)
+    const { options, dataType } = config;
+
+    return fetchWithTimeOut(config)
         .then((response: any) => {
 
             /**
              * Parse and return
              */
-            return response?.text().then((text: string) => {
+            return response.text().then((text: string) => {
                 
                 if(!text.trim()){
                     return null;
                 }
 
-                if(options.contentType === 'text/html') {
+                if(dataType === 'html') {
+                    
                     return text;
                 }
 
@@ -89,7 +118,6 @@ export const fetchData = (url: string, options: FetchOptions, timeOut: number): 
                 }
 
                 return parsedResponse;
-
 
             });
 

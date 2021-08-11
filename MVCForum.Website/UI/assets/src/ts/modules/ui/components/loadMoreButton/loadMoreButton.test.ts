@@ -7,13 +7,12 @@ const requestId = 'someid123';
 const requestIndex = 1;
 const loadMoreButtonId = 'loadMoreId';
 const mockHtmlResponse  = '<div>some post</div>';
-const getPostCommentsURL = `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex + 1}`;
-const getLatestTopicsURL = `/group/LoadMoreTopics?groupid=${requestId}&p=${requestIndex + 1}`;
+const mockSetFetchOptionsResponse = { contentType: 'text/html' };  
 
 beforeEach(() => {
 
     fetchHelpersMock = {
-        setFetchOptions: jest.fn(),
+        setFetchOptions: jest.fn(() => mockSetFetchOptionsResponse ),
         fetchData: jest.fn(() => Promise.resolve(mockHtmlResponse)),
         fetchWithTimeOut: jest.fn(),
         getErrorMessageString: jest.fn(() => 'Error')    
@@ -42,25 +41,6 @@ beforeEach(() => {
 
 describe('Load more button', () => {
 
-    it('When JS is enabled displays the button by removing the hidden utility class', () => {
-
-        const appendTargetElement = document.getElementById(mockAppendTargetId); 
-        const buttonElement = <HTMLButtonElement>document.getElementById(loadMoreButtonId);
-        
-        new LoadMoreButton({
-            fetchUrl: '',
-            requestIndex: 1,
-            maximRequests: 2,
-            appendTargetElement: appendTargetElement,
-            wrapperSelector: buttonElement
-        }, {
-            fetchHelpers: fetchHelpersMock
-        });
-
-        expect(buttonElement.classList.contains('u-hidden')).toBeFalsy();
-        
-    });
-
     it('Hides the button when there are no more posts to fetch', () => {
 
         const appendTargetElement = document.getElementById(mockAppendTargetId); 
@@ -68,7 +48,7 @@ describe('Load more button', () => {
         buttonElement.setAttribute('data-maxim-requests','1');
 
         new LoadMoreButton({
-            fetchUrl: '',
+            getFetchUrl: ()=>'',
             requestIndex: 2,
             maximRequests: 1,
             appendTargetElement: appendTargetElement,
@@ -87,7 +67,7 @@ describe('Load more button', () => {
         const buttonElement = <HTMLButtonElement>document.getElementById(loadMoreButtonId);
         
         new LoadMoreButton({
-            fetchUrl: '',
+            getFetchUrl: ()=>'',
             requestIndex: 1,
             maximRequests: 2,
             appendTargetElement: appendTargetElement,
@@ -118,7 +98,7 @@ describe('Load more button', () => {
         const buttonElement = <HTMLButtonElement>document.getElementById(loadMoreButtonId);
         
         new LoadMoreButton({
-            fetchUrl: testUrl,
+            getFetchUrl: () => testUrl,
             requestIndex: 1,
             maximRequests: 2,
             appendTargetElement: appendTargetElement,
@@ -131,7 +111,14 @@ describe('Load more button', () => {
 
         setTimeout(() => {
 
-            expect(fetchHelpersMock.fetchData).toBeCalledWith(testUrl, expect.anything(),expect.anything());
+            expect(fetchHelpersMock.fetchData).toBeCalledWith({
+                dataType: 'html',
+                options: {
+                    contentType: 'text/html'
+                },
+                timeOut: 60000,
+                url: testUrl
+            });
 
             done();
 

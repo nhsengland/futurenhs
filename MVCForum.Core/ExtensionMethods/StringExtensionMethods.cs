@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Globalization;
     using System.Net;
     using System.Text;
     using Utilities;
@@ -107,14 +108,8 @@
         /// <returns>The string with capitalised first letter of each word.</returns>
         public static string CapitaliseEachWord(this string sentence)
         {
-            string result = String.Empty;
-            string[] words = sentence.Split(null);
-            foreach (var word in words)
-            {
-                result += word.Replace(word[0].ToString(), word[0].ToString().ToUpper()) + " ";
-            }
-
-            return result.Trim();
+            TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+            return ti.ToTitleCase(sentence).Trim();
         }
 
         #region Private Methods

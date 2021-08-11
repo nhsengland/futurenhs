@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Core.Models.Entities;
     using Core.Models.General;
+    using MvcForum.Core;
     using Poll;
     using Post;
 
@@ -12,6 +13,7 @@
         public Topic Topic { get; set; }
         public PermissionSet Permissions { get; set; }
         public bool MemberIsOnline { get; set; }
+        public bool CanViewTopic { get; set; }
 
         // Poll
         public PollViewModel Poll { get; set; }
@@ -24,7 +26,7 @@
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
         public string LastPostPermaLink { get; set; }
-
+        public int? TotalComments { get; set; }
         // Permissions
         public bool DisablePosting { get; set; }
 
@@ -41,7 +43,9 @@
 
         public Guid? ReplyTo { get; set; }
         public string ReplyToUsername { get; set; }
+        public string ReplyToUsernameUrl { get; set; }
 
+        public Guid? Thread { get; set; }
         // Stats
         public int Answers { get; set; }
 
@@ -49,5 +53,29 @@
 
         // Misc
         public bool ShowUnSubscribedLink { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the logged in user.
+        /// </summary>
+        public string LoggedInUsersName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the profile Url of the logged in user.
+        /// </summary>
+        public string LoggedInUsersUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the view model to create a post
+        /// </summary>
+        public CreateAjaxPostViewModel NewPostViewModel { get; set; }
+
+        /// <summary>
+        /// Determine if the add comment view should be shown.
+        /// </summary>
+        /// <returns></returns>
+        public bool CanAddComment()
+        {
+            return !Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Topic.Group.IsLocked;
+        }
     }
 }

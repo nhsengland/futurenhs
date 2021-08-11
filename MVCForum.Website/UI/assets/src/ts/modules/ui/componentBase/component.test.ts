@@ -22,5 +22,15 @@ describe('UI Component Base', () => {
 
     });
 
+    it('Creates breakpoints object from scss import', () => {
+
+        const uiComponentBaseNoBreakPoints: UIComponentBase = new UIComponentBase({
+            wrapperSelector: document.getElementById('main')
+        });
+
+        expect(uiComponentBaseNoBreakPoints.css.breakPoints).not.toBeDefined();
+
+    });
+
 });
 

@@ -1,0 +1,27 @@
+﻿@model MvcForum.Web.ViewModels.Shared.GroupHeaderViewModel
+@using MvcForum.Web.ViewModels.Shared
+@using Microsoft.Ajax.Utilities
+@using MvcForum.Core.Utilities
+
+<div class="c-page-header u-bg-theme-8 u-padded-left u-padded-top-large">
+    <div class="l-col-12">
+        <div class="u-flex">
+            @if (!Model.Image.IsNullEmpty())
+            {
+                <div class="c-page-header_col-1">
+                    <div class="c-page-header_image-wrapper">
+                        <img role="presentation" src="@AppHelpers.GroupImage(Model.Image, Model.Id, 159)" alt="" class="c-page-header_image">
+                    </div>
+                </div>
+            }
+            <div class="c-page-header_col-2">
+                <div class="c-page-header_heading">
+                    <h1 class="u-has-subheading u-text-theme-1">@Model.Name</h1>
+                    <p class="u-text-lead">@Html.Raw(Model.Description)</p>
+                </div>
+                @Html.Partial("_TabsMenu", Model.HeaderTabs)
+
+            </div>
+        </div>
+    </div>
+</div>

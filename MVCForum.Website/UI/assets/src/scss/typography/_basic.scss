@@ -82,8 +82,12 @@ a {
 
 }
 
+.c-link {
+    @extend %clear-button-styles;
+    @extend %link-base;
+}
+
 button {
-    @include focus-outline-large;
     font-family: inherit;
 
     &:hover,
@@ -92,6 +96,9 @@ button {
         text-decoration: underline;
     }
 
+    &:focus {
+        @include nhsuk-focused-input;
+    }
 }
 
 // b,
@@ -99,17 +106,23 @@ button {
 // }
 
 input {
-    @include focus-outline-large;
     border: 0;
     font-family: inherit;
+
+    &:focus {
+        @include nhsuk-focused-input;
+    }
 }
 
 textarea {
     font-family: inherit;
+
+    &:focus {
+        @include nhsuk-focused-input;
+    }
 }
 
 select {
-    @include focus-outline-large;
     font-family: inherit;
     -webkit-appearance: none; // sass-lint:disable-line no-vendor-prefixes
     -moz-appearance: none; // sass-lint:disable-line no-vendor-prefixes
@@ -118,6 +131,9 @@ select {
         display: none;
     }
 
+    &:focus {
+        @include nhsuk-focused-input;
+    }
 }
 
 canvas {

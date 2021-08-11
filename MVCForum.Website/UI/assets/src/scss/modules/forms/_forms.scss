@@ -1,110 +1,69 @@
-.c-input {
-    @extend %input-base;
-    @include font-family-poppins-regular;
-    background-color: $white;
-    color: $night-blue;
-    position: relative;
-    margin: 0 $base-dimension-unit $base-dimension-unit 0;
-    padding: $spacer-xsm;
-    min-width: $spacer-lg;
-    min-height: $spacer-rg;
-    line-height: $very-large-text;
-    font-size: $large-text;
-    text-decoration: none;
-    outline: none;
-    border-color: $night-blue;
-    border-style: solid;
-    display: block;
+.c-fieldset {
+    @include clearfix;
+    border: 0;
+    margin: 0;
+    padding: 0;
+
+    &_legend {
+        @include standard-text(false);
+        box-sizing: border-box;
+        color: $color_nhsuk-black;
+        display: table;
+        margin-bottom: $nhsuk-spacing-point-2;
+        margin-top: 0;
+        max-width: 100%;
+        padding: 0;
+        white-space: normal;
+    }
+
+    &_heading {
+        margin: 0;
+    }
+}
+
+.c-form-group {
+    margin-bottom: $nhsuk-spacing-point-3;
 
     @include respond-to(tablet) {
-        padding: $base-dimension-unit;
-        min-height: derived-dimension(8);
-        font-size: $h6-font-size-mobile;
+        margin-bottom: $nhsuk-spacing-point-4;
     }
 
-    &--block {
-        width: 100%;
+    .c-form-group {
+        &:last-of-type {
+            margin-bottom: 0; // Remove margin from last item in nested groups
+        }
     }
-
 }
 
-.c-radio {
+.c-form-group--error {
+    border-left: $nhsuk-border-width-form-group-error solid $nhsuk-error-color;
+    padding-left: $nhsuk-spacing-point-3;
 
+    .c-form-group {
+        // Reset error styles in nested form groups that might have error class
+        border: 0;
+        padding: 0;
+    }
+}
+
+.c-error-message {
+    @include standard-text(false);
+    font-weight: $nhsuk-font-bold;
+    clear: both;
+    color: $nhsuk-error-color;
     display: block;
-
+    margin-bottom: $nhsuk-spacing-point-3;
 }
-
-// TODO - this needs to be moved elsewhere and tidied, temporary solution
-
-.c-callback-form {
-    select {
-        width: 100%;
-    }
-}
-
-select {
-
-    @extend %input-base;
-    min-height: $spacer-rg;
-    padding: $spacer-xsm $spacer-md $spacer-xsm $spacer-xsm;
-    font-size: $large-text;
-    background-image: linear-gradient(45deg, transparent 50%, $night-blue 50%), linear-gradient(135deg, $t-text-one 50%, transparent 50%);
-    background-position: calc(100% - #{$spacer-sm}) calc(50%), calc(100% - #{$spacer-xsm}) calc(50%), 100% 0;
-    background-size: #{$base-dimension-unit} #{$base-dimension-unit}, #{$base-dimension-unit} #{$base-dimension-unit}, #{$base-dimension-unit} 1em;
-    background-repeat: no-repeat;
-    background-color: $t-site-background-one;
-
-    @include respond-to(tablet) {
-        padding: $base-dimension-unit $spacer-md $base-dimension-unit $spacer-xsm;
-        min-height: derived-dimension(8);
-        font-size: $h6-font-size-mobile;
-    }
-
-}
-
 
 .c-label {
-    @include font-family-poppins-bold;
-    line-height: 1.4em;
-    margin: 0 0 $spacer-xsm;
+    @include standard-text(false);
     display: block;
+    margin-bottom: $nhsuk-spacing-point-1;
 }
 
-.c-form-row { // sass-lint:disable-line class-name-format
-
-    &.has-error { // sass-lint:disable-line class-name-format
-
-        .c-form-row__msg { // sass-lint:disable-line class-name-format
-
-            color: $coral;
-
-        }
-
-    }
-
-    &[class*="has-"] { // sass-lint:disable-line no-attribute-selectors
-
-        .c-form-row__msg { // sass-lint:disable-line class-name-format
-
-            opacity: 1;
-            display: block;
-            font-weight: 500;
-
-        }
-
-    }
-
-    &__msg { // sass-lint:disable-line class-name-format
-        display: none;
-        opacity: 0;
-        transition: opacity 1.3s linear;
-    }
-
-}
-
-.c-button.is-active { // sass-lint:disable-line force-element-nesting class-name-format 
-    border: $focus-outline-large-width solid $t-interaction-one-focus;
-    background-color: $night-blue;
-    color: $white;
-    fill: $white;
+.c-hint {
+    @include standard-text(false);
+    color: $nhsuk-secondary-text-color;
+    display: block;
+    margin-bottom: $nhsuk-spacing-point-3;
 }

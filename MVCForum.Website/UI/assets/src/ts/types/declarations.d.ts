@@ -8,4 +8,5 @@ declare interface Window {
     ShowUserMessage: any;
     tinyMCE: any;
     jQuery: any;
+    globalNamespaces: any ;
 }

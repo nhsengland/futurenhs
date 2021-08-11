@@ -1,6 +1,7 @@
 ﻿@using MvcForum.Core.ExtensionMethods
 @using MvcForum.Core.Models.Enums
 @using MvcForum.Core.Utilities
+@using MvcForum.Web.Controllers
 @using MvcForum.Web.ViewModels.Group
 @using MvcForum.Web.ViewModels.Shared
 
@@ -43,13 +44,19 @@
 			@Html.Action("CreateTopicButton", "Topic", new{groupId = Model.Group.Id})
 		}
 
-	} else if(Model.Tab == Constants.GroupMembersTab){
+	} else if(Model.Tab == Constants.GroupMembersTab || Model.Tab ==  Constants.GroupFilesTab){
         
-		@Html.Partial("_CommonSideNav")
+		@*@Html.Partial("_CommonSideNav")*@
 
     } else {
         Html.RenderAction("GetGroupHomeCards", new { slug = Model.Group.Slug });
 	}
+}
+
+@section GroupHeader {
+	@{ 
+		Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Group.Slug });
+    }
 }
 
 @Html.Action("GetGroupBreadcrumb", "Group", new { Group = Model.Group })
@@ -115,13 +122,17 @@
 
 @if (Model.Tab == Constants.GroupForumTab)
 {
-@Html.Action("GetGroupForum", new { groupId = Model.Group.Id })
-
+	@Html.Action("GetGroupForum", new { groupId = Model.Group.Id })
 }
+
+@if (Model.Tab == Constants.GroupFilesTab)
+{
+	@Html.Action("GetFolder","Folder", new { slug = Model.Group.Slug, folderId = Model.Folder, groupId = Model.Group.Id})
+}
+
 @if (Model.Tab == Constants.GroupMembersTab)
 {
-@Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
-
+	@Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
 }
 
 

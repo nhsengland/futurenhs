@@ -34,6 +34,7 @@ steps:
     workingDir: '$(Build.SourcesDirectory)'
     
 - task: gulp@0
+  displayName: 'Build front end'
   inputs:
     gulpFile: 'gulpfile.js'
     targets: 'buildWeb'
@@ -60,4 +61,19 @@ steps:
     artifact: 'FNHS'
     publishLocation: 'pipeline'
 
+- task: PublishTestResults@2
+  displayName: 'Publish Front End Unit Test Results'
+  inputs:
+    testResultsFiles: 'jest-junit.xml'
+    searchFolder: '$(System.DefaultWorkingDirectory)/js-report'
+    testRunTitle: 'Front End Test Run'
+  continueOnError: true
 
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish Code Coverage from Front End Unit Tests'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/js-report/cobertura-coverage.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/js-report/*.htm'
+    failIfCoverageEmpty: true

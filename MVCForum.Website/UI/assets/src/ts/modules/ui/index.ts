@@ -198,6 +198,40 @@ export const uiComponentsInit = (config: {
 
     }
 
+    /**
+    * Init topic post features
+    */
+    const topicForumContainers: Array<Element> = Array.from(document.getElementsByClassName('topicshow'));
+
+    if (topicForumContainers?.length > 0) {
+
+        import('@modules/ui/components/topicPost').then(({ TopicPost }) => {
+
+            topicForumContainers.forEach((topicForumContainer: HTMLElement) => {
+
+                const fancyBoxTargetTypes: Array<string> = ['gif', 'jpg', 'png', 'bmp', 'jpeg'];
+                const pollId: string = (<HTMLInputElement>document.getElementById('Poll_Id'))?.value;
+
+                new TopicPost({
+                    pollId: pollId,
+                    fancyBoxTargetTypes: fancyBoxTargetTypes,
+                    wrapperSelector: topicForumContainer,
+                }, {
+                    fetchHelpers: fetchHelpers,
+                    components: {
+                        toast: toast
+                    }
+                });
+
+            });
+
+        });
+
+    }
+
+
+
+
 
     /**
     * Init tags input
@@ -252,36 +286,123 @@ export const uiComponentsInit = (config: {
     /**
     * load more buttons
     */
-     const loadMoreButtons: Array<Element> = Array.from(document.getElementsByClassName('js-loadmore'));
+    const loadMoreButtons: Array<Element> = Array.from(document.getElementsByClassName('js-loadmore'));
 
-     if (loadMoreButtons?.length > 0) {
+    if (loadMoreButtons?.length > 0) {
+
+        Promise.all([
+            import('@modules/ui/components/loadMoreButton'),
+            import('@modules/ui/components/topicPost')
+        ])
+            .then(([{ LoadMoreButton }, { TopicPost }]) => {
+
+                loadMoreButtons.forEach((loadMoreButton: HTMLButtonElement) => {
+
+                    const requestId = loadMoreButton.getAttribute('data-request-id');
+                    const appendTargetId: string = loadMoreButton.getAttribute('data-target-id');
+                    const endpointType: string = loadMoreButton.getAttribute('data-endpoint-type');
+                    const appendTargetElement: HTMLElement = document.getElementById(appendTargetId);
+                    const maximRequests = parseInt(loadMoreButton.getAttribute('data-maxim-requests'));
+                    const requestIndex = parseInt(loadMoreButton.getAttribute('data-request-index')) + 1;
+
+                    const getFetchUrl = (requestIndex: number): string => {
+
+                    const endpoints = {
+                        'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
+                        'getThreadComments': `/topic/ajaxmorepostsforthread/?TopicId=${requestId}&PageIndex=${requestIndex}`,
+                        'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
+                    };
+
+                        return endpoints[endpointType];
+
+                    }
+
+                    const topicPostPlaceholder = new TopicPost({
+                        wrapperSelector: (document as any)
+                    }, {
+                        fetchHelpers: fetchHelpers,
+                        components: {
+                            toast: toast
+                        }
+                    });
+
+                    const requestSuccesCallbacks = {
+                        'getPostComments': topicPostPlaceholder.bindFeaturesToPost,
+                        'getThreadComments': topicPostPlaceholder.bindFeaturesToPost
+                    }
+
+                    const requestSuccessCallback = requestSuccesCallbacks[endpointType];
+
+                    new LoadMoreButton({
+                        getFetchUrl: getFetchUrl,
+                        requestIndex: requestIndex,
+                        maximRequests: maximRequests,
+                        wrapperSelector: loadMoreButton,
+                        appendTargetElement: appendTargetElement,
+                        requestSuccessCallback: requestSuccessCallback
+                    }, {
+                        fetchHelpers: fetchHelpers
+                    });
+
+                });
+
+            });
+
+    }
+
+
+    /**
+    * tinyMCE components
+    */
+    const tinyMCEContainers: Array<Element> = Array.from(document.getElementsByClassName('js-tinyMCE-container'));
+
+    if (tinyMCEContainers?.length > 0) {
+
+        import('@modules/ui/components/tinyMCE').then(({ TinyMCE }) => {
+
+            tinyMCEContainers.forEach((tinyMCEContainer: HTMLElement) => {
+
+                const tinyMceTextarea = <HTMLTextAreaElement>tinyMCEContainer.getElementsByClassName('js-tinyMCE')[0];
+                const tinyMceId : string = tinyMceTextarea.getAttribute('id');
+                const tinyMceAPI: any = window.tinyMCE.get(tinyMceId);
+                const notEmpty = (value: string): boolean => Boolean(value);
+
+                const validators = {
+                    'notEmpty' :  notEmpty
+                }
+
+                new TinyMCE({
+                    validators: validators,
+                    tinyMceAPI: tinyMceAPI,
+                    wrapperSelector: tinyMCEContainer,
+                });
+
+            });
+
+        });
+
+    }
+
+    /**
+    * input components
+    */
+     const inputContainers: Array<Element> = Array.from(document.getElementsByClassName('js-input-container'));
+
+     if (inputContainers?.length > 0) {
  
-         import('@modules/ui/components/loadMoreButton').then(({ LoadMoreButton }) => {
+         import('@modules/ui/components/input').then(({ Input }) => {
+ 
+            inputContainers.forEach((inputContainer: HTMLElement) => {
 
-            loadMoreButtons.forEach((loadMoreButton: HTMLButtonElement) => {
-
-                const requestId = loadMoreButton.getAttribute('data-request-id');
-                const appendTargetId: string = loadMoreButton.getAttribute('data-target-id');
-                const endpointType: string = loadMoreButton.getAttribute('data-endpoint-type');
-                const appendTargetElement: HTMLElement = document.getElementById(appendTargetId);
-                const maximRequests = parseInt(loadMoreButton.getAttribute('data-maxim-requests'));
-                let requestIndex = parseInt(loadMoreButton.getAttribute('data-request-index')) + 1;
-
-                const endpoints = {
-                    'getPostComments': `/topic/ajaxmoreposts/?TopicId=${requestId}&PageIndex=${requestIndex}`,
-                    'getLatestTopics': `/group/LoadMoreTopics/?groupId=${requestId}&p=${requestIndex}`
-                };
-
-                const fetchUrl = endpoints[endpointType];
-
-                 new LoadMoreButton({
-                    fetchUrl: fetchUrl,
-                    requestIndex: requestIndex,
-                    maximRequests: maximRequests,
-                    wrapperSelector: loadMoreButton,
-                    appendTargetElement: appendTargetElement
-                 }, {
-                     fetchHelpers: fetchHelpers 
+                 const notEmpty = (value: string): boolean => Boolean(value);
+ 
+                 const focusValidators = {
+                     'notEmpty' :  notEmpty
+                 }
+ 
+                 new Input({
+                    focusValidators: focusValidators,
+                    wrapperSelector: inputContainer,
                  });
  
              });

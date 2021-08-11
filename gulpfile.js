@@ -172,6 +172,17 @@ const activate = (done) => {
 
 gulp.task(activate);
 
+// Activate
+const activateLight = (done) => {
+
+    gulp.series(stopSite, build, buildWebLight, startSite)();
+
+    done();
+
+};
+
+gulp.task(activateLight);
+
 // Deactivate
 const deactivate = (done) => {
 
@@ -589,13 +600,24 @@ gulp.task(testAxe);
 // Build task - runs all the web tasks
 const buildWeb = (done) => { 
 
-    gulp.series(clean, initSvgSprite, templates, scss, js, fonts, images, favicon, sw)();
+    gulp.series(clean, initSvgSprite, templates, scss, js, fonts, images, favicon, sw, testJs)();
 
     done();
 
 };
 
 gulp.task(buildWeb);
+
+// Build task - runs all the web tasks
+const buildWebLight = (done) => { 
+
+    gulp.series(scss, js)();
+
+    done();
+
+};
+
+gulp.task(buildWebLight);
 
 // Watch task - runs all the web tasks then watches and re-runs tasks on subsequent changes - also hosts local prototyping server for prototyping
 const watchWeb = (done) => { 

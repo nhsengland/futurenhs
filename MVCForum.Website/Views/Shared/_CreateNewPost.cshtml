@@ -20,33 +20,42 @@
 }
 @if (!Model.DisablePosting)
 {
-    if (Model.InReplyTo != null && !string.IsNullOrEmpty(Model.ReplyToUsername))
-    {
-        <div class="showreplyto">
-            @Html.Lang("Post.ReplyingTo") <strong>@Model.ReplyToUsername</strong>
-        </div>
-    }
-    <div id="createpostholder">
-        @using (Ajax.BeginForm("CreatePost", "Post", null, new AjaxOptions
+    <a id="createpost"></a>
+    <div class="u-margin-top-spacing-3 u-margin-bottom-spacing-5">
+        <p class="u-regular-heading u-text-bold u-margin-bottom-spacing-3">
+            Join in the conversation
+        </p>
+        <p class="u-text-bold u-margin-bottom-spacing-1">
+            You're signed in, <a href="@Html.Raw(@Model.CurrentUserUrl)">@Model.CurrentUser</a>
+        </p>
+        @if (Model.InReplyTo != null && !string.IsNullOrEmpty(Model.ReplyToUsername))
         {
-            HttpMethod = "POST",
-            LoadingElementId = "createpostwait",
-            OnSuccess = "AjaxPostSuccess()",
-            OnFailure = "AjaxPostError('Error creating post')",
-            UpdateTargetId = "newpostmarker",
-            OnBegin = "AjaxPostBegin()"
-        }, new { @id = "postcodeform" }))
-        {
-            <div class="editorholder">
-                @Html.EditorFor(x => x.PostContent, new { @class = "createpost required form-control rte" })
-                @Html.ValidationMessageFor(x => x.PostContent)
-            </div>
-            <input type="submit" id="createpostbutton" class="btn-mvc-green btn-mvc-large" value="@Html.LanguageString("Buttons.CreatePost")" />
-            <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
-            @Html.HiddenFor(x => x.Topic)
-            @Html.HiddenFor(x => x.InReplyTo)
+            <p class="u-text-bold u-margin-bottom-spacing-1">
+                You’re replying to <a href="@Html.Raw(@Model.ReplyToUsernameUrl)">@Model.ReplyToUsername</a>
+            </p>
         }
 
     </div>
 
+    <div id="createpostholder" class="js-tinyMCE-container">
+        @using (Html.BeginForm("CreatePost", "Post", FormMethod.Post))
+        {
+            <div class="editorholder js-tinyMCE-holder">
+                @if (Model.HasError)
+                {
+                    <p role="alert" class="js-tinyMCE-error-notEmpty c-error-message">@Model.Error</p>
+                }
+                <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden c-error-message">Please provide a comment.</p>
+                @Html.EditorFor(x => x.PostContent, new { @class = "createpost required form-control rte" })
+                @Html.ValidationMessageFor(x => x.PostContent)
+            </div>
+            <div class="u-margin-top-spacing-5">
+                <button class="c-button c-button--outline js-tinyMCE-clear u-margin-right-spacing-5 u-no-js-hidden">@Html.LanguageString("Buttons.ClearPost")</button>
+                <input type="submit" id="createpostbutton" class="c-button js-tinyMCE-submit u-fright" data-mce-requirements="notEmpty" value="@Html.LanguageString("Buttons.CreatePost")" />
+                <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
+                @Html.HiddenFor(x => x.Topic)
+                @Html.HiddenFor(x => x.InReplyTo)
+            </div>
+        }
+    </div>
 }

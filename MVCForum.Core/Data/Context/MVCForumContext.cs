@@ -26,6 +26,7 @@
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<Block> Block { get; set; }
         public virtual DbSet<Group> Group { get; set; }
+        public virtual DbSet<Folder> Folder { get; set; }
         public virtual DbSet<Section> Section { get; set; }
         public virtual DbSet<GroupNotification> GroupNotification { get; set; }
         public virtual DbSet<GroupPermissionForRole> GroupPermissionForRole { get; set; }
@@ -45,6 +46,7 @@
         public virtual DbSet<TopicNotification> TopicNotification { get; set; }
         public virtual DbSet<TagNotification> TagNotification { get; set; }
         public virtual DbSet<Vote> Vote { get; set; }
+        public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<TopicTag> TopicTag { get; set; }
         public virtual DbSet<BannedEmail> BannedEmail { get; set; }
         public virtual DbSet<BannedWord> BannedWord { get; set; }
@@ -55,6 +57,8 @@
         public virtual DbSet<PostEdit> PostEdit { get; set; }
 
         public virtual DbSet<GroupUser> GroupUser { get; set; }
+
+        public virtual DbSet<UploadStatus> FileUploadStatus { get; set; }
 
         public override int SaveChanges()
         {

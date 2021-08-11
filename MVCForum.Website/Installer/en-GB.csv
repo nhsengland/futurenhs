@@ -41,7 +41,8 @@ Badges.UnableToAward,Unable to award badges as badge collection is null for user
 Buttons.Approve, Approve
 Buttons.ChangePassword,Change Password
 Buttons.Continue,Continue
-Buttons.CreatePost,Add Post
+Buttons.CreatePost,Add comment
+Buttons.ClearPost,Clear
 Buttons.Edit,Edit
 Buttons.LogOn,Log On
 Buttons.Report,Report
@@ -72,20 +73,29 @@ Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not ad
 Favourites.NoMemberFavourites,You have not starred any posts
 Favourites.PageTitle,My Favourites
 File.SuccessfullyDeleted,File deleted
+File.Error.NullTitle,Please provide a title.
+File.Error.InvalidType,The file above was not uploaded because the type is not allowed.
+File.Error.InvalidSize,The file above was not uploaded because the file size is too big.
+File.Error.NullFile,Please select to upload a file.
+File.Error.NullName,The file must have a name.
+File.Error.NameLength,The name of the file cannot be more than 100 characters.
+Folder.Error.NullTitle,Please provide a folder title.
+Folder.Error.DuplicateTitle,This folder already exists.
 Following.Groups,Groups you are following
 Following.PageTitle,Topics & Groups
 Following.Topics,Topics you are following
 Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
 Groups.Leave,Leave Group
 Group.AllGroups,All Groups
-Group.Forum,Latest Discussions
+Group.Forum,All discussions
 Group.GroupsSideHeading,Groups
 Group.MostRecent,Most recent:
 Group.Members,Group Members
 Group.NoDiscussions,Currently no discussions in this Group
 Group.SubGroupsHeading,Sub Groups In
-GroupTabs.Home,Group home
-GroupTabs.Forum,Group forum
+GroupTabs.Home,Home
+GroupTabs.Forum,Forum
+GroupTabs.Files,Files
 GroupTabs.Members,Members
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
@@ -389,7 +399,7 @@ Topic.Choose,Choose Existing Topic
 Topic.Comment,Answer
 Topic.Comments,Answers
 Topic.CommentsDetails,Comments
-Topic.CreateDiscussion,Create Discussion
+Topic.CreateDiscussion,Add Discussion
 Topic.Deleted,Topic Deleted
 Topic.DiscussionTaggedWith,Discussions Tagged With: 
 Topic.HotTopics,Hot Topics

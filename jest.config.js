@@ -11,6 +11,14 @@ module.exports = {
     setupFilesAfterEnv: [
         './setupTests.js'
     ],
+    reporters: [
+        'default', 
+        ['jest-junit', { 
+            suiteName: 'Jest tests',
+            outputDirectory: './js-report',
+            outputName: 'jest-junit.xml'
+        }]
+    ],
     collectCoverage: true,
     collectCoverageFrom: [
         'MVCForum.Website/UI/assets/src/ts/**/*.{ts,tsx,js,jsx}'
@@ -20,11 +28,12 @@ module.exports = {
         './node_modules/',
         'MVCForum.Website/UI/assets/src/ts/modules/utilities/index',
         'MVCForum.Website/UI/assets/src/ts/modules/ui/index',
-        'MVCForum.Website/UI/assets/src/ts/modules/polyfills/svg',
+        'MVCForum.Website/UI/assets/src/ts/modules/polyfills/*',
         'MVCForum.Website/UI/assets/src/ts/root/global',
         'MVCForum.Website/UI/assets/src/ts/root/polyfills',
         'MVCForum.Website/UI/assets/src/ts/types/*',
     ],
+    coverageReporters: ['json', 'lcov', 'text', 'clover', 'cobertura'],
     globals: {
         'ts-jest': {
             babelConfig: false,

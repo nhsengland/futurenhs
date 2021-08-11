@@ -23,9 +23,9 @@
     display: none !important; // sass-lint:disable-line no-important
 }
 
-.u-no-js-hidden {
-    display: block;
-}
+// .u-no-js-hidden {
+//     display: block;
+// }
 
 .u-flex {
     display: flex;
@@ -116,17 +116,41 @@
     }
 }
 
-// .u-desktop-up-inline-block {
-//     display: none;
+.u-desktop-up-inline-block {
+    display: none;
 
-//     @include respond-to(desktop) {
-//         display: inline-block;
-//     }
-// }
+    @include respond-to(desktop) {
+        display: inline-block;
+    }
+}
 
 .u-padded-left {
     @include respond-to(desktop) {
         padding-left: $nhsuk-spacing-point-3;
+    }
+}
+
+.u-padded-top {
+    @include respond-to(desktop) {
+        padding-top: $nhsuk-spacing-point-3;
+    }
+
+    &-large {
+        @include respond-to(desktop) {
+            padding-top: $nhsuk-spacing-point-6;
+        }
+    }
+}
+
+.u-padded-bottom {
+    @include respond-to(desktop) {
+        padding-bottom: $nhsuk-spacing-point-3;
+    }
+
+    &-large {
+        @include respond-to(desktop) {
+            padding-bottom: $nhsuk-spacing-point-6;
+        }
     }
 }
 
@@ -153,6 +177,11 @@
 
 .u-heading-lead {
     @include lead-heading;
+}
+
+
+.u-regular-heading {
+    @include regular-heading;
 }
 
 .u-text-bold {
@@ -195,6 +224,11 @@
     height: 100%;
 }
 
+.u-has-error {
+    padding-left: $nhsuk-spacing-point-3;
+    border-left: 4px solid $red;
+}
+
 @each $number, $theme in $t-utility-themes {
     .u-bg-theme-#{$number} {
         background-color: $theme;
@@ -210,5 +244,47 @@
 
     .u-border-theme-#{$number} {
         border-color: $theme;
+    }
+
+    .u-border-left-theme-#{$number} {
+        border-left-color: $theme;
+    }
+
+    .u-border-bottom-theme-#{$number} {
+        border-bottom-color: $theme;
+    }
+}
+
+@each $number, $spaceing in $t-utility-spacing {
+    .u-margin-top-spacing-#{$number} {
+        margin-top: $spaceing;
+    }
+
+    .u-margin-bottom-spacing-#{$number} {
+        margin-bottom: $spaceing;
+    }
+
+    .u-margin-left-spacing-#{$number} {
+        margin-left: $spaceing;
+    }
+
+    .u-margin-right-spacing-#{$number} {
+        margin-right: $spaceing;
+    }
+
+    .u-padding-top-spacing-#{$number} {
+        padding-top: $spaceing;
+    }
+
+    .u-padding-bottom-spacing-#{$number} {
+        padding-bottom: $spaceing;
+    }
+
+    .u-padding-left-spacing-#{$number} {
+        padding-left: $spaceing;
+    }
+
+    .u-padding-right-spacing-#{$number} {
+        padding-right: $spaceing;
     }
 }
