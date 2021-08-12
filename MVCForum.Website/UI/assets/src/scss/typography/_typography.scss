@@ -82,7 +82,7 @@ p {
 
 a {
     @extend %link-base;
-    text-decoration: none;
+    text-decoration: underline;
 
     @include print {
         &:after {
