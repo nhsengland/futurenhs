@@ -61,6 +61,36 @@
     @{ Html.RenderAction("SiteHeader", "Layout"); }
 
 
+    @* START BREADCRUMBS *@
+    <div class="l-container u-desktop-up">
+        <div class="l-col-12">
+            <div class="c-grid-block">
+                <div class="c-grid-block_item l-col-12">
+                    <div class="c-breadcrumb">
+                        
+                        <div class="c-breadcrumb_path">
+                            
+                        </div>
+
+                        
+                        <div class="c-breadcrumb_support-disclaimer">
+                            <p class="u-margin-bottom-spacing-0">
+                                <span class="u-text-bold">
+                                    Need help?
+                                </span>
+                                <span>
+                                    <a target="_blank" href="https://futurenhstest.service-now.com/csm/?id=futurenhs_test">Visit our support site</a>
+                                </span>
+                            </p>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* END  BREADCRUMBS *@
+    
     @*
 
         <section class="content-strip content-strip-@(User.Identity.IsAuthenticated.ToString().ToLower())">
