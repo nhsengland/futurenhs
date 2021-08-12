@@ -59,8 +59,7 @@
                             @if (@Model.File.FileUrl != null)
                             {   
 	                            Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));
-             
-                                <a href="@Model.File.FileUrl" class="">@Html.LanguageString("File.Label.Download")</a>
+                                @Html.ActionLink(Html.LanguageString("File.Label.Download"), "Download", new { fileId = Model.File.Id })
                             }
                         </td>
                     </tr>

@@ -2,8 +2,10 @@
 
 namespace MvcForum.Core.Services
 {
+    using Azure.Identity;
+    using Azure.Storage.Blobs;
+    using Azure.Storage.Sas;
     using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Blob;
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Models.Entities;
     using MvcForum.Core.Models.FilesAndFolders;
@@ -13,7 +15,6 @@ namespace MvcForum.Core.Services
     using MvcForum.Core.Repositories.Repository.Interfaces;
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web;
@@ -28,14 +29,14 @@ namespace MvcForum.Core.Services
         /// <summary>
         /// Instance of the <see cref="IFileCommand"/> for file write operations.
         /// </summary>
-        private IFileCommand _fileCommand { get; set; }
+        private readonly IFileCommand _fileCommand;
 
         /// <summary>
         /// Instance of the <see cref="IFileRepository"/> for file read operations.
         /// </summary>
-        private IFileRepository _fileRepository { get; set; }
+        private readonly IFileRepository _fileRepository;
 
-        private MembershipUser LoggedOnReadOnlyUser;
+        private readonly MembershipUser _loggedOnReadOnlyUser;
 
         /// <summary>
         /// Instance of the <see cref="IFileRepoIFileUploadValidationServicesitory"/> for file validation operations.
@@ -51,7 +52,7 @@ namespace MvcForum.Core.Services
         {
             _fileCommand = fileCommand;
             _fileRepository = fileRepository;
-            LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+            _loggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
             _fileUploadValidationService = fileUploadValidationService;
             _configurationProvider = configurationProvider;
         }
@@ -105,12 +106,51 @@ namespace MvcForum.Core.Services
                 file.ModifiedDate = file.CreatedDate;
             }
 
-            if (file.FileUrl != null)
-            {
-                file.FileUrl = $"{_configurationProvider.GetFileDownloadEndpoint()}/{file.FileUrl}";
-            }
-
             return file;
+        }
+
+        /// <summary>
+        /// Generate a Url to a blob to redirect to with a user delegation sas token.
+        /// </summary>
+        /// <param name="blobName">Name of blob to redirect to (blob storage name rather than original file name).</param>
+        /// <param name="downloadPermissions">Permissions to be applied to the SasBuilder.</param>
+        /// <returns></returns>
+        public async Task<string> GetDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions)
+        {
+            // Set the blob service client
+            BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri(_configurationProvider.GetFileDownloadEndpoint()), new DefaultAzureCredential());
+
+            // Generate the user delegation key
+            var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMinutes(40));
+
+            if (userDelegationKey != null)
+            {
+                BlobSasBuilder sasBuilder = new BlobSasBuilder()
+                {
+                    BlobContainerName = _configurationProvider.GetFileContainerName(),
+                    BlobName = blobName,
+                    Resource = "b",
+                    StartsOn = DateTimeOffset.UtcNow,
+                    ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(40)
+                };
+
+                // Specify read and write permissions for the SAS. Pass these in?
+                sasBuilder.SetPermissions(downloadPermissions);
+
+                // Add the SAS token to the blob URI.
+                BlobUriBuilder blobUriBuilder = new BlobUriBuilder(blobServiceClient.Uri)
+                {
+                    // Set container and blob name
+                    BlobContainerName = _configurationProvider.GetFileContainerName(),
+                    BlobName = blobName,
+                    // Specify the user delegation key.
+                    Sas = sasBuilder.ToSasQueryParameters(userDelegationKey, blobServiceClient.AccountName)
+                };
+
+                // Build the blob redirect path required
+                return $"{blobUriBuilder.BlobContainerName}/{blobUriBuilder.BlobName}?{blobUriBuilder.Sas}";
+            }
+            throw new InvalidOperationException("Unable to generate download token");
         }
 
         /// <summary>
@@ -130,37 +170,29 @@ namespace MvcForum.Core.Services
         /// <returns></returns>
         public async Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file)
         {
-            var result = new UploadBlobResult();
-            try
+            // TODO - implement validation including of type (MIME detective), add this to _fileUploadValidationService
+            var result = _fileUploadValidationService.ValidateUploadedFile(file, false);
+
+            if (!result.ValidationErrors.Any())
             {
-                // TODO - implement validation including of type (MIME detective), possibly add FileValidationService?
-                result = _fileUploadValidationService.ValidateUploadedFile(file, false);
+                var storageAccount = CloudStorageAccount.Parse(_configurationProvider.GetFileUploadConnectionString());
 
-                if (!result.ValidationErrors.Any())
-                {
- 
-                    var storageAccount = CloudStorageAccount.Parse(_configurationProvider.GetFileUploadConnectionString());
+                var blobStorage = storageAccount.CreateCloudBlobClient();
+                var container = blobStorage.GetContainerReference(_configurationProvider.GetFileContainerName());
 
-                    var blobStorage = storageAccount.CreateCloudBlobClient();
-                    var container = blobStorage.GetContainerReference(_configurationProvider.GetFileContainerName());
-                    
-                    var uniqueBlobName = $"{Guid.NewGuid()}{System.IO.Path.GetExtension(file.FileName)}";
+                var uniqueBlobName = $"{Guid.NewGuid()}{System.IO.Path.GetExtension(file.FileName)}";
 
-                    result.UploadedFileName = uniqueBlobName;
+                result.UploadedFileName = uniqueBlobName;
 
-                    var blob = container.GetBlockBlobReference(uniqueBlobName);
-                    blob.Properties.ContentType = file.ContentType;
-                    await blob.UploadFromStreamAsync(file.InputStream);
+                var blob = container.GetBlockBlobReference(uniqueBlobName);
+                blob.Properties.ContentType = file.ContentType;
+                blob.Properties.ContentDisposition = $"attachment; filename={file.FileName}";
+                await blob.UploadFromStreamAsync(file.InputStream);
 
-                    // set the attributes required to be saved in the DB?
-                    // Question, are the values from Posted file 'safe' enough or should we get from uploaded blob?
-                    result.UploadedFileHash = Convert.FromBase64String(blob.Properties.ContentMD5);
-                    result.UploadSuccessful = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                // TODO Deal with any unhandled exception...
+                // set the attributes required to be saved in the DB?
+                // Question, are the values from Posted file 'safe' enough or should we get from uploaded blob?
+                result.UploadedFileHash = Convert.FromBase64String(blob.Properties.ContentMD5);
+                result.UploadSuccessful = true;
             }
             return result;
         }
@@ -172,16 +204,7 @@ namespace MvcForum.Core.Services
         /// <returns></returns>
         public UploadBlobResult SimpleFileValidation(HttpPostedFileBase file)
         {
-            var result = new UploadBlobResult();
-            try
-            {
-                result =  _fileUploadValidationService.ValidateUploadedFile(file, true);
-            }
-            catch (Exception ex)
-            {
-                // TODO Deal with any exception...
-            }
-            return result;
+            return _fileUploadValidationService.ValidateUploadedFile(file, true);
         }
     }
 }

@@ -14,6 +14,8 @@ namespace MvcForum.Web.Controllers
     using System.Linq;
     using Status = MvcForum.Core.Models.Enums.UploadStatus;
     using System.Configuration;
+    using System.IO;
+    using Azure.Storage.Blobs;
 
     /// <summary>
     /// Defines methods and routes for the GroupFIles.
@@ -62,6 +64,7 @@ namespace MvcForum.Web.Controllers
         /// <returns>The show view.</returns>
         public ActionResult Show(Guid id, string slug)
         {
+            // TODO - Check user has permissions to view file
             var dbFile = _fileService.GetFile(id);
 
             var file = new FileViewModel
@@ -231,6 +234,52 @@ namespace MvcForum.Web.Controllers
         {
             _fileService.Delete(file);
             return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
+        }
+
+        /// <summary>
+        /// Download the file from blob storage.
+        /// </summary>
+        /// <param name="fileId">Id of the file to download.</param>
+        /// <param name="slug">Group slug for redirect if an error.</param>
+        /// <returns></returns>
+        public async Task<ActionResult> DownloadAsync(Guid fileId)
+        {
+            //TODO - Check user has permissions to download file
+
+            if (fileId == Guid.Empty)
+            {
+                throw new InvalidOperationException("Unable to download file as the Id is not valid");
+            }
+
+            // Get the file by Id passed in
+            var fileModel = _fileService.GetFile(fileId);
+
+            if (string.IsNullOrWhiteSpace(fileModel?.FileUrl))
+            {
+                throw new InvalidOperationException("The requested file does not have a valid name");
+            }
+
+            // Ensure the file is of status verified
+            if (fileModel.Status == (int)Status.Verified)
+            {
+                // File valid for Id, try and get the link to the blob
+                var downloadPath = await _fileService.GetDownloadUrlAsync(fileModel.FileUrl, Azure.Storage.Sas.BlobSasPermissions.Read);
+
+                if (string.IsNullOrWhiteSpace(downloadPath))
+                {
+                    throw new InvalidOperationException("Unable to download file, the end point is not valid");
+                }
+
+                // Get the base host name and initial path to add blob address to
+                string hostname = $"{Request.Url.Scheme}://{Request.Url.Authority}{Request.ApplicationPath.TrimEnd('/')}";
+
+                // Append download path to host name and redirect
+                return Redirect($"{hostname}/gateway/media/{downloadPath}");
+            }
+            else
+            {
+                throw new InvalidOperationException("The requested file is not valid");
+            }
         }
 
         /// <summary>

@@ -1,5 +1,8 @@
 ﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using Azure.Storage.Blobs;
+    using Azure.Storage.Sas;
+    using Microsoft.WindowsAzure.Storage.Blob;
     using MvcForum.Core.Models.FilesAndFolders;
     using MvcForum.Core.Models.General;
     using MvcForum.Core.Repositories.Models;
@@ -60,5 +63,13 @@
         /// <param name="file"></param>
         /// <returns></returns>
         UploadBlobResult SimpleFileValidation(HttpPostedFileBase file);
+
+        /// <summary>
+        /// Generate a Url to a blob to redirect to with a user delegation sas token.
+        /// </summary>
+        /// <param name="blobName">Name of blob to redirect to (blob storage name rather than original file name).</param>
+        /// <param name="downloadPermissions">Permissions to be applied to the SasBuilder.</param>
+        /// <returns></returns>
+        Task<string> GetDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions);
     }
 }

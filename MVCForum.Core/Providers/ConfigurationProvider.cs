@@ -16,7 +16,8 @@ namespace MvcForum.Core.Providers
         private readonly int _retryAttempts;
         private readonly int _retryDelay;
 
-        public ConfigurationProvider(string readOnlyDbConnectionString, int retryAttempts, int retryDelay, string fileUploadConnectionString, string fileContainerName, string fileDownloadEndpoint)
+        public ConfigurationProvider(string readOnlyDbConnectionString, int retryAttempts, int retryDelay, 
+            string fileUploadConnectionString, string fileContainerName, string fileDownloadEndpoint)
         {
             _readOnlyDbConnectionString = readOnlyDbConnectionString;
             _fileUploadConnectionString = fileUploadConnectionString;
