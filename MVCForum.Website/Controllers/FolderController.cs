@@ -24,12 +24,14 @@ namespace MvcForum.Web.Controllers
         private readonly IFolderService _folderService;
         private readonly IFeatureManager _featureManager;
         private readonly IMembershipService _membershipService;
+        private readonly ILocalizationService _localizationService;
 
-        public FolderController(IFolderService folderService, IFeatureManager featureManager, IMembershipService membershipService)
+        public FolderController(IFolderService folderService, IFeatureManager featureManager, IMembershipService membershipService, ILocalizationService localizationService)
         {
             _folderService = folderService;
             _featureManager = featureManager;
             _membershipService = membershipService;
+            _localizationService = localizationService;
         }
 
         [HttpGet]
@@ -58,10 +60,14 @@ namespace MvcForum.Web.Controllers
             {
                 if (ModelState.IsValid) 
                 {
-                    folder.AddedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-                    var newId = _folderService.CreateFolder(folder);
+                    if (FolderNameIsValid(folder))
+                    {
+                        folder.AddedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
+                        var newId = _folderService.CreateFolder(folder);
 
-                    return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = newId });
+                        return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = newId });
+                    }
+                    ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("Folder.Error.DuplicateTitle"));
                 }
                 ViewBag.HideSideBar = true;
                 folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug, "Create folder");
@@ -103,12 +109,18 @@ namespace MvcForum.Web.Controllers
                 {
                     var result = _folderService.GetFolder(folder.Slug, folder.FolderId);
 
+                    // Check folder exists for folder Id passed in
                     if (folder.FolderId == result.Folder.FolderId)
                     {
-                        folder.IsDeleted = folder.IsDeleted;
-                        _folderService.UpdateFolder(folder);
+                        // Ensure folder name is valid
+                        if (FolderNameIsValid(folder))
+                        {
+                            folder.IsDeleted = folder.IsDeleted;
+                            _folderService.UpdateFolder(folder);
 
-                        return RedirectToRoute("GroupUrls", new {slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId});
+                            return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId });
+                        }
+                        ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("Folder.Error.DuplicateTitle"));
                     }
                 }
                 ViewBag.HideSideBar = true;
@@ -216,6 +228,16 @@ namespace MvcForum.Web.Controllers
                 }
             }
             return breadCrumbs;
+        }
+
+        /// <summary>
+        /// Check the folder name entered is unique for the parent folder.
+        /// </summary>
+        /// <param name="folder">Folder to validate.</param>
+        /// <returns></returns>
+        private bool FolderNameIsValid(FolderWriteViewModel folder)
+        {
+           return _folderService.GetFolder(folder.FolderId, folder.FolderName, folder.ParentFolder) == null;
         }
     }
 }

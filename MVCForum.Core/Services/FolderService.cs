@@ -56,6 +56,18 @@ namespace MvcForum.Core.Services
             return model;
         }
 
+        /// <summary>
+        /// Get folder by Id, folder name and parent - validate folder exists for create/update, i.e. no duplicate names allowed.
+        /// </summary>
+        /// <param name="folderId"></param>
+        /// <param name="folderName"></param>
+        /// <param name="parentFolder"></param>
+        /// <returns></returns>
+        public FolderReadViewModel GetFolder(Guid? folderId, string folderName, Guid? parentFolder)
+        {
+            return _folderRepository.GetFolder(folderId, folderName, parentFolder);
+        }
+
         public Guid CreateFolder(FolderWriteViewModel model)
         {
             return _folderCommand.CreateFolder(model);

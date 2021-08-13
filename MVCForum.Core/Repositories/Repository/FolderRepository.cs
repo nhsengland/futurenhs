@@ -153,6 +153,40 @@ namespace MvcForum.Core.Repositories.Repository
             return result;
         }
 
+        /// <summary>
+        /// Get folder by Id, folder name and parent - validate folder exists for create/update, i.e. no duplicate names allowed.
+        /// </summary>
+        /// <param name="folderId"></param>
+        /// <param name="folderName"></param>
+        /// <param name="parentFolder"></param>
+        /// <returns></returns>
+        public FolderReadViewModel GetFolder(Guid? folderId, string folderName, Guid? parentFolder)
+        {
+            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+
+            const string query =
+                @"SELECT    Id AS FolderId, 
+                            Name AS FolderName, 
+                            Description, 
+                            FileCount 
+                FROM        Folder f
+                WHERE       (
+                                f.Id != @FolderId
+                                OR
+                                @FolderId IS NULL
+                            )
+                AND         f.Name = @FolderName
+                AND         (
+                                ParentFolder = @ParentFolder
+                                OR
+                                @ParentFolder IS NULL
+                            );";
+
+            var result = dbConnection.QueryFirstOrDefault<FolderReadViewModel>(query, new { FolderId = folderId, FolderName = folderName, ParentFolder = parentFolder });
+            return result;
+        }
+
+
         public bool UserIsAdmin(string groupSlug, Guid userId)
         {
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();

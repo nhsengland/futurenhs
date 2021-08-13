@@ -233,7 +233,7 @@ namespace MvcForum.Web.Controllers
         }
 
         /// <summary>
-        /// Verify that the Folder Id is for a valid folder.
+        /// Verify that the Folder Id is for a valid folder (folder exists).
         /// </summary>
         /// <param name="folderId"></param>
         /// <returns></returns>
