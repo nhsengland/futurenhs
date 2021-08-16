@@ -33,12 +33,12 @@
                             
                                 <p class="c-card_footer-item">
                                     @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-discussion", "c-card_footer-icon u-fill-theme-11"));}
-                                    <span class="u-desktop-up-inline-block">@string.Format(Html.LanguageString("Rss.Group.Title"), Model.TopicCount)</span>
+                                    <span>@string.Format(Html.LanguageString("Rss.Group.Title"), Model.TopicCount)</span>
                                 </p>
 
                                 <p class="c-card_footer-item">
                                     @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_footer-icon u-fill-theme-11"));}
-                                    <span class="u-desktop-up-inline-block"> @Model.PostCount @Html.LanguageString("Topic.CommentsDetails")</span>
+                                    <span> @Model.PostCount @Html.LanguageString("Topic.CommentsDetails")</span>
                                 </p>
                                 
                             </div>
