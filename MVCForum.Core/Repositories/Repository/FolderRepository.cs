@@ -176,6 +176,7 @@ namespace MvcForum.Core.Repositories.Repository
                                 @FolderId IS NULL
                             )
                 AND         f.Name = @FolderName
+                AND         f.IsDeleted = 0
                 AND         (
                                 ParentFolder = @ParentFolder
                                 OR
