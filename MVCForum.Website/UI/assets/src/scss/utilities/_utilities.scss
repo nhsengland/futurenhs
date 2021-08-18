@@ -1,12 +1,7 @@
 @use "sass:map";
 
 .u-no-decoration {
-    &:active,
-    &:focus,
-    &:hover {
-        outline: none;
-        text-decoration: none;
-    }
+    text-decoration: none;
 }
 
 .u-visually-hidden {
