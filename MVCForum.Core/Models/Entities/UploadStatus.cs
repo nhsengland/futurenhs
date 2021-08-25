@@ -1,8 +1,11 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
+    using System.ComponentModel.DataAnnotations.Schema;
+
     /// <summary>
     /// Defines the UploadStatus table entity.
     /// </summary>
+    [Table(name: "FileStatus")] 
     public class UploadStatus
     {
         /// <summary>

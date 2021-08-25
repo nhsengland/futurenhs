@@ -1,4 +1,10 @@
-﻿namespace MvcForum.Core.Models.Entities
+﻿//-----------------------------------------------------------------------
+// <copyright file="File.cs" company="CDS">
+// Copyright (c) CDS. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace MvcForum.Core.Models.Entities
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -47,7 +53,7 @@
         /// <summary>
         /// Gets or sets the file size.
         /// </summary>
-        public string FileSize { get; set; }
+        public long FileSizeBytes { get; set; }
         
         /// <summary>
         /// Gets or sets the file extension.
@@ -57,12 +63,11 @@
         /// <summary>
         /// Gets or sets the file url.
         /// </summary>
-        public string FileUrl { get; set; }
+        public string BlobName { get; set; }
 
         /// <summary>
         /// Gets or sets the blob hash (md5)
         /// </summary>
-        [MaxLength(16)]
         public byte[] BlobHash { get; set; }
 
         /// <summary>
@@ -78,18 +83,16 @@
         /// <summary>
         /// Gets or sets the file created date.
         /// </summary>
-        [Column(TypeName = "datetime2")]
         public DateTime CreatedAtUtc { get; set; }
 
         /// <summary>
         /// Gets or sets the file modified date.
         /// </summary>
-        [Column(TypeName = "datetime2")]
         public DateTime? ModifiedAtUtc { get; set; }
         
         /// <summary>
         /// Gets or sets the upload status of the file.
         /// </summary>
-        public int UploadStatus { get; internal set; }
+        public int FileStatus { get; internal set; }
     }
 }

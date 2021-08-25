@@ -151,7 +151,7 @@ namespace MvcForum.Web.Controllers
                             file.UploadStatus = fileUploadResult.UploadSuccessful ? (int)Status.Verified : (int)Status.Failed;
                             file.FileUrl = fileUploadResult.UploadSuccessful ? fileUploadResult.UploadedFileName : null;
                             file.FileName = file.PostedFile.FileName;
-                            file.FileSize = file.PostedFile.ContentLength.ToString();
+                            file.FileSize = file.PostedFile.ContentLength;
                             file.FileExtension = System.IO.Path.GetExtension(file.PostedFile.FileName);
                             file.BlobHash = fileUploadResult.UploadedFileHash;
 

@@ -164,6 +164,14 @@
     <Compile Include="Migrations\202109241244000_AddsSubtitleAndIntroductionToGroup.Designer.cs">
       <DependentUpon>202109241244000_AddsSubtitleAndIntroductionToGroup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202108241458387_modifiesFileProperties.cs" />
+    <Compile Include="Migrations\202108241458387_modifiesFileProperties.Designer.cs">
+      <DependentUpon>202108241458387_modifiesFileProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110061404409_FixMigrationBlank.cs" />
+    <Compile Include="Migrations\202110061404409_FixMigrationBlank.Designer.cs">
+      <DependentUpon>202110061404409_FixMigrationBlank.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -629,6 +637,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109241244000_AddsSubtitleAndIntroductionToGroup.resx">
       <DependentUpon>202109241244000_AddsSubtitleAndIntroductionToGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108241458387_modifiesFileProperties.resx">
+      <DependentUpon>202108241458387_modifiesFileProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110061404409_FixMigrationBlank.resx">
+      <DependentUpon>202110061404409_FixMigrationBlank.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

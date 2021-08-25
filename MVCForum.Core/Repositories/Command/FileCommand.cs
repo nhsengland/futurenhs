@@ -42,7 +42,7 @@
                 CreatedBy = (Guid)file.CreatedBy,
                 CreatedAtUtc = DateTime.UtcNow,
                 ParentFolder = file.FolderId,
-                UploadStatus = (int)Status.Uploading,
+                FileStatus = (int)Status.Uploading,
             };
 
             var createdFile = _context.Files.Add(fileCreate);
@@ -64,11 +64,11 @@
                 dbFile.Description = file.Description;
                 dbFile.ModifiedBy = file.ModifiedBy;
                 dbFile.ModifiedAtUtc = DateTime.UtcNow;
-                dbFile.UploadStatus = file.UploadStatus;
+                dbFile.FileStatus = file.UploadStatus;
                 dbFile.FileName = file.FileName;
                 dbFile.FileExtension = file.FileExtension;
-                dbFile.FileSize = file.FileSize;
-                dbFile.FileUrl = file.FileUrl;
+                dbFile.FileSizeBytes = file.FileSize;
+                dbFile.BlobName = file.FileUrl;
                 dbFile.BlobHash = file.BlobHash;
             }
 
@@ -79,7 +79,7 @@
         public void Delete(FileWriteViewModel file)
         {
             var dbFile = _context.Files.Find(file.FileId);
-            dbFile.UploadStatus = (int)Status.Recycled;
+            dbFile.FileStatus = (int)Status.Recycled;
             _context.SaveChanges();
         }
     }
