@@ -16,6 +16,7 @@
             Property(x => x.FileSize).IsRequired();
             Property(x => x.FileExtension).IsRequired();
             Property(x => x.FileUrl).IsRequired();
+            Property(x => x.BlobHash).IsRequired();            
             Property(x => x.CreatedBy).IsRequired();
             Property(x => x.ModifiedBy).IsRequired();
             Property(x => x.CreatedDate).IsRequired();

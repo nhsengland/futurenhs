@@ -134,6 +134,7 @@ namespace MvcForum.Web.Controllers
                                 file.FileName = file.PostedFile.FileName;
                                 file.FileSize = file.PostedFile.ContentLength.ToString();
                                 file.FileExtension = System.IO.Path.GetExtension(file.PostedFile.FileName);
+                                file.BlobHash = fileUploadResult.UploadedFileHash;
 
                                 _fileService.Update(file);
 

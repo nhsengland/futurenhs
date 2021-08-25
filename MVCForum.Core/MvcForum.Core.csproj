@@ -113,6 +113,9 @@
     <Compile Include="Migrations\202108041053595_makesFilePropertiesNullable.Designer.cs">
       <DependentUpon>202108041053595_makesFilePropertiesNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202108261327139_AddsBlobHashToFileTable.cs" />
+    <Compile Include="Migrations\202108261327139_AddsBlobHashToFileTable.Designer.cs">
+      <DependentUpon>202108261327139_AddsBlobHashToFileTable.cs</DependentUpon>
     <Compile Include="Migrations\202108111417474_SystemPages.cs" />
     <Compile Include="Migrations\202108111417474_SystemPages.Designer.cs">
       <DependentUpon>202108111417474_SystemPages.cs</DependentUpon>
@@ -526,6 +529,8 @@
     <EmbeddedResource Include="Migrations\202108041053595_makesFilePropertiesNullable.resx">
       <DependentUpon>202108041053595_makesFilePropertiesNullable.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108261327139_AddsBlobHashToFileTable.resx">
+      <DependentUpon>202108261327139_AddsBlobHashToFileTable.cs</DependentUpon>
     <EmbeddedResource Include="Migrations\202108111417474_SystemPages.resx">
       <DependentUpon>202108111417474_SystemPages.cs</DependentUpon>
     </EmbeddedResource>

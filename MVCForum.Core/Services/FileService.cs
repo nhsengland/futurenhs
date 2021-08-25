@@ -143,7 +143,7 @@ namespace MvcForum.Core.Services
 
                     var blobStorage = storageAccount.CreateCloudBlobClient();
                     var container = blobStorage.GetContainerReference(_configurationProvider.GetFileContainerName());
-
+                    
                     var uniqueBlobName = $"{Guid.NewGuid()}{System.IO.Path.GetExtension(file.FileName)}";
 
                     result.UploadedFileName = uniqueBlobName;
@@ -154,7 +154,7 @@ namespace MvcForum.Core.Services
 
                     // set the attributes required to be saved in the DB?
                     // Question, are the values from Posted file 'safe' enough or should we get from uploaded blob?
-
+                    result.UploadedFileHash = Convert.FromBase64String(blob.Properties.ContentMD5);
                     result.UploadSuccessful = true;
                 }
             }

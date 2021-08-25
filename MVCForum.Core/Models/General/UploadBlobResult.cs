@@ -25,7 +25,7 @@ namespace MvcForum.Core.Models.General
         /// Was the upload successful.
         /// </summary>
         public bool UploadSuccessful { get; set; }
-
+        
         /// <summary>
         /// List of validation errors.
         /// </summary>
@@ -36,5 +36,10 @@ namespace MvcForum.Core.Models.General
         /// and does not match original uploaded file name.
         /// </summary>
         public string UploadedFileName { get; set; }
+
+        /// <summary>
+        /// MD5 hash of uploaded file
+        /// </summary>
+        public byte[] UploadedFileHash { get; set; }
     }
 }

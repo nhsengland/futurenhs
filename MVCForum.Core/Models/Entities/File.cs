@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using MvcForum.Core.Utilities;
 
@@ -63,6 +64,12 @@ namespace MvcForum.Core.Models.Entities
         /// Gets or sets the file url.
         /// </summary>
         public string FileUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the blob hash (md5)
+        /// </summary>
+        [MaxLength(16)]
+        public byte[] BlobHash { get; set; }
 
         /// <summary>
         /// Gets or sets the file created by.

@@ -69,6 +69,7 @@
                 dbFile.FileExtension = file.FileExtension;
                 dbFile.FileSize = file.FileSize;
                 dbFile.FileUrl = file.FileUrl;
+                dbFile.BlobHash = file.BlobHash;
             }
 
             _context.SaveChanges();
