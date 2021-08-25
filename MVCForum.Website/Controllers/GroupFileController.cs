@@ -129,7 +129,7 @@ namespace MvcForum.Web.Controllers
                                 var fileUploadResult = await _fileService.UploadFileAsync(file.PostedFile);
 
                                 // Update the status of the file depending on upload result.
-                                file.UploadStatus = fileUploadResult.UploadSuccessful ? (int)Status.Uploaded : (int)Status.Failed;
+                                file.UploadStatus = fileUploadResult.UploadSuccessful ? (int)Status.Verified : (int)Status.Failed;
                                 file.FileUrl = fileUploadResult.UploadSuccessful ? fileUploadResult.UploadedFileName : null;
                                 file.FileName = file.PostedFile.FileName;
                                 file.FileSize = file.PostedFile.ContentLength.ToString();
