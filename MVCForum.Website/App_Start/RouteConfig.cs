@@ -19,6 +19,12 @@
             //routes.MapMvcAttributeRoutes();
 
             routes.MapRoute(
+                "SystemPageUrls", // Route name
+                "pages/{slug}", // URL with parameters
+                new { controller = "SystemPages", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
                 "GroupUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}"), // URL with parameters
                 new {controller = "Group", action = "Show", slug = UrlParameter.Optional,tab = UrlParameter.Optional} // Parameter defaults

@@ -58,12 +58,7 @@
             </ul>
 
         </li>
-        <li>
-            <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })" class="@(currentController == "adminbadge" && currentAction == "index" ? "active" : "")">
-                <i class="fa fa-fw fa-trophy"></i> Badges
-            </a>
-        </li>
-        <li>
+	    <li>
             <a href="#" data-toggle="collapse" data-target="#permissions">
                 <i class="fa fa-fw fa-check-square-o"></i> Permissions <i class="fa fa-fw fa-caret-down"></i>
             </a>
@@ -139,23 +134,39 @@
         <li>
             <a href="@Url.Action("CustomCode", "Settings", new { area = "Admin" }, null)" class="@(currentController == "settings" && currentAction == "customcode" ? "active" : "")"><i class="fa fa-fw fa-code"></i> Custom Code</a>
         </li>
-        <li>
-            <a href="#" data-toggle="collapse" data-target="#batch">
-                <i class="fa fa-fw fa-bolt"></i> Batch Tools <i class="fa fa-fw fa-caret-down"></i>
-            </a>
-            <ul id="batch" class="collapse">
-                <li>
-                    <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeletemembers" ? "active" : "")">Batch Delete Members</a>
-                </li>
-                <li>
-                    <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchmovetopics" ? "active" : "")">Batch Move Topics</a>
-                </li>
-                <li>
-                    <a href="@Url.Action("BatchDeletePrivateMessages", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeleteprivatemessages" ? "active" : "")">Batch Delete Private Messages</a>
-                </li>
-            </ul>
-        </li>
-        <li>
+	    <li>
+		    <a href="#" data-toggle="collapse" data-target="#batch">
+			    <i class="fa fa-fw fa-bolt"></i> Batch Tools <i class="fa fa-fw fa-caret-down"></i>
+		    </a>
+		    <ul id="batch" class="collapse">
+			    <li>
+				    <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeletemembers" ? "active" : "")">Batch Delete Members</a>
+			    </li>
+			    <li>
+				    <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchmovetopics" ? "active" : "")">Batch Move Topics</a>
+			    </li>
+		    </ul>
+	    </li>
+	    @*<li>
+		    <a href="#" data-toggle="collapse" data-target="#pages">
+			    <i class="fa fa-fw fa-book"></i> System Pages <i class="fa fa-fw fa-caret-down"></i>
+		    </a>
+		    <ul id="pages" class="collapse">
+			    <li>
+				    <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeletemembers" ? "active" : "")">Batch Delete Members</a>
+			    </li>
+			    <li>
+				    <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchmovetopics" ? "active" : "")">Batch Move Topics</a>
+			    </li>
+		    </ul>
+	    </li>*@
+        
+	    <li>
+			<a href="@Url.Action("Index", "AdminSystemPages", new { area = "Admin" }, null)" class="@(currentController == "adminSystemPages" && currentAction == "index" ? "active" : "")">
+				<i class="fa fa-fw fa-book"></i> System Pages
+			</a>
+	    </li>
+	    <li>
             <a href="@Url.Action("Index", "Log", new { area = "Admin" })" class="@(currentController == "log" && currentAction == "index" ? "active" : "")"><i class="fa fa-fw fa-file-text-o"></i> Log</a>
         </li>
     </ul>

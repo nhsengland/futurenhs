@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Core.Interfaces
+﻿using System.Threading;
+
+namespace MvcForum.Core.Interfaces
 {
     using System;
     using System.Data.Entity;
@@ -42,10 +44,11 @@
         DbSet<GroupUser> GroupUser { get; set; }
         DbSet<File> Files { get; set; }
         DbSet<UploadStatus> FileUploadStatus { get; set; }
+        DbSet<SystemPage> SystemPage { get; set; }
 
         int SaveChanges();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         Task<int> SaveChangesAsync();
-
         void RollBack();
     }
 }

@@ -1,0 +1,20 @@
+﻿@using System.Web.Mvc.Html
+@model MvcForum.Core.Models.SystemPages.SystemPageViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+    ViewBag.HideSideBar = true;
+	ViewBag.Title = Model.Title;
+}
+
+<div class="c-grid-block">
+
+    <div class="c-grid-block_item l-col-12 l-col-10-d l-col-push-2">
+        <h1 class="u-has-subheading">@Model.Title</h1>
+        <div class="c-section-break c-section-break--visible break c-section-break--small"></div>
+ 
+        <div class="c-rich-text">
+            @Html.Raw(Model.Content)
+        </div>
+    </div>
+</div>

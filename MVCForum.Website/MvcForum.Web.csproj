@@ -84,12 +84,14 @@
     <Compile Include="Areas\Admin\Controllers\AdminLanguageController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminSocialController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminSpamController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminSystemPagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedEmailController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Controllers\ApiControllers\AutomationController.cs" />
     <Compile Include="Controllers\FedTestController.cs" />
+    <Compile Include="Controllers\SystemPagesController.cs" />
     <Compile Include="Controllers\FolderController.cs" />
     <Compile Include="Controllers\GroupFileController.cs" />
     <Compile Include="Controllers\HealthCheckController.cs" />
@@ -665,6 +667,9 @@
     <Content Include="Global.asax" />
     <Content Include="Installer\ru-RU.csv" />
     <Content Include="ApplicationInsights.config" />
+    <Content Include="Areas\Admin\Views\AdminSystemPages\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSystemPages\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSystemPages\Create.cshtml" />
     <None Include="Installer\en-US.csv" />
     <Content Include="Installer\ManualSql\manualVersionOneSevenToOneEight.sql" />
     <Content Include="Scripts\bbeditor\emoticons\alien.png" />
@@ -1189,6 +1194,7 @@
     <Content Include="Views\GroupFile\Update.cshtml" />
     <Content Include="Views\GroupFile\Delete.cshtml" />
     <Content Include="Views\Shared\_Breadcrumbs.cshtml" />
+    <Content Include="Views\SystemPages\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

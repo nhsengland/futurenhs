@@ -3,6 +3,10 @@
 // Copyright (c) CDS. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace MvcForum.Core.Repositories.Database.DatabaseProviders
 {
     using Polly.Retry;
@@ -65,6 +69,15 @@ namespace MvcForum.Core.Repositories.Database.DatabaseProviders
                     _underlyingConnection.Open();
                 }
             });
+        }
+
+        public override async Task OpenAsync(CancellationToken cancellationToken)
+        {
+            var y = cancellationToken;
+            if (_underlyingConnection.State != ConnectionState.Open)
+            {
+                await _retryPolicy.ExecuteAsync(ct => _underlyingConnection.OpenAsync(ct), cancellationToken);
+            }
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)

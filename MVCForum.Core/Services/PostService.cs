@@ -567,7 +567,6 @@ namespace MvcForum.Core.Services
                 PostContent = postContent,
                 User = user,
                 Topic = topic,
-                IpAddress = StringUtils.GetUsersIpAddress(),
                 DateCreated = DateTime.UtcNow,
                 DateEdited = DateTime.UtcNow,
                 Pending = topic.Group.ModeratePosts == true

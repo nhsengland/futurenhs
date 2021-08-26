@@ -43,6 +43,9 @@
     <Compile Include="Constants\UI\Icons.cs" />
     <Compile Include="Constants\UI\Themes.cs" />
     <Compile Include="Data\Mapping\CategoryMapping.cs" />
+    <Compile Include="Data\Mapping\FileMapping.cs" />
+    <Compile Include="Data\Mapping\SystemPageMapping.cs" />
+    <Compile Include="Data\Mapping\FolderMapping.cs" />
     <Compile Include="Data\Mapping\GroupUserMapping.cs" />
     <Compile Include="Data\Mapping\SectionMapping.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
@@ -65,6 +68,7 @@
     <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\IFileService.cs" />
     <Compile Include="Interfaces\Services\IFileUploadValidationService.cs" />
+    <Compile Include="Interfaces\Services\ISystemPagesService.cs" />
     <Compile Include="Interfaces\Services\IFolderService.cs" />
     <Compile Include="Interfaces\Services\INotificationService.cs" />
     <Compile Include="Interfaces\Services\ISpamService.cs" />
@@ -109,6 +113,18 @@
     <Compile Include="Migrations\202108041053595_makesFilePropertiesNullable.Designer.cs">
       <DependentUpon>202108041053595_makesFilePropertiesNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202108111417474_SystemPages.cs" />
+    <Compile Include="Migrations\202108111417474_SystemPages.Designer.cs">
+      <DependentUpon>202108111417474_SystemPages.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108201321315_DropIPColumnFromPost.cs" />
+    <Compile Include="Migrations\202108201321315_DropIPColumnFromPost.Designer.cs">
+      <DependentUpon>202108201321315_DropIPColumnFromPost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108251344397_RemoveLatLonFromMembershipUser.cs" />
+    <Compile Include="Migrations\202108251344397_RemoveLatLonFromMembershipUser.Designer.cs">
+      <DependentUpon>202108251344397_RemoveLatLonFromMembershipUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -125,8 +141,10 @@
     <Compile Include="Models\Entities\File.cs" />
     <Compile Include="Models\Entities\Folder.cs" />
     <Compile Include="Models\Entities\GroupPermissions.cs" />
+    <Compile Include="Models\Entities\SystemPage.cs" />
     <Compile Include="Models\Entities\GroupUser.cs" />
     <Compile Include="Models\Enums\GroupUserStatus.cs" />
+    <Compile Include="Models\Enums\ResponseType.cs" />
     <Compile Include="Models\Enums\UploadStatus.cs" />
     <Compile Include="Models\FilesAndFolders\FileWriteViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FileViewModel.cs" />
@@ -239,6 +257,9 @@
     <Compile Include="Models\PostType.cs" />
     <Compile Include="Models\SectionsSummary.cs" />
     <Compile Include="Models\Spam\Comment.cs" />
+    <Compile Include="Models\SystemPages\SystemPageWriteResponse.cs" />
+    <Compile Include="Models\SystemPages\SystemPageViewModel.cs" />
+    <Compile Include="Models\SystemPages\SystemPageWriteViewModel.cs" />
     <Compile Include="Pipeline\Pipeline.cs" />
     <Compile Include="Pipeline\PipelineProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -247,8 +268,10 @@
     <Compile Include="Reflection\AssemblyProvider.cs" />
     <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Repositories\Command\FileCommand.cs" />
+    <Compile Include="Repositories\Command\SystemPagesCommand.cs" />
     <Compile Include="Repositories\Command\FolderCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IFileCommand.cs" />
+    <Compile Include="Repositories\Command\Interfaces\ISystemPagesCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IFolderCommand.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\Interfaces\IDbConnectionFactory.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbCommand.cs">
@@ -266,9 +289,11 @@
     <Compile Include="Repositories\Repository\FileRepository.cs" />
     <Compile Include="Repositories\Repository\FolderRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFileRepository.cs" />
+    <Compile Include="Repositories\Repository\Interfaces\ISystemPagesRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFolderRepository.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\DbRetryPolicy.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\IDbRetryPolicy.cs" />
+    <Compile Include="Repositories\Repository\SystemPagesRepository.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\BannedEmailService.cs" />
     <Compile Include="Services\BannedWordService.cs" />
@@ -330,6 +355,7 @@
     <Compile Include="Services\ServiceHelpers.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SpamService.cs" />
+    <Compile Include="Services\SystemPagesService.cs" />
     <Compile Include="SiteConfig\SiteConfig.cs" />
     <Compile Include="Services\TopicService.cs" />
     <Compile Include="Services\TopicTagService.cs" />
@@ -499,6 +525,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108041053595_makesFilePropertiesNullable.resx">
       <DependentUpon>202108041053595_makesFilePropertiesNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108111417474_SystemPages.resx">
+      <DependentUpon>202108111417474_SystemPages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108201321315_DropIPColumnFromPost.resx">
+      <DependentUpon>202108201321315_DropIPColumnFromPost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108251344397_RemoveLatLonFromMembershipUser.resx">
+      <DependentUpon>202108251344397_RemoveLatLonFromMembershipUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

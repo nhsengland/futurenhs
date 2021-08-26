@@ -18,8 +18,8 @@ namespace MvcForum.Core.Repositories.Database.RetryPolicy
 
         TResult Execute<TResult>(Func<TResult> operation);
 
-        Task Execute(Func<Task> operation, CancellationToken cancellationToken);
+        Task ExecuteAsync(Func<CancellationToken, Task> operation, CancellationToken cancellationToken);
 
-        Task<TResult> Execute<TResult>(Func<Task<TResult>> operation, CancellationToken cancellationToken);
+        Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> operation, CancellationToken cancellationToken);
     }
 }

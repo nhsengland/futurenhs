@@ -57,8 +57,6 @@
             Property(x => x.DisableFileUploads).IsOptional();
             Property(x => x.LoginIdExpires).IsOptional();
             Property(x => x.MiscAccessToken).IsOptional().HasMaxLength(250);
-            Property(x => x.Latitude).IsOptional().HasMaxLength(40);
-            Property(x => x.Longitude).IsOptional().HasMaxLength(40);
             Property(x => x.LastActivityDate).IsOptional();
             Property(x => x.HasAgreedToTermsAndConditions).IsOptional();
 

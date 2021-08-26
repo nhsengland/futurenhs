@@ -40,31 +40,6 @@ namespace MvcForum.Core.Repositories.Database.RetryPolicy
                     retryCount: retryCount,
                     sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(waitBetweenRetriesInMilliseconds)
                 );
-
-
-            
-            //const int FIFTEEN_SECONDS = 15;
-            //const int RETRY_ATTEMPTS_ON_TRANSIENT_ERROR = 3;
-            //var jitterer = new Random();
-            //var retryPolicyWithJitter = Policy.Handle<SqlException>(exception => _sqlExceptions.Contains(exception.Number)).
-            //    WaitAndRetryAsync(
-            //        retryCount: RETRY_ATTEMPTS_ON_TRANSIENT_ERROR,
-            //        sleepDurationProvider: retryNumber => TimeSpan.FromSeconds(Math.Pow(2, retryNumber)) + TimeSpan.FromMilliseconds(jitterer.Next(0, 100))
-            //    );
-            //var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(FIFTEEN_SECONDS);
-            //var bulkheadPolicy = Policy.BulkheadAsync<HttpResponseMessage>(maxParallelization: 3, maxQueuingActions: 25);
-            //var circuitBreakerPolicy =
-            //    Policy.HandleResult<HttpResponseMessage>(rm => !rm.IsSuccessStatusCode).
-            //        AdvancedCircuitBreakerAsync(
-            //            failureThreshold: 0.25,                             // If 25% or more of requests fail
-            //            samplingDuration: TimeSpan.FromSeconds(60),         // in a 60 second period
-            //            minimumThroughput: 7,                               // and there have been at least 7 requests in that time
-            //            durationOfBreak: TimeSpan.FromSeconds(30)           // then open the circuit for 30 seconds
-            //        );
-            //builder.AddPolicyHandler(timeoutPolicy).
-            //    AddPolicyHandler(circuitBreakerPolicy).
-            //    AddPolicyHandler(bulkheadPolicy).
-            //    AddPolicyHandler(retryPolicyWithJitter);
         }
 
         public void Execute(Action operation)
@@ -77,14 +52,14 @@ namespace MvcForum.Core.Repositories.Database.RetryPolicy
             return _retryPolicy.Execute(operation.Invoke);
         }
 
-        public async Task Execute(Func<Task> operation, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(Func<CancellationToken, Task> operation, CancellationToken cancellationToken)
         {
-            await _retryPolicyAsync.ExecuteAsync(operation.Invoke);
+            await _retryPolicyAsync.ExecuteAsync(operation.Invoke, cancellationToken);
         }
 
-        public async Task<TResult> Execute<TResult>(Func<Task<TResult>> operation, CancellationToken cancellationToken)
+        public async Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> operation, CancellationToken cancellationToken)
         {
-            return await _retryPolicyAsync.ExecuteAsync(operation.Invoke);
+            return await _retryPolicyAsync.ExecuteAsync(operation.Invoke, cancellationToken);
         }
     }
 }

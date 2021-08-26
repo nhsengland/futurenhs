@@ -98,7 +98,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IFolderService, FolderService>();
             Container.BindInRequestScope<IFileService, FileService>();
             Container.BindInRequestScope<IFileUploadValidationService, FileUploadValidationService>();
-
+            Container.BindInRequestScope<ISystemPagesService, SystemPagesService>();
             // Repositories
             Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString,  Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"]), ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString, ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"], ConfigurationManager.AppSettings["AzureBlobStorage:FilesPrimaryEndpoint_TO_BE_RETIRED"]));
             Container.BindInRequestScope<IDbRetryPolicy, DbRetryPolicy>();
@@ -106,6 +106,8 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IFolderRepository, FolderRepository>();
             Container.BindInRequestScope<IFileRepository, FileRepository>();
             Container.BindInRequestScope<IFileCommand, FileCommand>();
+            Container.BindInRequestScope<ISystemPagesRepository, SystemPagesRepository>();
+            Container.BindInRequestScope<ISystemPagesCommand, SystemPagesCommand>();
         }
     }
 
