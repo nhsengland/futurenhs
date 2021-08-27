@@ -84,12 +84,14 @@ namespace MvcForum.Core.Models.Entities
         /// <summary>
         /// Gets or sets the file created date.
         /// </summary>
-        public DateTime CreatedDate { get; set; }
+        [Column(TypeName = "datetime2")]
+        public DateTime CreatedAtUtc { get; set; }
 
         /// <summary>
         /// Gets or sets the file modified date.
         /// </summary>
-        public DateTime? ModifiedDate { get; set; }
+        [Column(TypeName = "datetime2")]
+        public DateTime? ModifiedAtUtc { get; set; }
         
         /// <summary>
         /// Gets or sets the upload status of the file.

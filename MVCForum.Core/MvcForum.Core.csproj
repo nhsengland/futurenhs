@@ -133,6 +133,14 @@
     <Compile Include="Migrations\202108271155117_ModifiesBlobHashTypeToBinary.Designer.cs">
       <DependentUpon>202108271155117_ModifiesBlobHashTypeToBinary.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202108271504319_RenameDateColumnOnFileAndFolderTable.cs" />
+    <Compile Include="Migrations\202108271504319_RenameDateColumnOnFileAndFolderTable.Designer.cs">
+      <DependentUpon>202108271504319_RenameDateColumnOnFileAndFolderTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108271511087_AlterFileFolderDataTypeToDatetime2.cs" />
+    <Compile Include="Migrations\202108271511087_AlterFileFolderDataTypeToDatetime2.Designer.cs">
+      <DependentUpon>202108271511087_AlterFileFolderDataTypeToDatetime2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -551,6 +559,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108271155117_ModifiesBlobHashTypeToBinary.resx">
       <DependentUpon>202108271155117_ModifiesBlobHashTypeToBinary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108271504319_RenameDateColumnOnFileAndFolderTable.resx">
+      <DependentUpon>202108271504319_RenameDateColumnOnFileAndFolderTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108271511087_AlterFileFolderDataTypeToDatetime2.resx">
+      <DependentUpon>202108271511087_AlterFileFolderDataTypeToDatetime2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

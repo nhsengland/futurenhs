@@ -27,7 +27,7 @@ namespace MvcForum.Core.Repositories.Command
                 Description = folder.Description,
                 AddedBy = folder.AddedBy,
                 ParentFolder = folder.ParentFolder,
-                DateAdded = DateTime.Now,
+                CreatedAtUtc = DateTime.UtcNow,
                 ParentGroup = folder.ParentGroup
             };
 

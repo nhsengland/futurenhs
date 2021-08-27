@@ -40,7 +40,7 @@
                 Title = file.Name,
                 Description = file.Description,
                 CreatedBy = (Guid)file.CreatedBy,
-                CreatedDate = DateTime.Now,
+                CreatedAtUtc = DateTime.UtcNow,
                 ParentFolder = file.FolderId,
                 UploadStatus = (int)Status.Uploading,
             };
@@ -63,7 +63,7 @@
                 dbFile.Title = file.Name;
                 dbFile.Description = file.Description;
                 dbFile.ModifiedBy = file.ModifiedBy;
-                dbFile.ModifiedDate = DateTime.Now;
+                dbFile.ModifiedAtUtc = DateTime.UtcNow;
                 dbFile.UploadStatus = file.UploadStatus;
                 dbFile.FileName = file.FileName;
                 dbFile.FileExtension = file.FileExtension;

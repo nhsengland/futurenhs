@@ -19,8 +19,8 @@
             Property(x => x.BlobHash).IsOptional();            
             Property(x => x.CreatedBy).IsRequired();
             Property(x => x.ModifiedBy).IsOptional();
-            Property(x => x.CreatedDate).IsRequired();
-            Property(x => x.ModifiedDate).IsOptional();
+            Property(x => x.CreatedAtUtc).IsRequired();
+            Property(x => x.ModifiedAtUtc).IsOptional();
             Property(x => x.UploadStatus).IsOptional();
         }
     }

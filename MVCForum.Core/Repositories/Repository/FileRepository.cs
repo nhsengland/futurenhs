@@ -43,12 +43,20 @@ namespace MvcForum.Core.Repositories.Repository
             try
             {
                 var conn = _connectionFactory.CreateReadOnlyConnection();
-                var query = @"SELECT f.Id, f.Title, f.Description, f.FileName, f.FileUrl, f.CreatedDate, 
-                            f.ModifiedDate, f.CreatedBy, f.ParentFolder, f.UploadStatus AS Status,
-                            m.FirstName + ' ' + m.Surname AS UserName, 
-                            m.Slug AS UserSlug, 
-                            mu.FirstName + ' ' + mu.Surname as ModifiedUserName, 
-                            mu.Slug AS ModifiedUserSlug  
+                var query = @"SELECT f.Id, 
+                                     f.Title, 
+                                     f.Description, 
+                                     f.FileName, 
+                                     f.FileUrl,
+                                     f.CreatedAtUtc,
+                                     f.ModifiedAtUtc,
+                                     f.CreatedBy,
+                                     f.ParentFolder,
+									 f.UploadStatus AS Status,
+                                     m.FirstName + ' ' + m.Surname AS UserName,
+                                     m.Slug AS UserSlug,
+                                     mu.FirstName + ' ' + mu.Surname as ModifiedUserName, 
+                                     mu.Slug AS ModifiedUserSlug 
                             FROM [File] f 
                             JOIN MembershipUser m ON m.Id = f.CreatedBy 
                             LEFT JOIN MembershipUser mu ON m.Id = f.ModifiedBy  
@@ -69,7 +77,12 @@ namespace MvcForum.Core.Repositories.Repository
             try
             {
                 var conn = _connectionFactory.CreateReadOnlyConnection();
-                var query = @"SELECT f.Id, f.Title, f.CreatedDate, f.CreatedBy, m.FirstName + ' ' + m.Surname AS UserName, m.Slug AS UserSlug 
+                var query = @"SELECT f.Id, 
+                                     f.Title, 
+                                     f.CreatedAtUtc, 
+                                     f.CreatedBy, 
+                                     m.FirstName + ' ' + m.Surname AS UserName,
+                                     m.Slug AS UserSlug 
                             FROM [File] f 
                             JOIN MembershipUser m ON m.Id = f.CreatedBy 
                             WHERE f.ParentFolder = @folderId

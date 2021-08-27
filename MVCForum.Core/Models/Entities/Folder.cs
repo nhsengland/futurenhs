@@ -18,7 +18,8 @@ namespace MvcForum.Core.Models.Entities
         public int FileCount { get; set; }
         public Guid AddedBy { get; set; }
         public Guid ParentGroup { get; set; }
-        public DateTime DateAdded { get; set; }
+        [Column(TypeName = "datetime2")]
+        public DateTime CreatedAtUtc { get; set; }
         public bool IsDeleted { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }

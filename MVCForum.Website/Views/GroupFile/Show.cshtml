@@ -51,8 +51,8 @@
 	                        </a>
                         </td>
                         <td role="cell" class="c-table_cell">
-                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedDate)</span>
-							<span>@DatesUi.GetPrettyDate(Model.File.ModifiedDate.ToString())</span>
+                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedAtUtc)</span>
+							<span>@DatesUi.GetPrettyDate(Model.File.ModifiedAtUtc.ToString())</span>
                         </td>
                         <td role="cell" class="c-table_cell">
                             <span class="c-table_heading">@Html.LanguageString("File.Label.Download")</span>

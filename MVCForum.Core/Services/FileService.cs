@@ -101,9 +101,9 @@ namespace MvcForum.Core.Services
                 file.ModifiedUserSlug = file.UserSlug;
             }
 
-            if (!file.ModifiedDate.HasValue)
+            if (!file.ModifiedAtUtc.HasValue)
             {
-                file.ModifiedDate = file.CreatedDate;
+                file.ModifiedAtUtc = file.CreatedAtUtc;
             }
 
             return file;
