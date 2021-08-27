@@ -12,15 +12,16 @@
             Property(x => x.Title).IsRequired();
             Property(x => x.ParentFolder).IsRequired();
             Property(x => x.Description).IsOptional();
-            Property(x => x.FileName).IsRequired();
-            Property(x => x.FileSize).IsRequired();
-            Property(x => x.FileExtension).IsRequired();
-            Property(x => x.FileUrl).IsRequired();
-            Property(x => x.BlobHash).IsRequired();            
+            Property(x => x.FileName).IsOptional();
+            Property(x => x.FileSize).IsOptional();
+            Property(x => x.FileExtension).IsOptional();
+            Property(x => x.FileUrl).IsOptional();
+            Property(x => x.BlobHash).IsOptional();            
             Property(x => x.CreatedBy).IsRequired();
-            Property(x => x.ModifiedBy).IsRequired();
+            Property(x => x.ModifiedBy).IsOptional();
             Property(x => x.CreatedDate).IsRequired();
-            Property(x => x.ModifiedDate).IsRequired();
+            Property(x => x.ModifiedDate).IsOptional();
+            Property(x => x.UploadStatus).IsOptional();
         }
     }
 }

@@ -129,6 +129,10 @@
     <Compile Include="Migrations\202108251344397_RemoveLatLonFromMembershipUser.Designer.cs">
       <DependentUpon>202108251344397_RemoveLatLonFromMembershipUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202108271155117_ModifiesBlobHashTypeToBinary.cs" />
+    <Compile Include="Migrations\202108271155117_ModifiesBlobHashTypeToBinary.Designer.cs">
+      <DependentUpon>202108271155117_ModifiesBlobHashTypeToBinary.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -541,6 +545,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108251344397_RemoveLatLonFromMembershipUser.resx">
       <DependentUpon>202108251344397_RemoveLatLonFromMembershipUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108271155117_ModifiesBlobHashTypeToBinary.resx">
+      <DependentUpon>202108271155117_ModifiesBlobHashTypeToBinary.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
