@@ -263,7 +263,7 @@ namespace MvcForum.Web.Controllers
             if (fileModel.Status == (int)Status.Verified)
             {
                 // File valid for Id, try and get the link to the blob
-                var downloadPath = await _fileService.GetDownloadUrlAsync(fileModel.FileUrl, Azure.Storage.Sas.BlobSasPermissions.Read);
+                var downloadPath = await _fileService.GetRelativeDownloadUrlAsync(fileModel.FileUrl, Azure.Storage.Sas.BlobSasPermissions.Read);
 
                 if (string.IsNullOrWhiteSpace(downloadPath))
                 {

@@ -115,7 +115,7 @@ namespace MvcForum.Core.Services
         /// <param name="blobName">Name of blob to redirect to (blob storage name rather than original file name).</param>
         /// <param name="downloadPermissions">Permissions to be applied to the SasBuilder.</param>
         /// <returns></returns>
-        public async Task<string> GetDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions)
+        public async Task<string> GetRelativeDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions)
         {
             // Set the blob service client
             BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri(_configurationProvider.GetFileDownloadEndpoint()), new DefaultAzureCredential());
