@@ -22,7 +22,7 @@ namespace MvcForum.Core.Repositories.Repository
         {
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
             const string query =
-                @"SELECT Id,Slug,Title
+                @"SELECT Id, Slug, Title
                 FROM SystemPage            
                 WHERE IsDeleted = 0";
 
