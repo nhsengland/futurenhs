@@ -66,7 +66,8 @@
             {
                 AllGroups = _groupService.GetBaseSelectListGroups(_groupService.GetAll(LoggedOnReadOnlyUser?.Id), LoggedOnReadOnlyUser?.Id),
                 AllSections = _groupService.GetAllSections().ToSelectList(),
-				Users = MembershipService.GetAll().ToSelectList()
+				Users = MembershipService.GetAll().ToSelectList(),
+                Public = true
             };
             return View(GroupViewModel);
         }
