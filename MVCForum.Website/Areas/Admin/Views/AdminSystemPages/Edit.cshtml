@@ -4,8 +4,7 @@
 @using MvcForum.Web.Application.ExtensionMethods
 @model MvcForum.Core.Models.SystemPages.SystemPageWriteViewModel
 @{
-    ViewBag.Title = $"Edit page - {Model.Title}";
-    var buttonText = (Model.Id == Guid.Empty) ? "Create" : "Save";
+    ViewBag.Title = $"Edit system page";
 }
 
 <div class="backbutton">
@@ -45,7 +44,7 @@
        
             <div class="submit-holder">
                 <input type="submit" class="btn-mvc-green" value="Save" />
-                <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.Title?')" class="btn-mvc-red" role="button">Delete</a>
+                <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete this page?')" class="btn-mvc-red" role="button">Delete</a>
             </div>
         }
 
