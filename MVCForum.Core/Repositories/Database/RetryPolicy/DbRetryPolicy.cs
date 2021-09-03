@@ -24,8 +24,8 @@ namespace MvcForum.Core.Repositories.Database.RetryPolicy
 
         public DbRetryPolicy(IConfigurationProvider configurationProvider)
         {
-            var retryCount = configurationProvider.GetRetryAttempts();
-            var waitBetweenRetriesInMilliseconds = configurationProvider.GetRetryDelay();
+            var retryCount = configurationProvider.RetryAttempts;
+            var waitBetweenRetriesInMilliseconds = configurationProvider.RetryDelay;
 
             _retryPolicyAsync = Policy
                 .Handle<SqlException>(exception => _sqlExceptions.Contains(exception.Number))

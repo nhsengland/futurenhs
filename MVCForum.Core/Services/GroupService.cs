@@ -14,6 +14,7 @@ namespace MvcForum.Core.Services
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
+    using Microsoft.Owin.Infrastructure;
     using Models;
     using Models.Entities;
     using Models.General;
@@ -38,14 +39,40 @@ namespace MvcForum.Core.Services
         /// <param name="GroupPermissionForRoleService"></param>
         /// <param name="cacheService"></param>
         public GroupService(IMvcForumContext context, IRoleService roleService,
-            INotificationService notificationService,
-            IGroupPermissionForRoleService GroupPermissionForRoleService, ICacheService cacheService)
+                            INotificationService notificationService, IGroupPermissionForRoleService GroupPermissionForRoleService, 
+                            ICacheService cacheService)
         {
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (roleService is null)
+            {
+                throw new ArgumentNullException(nameof(roleService));
+            }
+
+            if (notificationService is null)
+            {
+                throw new ArgumentNullException(nameof(notificationService));
+            }
+
+            if (GroupPermissionForRoleService is null)
+            {
+                throw new ArgumentNullException(nameof(GroupPermissionForRoleService));
+            }
+
+            if (cacheService is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+
+            _context = context;
             _roleService = roleService;
             _notificationService = notificationService;
             _groupPermissionForRoleService = GroupPermissionForRoleService;
             _cacheService = cacheService;
-            _context = context;
         }
 
         /// <inheritdoc />
@@ -591,7 +618,7 @@ namespace MvcForum.Core.Services
             groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
             groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
             _context.GroupUser.Add(groupUser);
-            var result = _context.SaveChanges();
+            _ = _context.SaveChanges();
             return true;
         }
 
@@ -599,18 +626,19 @@ namespace MvcForum.Core.Services
         {
             var group = _context.Group.SingleOrDefault(x => x.Id == groupId);
             group.GroupUsers = new List<GroupUser>();
+            var dateTimeUtcNow = DateTime.UtcNow;
             var groupUser = new GroupUser();
             groupUser.Approved = true;
             groupUser.Rejected = false;
             groupUser.Banned = false;
             groupUser.Locked = false;
             groupUser.Group = group;
-            groupUser.RequestToJoinDate = DateTime.UtcNow;
+            groupUser.RequestToJoinDate = dateTimeUtcNow;
             groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.StandardRoleName);
-            groupUser.ApprovedToJoinDate = DateTime.Now;
+            groupUser.ApprovedToJoinDate = dateTimeUtcNow;
             groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
             _context.GroupUser.Add(groupUser);
-            var result = _context.SaveChanges();
+            _ = _context.SaveChanges();
             return true;
         }
 
@@ -621,18 +649,18 @@ namespace MvcForum.Core.Services
 
             foreach (var membershipId in membershipIds)
             {
+                var dateTimeUtcNow = DateTime.UtcNow;
                 var groupUser = new GroupUser();
                 groupUser.Approved = true;
                 groupUser.Rejected = false;
                 groupUser.Banned = false;
                 groupUser.Locked = false;
                 groupUser.Group = group;
-                groupUser.RequestToJoinDate = DateTime.UtcNow;
+                groupUser.RequestToJoinDate = dateTimeUtcNow;
                 groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.AdminRoleName);
                 groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
-                groupUser.ApprovedToJoinDate = DateTime.UtcNow;
-                groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
-                ;
+                groupUser.ApprovedToJoinDate = dateTimeUtcNow;
+                groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);                
 
                 if (@group != null && group.GroupUsers == null || !@group.GroupUsers.Any(x =>
                     x.User.Id == membershipId && x.Group.Id == group.Id))
@@ -653,7 +681,7 @@ namespace MvcForum.Core.Services
                         user.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.AdminRoleName);
                     }
                 }
-                var result = _context.SaveChanges();
+                _ = _context.SaveChanges();
             }
 
 
@@ -664,9 +692,8 @@ namespace MvcForum.Core.Services
 
                 _context.GroupUser.RemoveRange(removedUsers);
 
-                var result = _context.SaveChanges();
+                _ = _context.SaveChanges();
             }
-
 
             return true;
         }
@@ -683,7 +710,7 @@ namespace MvcForum.Core.Services
                 groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
             }
 
-            var result = _context.SaveChanges();
+            _ = _context.SaveChanges();
             return true;
         }
 
@@ -697,7 +724,7 @@ namespace MvcForum.Core.Services
                 groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
             }
 
-            var result = _context.SaveChanges();
+            _ = _context.SaveChanges();
             return true;
         }
 
@@ -708,7 +735,7 @@ namespace MvcForum.Core.Services
             if (groupUser != null)
             {
                 _context.GroupUser.Remove(groupUser);
-                var result = _context.SaveChanges();
+                _ = _context.SaveChanges();
                 return true;
             }
 

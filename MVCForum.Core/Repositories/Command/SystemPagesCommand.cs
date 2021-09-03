@@ -36,7 +36,7 @@ namespace MvcForum.Core.Repositories.Command
             {
                 if (_context.SystemPage.Any(x => x.Slug == page.Slug && x.IsDeleted == false))
                 {
-                    response.Response = ResponseType.NameAlreadyExists;
+                    response.Response = ResponseType.AlreadyExists;
                     return response;
                 }
                 _context.SystemPage.Add(systemPage);
@@ -65,7 +65,7 @@ namespace MvcForum.Core.Repositories.Command
                 {
                     if (_context.SystemPage.Any(x => x.Slug == page.Slug && x.IsDeleted == false && x.Id != page.Id))
                     {
-                        response.Response = ResponseType.NameAlreadyExists;
+                        response.Response = ResponseType.AlreadyExists;
                         return response;
                     }
 

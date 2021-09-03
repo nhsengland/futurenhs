@@ -74,6 +74,7 @@
     <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\IFileService.cs" />
     <Compile Include="Interfaces\Services\IFileUploadValidationService.cs" />
+    <Compile Include="Interfaces\Services\IGroupAddMemberService.cs" />
     <Compile Include="Interfaces\Services\ISystemPagesService.cs" />
     <Compile Include="Interfaces\Services\IFolderService.cs" />
     <Compile Include="Interfaces\Services\IGroupInviteService.cs" />
@@ -184,6 +185,8 @@
     <Compile Include="Models\FilesAndFolders\FolderViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderWriteViewModel.cs" />
     <Compile Include="Models\General\UploadBlobResult.cs" />
+    <Compile Include="Models\GroupAddMember\GroupAddMemberResponse.cs" />
+    <Compile Include="Models\GroupAddMember\GroupAddMemberViewModel.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
     <Compile Include="Models\Entities\BannedEmail.cs" />
     <Compile Include="Models\Entities\Group.cs" />
@@ -302,6 +305,8 @@
     <Compile Include="Reflection\AssemblyProvider.cs" />
     <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Repositories\Command\FileCommand.cs" />
+    <Compile Include="Repositories\Command\GroupAddMemberCommand.cs" />
+    <Compile Include="Repositories\Command\Interfaces\IGroupAddMemberCommand.cs" />
     <Compile Include="Repositories\Command\SystemPagesCommand.cs" />
     <Compile Include="Repositories\Command\FolderCommand.cs" />
     <Compile Include="Repositories\Command\GroupInviteCommand.cs" />
@@ -325,8 +330,10 @@
     <Compile Include="Repositories\Models\GroupInviteViewModel.cs" />
     <Compile Include="Repositories\Repository\FileRepository.cs" />
     <Compile Include="Repositories\Repository\FolderRepository.cs" />
+    <Compile Include="Repositories\Repository\GroupAddMemberRepository.cs" />
     <Compile Include="Repositories\Repository\GroupInviteRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFileRepository.cs" />
+    <Compile Include="Repositories\Repository\Interfaces\IGroupAddMemberRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\ISystemPagesRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFolderRepository.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\DbRetryPolicy.cs" />
@@ -340,6 +347,7 @@
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileUploadValidationService.cs" />
     <Compile Include="Services\FolderService.cs" />
+    <Compile Include="Services\GroupAddMemberService.cs" />
     <Compile Include="Services\GroupInviteService.cs" />
     <Compile Include="Services\NoCacheService.cs" />
     <Compile Include="Services\CacheService.cs" />

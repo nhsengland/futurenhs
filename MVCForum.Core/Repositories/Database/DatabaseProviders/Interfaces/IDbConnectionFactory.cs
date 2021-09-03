@@ -15,5 +15,6 @@ namespace MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces
     public interface IDbConnectionFactory
     {
         IDbConnection CreateReadOnlyConnection();
+        IDbConnection CreateWriteOnlyConnection();
     }
 }

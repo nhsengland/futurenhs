@@ -301,6 +301,17 @@ namespace MvcForum.Web.Controllers
                 {
                     new ActionLink {  Name = LocalizationService.GetResourceString("Groups.Leave") , Url = Url.Action("Leave", "Group", new { slug = @group.Slug }), Order = 1}
                 };
+
+                var loggedOnUsersRole = GetGroupMembershipRole(group.Id);
+                if (loggedOnUsersRole.RoleName.ToLower() == "admin")
+                {
+                    model.ActionLinks.Add(new ActionLink
+                    {
+                        Name = "Add new member",
+                        Url = Url.Action("AddMember", "GroupInvite", new { slug = @group.Slug }),
+                        Order = 2
+                    });
+                }
             }
 
             return model;

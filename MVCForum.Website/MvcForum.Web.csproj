@@ -1199,10 +1199,11 @@
     <Content Include="Views\GroupFile\Delete.cshtml" />
     <Content Include="Views\Shared\_Breadcrumbs.cshtml" />
     <Content Include="Views\SystemPages\Show.cshtml" />
-    <Content Include="Views\GroupInvite\Create.cshtml" />
+    <Content Include="Views\GroupInvite\InviteMember.cshtml" />
     <Content Include="Views\Email\Index.cshtml" />
     <Content Include="Views\Shared\_Breadcrumbs.cshtml" />
     <Content Include="Views\SystemPages\Show.cshtml" />
+    <Content Include="Views\GroupInvite\AddMember.cshtml" />
     <Content Include="Views\Shared\_GroupActionMenu.cshtml" />
     <Content Include="Views\FedTest\FilesViews\_Subfolders.cshtml" />
     <Content Include="Views\FedTest\FilesViews\_TopLevelFolders.cshtml" />

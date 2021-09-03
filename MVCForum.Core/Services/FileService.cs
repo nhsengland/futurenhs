@@ -118,7 +118,7 @@ namespace MvcForum.Core.Services
         public async Task<string> GetRelativeDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions)
         {
             // Set the blob service client
-            BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri(_configurationProvider.GetFileDownloadEndpoint()), new DefaultAzureCredential());
+            BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri(_configurationProvider.FileDownloadEndpoint), new DefaultAzureCredential());
 
             // Generate the user delegation key
             var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMinutes(40));
@@ -127,7 +127,7 @@ namespace MvcForum.Core.Services
             {
                 BlobSasBuilder sasBuilder = new BlobSasBuilder()
                 {
-                    BlobContainerName = _configurationProvider.GetFileContainerName(),
+                    BlobContainerName = _configurationProvider.FileContainerName,
                     BlobName = blobName,
                     Resource = "b",
                     StartsOn = DateTimeOffset.UtcNow,
@@ -141,7 +141,7 @@ namespace MvcForum.Core.Services
                 BlobUriBuilder blobUriBuilder = new BlobUriBuilder(blobServiceClient.Uri)
                 {
                     // Set container and blob name
-                    BlobContainerName = _configurationProvider.GetFileContainerName(),
+                    BlobContainerName = _configurationProvider.FileContainerName,
                     BlobName = blobName,
                     // Specify the user delegation key.
                     Sas = sasBuilder.ToSasQueryParameters(userDelegationKey, blobServiceClient.AccountName)
@@ -175,10 +175,10 @@ namespace MvcForum.Core.Services
 
             if (!result.ValidationErrors.Any())
             {
-                var storageAccount = CloudStorageAccount.Parse(_configurationProvider.GetFileUploadConnectionString());
+                var storageAccount = CloudStorageAccount.Parse(_configurationProvider.FileUploadConnectionString);
 
                 var blobStorage = storageAccount.CreateCloudBlobClient();
-                var container = blobStorage.GetContainerReference(_configurationProvider.GetFileContainerName());
+                var container = blobStorage.GetContainerReference(_configurationProvider.FileContainerName);
 
                 var uniqueBlobName = $"{Guid.NewGuid()}{System.IO.Path.GetExtension(file.FileName)}";
 

@@ -18,6 +18,9 @@
             // API Attribute Routes
             //routes.MapMvcAttributeRoutes();
 
+
+            
+
             routes.MapRoute(
                 "TermsAndConditionsUrl", // Route name
                 "terms-and-conditions", // URL with parameters
@@ -92,16 +95,20 @@
             routes.MapRoute(
                 "GroupInviteUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/Invite/{groupId}"), // URL with parameters
-                new { controller = "GroupInvite", action = "Create", tab = UrlParameter.Optional } // Parameter defaults
+                new { controller = "GroupInvite", action = "InviteMember", tab = UrlParameter.Optional } // Parameter defaults
             );
 
+            routes.MapRoute(
+                "GroupAddMemberUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/AddMember"), // URL with parameters
+                new { controller = "GroupInvite", action = "AddMember", tab = "members" } // Parameter defaults
+            );
 
             routes.MapRoute(
                 "TopicUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{group}/{tab}/{slug}"), // URL with parameters
                 new { controller = "Topic", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
-            );
-
+            );            
 
             routes.MapRoute(
                 "GroupMembersUrls", // Route name

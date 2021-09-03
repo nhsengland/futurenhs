@@ -32,7 +32,7 @@
         public Task<bool> SendInvitationAsync(MailAddress recipientEmailAddress, CancellationToken cancellationToken)
         {
             return _sendEmailService.SendAsync(
-                new MailAddress(_configurationProvider.GetSmtpFrom()), 
+                new MailAddress(_configurationProvider.SmtpFrom), 
                 recipientEmailAddress, 
                 _localizationService.GetResourceString("Email.Invite.Subject"), 
                 _localizationService.GetResourceString("Email.Invite.Body"),

@@ -1,16 +1,11 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="DbConnectionFactory.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Database.DatabaseProviders
+﻿namespace MvcForum.Core.Repositories.Database.DatabaseProviders
 {
     using MvcForum.Core.Interfaces.Providers;
     using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
     using MvcForum.Core.Repositories.Database.RetryPolicy;
     using System.Data;
 
-    public class DbConnectionFactory : IDbConnectionFactory
+    public sealed class DbConnectionFactory : IDbConnectionFactory
     {
         private readonly IDbRetryPolicy _retryPolicy;
         private readonly IConfigurationProvider _configurationProvider;
@@ -23,7 +18,12 @@ namespace MvcForum.Core.Repositories.Database.DatabaseProviders
 
         public IDbConnection CreateReadOnlyConnection()
         {
-            return new ReliableSqlDbConnection(_configurationProvider.GetReadOnlyConnectionString(), _retryPolicy);
+            return new ReliableSqlDbConnection(_configurationProvider.ReadOnlyDbConnectionString, _retryPolicy);
+        }
+
+        public IDbConnection CreateWriteOnlyConnection()
+        {
+            return new ReliableSqlDbConnection(_configurationProvider.WriteOnlyDbConnectionString, _retryPolicy);
         }
     }
 }

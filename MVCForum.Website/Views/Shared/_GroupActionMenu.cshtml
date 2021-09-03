@@ -17,11 +17,12 @@
                     Actions
                     @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-down", "c-ui-icon c-ui-icon--large c-action-dropdown_trigger-icon")); }
                 </summary>
+
+                <ul class="c-action-dropdown_list">
                 @foreach (var actionLink in Model.ActionLinks.OrderBy(x => x.Order))
                 {
-                    <ul class="c-action-dropdown_list">
 
-                        @if(@actionLink.Name == "Leave Group"){
+                        if(@actionLink.Name == "Leave Group"){
                             
                                  <li class="c-action-dropdown_item" role="none">
                                     <a data-dialog-id="dialog-leave-group" class="c-action-dropdown_link js-dialog" href="@actionLink.Url">@actionLink.Name</a>
@@ -61,8 +62,9 @@
 
                         }
 
-                    </ul>
                 }
+
+                </ul>
             </details>
         </div>
 	}

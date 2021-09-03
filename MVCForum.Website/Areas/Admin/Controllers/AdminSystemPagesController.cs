@@ -49,7 +49,7 @@ namespace MvcForum.Web.Areas.Admin.Controllers
             
             switch (result.Response)
             {
-                case ResponseType.NameAlreadyExists:
+                case ResponseType.AlreadyExists:
                     ModelState.AddModelError("Slug", "The slug provided already exists, it must be unique");
                     break;
                 case ResponseType.Error:
@@ -109,7 +109,7 @@ namespace MvcForum.Web.Areas.Admin.Controllers
                 case ResponseType.DoesntExist:
                     ModelState.AddModelError("", "We couldn't find the page to update");
                     break;
-                case ResponseType.NameAlreadyExists:
+                case ResponseType.AlreadyExists:
                     ModelState.AddModelError("Slug", "The slug provided already exists, it must be unique");
                     break;
                 case ResponseType.Error:

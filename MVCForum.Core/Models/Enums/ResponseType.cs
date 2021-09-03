@@ -2,11 +2,11 @@
 {
     public enum ResponseType
     {
+        NoResponse,
         Success,
         Error,
-        NameAlreadyExists,
+        AlreadyExists,
         PermissionDenied,
-        DoesntExist
-
+        DoesntExist,
     }
 }

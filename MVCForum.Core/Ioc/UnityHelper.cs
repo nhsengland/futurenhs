@@ -106,6 +106,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IGroupInviteService, GroupInviteService>();
             Container.BindInRequestScope<IRegistrationEmailService, RegistrationEmailService>();
             Container.BindInRequestScope<ISmtpClientFactory, SmtpClientFactory>();
+            Container.BindInRequestScope<IGroupAddMemberService, GroupAddMemberService>();
 
             switch (ConfigurationManager.AppSettings["SendEmailService"])
             {
@@ -121,7 +122,8 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<ISystemPagesService, SystemPagesService>();
             // Repositories
             Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(
-                ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString,  
+                ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString,
+                ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString,
                 Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), 
                 Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"]), 
                 ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString, 
@@ -135,10 +137,10 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IFileCommand, FileCommand>();
             Container.BindInRequestScope<IGroupInviteRepository, GroupInviteRepository>();
             Container.BindInRequestScope<IGroupInviteCommand, GroupInviteCommand>();
-
-
             Container.BindInRequestScope<ISystemPagesRepository, SystemPagesRepository>();
             Container.BindInRequestScope<ISystemPagesCommand, SystemPagesCommand>();
+            Container.BindInRequestScope<IGroupAddMemberRepository, GroupAddMemberRepository>();
+            Container.BindInRequestScope<IGroupAddMemberCommand, GroupAddMemberCommand>();
         }
     }
 
