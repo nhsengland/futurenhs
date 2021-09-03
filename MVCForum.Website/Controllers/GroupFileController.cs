@@ -270,11 +270,8 @@ namespace MvcForum.Web.Controllers
                     throw new InvalidOperationException("Unable to download file, the end point is not valid");
                 }
 
-                // Get the base host name and initial path to add blob address to
-                string hostname = $"{Request.Url.Scheme}://{Request.Url.Authority}{Request.ApplicationPath.TrimEnd('/')}";
-
-                // Append download path to host name and redirect
-                return Redirect($"{hostname}/gateway/media/{downloadPath}");
+                // Append download path to files path and redirect
+                return Redirect($"/gateway/media/{downloadPath}");
             }
             else
             {
