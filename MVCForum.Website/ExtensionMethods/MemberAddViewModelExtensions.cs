@@ -17,7 +17,7 @@
         {
             var userToSave = new MembershipUser
             {
-                UserName = viewModel.UserName,
+                UserName = viewModel.Email,
                 FirstName = viewModel.FirstName,
                 Surname = viewModel.Surname,
                 Initials = string.Format("{0}{1}", viewModel.FirstName[0], viewModel.Surname[0]).ToUpper(),

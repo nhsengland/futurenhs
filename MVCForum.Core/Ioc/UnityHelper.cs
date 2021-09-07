@@ -3,6 +3,8 @@ namespace MvcForum.Core.Ioc
     using Data.Context;
     using Interfaces;
     using Interfaces.Services;
+    using MvcForum.Core.Factories;
+    using MvcForum.Core.Interfaces.Factories;
     using MvcForum.Core.Interfaces.Providers;
     using MvcForum.Core.Providers;
     using MvcForum.Core.Repositories.Command;
@@ -13,9 +15,12 @@ namespace MvcForum.Core.Ioc
     using MvcForum.Core.Repositories.Repository;
     using MvcForum.Core.Repositories.Repository.Interfaces;
     using Reflection;
+    using SendGrid;
     using Services;
     using System;
     using System.Configuration;
+    using System.Net;
+    using System.Net.Mail;
     using System.Web.Http;
     using System.Web.Mvc;
     using Unity;
@@ -98,6 +103,21 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IFolderService, FolderService>();
             Container.BindInRequestScope<IFileService, FileService>();
             Container.BindInRequestScope<IFileUploadValidationService, FileUploadValidationService>();
+            Container.BindInRequestScope<IGroupInviteService, GroupInviteService>();
+            Container.BindInRequestScope<IRegistrationEmailService, RegistrationEmailService>();
+            Container.BindInRequestScope<ISmtpClientFactory, SmtpClientFactory>();
+
+            switch (ConfigurationManager.AppSettings["SendEmailService"])
+            {
+                case "SendGrid":
+                    Container.BindInRequestScope<ISendEmailService, SendGridEmailService>();
+                    Container.RegisterInstance<ISendGridClient>(new SendGridClient(ConfigurationManager.AppSettings["Email_SendGridApiKey"]));
+                    break;
+                case "Smtp":
+                    Container.BindInRequestScope<ISendEmailService, SmtpEmailService>();
+                    break;
+            }
+
             Container.BindInRequestScope<ISystemPagesService, SystemPagesService>();
             // Repositories
             Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(
@@ -106,12 +126,17 @@ namespace MvcForum.Core.Ioc
                 Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"]), 
                 ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString, 
                 ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"], 
-                ConfigurationManager.AppSettings["AzureBlobStorage:FilesPrimaryEndpoint_TO_BE_RETIRED"]));
+                ConfigurationManager.AppSettings["AzureBlobStorage:FilesPrimaryEndpoint_TO_BE_RETIRED"],
+                ConfigurationManager.AppSettings["Email_SmtpFrom"]));
             Container.BindInRequestScope<IDbRetryPolicy, DbRetryPolicy>();
             Container.BindInRequestScope<IDbConnectionFactory, DbConnectionFactory>();
             Container.BindInRequestScope<IFolderRepository, FolderRepository>();
             Container.BindInRequestScope<IFileRepository, FileRepository>();
             Container.BindInRequestScope<IFileCommand, FileCommand>();
+            Container.BindInRequestScope<IGroupInviteRepository, GroupInviteRepository>();
+            Container.BindInRequestScope<IGroupInviteCommand, GroupInviteCommand>();
+
+
             Container.BindInRequestScope<ISystemPagesRepository, SystemPagesRepository>();
             Container.BindInRequestScope<ISystemPagesCommand, SystemPagesCommand>();
         }

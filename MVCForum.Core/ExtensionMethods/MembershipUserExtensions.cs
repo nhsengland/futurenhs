@@ -14,6 +14,11 @@
         /// <returns></returns>
         public static bool IsAdmin(this MembershipUser user)
         {
+            if (user is null)
+            {
+                return false;
+            }
+
             return user.Roles.Any(x => x.RoleName.Contains(Constants.Constants.AdminRoleName));
         }
 

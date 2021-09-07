@@ -1,72 +1,120 @@
 ﻿@model MvcForum.Web.ViewModels.Member.MemberAddViewModel
+@using MvcForum.Core.ExtensionMethods
 @{
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = Html.LanguageString("Members.Register");
+    string inputError = "c-input--error";
+    string formError = "c-form-group--error";
 }
 
 @if (!User.Identity.IsAuthenticated)
 {
 
-    <div class="c-grid-block">
 
-        <div class="c-grid-block_item l-col-12 l-col-6-t">
+<div class="u-bg-theme-3">
+    <div class="l-container ">
+        <div class="c-grid-block ">
 
-            @Html.Partial("_SocialLoginButtons")
+            <div class="c-grid-block_item l-col-12 l-col-6-t">
 
-            @if (Html.Settings().DisableStandardRegistration != true)
-            {
-            <div class="mainregisterform">
+                @Html.Partial("_SocialLoginButtons")
 
-                <h3>@ViewBag.Title</h3>
+                @if (Html.Settings().DisableStandardRegistration != true)
+                    {
 
-                @using (Html.BeginForm("Register", "Members", FormMethod.Post, new { @class = "form-register" }))
-                {
-                    @Html.ValidationSummary(true)
+
+
+                <div class="mainregisterform">
+
+
+                    @if (!ViewData.ModelState.IsValid)
+                        {
+                    <div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert" tabindex="-1">
+                        <h2 id="error-summary-title" class="c-error-summary_title">
+                            There is a problem
+                        </h2>
+                        <div class="c-error-summary_body">
+                            <ul class="c-error-summary_list">
+
+                                @Html.Raw(Html.CustomValidationSummary("c-error-summary_error-text"))
+
+                            </ul>
+                        </div>
+                    </div>
+                        }
+
+
+                    <h1 class="u-regular-heading">
+                        Register for an account
+                    </h1>
+
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex.
+                    </p>
+
+
+                    <div class="c-disclaimer">
+                        <p class="u-text-bold">
+                            Please read before choosing which address to use
+                        </p>
+                        <ul class="u-padding-left-spacing-5">
+                            <li>
+                                Use your work rather than personal email, where possible.
+                            </li>
+                            <li>
+                                Use the address provided to you by the main organisation you work for, where possible.
+                            </li>
+                            <li>
+                                Use your own email, not a group email address.
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    @using (Html.BeginForm("Register", "Members", FormMethod.Post, new { @class = "form-register" }))
+                        {
                     @Html.AntiForgeryToken()
 
-                    <div class="form-group">
-                        @Html.LabelFor(x => Model.UserName)
-                        @Html.TextBoxFor(x => Model.UserName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.UserName)
+                    <div class="c-form-group @Html.FieldHasError(model => model.Email, formError)">
+                        @Html.LabelFor(x => x.Email, "E-mail address", htmlAttributes: new { @class = "c-label" })
+                        <span class="c-hint-message">Enter your main email address.</span>
+                        @Html.ValidationMessageFor(x => x.Email, "", new { @class = "c-error-message" })
+                        @Html.EditorFor(x => x.Email, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Email, inputError) } })
                     </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(x => Model.FirstName)
-                        @Html.TextBoxFor(x => Model.FirstName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.FirstName)
+                    <div class="c-form-group @Html.FieldHasError(model => model.Password, formError)">
+                        @Html.LabelFor(x => x.Password, "Password", htmlAttributes: new { @class = "c-label" })
+                        <span class="c-hint-message">Choose a password at least 10 characters long</span>
+                        @Html.ValidationMessageFor(x => x.Password, "", new { @class = "c-error-message" })
+                        @Html.PasswordFor(x => x.Password, new { @class = "c-input" + " " + Html.FieldHasError(model => model.Password, inputError) })
                     </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(x => Model.Surname)
-                        @Html.TextBoxFor(x => Model.Surname, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.Surname)
+                    <div class="c-form-group @Html.FieldHasError(model => model.ConfirmPassword, formError)">
+                        @Html.LabelFor(x => x.ConfirmPassword, "Repeat password", htmlAttributes: new { @class = "c-label" })
+                        @Html.ValidationMessageFor(x => x.ConfirmPassword, "", new { @class = "c-error-message" })
+                        @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "c-input" + " " + Html.FieldHasError(model => model.ConfirmPassword, inputError) })
                     </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(x => Model.Password)
-                        @Html.PasswordFor(x => Model.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.Password)
+
+                    <div class="c-form-group @Html.FieldHasError(model => model.FirstName, formError)">
+                        @Html.LabelFor(x => x.FirstName, "First name", htmlAttributes: new { @class = "c-label" })
+                        @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "c-error-message" })
+                        @Html.TextBoxFor(x => x.FirstName, new { @class = "c-input" + " " + Html.FieldHasError(model => model.FirstName, inputError) })
                     </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(x => Model.ConfirmPassword)
-                        @Html.PasswordFor(x => Model.ConfirmPassword, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                    <div class="c-form-group @Html.FieldHasError(model => model.Surname, formError)">
+                        @Html.LabelFor(x => x.Surname, "Last name", htmlAttributes: new { @class = "c-label" })
+                        @Html.ValidationMessageFor(x => x.Surname, "", new { @class = "c-error-message" })
+                        @Html.TextBoxFor(x => x.Surname, new { @class = "c-input" + " " + Html.FieldHasError(model => model.Surname, inputError) })
                     </div>
 
+                            if (!string.IsNullOrEmpty(Html.Settings().SpamQuestion))
+                            {
                     <div class="form-group">
-                        @Html.LabelFor(x => x.Email)
-                        @Html.TextBoxFor(x => x.Email, new { type = "email", @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.Email)
+                        <label for="SpamAnswer">@Html.Settings().SpamQuestion</label>
+                        @Html.TextBoxFor(x => x.SpamAnswer, new { @class = "form-control" })
                     </div>
-
-                    if (!string.IsNullOrEmpty(Html.Settings().SpamQuestion))
-                    {
-                        <div class="form-group">
-                            <label for="SpamAnswer">@Html.Settings().SpamQuestion</label>
-                            @Html.TextBoxFor(x => x.SpamAnswer, new { @class = "form-control" })
-                        </div>
-                    }
+                            }
 
                     <div class="submit-holder">
                         <button type="submit" class="c-button">
@@ -75,14 +123,16 @@
                     </div>
 
                     @Html.HiddenFor(x => x.ReturnUrl)
-                }
+                        }
+                </div>
+                    }
             </div>
-            }
-        </div>
 
+        </div>
     </div>
+</div>
 }
 else
 {
-    <p>@Html.LanguageString("Members.AlreadyRegistered")</p>
+<p>@Html.LanguageString("Members.AlreadyRegistered")</p>
 }

@@ -177,7 +177,6 @@
                                 Email = user.Emails.Preferred,
                                 LoginType = LoginType.Microsoft,
                                 Password = StringUtils.RandomString(8),
-                                UserName = user.Name,
                                 UserAccessToken = accessTokenResponse.Body.AccessToken,
                                 SocialProfileImageUrl = $"https://apis.live.net/v5.0/{user.Id}/picture"
                             };

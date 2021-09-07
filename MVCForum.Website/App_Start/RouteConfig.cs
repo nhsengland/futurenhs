@@ -90,6 +90,13 @@
             );
 
             routes.MapRoute(
+                "GroupInviteUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/Invite/{groupId}"), // URL with parameters
+                new { controller = "GroupInvite", action = "Create", tab = UrlParameter.Optional } // Parameter defaults
+            );
+
+
+            routes.MapRoute(
                 "TopicUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{group}/{tab}/{slug}"), // URL with parameters
                 new { controller = "Topic", action = "Show", slug = UrlParameter.Optional } // Parameter defaults

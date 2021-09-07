@@ -595,6 +595,25 @@ namespace MvcForum.Core.Services
             return true;
         }
 
+        public bool JoinGroupApprove(Guid groupId, Guid membershipId)
+        {
+            var group = _context.Group.SingleOrDefault(x => x.Id == groupId);
+            group.GroupUsers = new List<GroupUser>();
+            var groupUser = new GroupUser();
+            groupUser.Approved = true;
+            groupUser.Rejected = false;
+            groupUser.Banned = false;
+            groupUser.Locked = false;
+            groupUser.Group = group;
+            groupUser.RequestToJoinDate = DateTime.UtcNow;
+            groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.StandardRoleName);
+            groupUser.ApprovedToJoinDate = DateTime.Now;
+            groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
+            _context.GroupUser.Add(groupUser);
+            var result = _context.SaveChanges();
+            return true;
+        }
+
         public bool AddGroupAdministrators(string slug, List<Guid> membershipIds, Guid approvingUserId)
         {
 

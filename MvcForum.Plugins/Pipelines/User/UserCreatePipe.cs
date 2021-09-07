@@ -5,6 +5,7 @@
     using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
@@ -26,10 +27,12 @@
         private readonly ILoggingService _loggingService;
         private readonly IMembershipService _membershipService;
         private readonly ISettingsService _settingsService;
+        private readonly IGroupInviteService _groupInviteService;
+        private readonly IGroupService _groupService;
 
         public UserCreatePipe(IMembershipService membershipService, ILoggingService loggingService,
             ISettingsService settingsService, ILocalizationService localizationService, IEmailService emailService,
-            IActivityService activityService)
+            IActivityService activityService, IGroupInviteService groupInviteService, IGroupService groupService)
         {
             _membershipService = membershipService;
             _loggingService = loggingService;
@@ -37,6 +40,8 @@
             _localizationService = localizationService;
             _emailService = emailService;
             _activityService = activityService;
+            _groupInviteService = groupInviteService;
+            _groupService = groupService;
         }
 
         /// <inheritdoc />
@@ -172,6 +177,14 @@
                     input.ProcessLog.Add("Unable to save changes to the database");
                     input.Successful = false;
                     return input;
+                }
+
+                foreach (var invite in await _groupInviteService.GetInvitesForGroupAsync(input.EntityToProcess.Email, CancellationToken.None))
+                {
+                    if (_groupService.JoinGroupApprove(invite.GroupId, input.EntityToProcess.Id))
+                    {
+                        await _groupInviteService.DeleteInviteAsync(invite.Id, CancellationToken.None);
+                    }
                 }
 
                 if (settings.EmailAdminOnNewMemberSignUp)

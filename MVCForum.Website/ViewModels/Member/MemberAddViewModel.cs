@@ -8,10 +8,6 @@
 
     public class MemberAddViewModel
     {
-        [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Username")]
-        [StringLength(150, MinimumLength = 4)]
-        public string UserName { get; set; }
 
         [Required]
         [EmailAddress]
@@ -19,13 +15,15 @@
         public string Email { get; set; }
 
         [Required]
+        [Display(Name = "First name")]
         public string FirstName { get; set; }
 
         [Required]
+        [Display(Name = "Last name")]
         public string Surname { get; set; }
 
         [Required]
-        [StringLength(100, MinimumLength = 6)]
+        [StringLength(100, MinimumLength = 10)]
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.Password")]
         public string Password { get; set; }

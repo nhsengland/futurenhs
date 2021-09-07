@@ -13,5 +13,6 @@ namespace MvcForum.Core.Interfaces.Providers
         string GetFileDownloadEndpoint();
         int GetRetryAttempts();
         int GetRetryDelay();
+        string GetSmtpFrom();
     }
 }

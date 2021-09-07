@@ -96,7 +96,8 @@ Layout.Nav.Leaderboard,Leaderboard
 Layout.Nav.Logon,Log On
 Layout.Nav.Register,Register
 Layout.Nav.Utilities,Utilities
-Layout.PoweredBy,Powered by 
+Layout.PoweredBy,Powered by
+Layout.GroupInvite,Invite new member
 Leaderboard.LeaderboardTitle,Global Leaderboard
 Leaderboard.ThisWeeksStars,This Weeks Stars
 Leaderboard.ThisYearsStars,This Years Rock Stars
@@ -198,7 +199,7 @@ Members.Profile.Posts,Posts:
 Members.Profile.Twitter,Twitter
 Members.Profile.Website,Website
 Members.ProfileTitle,Profile
-Members.Register,Register
+Members.Register,Register now
 Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
 Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.

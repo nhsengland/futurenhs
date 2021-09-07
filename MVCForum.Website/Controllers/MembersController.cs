@@ -310,7 +310,6 @@
                 // Populate empty viewmodel
                 var viewModel = new MemberAddViewModel
                 {
-                    UserName = user.UserName,
                     Email = user.Email,
                     FirstName = user.FirstName,
                     Surname = user.Surname,
@@ -425,29 +424,12 @@
             SetRegisterViewBagMessage(manuallyAuthoriseMembers == true, memberEmailAuthorisationNeeded == true,
                 pipelineProcess.EntityToProcess);
 
-            // Should we redirect to the home page
-            var homeRedirect = manuallyAuthoriseMembers != true && memberEmailAuthorisationNeeded != true;
-
-            // Get the return url
-            var returnUrl = pipelineProcess.EntityToProcess.GetExtendedDataItem(Constants.ExtendedDataKeys.ReturnUrl);
-
             try
             {
-                // Remove the ReturnUrl from the user
-                pipelineProcess.EntityToProcess.RemoveExtendedDataItem(Constants.ExtendedDataKeys.ReturnUrl);
-
                 // Save any outstanding changes
                 Context.SaveChanges();
 
-                if (homeRedirect)
-                {
-                    if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 &&
-                        returnUrl.StartsWith("/") && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    return RedirectToAction("Index", "Home", new { area = string.Empty });
-                }
+                return RedirectToAction("Index", "Group");
             }
             catch (Exception ex)
             {

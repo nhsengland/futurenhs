@@ -46,13 +46,16 @@
     <Compile Include="Data\Mapping\FileMapping.cs" />
     <Compile Include="Data\Mapping\SystemPageMapping.cs" />
     <Compile Include="Data\Mapping\FolderMapping.cs" />
+    <Compile Include="Data\Mapping\GroupInviteMapping.cs" />
     <Compile Include="Data\Mapping\GroupUserMapping.cs" />
     <Compile Include="Data\Mapping\SectionMapping.cs" />
+    <Compile Include="ExtensionMethods\HtmlHelperExtensions.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
     <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
     <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
     <Compile Include="ExtensionMethods\SectionExtentions.cs" />
     <Compile Include="ExternalServices\AkismetValidator.cs" />
+    <Compile Include="Factories\SmtpClientFactory.cs" />
     <Compile Include="FeatureManager.cs" />
     <Compile Include="ForumConfiguration.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
@@ -60,17 +63,22 @@
     <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
     <Compile Include="ExtensionMethods\StringExtensionMethods.cs" />
     <Compile Include="ExtensionMethods\VersionExtensionMethods.cs" />
+    <Compile Include="Interfaces\Factories\ISmtpClientFactory.cs" />
     <Compile Include="Interfaces\IAssemblyProvider.cs" />
     <Compile Include="Interfaces\IFeatureManager.cs" />
     <Compile Include="Interfaces\Pipeline\IPipe.cs" />
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
     <Compile Include="Interfaces\Providers\IConfigurationProvider.cs" />
+    <Compile Include="Interfaces\Providers\ISmtpClient.cs" />
+    <Compile Include="Interfaces\Services\ISendEmailService.cs" />
     <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\IFileService.cs" />
     <Compile Include="Interfaces\Services\IFileUploadValidationService.cs" />
     <Compile Include="Interfaces\Services\ISystemPagesService.cs" />
     <Compile Include="Interfaces\Services\IFolderService.cs" />
+    <Compile Include="Interfaces\Services\IGroupInviteService.cs" />
     <Compile Include="Interfaces\Services\INotificationService.cs" />
+    <Compile Include="Interfaces\Services\IRegistrationEmailService.cs" />
     <Compile Include="Interfaces\Services\ISpamService.cs" />
     <Compile Include="MemoryFile.cs" />
     <Compile Include="Migrations\202104301420534_renamecategoriestogroups.cs" />
@@ -113,6 +121,10 @@
     <Compile Include="Migrations\202108041053595_makesFilePropertiesNullable.Designer.cs">
       <DependentUpon>202108041053595_makesFilePropertiesNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202108111031523_AddGroupInvite.cs" />
+    <Compile Include="Migrations\202108111031523_AddGroupInvite.Designer.cs">
+      <DependentUpon>202108111031523_AddGroupInvite.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202108261327139_AddsBlobHashToFileTable.cs" />
     <Compile Include="Migrations\202108261327139_AddsBlobHashToFileTable.Designer.cs">
       <DependentUpon>202108261327139_AddsBlobHashToFileTable.cs</DependentUpon>
@@ -141,6 +153,10 @@
     <Compile Include="Migrations\202108271511087_AlterFileFolderDataTypeToDatetime2.Designer.cs">
       <DependentUpon>202108271511087_AlterFileFolderDataTypeToDatetime2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109020918155_FixesMigrations.cs" />
+    <Compile Include="Migrations\202109020918155_FixesMigrations.Designer.cs">
+      <DependentUpon>202109020918155_FixesMigrations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -156,6 +172,7 @@
     <Compile Include="Models\Entities\Category.cs" />
     <Compile Include="Models\Entities\File.cs" />
     <Compile Include="Models\Entities\Folder.cs" />
+    <Compile Include="Models\Entities\GroupInvite.cs" />
     <Compile Include="Models\Entities\GroupPermissions.cs" />
     <Compile Include="Models\Entities\SystemPage.cs" />
     <Compile Include="Models\Entities\GroupUser.cs" />
@@ -280,15 +297,18 @@
     <Compile Include="Pipeline\PipelineProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ConfigurationProvider.cs" />
+    <Compile Include="Providers\Mail\SmtpClientWrapper.cs" />
     <Compile Include="Providers\Storage\StorageProvider.cs" />
     <Compile Include="Reflection\AssemblyProvider.cs" />
     <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Repositories\Command\FileCommand.cs" />
     <Compile Include="Repositories\Command\SystemPagesCommand.cs" />
     <Compile Include="Repositories\Command\FolderCommand.cs" />
+    <Compile Include="Repositories\Command\GroupInviteCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IFileCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\ISystemPagesCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IFolderCommand.cs" />
+    <Compile Include="Repositories\Command\Interfaces\IGroupInviteCommand.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\Interfaces\IDbConnectionFactory.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbCommand.cs">
       <SubType>Component</SubType>
@@ -302,14 +322,17 @@
     <Compile Include="Repositories\Models\BreadcrumbsViewModel.cs" />
     <Compile Include="Repositories\Models\FileReadViewModel.cs" />
     <Compile Include="Repositories\Models\FolderReadViewModel.cs" />
+    <Compile Include="Repositories\Models\GroupInviteViewModel.cs" />
     <Compile Include="Repositories\Repository\FileRepository.cs" />
     <Compile Include="Repositories\Repository\FolderRepository.cs" />
+    <Compile Include="Repositories\Repository\GroupInviteRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFileRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\ISystemPagesRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFolderRepository.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\DbRetryPolicy.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\IDbRetryPolicy.cs" />
     <Compile Include="Repositories\Repository\SystemPagesRepository.cs" />
+    <Compile Include="Repositories\Repository\Interfaces\IGroupInviteRepository.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\BannedEmailService.cs" />
     <Compile Include="Services\BannedWordService.cs" />
@@ -317,6 +340,7 @@
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileUploadValidationService.cs" />
     <Compile Include="Services\FolderService.cs" />
+    <Compile Include="Services\GroupInviteService.cs" />
     <Compile Include="Services\NoCacheService.cs" />
     <Compile Include="Services\CacheService.cs" />
     <Compile Include="Services\GlobalPermissionForRoleService.cs" />
@@ -366,10 +390,13 @@
     <Compile Include="Services\PostEditService.cs" />
     <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\RecurringJobService.cs" />
+    <Compile Include="Services\RegistrationEmailService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\SendGridEmailService.cs" />
     <Compile Include="Services\ServiceHelpers.cs" />
     <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="Services\SmtpEmailService.cs" />
     <Compile Include="Services\SpamService.cs" />
     <Compile Include="Services\SystemPagesService.cs" />
     <Compile Include="SiteConfig\SiteConfig.cs" />
@@ -474,6 +501,9 @@
     <PackageReference Include="Polly">
       <Version>7.2.2</Version>
     </PackageReference>
+    <PackageReference Include="SendGrid">
+      <Version>9.24.2</Version>
+    </PackageReference>
     <PackageReference Include="Skybrud.Social">
       <Version>0.9.6</Version>
     </PackageReference>
@@ -545,6 +575,9 @@
     <EmbeddedResource Include="Migrations\202108041053595_makesFilePropertiesNullable.resx">
       <DependentUpon>202108041053595_makesFilePropertiesNullable.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108111031523_AddGroupInvite.resx">
+      <DependentUpon>202108111031523_AddGroupInvite.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108261327139_AddsBlobHashToFileTable.resx">
       <DependentUpon>202108261327139_AddsBlobHashToFileTable.cs</DependentUpon>
     </EmbeddedResource>
@@ -565,6 +598,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108271511087_AlterFileFolderDataTypeToDatetime2.resx">
       <DependentUpon>202108271511087_AlterFileFolderDataTypeToDatetime2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109020918155_FixesMigrations.resx">
+      <DependentUpon>202109020918155_FixesMigrations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

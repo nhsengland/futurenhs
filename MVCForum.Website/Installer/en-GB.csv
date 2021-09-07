@@ -62,6 +62,8 @@ Date.OneMinuteAgo,1 minute ago
 Date.WeeksAgo,{0} weeks ago
 Date.Yesterday,yesterday
 Editor.NeedHelp,Need formatting help?
+Email.Invite.Subject,Join the FutureNHS platform
+Email.Invite.Body,You have been invited to join the FutureNHS collaboration platform.
 Error.EmailIsBanned,The email address or domain you are trying to use is banned
 Error.WrongAnswerRegistration,There was an error with your answer. Please try again
 Errors.GenericMessage,Sorry an error occured
@@ -111,6 +113,7 @@ Layout.Nav.Logon,Log On
 Layout.Nav.Register,Register
 Layout.Nav.Utilities,Utilities
 Layout.PoweredBy,Powered by 
+Layout.GroupInvite,Invite new member
 Leaderboard.LeaderboardTitle,Global Leaderboard
 Leaderboard.ThisWeeksStars,This Weeks Stars
 Leaderboard.ThisYearsStars,This Years Rock Stars
@@ -212,7 +215,14 @@ Members.Profile.Posts,Posts:
 Members.Profile.Twitter,Twitter
 Members.Profile.Website,Website
 Members.ProfileTitle,Profile
-Members.Register,Register
+Members.Register,Register now
+Members.Register.InvalidEmail,Please provide a valid email address
+Members.Register.EmailExists,This email address is already registered.  Please provide another email address or login.
+Members.Register.PasswordShort,Your password must be at least 10 characters long
+Members.Register.PasswordMismatch,Your passwords do not match
+Members.Register.FirstnameNull,Please provide your first name
+Members.Register.SurnameNull,Please provide your surname
+Members.Register.ErrorTitle,There is a problem
 Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
 Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.

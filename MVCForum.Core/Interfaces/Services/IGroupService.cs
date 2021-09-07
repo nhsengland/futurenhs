@@ -59,7 +59,7 @@
         void DeleteSection(Guid id);
 
         bool JoinGroup(string slug, Guid membershipId);
-
+        bool JoinGroupApprove(Guid groupId, Guid membershipId);
         bool AddGroupAdministrators(string slug, List<Guid> membershipIds, Guid approvingUserId);
         bool LeaveGroup(string slug, Guid membershipId);
 
