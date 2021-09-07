@@ -153,9 +153,9 @@
     <Compile Include="Migrations\202108271511087_AlterFileFolderDataTypeToDatetime2.Designer.cs">
       <DependentUpon>202108271511087_AlterFileFolderDataTypeToDatetime2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202109020918155_FixesMigrations.cs" />
-    <Compile Include="Migrations\202109020918155_FixesMigrations.Designer.cs">
-      <DependentUpon>202109020918155_FixesMigrations.cs</DependentUpon>
+    <Compile Include="Migrations\202109071320535_FixMigrationsBlank.cs" />
+    <Compile Include="Migrations\202109071320535_FixMigrationsBlank.Designer.cs">
+      <DependentUpon>202109071320535_FixMigrationsBlank.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
@@ -599,8 +599,8 @@
     <EmbeddedResource Include="Migrations\202108271511087_AlterFileFolderDataTypeToDatetime2.resx">
       <DependentUpon>202108271511087_AlterFileFolderDataTypeToDatetime2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202109020918155_FixesMigrations.resx">
-      <DependentUpon>202109020918155_FixesMigrations.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202109071320535_FixMigrationsBlank.resx">
+      <DependentUpon>202109071320535_FixMigrationsBlank.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

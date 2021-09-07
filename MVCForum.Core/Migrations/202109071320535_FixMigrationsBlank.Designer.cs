@@ -7,13 +7,13 @@ namespace MvcForum.Core.Services.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class FixesMigrations : IMigrationMetadata
+    public sealed partial class FixMigrationsBlank : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(FixesMigrations));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(FixMigrationsBlank));
         
         string IMigrationMetadata.Id
         {
-            get { return "202109020918155_FixesMigrations"; }
+            get { return "202109071320535_FixMigrationsBlank"; }
         }
         
         string IMigrationMetadata.Source
