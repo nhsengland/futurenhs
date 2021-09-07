@@ -3,6 +3,7 @@
     using System;
     using System.Drawing.Imaging;
     using System.IO;
+    using System.Net.Mail;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading;
@@ -179,7 +180,9 @@
                     return input;
                 }
 
-                foreach (var invite in await _groupInviteService.GetInvitesForGroupAsync(input.EntityToProcess.Email, CancellationToken.None))
+                var inviteMailAddress = new MailAddress(input.EntityToProcess.Email);
+
+                foreach (var invite in await _groupInviteService.GetInvitesForGroupAsync(inviteMailAddress, CancellationToken.None))
                 {
                     if (_groupService.JoinGroupApprove(invite.GroupId, input.EntityToProcess.Id))
                     {

@@ -3,6 +3,7 @@
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Repositories.Models;
     using System;
+    using System.Net.Mail;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Mvc;
@@ -56,22 +57,24 @@
                 return View(model);
             }
 
+            var inviteMailAddress = new MailAddress(model.EmailAddress);
+
             //check if a user is already in the group
-            if (await _inviteService.MemberExistsInGroupAsync(model.GroupId, model.EmailAddress, cancellationToken))
+            if (await _inviteService.MemberExistsInGroupAsync(model.GroupId, inviteMailAddress, cancellationToken))
             {
                 ModelState.AddModelError("EmailExists", "A user with that email address is already a member of this group");
                 return View(model);
             }
 
             //check if a user has is already in the system
-            if (await _inviteService.MemberExistsInSystemAsync(model.EmailAddress, cancellationToken))
+            if (await _inviteService.MemberExistsInSystemAsync(inviteMailAddress, cancellationToken))
             {
                 ModelState.AddModelError("EmailExists", "A user with that email address is already registered on the platform - you may add them to your group");
                 return View(model);
             }
 
             //check if a user already has an invite for this group
-            if (await _inviteService.InviteExistsForGroupAsync(model.GroupId, model.EmailAddress, cancellationToken))
+            if (await _inviteService.InviteExistsForGroupAsync(model.GroupId, inviteMailAddress, cancellationToken))
             {
                 ModelState.AddModelError("EmailExists", "This email address has already been invited to this group");
                 return View(model);

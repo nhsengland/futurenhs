@@ -36,44 +36,59 @@
             return _inviteRepository.GetInvitesForGroupAsync(groupId, cancellationToken);
         }
 
-        public Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(string emailAddress, CancellationToken cancellationToken)
+        public Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(MailAddress mailAddress, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(emailAddress))
+            if (mailAddress is null)
             {
-                throw new ArgumentNullException(nameof(emailAddress));
+                throw new ArgumentNullException(nameof(mailAddress));
             }
 
-            return _inviteRepository.GetInvitesForGroupAsync(emailAddress, cancellationToken);
+            if (string.IsNullOrWhiteSpace(mailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(mailAddress.Address));
+            }
+
+            return _inviteRepository.GetInvitesForGroupAsync(mailAddress, cancellationToken);
         }
 
-        public Task<GroupInviteViewModel> GetInviteForGroupAsync(Guid groupId, string emailAddress, CancellationToken cancellationToken)
+        public Task<GroupInviteViewModel> GetInviteForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
         {
             if (groupId == Guid.Empty)
             {
                 throw new ArgumentOutOfRangeException(nameof(groupId));
             }
 
-            if (string.IsNullOrWhiteSpace(emailAddress))
+            if (mailAddress is null)
             {
-                throw new ArgumentNullException(nameof(emailAddress));
+                throw new ArgumentNullException(nameof(mailAddress));
             }
 
-            return _inviteRepository.GetInviteForGroupAsync(groupId, emailAddress, cancellationToken);
+            if (string.IsNullOrWhiteSpace(mailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(mailAddress.Address));
+            }
+
+            return _inviteRepository.GetInviteForGroupAsync(groupId, mailAddress, cancellationToken);
         }
 
-        public Task<bool> InviteExistsForGroupAsync(Guid groupId, string emailAddress, CancellationToken cancellationToken)
+        public Task<bool> InviteExistsForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
         {
             if (groupId == Guid.Empty)
             {
                 throw new ArgumentOutOfRangeException(nameof(groupId));
             }
 
-            if (string.IsNullOrWhiteSpace(emailAddress))
+            if (mailAddress is null)
             {
-                throw new ArgumentNullException(nameof(emailAddress));
+                throw new ArgumentNullException(nameof(mailAddress));
             }
 
-            return _inviteRepository.InviteExistsForGroupAsync(groupId, emailAddress, cancellationToken);
+            if (string.IsNullOrWhiteSpace(mailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(mailAddress.Address));
+            }
+
+            return _inviteRepository.InviteExistsForGroupAsync(groupId, mailAddress, cancellationToken);
         }
 
         public async Task<Guid> CreateInviteAsync(GroupInviteViewModel model, CancellationToken cancellationToken)
@@ -108,29 +123,39 @@
             return _inviteCommand.DeleteInviteAsync(inviteId, cancellationToken);
         }
 
-        public Task<bool> MemberExistsInGroupAsync(Guid groupId, string emailAddress, CancellationToken cancellationToken)
+        public Task<bool> MemberExistsInGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
         {
             if (groupId == Guid.Empty)
             {
                 throw new ArgumentOutOfRangeException(nameof(groupId));
             }
 
-            if (string.IsNullOrWhiteSpace(emailAddress))
+            if (mailAddress is null)
             {
-                throw new ArgumentNullException(nameof(emailAddress));
+                throw new ArgumentNullException(nameof(mailAddress));
             }
 
-            return _inviteRepository.GroupMemberExistsAsync(groupId, emailAddress, cancellationToken);
+            if (string.IsNullOrWhiteSpace(mailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(mailAddress.Address));
+            }
+
+            return _inviteRepository.GroupMemberExistsAsync(groupId, mailAddress, cancellationToken);
         }
 
-        public Task<bool> MemberExistsInSystemAsync(string emailAddress, CancellationToken cancellationToken)
+        public Task<bool> MemberExistsInSystemAsync(MailAddress mailAddress, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(emailAddress))
+            if (mailAddress is null)
             {
-                throw new ArgumentNullException(nameof(emailAddress));
+                throw new ArgumentNullException(nameof(mailAddress));
             }
 
-            return _inviteRepository.MemberExistsAsync(emailAddress, cancellationToken);
+            if (string.IsNullOrWhiteSpace(mailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(mailAddress.Address));
+            }
+
+            return _inviteRepository.MemberExistsAsync(mailAddress, cancellationToken);
         }
 
         public Task<bool> IsMemberAdminAsync(string username, CancellationToken cancellationToken)
