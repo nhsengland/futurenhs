@@ -66,6 +66,7 @@
     <Compile Include="Interfaces\Factories\ISmtpClientFactory.cs" />
     <Compile Include="Interfaces\IAssemblyProvider.cs" />
     <Compile Include="Interfaces\IFeatureManager.cs" />
+    <Compile Include="Interfaces\Helpers\IValidateFileType.cs" />
     <Compile Include="Interfaces\Pipeline\IPipe.cs" />
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
     <Compile Include="Interfaces\Providers\IConfigurationProvider.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="Models\General\UploadBlobResult.cs" />
     <Compile Include="Models\GroupAddMember\GroupAddMemberResponse.cs" />
     <Compile Include="Models\GroupAddMember\GroupAddMemberViewModel.cs" />
+    <Compile Include="Models\General\ValidateBlobResult.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
     <Compile Include="Models\Entities\BannedEmail.cs" />
     <Compile Include="Models\Entities\Group.cs" />
@@ -429,6 +431,7 @@
     <Compile Include="Utilities\ReflectionUtilities.cs" />
     <Compile Include="Utilities\RssReader.cs" />
     <Compile Include="Utilities\StringUtils.cs" />
+    <Compile Include="Utilities\FileTypeValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -502,6 +505,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Web.Infrastructure">
       <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Mime-Detective">
+      <Version>22.7.16</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>

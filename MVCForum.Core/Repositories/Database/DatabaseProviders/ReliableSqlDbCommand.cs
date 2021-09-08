@@ -1,9 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="ReliableSqlDbCommand.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Database.DatabaseProviders
+﻿namespace MvcForum.Core.Repositories.Database.DatabaseProviders
 {
     using Polly.Retry;
     using System;

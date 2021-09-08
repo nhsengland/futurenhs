@@ -1,23 +1,16 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FolderController.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-
-using System.Collections.Generic;
-using System.Linq;
-using MvcForum.Core.Repositories.Models;
-using MvcForum.Web.ViewModels.Folder;
-
-namespace MvcForum.Web.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using MvcForum.Core.Repositories.Models;
     using MvcForum.Core.Constants;
     using MvcForum.Core.Interfaces;
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Models.FilesAndFolders;
     using System;
     using System.Web.Mvc;
+    using System.Threading.Tasks;
+    using System.Threading;
 
     public class FolderController : Controller
     {
@@ -78,12 +71,15 @@ namespace MvcForum.Web.Controllers
             return null;
         }
 
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("UpdateFolder")]
         [HttpGet]
-        public ViewResult UpdateFolder(string slug, Guid? folderId)
+        public async Task<ViewResult> UpdateFolderAsync(string slug, Guid? folderId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                var result = _folderService.GetFolder(slug, folderId);
+                var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
 
                 var WriteFolder = new FolderWriteViewModel
                 {
@@ -99,15 +95,18 @@ namespace MvcForum.Web.Controllers
             return null;
         }
 
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("UpdateFolder")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UpdateFolder(FolderWriteViewModel folder)
+        public async Task<ActionResult> UpdateFolderAsync(FolderWriteViewModel folder, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
                 if (ModelState.IsValid)
                 {
-                    var result = _folderService.GetFolder(folder.Slug, folder.FolderId);
+                    var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
 
                     // Check folder exists for folder Id passed in
                     if (folder.FolderId == result.Folder.FolderId)
@@ -131,12 +130,15 @@ namespace MvcForum.Web.Controllers
             return null;
         }
 
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("DeleteFolder")]
         [HttpGet]
-        public ViewResult DeleteFolder(string slug, Guid? folderId)
+        public async Task<ViewResult> DeleteFolderAsync(string slug, Guid? folderId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                var result = _folderService.GetFolder(slug, folderId);
+                var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
 
                 var WriteFolder = new FolderWriteViewModel
                 {
@@ -152,15 +154,18 @@ namespace MvcForum.Web.Controllers
             return null;
         }
 
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("DeleteFolder")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteFolder(FolderWriteViewModel folder)
+        public async Task<ActionResult> DeleteFolderAsync(FolderWriteViewModel folder, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
                 if (ModelState.IsValid)
                 {
-                    var result = _folderService.GetFolder(folder.Slug, folder.FolderId);
+                    var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
 
                     if (folder.FolderId == result.Folder.FolderId)
                     {
@@ -178,12 +183,16 @@ namespace MvcForum.Web.Controllers
             return null;
         }
 
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("GetFolder")]
         [ChildActionOnly]
-        public PartialViewResult GetFolder(string slug, Guid? folderId, Guid groupId)
+        public async Task<PartialViewResult> GetFolderAsync(string slug, Guid? folderId, Guid groupId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                var model = _folderService.GetFolder(slug, folderId);
+                var model = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
+
                 model.GroupId = groupId;
                 model.IsAdmin = _folderService.UserIsAdmin(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id);
                 model.Breadcrumbs = GetBreadcrumbs(folderId, slug);

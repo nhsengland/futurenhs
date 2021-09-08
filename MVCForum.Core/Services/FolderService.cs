@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MvcForum.Core.Interfaces;
 using MvcForum.Core.Interfaces.Services;
@@ -28,7 +28,7 @@ namespace MvcForum.Core.Services
             _fileRepository = fileRepository;
         }
         
-        public FolderViewModel GetFolder(string groupSlug, Guid? folderId)
+        public async Task<FolderViewModel> GetFolderAsync(string groupSlug, Guid? folderId, CancellationToken cancellationToken)
         {
             FolderViewModel model;
 
@@ -49,7 +49,7 @@ namespace MvcForum.Core.Services
                     Slug = groupSlug,
                     Folder = _folderRepository.GetFolder(folderId.Value),
                     ChildFolders = _folderRepository.GetChildFoldersForFolder(folderId.Value),
-                    Files = _fileRepository.GetFiles(folderId.Value)
+                    Files = (await _fileRepository.GetFilesAsync(folderId.Value, cancellationToken)).ToList()
                 };
             }
 

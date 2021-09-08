@@ -1,9 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="IFolderRepository.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Repository.Interfaces
+﻿namespace MvcForum.Core.Repositories.Repository.Interfaces
 {
     using System;
     using System.Collections.Generic;

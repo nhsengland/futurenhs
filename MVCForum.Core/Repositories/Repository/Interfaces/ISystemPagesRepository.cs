@@ -1,19 +1,10 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="IGroupRepository.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-using MvcForum.Core.Models.General;
-using MvcForum.Core.Repositories.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using MvcForum.Core.Models.SystemPages;
-
-namespace MvcForum.Core.Repositories.Repository.Interfaces
+﻿namespace MvcForum.Core.Repositories.Repository.Interfaces
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MvcForum.Core.Models.SystemPages;
 
     public interface ISystemPagesRepository
     {

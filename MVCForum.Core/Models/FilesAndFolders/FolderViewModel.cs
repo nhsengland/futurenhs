@@ -1,9 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FolderListViewModel.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Web.ViewModels.Folder
+﻿namespace MvcForum.Web.ViewModels.Folder
 {
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Ioc;

@@ -1,16 +1,10 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="File.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using MvcForum.Core.Utilities;
-
-namespace MvcForum.Core.Models.Entities
+﻿namespace MvcForum.Core.Models.Entities
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using MvcForum.Core.Utilities;
+
     /// <summary>
     /// Defines the file entity to store file meta-data.
     /// </summary>

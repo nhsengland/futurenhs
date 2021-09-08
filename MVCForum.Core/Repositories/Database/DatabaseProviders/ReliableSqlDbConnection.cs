@@ -1,20 +1,11 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="ReliableSqlDbConnection.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace MvcForum.Core.Repositories.Database.DatabaseProviders
+﻿namespace MvcForum.Core.Repositories.Database.DatabaseProviders
 {
-    using Polly.Retry;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System;
     using System.Data;
     using System.Data.Common;
     using System.Data.SqlClient;
-    using MvcForum.Core.Interfaces.Providers;
     using MvcForum.Core.Repositories.Database.RetryPolicy;
 
     public class ReliableSqlDbConnection : DbConnection

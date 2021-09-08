@@ -1,9 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="DbRetryPolicy.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Database.RetryPolicy
+﻿namespace MvcForum.Core.Repositories.Database.RetryPolicy
 {
     using Polly;
     using Polly.Retry;

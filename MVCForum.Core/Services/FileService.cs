@@ -15,14 +15,14 @@ namespace MvcForum.Core.Services
     using MvcForum.Core.Repositories.Repository.Interfaces;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
 
     /// <summary>
     /// Defines methods for read and write operations on files.
     /// </summary>
-    public class FileService : IFileService
+    public sealed class FileService : IFileService
     {
         private readonly IConfigurationProvider _configurationProvider;
 
@@ -50,6 +50,12 @@ namespace MvcForum.Core.Services
         /// <param name="fileRepository">Instance of <see cref="IFileRepository"/>.</param>
         public FileService(IFileCommand fileCommand, IFileRepository fileRepository, IMembershipService membershipService, IFileUploadValidationService fileUploadValidationService, IConfigurationProvider configurationProvider)
         {
+            if (fileCommand is null) { throw new ArgumentNullException(nameof(fileCommand)); }
+            if (fileRepository is null) { throw new ArgumentNullException(nameof(fileRepository)); }
+            if (membershipService is null) { throw new ArgumentNullException(nameof(membershipService)); }
+            if (fileUploadValidationService is null) { throw new ArgumentNullException(nameof(fileUploadValidationService)); }
+            if (configurationProvider is null) { throw new ArgumentNullException(nameof(configurationProvider)); }
+
             _fileCommand = fileCommand;
             _fileRepository = fileRepository;
             _loggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
@@ -64,6 +70,8 @@ namespace MvcForum.Core.Services
         /// <returns>The file id.</returns>
         public Guid Create(FileWriteViewModel file)
         {
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+
             return _fileCommand.Create(file);
         }
 
@@ -74,6 +82,8 @@ namespace MvcForum.Core.Services
         /// <returns>The file id.</returns>
         public Guid Update(FileWriteViewModel file)
         {
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+
             return _fileCommand.Update(file);
         }
 
@@ -83,6 +93,8 @@ namespace MvcForum.Core.Services
         /// <param name="id">The id of the file.</param>
         public void Delete(FileWriteViewModel file)
         {
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+
             _fileCommand.Delete(file);
         }
 
@@ -91,20 +103,11 @@ namespace MvcForum.Core.Services
         /// </summary>
         /// <param name="id">The id of the file.</param>
         /// <returns>The requested <see cref="FileReadViewModel"/>.</returns>
-        public FileReadViewModel GetFile(Guid id)
+        public Task<FileReadViewModel> GetFileAsync(Guid id, CancellationToken cancellationToken)
         {
-            var file = _fileRepository.GetFile(id);
+            if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
 
-            if (string.IsNullOrWhiteSpace(file.ModifiedUserName) || string.IsNullOrWhiteSpace(file.ModifiedUserSlug))
-            {
-                file.ModifiedUserName = file.UserName;
-                file.ModifiedUserSlug = file.UserSlug;
-            }
-
-            if (!file.ModifiedAtUtc.HasValue)
-            {
-                file.ModifiedAtUtc = file.CreatedAtUtc;
-            }
+            var file = _fileRepository.GetFileAsync(id, cancellationToken);
 
             return file;
         }
@@ -115,13 +118,13 @@ namespace MvcForum.Core.Services
         /// <param name="blobName">Name of blob to redirect to (blob storage name rather than original file name).</param>
         /// <param name="downloadPermissions">Permissions to be applied to the SasBuilder.</param>
         /// <returns></returns>
-        public async Task<string> GetRelativeDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions)
+        public async Task<string> GetRelativeDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions, CancellationToken cancellationToken)
         {
             // Set the blob service client
             BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri(_configurationProvider.FileDownloadEndpoint), new DefaultAzureCredential());
 
             // Generate the user delegation key
-            var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMinutes(40));
+            var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMinutes(40), cancellationToken);
 
             if (userDelegationKey != null)
             {
@@ -150,7 +153,7 @@ namespace MvcForum.Core.Services
                 // Build the blob redirect path required
                 return $"{blobUriBuilder.BlobContainerName}/{blobUriBuilder.BlobName}?{blobUriBuilder.Sas}";
             }
-            throw new InvalidOperationException("Unable to generate download token");
+            throw new ApplicationException("Unable to generate download token");
         }
 
         /// <summary>
@@ -158,42 +161,45 @@ namespace MvcForum.Core.Services
         /// </summary>
         /// <param name="folderId">The folder id to get files for.</param>
         /// <returns>List of file <see cref="List{File}"/></returns>
-        public IEnumerable<FileReadViewModel> GetFiles(Guid folderId)
+        public Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, CancellationToken cancellationToken)
         {
-            return _fileRepository.GetFiles(folderId);
+            if (folderId == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(folderId)); }
+
+            return _fileRepository.GetFilesAsync(folderId, cancellationToken);
         }
 
         /// <summary>
         /// Upload a file to blob storage.
         /// </summary>
         /// <param name="file">Posted file to upload.</param>
+        /// <param name="contentType">Correct content type for file, determined during validation.</param>
         /// <returns></returns>
-        public async Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file)
+        public async Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file, string contentType, CancellationToken cancellationToken)
         {
-            // TODO - implement validation including of type (MIME detective), add this to _fileUploadValidationService
-            var result = _fileUploadValidationService.ValidateUploadedFile(file, false);
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
-            if (!result.ValidationErrors.Any())
-            {
-                var storageAccount = CloudStorageAccount.Parse(_configurationProvider.FileUploadConnectionString);
+            // Full validation happens in the controller so that we don't end up with an orphaned DB record
+            var result = new UploadBlobResult();
 
-                var blobStorage = storageAccount.CreateCloudBlobClient();
-                var container = blobStorage.GetContainerReference(_configurationProvider.FileContainerName);
+            var storageAccount = CloudStorageAccount.Parse(_configurationProvider.FileUploadConnectionString);
 
-                var uniqueBlobName = $"{Guid.NewGuid()}{System.IO.Path.GetExtension(file.FileName)}";
+            var blobStorage = storageAccount.CreateCloudBlobClient();
+            var container = blobStorage.GetContainerReference(_configurationProvider.FileContainerName);
 
-                result.UploadedFileName = uniqueBlobName;
+            var uniqueBlobName = $"{Guid.NewGuid()}{System.IO.Path.GetExtension(file.FileName)}";
 
-                var blob = container.GetBlockBlobReference(uniqueBlobName);
-                blob.Properties.ContentType = file.ContentType;
-                blob.Properties.ContentDisposition = $"attachment; filename={file.FileName}";
-                await blob.UploadFromStreamAsync(file.InputStream);
+            result.UploadedFileName = uniqueBlobName;
 
-                // set the attributes required to be saved in the DB?
-                // Question, are the values from Posted file 'safe' enough or should we get from uploaded blob?
-                result.UploadedFileHash = Convert.FromBase64String(blob.Properties.ContentMD5);
-                result.UploadSuccessful = true;
-            }
+            var blob = container.GetBlockBlobReference(uniqueBlobName);
+            blob.Properties.ContentType = contentType;
+            blob.Properties.ContentDisposition = $"attachment; filename={file.FileName}";
+            await blob.UploadFromStreamAsync(file.InputStream, cancellationToken);
+
+            // set the attributes required to be saved in the DB?
+            // Question, are the values from Posted file 'safe' enough or should we get from uploaded blob?
+            result.UploadedFileHash = Convert.FromBase64String(blob.Properties.ContentMD5);
+            result.UploadSuccessful = true;
+
             return result;
         }
 
@@ -202,9 +208,9 @@ namespace MvcForum.Core.Services
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public UploadBlobResult SimpleFileValidation(HttpPostedFileBase file)
+        public ValidateBlobResult FileValidation(HttpPostedFileBase file)
         {
-            return _fileUploadValidationService.ValidateUploadedFile(file, true);
+            return _fileUploadValidationService.ValidateUploadedFile(file);
         }
     }
 }

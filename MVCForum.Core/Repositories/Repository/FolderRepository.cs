@@ -1,21 +1,13 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FolderRepository.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Dapper;
-using MvcForum.Core.Models.General;
-using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
-using MvcForum.Core.Repositories.Models;
-using MvcForum.Core.Repositories.Repository.Interfaces;
-
-namespace MvcForum.Core.Repositories.Repository
+﻿namespace MvcForum.Core.Repositories.Repository
 {
-    //using DbFolder = MvcForum.Core.Repositories.Database.Models.Folder;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Dapper;
+    using MvcForum.Core.Models.General;
+    using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
+    using MvcForum.Core.Repositories.Models;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
 
     public class FolderRepository : IFolderRepository
     {

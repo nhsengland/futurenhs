@@ -2,13 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
     using MvcForum.Core.Models.FilesAndFolders;
     using MvcForum.Core.Repositories.Models;
     using MvcForum.Web.ViewModels.Folder;
 
     public interface IFolderService
     {
-        FolderViewModel GetFolder(string slug, Guid? folderId);
+        Task<FolderViewModel> GetFolderAsync(string slug, Guid? folderId, CancellationToken cancellationToken);
         FolderReadViewModel GetFolder(Guid? folderId, string folderName, Guid? parentFolder);
         Guid CreateFolder(FolderWriteViewModel model);
         void UpdateFolder(FolderWriteViewModel model);

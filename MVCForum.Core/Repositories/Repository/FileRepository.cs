@@ -1,10 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FileRepository.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-namespace MvcForum.Core.Repositories.Repository
+﻿namespace MvcForum.Core.Repositories.Repository
 {
     using Dapper;
     using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
@@ -13,6 +7,8 @@ namespace MvcForum.Core.Repositories.Repository
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Implements the <see cref="IFileRepository"/> for interactions with uploaded file.
@@ -38,11 +34,11 @@ namespace MvcForum.Core.Repositories.Repository
         /// </summary>
         /// <param name="fileId">Id of the <see cref="FileReadViewModel"/>.</param>
         /// <returns>The requested <see cref="FileReadViewModel"/>.</returns>
-        public FileReadViewModel GetFile(Guid fileId)
+        public async Task<FileReadViewModel> GetFileAsync(Guid fileId, CancellationToken cancellationToken)
         {
             try
             {
-                var conn = _connectionFactory.CreateReadOnlyConnection();
+                var dbConnection = _connectionFactory.CreateReadOnlyConnection();
                 var query = @"SELECT f.Id, 
                                      f.Title, 
                                      f.Description, 
@@ -55,13 +51,28 @@ namespace MvcForum.Core.Repositories.Repository
 									 f.UploadStatus AS Status,
                                      m.FirstName + ' ' + m.Surname AS UserName,
                                      m.Slug AS UserSlug,
-                                     mu.FirstName + ' ' + mu.Surname as ModifiedUserName, 
-                                     mu.Slug AS ModifiedUserSlug 
+									 CASE 
+										WHEN f.ModifiedAtUtc IS NULL 
+										THEN f.CreatedAtUtc
+										ELSE f.ModifiedAtUtc
+									 END AS LastModifiedAtUtc,
+									 CASE
+										WHEN f.ModifiedBy IS NULL
+										THEN (SELECT FirstName + ' ' + Surname FROM MembershipUser WHERE Id = CreatedBy)
+										ELSE (SELECT FirstName + ' ' + Surname FROM MembershipUser WHERE Id = ModifiedBy)
+									 END AS ModifiedUserName,
+									 CASE
+										WHEN f.ModifiedBy IS NULL
+										THEN (SELECT Slug FROM MembershipUser WHERE Id = CreatedBy)
+										ELSE (SELECT Slug FROM MembershipUser WHERE Id = ModifiedBy)
+									 END AS ModifiedUserSlug
                             FROM [File] f 
                             JOIN MembershipUser m ON m.Id = f.CreatedBy 
-                            LEFT JOIN MembershipUser mu ON m.Id = f.ModifiedBy  
                             WHERE f.Id = @fileId";
-                return conn.Query<FileReadViewModel>(query, new { fileId = fileId }).FirstOrDefault();
+
+                var commandDefinition = new CommandDefinition(query, new { fileId }, cancellationToken: cancellationToken);
+
+                return (await dbConnection.QueryAsync<FileReadViewModel>(commandDefinition)).SingleOrDefault();
             }
             catch (Exception) { }
             return null;
@@ -72,11 +83,12 @@ namespace MvcForum.Core.Repositories.Repository
         /// </summary>
         /// <param name="folderId">Id of the parent folder.</param>
         /// <returns>List of files <see cref="List{File}"/>.</returns>
-        public List<FileReadViewModel> GetFiles(Guid folderId)
+        public async Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, CancellationToken cancellationToken)
         {
             try
             {
-                var conn = _connectionFactory.CreateReadOnlyConnection();
+                var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+
                 var query = @"SELECT f.Id, 
                                      f.Title, 
                                      f.CreatedAtUtc, 
@@ -87,7 +99,10 @@ namespace MvcForum.Core.Repositories.Repository
                             JOIN MembershipUser m ON m.Id = f.CreatedBy 
                             WHERE f.ParentFolder = @folderId
                             ORDER BY f.Title";
-                return conn.Query<FileReadViewModel>(query, new { folderId = folderId }).ToList();
+
+                var commandDefinition = new CommandDefinition(query, new { folderId }, cancellationToken: cancellationToken);
+
+                return (await dbConnection.QueryAsync<FileReadViewModel>(commandDefinition));
             }
             catch (Exception) { }
             return null;

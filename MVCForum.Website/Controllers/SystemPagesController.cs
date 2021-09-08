@@ -1,15 +1,7 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FolderController.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace MvcForum.Web.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
+    using System.Threading;
+    using System.Threading.Tasks;
     using MvcForum.Core.Interfaces.Services;
     using System.Web.Mvc;
 

@@ -5,6 +5,7 @@ namespace MvcForum.Core.Ioc
     using Interfaces.Services;
     using MvcForum.Core.Factories;
     using MvcForum.Core.Interfaces.Factories;
+    using MvcForum.Core.Interfaces.Helpers;
     using MvcForum.Core.Interfaces.Providers;
     using MvcForum.Core.Providers;
     using MvcForum.Core.Repositories.Command;
@@ -14,6 +15,7 @@ namespace MvcForum.Core.Ioc
     using MvcForum.Core.Repositories.Database.RetryPolicy;
     using MvcForum.Core.Repositories.Repository;
     using MvcForum.Core.Repositories.Repository.Interfaces;
+    using MvcForum.Core.Utilities;
     using Reflection;
     using SendGrid;
     using Services;
@@ -107,6 +109,8 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IRegistrationEmailService, RegistrationEmailService>();
             Container.BindInRequestScope<ISmtpClientFactory, SmtpClientFactory>();
             Container.BindInRequestScope<IGroupAddMemberService, GroupAddMemberService>();
+
+            Container.RegisterSingleton<IValidateFileType, FileTypeValidator>(); 
 
             switch (ConfigurationManager.AppSettings["SendEmailService"])
             {

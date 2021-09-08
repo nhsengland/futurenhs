@@ -7,15 +7,11 @@ namespace MvcForum.Web.Controllers
     using System;
     using System.Web.Mvc;
     using MvcForum.Core.Constants;
-    using MvcForum.Web.ViewModels.Shared;
     using System.Collections.Generic;
-    using MvcForum.Core.Constants.UI;
-    using System.Threading.Tasks;
     using System.Linq;
-    using Status = MvcForum.Core.Models.Enums.UploadStatus;
-    using System.Configuration;
-    using System.IO;
-    using Azure.Storage.Blobs;
+    using Status = Core.Models.Enums.UploadStatus;
+    using System.Threading.Tasks;
+    using System.Threading;
 
     /// <summary>
     /// Defines methods and routes for the GroupFIles.
@@ -25,12 +21,12 @@ namespace MvcForum.Web.Controllers
         /// <summary>
         /// Instance of the <see cref="IFileService"/>.
         /// </summary>
-        private IFileService _fileService { get; set; }
+        private readonly IFileService _fileService;
 
         /// <summary>
         /// Instance of the <see cref="IMembershipService"/>.
         /// </summary>
-        private IMembershipService _membershipService { get; set; }
+        private readonly IMembershipService _membershipService;
 
         /// <summary>
         /// Instance of the <see cref="ILocalizationService"/>.
@@ -51,6 +47,11 @@ namespace MvcForum.Web.Controllers
         /// <param name="localizationService"></param>
         public GroupFileController(IFileService fileService, IMembershipService membershipService, IFolderService folderService, ILocalizationService localizationService)
         {
+            if (fileService is null) { throw new ArgumentNullException(nameof(fileService)); }
+            if (membershipService is null) { throw new ArgumentNullException(nameof(membershipService)); }
+            if (folderService is null) { throw new ArgumentNullException(nameof(folderService)); }
+            if (localizationService is null) { throw new ArgumentNullException(nameof(localizationService)); }
+
             _fileService = fileService;
             _membershipService = membershipService;
             _folderService = folderService;
@@ -62,10 +63,16 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         /// <param name="id">Id of the file to show.</param>
         /// <returns>The show view.</returns>
-        public ActionResult Show(Guid id, string slug)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Show")]
+        public async Task<ActionResult> ShowAsync(Guid id, string slug, CancellationToken cancellationToken)
         {
+            if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
+
             // TODO - Check user has permissions to view file
-            var dbFile = _fileService.GetFile(id);
+
+            var dbFile = await _fileService.GetFileAsync(id, cancellationToken);
 
             var file = new FileViewModel
             {
@@ -84,6 +91,8 @@ namespace MvcForum.Web.Controllers
         /// <returns></returns>
         public ActionResult Create(Guid folderId, string slug)
         {
+            if (folderId == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(folderId)); }
+
             var viewmodel = new FileWriteViewModel
             {
                 FolderId = folderId,
@@ -99,81 +108,79 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns>The detail view for the new file.</returns>
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(FileWriteViewModel file)
+        [ActionName("Create")]
+        public async Task<ActionResult> CreateAsync(FileWriteViewModel file, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (ModelState.IsValid)
             {
-                try
+                if(file is null)
                 {
-                    // Check that the folder Id passed in is valid (folder exists).
-                    if (!FolderIsValid(file.FolderId))
-                    {
-                        ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("File.Error.InvalidFolder"));
-                    }
-                    else
-                    {
-                        // Perform simple validation prior to actual upload attempt
-                        var simpleValidation = _fileService.SimpleFileValidation(file.PostedFile);
+                    throw new ArgumentNullException(nameof(file), "The required file parameter is missing.");
+                }
 
-                        // Simple validation passed, attempt upload and save to DB
-                        if (!simpleValidation.ValidationErrors.Any())
+                // Check that the folder Id passed in is valid (folder exists).
+                if (!(await FolderIsValidAsync(file.FolderId, cancellationToken)))
+                {
+                    ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("File.Error.InvalidFolder"));
+                }
+                else
+                {
+                    // Perform full validation prior to actual upload attempt
+                    var fileValidation = _fileService.FileValidation(file.PostedFile);
+
+                    // Simple validation passed, attempt upload and save to DB
+                    if (!fileValidation.ValidationErrors.Any())
+                    {
+                        file.CreatedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
+                        var id = _fileService.Create(file);
+
+                        // Only continue if file meta data added to DB
+                        if (id != Guid.Empty)
                         {
-                            file.CreatedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-                            var id = _fileService.Create(file);
+                            file.FileId = id;
 
-                            // Only continue if file meta data added to DB
-                            if (id != Guid.Empty)
+                            // Validate and attempt to upload the file to blob storage
+                            var fileUploadResult = await _fileService.UploadFileAsync(file.PostedFile, fileValidation.MimeType, cancellationToken);
+
+                            // Update the status of the file depending on upload result.
+                            file.UploadStatus = fileUploadResult.UploadSuccessful ? (int)Status.Verified : (int)Status.Failed;
+                            file.FileUrl = fileUploadResult.UploadSuccessful ? fileUploadResult.UploadedFileName : null;
+                            file.FileName = file.PostedFile.FileName;
+                            file.FileSize = file.PostedFile.ContentLength.ToString();
+                            file.FileExtension = System.IO.Path.GetExtension(file.PostedFile.FileName);
+                            file.BlobHash = fileUploadResult.UploadedFileHash;
+
+                            _fileService.Update(file);
+
+                            if (fileUploadResult.UploadSuccessful)
                             {
-                                file.FileId = id;
-
-                                // Validate and attempt to upload the file to blob storage
-                                var fileUploadResult = await _fileService.UploadFileAsync(file.PostedFile);
-
-                                // Update the status of the file depending on upload result.
-                                file.UploadStatus = fileUploadResult.UploadSuccessful ? (int)Status.Verified : (int)Status.Failed;
-                                file.FileUrl = fileUploadResult.UploadSuccessful ? fileUploadResult.UploadedFileName : null;
-                                file.FileName = file.PostedFile.FileName;
-                                file.FileSize = file.PostedFile.ContentLength.ToString();
-                                file.FileExtension = System.IO.Path.GetExtension(file.PostedFile.FileName);
-                                file.BlobHash = fileUploadResult.UploadedFileHash;
-
-                                _fileService.Update(file);
-
-                                if (fileUploadResult.UploadSuccessful)
-                                {
-                                    // Success, show the file
-                                    return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
-                                }
-                                else
-                                {
-                                    // Not successful surface the errors
-                                    foreach(var error in fileUploadResult.ValidationErrors)
-                                    {
-                                        ModelState.AddModelError(string.Empty, error);
-                                    }
-                                }
+                                // Success, show the file
+                                return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
                             }
                             else
                             {
-                                // Error saving file data surface the error.
-                                ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("File.Error.FileSaveError"));
+                                // Not successful, throw an exception
+                                throw new ApplicationException("Error uploading file to storage.");
                             }
                         }
                         else
                         {
-                            // Not successful surface the errors
-                            foreach (var error in simpleValidation.ValidationErrors)
-                            {
-                                ModelState.AddModelError(string.Empty, error);
-                            }
+                            // Error saving file data surface the error.
+                            ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("File.Error.FileSaveError"));
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    // TODO - deal with any unhandled exceptions.
+                    else
+                    {
+                        // Not successful surface the errors
+                        foreach (var error in fileValidation.ValidationErrors)
+                        {
+                            ModelState.AddModelError(string.Empty, error);
+                        }
+                    }
                 }
             }
             ViewBag.HideSideBar = true;
@@ -181,9 +188,14 @@ namespace MvcForum.Web.Controllers
             return View(file);
         }
 
-        public ActionResult Update(Guid id, string slug)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Update")]
+        public async Task<ActionResult> UpdateAsync(Guid id, string slug, CancellationToken cancellationToken)
         {
-            var file = _fileService.GetFile(id);
+            if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
+
+            var file = await _fileService.GetFileAsync(id, cancellationToken);
 
             var viewModel = new FileWriteViewModel
             {
@@ -203,8 +215,10 @@ namespace MvcForum.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (file is null) { throw new ArgumentNullException(nameof(file)); }
+
                 file.ModifiedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-                Guid id = _fileService.Update(file);
+                _fileService.Update(file);
 
                 return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
             }
@@ -212,9 +226,14 @@ namespace MvcForum.Web.Controllers
             return View();
         }
 
-        public ActionResult Delete(Guid id, string slug)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Delete")]
+        public async Task<ActionResult> DeleteAsync(Guid id, string slug, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var file = _fileService.GetFile(id);
+            if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
+
+            var file = await _fileService.GetFileAsync(id, cancellationToken);
 
             var viewModel = new FileWriteViewModel
             {
@@ -232,6 +251,8 @@ namespace MvcForum.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(FileWriteViewModel file)
         {
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+
             _fileService.Delete(file);
             return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
         }
@@ -242,7 +263,10 @@ namespace MvcForum.Web.Controllers
         /// <param name="fileId">Id of the file to download.</param>
         /// <param name="slug">Group slug for redirect if an error.</param>
         /// <returns></returns>
-        public async Task<ActionResult> DownloadAsync(Guid fileId)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Download")]
+        public async Task<ActionResult> DownloadAsync(Guid fileId, CancellationToken cancellationToken = default(CancellationToken))
         {
             //TODO - Check user has permissions to download file
 
@@ -252,7 +276,7 @@ namespace MvcForum.Web.Controllers
             }
 
             // Get the file by Id passed in
-            var fileModel = _fileService.GetFile(fileId);
+            var fileModel = await _fileService.GetFileAsync(fileId, cancellationToken);
 
             if (string.IsNullOrWhiteSpace(fileModel?.FileUrl))
             {
@@ -263,7 +287,7 @@ namespace MvcForum.Web.Controllers
             if (fileModel.Status == (int)Status.Verified)
             {
                 // File valid for Id, try and get the link to the blob
-                var downloadPath = await _fileService.GetRelativeDownloadUrlAsync(fileModel.FileUrl, Azure.Storage.Sas.BlobSasPermissions.Read);
+                var downloadPath = await _fileService.GetRelativeDownloadUrlAsync(fileModel.FileUrl, Azure.Storage.Sas.BlobSasPermissions.Read, cancellationToken);
 
                 if (string.IsNullOrWhiteSpace(downloadPath))
                 {
@@ -284,9 +308,9 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         /// <param name="folderId"></param>
         /// <returns></returns>
-        private bool FolderIsValid(Guid folderId)
+        private async Task<bool> FolderIsValidAsync(Guid folderId, CancellationToken cancellationToken)
         {
-            return _folderService.GetFolder(string.Empty, folderId).Folder != null;
+            return (await _folderService.GetFolderAsync(string.Empty, folderId, cancellationToken)).Folder != null;
         }
 
         /// <summary>

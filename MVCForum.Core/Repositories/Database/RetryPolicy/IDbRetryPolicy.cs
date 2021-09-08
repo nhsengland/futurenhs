@@ -1,14 +1,6 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="IDbRetryPolicy.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Database.RetryPolicy
+﻿namespace MvcForum.Core.Repositories.Database.RetryPolicy
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 

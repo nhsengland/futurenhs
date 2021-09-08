@@ -1,13 +1,10 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FileRepository.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Repository.Interfaces
+﻿namespace MvcForum.Core.Repositories.Repository.Interfaces
 {
     using MvcForum.Core.Repositories.Models;
     using System;
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Defines the repository for interactions with files.
@@ -19,13 +16,13 @@ namespace MvcForum.Core.Repositories.Repository.Interfaces
         /// </summary>
         /// <param name="folderId">Folder to get files for.</param>
         /// <returns>List of <see cref="FileReadViewModel"/>.</returns>
-        List<FileReadViewModel> GetFiles(Guid folderId);
+        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Method to get a file by fileId.
         /// </summary>
         /// <param name="fileId">File to get.</param>
         /// <returns>Requested <see cref="FileReadViewModel"/>.</returns>
-        FileReadViewModel GetFile(Guid fileId);
+        Task<FileReadViewModel> GetFileAsync(Guid fileId, CancellationToken cancellationToken);
     }
 }
