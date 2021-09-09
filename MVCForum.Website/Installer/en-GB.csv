@@ -136,8 +136,8 @@ Members.DateJoined,Date Joined
 Members.DeleteAllPosts,Delete All Posts
 Members.EditMember,Edit Member
 Members.EditProfile,Edit Profile
-Members.Errors.DuplicateEmail,A user name for that e-mail address already exists. Please enter a different e-mail address.
-Members.Errors.DuplicateUserName,User name already exists. Please enter a different user name.
+Members.Errors.DuplicateEmail,This email address is already registered.  Please provide another email address or login
+Members.Errors.DuplicateUserName,This email address is already registered.  Please provide another email address or login
 Members.Errors.InvalidAnswer,The password retrieval answer provided is invalid. Please check the value and try again.
 Members.Errors.InvalidEmail,The e-mail address provided is invalid. Please check the value and try again.
 Members.Errors.InvalidPassword,The password provided is invalid. Please enter a valid password value.
@@ -164,7 +164,7 @@ Members.Label.ConfirmPassword,Confirm Password
 Members.Label.CurrentPassword,Current Password
 Members.Label.DateJoined,Date Joined
 Members.Label.DisableEmailNotifications,Disable Email Notifications
-Members.Label.EmailAddress,Email address (Used by Gravatar to show your Avatar image)
+Members.Label.EmailAddress,Email address
 Members.Label.FirstName,Firstname
 Members.Label.Surname,Surname
 Members.Label.EmailAddressBlank,Enter your email address

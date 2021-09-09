@@ -9,28 +9,28 @@
     public class MemberAddViewModel
     {
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Please provide a valid email address")]
+        [EmailAddress(ErrorMessage = "Please provide a valid email address")]
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
         public string Email { get; set; }
 
-        [Required]
-        [Display(Name = "First name")]
+        [Required(ErrorMessage = "Please provide your first name")]
+        [Display(Name = "First name")]        
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please provide your surname")]
         [Display(Name = "Last name")]
         public string Surname { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 10)]
+        [Required(ErrorMessage = "Your password must be at least 10 characters long")]
+        [StringLength(100, MinimumLength = 10, ErrorMessage = "Your password must be at least 10 characters long")]
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.Password")]
         public string Password { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please confirm your password")]
         [DataType(DataType.Password)]
-        [Compare("Password")]
+        [Compare("Password", ErrorMessage = "Your passwords do not match")]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
         public string ConfirmPassword { get; set; }
 
