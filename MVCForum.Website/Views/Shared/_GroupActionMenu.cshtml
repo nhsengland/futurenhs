@@ -1,0 +1,33 @@
+﻿@model MvcForum.Web.ViewModels.Shared.ActionMenuModel
+@using MvcForum.Web.ViewModels.Shared
+
+<div class="l-col-12 l-col-4-d u-tar">
+	@if (Model.ActionButton != null)
+	{
+		<a href=@Model.ActionButton.Url class="c-button @(Model.ActionButton.Active ? "" : "c-button--outline-white u-disabled")">
+			@Model.ActionButton.Name
+		</a>
+	}
+
+	@if (Model.ActionLinks != null)
+	{
+        <div class="c-action-dropdown">
+            <details>
+                <summary aria-haspopup="true" class="c-action-dropdown_trigger" data-open-icon="icon-cross-circle">
+                    Actions
+                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-down", "c-ui-icon c-ui-icon--large c-action-dropdown_trigger-icon")); }
+                </summary>
+                @foreach (var actionLink in Model.ActionLinks.OrderBy(x => x.Order))
+                {
+                    <ul class="c-action-dropdown_list">
+                        <li class="c-action-dropdown_item" role="none">
+                            <a class="" href="@actionLink.Url">@actionLink.Name</a>
+                        </li>
+                    </ul>
+                }
+
+            </details>
+        </div>
+	}
+	
+</div>

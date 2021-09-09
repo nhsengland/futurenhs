@@ -11,5 +11,6 @@ namespace MvcForum.Web.ViewModels.Shared
     /// </summary>
     public class Link : NavItemBase
     {
+        public string Icon { get; set; }
     }
 }

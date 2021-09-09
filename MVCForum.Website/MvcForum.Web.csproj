@@ -125,11 +125,14 @@
     <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
+    <Compile Include="ViewModels\Shared\Button.cs" />
     <Compile Include="ViewModels\Shared\Link.cs" />
     <Compile Include="ViewModels\Shared\LinkGroup.cs" />
     <Compile Include="ViewModels\Shared\NavItemBase.cs" />
     <Compile Include="ViewModels\Shared\GroupHeaderViewModel.cs" />
+    <Compile Include="ViewModels\Shared\ActionLink.cs" />
     <Compile Include="ViewModels\Shared\Tab.cs" />
+    <Compile Include="ViewModels\Shared\ActionMenuModel.cs" />
     <Compile Include="ViewModels\Shared\TabViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupUserViewModel.cs" />
     <Compile Include="ViewModels\Group\SectionListViewModel.cs" />
@@ -1200,6 +1203,14 @@
     <Content Include="Views\Email\Index.cshtml" />
     <Content Include="Views\Shared\_Breadcrumbs.cshtml" />
     <Content Include="Views\SystemPages\Show.cshtml" />
+    <Content Include="Views\Shared\_GroupActionMenu.cshtml" />
+    <Content Include="Views\FedTest\FilesViews\_Subfolders.cshtml" />
+    <Content Include="Views\FedTest\FilesViews\_TopLevelFolders.cshtml" />
+    <Content Include="Views\FedTest\FilesViews\_ViewFile.cshtml" />
+    <Content Include="Views\FedTest\_Cards.cshtml" />
+    <Content Include="Views\FedTest\_ErrorSummary.cshtml" />
+    <Content Include="Views\FedTest\_Forms.cshtml" />
+    <Content Include="Views\FedTest\_Tables.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

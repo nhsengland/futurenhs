@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
 }
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
+    @{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
 }
 
 @{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }

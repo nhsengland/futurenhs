@@ -14,7 +14,7 @@
         /// </summary>
         public MembershipUser CurrentUser { get; set; }
 
-        public List<NavItemBase> NavigationItems { get; set; }
+        public List<LinkGroup> NavigationItems { get; set; }
 
     }
 }

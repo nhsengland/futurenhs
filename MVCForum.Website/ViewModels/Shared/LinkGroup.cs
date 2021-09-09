@@ -15,5 +15,7 @@ namespace MvcForum.Web.ViewModels.Shared
         /// Gets or sets the list of child items.
         /// </summary>
         public List<Link> ChildItems { get; set; }
+
+        public string Icon { get; set; }
     }
 }

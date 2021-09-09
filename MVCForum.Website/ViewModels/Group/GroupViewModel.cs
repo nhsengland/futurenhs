@@ -36,7 +36,10 @@ namespace MvcForum.Web.ViewModels.Group
         public bool ShowUnSubscribedLink { get; set; }
 
         public Guid? Folder { get; set; }
-    }
+
+        public ActionMenuModel ActionMenu { get; set; }
+}
+  
 
 
 }

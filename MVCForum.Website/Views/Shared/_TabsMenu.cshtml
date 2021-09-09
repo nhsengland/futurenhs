@@ -11,10 +11,7 @@
         {
             <li class="c-tabbed-nav_item" role="none">
                 <a class="@(tab.Active? "c-tabbed-nav_link--active" : "") c-tabbed-nav_link" href="@tab.Url" role="menuitem">
-                    <span class="c-tabbed-nav_item-icon">
-                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel(tab.Icon, "u-fill-theme-1")); }
-                    </span>
-                    <span>
+	                <span>
                         @Html.LanguageString(@tab.Name)
                     </span>
                 </a>

@@ -82,7 +82,7 @@
                             {
 
                                 <li role="none" class="u-desktop-hidden">
-                                    @if (navItem is LinkGroup)
+                                    @if (navItem.ChildItems != null && navItem.ChildItems.Any())
                                     {
                                     <details class="c-site-header-nav_root-nav-item">
                                         <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger @(navItem.BorderTheme != null ? navItem.BorderTheme : Themes.BORDER_1)" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
@@ -94,7 +94,7 @@
                                             <div class="c-site-header-nav_sub-nav-content">
                                                 <div class="l-row">
                                                     <ul class="u-list-plain" role="menu" aria-label="Your bill">
-                                                        @foreach (var link in ((LinkGroup)navItem).ChildItems)
+                                                        @foreach (var link in (navItem.ChildItems))
                                                         {
                                                             <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
                                                                 <a role="menuitem" href="@link.Url" class="c-site-header-nav_sub-nav-child">
@@ -107,7 +107,7 @@
                                             </div>
                                         </div>
                                     </details>
-                                    } else if (navItem is Link)
+                                    } else if (navItem.ChildItems is null || !navItem.ChildItems.Any())
                                     {
                                     <a role="menuitem" href="@navItem.Url" class="c-site-header-nav_root-nav-trigger @(navItem.BorderTheme != null ? navItem.BorderTheme : Themes.BORDER_1)">
                                         @if (navItem.Icon != null) {Html.RenderPartial("_SVGIcon", new SVGIconViewModel(navItem.Icon, String.Format("c-site-header-nav_root-nav-content-icon {0}", navItem.IconTheme != null ? navItem.IconTheme : Themes.FILL_THEME_1)));}
@@ -128,8 +128,6 @@
                                 </p>
                             </li>
                         </ul>
-                        
-                        </div>
                     </nav>
                 </div>
             </details>

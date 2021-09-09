@@ -23,11 +23,6 @@ namespace MvcForum.Web.ViewModels.Shared
         public string Url { get; set; }
 
         /// <summary>
-        /// Gets or sets the group icon.
-        /// </summary>
-        public string Icon { get; set; }
-
-        /// <summary>
         /// Gets or sets the border theme.
         /// </summary>
         public string BorderTheme { get; set; }

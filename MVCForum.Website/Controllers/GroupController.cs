@@ -235,55 +235,124 @@ namespace MvcForum.Web.Controllers
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 
-        /// <summary>
-        /// Method to get the group tabs model.
-        /// </summary>
-        /// <param name="slug">The slug for the current group.</param>
-        /// <returns>View model for the group tabs <see cref="TabViewModel"/>.</returns>
-        public TabViewModel GetGroupTabsModel(string slug)
+        public PartialViewResult GroupHeader(string slug, string tab = null)
         {
-            var tabsViewModel = new TabViewModel { Tabs = new List<Tab>( )};
+            var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
 
+            var viewModel = new GroupHeaderViewModel()
+            {
+                Name = group.Group.Name,
+                Description = group.Group.Description,
+                Colour = group.Group.Colour,
+                HeaderTabs = GetGroupTabsModel(slug, tab),
+                Image = group.Group.Image,
+                Id = group.Group.Id,
+                ActionMenu = GetGroupActionMenu(group.Group)
+            };
+
+            return PartialView("_GroupHeader", viewModel);
+        }
+
+        public ActionMenuModel GetGroupActionMenu(Group group)
+        {
+            var model = new ActionMenuModel();
+
+            if (LoggedOnReadOnlyUser == null) return model;
+
+            var user = @group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
+            var groupUserStatus = GetUserStatusForGroup(user);
+
+            if (groupUserStatus != GroupUserStatus.Joined)
+            {
+                switch (groupUserStatus)
+                {
+                    case GroupUserStatus.NotJoined:
+                        model.ActionButton = new Button
+                        {
+                            Name = LocalizationService.GetResourceString("Groups.Join"),
+                            Url = Url.Action("Join", "Group", new { slug = @group.Slug }),
+                            Active = true
+                        };
+                        break;
+                    case GroupUserStatus.Pending:
+                        model.ActionButton = new Button
+                        {
+                            Name = LocalizationService.GetResourceString("Pending Approval"),
+                        };
+                        break;
+                    case GroupUserStatus.Locked:
+                        model.ActionButton = new Button
+                        {
+                            Name = LocalizationService.GetResourceString("Locked Out"),
+                        };
+                        break;
+                    case GroupUserStatus.Banned:
+                        model.ActionButton = new Button
+                        {
+                            Name = LocalizationService.GetResourceString("Banned"),
+                        };
+                        break;
+
+                }
+            }
+            else
+            {
+                model.ActionLinks = new List<ActionLink>
+                {
+                    new ActionLink {  Name = LocalizationService.GetResourceString("Groups.Leave") , Url = Url.Action("Leave", "Group", new { slug = @group.Slug }), Order = 1}
+                };
+            }
+
+            return model;
+        }
+
+        // TODO Duplicated code from groups, we need to refactor all of this into one place.
+        public TabViewModel GetGroupTabsModel(string slug, string tab)
+        {
             var homeTab = new Tab
             {
-                Name = "GroupTabs.Home",
-                Order = 1,
-                Icon = Icons.Home,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = UrlParameter.Optional})}"
+                Name = "GroupTabs.Home", Order = 1,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}"
             };
-            tabsViewModel.Tabs.Add(homeTab);
 
             var forumTab = new Tab
             {
-                Name = "GroupTabs.Forum",
-                Order = 2,
-                Icon = Icons.Forum,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupForumTab})}"
+                Name = "GroupTabs.Forum", Order = 2,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}"
             };
-            tabsViewModel.Tabs.Add(forumTab);
 
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            var filesTab = new Tab
             {
-                var filesTab = new Tab
-                {
-                    Name = "GroupTabs.Files",
-                    Order = 3,
-                    Icon = Icons.File,
-                    Url = $"{Url.RouteUrl("GroupUrls", new {slug, tab = Constants.GroupFilesTab})}"
-                };
-                tabsViewModel.Tabs.Add(filesTab);
-            }
+                Name = "GroupTabs.Files", Order = 3,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupFilesTab })}"
+            };
 
             var membersTab = new Tab
             {
-                Name = "GroupTabs.Members",
-                Order = 4,
-                Icon = Icons.Members,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupMembersTab})}"
+                Name = "GroupTabs.Members", Order = 4,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}"
             };
-            tabsViewModel.Tabs.Add(membersTab);
 
+            if (tab != null)
+            {
+                switch (tab)
+                {
+                    case Constants.GroupFilesTab:
+                        filesTab.Active = true;
+                        break;
+                    case Constants.GroupForumTab:
+                        forumTab.Active = true;
+                        break;
+                    case Constants.GroupMembersTab:
+                        membersTab.Active = true;
+                        break;
+                    default:
+                        homeTab.Active = true;
+                        break;
+                }
+            }
 
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
 
             return tabsViewModel;
         }
@@ -426,8 +495,7 @@ namespace MvcForum.Web.Controllers
                     PageIndex = pageIndex,
                     User = LoggedOnReadOnlyUser,
                     GroupUserRole = GetGroupMembershipRole(group.Group.Id),
-                    IsSubscribed = User.Identity.IsAuthenticated && _notificationService
-                                       .GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
+                    IsSubscribed = User.Identity.IsAuthenticated && _notificationService.GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
                     Tab = tab,
                     Folder = folder
                 };
@@ -450,13 +518,6 @@ namespace MvcForum.Web.Controllers
                         viewModel.SubGroups = subCatViewModel;
                     }
 
-
-                if (LoggedOnReadOnlyUser != null)
-                {
-
-                    var user = viewModel.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
-                    viewModel.GroupUserStatus = GetUserStatusForGroup(user);
-                }
 
                 if (tab == Constants.GroupMembersTab)
                 {
