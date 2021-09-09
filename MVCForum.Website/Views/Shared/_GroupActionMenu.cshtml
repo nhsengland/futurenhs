@@ -20,9 +20,47 @@
                 @foreach (var actionLink in Model.ActionLinks.OrderBy(x => x.Order))
                 {
                     <ul class="c-action-dropdown_list">
-                        <li class="c-action-dropdown_item" role="none">
-                            <a class="c-action-dropdown_link" href="@actionLink.Url">@actionLink.Name</a>
-                        </li>
+
+                        @if(@actionLink.Name == "Leave Group"){
+                            
+                                 <li class="c-action-dropdown_item" role="none">
+                                    <a data-dialog-id="dialog-leave-group" class="c-action-dropdown_link js-dialog" href="@actionLink.Url">@actionLink.Name</a>
+                                </li>
+
+                                <dialog id="dialog-leave-group" class="c-dialog">
+
+                                    <div class="c-dialog_content">
+
+                                        <h3>Leave this group</h3>
+
+                                        <p class="u-text-theme-6">
+                                            Are you sure you would like to leave the group?
+                                        </p>
+                                        
+                                        <div>
+                                            <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+                                                Cancel
+                                            </button>
+                                        </div>
+
+                                        <div>
+                                            <button class="js-dialog-confirm c-button c-button--full-width">
+                                                Yes, leave group
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                
+                                </dialog>
+
+                        } else {
+
+                                <li class="c-action-dropdown_item" role="none">
+                                    <a class="c-action-dropdown_link"   href="@actionLink.Url">@actionLink.Name</a>
+                                </li>
+
+                        }
+
                     </ul>
                 }
             </details>
