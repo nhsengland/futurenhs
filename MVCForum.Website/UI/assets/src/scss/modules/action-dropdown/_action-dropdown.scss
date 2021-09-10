@@ -3,15 +3,16 @@
     position: relative;
     min-width: 200px;
     text-align: left;
+    z-index: 1; // allows interaction on mobile.
 
     &_trigger {
         @include standard-text(false);
-        padding-right: 30px;
         position: relative;
         z-index: 5;
         padding: 12px 16px;
+        padding-right: 30px;
         background-color: transparent;
-        border: solid $base-dimension-unit-quarter $color_nhsuk-white;
+        border: solid $base-dimension-unit-half $color_nhsuk-white;
         border-radius: $nhsuk-border-radius;
         color: $color_nhsuk-white;
 
@@ -26,11 +27,27 @@
         @include small-text(false);
         list-style-type: none;
         margin: 0;
+        margin-top: -1px;
         min-width: 100%;
-        padding: 12px 16px;
+        padding: 12px 0;
         position: absolute;
         background-color: $white;
         border-bottom-left-radius: $nhsuk-border-radius;
         border-bottom-right-radius: $nhsuk-border-radius;
+    }
+
+    &_item {
+        margin: 0;
+    }
+
+    &_link {
+        display: block;
+        padding: 12px 16px;
+        color: $nhsuk-text-color;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }

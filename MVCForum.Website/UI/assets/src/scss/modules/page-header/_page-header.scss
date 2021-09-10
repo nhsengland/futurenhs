@@ -54,6 +54,7 @@
         max-width: 70px;
         height: 70px;
         word-break: break-all; //fixes issue of missing file text breaking layout
+        margin-bottom: $nhsuk-spacing-point-2;
 
         @include respond-to(desktop) {
             margin-bottom: $nhsuk-spacing-point-6;
@@ -63,6 +64,7 @@
     }
 
     &_heading {
+        margin-bottom: $nhsuk-spacing-point-4;
         @include respond-to(desktop) {
             margin-top: $nhsuk-spacing-point-4;
         }
