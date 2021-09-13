@@ -10,6 +10,7 @@ namespace MvcForum.Web.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Application.CustomActionResults;
@@ -222,9 +223,12 @@ namespace MvcForum.Web.Controllers
             return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
         }
 
-        public virtual async Task<ActionResult> Join(string slug, int? p)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Join")]
+        public virtual async Task<ActionResult> JoinAsync(string slug, int? p, CancellationToken cancellationToken)
         {
-            _groupService.JoinGroup(slug, LoggedOnReadOnlyUser.Id);
+            await _groupService.JoinGroupAsync(slug, LoggedOnReadOnlyUser.Id, cancellationToken);
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 

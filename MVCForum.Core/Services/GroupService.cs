@@ -5,8 +5,10 @@ namespace MvcForum.Core.Services
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
@@ -604,41 +606,88 @@ namespace MvcForum.Core.Services
             return filteredCats;
         }
 
-        public bool JoinGroup(string slug, Guid membershipId)
-        {
-            var group = _context.Group.SingleOrDefault(x => x.Slug == slug);
-            group.GroupUsers = new List<GroupUser>();
-            var groupUser = new GroupUser();
-            groupUser.Approved = false;
-            groupUser.Rejected = false;
-            groupUser.Banned = false;
-            groupUser.Locked = false;
-            groupUser.Group = group;
-            groupUser.RequestToJoinDate = DateTime.UtcNow;
-            groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
-            groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
-            _context.GroupUser.Add(groupUser);
-            _ = _context.SaveChanges();
-            return true;
-        }
 
-        public bool JoinGroupApprove(Guid groupId, Guid membershipId)
+        public async Task JoinGroupAsync(string slug, Guid membershipId, CancellationToken cancellationToken)
         {
-            var group = _context.Group.SingleOrDefault(x => x.Id == groupId);
+            if (string.IsNullOrWhiteSpace(slug))
+            {
+                throw new ArgumentNullException(nameof(slug));
+            }
+            
+            if (Guid.Empty == membershipId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(membershipId));
+            }
+
+            var group = await _context.Group.SingleAsync(x => x.Slug == slug.ToLower(), cancellationToken);
+
+
             group.GroupUsers = new List<GroupUser>();
             var dateTimeUtcNow = DateTime.UtcNow;
-            var groupUser = new GroupUser();
-            groupUser.Approved = true;
-            groupUser.Rejected = false;
-            groupUser.Banned = false;
-            groupUser.Locked = false;
-            groupUser.Group = group;
-            groupUser.RequestToJoinDate = dateTimeUtcNow;
-            groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.StandardRoleName);
-            groupUser.ApprovedToJoinDate = dateTimeUtcNow;
-            groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
+
+            var groupUser = new GroupUser()
+            {
+                Approved = group.PublicGroup,
+                Rejected = false,
+                Banned = false,
+                Locked = false,
+                Group = group,
+                RequestToJoinDate = dateTimeUtcNow,
+                Role = await _context.MembershipRole.SingleAsync(x => x.RoleName == Constants.StandardRoleName, cancellationToken),
+                User = await _context.MembershipUser.SingleAsync(x => x.Id == membershipId, cancellationToken)
+            };
+
+            if (groupUser.Approved)
+            {
+                groupUser.ApprovedToJoinDate = dateTimeUtcNow;
+            }
+
             _context.GroupUser.Add(groupUser);
-            _ = _context.SaveChanges();
+            int resultCount = await _context.SaveChangesAsync(cancellationToken);
+
+            if (resultCount == 0)
+            {
+                throw new DbUpdateException(nameof(groupUser)); 
+            }            
+        }
+
+        public async Task<bool> JoinGroupApproveAsync(Guid groupId, Guid membershipId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == groupId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(groupId));
+            }
+
+            if (Guid.Empty == membershipId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(membershipId));
+            }
+
+            var group = await _context.Group.SingleAsync(x => x.Id == groupId, cancellationToken);
+            group.GroupUsers = new List<GroupUser>();
+            var dateTimeUtcNow = DateTime.UtcNow;
+
+            var groupUser = new GroupUser()
+            {
+                Approved = true,
+                Rejected = false,
+                Banned = false,
+                Locked = false,
+                Group = group,
+                RequestToJoinDate = dateTimeUtcNow,
+                ApprovedToJoinDate = dateTimeUtcNow,
+                Role = await _context.MembershipRole.SingleAsync(x => x.RoleName == Constants.StandardRoleName, cancellationToken),
+                User = await _context.MembershipUser.SingleAsync(x => x.Id == membershipId, cancellationToken)
+            };
+
+            _context.GroupUser.Add(groupUser);
+            int resultCount = await _context.SaveChangesAsync(cancellationToken);
+
+            if (resultCount == 0)
+            {
+                return false;
+            }
+
             return true;
         }
 

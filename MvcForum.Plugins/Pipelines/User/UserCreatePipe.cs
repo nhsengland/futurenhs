@@ -184,7 +184,7 @@
 
                 foreach (var invite in await _groupInviteService.GetInvitesForGroupAsync(inviteMailAddress, CancellationToken.None))
                 {
-                    if (_groupService.JoinGroupApprove(invite.GroupId, input.EntityToProcess.Id))
+                    if (await _groupService.JoinGroupApproveAsync(invite.GroupId, input.EntityToProcess.Id, CancellationToken.None))
                     {
                         await _groupInviteService.DeleteInviteAsync(invite.Id, CancellationToken.None);
                     }

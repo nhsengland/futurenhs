@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
@@ -58,8 +59,9 @@
         Section GetSection(Guid id);
         void DeleteSection(Guid id);
 
-        bool JoinGroup(string slug, Guid membershipId);
-        bool JoinGroupApprove(Guid groupId, Guid membershipId);
+        Task JoinGroupAsync(string slug, Guid membershipId, CancellationToken cancellationToken);
+        Task<bool> JoinGroupApproveAsync(Guid groupId, Guid membershipId, CancellationToken cancellationToken);
+
         bool AddGroupAdministrators(string slug, List<Guid> membershipIds, Guid approvingUserId);
         bool LeaveGroup(string slug, Guid membershipId);
 
