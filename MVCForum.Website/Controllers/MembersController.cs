@@ -366,7 +366,7 @@
                     var pipeline = await MembershipService.CreateUser(user, LoginType.Standard);
                     if (!pipeline.Successful)
                     {
-                        ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
+                        ModelState.AddModelError(nameof(userModel.Email), pipeline.ProcessLog.FirstOrDefault());
                         return View();
                     }
 

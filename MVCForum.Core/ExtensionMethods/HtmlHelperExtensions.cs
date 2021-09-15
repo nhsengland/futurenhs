@@ -37,16 +37,14 @@
                     var rawHtmlErrMsg = err.ErrorMessage;
                     var encodedErrMsg = helper.Encode(err.ErrorMessage);
 
-                    sb.Append("<li>");
-                    sb.Append($"<a class='{errorClass}'");
-
                     if (!(helper.ViewData.ModelState[key].Value is null))
                     {
-                        sb.Append($"href='#{key}'");
-                    }
-
-                    sb.Append($">{rawHtmlErrMsg}</a></li>");
-                    sb.AppendLine();
+                        sb.Append($"<li> <a class='{errorClass}' href='#{key}'>{rawHtmlErrMsg}</a></li>");
+                    } 
+                    else
+                    {
+                        sb.Append($"<li class='{errorClass}'>{rawHtmlErrMsg}</li>");
+                    }                    
                 }
             }
             return sb.ToString();
