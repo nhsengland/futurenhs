@@ -1,4 +1,5 @@
-﻿using MvcForum.Core.Models.GroupAddMember;
+﻿using MvcForum.Core.Models.Enums;
+using MvcForum.Core.Models.GroupAddMember;
 using System;
 using System.Net.Mail;
 using System.Threading;
@@ -8,10 +9,15 @@ namespace MvcForum.Core.Repositories.Command.Interfaces
 {
     public interface IGroupAddMemberCommand
     {
-        Task<GroupAddMemberResponse> AddMemberToGroupAsync(MailAddress invitedUserMailAddress,
-                                                           string invitedUserRoleName,
-                                                           string addedByUsername,
-                                                           string invitedToGroupSlug,
-                                                           CancellationToken cancellationToken);
+        Task<ResponseType> AddMemberToGroupAsync(MailAddress invitedUserMailAddress,
+                                                                  string invitedUserRoleName,
+                                                                  string addedByUsername,
+                                                                  string invitedToGroupSlug,
+                                                                  CancellationToken cancellationToken);
+
+        Task<ResponseType> ApproveGroupMemberAsync(MailAddress invitedUserMailAddress,
+                                                                    string approvedByUsername,
+                                                                    string invitedToGroupSlug,
+                                                                    CancellationToken cancellationToken);
     }
 }

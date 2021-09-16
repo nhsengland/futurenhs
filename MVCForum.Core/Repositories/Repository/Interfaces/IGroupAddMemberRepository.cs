@@ -9,9 +9,9 @@ namespace MvcForum.Core.Repositories.Repository.Interfaces
 {
     public interface IGroupAddMemberRepository
     {
-        Task<ResponseType> IsMemberMailAddressValidAsync(MailAddress invitedUserMailAddress,
-                                                         string invitedToGroupSlug,
-                                                         CancellationToken cancellationToken);
+        Task<GroupAddMemberQueryResponse> GroupAddMemberQueryAsync(MailAddress invitedUserMailAddress,
+                                                                   string invitedToGroupSlug,
+                                                                   CancellationToken cancellationToken);
 
         Task<bool> IsCurrentMemberAdminAsync(string currentMemberUsername,
                                              string invitedToGroupSlug,

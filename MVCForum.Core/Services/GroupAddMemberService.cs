@@ -32,22 +32,33 @@ namespace MvcForum.Core.Services
             _groupAddMemberCommand = groupAddMemberCommand;
         }
 
-        public Task<GroupAddMemberResponse> AddMemberToGroupAsync(MailAddress invitedUserMailAddress, 
-                                                                        string invitedUserRoleName, 
-                                                                        string addedByUsername, 
-                                                                        string invitedToGroupSlug, 
-                                                                        CancellationToken cancellationToken)
+        public Task<ResponseType> AddMemberToGroupAsync(MailAddress invitedUserMailAddress, 
+                                                                         string invitedUserRoleName, 
+                                                                         string addedByUsername, 
+                                                                         string invitedToGroupSlug, 
+                                                                         CancellationToken cancellationToken)
         {            
             return _groupAddMemberCommand.AddMemberToGroupAsync(invitedUserMailAddress,
-                                                                      invitedUserRoleName,
-                                                                      addedByUsername,
-                                                                      invitedToGroupSlug,
-                                                                      cancellationToken);
+                                                                invitedUserRoleName,
+                                                                addedByUsername,
+                                                                invitedToGroupSlug,
+                                                                cancellationToken);
         }
-        
-        public Task<ResponseType> IsMemberMailAddressValidAsync(MailAddress invitedUserMailAddress, string invitedToGroupSlug, CancellationToken cancellationToken)
+
+        public Task<ResponseType> ApproveGroupMemberAsync(MailAddress invitedUserMailAddress, 
+                                                                           string approvedByUsername, 
+                                                                           string invitedToGroupSlug, 
+                                                                           CancellationToken cancellationToken)
         {
-            return _groupAddMemberRepository.IsMemberMailAddressValidAsync(invitedUserMailAddress, invitedToGroupSlug, cancellationToken);
+            return _groupAddMemberCommand.ApproveGroupMemberAsync(invitedUserMailAddress,
+                                                                  approvedByUsername,
+                                                                  invitedToGroupSlug,
+                                                                  cancellationToken);
+        }
+
+        public Task<GroupAddMemberQueryResponse> GroupAddMemberQueryAsync(MailAddress invitedUserMailAddress, string invitedToGroupSlug, CancellationToken cancellationToken)
+        {
+            return _groupAddMemberRepository.GroupAddMemberQueryAsync(invitedUserMailAddress, invitedToGroupSlug, cancellationToken);
         }
 
         public Task<bool> IsCurrentMemberAdminAsync(string currentMemberUsername, string invitedToGroupSlug, CancellationToken cancellationToken)

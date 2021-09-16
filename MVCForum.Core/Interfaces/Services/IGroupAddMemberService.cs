@@ -9,15 +9,20 @@ namespace MvcForum.Core.Interfaces.Services
 {
     public interface IGroupAddMemberService
     {
-        Task<GroupAddMemberResponse> AddMemberToGroupAsync(MailAddress invitedUserMailAddress, 
-                                                           string invitedUserRoleName, 
-                                                           string addedByUsername, 
-                                                           string invitedToGroupSlug, 
-                                                           CancellationToken cancellationToken);
+        Task<ResponseType> AddMemberToGroupAsync(MailAddress invitedUserMailAddress, 
+                                                 string invitedUserRoleName, 
+                                                 string addedByUsername, 
+                                                 string invitedToGroupSlug, 
+                                                 CancellationToken cancellationToken);
 
-        Task<ResponseType> IsMemberMailAddressValidAsync(MailAddress invitedUserMailAddress,
-                                                         string invitedToGroupSlug, 
-                                                         CancellationToken cancellationToken);
+        Task<ResponseType> ApproveGroupMemberAsync(MailAddress invitedUserMailAddress,
+                                                   string approvedByUsername,
+                                                   string invitedToGroupSlug,
+                                                   CancellationToken cancellationToken);
+
+        Task<GroupAddMemberQueryResponse> GroupAddMemberQueryAsync(MailAddress invitedUserMailAddress,
+                                                                   string invitedToGroupSlug, 
+                                                                   CancellationToken cancellationToken);
 
         Task<bool> IsCurrentMemberAdminAsync(string currentMemberUsername,
                                              string invitedToGroupSlug,

@@ -25,11 +25,11 @@ namespace MvcForum.Core.Repositories.Command
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<GroupAddMemberResponse> AddMemberToGroupAsync(MailAddress invitedUserMailAddress,
-                                                                        string invitedUserRoleName,
-                                                                        string addedByUsername,
-                                                                        string invitedToGroupSlug,
-                                                                        CancellationToken cancellationToken)
+        public async Task<ResponseType> AddMemberToGroupAsync(MailAddress invitedUserMailAddress,
+                                                              string invitedUserRoleName,
+                                                              string addedByUsername,
+                                                              string invitedToGroupSlug,
+                                                              CancellationToken cancellationToken)
         {
             var groupUserId = GuidComb.GenerateComb();
             var dateTimeUtcNow = DateTime.UtcNow;
@@ -93,11 +93,50 @@ namespace MvcForum.Core.Repositories.Command
 
                 if (affectedRows == 1)
                 {
-                    return new GroupAddMemberResponse(groupUserId, ResponseType.Success);
+                    return ResponseType.Success;
                 }
             }
 
-            return new GroupAddMemberResponse(null, ResponseType.Error);
+            return ResponseType.Error;
+        }
+
+        public async Task<ResponseType> ApproveGroupMemberAsync(MailAddress invitedUserMailAddress, string approvedByUsername, string invitedToGroupSlug, CancellationToken cancellationToken)
+        {
+            var dateTimeUtcNow = DateTime.UtcNow;
+
+            const string query =
+                @"
+                    UPDATE
+                        GroupUser
+                    SET 
+                        Approved = 1,
+                        ApprovingMembershipUser_Id = (SELECT Id FROM MembershipUser WHERE UserName = @approvedByUsername),
+                        ApprovedToJoinDate = @dateTimeUtcNow                    
+                    WHERE
+	                    MembershipUser_Id = (SELECT Id FROM MembershipUser WHERE Email = @invitedUserMailAddressValue)                    
+                    AND
+                        Group_Id = (SELECT Id FROM [Group] WHERE Slug = @invitedToGroupSlug)
+                ";
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                dateTimeUtcNow,
+                invitedUserMailAddressValue = invitedUserMailAddress.Address,
+                approvedByUsername,
+                invitedToGroupSlug
+            }, cancellationToken: cancellationToken);
+
+            using (var dbConnection = _connectionFactory.CreateWriteOnlyConnection())
+            {
+                var affectedRows = await dbConnection.ExecuteAsync(commandDefinition);
+
+                if (affectedRows == 1)
+                {
+                    return ResponseType.Success;
+                }
+            }
+
+            return ResponseType.Error;
         }
     }
 }

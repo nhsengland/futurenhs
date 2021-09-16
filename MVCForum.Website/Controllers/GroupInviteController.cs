@@ -147,28 +147,34 @@
             }
 
             var invitedMemberMailAddress = new MailAddress(model.Email);
-            var isMailAddressValidResponse = await _addMemberService.IsMemberMailAddressValidAsync(invitedMemberMailAddress, model.Slug, cancellationToken);
-            if (!(ResponseType.Success == isMailAddressValidResponse))
-            {
-                if (ResponseType.DoesntExist == isMailAddressValidResponse)
-                {
-                    ModelState.AddModelError(nameof(model.Email), "This user is not registered on the platform.  The platform is not open for new registrations at present, please contact support for more information.");
-                    return View(model);
-                }
+            var groupAddMemberQueryResponse = await _addMemberService.GroupAddMemberQueryAsync(invitedMemberMailAddress, model.Slug, cancellationToken);
+            //Dont want to use IMembershipService
+            var addedByUsername = System.Web.HttpContext.Current.User.Identity.Name;
 
-                if (ResponseType.AlreadyExists == isMailAddressValidResponse)
+            if (ResponseType.DoesntExist == groupAddMemberQueryResponse.Response)
+            {
+                ModelState.AddModelError(nameof(model.Email), "This user is not registered on the platform.  The platform is not open for new registrations at present, please contact support for more information.");
+                return View(model);
+            }
+
+            var response = ResponseType.NoResponse;
+            
+            if (ResponseType.AlreadyExists == groupAddMemberQueryResponse.Response)
+            {
+                if (groupAddMemberQueryResponse.IsApproved)
                 {
                     ModelState.AddModelError(nameof(model.Email), "The email address belongs to a member of this group.");
                     return View(model);
                 }
+                response = await _addMemberService.ApproveGroupMemberAsync(invitedMemberMailAddress, addedByUsername, model.Slug, cancellationToken);
             }
-
-            //Dont want to use IMembershipService
-            var addedByUsername = System.Web.HttpContext.Current.User.Identity.Name;
-            
-            var response = await _addMemberService.AddMemberToGroupAsync(invitedMemberMailAddress, StandardMemberRole, addedByUsername, model.Slug, cancellationToken);
-
-            if (ResponseType.Success == response.Response)
+                           
+            if (ResponseType.Success == groupAddMemberQueryResponse.Response)
+            {
+                response = await _addMemberService.AddMemberToGroupAsync(invitedMemberMailAddress, StandardMemberRole, addedByUsername, model.Slug, cancellationToken);
+            }
+                       
+            if (ResponseType.Success == response)
             {
                 var newModel = new GroupAddMemberViewModel
                 {
@@ -178,14 +184,14 @@
                 return View(newModel);
             }
 
-            ModelState.AddModelError(nameof(model.Email), response.Response.ToString());
+            ModelState.AddModelError(nameof(model.Email), response.ToString());
             return View(model);
         }
 
-        private async Task<bool> IsCurrentUserAGroupAdministratorAsync(CancellationToken cancellationToken)
+        private Task<bool> IsCurrentUserAGroupAdministratorAsync(CancellationToken cancellationToken)
         {
             var currentUsername = System.Web.HttpContext.Current.User.Identity.Name;
-            return await _inviteService.IsMemberAdminAsync(currentUsername, cancellationToken);
+            return _inviteService.IsMemberAdminAsync(currentUsername, cancellationToken);
         }
     }
 }

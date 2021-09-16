@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MvcForum.Core.Models.Enums;
+using MvcForum.Core.Models.GroupAddMember;
 using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
 using MvcForum.Core.Repositories.Repository.Interfaces;
 using System;
@@ -24,9 +25,9 @@ namespace MvcForum.Core.Repositories.Repository
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<ResponseType> IsMemberMailAddressValidAsync(MailAddress invitedUserMailAddress,
-                                                                      string invitedToGroupSlug, 
-                                                                      CancellationToken cancellationToken)
+        public async Task<GroupAddMemberQueryResponse> GroupAddMemberQueryAsync(MailAddress invitedUserMailAddress,
+                                                                                string invitedToGroupSlug, 
+                                                                                CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -34,7 +35,7 @@ namespace MvcForum.Core.Repositories.Repository
                     FROM   MembershipUser
                     WHERE  MembershipUser.Email = @invitedUserMailAddressValue;
 
-                    SELECT MemberExistsInGroup = CAST(COUNT(1) AS BIT)
+                    SELECT GroupUser.Approved
                     FROM   MembershipUser
                     JOIN GroupUser ON MembershipUser.Id = GroupUser.MembershipUser_Id
                     JOIN [Group] ON GroupUser.Group_Id = [Group].Id
@@ -52,19 +53,23 @@ namespace MvcForum.Core.Repositories.Repository
             {
                 var result = await dbConnection.QueryMultipleAsync(commandDefinition);
                 var memberExists = result.ReadFirst<bool>();
-                var memberExistsInGroup = result.ReadFirst<bool>();
+                var memberExistsInGroupIsAccepted = result.ReadFirst<bool?>();
 
                 if (!memberExists)
                 {
-                    return ResponseType.DoesntExist;
+                    return new GroupAddMemberQueryResponse(false, ResponseType.DoesntExist);
                 }
 
-                if (memberExistsInGroup)
+                if (!(memberExistsInGroupIsAccepted is null))
                 {
-                    return ResponseType.AlreadyExists;
+                    if (memberExistsInGroupIsAccepted.GetValueOrDefault())
+                    {
+                        return new GroupAddMemberQueryResponse(true, ResponseType.AlreadyExists);
+                    }
+                    return new GroupAddMemberQueryResponse(false, ResponseType.AlreadyExists);
                 }
 
-                return ResponseType.Success;
+                return new GroupAddMemberQueryResponse(false, ResponseType.Success);
             }
         }
                

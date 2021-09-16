@@ -186,7 +186,7 @@
     <Compile Include="Models\FilesAndFolders\FolderViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderWriteViewModel.cs" />
     <Compile Include="Models\General\UploadBlobResult.cs" />
-    <Compile Include="Models\GroupAddMember\GroupAddMemberResponse.cs" />
+    <Compile Include="Models\GroupAddMember\GroupAddMemberQueryResponse.cs" />
     <Compile Include="Models\GroupAddMember\GroupAddMemberViewModel.cs" />
     <Compile Include="Models\General\ValidateBlobResult.cs" />
     <Compile Include="Models\GroupsSummary.cs" />
