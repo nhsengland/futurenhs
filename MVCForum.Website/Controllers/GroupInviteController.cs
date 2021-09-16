@@ -104,7 +104,7 @@
                 return View(model);
             }
 
-            return RedirectToAction("Create", new { slug = model.Slug, groupId = model.GroupId, success = true});
+            return RedirectToAction("InviteMember", new { slug = model.Slug, groupId = model.GroupId, success = true});
         }
 
         [HttpGet]

@@ -48,7 +48,8 @@
             MailMessage message = new MailMessage(fromEmailAddress.Address, recipientEmailAddress.Address)
             {
                 Subject = subject,
-                Body = content
+                Body = content,
+                IsBodyHtml = true
             };
 
             var client = _clientFactory.CreateInstance();
