@@ -43,7 +43,9 @@
                                 <tr role="row" class="c-table_row">
                                     <td role="cell" class="c-table_cell">
                                         <span class="c-table_heading">Name  </span> 
-                                        <span class="u-text-theme-8 u-text-bold">@groupUser.GroupUser.User.GetFullName()</span> 
+                                        <span class="u-text-theme-8 u-text-bold">
+                                            @Html.ActionLink(groupUser.GroupUser.User.GetFullName(), "GetByName", "Members", new { slug = groupUser.GroupUser.User.Slug }, new { })
+                                        </span> 
                                     </td>
                                     <td role="cell" class="c-table_cell">
                                         <span class="c-table_heading">Date joined </span>  
