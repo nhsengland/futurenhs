@@ -23,8 +23,6 @@ namespace MvcForum.Core.Ioc
     using Services;
     using System;
     using System.Configuration;
-    using System.Net;
-    using System.Net.Mail;
     using System.Web.Http;
     using System.Web.Mvc;
     using Unity;
