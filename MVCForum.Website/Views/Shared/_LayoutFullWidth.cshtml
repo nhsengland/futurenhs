@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "_Layout.cshtml";
+}
+
+@section SocialMeta{
+    @RenderSection("SocialMeta", false)
+}
+
+@section Header {
+    @RenderSection("Header", false)
+}
+
+<main>
+    <div class="fullwidthlayout">
+        @RenderBody()
+    </div>
+</main>
+
+@section Footer {
+    @RenderSection("Footer", false)
+}
+

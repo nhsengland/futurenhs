@@ -1,0 +1,128 @@
+﻿@using System.Globalization
+@model MvcForum.Web.ViewModels.Member.ViewMemberViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+    ViewBag.Title = string.Concat(Model.User.UserName, " ",Html.LanguageString("Members.ProfileTitle"));
+}
+
+@section Header
+{
+}
+
+@section side
+{
+    @* @Html.Partial("_CommonSideNav") *@
+}
+<div class="l-container">
+    <div class="l-row">
+        
+        <div class="l-col-6 l-col-4-t l-col-3-d">
+
+            @{
+	            Model.User.MemberImageSize = 205;
+	            Model.User.CustomClassName = "c-avatar--large";
+	            Html.RenderPartial("_UserAvatar", @Model.User);
+            }
+
+                     
+        </div>
+
+        <div class="l-col-12 l-col-9-d">
+
+            <div class="l-container">
+                <div class="l-row">
+                    <div class="l-col-12">
+                        <h2 class="u-text-theme-8 u-heading-lead">Member Profile</h2>
+                        @* <h3>Your details...</h3> *@
+
+                        <div class="c-input-group">
+                            <label class="c-input-label" for="first-name-readonly-input">
+                                First name
+                            </label>
+                            <input class="c-input-control" id="first-name-readonly-input"
+                                name="first-name-readonly-input" type="text" value="@Model.User.FirstName" readonly>
+                        </div>
+
+                          <div class="c-input-group">
+                            <label class="c-input-label" for="surname-readonly-input">
+                                Surname
+                            </label>
+                            <input class="c-input-control" id="surname-readonly-input"
+                                name="surname-readonly-input" type="text" value="@Model.User.Surname" readonly>
+                        </div>
+
+                         <div class="c-input-group">
+                            <label class="c-input-label" for="email-readonly-input">
+                                Email address
+                            </label>
+                            <input class="c-input-control" id="email-readonly-input"
+                                name="email-readonly-input" type="text" value="@Model.User.Email" readonly>
+                        </div>
+
+                        @* <button class="c-button c-button--outline">
+                            Edit profile details
+                        </button> *@
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="memberprofilepublic">
+
+    <div class="c-grid-block">
+
+        <div class="c-grid-block_item l-col-12 l-col-3-t memberavatardetails">
+
+            @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
+            {
+                <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
+            }
+
+            @if (Model.Permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
+            {
+
+                // If this is an admins profile then do not show
+                if (!Model.User.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
+                {
+                    <div class="memberprofileadminsection">
+                        @Html.Partial("AdminMemberProfileTools")
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="c-grid-block_item l-col-12 l-col-9-t membermaindetails">
+
+            @if (User.IsInRole(Constants.AdminRoleName))
+            {
+                if (Model.User.IsApproved == false)
+                {
+                    <p>
+                        @Html.LanguageString("Members.Errors.UserNotApproved")
+                    </p>
+                }
+                if (Model.User.IsBanned == true)
+                {
+                    <p>
+                        @Html.LanguageString("Members.NowBanned")
+                    </p>
+                }
+                if (Model.User.IsLockedOut == true)
+                {
+                    <p>
+                        @Html.LanguageString("Members.Errors.UserLockedOut")
+                    </p>
+                }
+                <div class="membersection adminpublicomments">
+                    @Html.Raw(Model.User.Comment)
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>

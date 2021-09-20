@@ -1,0 +1,134 @@
+.c-primary-action-column-block {
+
+    @include block;
+    @include card-shadow;
+    background-color: $t-card-background-one;
+
+    &_tag {
+        @include font-family-poppins-bold;
+        @include very-large-text;
+        align-self: flex-start;
+        display: inline-block;
+        margin: 0 0 $spacer-xsm;
+        padding: derived-dimension(.5) derived-dimension(1);
+        text-transform: uppercase;
+        color: $t-tag-text-one;
+        background-color: $t-tag-background-one;
+    }
+
+    &_body {
+        overflow: hidden;
+        padding: $spacer-sm;
+        flex-grow: 1;
+    }
+
+    &_icon {
+        display: block;
+        height: derived-dimension(5.5);
+        margin: 0 0 derived-dimension(5);
+        fill: $t-icon-two;
+    }
+
+    &_heading {
+        @include medium-heading;
+        margin: 0 0 derived-dimension(4);
+    }
+
+    &_content {
+        @include very-large-text;
+        margin: 0 0 derived-dimension(6);
+    }
+
+    &_link {
+        @extend %button-primary-callout;
+    }
+
+    &_link-text {
+        display: inline-block;
+    }
+
+    &_link-icon {
+        @include inline-icon(16px);
+        position: absolute;
+        top: 50%;
+        right: $spacer-xsm;
+        margin: -#{derived-dimension(1)} 0 0;
+        fill: $t-text-two;
+    }
+
+}
+
+.c-primary-action-row-block {
+
+    @include block;
+    @include card-shadow;
+    display: flex;
+    overflow: hidden;
+    padding: 0 $spacer-sm $spacer-sm;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    background-color: $t-card-background-one;
+
+    &_main-wrapper {
+        display: flex;
+        margin: $spacer-sm 0 0;
+        flex-grow: 10;
+        flex-wrap: wrap;
+        min-width: 70%;
+    }
+
+    &_tag {
+        @include font-family-poppins-bold;
+        @include very-large-text;
+        display: block;
+        text-transform: uppercase;
+        color: $t-heading-three;
+    }
+
+    &_icon {
+        display: block;
+        margin: 0 derived-dimension(5) $spacer-xsm 0;
+        height: derived-dimension(5.5);
+        min-width: derived-dimension(5.5);
+        max-width: derived-dimension(5.5);
+        fill: $t-icon-two;
+    }
+
+    &_content-wrapper {
+        margin: 0 $spacer-xsm 0 0;
+    }
+
+    &_heading {
+        @include small-heading;
+        margin: 0 0 derived-dimension(2);
+    }
+
+    &_content {
+        @include very-large-text;
+    }
+
+    &_link-wrapper {
+        margin: $spacer-sm 0 0;
+        min-width: derived-dimension(16);
+        align-self: flex-end;
+    }
+
+    &_link {
+        @extend %button-primary-callout;
+    }
+
+    &_link-text {
+        display: inline-block;
+    }
+
+    &_link-icon {
+        @include inline-icon(16px);
+        position: absolute;
+        top: 50%;
+        right: $spacer-xsm;
+        margin: -#{derived-dimension(1)} 0 0;
+        fill: $t-text-two;
+    }
+
+}

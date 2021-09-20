@@ -1,0 +1,29 @@
+﻿@model MvcForum.Web.ViewModels.Admin.RoleViewModel
+
+@{
+    ViewBag.Title = "Add New Role";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("AddRole", "Account", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.RoleName)
+                @Html.TextBoxFor(model => model.RoleName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RoleName)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Create" />
+            </div>
+        }
+    </div>
+</div>
+
+

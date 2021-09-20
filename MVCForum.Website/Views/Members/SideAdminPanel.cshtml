@@ -1,0 +1,89 @@
+﻿@model MvcForum.Web.ViewModels.Admin.ViewAdminSidePanelViewModel
+
+@if (Model.IsDropDown)
+{
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle mytoolslink" data-toggle="dropdown">
+            @Html.LanguageString("SideBox.MyTools")
+            @{
+                if (Model.ModerateCount > 0)
+                {
+                    <span class="badge">@Model.ModerateCount</span>                 
+                }
+                else
+                {
+                    <span class="caret"></span>
+                }
+            }
+        </a>
+        <ul class="dropdown-menu" role="menu">
+            @Html.Raw(DropDownContents())
+        </ul>
+    </li>
+}
+else
+{
+    @Html.Raw(DropDownContents())
+}
+
+@helper DropDownContents()
+{
+    if (User.IsInRole(Constants.AdminRoleName))
+    {
+        <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+            <a role="menuitem" class="c-site-header-nav_sub-nav-child" href="@Url.Action("Index", "Admin", new {area = "Admin"}, null)">@Html.LanguageString("Layout.Nav.Admin")</a>
+        </li>
+    }
+    @*
+    <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+        @Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")
+    </li>
+    *@
+    <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+        <a role="menuitem" class="c-site-header-nav_sub-nav-child" href="@Url.Action("Edit", "Members", new { id = Model.CurrentUser.Id })">@Html.LanguageString("Buttons.Edit") @Model.CurrentUser.UserName</a>
+    </li>
+    if (Model.ModerateCount > 0)
+    {
+        <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+            <a role="menuitem" class="c-site-header-nav_sub-nav-child" href="@Url.Action("Index", "Moderate")" data-name="@Html.Lang("Moderate.NavText")">
+                @Html.LanguageString("Moderate.NavText")
+                @if (Model.ModerateCount > 0)
+                {
+                    <span class="badge">@Model.ModerateCount</span>
+                }
+            </a>
+        </li>
+    }
+
+    <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
+        @Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members", new { @class = "c-button c-button--outline c-site-header-nav_sub-nav-child js-dialog", data_dialog_id="dialog-logout" })
+        
+        <dialog id="dialog-logout" class="c-dialog">
+
+            <div class="c-dialog_content">
+
+                <h3>Log out</h3>
+
+                <p class="u-text-bold">
+                    Are you sure you would like to log out?
+                </p>
+                
+                <div>
+                    <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+                        Cancel
+                    </button>
+                </div>
+
+                <div>
+                    <button class="js-dialog-confirm c-button c-button--full-width">
+                        Yes, Log Out
+                    </button>
+                </div>
+
+            </div>
+        
+        </dialog>
+        
+    </li>
+   
+}

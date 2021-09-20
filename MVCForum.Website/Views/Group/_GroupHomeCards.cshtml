@@ -1,0 +1,50 @@
+﻿@model MvcForum.Web.ViewModels.Group.GroupHomeCardsViewModel
+@using MvcForum.Web.ViewModels.Shared
+
+<div class="c-grid-block">
+
+    <div class="c-grid-block_item c-grid-block_item--row l-col-12 l-col-6-lm l-col-12-d">
+
+        <div class="c-card c-card--img-left u-border-bottom-theme-8">
+            <div class="c-card_img-container">
+                <picture> 
+                    <source srcset="/UI/assets/dist/img/cards/group-home-join-conversation-mobile.png" media="(max-width: 767px)">
+                    <source srcset="/UI/assets/dist/img/cards/group-home-join-conversation-desktop.png" media="(min-width: 768px)">
+                    <img class="c-card_img" role="presentation" src="/UI/assets/dist/img/cards/group-home-join-conversation-desktop.png" alt=""> 
+                </picture>
+            </div>
+            <div class="c-card_content">
+                <h2 class="c-card_heading c-card_heading--small">
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-forum-fill", "c-card_heading-icon u-fill-theme-8"));}
+                    <a class="c-card_link" href="@Model.ForumCard.Url">@Model.ForumCard.Name</a>
+                </h2>
+                <p class="c-card_description u-text-small">
+                    Contribute to our forum and help us build a better platform
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="c-grid-block_item c-grid-block_item--row l-col-12 l-col-6-lm l-col-12-d">
+
+        <div class="c-card c-card--img-left u-border-bottom-theme-8">
+            <div class="c-card_img-container">
+                <picture> 
+                    <source srcset="/UI/assets/dist/img/cards/group-home-meet-members-mobile.png" media="(max-width: 767px)">
+                    <source srcset="/UI/assets/dist/img/cards/group-home-meet-members-desktop.png" media="(min-width: 768px)">
+                    <img class="c-card_img" role="presentation" src="/UI/assets/dist/img/cards/group-home-meet-members-desktop.png" alt=""> 
+                </picture>
+            </div>
+            <div class="c-card_content">
+                <h2 class="c-card_heading c-card_heading--small">
+                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-members-fill", "c-card_heading-icon u-fill-theme-8"));}
+                    <a class="c-card_link" href="@Model.MembersCard.Url">@Model.MembersCard.Name</a>
+                </h2>
+                <p class="c-card_description u-text-small">Meet your colleagues who are getting involved</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>

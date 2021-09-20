@@ -1,0 +1,29 @@
+@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Web.Application.ExtensionMethods
+@using MvcForum.Web.ViewModels.Post
+@model PostViewModel
+@using MvcForum.Web.ViewModels.Shared
+
+<div class="c-card_footer">
+    <p class="c-card_footer-item votelink-container">
+        @if (Model.AllowedToVote) {
+            
+            <a href="#" aria-label="Like button" class="votelink u-no-js-hidden @(Model.HasVotedUp ? "u-fill-theme-8" : "u-fill-theme-5")" data-id="@Model.Post.Id" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()">
+                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-like-fill", "c-card_footer-icon"));}
+
+            </a>
+         }
+         <span class="count">@Model.VoteCount.KiloFormat()</span> <text>likes</text>
+</p>
+
+    @if (Model.AllowedToReply) {
+        <p class="c-card_footer-item u-text-theme-10">
+            <a href="?reply=@Model.Post.Id&p=@Model.PageIndex#createpost" class="u-text-theme-8">
+                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-reply", "c-card_footer-icon u-fill-theme-8"));}
+                <span>
+                    Reply
+                </span>
+            </a>
+        </p>
+    }
+</div>

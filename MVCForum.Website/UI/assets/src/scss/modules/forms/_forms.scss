@@ -1,0 +1,69 @@
+.c-fieldset {
+    @include clearfix;
+    border: 0;
+    margin: 0;
+    padding: 0;
+
+    &_legend {
+        @include standard-text(false);
+        box-sizing: border-box;
+        color: $color_nhsuk-black;
+        display: table;
+        margin-bottom: $nhsuk-spacing-point-2;
+        margin-top: 0;
+        max-width: 100%;
+        padding: 0;
+        white-space: normal;
+    }
+
+    &_heading {
+        margin: 0;
+    }
+}
+
+.c-form-group {
+    margin-bottom: $nhsuk-spacing-point-3;
+
+    @include respond-to(tablet) {
+        margin-bottom: $nhsuk-spacing-point-4;
+    }
+
+    .c-form-group {
+        &:last-of-type {
+            margin-bottom: 0; // Remove margin from last item in nested groups
+        }
+    }
+}
+
+.c-form-group--error {
+    border-left: $nhsuk-border-width-form-group-error solid $nhsuk-error-color;
+    padding-left: $nhsuk-spacing-point-3;
+
+    .c-form-group {
+        // Reset error styles in nested form groups that might have error class
+        border: 0;
+        padding: 0;
+    }
+}
+
+.c-error-message {
+    @include standard-text(false);
+    font-weight: $nhsuk-font-bold;
+    clear: both;
+    color: $nhsuk-error-color;
+    display: block;
+    margin-bottom: $nhsuk-spacing-point-3;
+}
+
+.c-label {
+    @include standard-text(false);
+    display: block;
+    margin-bottom: $nhsuk-spacing-point-1;
+}
+
+.c-hint {
+    @include standard-text(false);
+    color: $nhsuk-secondary-text-color;
+    display: block;
+    margin-bottom: $nhsuk-spacing-point-3;
+}

@@ -1,0 +1,48 @@
+.c-section {
+
+    position: relative;
+    padding: derived-dimension(5) 0 derived-dimension(6);
+    background-color: transparent;
+    fill: inherit;
+
+    @include respond-to(tablet) {
+        padding: derived-dimension(7) 0 derived-dimension(8);
+    }
+
+    @include respond-to(desktop) {
+        padding: derived-dimension(9) 0 derived-dimension(10);
+    }
+
+    &--short {
+
+        padding: 0;
+        overflow: hidden;
+
+        @include respond-to(tablet) {
+            padding: $spacer-xsm 0;
+        }
+
+    }
+
+    &--border-top {
+        border-top: derived-dimension(1.5) solid $t-section-divider-one;
+    }
+
+    &_border-decorator {
+        display: block;
+        position: absolute;
+        margin: 0 0 0 -180px;
+        top: -#{$spacer-rg};
+        left: 50%;
+        height: $spacer-rg;
+        width: 360px;
+        fill: inherit;
+
+    }
+
+}
+
+.c-icon-border-decorator {
+    fill: $t-section-divider-one;
+    overflow: hidden;
+}

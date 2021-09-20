@@ -1,0 +1,56 @@
+.c-breadcrumb {
+
+    padding: derived-dimension(1) 0;
+
+    @include respond-to(tablet) {
+        padding: $spacer-xsm 0;
+    }
+
+    &_list {
+        @include clearfix;
+        margin: 0;
+        list-style-type: none;
+    }
+
+    &_list-item {
+        @include very-large-text;
+        display: block;
+        margin: derived-dimension(1) 0;
+        float: left;
+    }
+
+    &_delimiter {
+
+        margin: 0 derived-dimension(1.5);
+        height: derived-dimension(1.5);
+        width: derived-dimension(1);
+        vertical-align: middle;
+        fill: $t-icon-one;
+
+        &--home {
+            margin: -#{derived-dimension(.5)} derived-dimension(1.5) 0 0;
+            height: $spacer-xsm;
+            width: $spacer-xsm;
+            stroke: $t-text-one;
+            stroke-width: 2px;
+            fill: $t-icon-two;
+        }
+
+    }
+
+    &_link {
+        @extend %standard-link;
+
+        &--current {
+            @include font-family-poppins-regular;
+            color: $t-text-one;
+            text-decoration: none;
+
+            &:hover {
+                cursor: default;
+            }
+        }
+
+    }
+
+}

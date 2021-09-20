@@ -1,0 +1,26 @@
+﻿@model MvcForum.Web.ViewModels.Admin.LowestPointUsersViewModels
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Lowest Point Users</h5>
+    </div>
+    @if (Model.Users.Any())
+    {
+        <ul class="list-group">
+            @foreach (var user in Model.Users)
+            {
+                <li class="list-group-item">
+                    <span class="badge">@user.Value</span>
+                    <a href="@user.Key.NiceUrl">@Html.Raw(user.Key.UserName)</a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="panel-body">
+            Nothing to show
+        </div>
+    }
+
+</div>

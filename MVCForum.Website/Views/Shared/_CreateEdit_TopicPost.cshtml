@@ -1,0 +1,176 @@
+﻿
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Topic.CreateEditTopicViewModel
+@using MvcForum.Web.ViewModels.Shared
+
+@{
+	var count = 0;
+	const string displayNone = "style=\"display: none;\"";
+	ViewBag.ImageUploadType = Model.OptionalPermissions.CanInsertImages ? "forumimageinsert" : "image";
+
+	@*TODO This is a temporary fix to get it working for a demo, this logic needs moving into the controller and an error list adding to the view model to remove the need for logic in the view*@
+	ViewContext.ViewData.ModelState.TryGetValue("Name", out var nameErrorMessage);
+	var nameErrors = nameErrorMessage != null && nameErrorMessage.Errors.Any();
+	ViewContext.ViewData.ModelState.TryGetValue("Content", out var contentErrorMessage);
+	var contentErrors = contentErrorMessage != null && contentErrorMessage.Errors.Any();
+}
+
+<fieldset class="c-fieldset js-tinyMCE-container">
+	<legend class="c-fieldset_legend">
+		<h2>
+			@ViewBag.Title
+		</h2>
+	</legend>
+
+	@Html.HiddenFor(x => x.TopicId)
+	@Html.HiddenFor(x => x.Group)
+	@if (Model.IsTopicStarter)
+	{
+		@*TODO We need to come up with generic components here so we can re use this code without having to copy and paste it around everywhere*@
+		@*TODO Once the models are refactored to contain a simple error list this needs implementing in this code*@
+        <div class="js-input-container">
+            
+            <div class="c-form-group  js-input-holder @(nameErrors ? "c-form-group--error" : "")">
+                @Html.LabelFor(model => model.Name, new { @class = "c-label" })
+                @if (nameErrors)
+                {
+                    foreach (var error in nameErrorMessage.Errors)
+                    {
+                        <span class="c-error-message" id="MODEL.NAME-error">
+                            <span class="u-visually-hidden">Error:</span> 
+                            @* FOR DEMO we are using the notEmpty for all erros
+                            
+                            we need unique class for each error
+                            error mapping required
+                            *@
+                            <span class="js-input-error-notEmpty">@error.ErrorMessage</span>
+                        </span>
+                    }
+                }else {
+                    <p role="alert" class="js-input-error-notEmpty u-hidden c-error-message">Please provide a discussion title.</p>
+                }
+
+                @Html.TextBoxFor(model => model.Name, new {data_focus_requirements="notEmpty" ,  @class = $"c-input  js-input {(nameErrors ? "c-input--error" : "")}" })
+
+
+            </div>
+        
+        </div>
+	}
+	else
+	{
+
+		@Html.HiddenFor(x => x.Name)
+	}
+
+	@*TODO We need to come up with generic components here so we can re use this code without having to copy and paste it around everywhere*@
+	@*TODO Once the models are refactored to contain a simple error list this needs implementing in this code*@
+	<div class="c-form-group js-tinyMCE-holder @(contentErrors ? "u-has-error" : "")">
+		@Html.LabelFor(model => model.Content, "Comment", new { @class = "c-label" })
+        <p role="alert" class="js-tinyMCE-error-notEmpty u-hidden c-error-message">Please provide a comment.</p>
+		@if (contentErrors)
+		{
+
+			foreach (var error in contentErrorMessage.Errors)
+			{
+				<span class="c-error-message" id="MODEL.CONTENT-error">
+					<span class="u-visually-hidden">Error:</span> @error.ErrorMessage
+				</span>
+			}
+		}
+		@Html.EditorFor(model => model.Content)
+	</div>
+
+	@*
+		@if (Model.IsTopicStarter)
+		{
+			<div class="c-grid-block">
+				<div class="c-grid-block_item l-col-12 topicGroup">
+
+					@if (Model.Id == Guid.Empty)
+					{
+						<div class="form-group createuploadfiles" @Html.Raw(Model.OptionalPermissions.CanUploadFiles ? "" : displayNone)>
+							@Html.LabelFor(x => x.Files)
+							<div class="input-group">
+								<span class="input-group-btn">
+									<span class="btn btn-default btn-file">
+										@Html.LanguageString("Post.Browse") <input type="file" name="files" id="Files" multiple="multiple" value="">
+									</span>
+								</span>
+								<label for="fileReadOnly" class="u-hidden">File Name</label>
+								<input id="fileReadOnly" type="text" class="form-control" readonly="">
+							</div>
+							@Html.ValidationMessageFor(x => x.Files)
+						</div>
+					}
+				</div>
+			</div>
+		}
+	*@
+
+
+	<button type="submit" class="c-button u-fright js-tinyMCE-submit" data-mce-requirements="notEmpty">
+		@if (Model.Id == Guid.Empty)
+		{
+			@Html.LanguageString("Topic.CreateDiscussion")
+		}
+		else
+		{
+			@Html.LanguageString("Post.Edit")
+		}
+	</button>
+
+	<a href="@Url.RouteUrl("GroupUrls", new { slug = Model.GroupSlug, tab = Constants.GroupForumTab })" class="c-button c-button--outline js-dialog" data-dialog-id="dialog-cancel-create">
+		Cancel
+	</a>
+    
+    <dialog id="dialog-cancel-create" class="c-dialog">
+
+            <div class="c-dialog_content">
+
+                <h3>Entered Data will be lost</h3>
+
+                <p class="u-text-bold">
+                    The discussion details will be discarded. <br> 
+                    Are you sure you wish to proceed?
+                </p>
+                
+                <div>
+                    <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+                        Cancel
+                    </button>
+                </div>
+
+                <div>
+                    <button class="js-dialog-confirm c-button c-button--full-width">
+                        Yes, discard
+                    </button>
+                </div>
+
+            </div>
+        
+    </dialog>
+    
+	@*
+		@if (Model.IsTopicStarter)
+		{
+			<div class="checkbox createsticky" @Html.Raw(Model.OptionalPermissions.CanStickyTopic ? "" : displayNone)>
+				@using (Html.BeginLabelFor(m => m.IsSticky, new { @class = "checkbox" }))
+				{
+					@Html.CheckBoxFor(m => m.IsSticky)
+				}
+				@Html.ValidationMessageFor(m => m.IsSticky)
+			</div>
+			<div class="checkbox createlocked" @Html.Raw(Model.OptionalPermissions.CanLockTopic ? "" : displayNone)>
+				@using (Html.BeginLabelFor(m => m.IsLocked, new { @class = "checkbox" }))
+				{
+					@Html.CheckBoxFor(m => m.IsLocked)
+				}
+				@Html.ValidationMessageFor(m => m.IsLocked)
+			</div>
+		}
+	*@
+
+	@Html.HiddenFor(x => x.IsPostEdit)
+</fieldset>
+

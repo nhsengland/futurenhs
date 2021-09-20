@@ -1,0 +1,22 @@
+.c-rich-text-block {
+
+    @include no-margin-on-last-child;
+
+    a {
+        @extend %standard-link;
+    }
+
+    &--content {
+        @include very-large-text;
+    }
+
+    & blockquote {
+        @include small-heading;
+        @include font-family-poppins-bold;
+        margin: $spacer-xsm 0 derived-dimension(5) 10%;
+        padding: $base-dimension-unit $base-dimension-unit $spacer-sm;
+        border-top: $base-dimension-unit solid $t-blockquote-border-one;
+        background-color: $t-blockquote-background-one;
+    }
+
+}

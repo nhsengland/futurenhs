@@ -1,0 +1,10 @@
+﻿@model MvcForum.Web.ViewModels.Breadcrumb.BreadcrumbViewModel
+
+@if (Model.Groups.Any())
+{
+    <p>
+	    <a href=@Url.RouteUrl("GroupUrls", new { slug = Model.Groups[0].Slug, tab = Constants.GroupForumTab }) class="u-text-small u-text-theme-0">
+		    &lsaquo; Back to discussions
+	    </a>
+    </p>
+}

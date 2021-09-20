@@ -1,0 +1,22 @@
+﻿@model MvcForum.Core.Repositories.Models.BreadcrumbsViewModel
+
+@if (Model != null)
+{
+    if (Model.BreadcrumbLinks.Any())
+    {
+        foreach (var breadcrumb in Model.BreadcrumbLinks)
+        {
+            <a href=@breadcrumb.Url class="u-text-small">
+                @breadcrumb.Name &rsaquo;
+            </a>
+        }
+    }
+    if (!string.IsNullOrWhiteSpace(Model.LastEntry))
+    {
+        <a class="u-text-small u-text-theme-0">
+            @Model.LastEntry
+        </a>
+    }
+}
+
+

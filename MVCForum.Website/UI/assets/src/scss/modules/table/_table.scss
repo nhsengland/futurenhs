@@ -1,0 +1,145 @@
+.c-table {
+    $self: &;
+    @include standard-text;
+    width: 100%;
+    margin-bottom: $spacer-xsm;
+
+    &_caption {
+        @include regular-heading;
+        font-weight: $nhsuk-font-bold;
+        color: $black;
+    }
+
+    &_head {
+        @include visually-hidden;
+        font-weight: $nhsuk-font-bold;
+        border-width: $spacer-sm;
+        border-style: solid;
+        border-color: transparent;
+        border-bottom-color: $white;
+
+        @include respond-to(desktop) {
+            position: relative !important; //sass-lint:disable-line no-important
+            top: unset;
+            left: unset;
+        }
+    }
+
+    &_th {
+        padding-bottom: $spacer-xsm;
+        padding-left: $spacer-rg;
+    }
+
+    &_heading {
+        @include small-heading;
+        font-weight: $nhsuk-font-bold;
+        text-align: left;
+
+        @include respond-to(desktop) {
+            display: none;
+        }
+    }
+
+    &_body {
+        border-width: $spacer-xsm;
+        border-style: solid;
+        border-color: $white;
+
+        @include respond-to(desktop) {
+            border-width: $spacer-sm;
+        }
+    }
+
+    &_row {
+        display: table-row;
+        background-color: $t-table-row-background-one;
+
+        @include respond-to(desktop) {
+            display: table-row;
+
+            &:nth-child(odd) {
+                background-color: $t-table-row-background-two;
+            }
+        }
+    }
+
+    &_cell {
+        display: flex;
+        justify-content: space-between;
+        padding: $nhsuk-spacing-point-2 $spacer-xsm;
+        text-align: right;
+
+        &:first-of-type {
+            background-color: $t-table-row-background-two;
+        }
+
+        @include respond-to(desktop) {
+            text-align: left;
+            display: table-cell;
+            padding-right: 0;
+            padding: $nhsuk-spacing-point-2 $spacer-rg;
+
+            &:first-of-type {
+                background-color: transparent;
+            }
+        }
+
+        &--edit {
+            display: block;
+            text-align: left;
+        }
+    }
+
+    &--files {
+
+        margin-bottom: 0;
+        background-color: $white;
+
+        #{$self}_body,
+        #{$self}_head {
+            border-width: 0;
+        }
+
+        #{$self}_row {
+            background-color: $white;
+            border-top: 1px solid $color_nhsuk-grey-4;
+            border-left: $spacer-md solid transparent;
+            border-right: $spacer-md solid transparent;
+
+            @include respond-to(desktop) {
+
+                &:first-of-type {
+                    border-top: 2px solid $color_nhsuk-grey-4;
+                }
+            }
+
+            &:last-of-type {
+                border-bottom: 1px solid $color_nhsuk-grey-4;
+            }
+
+        }
+
+        #{$self}_th {
+
+            padding-top: $spacer-xsm;
+
+        }
+
+        #{$self}_cell {
+
+            background-color: $white;
+            padding-left: 0;
+
+            @include respond-to(desktop) {
+
+                padding-left: $spacer-rg;
+
+                &:first-of-type {
+                    padding-left: $nhsuk-spacing-point-2;
+                }
+            }
+
+        }
+
+    }
+}

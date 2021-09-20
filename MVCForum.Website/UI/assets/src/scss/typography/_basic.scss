@@ -1,0 +1,186 @@
+// sass-lint:disable single-line-per-selector, no-universal-selectors, no-vendor-prefixes, pseudo-element, force-element-nesting, no-combinators
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+    -webkit-font-smoothing: antialiased;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, main {
+    display: block;
+}
+
+html {
+    box-sizing: border-box;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    overflow-y: scroll;
+    @include _nhsuk-font-face-frutiger;
+    font-family: $nhsuk-font, $nhsuk-font-fallback;
+}
+
+body,
+html {
+    // font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+}
+
+body {
+    // font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    color: $t-text-one;
+    background: $t-site-background-one;
+    fill: $t-site-background-one;
+    line-height: 1.5em;
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
+    min-height: 100%;
+}
+
+.mainbody { //sass-lint:disable-line class-name-format
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+em,
+i {
+    font-style: italic;
+}
+
+a {
+    @include focus-outline;
+
+    &:hover,
+    &:active {
+        text-decoration: underline;
+    }
+
+}
+
+.c-link {
+    @extend %clear-button-styles;
+    @extend %link-base;
+}
+
+button {
+    font-family: inherit;
+
+    &:hover,
+    &:active {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    &:focus {
+        @include nhsuk-focused-input;
+    }
+}
+
+// b,
+// strong {
+// }
+
+input {
+    border: 0;
+    font-family: inherit;
+
+    &:focus {
+        @include nhsuk-focused-input;
+    }
+}
+
+textarea {
+    font-family: inherit;
+
+    &:focus {
+        @include nhsuk-focused-input;
+    }
+}
+
+select {
+    font-family: inherit;
+    -webkit-appearance: none; // sass-lint:disable-line no-vendor-prefixes
+    -moz-appearance: none; // sass-lint:disable-line no-vendor-prefixes
+
+    &::-ms-expand { // sass-lint:disable-line no-vendor-prefixes
+        display: none;
+    }
+
+    &:focus {
+        @include nhsuk-focused-input;
+    }
+}
+
+canvas {
+    max-width: 100%;
+    display: block;
+}
+
+svg title {
+    pointer-events: none;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.gm-style img { // sass-lint:disable-line class-name-format
+    max-width: none !important; // sass-lint:disable-line no-important
+    max-height: none !important; // sass-lint:disable-line no-important
+}
+
+summary {
+    @extend %nhsuk-focused-item;
+
+    &:before {
+        display: none;
+    }
+
+    &::-webkit-details-marker { // sass-lint:disable-line no-vendor-prefixes
+        display: none;
+    }
+
+    &::marker {
+        content: "";
+    }
+
+    &:hover,
+    &:active {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+}
+
+svg {
+    height: 100%;
+    width: 100%;
+}
+
+// sass-lint:enable single-line-per-selector, no-universal-selectors, no-vendor-prefixes, pseudo-element, force-element-nesting, no-combinators
