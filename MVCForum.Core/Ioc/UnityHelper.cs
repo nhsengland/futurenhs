@@ -3,6 +3,8 @@ namespace MvcForum.Core.Ioc
     using Data.Context;
     using Interfaces;
     using Interfaces.Services;
+    using Microsoft.Extensions.Caching.Memory;
+    using Microsoft.Extensions.Options;
     using MvcForum.Core.Factories;
     using MvcForum.Core.Interfaces.Factories;
     using MvcForum.Core.Interfaces.Helpers;
@@ -110,7 +112,9 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<ISmtpClientFactory, SmtpClientFactory>();
             Container.BindInRequestScope<IGroupAddMemberService, GroupAddMemberService>();
 
-            Container.RegisterSingleton<IValidateFileType, FileTypeValidator>(); 
+            Container.RegisterSingleton<IValidateFileType, FileTypeValidator>();
+
+            Container.RegisterInstance<IMemoryCache>(new MemoryCache(Options.Create<MemoryCacheOptions>(new MemoryCacheOptions())));
 
             switch (ConfigurationManager.AppSettings["SendEmailService"])
             {

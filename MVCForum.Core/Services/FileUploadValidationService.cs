@@ -83,7 +83,7 @@
                 }
                 else
                 {
-                    validationErrors.Add(_localizationService.GetResourceString("File.Error.InvalidType"));
+                    validationErrors.Add(_localizationService.GetResourceString("File.Error.ContentMatchesExtension"));
                 }
             }
 

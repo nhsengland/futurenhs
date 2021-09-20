@@ -5,6 +5,7 @@ namespace MvcForum.Core.Services
     using Azure.Identity;
     using Azure.Storage.Blobs;
     using Azure.Storage.Sas;
+    using Microsoft.Extensions.Caching.Memory;
     using Microsoft.WindowsAzure.Storage;
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Models.Entities;
@@ -43,24 +44,30 @@ namespace MvcForum.Core.Services
         /// </summary>
         private readonly IFileUploadValidationService _fileUploadValidationService;
 
+        private readonly IMemoryCache _memoryCache;
+
         /// <summary>
         /// Constructs a new instance of the <see cref="FileService"/>.
         /// </summary>
         /// <param name="fileCommand">Instance of <see cref="IFileCommand"/>.</param>
         /// <param name="fileRepository">Instance of <see cref="IFileRepository"/>.</param>
-        public FileService(IFileCommand fileCommand, IFileRepository fileRepository, IMembershipService membershipService, IFileUploadValidationService fileUploadValidationService, IConfigurationProvider configurationProvider)
+        public FileService(IFileCommand fileCommand, IFileRepository fileRepository, 
+                                IMembershipService membershipService, IFileUploadValidationService fileUploadValidationService, 
+                                IConfigurationProvider configurationProvider, IMemoryCache memoryCache)
         {
-            if (fileCommand is null) { throw new ArgumentNullException(nameof(fileCommand)); }
-            if (fileRepository is null) { throw new ArgumentNullException(nameof(fileRepository)); }
-            if (membershipService is null) { throw new ArgumentNullException(nameof(membershipService)); }
-            if (fileUploadValidationService is null) { throw new ArgumentNullException(nameof(fileUploadValidationService)); }
-            if (configurationProvider is null) { throw new ArgumentNullException(nameof(configurationProvider)); }
+            if (fileCommand is null) throw new ArgumentNullException(nameof(fileCommand));
+            if (fileRepository is null) throw new ArgumentNullException(nameof(fileRepository));
+            if (membershipService is null) throw new ArgumentNullException(nameof(membershipService));
+            if (fileUploadValidationService is null) throw new ArgumentNullException(nameof(fileUploadValidationService));
+            if (configurationProvider is null) throw new ArgumentNullException(nameof(configurationProvider));
+            if (memoryCache is null) throw new ArgumentNullException(nameof(memoryCache));
 
             _fileCommand = fileCommand;
             _fileRepository = fileRepository;
             _loggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
             _fileUploadValidationService = fileUploadValidationService;
             _configurationProvider = configurationProvider;
+            _memoryCache = memoryCache;
         }
 
         /// <summary>
@@ -123,8 +130,17 @@ namespace MvcForum.Core.Services
             // Set the blob service client
             BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri(_configurationProvider.FileDownloadEndpoint), new DefaultAzureCredential());
 
-            // Generate the user delegation key
-            var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMinutes(40), cancellationToken);
+            // Generate the user delegation key - get from cache if available or add to cache on generation
+            var userDelegationKey = await _memoryCache.GetOrCreateAsync(
+                Constants.Constants.BlobStorageDownloadUserDelegationKeyCacheKey,
+                async cacheEntry =>
+                {
+                    cacheEntry.Priority = CacheItemPriority.High;
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(23);
+
+                    var azureResponse = await blobServiceClient.GetUserDelegationKeyAsync(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddDays(1), cancellationToken);
+                    return azureResponse.Value;
+                });
 
             if (userDelegationKey != null)
             {
