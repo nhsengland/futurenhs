@@ -53,7 +53,7 @@ namespace MvcForum.Core.Repositories.Repository
             {
                 var result = await dbConnection.QueryMultipleAsync(commandDefinition);
                 var memberExists = result.ReadFirst<bool>();
-                var memberExistsInGroupIsAccepted = result.ReadFirst<bool?>();
+                var memberExistsInGroupIsAccepted = result.Read<bool?>().FirstOrDefault();
 
                 if (!memberExists)
                 {
