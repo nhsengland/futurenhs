@@ -118,7 +118,7 @@
         /// <returns></returns>
         private bool FileTypeIsNotSupported(string extension)
         {
-            if (string.IsNullOrWhiteSpace(extension)) return false;
+            if (string.IsNullOrWhiteSpace(extension)) return true;
 
             return Array.Find(_validFileTypes, _ => _.Equals(extension, StringComparison.OrdinalIgnoreCase)) is null;
         }
@@ -141,7 +141,7 @@
         /// <returns></returns>
         private bool FilenameIsEmpty(string filename)
         {
-            return filename == string.Empty;
+            return string.IsNullOrWhiteSpace(filename);
         }
 
         /// <summary>
@@ -151,6 +151,8 @@
         /// <returns></returns>
         private bool FilenameLengthIsOutOfRange(string filename)
         {
+            if (string.IsNullOrWhiteSpace(filename)) return true;
+
             return filename.Length > _maxFilenameLength;
         }
     }
