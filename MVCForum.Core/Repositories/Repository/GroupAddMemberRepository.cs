@@ -67,7 +67,7 @@ namespace MvcForum.Core.Repositories.Repository
                         return new GroupAddMemberQueryResponse(true, ResponseType.AlreadyExists);
                     }
                     return new GroupAddMemberQueryResponse(false, ResponseType.AlreadyExists);
-                }
+                }               
 
                 return new GroupAddMemberQueryResponse(false, ResponseType.Success);
             }

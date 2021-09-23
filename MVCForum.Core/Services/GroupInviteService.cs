@@ -11,7 +11,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class GroupInviteService : IGroupInviteService
+    public sealed class GroupInviteService : IGroupInviteService
     {
         private readonly IGroupInviteRepository _inviteRepository;
         private readonly IGroupInviteCommand _inviteCommand;
@@ -21,9 +21,9 @@
                                   IGroupInviteCommand inviteCommand,
                                   IRegistrationEmailService emailService)
         {
-            _inviteRepository = inviteRepository;
-            _inviteCommand = inviteCommand;
-            _emailService = emailService;
+            _inviteRepository = inviteRepository ?? throw new ArgumentNullException(nameof(inviteRepository));
+            _inviteCommand = inviteCommand ?? throw new ArgumentNullException(nameof(inviteCommand));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         public Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(Guid groupId, CancellationToken cancellationToken)
@@ -89,6 +89,21 @@
             }
 
             return _inviteRepository.InviteExistsForGroupAsync(groupId, mailAddress, cancellationToken);
+        }
+
+        public Task<bool> InviteExistsForMailAddressAsync(MailAddress mailAddress, CancellationToken cancellationToken)
+        {
+            if (mailAddress is null)
+            {
+                throw new ArgumentNullException(nameof(mailAddress));
+            }
+
+            if (string.IsNullOrWhiteSpace(mailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(mailAddress.Address));
+            }
+
+            return _inviteRepository.InviteExistsForMailAddressAsync(mailAddress, cancellationToken);
         }
 
         public async Task<Guid> CreateInviteAsync(GroupInviteViewModel model, CancellationToken cancellationToken)

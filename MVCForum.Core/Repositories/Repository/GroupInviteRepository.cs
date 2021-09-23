@@ -11,20 +11,18 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class GroupInviteRepository : IGroupInviteRepository
+    public sealed class GroupInviteRepository : IGroupInviteRepository
     {
 
         private readonly IDbConnectionFactory _connectionFactory;
 
         public GroupInviteRepository(IDbConnectionFactory connectionFactory)
         {
-            _connectionFactory = connectionFactory;
+            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
 
-        public async Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(Guid groupId, CancellationToken cancellationToken)
-        {
-            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-
+        public Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(Guid groupId, CancellationToken cancellationToken)
+        {           
             const string query =
                 @"
                     SELECT gi.Id,
@@ -33,22 +31,19 @@
                            gi.IsDeleted
                     FROM   GroupInvite gi
                     WHERE  GroupId = @groupId
-                      AND  IsDeleted = 0
+                      AND  IsDeleted = 0;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new { groupId }, cancellationToken: cancellationToken);
 
-            using (var multipleResults = await dbConnection.QueryMultipleAsync(commandDefinition))
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                var results = multipleResults.Read<GroupInviteViewModel>();
-                return results;
+                return dbConnection.QueryAsync<GroupInviteViewModel>(commandDefinition);
             }
         }
 
-        public async Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(MailAddress mailAddress, CancellationToken cancellationToken)
+        public Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(MailAddress mailAddress, CancellationToken cancellationToken)
         {
-            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-
             const string query =
                 @"
                     SELECT gi.Id,
@@ -57,23 +52,19 @@
                            gi.IsDeleted
                     FROM   GroupInvite gi
                     WHERE  EmailAddress = @mailAddressValue
-                      AND  IsDeleted = 0
+                      AND  IsDeleted = 0;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new { mailAddressValue = mailAddress.Address }, cancellationToken: cancellationToken);
 
-
-            using (var multipleResults = await dbConnection.QueryMultipleAsync(commandDefinition))
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                var results = multipleResults.Read<GroupInviteViewModel>();
-                return results;
+                return dbConnection.QueryAsync<GroupInviteViewModel>(commandDefinition);
             }
         }
 
-        public async Task<GroupInviteViewModel> GetInviteForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
+        public Task<GroupInviteViewModel> GetInviteForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
         {
-            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-
             const string query =
                 @"
                     SELECT gi.Id,
@@ -83,69 +74,90 @@
                     FROM   GroupInvite gi
                     WHERE  EmailAddress = @mailAddressValue
 	                  AND  GroupId = @groupId
-                      AND  IsDeleted = 0
+                      AND  IsDeleted = 0;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new { groupId, mailAddressValue = mailAddress.Address }, cancellationToken: cancellationToken);
 
-            return (await dbConnection.QueryAsync<GroupInviteViewModel>(commandDefinition)).SingleOrDefault();
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            {
+                return dbConnection.QuerySingleOrDefaultAsync<GroupInviteViewModel>(commandDefinition);
+            }
         }
 
-        public async Task<bool> InviteExistsForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
+        public Task<bool> InviteExistsForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
         {
-            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-
             const string query =
                 @"
                     SELECT CAST(COUNT(1) AS BIT)
                     FROM   GroupInvite
                     WHERE  EmailAddress = @mailAddressValue
-	                  AND  GroupId = @groupId
+	                  AND  GroupId = @groupId;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new { groupId, mailAddressValue = mailAddress.Address }, cancellationToken: cancellationToken);
 
-            return (await dbConnection.QueryAsync<bool>(commandDefinition)).SingleOrDefault();
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            {
+                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+            }
         }
 
-        public async Task<bool> GroupMemberExistsAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
+        public Task<bool> InviteExistsForMailAddressAsync(MailAddress mailAddress, CancellationToken cancellationToken)
         {
-            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+            const string query =
+                @"
+                    SELECT CAST(COUNT(1) AS BIT)
+                    FROM   GroupInvite
+                    WHERE  EmailAddress = @mailAddressValue;
+                ";
 
+            var commandDefinition = new CommandDefinition(query, new { mailAddressValue = mailAddress.Address }, cancellationToken: cancellationToken);
+
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            {
+                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+            }
+        }
+
+        public Task<bool> GroupMemberExistsAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
+        {
             const string query =
                 @"
                     SELECT CAST(COUNT(1) AS BIT)
                     FROM   MembershipUser
                     INNER JOIN GroupUser ON MembershipUser.Id = GroupUser.MembershipUser_Id
                     WHERE  MembershipUser.Email = @mailAddressValue 
-	                  AND GroupUser.Group_Id = @groupId
+	                  AND GroupUser.Group_Id = @groupId;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new { groupId, mailAddressValue = mailAddress.Address }, cancellationToken: cancellationToken);
-            
-            return (await dbConnection.QueryAsync<bool>(commandDefinition)).SingleOrDefault();
+
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            {
+                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+            }
         }
 
-        public async Task<bool> MemberExistsAsync(MailAddress mailAddress, CancellationToken cancellationToken)
+        public Task<bool> MemberExistsAsync(MailAddress mailAddress, CancellationToken cancellationToken)
         {
-            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-
             const string query =
                 @"
                     SELECT CAST(COUNT(1) AS BIT)
                     FROM   MembershipUser 
-                    WHERE  MembershipUser.Email = @mailAddressValue 
+                    WHERE  MembershipUser.Email = @mailAddressValue;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new { mailAddressValue = mailAddress.Address }, cancellationToken: cancellationToken);
 
-            return (await dbConnection.QueryAsync<bool>(commandDefinition)).SingleOrDefault();
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            {
+                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+            }
         }
 
-        public async Task<bool> IsMemberAdminAsync(string username, CancellationToken cancellationToken)
+        public Task<bool> IsMemberAdminAsync(string username, CancellationToken cancellationToken)
         {
-            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
-
             const string query =
                 @"
                     SELECT CAST(COUNT(1) AS BIT)
@@ -155,12 +167,15 @@
 						JOIN MembershipUser mu 
 						    ON mu.Id = m.UserIdentifier
                         WHERE  mu.UserName = @username 
-					    AND mr.RoleName = 'admin'                   
+					    AND mr.RoleName = 'admin';                 
                 ";
 
             var commandDefinition = new CommandDefinition(query, new { username }, cancellationToken: cancellationToken);
 
-            return (await dbConnection.QueryAsync<bool>(commandDefinition)).SingleOrDefault();
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            {
+                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+            }
         }
     }
 }

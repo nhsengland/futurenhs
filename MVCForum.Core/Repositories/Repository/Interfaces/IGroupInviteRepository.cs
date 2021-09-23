@@ -10,18 +10,12 @@
     public interface IGroupInviteRepository
     {
         Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(Guid groupId, CancellationToken cancellationToken);
-
         Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(MailAddress mailAddress, CancellationToken cancellationToken);
-
         Task<GroupInviteViewModel> GetInviteForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken);
-
         Task<bool> InviteExistsForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken);
-
+        Task<bool> InviteExistsForMailAddressAsync(MailAddress mailAddress, CancellationToken cancellationToken);
         Task<bool> GroupMemberExistsAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken);
-
         Task<bool> MemberExistsAsync(MailAddress mailAddress, CancellationToken cancellationToken);
-
         Task<bool> IsMemberAdminAsync(string username, CancellationToken cancellationToken);
-
     }
 }

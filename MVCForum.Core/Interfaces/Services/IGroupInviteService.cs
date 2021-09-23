@@ -7,12 +7,13 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public  interface IGroupInviteService
+    public interface IGroupInviteService
     {
         Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(Guid groupId, CancellationToken cancellationToken);
         Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(MailAddress mailAddress, CancellationToken cancellationToken);
         Task<GroupInviteViewModel> GetInviteForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken);
         Task<bool> InviteExistsForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken);
+        Task<bool> InviteExistsForMailAddressAsync(MailAddress mailAddress, CancellationToken cancellationToken);
         Task<bool> MemberExistsInGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken);
         Task<bool> MemberExistsInSystemAsync(MailAddress mailAddress, CancellationToken cancellationToken);
         Task<bool> IsMemberAdminAsync(string username, CancellationToken cancellationToken);

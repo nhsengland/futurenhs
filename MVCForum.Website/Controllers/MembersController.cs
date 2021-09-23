@@ -2,8 +2,10 @@
 {
     using System;
     using System.Linq;
+    using System.Net.Mail;
     using System.Security.Principal;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
@@ -41,6 +43,7 @@
         private readonly IReportService _reportService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
+        private readonly IGroupInviteService _groupInviteService;
 
         /// <summary>
         ///     Constructor
@@ -77,7 +80,8 @@
             IPollService pollService, 
             IVoteService voteService, 
             IFavouriteService favouriteService,
-            IMvcForumContext context )
+            IMvcForumContext context,
+            IGroupInviteService groupInviteService)
             : base(loggingService, 
                 membershipService, 
                 localizationService, 
@@ -95,6 +99,7 @@
             _pollService = pollService;
             _voteService = voteService;
             _favouriteService = favouriteService;
+            _groupInviteService = groupInviteService ?? throw new ArgumentNullException(nameof(groupInviteService));
         }
 
         /// <summary>
@@ -336,12 +341,21 @@
         /// </summary>
         /// <param name="userModel"></param>
         /// <returns></returns>
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> Register(MemberAddViewModel userModel)
+        public virtual async Task<ActionResult> Register(MemberAddViewModel userModel, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
+                var mailAddress = new MailAddress(userModel.Email);
+                if (!await _groupInviteService.InviteExistsForMailAddressAsync(mailAddress, cancellationToken))
+                {
+                    ModelState.AddModelError(nameof(userModel.Email), "This user has not been invited onto the platform. Please check the email address provided.");
+                    return View(userModel);
+                }                
+
                 var settings = SettingsService.GetSettings();
                 if (settings.SuspendRegistration != true &&
                     settings.DisableStandardRegistration != true)
