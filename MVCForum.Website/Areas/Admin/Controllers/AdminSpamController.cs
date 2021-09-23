@@ -35,6 +35,7 @@
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Akismet(AkismetViewModel viewModel)
         {
             var settings = SettingsService.GetSettings(false);
@@ -79,6 +80,7 @@
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult RegistrationQuestion(RegistrationQuestionViewModel viewModel)
         {
             var settings = SettingsService.GetSettings(false);
@@ -123,6 +125,7 @@
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult SpamReporting(SpamReportingViewModel viewModel)
         {
             var settings = SettingsService.GetSettings(false);

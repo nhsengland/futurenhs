@@ -17,6 +17,7 @@
         @using (Html.BeginForm("Akismet", "AdminSpam", FormMethod.Post))
         {
             @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
 
             <div class="checkbox">
                 @using (Html.BeginLabelFor(m => m.EnableAkisment, new { @class = "checkbox" }))

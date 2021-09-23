@@ -71,6 +71,6 @@
         MembershipRole GetGroupRole(Guid groupId, Guid? membershipId);
 
         GroupUser GetGroupUser(Guid groupUserId);
-        Task<GroupUser> UpdateGroupUser(GroupUser groupUser);
+        Task<GroupUser> UpdateGroupUserAsync(GroupUser groupUser, CancellationToken cancellationToken);
     }
 }

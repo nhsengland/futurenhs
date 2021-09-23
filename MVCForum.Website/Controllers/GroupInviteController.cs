@@ -10,6 +10,7 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
+    [Authorize]
     public class GroupInviteController : Controller
     {
         private const string StandardMemberRole = "Standard Members";
@@ -36,7 +37,6 @@
         [HttpGet]
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        [Authorize]
         [ActionName("InviteMember")]
         public async Task<ActionResult> InviteMemberAsync(string slug, Guid groupId, bool success = false, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -61,7 +61,6 @@
         [ValidateAntiForgeryToken]
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        [Authorize]
         [ActionName("InviteMember")]
         public async Task<ActionResult> InviteMemberAsync(GroupInviteViewModel model, CancellationToken cancellationToken)
         {
@@ -110,7 +109,6 @@
         [HttpGet]
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        [Authorize]
         [ActionName("AddMember")]
         public async Task<ActionResult> AddMemberAsync(string slug, CancellationToken cancellationToken)
         {
@@ -135,7 +133,6 @@
         [ValidateAntiForgeryToken]
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        [Authorize]
         [ActionName("AddMember")]
         public async Task<ActionResult> AddMemberAsync(GroupAddMemberViewModel model, CancellationToken cancellationToken)
         {

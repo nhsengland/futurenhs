@@ -16,6 +16,7 @@
         @using (Html.BeginForm("SpamReporting", "AdminSpam", FormMethod.Post))
         {
             @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
 
             <div class="checkbox">
                 @using (Html.BeginLabelFor(m => m.EnableMemberReporting, new { @class = "checkbox" }))

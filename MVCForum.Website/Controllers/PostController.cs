@@ -44,7 +44,10 @@
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult> CreatePost(CreateAjaxPostViewModel post)
+        [ActionName("CreatePost")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> CreatePostAsync(CreateAjaxPostViewModel post)
         {
             var topic = _topicService.Get(post.Topic);
 
@@ -115,7 +118,10 @@
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult> DeletePost(Guid id)
+        [ActionName("DeletePost")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> DeletePostAsync(Guid id)
         {
             User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -238,6 +244,7 @@
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public virtual ActionResult Report(ReportPostViewModel viewModel)
         {
             if (SettingsService.GetSettings().EnableSpamReporting)
@@ -339,7 +346,11 @@
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult> MovePost(MovePostViewModel viewModel)
+        [ActionName("MovePost")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ValidateAntiForgeryToken]
+        public virtual async Task<ActionResult> MovePostAsync(MovePostViewModel viewModel)
         {
             // Firstly check if this is a post and they are allowed to move it
             var post = _postService.Get(viewModel.PostId);

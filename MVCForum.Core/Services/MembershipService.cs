@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Security.Principal;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Security;
@@ -277,8 +278,9 @@
         /// <param name="newUser"></param>
         /// <param name="loginType"></param>
         /// <returns></returns>
-        public async Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType)
+        public async Task<IPipelineProcess<MembershipUser>> CreateUserAsync(MembershipUser newUser, LoginType loginType, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             // Get the site settings
             var settings = _settingsService.GetSettings(false);
 
@@ -331,9 +333,11 @@
         }
 
         /// <inheritdoc />
-        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser,
-            HttpPostedFileBase image)
+        public async Task<IPipelineProcess<MembershipUser>> EditUserAsync(MembershipUser userToEdit, IPrincipal loggedInUser,
+            HttpPostedFileBase image, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             // Get the pipelines
             var pipes = ForumConfiguration.Instance.PipelinesUserUpdate;
 
@@ -638,8 +642,10 @@
             return _context.MembershipUser.ToList();
         }
 
-        public async Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize)
+        public async Task<PaginatedList<MembershipUser>> GetAllAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var query = _context.MembershipUser.OrderBy(x => x.UserName);
             return await PaginatedList<MembershipUser>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }

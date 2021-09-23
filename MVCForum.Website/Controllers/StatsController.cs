@@ -6,6 +6,7 @@
     using Core.Models.Enums;
     using ViewModels.Stats;
 
+    [Authorize]
     public partial class StatsController : BaseController
     {
         private readonly IGroupService _groupService;

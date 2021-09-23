@@ -12,6 +12,7 @@
     using System.Threading.Tasks;
     using System.Threading;
 
+    [Authorize]
     public class FolderController : Controller
     {
         private readonly IFolderService _folderService;

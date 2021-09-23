@@ -101,6 +101,7 @@
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult AddType(AddTypeViewModel permissionViewModel)
         {
             try

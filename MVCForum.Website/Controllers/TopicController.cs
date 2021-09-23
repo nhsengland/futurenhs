@@ -23,6 +23,7 @@
     using ViewModels.Shared;
     using ViewModels.Topic;
 
+    [Authorize]
     public partial class TopicController : BaseController
     {
         private readonly IGroupService _groupService;
@@ -55,7 +56,6 @@
 
 
         [ChildActionOnly]
-        [Authorize]
         public virtual PartialViewResult TopicsMemberHasPostedIn(int? p)
         {
             var loggedOnloggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -90,7 +90,6 @@
         }
 
         [ChildActionOnly]
-        [Authorize]
         public virtual PartialViewResult GetSubscribedTopics()
         {
             var viewModel = new List<TopicViewModel>();
@@ -171,7 +170,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public virtual JsonResult CheckTopicCreatePermissions(Guid catId)
         {
             if (Request.IsAjaxRequest())
@@ -274,7 +272,6 @@
         ///     Create topic view
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         public virtual ActionResult Create(Guid groupId)
         {
             User.GetMembershipUser(MembershipService);
@@ -299,7 +296,6 @@
         /// <param name="topicViewModel"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public virtual async Task<ActionResult> Create(CreateEditTopicViewModel topicViewModel)
         {
@@ -375,8 +371,6 @@
             return View(topicViewModel);
         }
 
-
-        [Authorize]
         public virtual ActionResult EditPostTopic(Guid id)
         {
             // Get the post
@@ -582,7 +576,10 @@
             return View(editPostViewModel);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int p = 1, Guid? threadId = null)
+        [ActionName("Show")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> ShowAsync(string slug, int p = 1, Guid? threadId = null)
         {
             // Set the page index
             var pageIndex = p <= 0 ? 1 : p;
@@ -809,7 +806,10 @@
         }
 
         [HttpPost]
-        public virtual async Task<PartialViewResult> AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
+        [ActionName("AjaxMorePosts")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<PartialViewResult> AjaxMorePostsAsync(GetMorePostsViewModel getMorePostsViewModel)
         {
             User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -946,7 +946,10 @@
             return PartialView("AjaxMorePosts", viewModel);
         }
 
-        public virtual async Task<ActionResult> TopicsByTag(string tag, int? p)
+        [ActionName("TopicsByTag")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<ActionResult> TopicsByTagAsync(string tag, int? p)
         {
             User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);

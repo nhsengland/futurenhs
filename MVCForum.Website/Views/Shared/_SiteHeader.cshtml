@@ -39,20 +39,6 @@
                     </form>
                     <nav id="header-nav" class="c-site-header-nav_nav" aria-label="Navigation">
                         <ul class="c-site-header-nav_root-nav c-site-header-nav_root-nav--mobile-full-height" role="menubar">
-
-                            @if (!User.Identity.IsAuthenticated)
-                            {
-                                <li role="none">
-                                    <a role="menuitem" class="c-button c-site-header-nav_header-button" href="@Url.Action("LogOn", "Members", new { ReturnUrl = "/group" })">@Html.LanguageString("Layout.Nav.Logon")</a>
-                                </li>
-
-                                if (Html.Settings().SuspendRegistration != true)
-                                {
-                                    <li role="none">
-                                        <a role="menuitem" class="c-button c-site-header-nav_header-button c-site-header-nav_header-button--outline" href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a>
-                                    </li>
-                                }
-                            }
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <li role="none">

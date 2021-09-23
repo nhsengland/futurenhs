@@ -18,6 +18,7 @@
         @using (Html.BeginForm("RegistrationQuestion", "AdminSpam", FormMethod.Post))
         {
             @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
 
             <div class="form-group">
                 @Html.LabelFor(m => m.SpamQuestion)

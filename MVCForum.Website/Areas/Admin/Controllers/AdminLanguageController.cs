@@ -15,6 +15,7 @@
     using Web.ViewModels;
     using Web.ViewModels.Admin;
 
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminLanguageController : BaseAdminController
     {
         /// <summary>
@@ -88,7 +89,6 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteLanguageConfirmation(Guid id)
         {
             try
@@ -121,7 +121,6 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteLanguage(string buttonYes, string buttonNo, Guid id)
         {
             if (buttonYes != null)
@@ -148,7 +147,6 @@
         /// </summary>
         /// <param name="resourceKeyId"></param>
         /// <returns></returns>
-        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteResourceConfirmation(Guid resourceKeyId)
         {
             try
@@ -180,7 +178,6 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteResource(string buttonYes, string buttonNo, Guid id)
         {
             if (buttonYes != null)
@@ -208,7 +205,6 @@
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        [Authorize(Roles = Constants.AdminRoleName)]
         public PartialViewResult CreateLanguage()
         {
             return PartialView();
@@ -221,7 +217,6 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult CreateLanguage(CreateLanguageViewModel languageViewModel)
         {
             try
@@ -268,7 +263,6 @@
         ///     Manage resource values for a language
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Constants.AdminRoleName)]
         public async Task<ActionResult> ManageLanguageResourceValues(Guid languageId, int? p, string search)
         {
             return await GetLanguageResources(false, languageId, p, search);
@@ -278,7 +272,6 @@
         ///     Manage resource values for a language
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Constants.AdminRoleName)]
         public async Task<ActionResult> ManageLanguageResourceKeys(Guid languageId, int? p, string search)
         {
             return await GetLanguageResources(true, languageId, p, search);
@@ -288,8 +281,10 @@
         ///     Manage resource keys (for all languages)
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Constants.AdminRoleName)]
-        public async Task<ActionResult> ManageResourceKeys(int? p, string search)
+        [ActionName("ManageResourceKeys")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> ManageResourceKeysAsync(int? p, string search)
         {
             try
             {

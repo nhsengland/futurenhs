@@ -8,6 +8,7 @@
     using Core.Models.Entities;
     using ViewModels;
 
+    [Authorize]
     public partial class BlockController : BaseController
     {
         private readonly IBlockService _blockService;
@@ -22,7 +23,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public virtual void BlockOrUnBlock(EntityIdViewModel viewModel)
         {
             if (Request.IsAjaxRequest())

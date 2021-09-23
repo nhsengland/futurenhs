@@ -33,7 +33,8 @@
             _bannedWordService = bannedWordService;
         }
 
-
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         public async Task<ActionResult> Index(int? p, string search)
         {
             var pageIndex = p ?? 1;
@@ -53,6 +54,7 @@
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Add(AddBannedWordViewModel addBannedEmailViewModel)
         {
             try

@@ -6,6 +6,7 @@
     using Core.Models.Enums;
     using ViewModels;
 
+    [Authorize]
     public partial class PointController : BaseController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;

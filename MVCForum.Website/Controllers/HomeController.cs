@@ -19,6 +19,7 @@
     using System.Web.Mvc;
     using ViewModels.Home;
 
+    [Authorize]
     public partial class HomeController : BaseController
     {
         private readonly IActivityService _activityService;
@@ -52,6 +53,7 @@
             return View();
         }
 
+        [AllowAnonymous]
         public virtual ActionResult TermsAndConditions()
         {
             var settings = SettingsService.GetSettings();
@@ -64,6 +66,7 @@
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public virtual ActionResult TermsAndConditions(TermsAndConditionsViewModel viewmodel)
         {
             if (ModelState.IsValid)

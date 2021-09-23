@@ -830,16 +830,16 @@ namespace MvcForum.Core.Services
             return groupUser;
         }
 
-        public async Task<GroupUser> UpdateGroupUser(GroupUser groupUser)
+        public async Task<GroupUser> UpdateGroupUserAsync(GroupUser groupUser, CancellationToken cancellationToken)
         {
             var user = _context.GroupUser.Include(x => x.Role).FirstOrDefault(x => x.Id == groupUser.Id);
-            if (user == null)
+            if (user is null)
                 return null;
             user.Approved = groupUser.Approved;
             user.Locked = groupUser.Locked;
             user.Banned = groupUser.Banned;
             user.Role = _context.MembershipRole.FirstOrDefault(x => x.Id == groupUser.Role.Id);
-            await SaveChanges();
+            _ = await _context.SaveChangesAsync(cancellationToken);
             return user;
         }
     }

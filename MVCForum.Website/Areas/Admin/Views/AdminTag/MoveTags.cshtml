@@ -15,6 +15,7 @@
         @using (Html.BeginForm("MoveTags", "AdminTag", FormMethod.Post))
         {
             @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
 
             <div class="form-group">
                 @Html.LabelFor(m => m.CurrentTagId)

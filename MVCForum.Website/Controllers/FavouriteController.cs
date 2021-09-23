@@ -11,6 +11,7 @@
     using ViewModels.Favourite;
     using ViewModels.Mapping;
 
+    [Authorize]
     public partial class FavouriteController : BaseController
     {
         private readonly IFavouriteService _favouriteService;
@@ -29,7 +30,6 @@
             _favouriteService = favouriteService;
         }
 
-        [Authorize]
         public virtual ActionResult Index()
         {
             User.GetMembershipUser(MembershipService);
@@ -60,7 +60,6 @@
 
 
         [HttpPost]
-        [Authorize]
         public virtual JsonResult FavouritePost(EntityIdViewModel viewModel)
         {
             var returnValue = new FavouriteJsonReturnModel();

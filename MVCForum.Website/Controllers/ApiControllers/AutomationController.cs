@@ -9,6 +9,7 @@
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Http;
 
@@ -63,7 +64,7 @@
                 };
                 try
                 {
-                    var result = await _membershipService.CreateUser(user, LoginType.Standard);
+                    var result = await _membershipService.CreateUserAsync(user, LoginType.Standard, CancellationToken.None);
                     users.Add(user);
                     if (!result.Successful)
                     {

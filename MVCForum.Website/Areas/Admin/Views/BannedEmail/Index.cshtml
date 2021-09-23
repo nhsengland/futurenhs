@@ -28,6 +28,7 @@
             <div class="col-md-6">
                 @using (Html.BeginForm("Add", "BannedEmail", FormMethod.Post))
                 {
+                    @Html.AntiForgeryToken()
                     <div class="input-group tablesearch">
                         @Html.TextBox("Email", null, new { @class = "form-control", type = "email", placeholder = "Add new Email" })
                         <span class="input-group-btn">

@@ -18,6 +18,8 @@ namespace MvcForum.Web.Areas.Admin.Controllers
             _systemPagesService = systemPagesService;
         }
         // GET: Admin/AdminSystemPages
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         public async Task<ActionResult> Index(CancellationToken cancellationToken)
         {
             var pages = await _systemPagesService.GetAllSystemPages(cancellationToken);
@@ -31,7 +33,10 @@ namespace MvcForum.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(SystemPageWriteViewModel pageModel, CancellationToken cancellationToken)
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Create")]
+        [AsyncTimeout(30000)]
+        public async Task<ActionResult> CreateAsync(SystemPageWriteViewModel pageModel, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) 
                 return View(pageModel);
@@ -67,8 +72,10 @@ namespace MvcForum.Web.Areas.Admin.Controllers
 
         }
 
-
-        public async Task<ActionResult> Edit(Guid id, CancellationToken cancellationToken)
+        [ActionName("Edit")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> EditAsync(Guid id, CancellationToken cancellationToken)
         {
             var page = await _systemPagesService.GetSystemPageById(id, cancellationToken);
 
@@ -88,7 +95,10 @@ namespace MvcForum.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(SystemPageWriteViewModel pageModel, CancellationToken cancellationToken)
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Edit")]
+        [AsyncTimeout(30000)]
+        public async Task<ActionResult> EditAsync(SystemPageWriteViewModel pageModel, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) 
                 return View(pageModel);
@@ -127,7 +137,10 @@ namespace MvcForum.Web.Areas.Admin.Controllers
 
         }
 
-        public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
+        [ActionName("Delete")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        public async Task<ActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             var result = await _systemPagesService.DeleteSystemPage(id, cancellationToken);
 

@@ -39,6 +39,7 @@
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Index(SocialSettingsViewModel viewModel)
         {
             var settings = SettingsService.GetSettings(false);

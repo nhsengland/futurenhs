@@ -16,6 +16,7 @@ namespace MvcForum.Web.Controllers
     /// <summary>
     /// Defines methods and routes for the GroupFIles.
     /// </summary>
+    [Authorize]
     public class GroupFileController : AsyncController
     {
         /// <summary>

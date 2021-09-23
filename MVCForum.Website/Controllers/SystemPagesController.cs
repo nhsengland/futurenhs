@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using MvcForum.Core.Interfaces.Services;
     using System.Web.Mvc;
+    using System;
 
     public class SystemPagesController : Controller
     {
@@ -13,7 +14,11 @@
         {
             _systemPagesService = systemPagesService;
         }
-        public async Task<ActionResult> Show(string slug, CancellationToken cancellationToken)
+
+        [ActionName("Show")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> ShowAsync(string slug, CancellationToken cancellationToken)
         {
             var page = await _systemPagesService.GetSystemPageBySlug(slug.ToLower(), cancellationToken);
             if (page != null)

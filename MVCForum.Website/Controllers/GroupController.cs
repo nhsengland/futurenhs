@@ -26,6 +26,7 @@ namespace MvcForum.Web.Controllers
     using ViewModels.Group;
     using ViewModels.Mapping;
 
+    [Authorize]
     public partial class GroupController : BaseController
     {
         private readonly INotificationService _notificationService;
@@ -77,11 +78,13 @@ namespace MvcForum.Web.Controllers
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
+        [HttpGet]
         public ActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult ListMainGroups()
         {
@@ -97,7 +100,7 @@ namespace MvcForum.Web.Controllers
             return PartialView(catViewModel);
         }
 
-
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult ListSections()
         {
@@ -132,6 +135,7 @@ namespace MvcForum.Web.Controllers
             return PartialView(allSections);
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult ListGroupSideMenu()
         {
@@ -160,7 +164,7 @@ namespace MvcForum.Web.Controllers
             return PartialView(MyGroupsModel);
         }
 
-        [Authorize]
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult GetSubscribedGroups()
         {
@@ -232,13 +236,18 @@ namespace MvcForum.Web.Controllers
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 
-        public virtual async Task<ActionResult> Leave(string slug, int? p)
+        [HttpGet]
+        [ActionName("Leave")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<ActionResult> LeaveAsync(string slug, int? p)
         {
 
             _groupService.LeaveGroup(slug, LoggedOnReadOnlyUser.Id);
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 
+        [HttpGet]
         public PartialViewResult GroupHeader(string slug, string tab = null)
         {
             var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
@@ -372,6 +381,7 @@ namespace MvcForum.Web.Controllers
             return tabsViewModel;
         }
 
+        [HttpGet]
         public PartialViewResult GetGroupHomeCards(string slug)
         {
             var viewModel = new GroupHomeCardsViewModel 
@@ -384,6 +394,7 @@ namespace MvcForum.Web.Controllers
             return PartialView("_GroupHomeCards", viewModel);
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult GetGroupForum(Guid groupId, int? p)
         {
@@ -444,7 +455,7 @@ namespace MvcForum.Web.Controllers
             return PartialView("_Forum", topicViewModel);
         }
 
-        
+        [HttpGet]
         public virtual PartialViewResult LoadMoreTopics(Guid groupId, int? p)
         {
             var group = _groupService.Get(groupId);
@@ -484,15 +495,16 @@ namespace MvcForum.Web.Controllers
             return PartialView("_Topics", topicViewModels);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int? p, string tab = null, Guid? folder = null)
+        [HttpGet]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        [ActionName("Show")]
+        public async virtual Task<ActionResult> ShowAsync(string slug, int? p, string tab = null, Guid? folder = null)
         {
 
             // Get the Group
             var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
             var loggedOnUsersRole = GetGroupMembershipRole(group.Group.Id);
-
-            // Allowed Groups for this user
-            var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
 
             // Set the page index
             var pageIndex = p ?? 1;
@@ -550,12 +562,14 @@ namespace MvcForum.Web.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult GetGroupFiles(Guid groupId, int? p)
         {
             return PartialView("_Files", null);
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult GetGroupMembers(Guid groupId, int? p)
         {
@@ -599,6 +613,7 @@ namespace MvcForum.Web.Controllers
             return PartialView("_ManageUsers", viewModel);
         }
 
+        [HttpGet]
         public virtual ActionResult ManageUser(Guid groupUserId)
         {
             // Get the Group
@@ -606,7 +621,6 @@ namespace MvcForum.Web.Controllers
             var roles = _roleService.AllRoles().Where(x => x.RoleName != Constants.GuestRoleName);
             var selectList = new List<SelectListItem>(roles.Select(x => new SelectListItem { Text = x.RoleName, Value = x.Id.ToString() }));
 
-
             var viewModel = new GroupUserViewModel
             {
                 GroupUser = groupUser,
@@ -616,15 +630,17 @@ namespace MvcForum.Web.Controllers
 
             };
 
-
             return View(viewModel);
         }
 
-       public virtual ActionResult ApproveUser(Guid groupUserId, string slug)
+        [HttpGet]
+        public virtual ActionResult ApproveUser(Guid groupUserId, string slug)
         {
             _groupService.ApproveJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
             return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab });
         }
+
+        [HttpGet]
         public virtual ActionResult RejectUser(Guid groupUserId, string slug)
         {
             _groupService.RejectJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
@@ -632,15 +648,16 @@ namespace MvcForum.Web.Controllers
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult> ManageUser(GroupUserViewModel model)
+        [ActionName("ManageUser")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        [ValidateAntiForgeryToken]
+        public virtual async Task<ActionResult> ManageUserAsync(GroupUserViewModel model, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Get the Group
-
-
-            var groupUser = await _groupService.UpdateGroupUser(model.GroupUser);
+            var groupUser = await _groupService.UpdateGroupUserAsync(model.GroupUser, cancellationToken);
             var roles = _roleService.AllRoles();
             var selectList = new List<SelectListItem>(roles.Select(x => new SelectListItem { Text = x.RoleName, Value = x.Id.ToString() }));
-
 
             var viewModel = new GroupUserViewModel
             {
@@ -651,10 +668,10 @@ namespace MvcForum.Web.Controllers
 
             };
 
-
             return View(viewModel);
         }
 
+        [HttpGet]
         private MembershipRole GetGroupMembershipRole(Guid groupId)
         {
 

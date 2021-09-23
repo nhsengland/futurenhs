@@ -5,6 +5,7 @@
     using Core.Interfaces.Services;
     using ViewModels;
 
+    [Authorize]
     public partial class SnippetsController : BaseController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;

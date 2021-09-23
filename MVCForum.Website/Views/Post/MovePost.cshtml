@@ -12,6 +12,7 @@
         <p>@Html.Lang("Post.Move.Description")</p>
         @using (Html.BeginForm("MovePost", "post", FormMethod.Post, new {@class = "form-report"}))
         {
+            @Html.AntiForgeryToken()
             @Html.HiddenFor(x => Model.PostId)
             @Html.ValidationSummary(false)
 

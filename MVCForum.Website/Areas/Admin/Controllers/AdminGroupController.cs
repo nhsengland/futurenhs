@@ -79,7 +79,10 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateGroup(GroupEditViewModel GroupViewModel)
+        [ActionName("CreateGroup")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> CreateGroupAsync(GroupEditViewModel GroupViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -129,7 +132,11 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult> EditGroup(GroupEditViewModel GroupViewModel)
+        [ValidateAntiForgeryToken]
+        [ActionName("EditGroup")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> EditGroupAsync(GroupEditViewModel GroupViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -197,7 +204,10 @@
             return View(viewModel);
         }
 
-        public async Task<ActionResult> DeleteGroup(Guid id)
+        [ActionName("DeleteGroup")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> DeleteGroupAsync(Guid id)
         {
             var cat = _groupService.Get(id);
             var GroupResult = await _groupService.Delete(cat);

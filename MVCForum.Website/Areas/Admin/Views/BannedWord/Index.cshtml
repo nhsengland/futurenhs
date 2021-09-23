@@ -26,6 +26,7 @@
             <div class="col-md-7">
                 @using (Html.BeginForm("Add", "BannedWord", FormMethod.Post, new { @class = "form-inline" }))
                 {
+                    @Html.AntiForgeryToken()
                     <div class="form-group">
                         <label class="sr-only" for="Word">Word</label>
                         @Html.TextBox("Word", null, new { @class = "form-control" })
