@@ -119,7 +119,13 @@ Leaderboard.LeaderboardTitle,Global Leaderboard
 Leaderboard.ThisWeeksStars,This Weeks Stars
 Leaderboard.ThisYearsStars,This Years Rock Stars
 LogOn.LogOff,Log Off
-LogOn.LogOn,Log On
+LogOn.LogOn,Log In
+LogOn.Button.Text,Log In
+LogOn.Error.UnableToLogIn.Text, Unable to log in. Please check your details.
+LogOn.Introduction.Text, Log in text TBC
+LogOn.ForgotPassword.Text, Forgot your password?
+LogOn.RegisterInterest.Link, #
+LogOn.ContactSupport.Link, #
 Member.HasNewPrivateMessages,You have new unread Private messages
 Member.ProfileUpdated,Profile Updated
 Members.Admin,Admin

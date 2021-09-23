@@ -626,7 +626,11 @@
         /// <returns></returns>
         public virtual ActionResult LogOn()
         {
-            // Create the empty view model
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Group" );
+            }
+                // Create the empty view model
             var viewModel = new LogOnViewModel();
 
             // See if a return url is present or not and add it

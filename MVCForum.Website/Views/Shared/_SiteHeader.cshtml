@@ -43,7 +43,7 @@
                             @if (!User.Identity.IsAuthenticated)
                             {
                                 <li role="none">
-                                    <a role="menuitem" class="c-button c-site-header-nav_header-button" href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a>
+                                    <a role="menuitem" class="c-button c-site-header-nav_header-button" href="@Url.Action("LogOn", "Members", new { ReturnUrl = "/group" })">@Html.LanguageString("Layout.Nav.Logon")</a>
                                 </li>
 
                                 if (Html.Settings().SuspendRegistration != true)
