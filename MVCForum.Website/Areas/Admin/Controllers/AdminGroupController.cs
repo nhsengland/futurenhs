@@ -175,6 +175,7 @@
                     {
                         _groupService.AddGroupAdministrators(group.Slug, new List<Guid>(), LoggedOnReadOnlyUser.Id);
                     }
+                    return RedirectToAction("Index");
                 }
             }
             GroupViewModel.Users = MembershipService.GetAll().ToSelectList();

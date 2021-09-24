@@ -159,6 +159,10 @@
     <Compile Include="Migrations\202109071320535_FixMigrationsBlank.Designer.cs">
       <DependentUpon>202109071320535_FixMigrationsBlank.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109241244000_AddsSubtitleAndIntroductionToGroup.cs" />
+    <Compile Include="Migrations\202109241244000_AddsSubtitleAndIntroductionToGroup.Designer.cs">
+      <DependentUpon>202109241244000_AddsSubtitleAndIntroductionToGroup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -621,6 +625,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109071320535_FixMigrationsBlank.resx">
       <DependentUpon>202109071320535_FixMigrationsBlank.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109241244000_AddsSubtitleAndIntroductionToGroup.resx">
+      <DependentUpon>202109241244000_AddsSubtitleAndIntroductionToGroup.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

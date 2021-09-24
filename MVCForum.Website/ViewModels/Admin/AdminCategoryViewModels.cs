@@ -30,11 +30,22 @@
         [StringLength(600)]
         public string Name { get; set; }
 
-        [DisplayName("Group Description")]
+        [DisplayName("Strap line")]
         [Required]
         [DataType(DataType.MultilineText)]
         [StringLength(1800)]
         public string Description { get; set; }
+
+        [DisplayName("Group subtitle")]
+        [StringLength(254, ErrorMessage = "The group subtitle must be less than 255 characters.")]
+        public string Subtitle { get; set; }
+
+        [DisplayName("Group introduction")]
+        [UIHint(Constants.EditorType)]
+        [AllowHtml]
+        [Required(ErrorMessage = "Please provide an introduction to your group")]
+        [StringLength(4000, ErrorMessage = "The group introduction must not be greater than 4000 characters.")]
+        public string Introduction { get; set; }
 
         [DisplayName("Group Colour")]
         [UIHint(Constants.EditorTemplateColourPicker)]

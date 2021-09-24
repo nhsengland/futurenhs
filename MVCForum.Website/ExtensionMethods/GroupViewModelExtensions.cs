@@ -20,6 +20,8 @@
             var Group = new Group {
                 Name = GroupViewModel.Name,
                 Description = GroupViewModel.Description,
+                Subtitle = GroupViewModel.Subtitle,
+                Introduction = GroupViewModel.Introduction,
                 IsLocked = GroupViewModel.IsLocked,
                 ModeratePosts = GroupViewModel.ModeratePosts,
                 ModerateTopics = GroupViewModel.ModerateTopics,
@@ -43,6 +45,8 @@
         public static Group ToGroup(this GroupEditViewModel GroupViewModel, Group Group)
         {
             Group.Description = GroupViewModel.Description;
+            Group.Subtitle = GroupViewModel.Subtitle;
+            Group.Introduction = GroupViewModel.Introduction;
             Group.IsLocked = GroupViewModel.IsLocked;
             Group.ModeratePosts = GroupViewModel.ModeratePosts;
             Group.ModerateTopics = GroupViewModel.ModerateTopics;
@@ -69,6 +73,8 @@
             {
                 Name = Group.Name,
                 Description = Group.Description,
+                Subtitle = Group.Subtitle,
+                Introduction = Group.Introduction,
                 IsLocked = Group.IsLocked,
                 ModeratePosts = Group.ModeratePosts == true,
                 ModerateTopics = Group.ModerateTopics == true,
