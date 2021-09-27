@@ -33,11 +33,6 @@ namespace MvcForum.Core.Services
                 throw new ArgumentNullException(nameof(invitedUserMailAddress));
             }
 
-            if (string.IsNullOrWhiteSpace(invitedUserMailAddress.Address))
-            {
-                throw new ArgumentNullException(nameof(invitedUserMailAddress.Address));
-            }
-
             if (string.IsNullOrWhiteSpace(invitedUserRoleName))
             {
                 throw new ArgumentNullException(nameof(invitedUserRoleName));
@@ -70,11 +65,6 @@ namespace MvcForum.Core.Services
                 throw new ArgumentNullException(nameof(invitedUserMailAddress));
             }
 
-            if (string.IsNullOrWhiteSpace(invitedUserMailAddress.Address))
-            {
-                throw new ArgumentNullException(nameof(invitedUserMailAddress.Address));
-            }
-
             if (string.IsNullOrWhiteSpace(approvedByUsername))
             {
                 throw new ArgumentNullException(nameof(approvedByUsername));
@@ -98,11 +88,6 @@ namespace MvcForum.Core.Services
                 throw new ArgumentNullException(nameof(invitedUserMailAddress));
             }
 
-            if (string.IsNullOrWhiteSpace(invitedUserMailAddress.Address))
-            {
-                throw new ArgumentNullException(nameof(invitedUserMailAddress.Address));
-            }
-
             if (string.IsNullOrWhiteSpace(invitedToGroupSlug))
             {
                 throw new ArgumentNullException(nameof(invitedToGroupSlug));
@@ -115,12 +100,12 @@ namespace MvcForum.Core.Services
         {
             if (string.IsNullOrWhiteSpace(currentMemberUsername))
             {
-                throw new ArgumentNullException(currentMemberUsername);
+                throw new ArgumentNullException(nameof(currentMemberUsername));
             }
 
             if (string.IsNullOrWhiteSpace(invitedToGroupSlug))
             {
-                throw new ArgumentNullException(currentMemberUsername);
+                throw new ArgumentNullException(nameof(invitedToGroupSlug));
             }
 
             return _groupAddMemberRepository.IsCurrentMemberAdminAsync(currentMemberUsername, invitedToGroupSlug, cancellationToken);

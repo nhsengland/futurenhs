@@ -90,7 +90,6 @@ namespace MvcForum.Core.Repositories.Repository
                     WHERE  
                         MembershipUser.UserName = @currentMemberUsername;
 
-
                     SELECT 
                         MembershipRole.RoleName
                     FROM
@@ -121,8 +120,7 @@ namespace MvcForum.Core.Repositories.Repository
                 var membershipRole = result.ReadFirstOrDefault<string>();
                 var groupRole = result.ReadFirstOrDefault<string>();
 
-                return membershipRole?.ToLower() == "admin" || groupRole?.ToLower() == "admin";
-                
+                return membershipRole?.ToLower() == "admin" || groupRole?.ToLower() == "admin";                
             }
         }
     }
