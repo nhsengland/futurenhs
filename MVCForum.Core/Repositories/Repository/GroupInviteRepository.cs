@@ -21,7 +21,7 @@
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
 
-        public Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(Guid groupId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(Guid groupId, CancellationToken cancellationToken)
         {           
             const string query =
                 @"
@@ -38,11 +38,11 @@
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                return dbConnection.QueryAsync<GroupInviteViewModel>(commandDefinition);
+                return await  dbConnection.QueryAsync<GroupInviteViewModel>(commandDefinition);
             }
         }
 
-        public Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(MailAddress mailAddress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GroupInviteViewModel>> GetInvitesForGroupAsync(MailAddress mailAddress, CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -59,11 +59,11 @@
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                return dbConnection.QueryAsync<GroupInviteViewModel>(commandDefinition);
+                return await dbConnection.QueryAsync<GroupInviteViewModel>(commandDefinition);
             }
         }
 
-        public Task<GroupInviteViewModel> GetInviteForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
+        public async Task<GroupInviteViewModel> GetInviteForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -81,11 +81,11 @@
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                return dbConnection.QuerySingleOrDefaultAsync<GroupInviteViewModel>(commandDefinition);
+                return await dbConnection.QuerySingleOrDefaultAsync<GroupInviteViewModel>(commandDefinition);
             }
         }
 
-        public Task<bool> InviteExistsForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
+        public async Task<bool> InviteExistsForGroupAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -99,11 +99,11 @@
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+                return await dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
             }
         }
 
-        public Task<bool> InviteExistsForMailAddressAsync(MailAddress mailAddress, CancellationToken cancellationToken)
+        public async Task<bool> InviteExistsForMailAddressAsync(MailAddress mailAddress, CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -116,11 +116,11 @@
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+                return await dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
             }
         }
 
-        public Task<bool> GroupMemberExistsAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
+        public async Task<bool> GroupMemberExistsAsync(Guid groupId, MailAddress mailAddress, CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -135,11 +135,11 @@
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+                return await dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
             }
         }
 
-        public Task<bool> MemberExistsAsync(MailAddress mailAddress, CancellationToken cancellationToken)
+        public async Task<bool> MemberExistsAsync(MailAddress mailAddress, CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -152,11 +152,11 @@
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+                return await dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
             }
         }
 
-        public Task<bool> IsMemberAdminAsync(string username, CancellationToken cancellationToken)
+        public async Task<bool> IsMemberAdminAsync(string username, CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -174,7 +174,7 @@
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
             {
-                return dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+                return await dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
             }
         }
     }
