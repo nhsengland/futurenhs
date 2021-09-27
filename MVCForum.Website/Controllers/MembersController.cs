@@ -628,16 +628,26 @@
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Group" );
+                return RedirectToAction("Index", "Group");
             }
-                // Create the empty view model
+
             var viewModel = new LogOnViewModel();
 
-            // See if a return url is present or not and add it
             var returnUrl = Request["ReturnUrl"];
             if (!string.IsNullOrWhiteSpace(returnUrl))
             {
                 viewModel.ReturnUrl = returnUrl;
+            }
+
+            var returnUrlLocalPath = Request.UrlReferrer?.LocalPath;
+            if (!string.IsNullOrWhiteSpace(returnUrlLocalPath))
+            {
+                viewModel.ReturnUrl = returnUrlLocalPath;
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.ReturnUrl))
+            {
+                viewModel.ReturnUrl = "/group";
             }
 
             return View(viewModel);

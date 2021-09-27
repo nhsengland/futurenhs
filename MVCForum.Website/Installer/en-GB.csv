@@ -126,6 +126,7 @@ LogOn.Introduction.Text, Log in text TBC
 LogOn.ForgotPassword.Text, Forgot your password?
 LogOn.RegisterInterest.Link, #
 LogOn.ContactSupport.Link, #
+LogOn.Title.Text,Log In
 Member.HasNewPrivateMessages,You have new unread Private messages
 Member.ProfileUpdated,Profile Updated
 Members.Admin,Admin
