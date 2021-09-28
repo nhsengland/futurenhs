@@ -88,7 +88,7 @@ namespace MvcForum.Core.Repositories.Repository
 					JOIN  
                         MembershipRole ON MembershipUsersInRoles.RoleIdentifier = MembershipRole.Id
                     WHERE  
-                        MembershipUser.UserName = 'admin';
+                        MembershipUser.UserName = @currentMemberUsername;
 
 
                     SELECT 

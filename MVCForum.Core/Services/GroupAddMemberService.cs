@@ -18,26 +18,41 @@ namespace MvcForum.Core.Services
         public GroupAddMemberService(IGroupAddMemberRepository groupAddMemberRepository,
                                      IGroupAddMemberCommand groupAddMemberCommand)
         {
-            if (groupAddMemberRepository is null)
-            {
-                throw new ArgumentNullException(nameof(groupAddMemberRepository));
-            }
-
-            if (groupAddMemberCommand is null)
-            {
-                throw new ArgumentNullException(nameof(groupAddMemberCommand));
-            }
-
-            _groupAddMemberRepository = groupAddMemberRepository;
-            _groupAddMemberCommand = groupAddMemberCommand;
+            _groupAddMemberRepository = groupAddMemberRepository ?? throw new ArgumentNullException(nameof(groupAddMemberRepository));
+            _groupAddMemberCommand = groupAddMemberCommand ?? throw new ArgumentNullException(nameof(groupAddMemberCommand));
         }
 
         public Task<ResponseType> AddMemberToGroupAsync(MailAddress invitedUserMailAddress, 
-                                                                         string invitedUserRoleName, 
-                                                                         string addedByUsername, 
-                                                                         string invitedToGroupSlug, 
-                                                                         CancellationToken cancellationToken)
-        {            
+                                                        string invitedUserRoleName, 
+                                                        string addedByUsername, 
+                                                        string invitedToGroupSlug, 
+                                                        CancellationToken cancellationToken)
+        {
+            if (invitedUserMailAddress is null)
+            {
+                throw new ArgumentNullException(nameof(invitedUserMailAddress));
+            }
+
+            if (string.IsNullOrWhiteSpace(invitedUserMailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(invitedUserMailAddress.Address));
+            }
+
+            if (string.IsNullOrWhiteSpace(invitedUserRoleName))
+            {
+                throw new ArgumentNullException(nameof(invitedUserRoleName));
+            }
+
+            if (string.IsNullOrWhiteSpace(addedByUsername))
+            {
+                throw new ArgumentNullException(nameof(addedByUsername));
+            }
+
+            if (string.IsNullOrWhiteSpace(invitedToGroupSlug))
+            {
+                throw new ArgumentNullException(nameof(invitedToGroupSlug));
+            }
+
             return _groupAddMemberCommand.AddMemberToGroupAsync(invitedUserMailAddress,
                                                                 invitedUserRoleName,
                                                                 addedByUsername,
@@ -46,10 +61,30 @@ namespace MvcForum.Core.Services
         }
 
         public Task<ResponseType> ApproveGroupMemberAsync(MailAddress invitedUserMailAddress, 
-                                                                           string approvedByUsername, 
-                                                                           string invitedToGroupSlug, 
-                                                                           CancellationToken cancellationToken)
+                                                          string approvedByUsername, 
+                                                          string invitedToGroupSlug, 
+                                                          CancellationToken cancellationToken)
         {
+            if (invitedUserMailAddress is null)
+            {
+                throw new ArgumentNullException(nameof(invitedUserMailAddress));
+            }
+
+            if (string.IsNullOrWhiteSpace(invitedUserMailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(invitedUserMailAddress.Address));
+            }
+
+            if (string.IsNullOrWhiteSpace(approvedByUsername))
+            {
+                throw new ArgumentNullException(nameof(approvedByUsername));
+            }
+
+            if (string.IsNullOrWhiteSpace(invitedToGroupSlug))
+            {
+                throw new ArgumentNullException(nameof(invitedToGroupSlug));
+            }
+
             return _groupAddMemberCommand.ApproveGroupMemberAsync(invitedUserMailAddress,
                                                                   approvedByUsername,
                                                                   invitedToGroupSlug,
@@ -58,11 +93,36 @@ namespace MvcForum.Core.Services
 
         public Task<GroupAddMemberQueryResponse> GroupAddMemberQueryAsync(MailAddress invitedUserMailAddress, string invitedToGroupSlug, CancellationToken cancellationToken)
         {
+            if (invitedUserMailAddress is null)
+            {
+                throw new ArgumentNullException(nameof(invitedUserMailAddress));
+            }
+
+            if (string.IsNullOrWhiteSpace(invitedUserMailAddress.Address))
+            {
+                throw new ArgumentNullException(nameof(invitedUserMailAddress.Address));
+            }
+
+            if (string.IsNullOrWhiteSpace(invitedToGroupSlug))
+            {
+                throw new ArgumentNullException(nameof(invitedToGroupSlug));
+            }
+
             return _groupAddMemberRepository.GroupAddMemberQueryAsync(invitedUserMailAddress, invitedToGroupSlug, cancellationToken);
         }
 
         public Task<bool> IsCurrentMemberAdminAsync(string currentMemberUsername, string invitedToGroupSlug, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(currentMemberUsername))
+            {
+                throw new ArgumentNullException(currentMemberUsername);
+            }
+
+            if (string.IsNullOrWhiteSpace(invitedToGroupSlug))
+            {
+                throw new ArgumentNullException(currentMemberUsername);
+            }
+
             return _groupAddMemberRepository.IsCurrentMemberAdminAsync(currentMemberUsername, invitedToGroupSlug, cancellationToken);
         }
     }
