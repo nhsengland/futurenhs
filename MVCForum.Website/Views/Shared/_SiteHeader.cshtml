@@ -27,16 +27,19 @@
                     Menu
                 </summary>
                 <div class="c-site-header-nav_desktop-container">
-                    <form method="get" action="/search/" class="c-site-header-nav_search-wrapper">
-                        <div class="c-site-header-nav_search-item">
-                            <label class="u-visually-hidden" for="siteSearch">Search the NHS website</label>
-                            <!-- INPUT NEEDS HOOKING UP TO SEARCH - WORKS WITH ID OF "term" BUT NEEDS TO WORK WITH THIS ID INSTEAD -->
-                            @Html.TextBox("siteSearch", null, new { @class = "c-site-header-nav_search-input", placeholder = searchFor, type = "search", aria_label = "Search site" })
-                            <button type="submit" aria-label="Site search button" class="c-site-header-nav_search-button">
-                                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-search", "c-site-header-nav_search-button-icon js-svg"));}
-                            </button>
-                        </div>
-                    </form>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form method="get" action="/search/" class="c-site-header-nav_search-wrapper">
+                            <div class="c-site-header-nav_search-item">
+                                <label class="u-visually-hidden" for="siteSearch">Search the NHS website</label>
+                                <!-- INPUT NEEDS HOOKING UP TO SEARCH - WORKS WITH ID OF "term" BUT NEEDS TO WORK WITH THIS ID INSTEAD -->
+                                @Html.TextBox("siteSearch", null, new { @class = "c-site-header-nav_search-input", placeholder = searchFor, type = "search", aria_label = "Search site" })
+                                <button type="submit" aria-label="Site search button" class="c-site-header-nav_search-button">
+                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-search", "c-site-header-nav_search-button-icon js-svg"));}
+                                </button>
+                            </div>
+                        </form>
+                    }
                     <nav id="header-nav" class="c-site-header-nav_nav" aria-label="Navigation">
                         <ul class="c-site-header-nav_root-nav c-site-header-nav_root-nav--mobile-full-height" role="menubar">
                             @if (User.Identity.IsAuthenticated)
