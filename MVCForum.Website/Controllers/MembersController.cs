@@ -1158,6 +1158,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public virtual ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
         {
             if (!ModelState.IsValid)
@@ -1242,7 +1243,6 @@
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet]
-        [AllowAnonymous]
         public virtual ViewResult ResetPassword(Guid? id, string token)
         {
             var model = new ResetPasswordViewModel
@@ -1266,7 +1266,6 @@
         /// <param name="postedModel"></param>
         /// <returns></returns>
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public virtual ActionResult ResetPassword(ResetPasswordViewModel postedModel)
         {
@@ -1317,7 +1316,6 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [AllowAnonymous]
         public virtual ViewResult PasswordChanged()
         {
             return View();
