@@ -124,8 +124,7 @@ LogOn.Button.Text,Log In
 LogOn.Error.UnableToLogIn.Text, Unable to log in. Please check your details.
 LogOn.Introduction.Text, Log in text TBC
 LogOn.ForgotPassword.Text, Forgot your password?
-LogOn.RegisterInterest.Link, #
-LogOn.ContactSupport.Link, #
+LogOn.RegisterInterest.Link, mailto:support@futurenhs.zendesk.com?subject=Register Interest
 LogOn.Title.Text,Log In
 Member.HasNewPrivateMessages,You have new unread Private messages
 Member.ProfileUpdated,Profile Updated
