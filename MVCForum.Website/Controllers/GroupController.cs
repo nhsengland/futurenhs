@@ -135,7 +135,6 @@ namespace MvcForum.Web.Controllers
             return PartialView(allSections);
         }
 
-        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult ListGroupSideMenu()
         {
@@ -247,7 +246,6 @@ namespace MvcForum.Web.Controllers
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 
-        [HttpGet]
         public PartialViewResult GroupHeader(string slug, string tab = null)
         {
             var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
@@ -455,7 +453,6 @@ namespace MvcForum.Web.Controllers
             return PartialView("_Forum", topicViewModel);
         }
 
-        [HttpGet]
         public virtual PartialViewResult LoadMoreTopics(Guid groupId, int? p)
         {
             var group = _groupService.Get(groupId);
