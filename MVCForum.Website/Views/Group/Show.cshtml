@@ -49,15 +49,9 @@
 		@*@Html.Partial("_CommonSideNav")*@
 
     } else {
-        if (Model.User.IsAdmin())
-        {
-            <a id="groupinvite" href="@Url.RouteUrl("GroupInviteUrls", new {slug = Model.Group.Slug, groupId = Model.Group.Id})" class="c-button c-button-outline c-button--min-width">
-                @Html.LanguageString("Layout.GroupInvite")
-            </a>
-        }
         Html.RenderAction("GetGroupHomeCards", new { slug = Model.Group.Slug });
-        }
     }
+}
 
 @section GroupHeader {
 	@{ 

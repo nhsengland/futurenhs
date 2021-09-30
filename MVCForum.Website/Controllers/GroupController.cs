@@ -322,6 +322,12 @@ namespace MvcForum.Web.Controllers
                         Url = Url.Action("AddMember", "GroupInvite", new { slug = @group.Slug }),
                         Order = 2
                     });
+                    model.ActionLinks.Add(new ActionLink
+                    {
+                        Name = "Add new user",
+                        Url = Url.RouteUrl("GroupInviteUrls", new { slug = @group.Slug, groupId = @group.Id }),
+                        Order = 3
+                    });
                 }
             }
 
