@@ -107,16 +107,24 @@
         {
             const string query =
                 @"
-                    SELECT CAST(COUNT(1) AS BIT)
+                    SELECT CAST(COUNT(1) AS BIT) AS IsMemberInvited
                     FROM   GroupInvite
                     WHERE  EmailAddress = @mailAddressValue;
+
+                    SELECT CAST(COUNT(1) AS BIT) AS IsMemberRegistered
+                    FROM   MembershipUser
+                    WHERE  Email = @mailAddressValue;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new { mailAddressValue = mailAddress.Address }, cancellationToken: cancellationToken);
 
             using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            using (var queryResult = await dbConnection.QueryMultipleAsync(commandDefinition))
             {
-                return await dbConnection.ExecuteScalarAsync<bool>(commandDefinition);
+                var isMemberInvited = queryResult.ReadFirstOrDefault<bool>();
+                var isMemberRegistered = queryResult.ReadFirstOrDefault<bool>();
+
+                return isMemberInvited || isMemberRegistered;
             }
         }
 
