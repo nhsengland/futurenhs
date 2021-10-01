@@ -324,7 +324,7 @@ namespace MvcForum.Web.Controllers
                     });
                     model.ActionLinks.Add(new ActionLink
                     {
-                        Name = "Add new user",
+                        Name = "Invite new user",
                         Url = Url.RouteUrl("GroupInviteUrls", new { slug = @group.Slug, groupId = @group.Id }),
                         Order = 3
                     });
