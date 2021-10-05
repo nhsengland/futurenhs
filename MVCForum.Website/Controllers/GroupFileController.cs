@@ -70,11 +70,16 @@ namespace MvcForum.Web.Controllers
         [ActionName("Show")]
         public async Task<ActionResult> ShowAsync(Guid id, string slug, CancellationToken cancellationToken)
         {
-            if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
+            if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            // TODO - Check user has permissions to view file
+            if (!UserHasGroupAccess(slug))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             var dbFile = await _fileService.GetFileAsync(id, cancellationToken);
+
+            if (dbFile is null) throw new ApplicationException("No file found for supplied Id");
 
             var file = new FileViewModel
             {
@@ -99,7 +104,7 @@ namespace MvcForum.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (folderId == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(folderId)); }
+            if (folderId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(folderId));
 
             var folder = GetFolderReadViewModel(folderId);
 
@@ -218,7 +223,7 @@ namespace MvcForum.Web.Controllers
         [ActionName("Update")]
         public async Task<ActionResult> UpdateAsync(Guid id, string slug, CancellationToken cancellationToken)
         {
-            if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
+            if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
             if (!UserHasGroupAccess(slug))
             {
@@ -226,6 +231,8 @@ namespace MvcForum.Web.Controllers
             }
 
             var file = await _fileService.GetFileAsync(id, cancellationToken);
+
+            if (file is null) throw new ApplicationException("No file found for update for supplied Id");
 
             var viewModel = new FileWriteViewModel
             {
@@ -245,7 +252,7 @@ namespace MvcForum.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (file is null) { throw new ArgumentNullException(nameof(file)); }
+                if (file is null) throw new ArgumentNullException(nameof(file));
 
                 if (!UserHasGroupAccess(file.Slug))
                 {
@@ -266,7 +273,7 @@ namespace MvcForum.Web.Controllers
         [ActionName("Delete")]
         public async Task<ActionResult> DeleteAsync(Guid id, string slug, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
+            if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
             if (!UserHasGroupAccess(slug))
             {
@@ -274,6 +281,8 @@ namespace MvcForum.Web.Controllers
             }
 
             var file = await _fileService.GetFileAsync(id, cancellationToken);
+
+            if (file is null) throw new ApplicationException("No file found for delete for supplied Id");
 
             var viewModel = new FileWriteViewModel
             {
@@ -291,7 +300,7 @@ namespace MvcForum.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(FileWriteViewModel file)
         {
-            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+            if (file is null) throw new ArgumentNullException(nameof(file));
 
             if (!UserHasGroupAccess(file.Slug))
             {
@@ -313,10 +322,7 @@ namespace MvcForum.Web.Controllers
         [ActionName("Download")]
         public async Task<ActionResult> DownloadAsync(Guid fileId, string groupSlug, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (fileId == Guid.Empty)
-            {
-                throw new InvalidOperationException("Unable to download file as the Id is not valid");
-            }
+            if (fileId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(fileId));
 
             // Check user has permissions to download file
             if (!UserHasGroupAccess(groupSlug))
@@ -327,10 +333,9 @@ namespace MvcForum.Web.Controllers
             // Get the file by Id passed in
             var fileModel = await _fileService.GetFileAsync(fileId, cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(fileModel?.BlobName))
-            {
-                throw new InvalidOperationException("The requested file does not have a valid name");
-            }
+            if (fileModel is null) throw new ApplicationException("No file found for download for supplied Id");
+
+            if (string.IsNullOrWhiteSpace(fileModel?.BlobName)) throw new ApplicationException("The requested file does not have a valid name");
 
             // Ensure the file is of status verified
             if (fileModel.Status == (int)Status.Verified)
@@ -340,7 +345,7 @@ namespace MvcForum.Web.Controllers
 
                 if (string.IsNullOrWhiteSpace(downloadPath))
                 {
-                    throw new InvalidOperationException("Unable to download file, the end point is not valid");
+                    throw new ApplicationException("Unable to download file, the end point is not valid");
                 }
 
                 // Append download path to files path and redirect
@@ -348,7 +353,7 @@ namespace MvcForum.Web.Controllers
             }
             else
             {
-                throw new InvalidOperationException("The requested file is not valid");
+                throw new ApplicationException("The requested file is not valid");
             }
         }
 
@@ -369,8 +374,13 @@ namespace MvcForum.Web.Controllers
 
         private bool UserHasGroupAccess(string groupSlug)
         {
-            var userId = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-            return _folderService.UserHasGroupAccess(groupSlug, userId);
+            if (System.Web.HttpContext.Current.User is null) throw new NullReferenceException("User not logged in");
+
+            var user = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
+            if (user is null) throw new ApplicationException("No user found for logged in Id");
+
+            return _folderService.UserHasGroupAccess(groupSlug, user.Id);
         }
 
         /// <summary>
