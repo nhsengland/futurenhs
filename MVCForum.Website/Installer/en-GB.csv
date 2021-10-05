@@ -96,6 +96,7 @@ Group.MostRecent,Most recent:
 Group.Members,Group Members
 Group.NoDiscussions,Currently no discussions in this Group
 Group.SubGroupsHeading,Sub Groups In
+Group.PublicGroup.JoinMessage,Please join the group to contribute
 GroupTabs.Home,Home
 GroupTabs.Forum,Forum
 GroupTabs.Files,Files

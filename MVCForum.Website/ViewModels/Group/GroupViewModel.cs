@@ -21,6 +21,7 @@ namespace MvcForum.Web.ViewModels.Group
         public MembershipUser User { get; set; }
         public bool IsSubscribed { get; set; }
         public GroupUserStatus GroupUserStatus { get; set; }
+        public bool IsMember { get; set; }
         public MembershipRole GroupUserRole {get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }

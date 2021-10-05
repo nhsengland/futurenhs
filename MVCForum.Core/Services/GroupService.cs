@@ -20,6 +20,7 @@ namespace MvcForum.Core.Services
     using Models;
     using Models.Entities;
     using Models.General;
+    using MvcForum.Core.ExtensionMethods;
     using Pipeline;
     using Reflection;
     using Utilities;
@@ -791,22 +792,6 @@ namespace MvcForum.Core.Services
             return false;
         }
 
-        private GroupUserStatus GetUserStatusForGroup(GroupUser user)
-        {
-            if (user == null)
-                return GroupUserStatus.NotJoined;
-            if (user.Approved && !user.Banned && !user.Locked)
-                return GroupUserStatus.Joined;
-            if (!user.Approved && !user.Banned && !user.Locked && !user.Rejected)
-                return GroupUserStatus.Pending;
-            if (user.Approved && user.Banned && !user.Locked)
-                return GroupUserStatus.Banned;
-            if (user.Approved && !user.Banned && user.Locked)
-                return GroupUserStatus.Locked;
-
-            return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
-        }
-
         public MembershipRole GetGroupRole(Guid groupId, Guid? membershipId)
         {
             if (membershipId == null)
@@ -818,7 +803,7 @@ namespace MvcForum.Core.Services
                 return _context.MembershipRole.AsNoTracking().FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
 
 
-            if (GetUserStatusForGroup(groupUser) != GroupUserStatus.Joined)
+            if (groupUser.GetUserStatusForGroup() != GroupUserStatus.Joined)
                 return _context.MembershipRole.AsNoTracking().FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
 
             return groupUser?.Role;

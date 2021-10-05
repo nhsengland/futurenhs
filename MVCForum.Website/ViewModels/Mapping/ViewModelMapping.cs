@@ -12,7 +12,9 @@
     using Core.Models;
     using Core.Models.Entities;
     using Core.Models.General;
+    using MvcForum.Core.ExtensionMethods;
     using MvcForum.Core.Ioc;
+    using MvcForum.Core.Models.Enums;
     using Poll;
     using Post;
     using Topic;
@@ -437,6 +439,8 @@
             Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
             IPostService postService = (IPostService) new UnityDependencyResolver(UnityHelper.Container).GetService(typeof(IPostService));
+            var groupUser = post.Topic.Group.GroupUsers.FirstOrDefault(x => x.User.Id == loggedOnUser.Id);
+            var groupUserStatus = groupUser.GetUserStatusForGroup();
             var allowedToVote = loggedOnUser != null && loggedOnUser.Id != post.User.Id;
             if (allowedToVote && settings.EnablePoints)
             {
@@ -467,7 +471,10 @@
                 Post = post,
                 ParentTopic = topic,
                 AllowedToVote = allowedToVote,
-                AllowedToReply = HttpContext.Current.User.Identity.IsAuthenticated == true && post.User.Id != loggedOnUser.Id && !post.IsTopicStarter,
+                AllowedToReply = HttpContext.Current.User.Identity.IsAuthenticated == true 
+                    && post.User.Id != loggedOnUser.Id 
+                    && !post.IsTopicStarter 
+                    && groupUserStatus == GroupUserStatus.Joined,
                 MemberHasFavourited = hasFavourited,
                 Favourites = favourites,
                 PermaLink = string.Concat(topic.NiceUrl, "?", Constants.PostOrderBy, "=", Constants.AllPosts,

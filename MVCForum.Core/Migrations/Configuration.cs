@@ -175,6 +175,7 @@ namespace MvcForum.Core.Services.Migrations
                     var exampleCat = new Group
                     {
                         Name = exampleCatName,
+                        Introduction = "A group introduction.",
                         ModeratePosts = false,
                         ModerateTopics = false,
                         Slug = ServiceHelpers.CreateUrl(exampleCatName),

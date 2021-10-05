@@ -2,6 +2,7 @@
 {
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Ioc;
+    using MvcForum.Core.Models.Enums;
     using MvcForum.Core.Repositories.Models;
     using System;
     using System.Collections.Generic;
@@ -17,5 +18,7 @@
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
         public Guid GroupId { get; set; }
+        public GroupUserStatus GroupUserStatus { get; set; }
+        public bool IsMember { get; set; }
     }
 }

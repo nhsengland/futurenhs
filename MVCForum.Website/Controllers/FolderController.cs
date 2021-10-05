@@ -11,6 +11,9 @@
     using System.Web.Mvc;
     using System.Threading.Tasks;
     using System.Threading;
+    using MvcForum.Core.Models.Entities;
+    using MvcForum.Core.Models.Enums;
+    using MvcForum.Core.ExtensionMethods;
 
     [Authorize]
     public class FolderController : Controller
@@ -19,13 +22,15 @@
         private readonly IFeatureManager _featureManager;
         private readonly IMembershipService _membershipService;
         private readonly ILocalizationService _localizationService;
+        private readonly IGroupService _groupService;
 
-        public FolderController(IFolderService folderService, IFeatureManager featureManager, IMembershipService membershipService, ILocalizationService localizationService)
+        public FolderController(IFolderService folderService, IFeatureManager featureManager, IMembershipService membershipService, ILocalizationService localizationService, IGroupService groupService)
         {
             _folderService = folderService;
             _featureManager = featureManager;
             _membershipService = membershipService;
             _localizationService = localizationService;
+            _groupService = groupService;
         }
 
         [HttpGet]
@@ -192,12 +197,16 @@
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
+                var currentUser = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
                 var model = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
+                var groupUserStatus = _groupService.GetAllForUser(currentUser?.Id).FirstOrDefault(x => x.Group.Id == groupId).GetUserStatusForGroup();
 
                 model.GroupId = groupId;
-                model.IsAdmin = _folderService.UserIsAdmin(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id);
+                model.IsAdmin = _folderService.UserIsAdmin(slug, currentUser?.Id);
                 model.Breadcrumbs = GetBreadcrumbs(folderId, slug);
-
+                model.GroupUserStatus = groupUserStatus;
+                model.IsMember = groupUserStatus == GroupUserStatus.Joined;
                 return PartialView("_Folders", model);
             }
 

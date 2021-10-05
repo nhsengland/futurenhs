@@ -209,23 +209,6 @@ namespace MvcForum.Web.Controllers
             return PartialView("GetGroupBreadcrumb", viewModel);
         }
 
-
-        private GroupUserStatus GetUserStatusForGroup(GroupUser user)
-        {
-            if (user == null)
-                return GroupUserStatus.NotJoined;
-            if (user.Approved && !user.Banned && !user.Locked)
-                return GroupUserStatus.Joined;
-            if (!user.Approved && !user.Banned && !user.Locked && !user.Rejected)
-                return GroupUserStatus.Pending;
-            if (user.Approved && user.Banned && !user.Locked)
-                return GroupUserStatus.Banned;
-            if (user.Approved && !user.Banned && user.Locked)
-                return GroupUserStatus.Locked;
-
-            return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
-        }
-
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("Join")]
@@ -271,7 +254,7 @@ namespace MvcForum.Web.Controllers
             if (LoggedOnReadOnlyUser == null) return model;
 
             var user = @group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
-            var groupUserStatus = GetUserStatusForGroup(user);
+            var groupUserStatus = user.GetUserStatusForGroup();
 
             if (groupUserStatus != GroupUserStatus.Joined)
             {
@@ -451,8 +434,9 @@ namespace MvcForum.Web.Controllers
             if (LoggedOnReadOnlyUser != null)
             {
 
-                var user = group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
-                topicViewModel.GroupUserStatus = GetUserStatusForGroup(user);
+                var userGroupStatus = group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id).GetUserStatusForGroup();
+                topicViewModel.GroupUserStatus = userGroupStatus;
+                topicViewModel.IsMember = userGroupStatus == GroupUserStatus.Joined;
                 topicViewModel.LoggedInUserRole = loggedOnUsersRole;
             }
 
@@ -517,6 +501,7 @@ namespace MvcForum.Web.Controllers
 
             if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
             {
+                var groupUser = group.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
                 // Create the main view model for the Group
                 var viewModel = new GroupViewModel
                 {
@@ -524,13 +509,16 @@ namespace MvcForum.Web.Controllers
                     Group = group.Group,
                     PageIndex = pageIndex,
                     User = LoggedOnReadOnlyUser,
+                    GroupUserStatus = groupUser.GetUserStatusForGroup(),
                     GroupUserRole = GetGroupMembershipRole(group.Group.Id),
                     IsSubscribed = User.Identity.IsAuthenticated && _notificationService.GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
                     Tab = tab,
                     Folder = folder
                 };
 
-                if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName)
+                viewModel.IsMember = viewModel.GroupUserStatus == GroupUserStatus.Joined; 
+
+                if (loggedOnUsersRole.RoleName != Constants.GuestRoleName)
 
                     // If there are subGroups then add then with their permissions
                     if (group.SubGroups.Any())
@@ -587,7 +575,7 @@ namespace MvcForum.Web.Controllers
             // check the user has permission to this Group
             var permissions = RoleService.GetPermissions(group, loggedOnUsersRole);
 
-            var groupUsers = group.GroupUsers.Select(x => new GroupUserViewModel { GroupUser = x, GroupUserStatus = GetUserStatusForGroup(x) });
+            var groupUsers = group.GroupUsers.Select(x => new GroupUserViewModel { GroupUser = x, GroupUserStatus = x.GetUserStatusForGroup() });
 
             // Create the main view model for the Group
             var viewModel = new GroupMembersViewModel {
@@ -609,7 +597,7 @@ namespace MvcForum.Web.Controllers
             {
 
                 var user = group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
-                viewModel.GroupUserStatus = GetUserStatusForGroup(user);
+                viewModel.GroupUserStatus = user.GetUserStatusForGroup();
                 viewModel.LoggedInUserRole = loggedOnUsersRole;
             }
 
@@ -627,7 +615,7 @@ namespace MvcForum.Web.Controllers
             var viewModel = new GroupUserViewModel
             {
                 GroupUser = groupUser,
-                GroupUserStatus = GetUserStatusForGroup(groupUser),
+                GroupUserStatus = groupUser.GetUserStatusForGroup(),
                 RoleSelectList = selectList,
                 MemberRole = GetGroupMembershipRole(groupUser.Group.Id)
 
@@ -665,7 +653,7 @@ namespace MvcForum.Web.Controllers
             var viewModel = new GroupUserViewModel
             {
                 GroupUser = groupUser,
-                GroupUserStatus = GetUserStatusForGroup(groupUser),
+                GroupUserStatus = groupUser.GetUserStatusForGroup(),
                 RoleSelectList = selectList,
                 MemberRole = GetGroupMembershipRole(groupUser.Group.Id)
 

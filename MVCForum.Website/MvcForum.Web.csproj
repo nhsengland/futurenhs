@@ -1211,6 +1211,7 @@
     <Content Include="Views\FedTest\_ErrorSummary.cshtml" />
     <Content Include="Views\FedTest\_Forms.cshtml" />
     <Content Include="Views\FedTest\_Tables.cshtml" />
+    <Content Include="Views\Folder\_Folder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

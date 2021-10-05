@@ -5,6 +5,8 @@
     using Core.Models.Entities;
     using Core.Models.General;
     using MvcForum.Core;
+    using MvcForum.Core.Constants;
+    using MvcForum.Core.Models.Enums;
     using Poll;
     using Post;
 
@@ -64,10 +66,14 @@
         /// </summary>
         public string LoggedInUsersUrl { get; set; }
 
+        public GroupUserStatus GroupUserStatus { get; set; }
+
         /// <summary>
         /// Gets or sets the view model to create a post
         /// </summary>
         public CreateAjaxPostViewModel NewPostViewModel { get; set; }
+        public bool IsMember { get; set; }
+        public bool IsAdmin { get; set; }
 
         /// <summary>
         /// Determine if the add comment view should be shown.
@@ -75,7 +81,10 @@
         /// <returns></returns>
         public bool CanAddComment()
         {
-            return !Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Topic.Group.IsLocked;
+            return (!Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked
+                && !Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked
+                && !Topic.Group.IsLocked
+                && IsMember) || IsAdmin;
         }
     }
 }

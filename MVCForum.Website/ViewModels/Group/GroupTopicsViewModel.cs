@@ -19,5 +19,6 @@ namespace MvcForum.Web.ViewModels.Group
         public int? TotalPages { get; set; }
         public GroupUserStatus GroupUserStatus { get; set; }
         public bool PublicGroup { get; set; }
+        public bool IsMember { get; set; }
     }
 }

@@ -50,6 +50,7 @@
     <Compile Include="Data\Mapping\GroupInviteMapping.cs" />
     <Compile Include="Data\Mapping\GroupUserMapping.cs" />
     <Compile Include="Data\Mapping\SectionMapping.cs" />
+    <Compile Include="ExtensionMethods\GroupUserExtensions.cs" />
     <Compile Include="ExtensionMethods\HtmlHelperExtensions.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
     <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
