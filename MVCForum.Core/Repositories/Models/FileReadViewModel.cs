@@ -47,7 +47,7 @@
         /// <summary>
         /// Gets or sets the file url.
         /// </summary>
-        public string FileUrl { get; set; }
+        public string BlobName { get; set; }
 
         /// <summary>
         /// Gets or sets the file created by.

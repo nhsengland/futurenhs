@@ -279,7 +279,7 @@ namespace MvcForum.Web.Controllers
             // Get the file by Id passed in
             var fileModel = await _fileService.GetFileAsync(fileId, cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(fileModel?.FileUrl))
+            if (string.IsNullOrWhiteSpace(fileModel?.BlobName))
             {
                 throw new InvalidOperationException("The requested file does not have a valid name");
             }
@@ -288,7 +288,7 @@ namespace MvcForum.Web.Controllers
             if (fileModel.Status == (int)Status.Verified)
             {
                 // File valid for Id, try and get the link to the blob
-                var downloadPath = await _fileService.GetRelativeDownloadUrlAsync(fileModel.FileUrl, Azure.Storage.Sas.BlobSasPermissions.Read, cancellationToken);
+                var downloadPath = await _fileService.GetRelativeDownloadUrlAsync(fileModel.BlobName, Azure.Storage.Sas.BlobSasPermissions.Read, cancellationToken);
 
                 if (string.IsNullOrWhiteSpace(downloadPath))
                 {

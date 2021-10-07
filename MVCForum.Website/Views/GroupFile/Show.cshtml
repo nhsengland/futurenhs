@@ -56,7 +56,7 @@
                         </td>
                         <td role="cell" class="c-table_cell">
                             <span class="c-table_heading">@Html.LanguageString("File.Label.Download")</span>
-                            @if (@Model.File.FileUrl != null)
+                            @if (@Model.File.BlobName != null)
                             {   
 	                            Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));
                                 @Html.ActionLink(Html.LanguageString("File.Label.Download"), "Download", new { fileId = Model.File.Id })
