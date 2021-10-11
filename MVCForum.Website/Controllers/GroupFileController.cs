@@ -109,7 +109,7 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns>The detail view for the new file.</returns>
-        [AsyncTimeout(30000)]
+        [AsyncTimeout(120000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [HttpPost]
         [ValidateAntiForgeryToken]
