@@ -57,6 +57,16 @@ namespace MvcForum.Core.Services
         }
 
         /// <summary>
+        /// Get a file by folder Id only, excludes deleted.
+        /// </summary>
+        /// <param name="folderId"></param>
+        /// <returns></returns>
+        public FolderReadViewModel GetFolder(Guid folderId)
+        {
+            return _folderRepository.GetFolder(folderId);
+        }
+
+        /// <summary>
         /// Get folder by Id, folder name and parent - validate folder exists for create/update, i.e. no duplicate names allowed.
         /// </summary>
         /// <param name="folderId"></param>
@@ -90,6 +100,14 @@ namespace MvcForum.Core.Services
                 return false;
 
             return userId.HasValue && _folderRepository.UserIsAdmin(groupSlug, userId.Value);
+        }
+
+        public bool UserHasGroupAccess(string groupSlug, Guid userId)
+        {
+            if (string.IsNullOrWhiteSpace(groupSlug)) return false;
+            if (Guid.Empty == userId) return false;
+
+            return _folderRepository.UserHasGroupAccess(groupSlug, userId);
         }
 
         /// <inheritdoc />

@@ -12,6 +12,7 @@ namespace MvcForum.Web.Controllers
     using Status = Core.Models.Enums.UploadStatus;
     using System.Threading.Tasks;
     using System.Threading;
+    using MvcForum.Web.ViewModels.Folder;
 
     /// <summary>
     /// Defines methods and routes for the GroupFIles.
@@ -90,16 +91,31 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         /// <param name="folderId"></param>
         /// <returns></returns>
+        [ActionName("Create")]
         public ActionResult Create(Guid folderId, string slug)
         {
+            if (!UserHasGroupAccess(slug))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (folderId == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(folderId)); }
 
-            var viewmodel = new FileWriteViewModel
+            var folder = GetFolderReadViewModel(folderId);
+
+            if (folder is null) throw new ApplicationException("No folder found for Id passed in");
+
+            var viewmodel = new FileUploadViewModel
             {
-                FolderId = folderId,
-                Slug = slug,
-                Breadcrumbs = GetBreadcrumbs(folderId, slug, "Upload file")
+                FolderName = folder.FolderName,
+                Breadcrumbs = GetBreadcrumbs(folderId, slug, "Upload file"),
+                FileToUpload = new FileWriteViewModel
+                {
+                    FolderId = folder.FolderId,
+                    Slug = slug,
+                }
             };
+
             ViewBag.HideSideBar = true;
             return View(viewmodel);
         }
@@ -114,17 +130,24 @@ namespace MvcForum.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Create")]
-        public async Task<ActionResult> CreateAsync(FileWriteViewModel file, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ActionResult> CreateAsync(FileUploadViewModel model, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (ModelState.IsValid)
             {
-                if(file is null)
+                if(model is null) throw new ArgumentNullException(nameof(model), "The required model parameter is missing.");
+
+                // Set file to be uploaded from model
+                var file = model.FileToUpload;
+
+                if (file is null) throw new ApplicationException("File upload data is missing");
+
+                if (!UserHasGroupAccess(file.Slug))
                 {
-                    throw new ArgumentNullException(nameof(file), "The required file parameter is missing.");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 // Check that the folder Id passed in is valid (folder exists).
-                if (!(await FolderIsValidAsync(file.FolderId, cancellationToken)))
+                if (!(FolderIsValid(file.FolderId)))
                 {
                     ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("File.Error.InvalidFolder"));
                 }
@@ -184,9 +207,10 @@ namespace MvcForum.Web.Controllers
                     }
                 }
             }
+
             ViewBag.HideSideBar = true;
-            file.Breadcrumbs = GetBreadcrumbs(file.FolderId, file.Slug, "Upload file");
-            return View(file);
+            model.Breadcrumbs = GetBreadcrumbs(model.FileToUpload.FolderId, model.FileToUpload.Slug, "Upload file");
+            return View(model);
         }
 
         [AsyncTimeout(30000)]
@@ -195,6 +219,11 @@ namespace MvcForum.Web.Controllers
         public async Task<ActionResult> UpdateAsync(Guid id, string slug, CancellationToken cancellationToken)
         {
             if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
+
+            if (!UserHasGroupAccess(slug))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             var file = await _fileService.GetFileAsync(id, cancellationToken);
 
@@ -218,6 +247,11 @@ namespace MvcForum.Web.Controllers
             {
                 if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
+                if (!UserHasGroupAccess(file.Slug))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
                 file.ModifiedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
                 _fileService.Update(file);
 
@@ -233,6 +267,11 @@ namespace MvcForum.Web.Controllers
         public async Task<ActionResult> DeleteAsync(Guid id, string slug, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (id == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(id)); }
+
+            if (!UserHasGroupAccess(slug))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             var file = await _fileService.GetFileAsync(id, cancellationToken);
 
@@ -254,6 +293,11 @@ namespace MvcForum.Web.Controllers
         {
             if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
+            if (!UserHasGroupAccess(file.Slug))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             _fileService.Delete(file);
             return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
         }
@@ -267,13 +311,17 @@ namespace MvcForum.Web.Controllers
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("Download")]
-        public async Task<ActionResult> DownloadAsync(Guid fileId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ActionResult> DownloadAsync(Guid fileId, string groupSlug, CancellationToken cancellationToken = default(CancellationToken))
         {
-            //TODO - Check user has permissions to download file
-
             if (fileId == Guid.Empty)
             {
                 throw new InvalidOperationException("Unable to download file as the Id is not valid");
+            }
+
+            // Check user has permissions to download file
+            if (!UserHasGroupAccess(groupSlug))
+            {
+                return RedirectToAction("Index", "Home");
             }
 
             // Get the file by Id passed in
@@ -309,9 +357,20 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         /// <param name="folderId"></param>
         /// <returns></returns>
-        private async Task<bool> FolderIsValidAsync(Guid folderId, CancellationToken cancellationToken)
+        private bool FolderIsValid(Guid folderId)
         {
-            return (await _folderService.GetFolderAsync(string.Empty, folderId, cancellationToken)).Folder != null;
+            return GetFolderReadViewModel(folderId) != null;
+        }
+
+        private FolderReadViewModel GetFolderReadViewModel(Guid folderId)
+        {
+            return _folderService.GetFolder(folderId);
+        }
+
+        private bool UserHasGroupAccess(string groupSlug)
+        {
+            var userId = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
+            return _folderService.UserHasGroupAccess(groupSlug, userId);
         }
 
         /// <summary>

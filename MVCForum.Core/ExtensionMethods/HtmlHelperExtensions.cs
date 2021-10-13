@@ -37,7 +37,7 @@
                     var rawHtmlErrMsg = err.ErrorMessage;
                     var encodedErrMsg = helper.Encode(err.ErrorMessage);
 
-                    if (!(helper.ViewData.ModelState[key].Value is null))
+                    if (!(helper.ViewData.Model.GetType().GetProperty(key) is null))
                     {
                         sb.Append($"<li> <a class='{errorClass}' href='#{key}'>{rawHtmlErrMsg}</a></li>");
                     } 

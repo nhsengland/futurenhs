@@ -2,21 +2,25 @@
 
 @if (Model != null)
 {
-    if (Model.BreadcrumbLinks.Any())
-    {
-        foreach (var breadcrumb in Model.BreadcrumbLinks)
+    <div class="c-breadcrumbs u-margin-bottom-spacing-3">
+
+        @if (Model.BreadcrumbLinks.Any())
         {
-            <a href=@breadcrumb.Url class="u-text-small">
-                @breadcrumb.Name &rsaquo;
+            foreach (var breadcrumb in Model.BreadcrumbLinks)
+            {
+                <a href=@breadcrumb.Url class="u-text-small">
+                    @breadcrumb.Name &rsaquo;
+                </a>
+            }
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.LastEntry))
+        {
+            <a class="u-text-small u-text-theme-0">
+                @Model.LastEntry
             </a>
         }
-    }
-    if (!string.IsNullOrWhiteSpace(Model.LastEntry))
-    {
-        <a class="u-text-small u-text-theme-0">
-            @Model.LastEntry
-        </a>
-    }
+        
+    </div>
 }
 
 

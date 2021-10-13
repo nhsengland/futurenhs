@@ -21,8 +21,8 @@
     &_logo {
         display: block;
         float: left;
-        max-width: calc(100% - 85px);
-        height: $site-logo-mobile-height;
+        max-width: calc(100% - 120px);
+        height: 25px;
         box-sizing: content-box;
     }
 
@@ -36,4 +36,8 @@
         }
     }
 
+}
+
+.c-logo {
+    width: 100%;
 }

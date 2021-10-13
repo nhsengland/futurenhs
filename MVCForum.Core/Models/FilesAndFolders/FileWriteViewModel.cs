@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using MvcForum.Core.Repositories.Models;
 
 namespace MvcForum.Core.Models.FilesAndFolders
@@ -15,6 +14,8 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public string Name { get; set; }
 
         [Required]
+        [UIHint(Constants.Constants.EditorType)]
+        [AllowHtml]
         public string Description { get; set; }
 
         public Guid FolderId { get; set; }
@@ -26,6 +27,7 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public Guid? ModifiedBy { get; set; }
 
         [Required]
+        [Display(Name = "File upload")]
         public HttpPostedFileBase PostedFile { get; set; }
 
         public int UploadStatus { get; set; }

@@ -59,7 +59,7 @@
                             @if (@Model.File.BlobName != null)
                             {   
 	                            Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));
-                                @Html.ActionLink(Html.LanguageString("File.Label.Download"), "Download", new { fileId = Model.File.Id })
+                                @Html.ActionLink(Html.LanguageString("File.Label.Download"), "Download", new { fileId = Model.File.Id, groupSlug = Model.Slug })
                             }
                         </td>
                     </tr>

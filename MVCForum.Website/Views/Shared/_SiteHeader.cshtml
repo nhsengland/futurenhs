@@ -19,16 +19,16 @@
     </div>
     <div class="l-container c-site-header_content">
         <a href="/" class="c-site-header_logo u-focus-item">
-            <img src="/UI/assets/dist/img/content/logo.svg" alt="Future NHS home page">
+            <img src="/UI/assets/dist/img/content/logo1.svg" class="c-logo" alt="Future NHS home page">
         </a>
         <div id="navigation" class="c-site-header_nav c-site-header-nav">
+            @if (User.Identity.IsAuthenticated)
+            {
             <details class="c-site-header-nav_content" open>
                 <summary aria-haspopup="true" class="c-site-header-nav_mobile-trigger c-site-header-nav_mobile-trigger--right">
                     Menu
                 </summary>
                 <div class="c-site-header-nav_desktop-container">
-                    @if (User.Identity.IsAuthenticated)
-                    {
                         <form method="get" action="/search/" class="c-site-header-nav_search-wrapper">
                             <div class="c-site-header-nav_search-item">
                                 <label class="u-visually-hidden" for="siteSearch">Search the NHS website</label>
@@ -39,34 +39,32 @@
                                 </button>
                             </div>
                         </form>
-                    }
                     <nav id="header-nav" class="c-site-header-nav_nav" aria-label="Navigation">
                         <ul class="c-site-header-nav_root-nav c-site-header-nav_root-nav--mobile-full-height" role="menubar">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <li role="none">
-                                    <details class="c-site-header-nav_root-nav-item">
-                                        <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
+                           
+                            <li role="none">
+                                <details class="c-site-header-nav_root-nav-item">
+                                    <summary aria-haspopup="true" class="c-site-header-nav_root-nav-trigger" data-open-icon="icon-cross-circle" data-closed-icon="icon-plus-circle">
 
-                                            <span class="c-site-header-nav_root-nav-image">
-                                                @{Html.RenderPartial("_UserAvatar", @Model.CurrentUser);}
-                                            </span>
-                                            @Model.CurrentUser.GetFullName()
-                                            @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg"));}
-                                        </summary>
-                                        <div class="c-site-header-nav_sub-nav">
-                                            <div class="c-site-header-nav_sub-nav-content">
-                                                <div class="l-row">
-                                                    <ul class="u-list-plain" role="menu" aria-label="Account navigation">
-                                                        @Html.Action("SideAdminPanel", "Members", new { isDropDown = false })
-                                                    </ul>
-                                                </div>
+                                        <span class="c-site-header-nav_root-nav-image">
+                                            @{Html.RenderPartial("_UserAvatar", @Model.CurrentUser);}
+                                        </span>
+                                        @Model.CurrentUser.GetFullName()
+                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus-circle", "c-site-header-nav_root-nav-icon js-svg"));}
+                                    </summary>
+                                    <div class="c-site-header-nav_sub-nav">
+                                        <div class="c-site-header-nav_sub-nav-content">
+                                            <div class="l-row">
+                                                <ul class="u-list-plain" role="menu" aria-label="Account navigation">
+                                                    @Html.Action("SideAdminPanel", "Members", new { isDropDown = false })
+                                                </ul>
                                             </div>
                                         </div>
-                                    </details>
-                                </li>
+                                    </div>
+                                </details>
+                            </li>
 
-                            }
+                            
                             @foreach (var navItem in Model.NavigationItems.OrderBy(x => x.Order))
                             {
 
@@ -120,6 +118,7 @@
                     </nav>
                 </div>
             </details>
+            }
         </div>
     </div>
 </header>

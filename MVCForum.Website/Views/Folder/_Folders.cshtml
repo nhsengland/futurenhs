@@ -4,11 +4,9 @@
 <div>
     @{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
 
-    <div class="c-section-break"></div>
-
     @if (Model.Folder != null)
     {
-        <h2>@Model.Folder.FolderName</h2>
+        <h2 class="u-margin-bottom-spacing-0">@Model.Folder.FolderName</h2>
         <hr>
 
         if (!Model.IsMember && !Model.IsAdmin)
@@ -18,7 +16,7 @@
             </p>
         }
 
-        <p>@Model.Folder.Description</p>
+        <p class="u-margin-bottom-spacing-6">@Model.Folder.Description</p>
 
         @*@Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug, groupId = Model.GroupId }, new { @class = "c-button c-button-outline c-button--min-width" })*@
 

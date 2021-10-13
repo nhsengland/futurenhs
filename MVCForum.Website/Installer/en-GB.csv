@@ -82,6 +82,16 @@ File.Error.InvalidSize,The file above was not uploaded because the file size is 
 File.Error.NullFile,Please select to upload a file.
 File.Error.NullName,The file must have a name.
 File.Error.NameLength,The name of the file cannot be more than 100 characters.
+File.Upload.Button.Label,Upload
+File.Upload.FileDescription.Guidance,This is the description as seen by users when they select the file title in the folder. Try to be as descriptive as possible.
+File.Upload.FileDescription.Label,Enter file description (optional)
+File.Upload.FileTitle.Guidance,This is the file title as seen by users and listed in the folder. Try to be as descriptive as possible. Avoid including underscores, hyphens, or document type details (.doc, .pdf etc)
+File.Upload.FileTitle.Label,Enter file title
+File.Upload.Guidance,Guidance on file formats, size, don't upload sensitive data.
+File.Upload.Subtitle,Upload file
+File.Upload.Terms.Link,/terms-and-conditions
+File.Upload.Terms.LinkText,Open terms and conditions in a new window
+File.Upload.Terms.Text,All uploaded content must conform to the platform's terms and conditions.
 Folder.Error.NullTitle,Please provide a folder title.
 Folder.Error.DuplicateTitle,This folder already exists.
 Following.Groups,Groups you are following

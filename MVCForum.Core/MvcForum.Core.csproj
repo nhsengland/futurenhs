@@ -199,6 +199,7 @@
     <Compile Include="Models\Enums\GroupUserStatus.cs" />
     <Compile Include="Models\Enums\ResponseType.cs" />
     <Compile Include="Models\Enums\UploadStatus.cs" />
+    <Compile Include="Models\FilesAndFolders\FileUploadViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FileWriteViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FileViewModel.cs" />
     <Compile Include="Models\FilesAndFolders\FolderViewModel.cs" />

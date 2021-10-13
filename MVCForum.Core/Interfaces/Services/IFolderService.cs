@@ -11,11 +11,12 @@
     public interface IFolderService
     {
         Task<FolderViewModel> GetFolderAsync(string slug, Guid? folderId, CancellationToken cancellationToken);
+        FolderReadViewModel GetFolder(Guid folderId);
         FolderReadViewModel GetFolder(Guid? folderId, string folderName, Guid? parentFolder);
         Guid CreateFolder(FolderWriteViewModel model);
         void UpdateFolder(FolderWriteViewModel model);
         bool UserIsAdmin(string groupSlug, Guid? userId);
-
+        bool UserHasGroupAccess(string groupSlug, Guid userId);
         /// <summary>
         /// Delete a folder  by id - returns boolean to confirm deletion.
         /// </summary>

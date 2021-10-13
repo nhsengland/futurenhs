@@ -1,53 +1,92 @@
-﻿@model MvcForum.Core.Models.FilesAndFolders.FileWriteViewModel
+﻿@using MvcForum.Core.ExtensionMethods
+
+@*@model MvcForum.Core.Models.FilesAndFolders.FileWriteViewModel*@
+@model MvcForum.Core.Models.FilesAndFolders.FileUploadViewModel
 
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+
+    string inputError = "c-input--error";
+    string formError = "c-form-group--error";
 }
 
-@section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
+@section GroupHeader
+{
+    @{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.FileToUpload.Slug, tab = Constants.GroupFilesTab }); }
 }
 
 @{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
 
-<h2>Upload file</h2>
+<h2 class="u-margin-bottom-spacing-0">@Model.FolderName</h2>
+<hr>
 
-@using (Html.BeginForm("Create", "GroupFile", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
+<div class="l-row">
+    <div class="l-col-6 js-tinyMCE-container">
 
-    <div class="form-horizontal">
-        @Html.HiddenFor(model => model.FolderId)
-        @Html.HiddenFor(model => model.Slug)
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        <h3>@Html.LanguageString("File.Upload.Subtitle")</h3>
+        <p>@Html.LanguageString("File.Upload.Guidance")</p>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        @using (Html.BeginForm("Create", "GroupFile", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.FolderName)
+            @Html.HiddenFor(model => model.FileToUpload.FolderId)
+            @Html.HiddenFor(model => model.FileToUpload.Slug)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PostedFile, "File upload", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.PostedFile, new { type = "file", name = "File" })
-                @Html.ValidationMessageFor(model => model.PostedFile, "Please select a file to upload", new { @class = "text-danger" })
+            if (!ViewData.ModelState.IsValid)
+            {
+                <div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert" tabindex="-1">
+                    <h2 id="error-summary-title" class="c-error-summary_title">
+                        There is a problem
+                    </h2>
+                    <div class="c-error-summary_body">
+                        <ul class="c-error-summary_list">
+
+                            @Html.Raw(Html.CustomValidationSummary("c-error-summary_error-text"))
+
+                        </ul>
+                    </div>
+                </div>
+            }
+
+            <div class="c-form-group @Html.FieldHasError(model => model.FileToUpload.PostedFile, formError)">
+                @Html.LabelFor(model => model.FileToUpload.PostedFile, "File upload", htmlAttributes: new { @class = "c-label u-margin-bottom-spacing-2" })
+                @Html.ValidationMessageFor(model => model.FileToUpload.PostedFile, "Please select a file to upload", new { @class = "c-error-message" })
+                @Html.TextBoxFor(model => model.FileToUpload.PostedFile, new { type = "file", name = "File", @class = "" })
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Upload" class="btn btn-default" />
+
+            <div class="c-card">
+                <div class="c-card_content">
+                    <div class="c-form-group @Html.FieldHasError(model => model.FileToUpload.Name, formError)">
+                        @Html.LabelFor(model => model.FileToUpload.Name, @Html.LanguageString("File.Upload.FileTitle.Label"), htmlAttributes: new { @class = "c-label" })
+                        <div class="c-hint" id="@Html.DisplayNameFor(model => model.FileToUpload.Name)-hint">
+                            @Html.LanguageString("File.Upload.FileTitle.Guidance")
+                        </div>
+
+                        @Html.ValidationMessageFor(model => model.FileToUpload.Name, "", new { @class = "c-error-message" })
+                        @Html.EditorFor(model => model.FileToUpload.Name, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.FileToUpload.Name, inputError) } })
+                    </div>
+
+                    <div class="c-form-group js-tinyMCE-holder @Html.FieldHasError(model => model.FileToUpload.Description, formError)">
+                        @Html.LabelFor(model => model.FileToUpload.Description, @Html.LanguageString("File.Upload.FileDescription.Label"), htmlAttributes: new { @class = "c-label" })
+                        <div class="c-hint" id="@Html.DisplayNameFor(model => model.FileToUpload.Description)-hint">
+                            @Html.LanguageString("File.Upload.FileDescription.Guidance")
+                        </div>
+
+                        @Html.ValidationMessageFor(model => model.FileToUpload.Description, "", new { @class = "c-error-message" })
+                        @Html.EditorFor(model => model.FileToUpload.Description, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.FileToUpload.Description, inputError) } })
+                    </div>
+
+                </div>
             </div>
-        </div>
+
+            //When terms link needs to be added use @Html.LanguageString("File.Upload.Terms.Link"), currently # due to acceptance criteria
+            <p class="u-text-small">@Html.LanguageString("File.Upload.Terms.Text") <br> <a target="_blank" href="#">@Html.LanguageString("File.Upload.Terms.LinkText")</a></p>
+
+            <div class="c-form-group">
+                <input type="submit" value="@Html.LanguageString("File.Upload.Button.Label")" class="c-button js-tinyMCE-submit" data-mce-requirements="none">
+            </div>
+        }
     </div>
-}
+</div>

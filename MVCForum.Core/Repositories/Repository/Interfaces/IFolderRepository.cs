@@ -52,6 +52,15 @@
         bool UserIsAdmin(string groupSlug, Guid userId);
 
         /// <summary>
+        /// Returns a boolean indicating if the user has group access
+        /// Either a Site Admin, Group Admin or standard member
+        /// </summary>
+        /// <param name="groupSlug">Group slug to identify the group</param>
+        /// <param name="userId">User id to check the role for(they may</param>
+        /// <returns></returns>
+        bool UserHasGroupAccess(string groupSlug, Guid userId);
+
+        /// <summary>
         /// Returns Breadcrumb trail to allow the user to navigate back up the tree
         /// </summary>
         /// <param name="folderId">Id of the bottom element in the tree to work back from</param>

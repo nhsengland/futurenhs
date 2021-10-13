@@ -184,9 +184,25 @@
             return result;
         }
 
-
         public bool UserIsAdmin(string groupSlug, Guid userId)
         {
+            var (MembershipRole, GroupRole) = GetUserRoles(groupSlug, userId);
+
+            return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin";
+        }
+
+        public bool UserHasGroupAccess(string groupSlug, Guid userId)
+        {
+            var (MembershipRole, GroupRole) = GetUserRoles(groupSlug, userId);
+
+            return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin" || GroupRole?.ToLower() == "standard members";
+        }
+
+        private (string MembershipRole, string GroupRole) GetUserRoles(string groupSlug, Guid userId)
+        {
+            if (string.IsNullOrWhiteSpace(groupSlug)) throw new ArgumentNullException(nameof(groupSlug));
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(groupSlug));
+
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
 
             const string query =
@@ -217,7 +233,7 @@
                 var membershipRole = result.Read<string>().FirstOrDefault();
                 var groupRole = result.Read<string>().FirstOrDefault();
 
-                return membershipRole?.ToLower() == "admin" || groupRole?.ToLower() == "admin";
+                return (membershipRole, groupRole);
             }
         }
 
