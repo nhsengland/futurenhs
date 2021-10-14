@@ -11,5 +11,12 @@ namespace MvcForum.Core.Repositories.Command.Interfaces
     {
         Guid CreateFolder(FolderWriteViewModel folder);
         void UpdateFolder(FolderWriteViewModel folder);
+
+        /// <summary>
+        /// Delete a folder  by id - returns boolean to confirm deletion.
+        /// </summary>
+        /// <param name="folderId"><see cref="Guid"/> - Id of the folder.</param>
+        /// <returns>Boolean -true if success</returns>
+        Task<bool> DeleteFolderAsync(Guid folderId);
     }
 }

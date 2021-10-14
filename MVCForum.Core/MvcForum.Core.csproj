@@ -173,6 +173,10 @@
     <Compile Include="Migrations\202110061404409_FixMigrationBlank.Designer.cs">
       <DependentUpon>202110061404409_FixMigrationBlank.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110131450352_DeleteFolderStoredProcedure.cs" />
+    <Compile Include="Migrations\202110131450352_DeleteFolderStoredProcedure.Designer.cs">
+      <DependentUpon>202110131450352_DeleteFolderStoredProcedure.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -645,8 +649,13 @@
     <EmbeddedResource Include="Migrations\202110061404409_FixMigrationBlank.resx">
       <DependentUpon>202110061404409_FixMigrationBlank.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110131450352_DeleteFolderStoredProcedure.resx">
+      <DependentUpon>202110131450352_DeleteFolderStoredProcedure.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

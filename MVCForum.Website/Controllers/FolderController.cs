@@ -175,10 +175,10 @@
 
                     if (folder.FolderId == result.Folder.FolderId)
                     {
-                        folder.IsDeleted = true;
-                        _folderService.UpdateFolder(folder);
-
-                        return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
+                        if (await _folderService.DeleteFolderAsync(folder.FolderId))
+                        {
+                            return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
+                        }
                     }
                 }
                 ViewBag.HideSideBar = true;

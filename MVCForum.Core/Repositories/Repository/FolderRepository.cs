@@ -2,7 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
+    using System.Data.SqlClient;
     using System.Linq;
+    using System.Threading.Tasks;
+    using System.Transactions;
     using Dapper;
     using MvcForum.Core.Models.General;
     using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
@@ -139,7 +143,8 @@
             const string query =
                 @"SELECT Id AS FolderId, Name AS FolderName, Description, FileCount 
                 FROM Folder folders
-                WHERE folders.Id = @FolderId;";
+                WHERE folders.Id = @FolderId
+                AND folders.IsDeleted = 0";
 
             var result = dbConnection.QueryFirstOrDefault<FolderReadViewModel>(query, new {FolderId = folderId});
             return result;

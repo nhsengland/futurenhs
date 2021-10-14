@@ -15,6 +15,13 @@
         Guid CreateFolder(FolderWriteViewModel model);
         void UpdateFolder(FolderWriteViewModel model);
         bool UserIsAdmin(string groupSlug, Guid? userId);
+
+        /// <summary>
+        /// Delete a folder  by id - returns boolean to confirm deletion.
+        /// </summary>
+        /// <param name="folderId"><see cref="Guid"/> - Id of the folder.</param>
+        /// <returns>Boolean -true if success</returns>
+        Task<bool> DeleteFolderAsync(Guid? folderId);
         IEnumerable<BreadCrumbItem> GenerateBreadcrumbTrail(Guid folderId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Core.Repositories.Repository
 {
     using Dapper;
+    using MvcForum.Core.Models.Enums;
     using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
     using MvcForum.Core.Repositories.Models;
     using MvcForum.Core.Repositories.Repository.Interfaces;
@@ -83,7 +84,7 @@
         /// </summary>
         /// <param name="folderId">Id of the parent folder.</param>
         /// <returns>List of files <see cref="List{File}"/>.</returns>
-        public async Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, UploadStatus status = UploadStatus.Uploaded, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -98,9 +99,10 @@
                             FROM [File] f 
                             JOIN MembershipUser m ON m.Id = f.CreatedBy 
                             WHERE f.ParentFolder = @folderId
+                            AND f.FileStatus = @fileStatus
                             ORDER BY f.Title";
 
-                var commandDefinition = new CommandDefinition(query, new { folderId }, cancellationToken: cancellationToken);
+                var commandDefinition = new CommandDefinition(query, new { folderId = folderId, fileStatus = status }, cancellationToken: cancellationToken);
 
                 return (await dbConnection.QueryAsync<FileReadViewModel>(commandDefinition));
             }

@@ -49,7 +49,7 @@ namespace MvcForum.Core.Services
                     Slug = groupSlug,
                     Folder = _folderRepository.GetFolder(folderId.Value),
                     ChildFolders = _folderRepository.GetChildFoldersForFolder(folderId.Value),
-                    Files = (await _fileRepository.GetFilesAsync(folderId.Value, cancellationToken)).ToList()
+                    Files = (await _fileRepository.GetFilesAsync(folderId.Value, cancellationToken: cancellationToken)).ToList()
                 };
             }
 
@@ -90,6 +90,12 @@ namespace MvcForum.Core.Services
                 return false;
 
             return userId.HasValue && _folderRepository.UserIsAdmin(groupSlug, userId.Value);
+        }
+
+        /// <inheritdoc />
+        public Task<bool> DeleteFolderAsync(Guid? folderId)
+        {
+            return _folderCommand.DeleteFolderAsync(folderId.Value);
         }
     }
 }

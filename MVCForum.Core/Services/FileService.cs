@@ -19,6 +19,7 @@ namespace MvcForum.Core.Services
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
+    using FileStatus = Models.Enums.UploadStatus;
 
     /// <summary>
     /// Defines methods for read and write operations on files.
@@ -177,11 +178,11 @@ namespace MvcForum.Core.Services
         /// </summary>
         /// <param name="folderId">The folder id to get files for.</param>
         /// <returns>List of file <see cref="List{File}"/></returns>
-        public Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, CancellationToken cancellationToken)
+        public Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, FileStatus status = FileStatus.Uploaded, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (folderId == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(folderId)); }
 
-            return _fileRepository.GetFilesAsync(folderId, cancellationToken);
+            return _fileRepository.GetFilesAsync(folderId, status, cancellationToken);
         }
 
         /// <summary>

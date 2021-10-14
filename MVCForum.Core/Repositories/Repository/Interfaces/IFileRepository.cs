@@ -1,5 +1,6 @@
 ﻿namespace MvcForum.Core.Repositories.Repository.Interfaces
 {
+    using MvcForum.Core.Models.Enums;
     using MvcForum.Core.Repositories.Models;
     using System;
     using System.Collections.Generic;
@@ -16,7 +17,7 @@
         /// </summary>
         /// <param name="folderId">Folder to get files for.</param>
         /// <returns>List of <see cref="FileReadViewModel"/>.</returns>
-        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, CancellationToken cancellationToken);
+        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, UploadStatus status = UploadStatus.Uploaded, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Method to get a file by fileId.
