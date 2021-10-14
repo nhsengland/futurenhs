@@ -18,7 +18,7 @@ namespace MvcForum.Web.Controllers
     /// Defines methods and routes for the GroupFIles.
     /// </summary>
     [Authorize]
-    public class GroupFileController : AsyncController
+    public sealed class GroupFileController : AsyncController
     {
         /// <summary>
         /// Instance of the <see cref="IFileService"/>.
@@ -68,11 +68,11 @@ namespace MvcForum.Web.Controllers
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("Show")]
-        public async Task<ActionResult> ShowAsync(Guid id, string slug, CancellationToken cancellationToken)
+        public async Task<ActionResult> ShowAsync(Guid id, string groupSlug, CancellationToken cancellationToken)
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            if (!UserHasGroupAccess(slug))
+            if (!UserHasGroupAccess(groupSlug))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -84,8 +84,8 @@ namespace MvcForum.Web.Controllers
             var file = new FileViewModel
             {
                 File = dbFile,
-                Slug = slug,
-                Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, slug, dbFile.Title)
+                Slug = groupSlug,
+                Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, groupSlug, dbFile.Title)
             };
             ViewBag.HideSideBar = true;
             return View(file);
@@ -97,27 +97,27 @@ namespace MvcForum.Web.Controllers
         /// <param name="folderId"></param>
         /// <returns></returns>
         [ActionName("Create")]
-        public ActionResult Create(Guid folderId, string slug)
+        public ActionResult Create(Guid folderId, string groupSlug)
         {
-            if (!UserHasGroupAccess(slug))
+            if (!UserHasGroupAccess(groupSlug))
             {
                 return RedirectToAction("Index", "Home");
             }
 
             if (folderId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(folderId));
 
-            var folder = GetFolderReadViewModel(folderId);
+            var folderModel = _folderService.GetFolderAsync(groupSlug, folderId, CancellationToken.None).Result;
 
-            if (folder is null) throw new ApplicationException("No folder found for Id passed in");
+            if (folderModel is null) throw new ApplicationException("No folder found for Id passed in");
 
             var viewmodel = new FileUploadViewModel
             {
-                FolderName = folder.FolderName,
-                Breadcrumbs = GetBreadcrumbs(folderId, slug, "Upload file"),
+                FolderName = folderModel.Folder.FolderName,
+                Breadcrumbs = GetBreadcrumbs(folderId, groupSlug, "Upload file"),
                 FileToUpload = new FileWriteViewModel
                 {
-                    FolderId = folder.FolderId,
-                    Slug = slug,
+                    FolderId = folderId,
+                    Slug = groupSlug,
                 }
             };
 
@@ -152,7 +152,7 @@ namespace MvcForum.Web.Controllers
                 }
 
                 // Check that the folder Id passed in is valid (folder exists).
-                if (!(FolderIsValid(file.FolderId)))
+                if (!FolderIsValid(file.FolderId))
                 {
                     ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("File.Error.InvalidFolder"));
                 }
@@ -364,12 +364,7 @@ namespace MvcForum.Web.Controllers
         /// <returns></returns>
         private bool FolderIsValid(Guid folderId)
         {
-            return GetFolderReadViewModel(folderId) != null;
-        }
-
-        private FolderReadViewModel GetFolderReadViewModel(Guid folderId)
-        {
-            return _folderService.GetFolder(folderId);
+            return _folderService.IsFolderIdValidAsync(folderId, CancellationToken.None).Result;
         }
 
         private bool UserHasGroupAccess(string groupSlug)
@@ -380,7 +375,7 @@ namespace MvcForum.Web.Controllers
 
             if (user is null) throw new ApplicationException("No user found for logged in Id");
 
-            return _folderService.UserHasGroupAccess(groupSlug, user.Id);
+            return _folderService.UserHasGroupAccessAsync(groupSlug, user.Id, CancellationToken.None).Result;
         }
 
         /// <summary>
@@ -396,7 +391,7 @@ namespace MvcForum.Web.Controllers
             breadCrumbs.BreadcrumbLinks.Add(new BreadCrumbItem() { Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "Files" });
             if (folderId.HasValue)
             {
-                var bc = _folderService.GenerateBreadcrumbTrail(folderId.Value);
+                var bc = _folderService.GenerateBreadcrumbTrailAsync(folderId.Value, CancellationToken.None).Result;
 
                 if (bc != null)
                 {

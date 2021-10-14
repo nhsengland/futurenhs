@@ -14,18 +14,18 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public string Slug { get; set; }
         public Guid? FolderId { get; set; }
 
-        [Required]
-        [DisplayName("Folder name")]
+        [Required(ErrorMessage = "Please provide a folder title")]
+        [DisplayName("Folder title")]
+        [MaxLength(1000, ErrorMessage = "The folder title cannot be more than 1000 characters.")]
         public string FolderName { get; set; }
 
+        [MaxLength(4000, ErrorMessage = "The folder description cannot be more than 4000 characters.")]
         public string Description { get; set; }
         public Guid AddedBy { get; set; }
         public Guid? ParentFolder { get; set; }
         [Required]
         public Guid ParentGroup { get; set; }
-
         public  bool IsDeleted { get; set; }
         public BreadcrumbsViewModel Breadcrumbs { get; set; }
-
     }
 }

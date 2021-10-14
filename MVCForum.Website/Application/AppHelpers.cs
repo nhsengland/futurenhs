@@ -49,7 +49,7 @@
             {
                 return false;
             }
-
+            
             switch (extension.ToLower())
             {
                 case ".axd":

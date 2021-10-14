@@ -36,14 +36,13 @@ namespace MvcForum.Core.Repositories.Command
         {
             var newFolder = new Folder
             {
-                Name = folder.FolderName,
+                Name = folder.FolderName.Trim(),
                 Description = folder.Description,
                 AddedBy = folder.AddedBy,
                 ParentFolder = folder.ParentFolder,
                 CreatedAtUtc = DateTime.UtcNow,
                 ParentGroup = folder.ParentGroup
             };
-
 
             _context.Folder.Add(newFolder);
             _context.SaveChanges();
@@ -60,7 +59,7 @@ namespace MvcForum.Core.Repositories.Command
                     || result.IsDeleted != folder.IsDeleted
                     || result.Description != folder.Description)
                 {
-                    result.Name = folder.FolderName;
+                    result.Name = folder.FolderName.Trim();
                     result.Description = folder.Description;
                     result.IsDeleted = folder.IsDeleted;
                     _context.SaveChanges();

@@ -30,7 +30,7 @@
 
         if (Model.IsMember || Model.IsAdmin)
         {
-            <a href="@Url.RouteUrl("GroupFileUploadUrls", new { slug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId })" class="c-button c-button-outline c-button--min-width">
+            <a href="@Url.RouteUrl("GroupFileUploadUrls", new { groupSlug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId })" class="c-button c-button-outline c-button--min-width">
                 Upload file
             </a>
         }
@@ -60,7 +60,7 @@
 
         if (Model.Folder != null)
         {
-            <a href="@Url.RouteUrl("GroupFileEditFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
+            <a href="@Url.RouteUrl("GroupFileEditFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, parentId = Model.Folder?.ParentId, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
                 Edit folder
             </a>
             <span>&nbsp;</span>

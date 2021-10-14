@@ -39,6 +39,7 @@
         private readonly Guid _folderId = Guid.NewGuid();
         private readonly Guid _addUpdateUserId = Guid.NewGuid();
         private readonly byte[] _fileUploadedFileHash = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
+        private readonly string _slug = "test-group";
 
         private readonly FileReadViewModel _fileReadViewModel = new FileReadViewModel();
         private readonly FileWriteViewModel _fileWriteViewModel = new FileWriteViewModel();
@@ -111,6 +112,10 @@
 
             _fileWriteViewModel.FileId = _fileId;
             _fileWriteViewModel.FolderId = _folderId;
+
+            _folderReadViewModel.FolderId = _folderId;
+
+            _folderViewModel.Folder = _folderReadViewModel;
 
             _localizationService.Setup(x => x.GetResourceString("File.Error.InvalidFolder")).Returns(ErrorInvalidFolder);
             _localizationService.Setup(x => x.GetResourceString("File.Error.FileSaveError")).Returns(ErrorSavingFileToDb);
@@ -275,7 +280,7 @@
             SetupUserHasGroupAccess(true);
             SetupController();
 
-            _folderService.Setup(x => x.GetFolder(_folderId)).Returns(_folderReadViewModel);
+            _folderService.Setup(x => x.GetFolderAsync(null, _folderId, CancellationToken.None)).Returns(Task.FromResult(_folderViewModel));
 
             var response = _groupFileController.Create(_folderId, null) as ViewResult;
 
@@ -385,7 +390,8 @@
 
             _validateBlobResult.ValidationErrors = new List<string>() { ValidateBlobError };
             _fileService.Setup(x => x.FileValidation(It.IsAny<HttpPostedFileBase>())).Returns(_validateBlobResult);
-            _folderService.Setup(x => x.GetFolder(_folderId)).Returns(_folderReadViewModel);
+            _folderService.Setup(x => x.GetFolderAsync(_slug, _folderId, CancellationToken.None)).Returns(Task.FromResult(_folderViewModel));
+            _folderService.Setup(x => x.IsFolderIdValidAsync(_folderId, CancellationToken.None)).Returns(Task.FromResult(true));
 
             var response = await _groupFileController.CreateAsync(_fileUploadViewModel, CancellationToken.None) as ViewResult;
 
@@ -413,7 +419,8 @@
 
             _fileService.Setup(x => x.FileValidation(It.IsAny<HttpPostedFileBase>())).Returns(_validateBlobResult);
             _fileService.Setup(x => x.Create(_fileWriteViewModel)).Returns(Guid.Empty);
-            _folderService.Setup(x => x.GetFolder(_folderId)).Returns(_folderReadViewModel);
+            _folderService.Setup(x => x.GetFolderAsync(_slug, _folderId, CancellationToken.None)).Returns(Task.FromResult(_folderViewModel));
+            _folderService.Setup(x => x.IsFolderIdValidAsync(_folderId, CancellationToken.None)).Returns(Task.FromResult(true));
 
             var response = await _groupFileController.CreateAsync(_fileUploadViewModel, CancellationToken.None) as ViewResult;
 
@@ -444,7 +451,7 @@
             _fileService.Setup(x => x.FileValidation(It.IsAny<HttpPostedFileBase>())).Returns(_validateBlobResult);
             _fileService.Setup(x => x.Create(_fileWriteViewModel)).Returns(_fileId);
             _fileService.Setup(x => x.UploadFileAsync(_postedFile.Object, It.IsAny<string>(), CancellationToken.None)).Returns(Task.FromResult(_uploadBlobResult));
-            _folderService.Setup(x => x.GetFolder(_folderId)).Returns(_folderReadViewModel);
+            _folderService.Setup(x => x.IsFolderIdValidAsync(_folderId, CancellationToken.None)).Returns(Task.FromResult(true));
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.CreateAsync(_fileUploadViewModel, CancellationToken.None));
 
@@ -466,8 +473,7 @@
             _fileService.Setup(x => x.FileValidation(It.IsAny<HttpPostedFileBase>())).Returns(_validateBlobResult);
             _fileService.Setup(x => x.Create(_fileWriteViewModel)).Returns(_fileId);
             _fileService.Setup(x => x.UploadFileAsync(_postedFile.Object, It.IsAny<string>(), CancellationToken.None)).Returns(Task.FromResult(_uploadBlobResult));
-
-            _folderService.Setup(x => x.GetFolder(_folderId)).Returns(_folderReadViewModel);
+            _folderService.Setup(x => x.IsFolderIdValidAsync(_folderId, CancellationToken.None)).Returns(Task.FromResult(true));
 
             var response = await _groupFileController.CreateAsync(_fileUploadViewModel, CancellationToken.None);
             var responseRouteName = ((RedirectToRouteResult)response).RouteName;
@@ -951,7 +957,7 @@
 
         private void SetupUserHasGroupAccess(bool hasAccess)
         {
-            _folderService.Setup(x => x.UserHasGroupAccess(It.IsAny<string>(), It.IsAny<Guid>())).Returns(hasAccess);
+            _folderService.Setup(x => x.UserHasGroupAccessAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(hasAccess));
         }
 
         private void SetupPostedFile()

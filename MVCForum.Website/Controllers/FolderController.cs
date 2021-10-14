@@ -1,22 +1,22 @@
 ﻿namespace MvcForum.Web.Controllers
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using MvcForum.Core.Repositories.Models;
     using MvcForum.Core.Constants;
+    using MvcForum.Core.ExtensionMethods;
     using MvcForum.Core.Interfaces;
     using MvcForum.Core.Interfaces.Services;
-    using MvcForum.Core.Models.FilesAndFolders;
-    using System;
-    using System.Web.Mvc;
-    using System.Threading.Tasks;
-    using System.Threading;
-    using MvcForum.Core.Models.Entities;
     using MvcForum.Core.Models.Enums;
-    using MvcForum.Core.ExtensionMethods;
+    using MvcForum.Core.Models.FilesAndFolders;
+    using MvcForum.Core.Repositories.Models;
+    using MvcForum.Web.ViewModels.Breadcrumb;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
 
     [Authorize]
-    public class FolderController : Controller
+    public sealed class FolderController : Controller
     {
         private readonly IFolderService _folderService;
         private readonly IFeatureManager _featureManager;
@@ -33,72 +33,101 @@
             _groupService = groupService;
         }
 
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("CreateFolder")]
         [HttpGet]
-        public ViewResult CreateFolder(string slug, Guid? parentId, Guid groupId)
+        public async Task<ActionResult> CreateFolderAsync(string slug, Guid? parentId, Guid groupId, CancellationToken cancellationToken)
         {
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            if (!_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                var WriteFolder = new FolderWriteViewModel
-                {
-                    ParentFolder = parentId,
-                    Slug = slug,
-                    ParentGroup = groupId,
-                    Breadcrumbs = GetBreadcrumbs(parentId, slug, "Create folder")
-                };
-                ViewBag.HideSideBar = true;
-                return View("_CreateFolder", WriteFolder);
+                return RedirectToAction("Index", "Home");
             }
-            return null;
+
+            if (!await _folderService.IsUserAdminAsync(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
+            {
+                return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = parentId });
+            }
+
+            var WriteFolder = new FolderWriteViewModel
+            {
+                ParentFolder = parentId,
+                Slug = slug,
+                ParentGroup = groupId,
+                Breadcrumbs = await GetBreadcrumbsAsync(parentId, slug, "Create folder", cancellationToken)
+            };
+
+            ViewBag.HideSideBar = true;
+            return View("_CreateFolder", WriteFolder);           
         }
 
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("CreateFolder")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateFolder(FolderWriteViewModel folder)
+        public async Task<ActionResult> CreateFolderAsync(FolderWriteViewModel folder, CancellationToken cancellationToken)
         {
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            if (!_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                if (ModelState.IsValid) 
-                {
-                    if (FolderNameIsValid(folder))
-                    {
-                        folder.AddedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-                        var newId = _folderService.CreateFolder(folder);
-
-                        return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = newId });
-                    }
-                    ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("Folder.Error.DuplicateTitle"));
-                }
-                ViewBag.HideSideBar = true;
-                folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug, "Create folder");
-
-                return View("_CreateFolder", folder);
+                return RedirectToAction("Index", "Home");
             }
 
-            return null;
+            if (!await _folderService.IsUserAdminAsync(folder.Slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
+            {
+                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
+            }
+
+            if (ModelState.IsValid) 
+            {
+                if (await _folderService.IsFolderNameValidAsync(folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
+                {
+                    folder.AddedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
+                    var newId = _folderService.CreateFolder(folder);
+
+                    return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = newId });
+                }
+                ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("Folder.Error.DuplicateTitle"));
+            }
+
+            ViewBag.HideSideBar = true;
+            folder.Breadcrumbs = await GetBreadcrumbsAsync(folder.FolderId, folder.Slug, "Create folder", cancellationToken);
+
+            return View("_CreateFolder", folder);
         }
 
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("UpdateFolder")]
         [HttpGet]
-        public async Task<ViewResult> UpdateFolderAsync(string slug, Guid? folderId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ActionResult> UpdateFolderAsync(string slug, Guid groupId, Guid folderId, Guid? parentId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            if (!_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
-
-                var WriteFolder = new FolderWriteViewModel
-                {
-                    FolderId = folderId,
-                    Slug = slug,
-                    FolderName =  result.Folder.FolderName,
-                    Description = result.Folder.Description,
-                    Breadcrumbs = GetBreadcrumbs(folderId, slug)
-                };
-                ViewBag.HideSideBar = true;
-                return View("_UpdateFolder", WriteFolder);
+                return RedirectToAction("Index", "Home");
             }
-            return null;
+
+            if (!await _folderService.IsUserAdminAsync(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
+            {
+                return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = folderId });
+            }
+
+            var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
+
+            var WriteFolder = new FolderWriteViewModel
+            {
+                FolderId = folderId,
+                Slug = slug,
+                FolderName = result.Folder.FolderName,
+                Description = result.Folder.Description,
+                Breadcrumbs = await GetBreadcrumbsAsync(folderId, slug, cancellationToken: cancellationToken),
+                ParentGroup = groupId,
+                ParentFolder = parentId
+            };
+
+            ViewBag.HideSideBar = true;
+            return View("_UpdateFolder", WriteFolder);            
+           
         }
 
         [AsyncTimeout(30000)]
@@ -108,32 +137,38 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UpdateFolderAsync(FolderWriteViewModel folder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            if (!_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                if (ModelState.IsValid)
-                {
-                    var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
-
-                    // Check folder exists for folder Id passed in
-                    if (folder.FolderId == result.Folder.FolderId)
-                    {
-                        // Ensure folder name is valid
-                        if (FolderNameIsValid(folder))
-                        {
-                            folder.IsDeleted = folder.IsDeleted;
-                            _folderService.UpdateFolder(folder);
-
-                            return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId });
-                        }
-                        ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("Folder.Error.DuplicateTitle"));
-                    }
-                }
-                ViewBag.HideSideBar = true;
-                folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug);
-                return View("_UpdateFolder", folder);
+                return RedirectToAction("Index", "Home");
             }
 
-            return null;
+            if (!await _folderService.IsUserAdminAsync(folder.Slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
+            {
+                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
+            }
+
+            if (ModelState.IsValid)
+            {
+                var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
+
+                // Check folder exists for folder Id passed in
+                if (folder.FolderId == result.Folder.FolderId)
+                {
+                    // Ensure folder name is valid
+                    if (await _folderService.IsFolderNameValidAsync(folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
+                    {
+                        folder.IsDeleted = folder.IsDeleted;
+                        _folderService.UpdateFolder(folder);
+
+                        return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId });
+                    }
+                    ModelState.AddModelError(string.Empty, _localizationService.GetResourceString("Folder.Error.DuplicateTitle"));
+                }
+            }
+
+            ViewBag.HideSideBar = true;
+            folder.Breadcrumbs = await GetBreadcrumbsAsync(folder.FolderId, folder.Slug, cancellationToken: cancellationToken);
+            return View("_UpdateFolder", folder);            
         }
 
         [AsyncTimeout(30000)]
@@ -142,95 +177,87 @@
         [HttpGet]
         public async Task<ActionResult> DeleteFolderAsync(FolderWriteViewModel folder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            if (!_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                if (_folderService.UserIsAdmin(folder.Slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id))
-                {
-                    var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
+                return RedirectToAction("Index", "Home");
+            }
 
-                    if (folder.FolderId == result.Folder.FolderId)
-                    {
-                        if (await _folderService.DeleteFolderAsync(folder.FolderId.Value, cancellationToken))
-                        {
-                            return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = result.Folder.ParentId });
-                        }
-                    }
-                }
+            if (!await _folderService.IsUserAdminAsync(folder.Slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
+            {
                 return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId, hasError = true });
             }
 
-            return null;
-        }
+            var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
 
-        [AsyncTimeout(30000)]
-        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        [ActionName("GetFolder")]
-        [ChildActionOnly]
-        public async Task<PartialViewResult> GetFolderAsync(string slug, Guid? folderId, Guid groupId, bool hasError = false, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            if (folder.FolderId == result.Folder.FolderId)
             {
-                var currentUser = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
-
-                var model = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
-                var groupUserStatus = _groupService.GetAllForUser(currentUser.Id).FirstOrDefault(x => x.Group.Id == groupId).GetUserStatusForGroup();
-
-                model.GroupId = groupId;
-                model.IsAdmin = _folderService.UserIsAdmin(slug, currentUser?.Id);
-                model.Breadcrumbs = GetBreadcrumbs(folderId, slug);
-                model.GroupUserStatus = groupUserStatus;
-                model.IsMember = groupUserStatus == GroupUserStatus.Joined;
-                model.HasError = hasError;
-                return PartialView("_Folders", model);
+                if (await _folderService.DeleteFolderAsync(folder.FolderId.Value, cancellationToken))
+                {
+                    return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = result.Folder.ParentId });
+                }
             }
 
-            return null;
+            return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId, hasError = true });
         }
 
-        /// <summary>
-        /// Generate the breadcrumbs for the folder view/create.
-        /// </summary>
-        /// <param name="folderId">Folder Id to get folder heirarchy.</param>
-        /// <param name="slug"></param>
-        /// <returns></returns>
-        private BreadcrumbsViewModel GetBreadcrumbs(Guid? folderId, string slug, string lastEntry = null)
+        [ChildActionOnly]
+        public PartialViewResult GetFolder(string slug, Guid? folderId, Guid groupId, bool hasError = false)
+        {
+            if (!_featureManager.IsEnabled(Features.FilesAndFolders))
+            {
+                return null;
+            }
+            //needed to stop blocking, PartialViewResuls don't support async in MVC5
+            var syncContext = SynchronizationContext.Current;
+            SynchronizationContext.SetSynchronizationContext(null);
+
+            var currentUser = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
+            var model = _folderService.GetFolderAsync(slug, folderId, CancellationToken.None).Result;
+            var groupUserStatus = _groupService.GetAllForUser(currentUser.Id).FirstOrDefault(x => x.Group.Id == groupId).GetUserStatusForGroup();
+
+            model.GroupId = groupId;
+            model.IsAdmin = _folderService.IsUserAdminAsync(slug, currentUser.Id, CancellationToken.None).Result;
+            model.Breadcrumbs = GetBreadcrumbsAsync(folderId, slug, cancellationToken: CancellationToken.None).Result;
+            model.GroupUserStatus = groupUserStatus;
+            model.IsMember = groupUserStatus == GroupUserStatus.Joined;
+		    model.HasError = hasError;
+
+            SynchronizationContext.SetSynchronizationContext(syncContext);
+            return PartialView("_Folders", model);
+            
+        }
+
+        private async Task<BreadcrumbsViewModel> GetBreadcrumbsAsync(Guid? folderId, string slug, string lastEntry = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var breadCrumbs = new BreadcrumbsViewModel() { BreadcrumbLinks = new List<BreadCrumbItem>() };
 
-            if (folderId.HasValue)
+            if (!folderId.HasValue)
             {
-                // Only add the root item if there is a folder Id, if it's null then we're at the root folder and no need to show breadcrumbs
-                breadCrumbs.BreadcrumbLinks.Add(new BreadCrumbItem() { Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "Files" });
+                return breadCrumbs;
+            }
+            // Only add the root item if there is a folder Id, if it's null then we're at the root folder and no need to show breadcrumbs
+            breadCrumbs.BreadcrumbLinks.Add(new BreadCrumbItem() { Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "Files" });
 
-                var bc = _folderService.GenerateBreadcrumbTrail(folderId.Value);
+            var bc = await _folderService.GenerateBreadcrumbTrailAsync(folderId.Value, cancellationToken);
 
-                if(bc != null)
+            if (!(bc is null))
+            {
+                if (!string.IsNullOrWhiteSpace(lastEntry))
                 {
-                    if (!string.IsNullOrWhiteSpace(lastEntry))
-                    {
-                        // Last entry not passed in use all the folder heirarchy as links with last entry - add only
-                        breadCrumbs.BreadcrumbLinks.AddRange(bc.Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
-                        breadCrumbs.LastEntry = lastEntry;
-                    }
-                    else
-                    {
-                        // Exclude the last folder as this is the folder being viewed and should not be clickable, add last folder as non clickable
-                        breadCrumbs.BreadcrumbLinks.AddRange(bc.Take(bc.Count() - 1).Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
-                        breadCrumbs.LastEntry = bc.Last().Name;
-                    }
+                    // Last entry not passed in use all the folder heirarchy as links with last entry - add only
+                    breadCrumbs.BreadcrumbLinks.AddRange(bc.Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
+                    breadCrumbs.LastEntry = lastEntry;
+                }
+                else
+                {
+                    // Exclude the last folder as this is the folder being viewed and should not be clickable, add last folder as non clickable
+                    breadCrumbs.BreadcrumbLinks.AddRange(bc.Take(bc.Count() - 1).Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
+                    breadCrumbs.LastEntry = bc.Last().Name;
                 }
             }
+            
             return breadCrumbs;
-        }
-
-        /// <summary>
-        /// Check the folder name entered is unique for the parent folder.
-        /// </summary>
-        /// <param name="folder">Folder to validate.</param>
-        /// <returns></returns>
-        private bool FolderNameIsValid(FolderWriteViewModel folder)
-        {
-           return _folderService.GetFolder(folder.FolderId, folder.FolderName, folder.ParentFolder) == null;
         }
     }
 }

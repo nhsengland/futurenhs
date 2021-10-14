@@ -1188,7 +1188,6 @@
     <Content Include="Views\Topic\AjaxMorePostsForThread.cshtml" />
     <Content Include="Views\Shared\_PostFooter.cshtml" />
     <Content Include="Views\Folder\_Folders.cshtml" />
-    <Content Include="Views\Group\_Files.cshtml" />
     <Content Include="Views\GroupFile\Create.cshtml" />
     <Content Include="Views\GroupFile\Show.cshtml" />
     <Content Include="Views\Folder\_CreateFolder.cshtml" />
@@ -1210,7 +1209,6 @@
     <Content Include="Views\FedTest\_ErrorSummary.cshtml" />
     <Content Include="Views\FedTest\_Forms.cshtml" />
     <Content Include="Views\FedTest\_Tables.cshtml" />
-    <Content Include="Views\Folder\_Folder.cshtml" />
     <Content Include="Views\Group\_MyGroups.cshtml" />
     <Content Include="Views\Group\_DiscoverGroups.cshtml" />
   </ItemGroup>
