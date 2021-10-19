@@ -140,22 +140,26 @@
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("DeleteFolder")]
         [HttpGet]
-        public async Task<ViewResult> DeleteFolderAsync(string slug, Guid? folderId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ViewResult> DeleteFolderAsync(string slug, Guid folderId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
-
-                var WriteFolder = new FolderWriteViewModel
+                if (_folderService.UserIsAdmin(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id))
                 {
-                    FolderId = folderId,
-                    Slug = slug,
-                    FolderName = result.Folder.FolderName,
-                    Description = result.Folder.Description,
-                    Breadcrumbs = GetBreadcrumbs(folderId, slug)
-                };
-                ViewBag.HideSideBar = true;
-                return View("_DeleteFolder", WriteFolder);
+
+                    var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
+
+                    var WriteFolder = new FolderWriteViewModel
+                    {
+                        FolderId = folderId,
+                        Slug = slug,
+                        FolderName = result.Folder.FolderName,
+                        Description = result.Folder.Description,
+                        Breadcrumbs = GetBreadcrumbs(folderId, slug)
+                    };
+                    ViewBag.HideSideBar = true;
+                    return View("_DeleteFolder", WriteFolder);
+                }
             }
             return null;
         }
@@ -169,21 +173,24 @@
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
-                if (ModelState.IsValid)
+                if (_folderService.UserIsAdmin(folder.Slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id))
                 {
-                    var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
-
-                    if (folder.FolderId == result.Folder.FolderId)
+                    if (ModelState.IsValid)
                     {
-                        if (await _folderService.DeleteFolderAsync(folder.FolderId))
+                        var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
+
+                        if (folder.FolderId == result.Folder.FolderId)
                         {
-                            return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
+                            if (await _folderService.DeleteFolderAsync(folder.FolderId.Value))
+                            {
+                                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
+                            }
                         }
                     }
+                    ViewBag.HideSideBar = true;
+                    folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug);
+                    return View("_DeleteFolder", folder);
                 }
-                ViewBag.HideSideBar = true;
-                folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug);
-                return View("_DeleteFolder", folder);
             }
 
             return null;

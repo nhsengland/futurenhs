@@ -93,9 +93,9 @@ namespace MvcForum.Core.Services
         }
 
         /// <inheritdoc />
-        public Task<bool> DeleteFolderAsync(Guid? folderId)
+        public Task<bool> DeleteFolderAsync(Guid folderId)
         {
-            return _folderCommand.DeleteFolderAsync(folderId.Value);
+            return _folderCommand.DeleteFolderAsync(folderId);
         }
     }
 }

@@ -43,7 +43,7 @@
         @Html.HiddenFor(model => model.Slug)
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" />
-            <a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folder = Model.FolderId})"> back </a>
+            <a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folder = Model.FolderId.Value})"> back </a>
         </div>
     }
 </div>
