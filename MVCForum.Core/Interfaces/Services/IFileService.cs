@@ -42,7 +42,7 @@
         /// </summary>
         /// <param name="folderId">The id of the folder.</param>
         /// <returns>List of files <see cref="List{File}"/></returns>
-        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, FileStatus status = FileStatus.Uploaded, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, FileStatus status = FileStatus.Verified, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Method to perform soft delete of a <see cref="File"/>.

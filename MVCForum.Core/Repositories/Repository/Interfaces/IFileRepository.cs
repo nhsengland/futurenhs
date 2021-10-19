@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="folderId">Folder to get files for.</param>
         /// <returns>List of <see cref="FileReadViewModel"/>.</returns>
-        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, UploadStatus status = UploadStatus.Uploaded, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, UploadStatus status = UploadStatus.Verified, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Method to get a file by fileId.

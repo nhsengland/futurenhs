@@ -178,7 +178,7 @@ namespace MvcForum.Core.Services
         /// </summary>
         /// <param name="folderId">The folder id to get files for.</param>
         /// <returns>List of file <see cref="List{File}"/></returns>
-        public Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, FileStatus status = FileStatus.Uploaded, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, FileStatus status = FileStatus.Verified, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (folderId == Guid.Empty) { throw new ArgumentOutOfRangeException(nameof(folderId)); }
 

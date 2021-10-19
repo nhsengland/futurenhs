@@ -84,7 +84,7 @@
         /// </summary>
         /// <param name="folderId">Id of the parent folder.</param>
         /// <returns>List of files <see cref="List{File}"/>.</returns>
-        public async Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, UploadStatus status = UploadStatus.Uploaded, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, UploadStatus status = UploadStatus.Verified, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
