@@ -140,57 +140,23 @@
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("DeleteFolder")]
         [HttpGet]
-        public async Task<ViewResult> DeleteFolderAsync(string slug, Guid folderId, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
-            {
-                if (_folderService.UserIsAdmin(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id))
-                {
-
-                    var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
-
-                    var WriteFolder = new FolderWriteViewModel
-                    {
-                        FolderId = folderId,
-                        Slug = slug,
-                        FolderName = result.Folder.FolderName,
-                        Description = result.Folder.Description,
-                        Breadcrumbs = GetBreadcrumbs(folderId, slug)
-                    };
-                    ViewBag.HideSideBar = true;
-                    return View("_DeleteFolder", WriteFolder);
-                }
-            }
-            return null;
-        }
-
-        [AsyncTimeout(30000)]
-        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        [ActionName("DeleteFolder")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteFolderAsync(FolderWriteViewModel folder, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
                 if (_folderService.UserIsAdmin(folder.Slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true)?.Id))
                 {
-                    if (ModelState.IsValid)
-                    {
-                        var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
+                    var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
 
-                        if (folder.FolderId == result.Folder.FolderId)
+                    if (folder.FolderId == result.Folder.FolderId)
+                    {
+                        if (await _folderService.DeleteFolderAsync(folder.FolderId.Value, cancellationToken))
                         {
-                            if (await _folderService.DeleteFolderAsync(folder.FolderId.Value))
-                            {
-                                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
-                            }
+                            return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = result.Folder.ParentId });
                         }
                     }
-                    ViewBag.HideSideBar = true;
-                    folder.Breadcrumbs = GetBreadcrumbs(folder.FolderId, folder.Slug);
-                    return View("_DeleteFolder", folder);
                 }
+                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId, isError = true });
             }
 
             return null;
@@ -200,7 +166,7 @@
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("GetFolder")]
         [ChildActionOnly]
-        public async Task<PartialViewResult> GetFolderAsync(string slug, Guid? folderId, Guid groupId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<PartialViewResult> GetFolderAsync(string slug, Guid? folderId, Guid groupId, bool isError = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
@@ -214,6 +180,7 @@
                 model.Breadcrumbs = GetBreadcrumbs(folderId, slug);
                 model.GroupUserStatus = groupUserStatus;
                 model.IsMember = groupUserStatus == GroupUserStatus.Joined;
+                model.IsError = isError;
                 return PartialView("_Folders", model);
             }
 

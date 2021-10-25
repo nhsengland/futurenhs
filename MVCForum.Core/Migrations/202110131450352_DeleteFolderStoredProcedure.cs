@@ -60,6 +60,7 @@ namespace MvcForum.Core.Services.Migrations
 					BEGIN CATCH
 						-- rollback transaction if there is an exception
 						ROLLBACK TRANSACTION; 
+						THROW;
 					END CATCH
 				
 					SELECT @success;

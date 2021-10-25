@@ -141,7 +141,7 @@
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
             
             const string query =
-                @"SELECT Id AS FolderId, Name AS FolderName, Description, FileCount 
+                @"SELECT Id AS FolderId, Name AS FolderName, Description, FileCount, ParentFolder AS ParentId
                 FROM Folder folders
                 WHERE folders.Id = @FolderId
                 AND folders.IsDeleted = 0";

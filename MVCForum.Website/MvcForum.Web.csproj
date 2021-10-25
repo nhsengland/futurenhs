@@ -1193,7 +1193,6 @@
     <Content Include="Views\GroupFile\Show.cshtml" />
     <Content Include="Views\Folder\_CreateFolder.cshtml" />
     <Content Include="Views\Folder\_UpdateFolder.cshtml" />
-    <Content Include="Views\Folder\_DeleteFolder.cshtml" />
     <Content Include="Views\Shared\_GroupHeader.cshtml" />
     <Content Include="Views\GroupFile\Update.cshtml" />
     <Content Include="Views\GroupFile\Delete.cshtml" />

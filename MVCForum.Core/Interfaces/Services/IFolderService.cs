@@ -22,7 +22,7 @@
         /// </summary>
         /// <param name="folderId"><see cref="Guid"/> - Id of the folder.</param>
         /// <returns>Boolean -true if success</returns>
-        Task<bool> DeleteFolderAsync(Guid folderId);
+        Task<bool> DeleteFolderAsync(Guid folderId, CancellationToken cancellationToken = default(CancellationToken));
         IEnumerable<BreadCrumbItem> GenerateBreadcrumbTrail(Guid folderId);
     }
 }

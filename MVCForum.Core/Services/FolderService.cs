@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -111,9 +112,16 @@ namespace MvcForum.Core.Services
         }
 
         /// <inheritdoc />
-        public Task<bool> DeleteFolderAsync(Guid folderId)
+        public async Task<bool> DeleteFolderAsync(Guid folderId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _folderCommand.DeleteFolderAsync(folderId);
+            try
+            {
+                return await _folderCommand.DeleteFolderAsync(folderId, cancellationToken);
+            } catch (SqlException)
+            {
+                // TODO: Implement logging to improve debugging - returning false here to surface the error message as defined in the AC.
+                return false;
+            }
         }
     }
 }

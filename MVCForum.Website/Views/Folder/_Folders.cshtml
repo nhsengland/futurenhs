@@ -9,6 +9,14 @@
         <h2 class="u-margin-bottom-spacing-0">@Model.Folder.FolderName</h2>
         <hr>
 
+
+        if (!ViewData.ModelState.IsValid || Model.IsError)
+        {
+            <p class="c-info-message c-info-message--error">
+                @Html.LanguageString("Folder.Error.FailedDelete")
+            </p>
+        }
+
         if (!Model.IsMember && !Model.IsAdmin)
         {
             <p class="c-info-message">
@@ -56,9 +64,34 @@
                 Edit folder
             </a>
             <span>&nbsp;</span>
-            <a href="@Url.RouteUrl("GroupFileDeleteFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
-                Delete folder
-            </a>
+
+            @Html.ActionLink("Delete folder", "DeleteFolder", "Folder", new { @class = "c-button c-button-outline c-button--min-width js-dialog", data_dialog_id = "dialog-delete-confirm" })
+
+            <dialog id="dialog-delete-confirm" class="c-dialog">
+
+                <div class="c-dialog_content">
+
+                    <h3>Delete Folder</h3>
+
+                    <p class="u-text-bold">
+                        Deleting this folder will also delete all its contents including the contents of any sub-folders.  Do you wish to continue?
+                    </p>
+
+                    <div>
+                        <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+                            Cancel
+                        </button>
+                    </div>
+
+                    <div>
+                        <button class="js-dialog-confirm c-button c-button--full-width">
+                            Yes, Delete
+                        </button>
+                    </div>
+
+                </div>
+
+            </dialog>
         }
     }
 

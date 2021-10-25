@@ -13,6 +13,13 @@
             <p>@Model.Description</p>
         </div>
 
+        if (!ViewData.ModelState.IsValid)
+        {
+            <p class="c-info-message c-info-message--error">
+                @Html.LanguageString("Folder.Error.FailedDelete")
+            </p>
+        }
+
 
     }
 

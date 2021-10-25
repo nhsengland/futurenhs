@@ -94,6 +94,7 @@ File.Upload.Terms.LinkText,Open terms and conditions in a new window
 File.Upload.Terms.Text,All uploaded content must conform to the platform's terms and conditions.
 Folder.Error.NullTitle,Please provide a folder title.
 Folder.Error.DuplicateTitle,This folder already exists.
+Folder.Error.FailedDelete,The folder and its contents cannot be deleted at the moment.  Please try again later.
 Following.Groups,Groups you are following
 Following.PageTitle,Topics & Groups
 Following.Topics,Topics you are following

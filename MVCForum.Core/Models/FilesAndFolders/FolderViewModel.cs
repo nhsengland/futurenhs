@@ -20,5 +20,6 @@
         public Guid GroupId { get; set; }
         public GroupUserStatus GroupUserStatus { get; set; }
         public bool IsMember { get; set; }
+        public bool IsError { get; set; }
     }
 }

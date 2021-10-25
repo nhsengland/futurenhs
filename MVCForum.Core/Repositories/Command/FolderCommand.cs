@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using MvcForum.Core.Interfaces;
@@ -67,18 +69,11 @@ namespace MvcForum.Core.Repositories.Command
         }
 
         /// <inheritdoc />
-        public Task<bool> DeleteFolderAsync(Guid folderId)
+        public Task<bool> DeleteFolderAsync(Guid folderId, CancellationToken cancellationToken = default(CancellationToken))
         {
             using (var dbConnection = _connectionFactory.CreateWriteOnlyConnection())
             {
-                try
-                {
-                    return dbConnection.QuerySingleAsync<bool>("usp_delete_folder", new { FolderId = folderId }, commandType: CommandType.StoredProcedure);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                return dbConnection.QuerySingleAsync<bool>("usp_delete_folder", new { FolderId = folderId }, commandType: CommandType.StoredProcedure);
             }
         }
     }
