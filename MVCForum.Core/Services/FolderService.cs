@@ -114,6 +114,8 @@ namespace MvcForum.Core.Services
         /// <inheritdoc />
         public async Task<bool> DeleteFolderAsync(Guid folderId, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (folderId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(folderId));
+
             try
             {
                 return await _folderCommand.DeleteFolderAsync(folderId, cancellationToken);
