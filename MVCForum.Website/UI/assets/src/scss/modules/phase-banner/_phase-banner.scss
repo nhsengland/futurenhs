@@ -1,0 +1,72 @@
+.c-page-header {
+    padding: $nhsuk-spacing-point-3 0;
+    color: $white;
+    position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        display: block;
+        top: 0;
+        right: 100%;
+        width: 10000px;
+        height: 100%;
+        background-color: inherit;
+
+        @include respond-to(desktop) {
+            display: none;
+        }
+    }
+
+    &:after {
+        content: '';
+        position: absolute;
+        display: block;
+        top: 0;
+        left: 100%;
+        width: 10000px;
+        height: 100%;
+        background-color: inherit;
+    }
+
+    @include respond-to(desktop) {
+        padding: $nhsuk-spacing-point-6 $nhsuk-spacing-point-3 0;
+    }
+
+    &_col-1 {
+        flex: 0 0 auto;
+        margin-right: $nhsuk-spacing-point-4;
+
+        @include respond-to(desktop) {
+            margin-right: $nhsuk-spacing-point-8;
+        }
+    }
+
+    &_col-2 {
+        flex: 12 1 auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &_image {
+        display: block;
+        object-fit: cover;
+        max-width: 70px;
+        height: 70px;
+        word-break: break-all; //fixes issue of missing file text breaking layout
+        margin-bottom: $nhsuk-spacing-point-2;
+
+        @include respond-to(desktop) {
+            margin-bottom: $nhsuk-spacing-point-6;
+            max-width: 159px;
+            height: 159px;
+        }
+    }
+
+    &_heading {
+        margin-bottom: $nhsuk-spacing-point-4;
+        @include respond-to(desktop) {
+            margin-top: $nhsuk-spacing-point-4;
+        }
+    }
+}
