@@ -130,7 +130,7 @@
 
 @if (Model.Tab == Constants.GroupFilesTab)
 {
-    @Html.Action("GetFolder", "Folder", new { slug = Model.Group.Slug, folderId = Model.Folder, groupId = Model.Group.Id, isError = Model.IsError })
+    @Html.Action("GetFolder", "Folder", new { slug = Model.Group.Slug, folderId = Model.Folder, groupId = Model.Group.Id, hasError = Model.HasError })
 }
 
 @if (Model.Tab == Constants.GroupMembersTab)

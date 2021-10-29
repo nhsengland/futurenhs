@@ -27,7 +27,7 @@ namespace MvcForum.Web.ViewModels.Group
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
         public int PostCount { get; set; }
-        public bool? IsError { get; set; }
+        public bool? HasError { get; set; }
 
         // Topic info
         public Topic LatestTopic { get; set; }

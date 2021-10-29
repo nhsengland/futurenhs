@@ -100,7 +100,7 @@ namespace MvcForum.Web.Tests.Controllers.Folder
             Assert.IsInstanceOf<RedirectToRouteResult>(result);
             Assert.AreEqual(_model.Slug, (result as RedirectToRouteResult).RouteValues["slug"]);
             Assert.AreEqual(Constants.GroupFilesTab, (result as RedirectToRouteResult).RouteValues["tab"]);
-            Assert.IsTrue((bool)(result as RedirectToRouteResult).RouteValues["IsError"]);
+            Assert.IsTrue((bool)(result as RedirectToRouteResult).RouteValues["HasError"]);
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace MvcForum.Web.Tests.Controllers.Folder
             Assert.IsInstanceOf<RedirectToRouteResult>(result);
             Assert.AreEqual(_model.Slug, (result as RedirectToRouteResult).RouteValues["slug"]);
             Assert.AreEqual(Constants.GroupFilesTab, (result as RedirectToRouteResult).RouteValues["tab"]);
-            Assert.IsTrue((bool)(result as RedirectToRouteResult).RouteValues["IsError"]);
+            Assert.IsTrue((bool)(result as RedirectToRouteResult).RouteValues["HasError"]);
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace MvcForum.Web.Tests.Controllers.Folder
             Assert.IsInstanceOf<RedirectToRouteResult>(result);
             Assert.AreEqual(_model.Slug, (result as RedirectToRouteResult).RouteValues["slug"]);
             Assert.AreEqual(Constants.GroupFilesTab, (result as RedirectToRouteResult).RouteValues["tab"]);
-            Assert.IsTrue((bool)(result as RedirectToRouteResult).RouteValues["IsError"]);
+            Assert.IsTrue((bool)(result as RedirectToRouteResult).RouteValues["HasError"]);
         }
     }
 }

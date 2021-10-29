@@ -486,7 +486,7 @@ namespace MvcForum.Web.Controllers
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [AsyncTimeout(30000)]
         [ActionName("Show")]
-        public async virtual Task<ActionResult> ShowAsync(string slug, int? p, string tab = null, Guid? folder = null, bool? isError = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async virtual Task<ActionResult> ShowAsync(string slug, int? p, string tab = null, Guid? folder = null, bool? hasError = null, CancellationToken cancellationToken = default(CancellationToken))
         {
 
             // Get the Group
@@ -514,7 +514,7 @@ namespace MvcForum.Web.Controllers
                     IsSubscribed = User.Identity.IsAuthenticated && _notificationService.GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
                     Tab = tab,
                     Folder = folder,
-                    IsError = isError
+                    HasError = hasError
                 };
 
                 viewModel.IsMember = viewModel.GroupUserStatus == GroupUserStatus.Joined; 

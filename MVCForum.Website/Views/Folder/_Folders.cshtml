@@ -10,7 +10,7 @@
         <hr>
 
 
-        if (!ViewData.ModelState.IsValid || Model.IsError)
+        if (!ViewData.ModelState.IsValid || Model.HasError)
         {
             <p class="c-info-message c-info-message--error">
                 @Html.LanguageString("Folder.Error.FailedDelete")
@@ -69,7 +69,7 @@
 
             <dialog id="dialog-delete-confirm" class="c-dialog">
 
-                <div class="c-dialog_content">
+                <div class="c-dialog_content c-dialog_content--thin">
 
                     <h3>Delete Folder</h3>
 

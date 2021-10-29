@@ -156,7 +156,7 @@
                         }
                     }
                 }
-                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId, isError = true });
+                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId, hasError = true });
             }
 
             return null;
@@ -166,7 +166,7 @@
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("GetFolder")]
         [ChildActionOnly]
-        public async Task<PartialViewResult> GetFolderAsync(string slug, Guid? folderId, Guid groupId, bool isError = false, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<PartialViewResult> GetFolderAsync(string slug, Guid? folderId, Guid groupId, bool hasError = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_featureManager.IsEnabled(Features.FilesAndFolders))
             {
@@ -180,7 +180,7 @@
                 model.Breadcrumbs = GetBreadcrumbs(folderId, slug);
                 model.GroupUserStatus = groupUserStatus;
                 model.IsMember = groupUserStatus == GroupUserStatus.Joined;
-                model.IsError = isError;
+                model.HasError = hasError;
                 return PartialView("_Folders", model);
             }
 
