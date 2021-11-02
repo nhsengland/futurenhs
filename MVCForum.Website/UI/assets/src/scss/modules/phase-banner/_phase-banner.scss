@@ -3,6 +3,10 @@
     padding-top: 10px;
     padding-bottom: 10px;
 
+    @include respond-to(desktop) {
+        margin: 0 derived-dimension(-2);
+    }
+
     &_content {
         margin: 0 auto;
     }
@@ -20,7 +24,7 @@
         font-weight: 700;
         font-size: 14px;
         line-height: 1;
-        padding: 5px 8px 4px 8px;
+        padding: 5px 8px 4px;
     }
 
 }
