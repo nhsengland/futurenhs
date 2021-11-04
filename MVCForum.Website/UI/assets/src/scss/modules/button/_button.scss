@@ -5,6 +5,11 @@
         @extend %toggle-button;
     }
 
+    &--outline-white {
+        @extend %toggle-button-white;
+    }
+
+
     &--secondary {
         @extend %nhsuk-button-secondary;
     }

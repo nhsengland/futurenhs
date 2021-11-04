@@ -181,7 +181,6 @@
                         Email = user.Email,
                         LoginType = LoginType.Google,
                         Password = StringUtils.RandomString(8),
-                        UserName = user.Name,
                         SocialProfileImageUrl = user.Picture,
                         UserAccessToken = info.RefreshToken
                     };

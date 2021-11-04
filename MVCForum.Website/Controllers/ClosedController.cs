@@ -4,6 +4,7 @@
     using Core.Interfaces;
     using Core.Interfaces.Services;
 
+    [Authorize]
     public partial class ClosedController : BaseController
     {
         public ClosedController(ILoggingService loggingService, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ICacheService cacheService,

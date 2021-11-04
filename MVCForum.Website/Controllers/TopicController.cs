@@ -1,28 +1,28 @@
-﻿namespace MvcForum.Web.Controllers
-{
-    using Core;
-    using Core.Constants;
-    using Core.Constants.UI;
-    using Core.ExtensionMethods;
-    using Core.Interfaces;
-    using Core.Interfaces.Services;
-    using Core.Models.Entities;
-    using Core.Models.Enums;
-    using Core.Models.General;
-    using Core.Utilities;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Web.Mvc;
-    using ViewModels;
-    using ViewModels.Breadcrumb;
-    using ViewModels.ExtensionMethods;
-    using ViewModels.Mapping;
-    using ViewModels.Post;
-    using ViewModels.Shared;
-    using ViewModels.Topic;
+﻿using MvcForum.Core;
+using MvcForum.Core.Constants;
+using MvcForum.Core.Constants.UI;
+using MvcForum.Core.ExtensionMethods;
+using MvcForum.Core.Interfaces;
+using MvcForum.Core.Interfaces.Services;
+using MvcForum.Core.Models.Entities;
+using MvcForum.Core.Models.Enums;
+using MvcForum.Core.Models.General;
+using MvcForum.Core.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using MvcForum.Web.ViewModels;
+using MvcForum.Web.ViewModels.Breadcrumb;
+using MvcForum.Web.ViewModels.ExtensionMethods;
+using MvcForum.Web.ViewModels.Mapping;
+using MvcForum.Web.ViewModels.Post;
+using MvcForum.Web.ViewModels.Topic;
 
+namespace MvcForum.Web.Controllers
+{
+    [Authorize]
     public partial class TopicController : BaseController
     {
         private readonly IGroupService _groupService;
@@ -55,7 +55,6 @@
 
 
         [ChildActionOnly]
-        [Authorize]
         public virtual PartialViewResult TopicsMemberHasPostedIn(int? p)
         {
             var loggedOnloggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -90,7 +89,6 @@
         }
 
         [ChildActionOnly]
-        [Authorize]
         public virtual PartialViewResult GetSubscribedTopics()
         {
             var viewModel = new List<TopicViewModel>();
@@ -171,7 +169,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public virtual JsonResult CheckTopicCreatePermissions(Guid catId)
         {
             if (Request.IsAjaxRequest())
@@ -274,7 +271,6 @@
         ///     Create topic view
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         public virtual ActionResult Create(Guid groupId)
         {
             User.GetMembershipUser(MembershipService);
@@ -299,7 +295,6 @@
         /// <param name="topicViewModel"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public virtual async Task<ActionResult> Create(CreateEditTopicViewModel topicViewModel)
         {
@@ -375,8 +370,6 @@
             return View(topicViewModel);
         }
 
-
-        [Authorize]
         public virtual ActionResult EditPostTopic(Guid id)
         {
             // Get the post
@@ -582,7 +575,10 @@
             return View(editPostViewModel);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int p = 1, Guid? threadId = null)
+        [ActionName("Show")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> ShowAsync(string slug, int p = 1, Guid? threadId = null)
         {
             // Set the page index
             var pageIndex = p <= 0 ? 1 : p;
@@ -662,11 +658,16 @@
                     viewModel.LoggedInUsersUrl = currentUser.NiceUrl;
                 }
 
+                var userGroupStatus = topic.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser?.Id).GetUserStatusForGroup();
+                viewModel.GroupUserStatus = userGroupStatus;
+                viewModel.IsMember = userGroupStatus == GroupUserStatus.Joined;
+                viewModel.IsAdmin = User.IsInRole(Constants.AdminRoleName);
+
                 viewModel.CanViewTopic = topic.Group.PublicGroup;
                 if (!viewModel.CanViewTopic && LoggedOnReadOnlyUser != null) {
-                    var user = topic.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
+                    
                     viewModel.CanViewTopic = loggedOnUsersRole.RoleName == Constants.AdminRoleName
-                        || (GetUserStatusForGroup(user) == GroupUserStatus.Joined); 
+                        || (viewModel.GroupUserStatus == GroupUserStatus.Joined);
                 }
                 
                 viewModel.TotalComments = _postService.TopicPostCount(viewModel.Topic.Id);
@@ -809,7 +810,10 @@
         }
 
         [HttpPost]
-        public virtual async Task<PartialViewResult> AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
+        [ActionName("AjaxMorePosts")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<PartialViewResult> AjaxMorePostsAsync(GetMorePostsViewModel getMorePostsViewModel)
         {
             User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -946,7 +950,10 @@
             return PartialView("AjaxMorePosts", viewModel);
         }
 
-        public virtual async Task<ActionResult> TopicsByTag(string tag, int? p)
+        [ActionName("TopicsByTag")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<ActionResult> TopicsByTagAsync(string tag, int? p)
         {
             User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -1105,31 +1112,5 @@
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
             return loggedOnUsersRole.RoleName == MvcForum.Core.Constants.Constants.AdminRoleName ? loggedOnUsersRole : role;
         }
-
-        private GroupUserStatus GetUserStatusForGroup(GroupUser user)
-        {
-            if (user == null) {
-                return GroupUserStatus.NotJoined;
-            }
-
-            if (user.Approved && !user.Banned && !user.Locked) {
-                return GroupUserStatus.Joined;
-            }
-
-            if (!user.Approved && !user.Banned && !user.Locked && !user.Rejected) {
-                    return GroupUserStatus.Pending;
-            }
-
-            if (user.Approved && user.Banned && !user.Locked) {
-                return GroupUserStatus.Banned;
-            }
-
-            if (user.Approved && !user.Banned && user.Locked) {
-                return GroupUserStatus.Locked;
-            }
-
-            return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
-        }
-
     }
 }

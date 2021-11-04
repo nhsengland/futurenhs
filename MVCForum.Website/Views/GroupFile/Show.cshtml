@@ -8,7 +8,7 @@
 }
 
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
+    @{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
 }
 
 @{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
@@ -28,7 +28,7 @@
 <div class="c-grid-block">
     <div class="c-grid-block_item l-col-12">
         <div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
-            <table role="table" class="c-table c-table--files">
+            <table role="table" class="c-table c-table--files" id="file-details-table">
                 <caption class="c-table_caption u-visually-hidden">File details</caption>
                 <thead role="rowgroup" class="c-table_head">
                     <tr role="row">
@@ -51,16 +51,15 @@
 	                        </a>
                         </td>
                         <td role="cell" class="c-table_cell">
-                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedDate)</span>
-							<span>@DatesUi.GetPrettyDate(Model.File.ModifiedDate.ToString())</span>
+                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedAtUtc)</span>
+							<span>@DatesUi.GetPrettyDate(Model.File.LastModifiedAtUtc.ToString())</span>
                         </td>
                         <td role="cell" class="c-table_cell">
                             <span class="c-table_heading">@Html.LanguageString("File.Label.Download")</span>
-                            @if (@Model.File.FileUrl != null)
+                            @if (@Model.File.BlobName != null)
                             {   
 	                            Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));
-             
-                                <a href="@Model.File.FileUrl" class="">@Html.LanguageString("File.Label.Download")</a>
+                                @Html.ActionLink(Html.LanguageString("File.Label.Download"), "Download", new { fileId = Model.File.Id, groupSlug = Model.Slug })
                             }
                         </td>
                     </tr>

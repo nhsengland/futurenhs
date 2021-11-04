@@ -1,9 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="Folder.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Models
+﻿namespace MvcForum.Core.Repositories.Models
 {
     using System;
 
@@ -41,7 +36,7 @@ namespace MvcForum.Core.Repositories.Models
         /// <summary>
         /// Gets or sets when the Folder was added.
         /// </summary>
-        public DateTime DateAdded { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
 
         /// <summary>
         /// Gets or sets the parent of the folder, may not have a parent i.e. root.

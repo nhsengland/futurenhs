@@ -16,7 +16,6 @@
             Property(x => x.IsSolution).IsRequired();
             Property(x => x.IsTopicStarter).IsOptional();
             Property(x => x.FlaggedAsSpam).IsOptional();
-            Property(x => x.IpAddress).IsOptional().HasMaxLength(50);
             Property(x => x.Pending).IsOptional();
             Property(x => x.InReplyTo).IsOptional();
 

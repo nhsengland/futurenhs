@@ -9,6 +9,7 @@
     using Core.Models.Enums;
     using ViewModels.Tag;
 
+    [Authorize]
     public partial class TagController : BaseController
     {
         private readonly IGroupService _groupService;

@@ -13,5 +13,6 @@ namespace MvcForum.Web.ViewModels.Shared
         public string Image { get; set; }
         public string Colour { get; set; }
         public TabViewModel HeaderTabs { get; set; }
+        public ActionMenuModel ActionMenu { get; set; }
     }
 }

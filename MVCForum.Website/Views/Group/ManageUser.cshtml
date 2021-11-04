@@ -30,6 +30,7 @@
 
 @using (Html.BeginForm("ManageUser", "Group", FormMethod.Post, new { enctype = "multipart/form-data", @class = "editmemberform" }))
 {
+	@Html.AntiForgeryToken()
 	@Html.HiddenFor(x => Model.GroupUser.Id)
 	<div class="memberprofilepublic">
 

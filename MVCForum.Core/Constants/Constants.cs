@@ -89,6 +89,11 @@
         public const string GroupMembersTab = "members";
         public const string GroupFilesTab = "files";
 
+        /// <summary>
+        /// Key of cached UserDelegationKey.
+        /// </summary>
+        public const string BlobStorageDownloadUserDelegationKeyCacheKey = "AzureBlobStorageDownload:UserDelegationKey";
+
         public class ExtendedDataKeys
         {
             /// <summary>

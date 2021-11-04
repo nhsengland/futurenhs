@@ -66,7 +66,8 @@
             {
                 AllGroups = _groupService.GetBaseSelectListGroups(_groupService.GetAll(LoggedOnReadOnlyUser?.Id), LoggedOnReadOnlyUser?.Id),
                 AllSections = _groupService.GetAllSections().ToSelectList(),
-				Users = MembershipService.GetAll().ToSelectList()
+				Users = MembershipService.GetAll().ToSelectList(),
+                Public = true
             };
             return View(GroupViewModel);
         }
@@ -78,7 +79,10 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateGroup(GroupEditViewModel GroupViewModel)
+        [ActionName("CreateGroup")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> CreateGroupAsync(GroupEditViewModel GroupViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -128,7 +132,11 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult> EditGroup(GroupEditViewModel GroupViewModel)
+        [ValidateAntiForgeryToken]
+        [ActionName("EditGroup")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> EditGroupAsync(GroupEditViewModel GroupViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -174,6 +182,7 @@
                     {
                         _groupService.AddGroupAdministrators(group.Slug, new List<Guid>(), LoggedOnReadOnlyUser.Id);
                     }
+                    return RedirectToAction("Index");
                 }
             }
             GroupViewModel.Users = MembershipService.GetAll().ToSelectList();
@@ -195,7 +204,10 @@
             return View(viewModel);
         }
 
-        public async Task<ActionResult> DeleteGroup(Guid id)
+        [ActionName("DeleteGroup")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> DeleteGroupAsync(Guid id)
         {
             var cat = _groupService.Get(id);
             var GroupResult = await _groupService.Delete(cat);

@@ -1,10 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="File.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-namespace MvcForum.Core.Repositories.Models
+﻿namespace MvcForum.Core.Repositories.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -53,7 +47,7 @@ namespace MvcForum.Core.Repositories.Models
         /// <summary>
         /// Gets or sets the file url.
         /// </summary>
-        public string FileUrl { get; set; }
+        public string BlobName { get; set; }
 
         /// <summary>
         /// Gets or sets the file created by.
@@ -68,12 +62,12 @@ namespace MvcForum.Core.Repositories.Models
         /// <summary>
         /// Gets or sets the file created date.
         /// </summary>
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
 
         /// <summary>
         /// Gets or sets the file modified date.
         /// </summary>
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime? ModifiedAtUtc { get; set; }
 
         /// <summary>
         /// Gets or sets the status. Relates to UploadStatus Id.
@@ -83,7 +77,19 @@ namespace MvcForum.Core.Repositories.Models
         public string UserName { get; set; }
         public string UserSlug { get; set; }
 
+        /// <summary>
+        /// Will return name of user that created the file if modifed by is null.
+        /// </summary>
         public string ModifiedUserName { get; set; }
+
+        /// <summary>
+        /// Will return the slug of user that created the file if modifed by is null.
+        /// </summary>
         public string ModifiedUserSlug { get; set; }
+
+        /// <summary>
+        /// Will return the date the file was created if modifed at is null.
+        /// </summary>
+        public DateTime LastModifiedAtUtc { get; set; }
     }
 }

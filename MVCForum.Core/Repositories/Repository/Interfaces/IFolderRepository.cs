@@ -1,18 +1,11 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="IGroupRepository.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-using MvcForum.Core.Models.General;
-using MvcForum.Core.Repositories.Models;
-
-namespace MvcForum.Core.Repositories.Repository.Interfaces
+﻿namespace MvcForum.Core.Repositories.Repository.Interfaces
 {
-    using MvcForum.Core.Models.Entities;
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
+    using MvcForum.Core.Models.General;
+    using MvcForum.Core.Repositories.Models;
 
     public interface IFolderRepository
     {
@@ -22,6 +15,15 @@ namespace MvcForum.Core.Repositories.Repository.Interfaces
         /// <param name="folderId">Id to get folder.</param>
         /// <returns>Folder Meta data for the Id provided</returns>
         FolderReadViewModel GetFolder(Guid folderId);
+
+        /// <summary>
+        /// Get folder by Id, folder name and parent - validate folder exists for create/update, i.e. no duplicate names allowed.
+        /// </summary>
+        /// <param name="folderId"></param>
+        /// <param name="folderName"></param>
+        /// <param name="parentFolder"></param>
+        /// <returns></returns>
+        FolderReadViewModel GetFolder(Guid? folderId, string folderName, Guid? parentFolder);
 
         /// <summary>
         /// Gets root folder for a group.
@@ -48,6 +50,15 @@ namespace MvcForum.Core.Repositories.Repository.Interfaces
         /// <param name="userId">User id to check the role for(they may</param>
         /// <returns></returns>
         bool UserIsAdmin(string groupSlug, Guid userId);
+
+        /// <summary>
+        /// Returns a boolean indicating if the user has group access
+        /// Either a Site Admin, Group Admin or standard member
+        /// </summary>
+        /// <param name="groupSlug">Group slug to identify the group</param>
+        /// <param name="userId">User id to check the role for(they may</param>
+        /// <returns></returns>
+        bool UserHasGroupAccess(string groupSlug, Guid userId);
 
         /// <summary>
         /// Returns Breadcrumb trail to allow the user to navigate back up the tree

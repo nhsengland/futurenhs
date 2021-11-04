@@ -41,7 +41,6 @@ export class SiteHeaderNav extends UIComponentBase {
         this.bindSiblings(this.mobileNavTriggers);
         this.bindSiblings(this.parentMenuNavs);
         this.resetNavState();
-        console.log(this.css.breakPoints)
 
         /**
          * On window resize ensure the main nav is reset if not in mobile breakpoint
@@ -62,7 +61,7 @@ export class SiteHeaderNav extends UIComponentBase {
     }
 
     /**
-     * Updates nav and body scroll state according to ctive breakpoint
+     * Updates nav and body scroll state according to active breakpoint
      */
     private resetNavState: Function = (): void => {
 

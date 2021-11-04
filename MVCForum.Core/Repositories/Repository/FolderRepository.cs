@@ -1,21 +1,17 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FolderRepository.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Dapper;
-using MvcForum.Core.Models.General;
-using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
-using MvcForum.Core.Repositories.Models;
-using MvcForum.Core.Repositories.Repository.Interfaces;
-
-namespace MvcForum.Core.Repositories.Repository
+﻿namespace MvcForum.Core.Repositories.Repository
 {
-    //using DbFolder = MvcForum.Core.Repositories.Database.Models.Folder;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.SqlClient;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Transactions;
+    using Dapper;
+    using MvcForum.Core.Models.General;
+    using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
+    using MvcForum.Core.Repositories.Models;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
 
     public class FolderRepository : IFolderRepository
     {
@@ -145,16 +141,68 @@ namespace MvcForum.Core.Repositories.Repository
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
             
             const string query =
-                @"SELECT Id AS FolderId, Name AS FolderName, Description, FileCount 
+                @"SELECT Id AS FolderId, Name AS FolderName, Description, FileCount, ParentFolder AS ParentId
                 FROM Folder folders
-                WHERE folders.Id = @FolderId;";
+                WHERE folders.Id = @FolderId
+                AND folders.IsDeleted = 0";
 
             var result = dbConnection.QueryFirstOrDefault<FolderReadViewModel>(query, new {FolderId = folderId});
             return result;
         }
 
+        /// <summary>
+        /// Get folder by Id, folder name and parent - validate folder exists for create/update, i.e. no duplicate names allowed.
+        /// </summary>
+        /// <param name="folderId"></param>
+        /// <param name="folderName"></param>
+        /// <param name="parentFolder"></param>
+        /// <returns></returns>
+        public FolderReadViewModel GetFolder(Guid? folderId, string folderName, Guid? parentFolder)
+        {
+            var dbConnection = _connectionFactory.CreateReadOnlyConnection();
+
+            const string query =
+                @"SELECT    Id AS FolderId, 
+                            Name AS FolderName, 
+                            Description, 
+                            FileCount 
+                FROM        Folder f
+                WHERE       (
+                                f.Id != @FolderId
+                                OR
+                                @FolderId IS NULL
+                            )
+                AND         f.Name = @FolderName
+                AND         f.IsDeleted = 0
+                AND         (
+                                ParentFolder = @ParentFolder
+                                OR
+                                @ParentFolder IS NULL
+                            );";
+
+            var result = dbConnection.QueryFirstOrDefault<FolderReadViewModel>(query, new { FolderId = folderId, FolderName = folderName, ParentFolder = parentFolder });
+            return result;
+        }
+
         public bool UserIsAdmin(string groupSlug, Guid userId)
         {
+            var (MembershipRole, GroupRole) = GetUserRoles(groupSlug, userId);
+
+            return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin";
+        }
+
+        public bool UserHasGroupAccess(string groupSlug, Guid userId)
+        {
+            var (MembershipRole, GroupRole) = GetUserRoles(groupSlug, userId);
+
+            return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin" || GroupRole?.ToLower() == "standard members";
+        }
+
+        private (string MembershipRole, string GroupRole) GetUserRoles(string groupSlug, Guid userId)
+        {
+            if (string.IsNullOrWhiteSpace(groupSlug)) throw new ArgumentNullException(nameof(groupSlug));
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(groupSlug));
+
             var dbConnection = _connectionFactory.CreateReadOnlyConnection();
 
             const string query =
@@ -185,7 +233,7 @@ namespace MvcForum.Core.Repositories.Repository
                 var membershipRole = result.Read<string>().FirstOrDefault();
                 var groupRole = result.Read<string>().FirstOrDefault();
 
-                return membershipRole?.ToLower() == "admin" || groupRole?.ToLower() == "admin";
+                return (membershipRole, groupRole);
             }
         }
 

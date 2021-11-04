@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
 }
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Layout", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
+    @{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
 }
 
 @{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
@@ -23,7 +23,7 @@
             @Html.LabelFor(model => model.FolderName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.FolderName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.FolderName, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.FolderName, Html.LanguageString("Folder.Error.NullTitle"), new { @class = "text-danger" })
             </div>
         </div>
 

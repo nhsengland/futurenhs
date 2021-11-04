@@ -10,7 +10,7 @@
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
     ViewBag.MetaDesc = StringUtils.ReturnAmountWordsFromString(string.Concat(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), "..."), 20);
-	var hideSideBar = ViewBag.HideSideBar == null ? false : ViewBag.HideSideBar;
+    var hideSideBar = ViewBag.HideSideBar == null ? false : ViewBag.HideSideBar;
 
     if (Request.QueryString.AllKeys.Any())
     {
@@ -54,13 +54,17 @@
 {
     @if (hideSideBar == false)
     {
-	    @Html.Partial("_CommonSideNav")
+        @Html.Partial("_CommonSideNav")
     }
 }
-
+@section GroupHeader {
+    @Html.Action("GroupHeader", "Group", new { slug = Model.Topic.Group.Slug, tab = Constants.GroupForumTab })
+}
 @Html.Action("GetTopicBreadcrumb", "Topic", new { topic = Model.Topic })
 
-@if (!Model.CanViewTopic) {
+
+@if (!Model.CanViewTopic)
+{
 
     <p>@Html.LanguageString("Group.PermissionDenied")</p>
 
@@ -85,9 +89,9 @@ else
                     <div class="c-card c-card--post u-border-left-theme-8">
                         <div class="c-card_content">
 
-                            <h1 class="c-card_heading">
+                            <h2 class="c-card_heading">
                                 @Html.Raw(Model.Topic.Name)
-                            </h1>
+                            </h2>
 
 
 
@@ -153,6 +157,13 @@ else
             }
         </div>
 
+        @if (!Model.IsMember && Model.Topic.Group.PublicGroup && !Model.IsAdmin)
+        {
+            <p class="c-info-message">
+                @Html.LanguageString("Group.PublicGroup.JoinMessage")
+            </p>
+        }
+
         <div id="commentsList">
             @foreach (var post in Model.Posts)
             {
@@ -194,9 +205,9 @@ else
             <p class="topiclockedmessage">@Html.LanguageString("Topic.IsLocked")</p>
         }
 
-        <input type="hidden" id="pageIndex" value="@(Model.PageIndex + 1)"/>
-        <input type="hidden" id="topicId" value="@Model.Topic.Id"/>
-        <input type="hidden" id="totalPages" value="@Model.TotalPages"/>
+        <input type="hidden" id="pageIndex" value="@(Model.PageIndex + 1)" />
+        <input type="hidden" id="topicId" value="@Model.Topic.Id" />
+        <input type="hidden" id="totalPages" value="@Model.TotalPages" />
     </div>
 
 }

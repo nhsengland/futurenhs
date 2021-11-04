@@ -9,6 +9,7 @@
     using Core.Interfaces.Services;
     using ViewModels.Language;
 
+    [Authorize]
     public partial class LanguageController : BaseController
     {
         /// <summary>

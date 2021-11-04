@@ -189,7 +189,6 @@
                                 Email = email,
                                 LoginType = LoginType.Facebook,
                                 Password = StringUtils.RandomString(8),
-                                UserName = user.Body.Name,
                                 UserAccessToken = userAccessToken
                             };
 

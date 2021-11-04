@@ -10,6 +10,7 @@ namespace MvcForum.Web.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Application.CustomActionResults;
@@ -25,6 +26,7 @@ namespace MvcForum.Web.Controllers
     using ViewModels.Group;
     using ViewModels.Mapping;
 
+    [Authorize]
     public partial class GroupController : BaseController
     {
         private readonly INotificationService _notificationService;
@@ -76,11 +78,13 @@ namespace MvcForum.Web.Controllers
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
+        [HttpGet]
         public ActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult ListMainGroups()
         {
@@ -96,7 +100,7 @@ namespace MvcForum.Web.Controllers
             return PartialView(catViewModel);
         }
 
-
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult ListSections()
         {
@@ -159,7 +163,7 @@ namespace MvcForum.Web.Controllers
             return PartialView(MyGroupsModel);
         }
 
-        [Authorize]
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult GetSubscribedGroups()
         {
@@ -205,89 +209,166 @@ namespace MvcForum.Web.Controllers
             return PartialView("GetGroupBreadcrumb", viewModel);
         }
 
-
-        private GroupUserStatus GetUserStatusForGroup(GroupUser user)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Join")]
+        public virtual async Task<ActionResult> JoinAsync(string slug, int? p, CancellationToken cancellationToken)
         {
-            if (user == null)
-                return GroupUserStatus.NotJoined;
-            if (user.Approved && !user.Banned && !user.Locked)
-                return GroupUserStatus.Joined;
-            if (!user.Approved && !user.Banned && !user.Locked && !user.Rejected)
-                return GroupUserStatus.Pending;
-            if (user.Approved && user.Banned && !user.Locked)
-                return GroupUserStatus.Banned;
-            if (user.Approved && !user.Banned && user.Locked)
-                return GroupUserStatus.Locked;
-
-            return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
-        }
-
-        public virtual async Task<ActionResult> Join(string slug, int? p)
-        {
-            _groupService.JoinGroup(slug, LoggedOnReadOnlyUser.Id);
+            await _groupService.JoinGroupAsync(slug, LoggedOnReadOnlyUser.Id, cancellationToken);
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 
-        public virtual async Task<ActionResult> Leave(string slug, int? p)
+        [HttpGet]
+        [ActionName("Leave")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<ActionResult> LeaveAsync(string slug, int? p)
         {
 
             _groupService.LeaveGroup(slug, LoggedOnReadOnlyUser.Id);
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 
-        /// <summary>
-        /// Method to get the group tabs model.
-        /// </summary>
-        /// <param name="slug">The slug for the current group.</param>
-        /// <returns>View model for the group tabs <see cref="TabViewModel"/>.</returns>
-        public TabViewModel GetGroupTabsModel(string slug)
+        public PartialViewResult GroupHeader(string slug, string tab = null)
         {
-            var tabsViewModel = new TabViewModel { Tabs = new List<Tab>( )};
+            var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
 
+            var viewModel = new GroupHeaderViewModel()
+            {
+                Name = group.Group.Name,
+                Description = group.Group.Description,
+                Colour = group.Group.Colour,
+                HeaderTabs = GetGroupTabsModel(slug, tab),
+                Image = group.Group.Image,
+                Id = group.Group.Id,
+                ActionMenu = GetGroupActionMenu(group.Group)
+            };
+
+            return PartialView("_GroupHeader", viewModel);
+        }
+
+        public ActionMenuModel GetGroupActionMenu(Group group)
+        {
+            var model = new ActionMenuModel();
+
+            if (LoggedOnReadOnlyUser == null) return model;
+
+            var user = @group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
+            var groupUserStatus = user.GetUserStatusForGroup();
+
+            if (groupUserStatus != GroupUserStatus.Joined)
+            {
+                switch (groupUserStatus)
+                {
+                    case GroupUserStatus.NotJoined:
+                        model.ActionButton = new Button
+                        {
+                            Name = LocalizationService.GetResourceString("Groups.Join"),
+                            Url = Url.Action("Join", "Group", new { slug = @group.Slug }),
+                            Active = true
+                        };
+                        break;
+                    case GroupUserStatus.Pending:
+                        model.ActionButton = new Button
+                        {
+                            Name = LocalizationService.GetResourceString("Pending Approval"),
+                        };
+                        break;
+                    case GroupUserStatus.Locked:
+                        model.ActionButton = new Button
+                        {
+                            Name = LocalizationService.GetResourceString("Locked Out"),
+                        };
+                        break;
+                    case GroupUserStatus.Banned:
+                        model.ActionButton = new Button
+                        {
+                            Name = LocalizationService.GetResourceString("Banned"),
+                        };
+                        break;
+
+                }
+            }
+            else
+            {
+                model.ActionLinks = new List<ActionLink>
+                {
+                    new ActionLink {  Name = LocalizationService.GetResourceString("Groups.Leave") , Url = Url.Action("Leave", "Group", new { slug = @group.Slug }), Order = 1}
+                };
+
+                var loggedOnUsersRole = GetGroupMembershipRole(group.Id);
+                if (loggedOnUsersRole.RoleName.ToLower() == "admin")
+                {
+                    model.ActionLinks.Add(new ActionLink
+                    {
+                        Name = "Add new member",
+                        Url = Url.Action("AddMember", "GroupInvite", new { slug = @group.Slug }),
+                        Order = 2
+                    });
+                    model.ActionLinks.Add(new ActionLink
+                    {
+                        Name = "Invite new user",
+                        Url = Url.RouteUrl("GroupInviteUrls", new { slug = @group.Slug, groupId = @group.Id }),
+                        Order = 3
+                    });
+                }
+            }
+
+            return model;
+        }
+
+        // TODO Duplicated code from groups, we need to refactor all of this into one place.
+        public TabViewModel GetGroupTabsModel(string slug, string tab)
+        {
             var homeTab = new Tab
             {
-                Name = "GroupTabs.Home",
-                Order = 1,
-                Icon = Icons.Home,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = UrlParameter.Optional})}"
+                Name = "GroupTabs.Home", Order = 1,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}"
             };
-            tabsViewModel.Tabs.Add(homeTab);
 
             var forumTab = new Tab
             {
-                Name = "GroupTabs.Forum",
-                Order = 2,
-                Icon = Icons.Forum,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupForumTab})}"
+                Name = "GroupTabs.Forum", Order = 2,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}"
             };
-            tabsViewModel.Tabs.Add(forumTab);
 
-            if (_featureManager.IsEnabled(Features.FilesAndFolders))
+            var filesTab = new Tab
             {
-                var filesTab = new Tab
-                {
-                    Name = "GroupTabs.Files",
-                    Order = 3,
-                    Icon = Icons.File,
-                    Url = $"{Url.RouteUrl("GroupUrls", new {slug, tab = Constants.GroupFilesTab})}"
-                };
-                tabsViewModel.Tabs.Add(filesTab);
-            }
+                Name = "GroupTabs.Files", Order = 3,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupFilesTab })}"
+            };
 
             var membersTab = new Tab
             {
-                Name = "GroupTabs.Members",
-                Order = 4,
-                Icon = Icons.Members,
-                Url = $"{Url.RouteUrl("GroupUrls", new {slug = slug, tab = Constants.GroupMembersTab})}"
+                Name = "GroupTabs.Members", Order = 4,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}"
             };
-            tabsViewModel.Tabs.Add(membersTab);
 
+            if (tab != null)
+            {
+                switch (tab)
+                {
+                    case Constants.GroupFilesTab:
+                        filesTab.Active = true;
+                        break;
+                    case Constants.GroupForumTab:
+                        forumTab.Active = true;
+                        break;
+                    case Constants.GroupMembersTab:
+                        membersTab.Active = true;
+                        break;
+                    default:
+                        homeTab.Active = true;
+                        break;
+                }
+            }
 
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
 
             return tabsViewModel;
         }
 
+        [HttpGet]
         public PartialViewResult GetGroupHomeCards(string slug)
         {
             var viewModel = new GroupHomeCardsViewModel 
@@ -300,6 +381,7 @@ namespace MvcForum.Web.Controllers
             return PartialView("_GroupHomeCards", viewModel);
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult GetGroupForum(Guid groupId, int? p)
         {
@@ -352,15 +434,15 @@ namespace MvcForum.Web.Controllers
             if (LoggedOnReadOnlyUser != null)
             {
 
-                var user = group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
-                topicViewModel.GroupUserStatus = GetUserStatusForGroup(user);
+                var userGroupStatus = group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id).GetUserStatusForGroup();
+                topicViewModel.GroupUserStatus = userGroupStatus;
+                topicViewModel.IsMember = userGroupStatus == GroupUserStatus.Joined;
                 topicViewModel.LoggedInUserRole = loggedOnUsersRole;
             }
 
             return PartialView("_Forum", topicViewModel);
         }
 
-        
         public virtual PartialViewResult LoadMoreTopics(Guid groupId, int? p)
         {
             var group = _groupService.Get(groupId);
@@ -400,15 +482,16 @@ namespace MvcForum.Web.Controllers
             return PartialView("_Topics", topicViewModels);
         }
 
-        public virtual async Task<ActionResult> Show(string slug, int? p, string tab = null, Guid? folder = null)
+        [HttpGet]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        [ActionName("Show")]
+        public async virtual Task<ActionResult> ShowAsync(string slug, int? p, string tab = null, Guid? folder = null, bool? hasError = null, CancellationToken cancellationToken = default(CancellationToken))
         {
 
             // Get the Group
             var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
             var loggedOnUsersRole = GetGroupMembershipRole(group.Group.Id);
-
-            // Allowed Groups for this user
-            var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
 
             // Set the page index
             var pageIndex = p ?? 1;
@@ -418,6 +501,7 @@ namespace MvcForum.Web.Controllers
 
             if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
             {
+                var groupUser = group.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
                 // Create the main view model for the Group
                 var viewModel = new GroupViewModel
                 {
@@ -425,14 +509,17 @@ namespace MvcForum.Web.Controllers
                     Group = group.Group,
                     PageIndex = pageIndex,
                     User = LoggedOnReadOnlyUser,
+                    GroupUserStatus = groupUser.GetUserStatusForGroup(),
                     GroupUserRole = GetGroupMembershipRole(group.Group.Id),
-                    IsSubscribed = User.Identity.IsAuthenticated && _notificationService
-                                       .GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
+                    IsSubscribed = User.Identity.IsAuthenticated && _notificationService.GetGroupNotificationsByUserAndGroup(LoggedOnReadOnlyUser, group.Group).Any(),
                     Tab = tab,
-                    Folder = folder
+                    Folder = folder,
+                    HasError = hasError
                 };
 
-                if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName)
+                viewModel.IsMember = viewModel.GroupUserStatus == GroupUserStatus.Joined; 
+
+                if (loggedOnUsersRole.RoleName != Constants.GuestRoleName)
 
                     // If there are subGroups then add then with their permissions
                     if (group.SubGroups.Any())
@@ -451,13 +538,6 @@ namespace MvcForum.Web.Controllers
                     }
 
 
-                if (LoggedOnReadOnlyUser != null)
-                {
-
-                    var user = viewModel.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
-                    viewModel.GroupUserStatus = GetUserStatusForGroup(user);
-                }
-
                 if (tab == Constants.GroupMembersTab)
                 {
                     ViewBag.HideSideBar = true;
@@ -474,12 +554,14 @@ namespace MvcForum.Web.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult GetGroupFiles(Guid groupId, int? p)
         {
             return PartialView("_Files", null);
         }
 
+        [HttpGet]
         [ChildActionOnly]
         public virtual PartialViewResult GetGroupMembers(Guid groupId, int? p)
         {
@@ -494,7 +576,7 @@ namespace MvcForum.Web.Controllers
             // check the user has permission to this Group
             var permissions = RoleService.GetPermissions(group, loggedOnUsersRole);
 
-            var groupUsers = group.GroupUsers.Select(x => new GroupUserViewModel { GroupUser = x, GroupUserStatus = GetUserStatusForGroup(x) });
+            var groupUsers = group.GroupUsers.Select(x => new GroupUserViewModel { GroupUser = x, GroupUserStatus = x.GetUserStatusForGroup() });
 
             // Create the main view model for the Group
             var viewModel = new GroupMembersViewModel {
@@ -516,13 +598,14 @@ namespace MvcForum.Web.Controllers
             {
 
                 var user = group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
-                viewModel.GroupUserStatus = GetUserStatusForGroup(user);
+                viewModel.GroupUserStatus = user.GetUserStatusForGroup();
                 viewModel.LoggedInUserRole = loggedOnUsersRole;
             }
 
             return PartialView("_ManageUsers", viewModel);
         }
 
+        [HttpGet]
         public virtual ActionResult ManageUser(Guid groupUserId)
         {
             // Get the Group
@@ -530,25 +613,26 @@ namespace MvcForum.Web.Controllers
             var roles = _roleService.AllRoles().Where(x => x.RoleName != Constants.GuestRoleName);
             var selectList = new List<SelectListItem>(roles.Select(x => new SelectListItem { Text = x.RoleName, Value = x.Id.ToString() }));
 
-
             var viewModel = new GroupUserViewModel
             {
                 GroupUser = groupUser,
-                GroupUserStatus = GetUserStatusForGroup(groupUser),
+                GroupUserStatus = groupUser.GetUserStatusForGroup(),
                 RoleSelectList = selectList,
                 MemberRole = GetGroupMembershipRole(groupUser.Group.Id)
 
             };
 
-
             return View(viewModel);
         }
 
-       public virtual ActionResult ApproveUser(Guid groupUserId, string slug)
+        [HttpGet]
+        public virtual ActionResult ApproveUser(Guid groupUserId, string slug)
         {
             _groupService.ApproveJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
             return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab });
         }
+
+        [HttpGet]
         public virtual ActionResult RejectUser(Guid groupUserId, string slug)
         {
             _groupService.RejectJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
@@ -556,29 +640,30 @@ namespace MvcForum.Web.Controllers
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult> ManageUser(GroupUserViewModel model)
+        [ActionName("ManageUser")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        [ValidateAntiForgeryToken]
+        public virtual async Task<ActionResult> ManageUserAsync(GroupUserViewModel model, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Get the Group
-
-
-            var groupUser = await _groupService.UpdateGroupUser(model.GroupUser);
+            var groupUser = await _groupService.UpdateGroupUserAsync(model.GroupUser, cancellationToken);
             var roles = _roleService.AllRoles();
             var selectList = new List<SelectListItem>(roles.Select(x => new SelectListItem { Text = x.RoleName, Value = x.Id.ToString() }));
-
 
             var viewModel = new GroupUserViewModel
             {
                 GroupUser = groupUser,
-                GroupUserStatus = GetUserStatusForGroup(groupUser),
+                GroupUserStatus = groupUser.GetUserStatusForGroup(),
                 RoleSelectList = selectList,
                 MemberRole = GetGroupMembershipRole(groupUser.Group.Id)
 
             };
 
-
             return View(viewModel);
         }
 
+        [HttpGet]
         private MembershipRole GetGroupMembershipRole(Guid groupId)
         {
 

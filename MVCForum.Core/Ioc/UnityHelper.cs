@@ -3,6 +3,11 @@ namespace MvcForum.Core.Ioc
     using Data.Context;
     using Interfaces;
     using Interfaces.Services;
+    using Microsoft.Extensions.Caching.Memory;
+    using Microsoft.Extensions.Options;
+    using MvcForum.Core.Factories;
+    using MvcForum.Core.Interfaces.Factories;
+    using MvcForum.Core.Interfaces.Helpers;
     using MvcForum.Core.Interfaces.Providers;
     using MvcForum.Core.Providers;
     using MvcForum.Core.Repositories.Command;
@@ -12,7 +17,9 @@ namespace MvcForum.Core.Ioc
     using MvcForum.Core.Repositories.Database.RetryPolicy;
     using MvcForum.Core.Repositories.Repository;
     using MvcForum.Core.Repositories.Repository.Interfaces;
+    using MvcForum.Core.Utilities;
     using Reflection;
+    using SendGrid;
     using Services;
     using System;
     using System.Configuration;
@@ -98,14 +105,48 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IFolderService, FolderService>();
             Container.BindInRequestScope<IFileService, FileService>();
             Container.BindInRequestScope<IFileUploadValidationService, FileUploadValidationService>();
+            Container.BindInRequestScope<IGroupInviteService, GroupInviteService>();
+            Container.BindInRequestScope<IRegistrationEmailService, RegistrationEmailService>();
+            Container.BindInRequestScope<ISmtpClientFactory, SmtpClientFactory>();
+            Container.BindInRequestScope<IGroupAddMemberService, GroupAddMemberService>();
 
+            Container.RegisterSingleton<IValidateFileType, FileTypeValidator>();
+
+            Container.RegisterInstance<IMemoryCache>(new MemoryCache(Options.Create<MemoryCacheOptions>(new MemoryCacheOptions())));
+
+            switch (ConfigurationManager.AppSettings["SendEmailService"])
+            {
+                case "SendGrid":
+                    Container.BindInRequestScope<ISendEmailService, SendGridEmailService>();
+                    Container.RegisterInstance<ISendGridClient>(new SendGridClient(ConfigurationManager.AppSettings["Email_SendGridApiKey"]));
+                    break;
+                case "Smtp":
+                    Container.BindInRequestScope<ISendEmailService, SmtpEmailService>();
+                    break;
+            }
+
+            Container.BindInRequestScope<ISystemPagesService, SystemPagesService>();
             // Repositories
-            Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString,  Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"]), ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString, ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"], ConfigurationManager.AppSettings["AzureBlobStorage:FilesPrimaryEndpoint_TO_BE_RETIRED"]));
+            Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(
+                ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString,
+                ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString,
+                Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), 
+                Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"]), 
+                ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString, 
+                ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"], 
+                ConfigurationManager.AppSettings["AzureBlobStorage:FilesPrimaryEndpoint_TO_BE_RETIRED"],
+                ConfigurationManager.AppSettings["Email_SmtpFrom"]));
             Container.BindInRequestScope<IDbRetryPolicy, DbRetryPolicy>();
             Container.BindInRequestScope<IDbConnectionFactory, DbConnectionFactory>();
             Container.BindInRequestScope<IFolderRepository, FolderRepository>();
             Container.BindInRequestScope<IFileRepository, FileRepository>();
             Container.BindInRequestScope<IFileCommand, FileCommand>();
+            Container.BindInRequestScope<IGroupInviteRepository, GroupInviteRepository>();
+            Container.BindInRequestScope<IGroupInviteCommand, GroupInviteCommand>();
+            Container.BindInRequestScope<ISystemPagesRepository, SystemPagesRepository>();
+            Container.BindInRequestScope<ISystemPagesCommand, SystemPagesCommand>();
+            Container.BindInRequestScope<IGroupAddMemberRepository, GroupAddMemberRepository>();
+            Container.BindInRequestScope<IGroupAddMemberCommand, GroupAddMemberCommand>();
         }
     }
 

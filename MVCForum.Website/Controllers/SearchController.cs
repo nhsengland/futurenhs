@@ -1,5 +1,6 @@
 ﻿namespace MvcForum.Web.Controllers
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
@@ -10,6 +11,7 @@
     using ViewModels.Mapping;
     using ViewModels.Search;
 
+    [Authorize]
     public partial class SearchController : BaseController
     {
         private readonly IGroupService _groupService;
@@ -31,6 +33,8 @@
         }
 
         [HttpGet]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
         public virtual async Task<ActionResult> Index(int? p, string siteSearch)
         {
             if (!string.IsNullOrWhiteSpace(siteSearch))

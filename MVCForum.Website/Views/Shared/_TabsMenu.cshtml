@@ -3,23 +3,25 @@
 @{
     
 }
+<details class="c-tabbed-nav" open>
+        <summary aria-haspopup="true" class="c-tabbed-nav_mobile-trigger" data-open-icon="icon-chevron-up" data-closed-icon="icon-chevron-down" data-open-on-desktop="true">
+            Group Menu
+            @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-down", "c-ui-icon c-ui-icon--large c-tabbed-nav_trigger-icon")); }
+        </summary>
+        <nav class="c-tabbed-nav_nav">
+            <ul role="menu" class="u-list-plain c-tabbed-nav_list">
+                
+                @foreach (var tab in Model.Tabs.OrderBy(x=> x.Order))
+                {
+                    <li class="c-tabbed-nav_item" role="none">
+                        <a class="@(tab.Active? "c-tabbed-nav_link--active" : "") c-tabbed-nav_link" href="@tab.Url" role="menuitem">
+                            <span>
+                                @Html.LanguageString(@tab.Name)
+                            </span>
+                        </a>
 
-<nav class="c-tabbed-nav">
-    <ul role="menu" class="u-list-plain c-tabbed-nav_list">
-        
-        @foreach (var tab in Model.Tabs.OrderBy(x=> x.Order))
-        {
-            <li class="c-tabbed-nav_item" role="none">
-                <a class="@(tab.Active? "c-tabbed-nav_link--active" : "") c-tabbed-nav_link" href="@tab.Url" role="menuitem">
-                    <span class="c-tabbed-nav_item-icon">
-                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel(tab.Icon, "u-fill-theme-1")); }
-                    </span>
-                    <span>
-                        @Html.LanguageString(@tab.Name)
-                    </span>
-                </a>
-
-            </li>
-        }
-    </ul>
-</nav>
+                    </li>
+                }
+            </ul>
+        </nav>
+</details>

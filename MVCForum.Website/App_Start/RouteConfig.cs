@@ -10,18 +10,56 @@
         public static void RegisterRoutes(RouteCollection routes)
         {
             RouteTable.Routes.LowercaseUrls = true;
-            RouteTable.Routes.AppendTrailingSlash = true;
+            RouteTable.Routes.AppendTrailingSlash = false;
 
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            routes.IgnoreRoute("{*favicon}", new {favicon = @"(.*/)?favicon.ico(/.*)?"});
+            routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
 
             // API Attribute Routes
             //routes.MapMvcAttributeRoutes();
 
+
+            
+
+            routes.MapRoute(
+                "TermsAndConditionsUrl", // Route name
+                "terms-and-conditions", // URL with parameters
+                new { controller = "SystemPages", action = "Show", slug = "terms-and-conditions" } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "PrivacyPolicyUrl", // Route name
+                "privacy-policy", // URL with parameters
+                new { controller = "SystemPages", action = "Show", slug = "privacy-policy" } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "CookiesUrl", // Route name
+                "cookies", // URL with parameters
+                new { controller = "SystemPages", action = "Show", slug = "cookies" } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "ContactUsUrl", // Route name
+                "contact-us", // URL with parameters
+                new { controller = "SystemPages", action = "Show", slug = "contact-us" } // Parameter defaults
+            );
+            routes.MapRoute(
+                "AccessibilityStatementUrl", // Route name
+                "accessibility-statement", // URL with parameters
+                new { controller = "SystemPages", action = "Show", slug = "accessibility-statement" } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "SystemPageUrls", // Route name
+                "pages/{slug}", // URL with parameters
+                new { controller = "SystemPages", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
+            );
+
             routes.MapRoute(
                 "GroupUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}"), // URL with parameters
-                new {controller = "Group", action = "Show", slug = UrlParameter.Optional,tab = UrlParameter.Optional} // Parameter defaults
+                new { controller = "Group", action = "Show", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
             );
 
             routes.MapRoute(
@@ -55,11 +93,22 @@
             );
 
             routes.MapRoute(
+                "GroupInviteUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/Invite/{groupId}"), // URL with parameters
+                new { controller = "GroupInvite", action = "InviteMember", tab = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "GroupAddMemberUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/AddMember"), // URL with parameters
+                new { controller = "GroupInvite", action = "AddMember", tab = "members" } // Parameter defaults
+            );
+
+            routes.MapRoute(
                 "TopicUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{group}/{tab}/{slug}"), // URL with parameters
                 new { controller = "Topic", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
-            );
-
+            );            
 
             routes.MapRoute(
                 "GroupMembersUrls", // Route name
@@ -87,37 +136,37 @@
             routes.MapRoute(
                 "memberUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.MemberUrlIdentifier, "/{slug}"), // URL with parameters
-                new {controller = "Members", action = "GetByName", slug = UrlParameter.Optional} // Parameter defaults
+                new { controller = "Members", action = "GetByName", slug = UrlParameter.Optional } // Parameter defaults
             );
 
             routes.MapRoute(
                 "tagUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.TagsUrlIdentifier, "/{tag}"), // URL with parameters
-                new {controller = "Topic", action = "TopicsByTag", tag = UrlParameter.Optional} // Parameter defaults
+                new { controller = "Topic", action = "TopicsByTag", tag = UrlParameter.Optional } // Parameter defaults
             );
 
             routes.MapRoute(
                 "topicXmlSitemap", // Route name
                 "topicxmlsitemap", // URL with parameters
-                new {controller = "Home", action = "GoogleSitemap"} // Parameter defaults
+                new { controller = "Home", action = "GoogleSitemap" } // Parameter defaults
             );
 
             routes.MapRoute(
                 "GroupXmlSitemap", // Route name
                 "Groupxmlsitemap", // URL with parameters
-                new {controller = "Home", action = "GoogleGroupSitemap"} // Parameter defaults
+                new { controller = "Home", action = "GoogleGroupSitemap" } // Parameter defaults
             );
 
             routes.MapRoute(
                 "memberXmlSitemap", // Route name
                 "memberxmlsitemap", // URL with parameters
-                new {controller = "Home", action = "GoogleMemberSitemap"} // Parameter defaults
+                new { controller = "Home", action = "GoogleMemberSitemap" } // Parameter defaults
             );
 
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
-                new {controller = "Home", action = "Index", id = UrlParameter.Optional} // Parameter defaults
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
             //.RouteHandler = new SlugRouteHandler()
         }

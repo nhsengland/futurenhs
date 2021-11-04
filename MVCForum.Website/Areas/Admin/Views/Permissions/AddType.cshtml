@@ -15,6 +15,7 @@
         @using (Html.BeginForm("AddType", "Permissions", FormMethod.Post))
         {
             @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
 
                 <div class="form-group">
                     @Html.LabelFor(model => model.Name)

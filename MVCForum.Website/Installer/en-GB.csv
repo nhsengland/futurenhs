@@ -62,6 +62,9 @@ Date.OneMinuteAgo,1 minute ago
 Date.WeeksAgo,{0} weeks ago
 Date.Yesterday,yesterday
 Editor.NeedHelp,Need formatting help?
+Email.Invite.Subject,Join the FutureNHS platform
+Email.Invite.Body,You have been invited to join the FutureNHS collaboration platform.
+Email.Invite.Link,Register
 Error.EmailIsBanned,The email address or domain you are trying to use is banned
 Error.WrongAnswerRegistration,There was an error with your answer. Please try again
 Errors.GenericMessage,Sorry an error occured
@@ -79,8 +82,19 @@ File.Error.InvalidSize,The file above was not uploaded because the file size is 
 File.Error.NullFile,Please select to upload a file.
 File.Error.NullName,The file must have a name.
 File.Error.NameLength,The name of the file cannot be more than 100 characters.
+File.Upload.Button.Label,Upload
+File.Upload.FileDescription.Guidance,This is the description as seen by users when they select the file title in the folder. Try to be as descriptive as possible.
+File.Upload.FileDescription.Label,Enter file description (optional)
+File.Upload.FileTitle.Guidance,This is the file title as seen by users and listed in the folder. Try to be as descriptive as possible. Avoid including underscores, hyphens, or document type details (.doc, .pdf etc)
+File.Upload.FileTitle.Label,Enter file title
+File.Upload.Guidance,Guidance on file formats, size, don't upload sensitive data.
+File.Upload.Subtitle,Upload file
+File.Upload.Terms.Link,/terms-and-conditions
+File.Upload.Terms.LinkText,Open terms and conditions in a new window
+File.Upload.Terms.Text,All uploaded content must conform to the platform's terms and conditions.
 Folder.Error.NullTitle,Please provide a folder title.
 Folder.Error.DuplicateTitle,This folder already exists.
+Folder.Error.FailedDelete,The folder and its contents cannot be deleted at the moment.  Please try again later.
 Following.Groups,Groups you are following
 Following.PageTitle,Topics & Groups
 Following.Topics,Topics you are following
@@ -93,10 +107,12 @@ Group.MostRecent,Most recent:
 Group.Members,Group Members
 Group.NoDiscussions,Currently no discussions in this Group
 Group.SubGroupsHeading,Sub Groups In
+Group.PublicGroup.JoinMessage,Please join the group to contribute
 GroupTabs.Home,Home
 GroupTabs.Forum,Forum
 GroupTabs.Files,Files
 GroupTabs.Members,Members
+Header.Phasebanner.FeedbackLink,http://www.google.co.uk
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
 Language.Change,Change Language
@@ -111,11 +127,18 @@ Layout.Nav.Logon,Log On
 Layout.Nav.Register,Register
 Layout.Nav.Utilities,Utilities
 Layout.PoweredBy,Powered by 
+Layout.GroupInvite,Invite new member
 Leaderboard.LeaderboardTitle,Global Leaderboard
 Leaderboard.ThisWeeksStars,This Weeks Stars
 Leaderboard.ThisYearsStars,This Years Rock Stars
 LogOn.LogOff,Log Off
-LogOn.LogOn,Log On
+LogOn.LogOn,Log In
+LogOn.Button.Text,Log In
+LogOn.Error.UnableToLogIn.Text, Unable to log in. Please check your details.
+LogOn.Introduction.Text, Log in text TBC
+LogOn.ForgotPassword.Text, Forgot your password?
+LogOn.RegisterInterest.Link, mailto:support@futurenhs.zendesk.com?subject=Register Interest
+LogOn.Title.Text,Log In
 Member.HasNewPrivateMessages,You have new unread Private messages
 Member.ProfileUpdated,Profile Updated
 Members.Admin,Admin
@@ -133,8 +156,8 @@ Members.DateJoined,Date Joined
 Members.DeleteAllPosts,Delete All Posts
 Members.EditMember,Edit Member
 Members.EditProfile,Edit Profile
-Members.Errors.DuplicateEmail,A user name for that e-mail address already exists. Please enter a different e-mail address.
-Members.Errors.DuplicateUserName,User name already exists. Please enter a different user name.
+Members.Errors.DuplicateEmail,This email address is already registered.  Please provide another email address or login
+Members.Errors.DuplicateUserName,This email address is already registered.  Please provide another email address or login
 Members.Errors.InvalidAnswer,The password retrieval answer provided is invalid. Please check the value and try again.
 Members.Errors.InvalidEmail,The e-mail address provided is invalid. Please check the value and try again.
 Members.Errors.InvalidPassword,The password provided is invalid. Please enter a valid password value.
@@ -161,7 +184,7 @@ Members.Label.ConfirmPassword,Confirm Password
 Members.Label.CurrentPassword,Current Password
 Members.Label.DateJoined,Date Joined
 Members.Label.DisableEmailNotifications,Disable Email Notifications
-Members.Label.EmailAddress,Email address (Used by Gravatar to show your Avatar image)
+Members.Label.EmailAddress,Email address
 Members.Label.FirstName,Firstname
 Members.Label.Surname,Surname
 Members.Label.EmailAddressBlank,Enter your email address
@@ -212,7 +235,14 @@ Members.Profile.Posts,Posts:
 Members.Profile.Twitter,Twitter
 Members.Profile.Website,Website
 Members.ProfileTitle,Profile
-Members.Register,Register
+Members.Register,Register now
+Members.Register.InvalidEmail,Please provide a valid email address
+Members.Register.EmailExists,This email address is already registered.  Please provide another email address or login.
+Members.Register.PasswordShort,Your password must be at least 10 characters long
+Members.Register.PasswordMismatch,Your passwords do not match
+Members.Register.FirstnameNull,Please provide your first name
+Members.Register.SurnameNull,Please provide your surname
+Members.Register.ErrorTitle,There is a problem
 Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
 Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.

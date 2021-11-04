@@ -1,12 +1,8 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FolderListViewModel.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Web.ViewModels.Folder
+﻿namespace MvcForum.Web.ViewModels.Folder
 {
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Ioc;
+    using MvcForum.Core.Models.Enums;
     using MvcForum.Core.Repositories.Models;
     using System;
     using System.Collections.Generic;
@@ -22,5 +18,8 @@ namespace MvcForum.Web.ViewModels.Folder
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
         public Guid GroupId { get; set; }
+        public GroupUserStatus GroupUserStatus { get; set; }
+        public bool IsMember { get; set; }
+        public bool HasError { get; set; }
     }
 }

@@ -1,65 +1,74 @@
 ﻿@model MvcForum.Web.ViewModels.Registration.LogOnViewModel
+@using MvcForum.Core.ExtensionMethods
 @{
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
-    ViewBag.Title = Html.LanguageString("LogOn.LogOn");
+    ViewBag.Title = Html.LanguageString("LogOn.Title.Text");
+    string inputError = "c-input--error";
+    string formError = "c-form-group--error";
 }
 
-<div class="c-grid-block">
 
-    <div class="c-grid-block_item l-col-12 l-col-6-t">
+<div class="u-bg-theme-3 u-max-height">
+    <div class="l-container u-padded-top-large">
+        <div class="c-grid-block ">
 
-        @Html.Partial("_SocialLoginButtons")
+            <div class="c-grid-block_item l-col-12 l-col-6-t">
 
-        @if (Html.Settings().DisableStandardRegistration != true)
-        {
-            <div class="mainlogonform">
-
-                <h3>@ViewBag.Title</h3>
-
-                @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-login" }))
+                @if (!ViewData.ModelState.IsValid)
                 {
-                    @Html.ValidationSummary(false)
+                    <p class="c-info-message c-info-message--error">
+                        @Html.LanguageString("LogOn.Error.UnableToLogIn.Text")
+                    </p>
+                }
+
+
+                <h1>
+                    Log In
+                </h1>
+
+                <p>
+                    @Html.LanguageString("LogOn.Introduction.Text")
+                </p>
+
+
+                @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-register" }))
+                {
                     @Html.AntiForgeryToken()
 
-                    if (Html.Settings().DisableStandardRegistration != true)
-                    {
-                        <p class="help-block">@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink(Html.Lang("Members.Register"), "Register")))</p>
-                    }
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.UserName)
-                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.UserName)
+                    <div class="c-form-group @Html.FieldHasError(model => model.UserName, formError)">
+                        @Html.LabelFor(x => x.UserName, "Email address", htmlAttributes: new { @class = "c-label" })
+                        @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "c-error-message" })
+                        @Html.EditorFor(x => x.UserName, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.UserName, inputError) } })
                     </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Password)
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Password)
+                    <div class="c-form-group @Html.FieldHasError(model => model.Password, formError)">
+                        @Html.LabelFor(x => x.Password, "Password", htmlAttributes: new { @class = "c-label" })
+                        @Html.ValidationMessageFor(x => x.Password, "", new { @class = "c-error-message" })
+                        @Html.PasswordFor(x => x.Password, new { @class = "c-input" + " " + Html.FieldHasError(model => model.Password, inputError) })
                     </div>
 
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.RememberMe, new { @class = "checkbox" }))
-                    {
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                        }
-                        @Html.ValidationMessageFor(m => m.RememberMe)
-                    </div>
-
-                    <div class="submit-holder">
-                        <button type="submit" class="c-button">@Html.LanguageString("Buttons.LogOn")</button>
-                    </div>
+                    <button type="submit" class="c-button c-button--min-width">
+                        @Html.LanguageString("LogOn.Button.Text")
+                    </button>
 
                     @Html.HiddenFor(x => x.ReturnUrl)
                 }
+
+                <p class="u-padded-bottom">
+                    <a href="@Url.Action("ForgotPassword")">
+                        @Html.LanguageString("LogOn.ForgotPassword.Text")
+                    </a>
+                </p>
+
+                <h2>
+                    Register your interest
+                </h2>
+
+                <p class="u-padded-bottom">
+                    Don't have an account? <a href="@Html.LanguageString("LogOn.RegisterInterest.Link")">Register your interest</a>
+                </p>
+
             </div>
-
-            <p class="forgotpasswordtext">
-                <a href="@Url.Action("ForgotPassword")">
-                    @Html.LanguageString("Members.ForgotPassword.Link")
-                </a>
-            </p>
-        }
+        </div>
     </div>
-
 </div>

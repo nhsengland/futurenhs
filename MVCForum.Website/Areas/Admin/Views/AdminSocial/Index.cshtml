@@ -16,6 +16,7 @@
         @using (Html.BeginForm("Index", "AdminSocial", FormMethod.Post))
         {
             @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
 
             <div class="checkbox">
                 @using (Html.BeginLabelFor(m => m.EnableSocialLogins, new { @class = "checkbox" }))

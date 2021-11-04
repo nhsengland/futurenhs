@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core;
@@ -15,6 +16,7 @@
     using Web.ViewModels.Admin;
     using Web.ViewModels.Mapping;
 
+    [Authorize]
     public class AccountController : BaseAdminController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
@@ -108,11 +110,14 @@
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Constants.AdminRoleName)]
-        private async Task<ActionResult> ListUsers(int? p, string search)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("ListUsers")]
+        private async Task<ActionResult> ListUsersAsync(int? p, string search, CancellationToken cancellationToken = default(CancellationToken))
         {
             var pageIndex = p ?? 1;
             var allUsers = string.IsNullOrWhiteSpace(search)
-                ? await MembershipService.GetAll(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
+                ? await MembershipService.GetAllAsync(pageIndex, ForumConfiguration.Instance.AdminListPageSize, cancellationToken)
                 : await MembershipService.SearchMembers(search, pageIndex, ForumConfiguration.Instance.AdminListPageSize);
 
             // Redisplay list of users
@@ -232,9 +237,12 @@
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Constants.AdminRoleName)]
-        public async Task<ActionResult> Manage(int? p, string search)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Manage")]
+        public Task<ActionResult> ManageAsync(int? p, string search, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await ListUsers(p, search);
+            return ListUsersAsync(p, search, cancellationToken);
         }
 
 
@@ -252,7 +260,10 @@
 
         [HttpPost]
         [Authorize(Roles = Constants.AdminRoleName)]
-        public async Task<ActionResult> Edit(MemberEditViewModel userModel)
+        [ActionName("Edit")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> EditAsync(MemberEditViewModel userModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             var user = MembershipService.GetUser(userModel.Id);
 
@@ -278,7 +289,7 @@
 
             try
             {
-                Context.SaveChanges();
+                _ = await Context.SaveChangesAsync(cancellationToken);
 
                 TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
@@ -294,7 +305,7 @@
                     LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
 
-            return await ListUsers(null, null);
+            return await ListUsersAsync(null, null, cancellationToken);
         }
 
 

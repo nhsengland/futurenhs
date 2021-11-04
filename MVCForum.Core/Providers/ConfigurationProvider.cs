@@ -1,59 +1,61 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="ConfigurationProvider.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Providers
+﻿namespace MvcForum.Core.Providers
 {
     using MvcForum.Core.Interfaces.Providers;
+    using System;
 
-    public class ConfigurationProvider : IConfigurationProvider
+    public sealed class ConfigurationProvider : IConfigurationProvider
     {
-        private readonly string _readOnlyDbConnectionString;
-        private readonly string _fileUploadConnectionString;
-        private readonly string _fileContainerName;
-        private readonly string _fileDownloadEndpoint;
-        private readonly int _retryAttempts;
-        private readonly int _retryDelay;
+        public string ReadOnlyDbConnectionString { get; }
+        public string WriteOnlyDbConnectionString { get; }
+        public string FileUploadConnectionString { get; }
+        public string FileContainerName { get; }
+        public string FileDownloadEndpoint { get; }
+        public int RetryAttempts { get; }
+        public int RetryDelay { get; }
+        public string SmtpFrom { get; }        
 
-        public ConfigurationProvider(string readOnlyDbConnectionString, int retryAttempts, int retryDelay, string fileUploadConnectionString, string fileContainerName, string fileDownloadEndpoint)
+        public ConfigurationProvider(string readOnlyDbConnectionString, string writeOnlyDbConnectionString, 
+                                     int retryAttempts, int retryDelay, string fileUploadConnectionString, 
+                                     string fileContainerName, string fileDownloadEndpoint, string smtpFrom)
         {
-            _readOnlyDbConnectionString = readOnlyDbConnectionString;
-            _fileUploadConnectionString = fileUploadConnectionString;
-            _fileContainerName = fileContainerName;
-            _fileDownloadEndpoint = fileDownloadEndpoint;
-            _retryAttempts = retryAttempts;
-            _retryDelay = retryDelay;
-        }
+            if (string.IsNullOrWhiteSpace(readOnlyDbConnectionString))
+            {
+                throw new ArgumentNullException(nameof(readOnlyDbConnectionString));
+            }
 
-        public string GetReadOnlyConnectionString()
-        {
-            return _readOnlyDbConnectionString;
-        }
+            if (string.IsNullOrWhiteSpace(writeOnlyDbConnectionString))
+            {
+                throw new ArgumentNullException(nameof(writeOnlyDbConnectionString));
+            }
 
-        public string GetFileUploadConnectionString()
-        {
-            return _fileUploadConnectionString;
-        }
+            if (retryAttempts < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(retryAttempts));
+            }
 
-        public string GetFileContainerName()
-        {
-            return _fileContainerName;
-        }
+            if (retryDelay < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(retryDelay));
+            }
+            
+            if (string.IsNullOrWhiteSpace(fileContainerName))
+            {
+                throw new ArgumentNullException(nameof(fileContainerName));
+            }
 
-        public string GetFileDownloadEndpoint()
-        {
-            return _fileDownloadEndpoint;
-        }
+            if (string.IsNullOrWhiteSpace(smtpFrom))
+            {
+                throw new ArgumentNullException(nameof(smtpFrom));
+            }
 
-        public int GetRetryAttempts()
-        {
-            return _retryAttempts;
-        }
-
-        public int GetRetryDelay()
-        {
-            return _retryDelay;
+            ReadOnlyDbConnectionString = readOnlyDbConnectionString;
+            WriteOnlyDbConnectionString = writeOnlyDbConnectionString;
+            FileUploadConnectionString = fileUploadConnectionString;
+            FileContainerName = fileContainerName;
+            FileDownloadEndpoint = fileDownloadEndpoint;
+            RetryAttempts = retryAttempts;
+            RetryDelay = retryDelay;
+            SmtpFrom = smtpFrom;
         }
     }
 }

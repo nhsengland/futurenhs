@@ -19,6 +19,18 @@
     @Html.ValidationMessageFor(model => model.Description)
 </div>
 
+<div class="form-group">
+    @Html.LabelFor(model => model.Subtitle)
+    @Html.TextBoxFor(model => model.Subtitle, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.Subtitle)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Introduction)
+    @Html.EditorFor(model => model.Introduction, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.Introduction)
+</div>
+
 <div class="row Groupimage">
 
     @if (!string.IsNullOrEmpty(Model.Image))

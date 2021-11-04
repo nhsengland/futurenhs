@@ -4,12 +4,13 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using MvcForum.Core.Utilities;
-
 namespace MvcForum.Core.Models.Entities
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using MvcForum.Core.Utilities;
+
     /// <summary>
     /// Defines the file entity to store file meta-data.
     /// </summary>
@@ -52,7 +53,7 @@ namespace MvcForum.Core.Models.Entities
         /// <summary>
         /// Gets or sets the file size.
         /// </summary>
-        public string FileSize { get; set; }
+        public long FileSizeBytes { get; set; }
         
         /// <summary>
         /// Gets or sets the file extension.
@@ -62,7 +63,12 @@ namespace MvcForum.Core.Models.Entities
         /// <summary>
         /// Gets or sets the file url.
         /// </summary>
-        public string FileUrl { get; set; }
+        public string BlobName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the blob hash (md5)
+        /// </summary>
+        public byte[] BlobHash { get; set; }
 
         /// <summary>
         /// Gets or sets the file created by.
@@ -77,16 +83,16 @@ namespace MvcForum.Core.Models.Entities
         /// <summary>
         /// Gets or sets the file created date.
         /// </summary>
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
 
         /// <summary>
         /// Gets or sets the file modified date.
         /// </summary>
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime? ModifiedAtUtc { get; set; }
         
         /// <summary>
         /// Gets or sets the upload status of the file.
         /// </summary>
-        public int UploadStatus { get; internal set; }
+        public int FileStatus { get; internal set; }
     }
 }

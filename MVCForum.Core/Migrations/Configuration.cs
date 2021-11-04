@@ -175,6 +175,7 @@ namespace MvcForum.Core.Services.Migrations
                     var exampleCat = new Group
                     {
                         Name = exampleCatName,
+                        Introduction = "A group introduction.",
                         ModeratePosts = false,
                         ModerateTopics = false,
                         Slug = ServiceHelpers.CreateUrl(exampleCatName),
@@ -194,7 +195,7 @@ namespace MvcForum.Core.Services.Migrations
                     // create the settings
                     var settings = new Settings
                     {
-                        ForumName = "MvcForum",
+                        ForumName = "FutureNHS",
                         ForumUrl = "http://www.mydomain.com",
                         IsClosed = false,
                         EnableRSSFeeds = true,

@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Core.Data.Context
+namespace MvcForum.Core.Data.Context
 {
     using System;
     using System.Data.Entity;
@@ -7,6 +7,7 @@
     using System.Data.Entity.Validation;
     using System.Linq;
     using System.Reflection;
+    using System.Threading;
     using System.Threading.Tasks;
     using Interfaces;
     using Models.Activity;
@@ -57,9 +58,13 @@
         public virtual DbSet<PostEdit> PostEdit { get; set; }
 
         public virtual DbSet<GroupUser> GroupUser { get; set; }
+        public virtual DbSet<GroupInvite> GroupInvite { get; set; }
+
 
         public virtual DbSet<UploadStatus> FileUploadStatus { get; set; }
 
+        public virtual DbSet<SystemPage> SystemPage { get; set; }
+        
         public override int SaveChanges()
         {
             try
@@ -84,11 +89,11 @@
             }
         }
 
-        public override Task<int> SaveChangesAsync()
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             try
             {
-                return base.SaveChangesAsync();
+                return base.SaveChangesAsync(cancellationToken);
             }
             catch (DbEntityValidationException ex)
             {

@@ -20,5 +20,9 @@
         box-shadow: 0 $base-dimension-unit-half $base-dimension-unit-half 0 $black-tint;
         background-color: $white;
         border-left: $base-dimension-unit-half solid $color_nhsuk-red;
+
+        &--thin {
+            max-width: 400px;
+        }
     }
 }

@@ -5,8 +5,10 @@ namespace MvcForum.Core.Services
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
@@ -14,9 +16,11 @@ namespace MvcForum.Core.Services
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
+    using Microsoft.Owin.Infrastructure;
     using Models;
     using Models.Entities;
     using Models.General;
+    using MvcForum.Core.ExtensionMethods;
     using Pipeline;
     using Reflection;
     using Utilities;
@@ -38,14 +42,40 @@ namespace MvcForum.Core.Services
         /// <param name="GroupPermissionForRoleService"></param>
         /// <param name="cacheService"></param>
         public GroupService(IMvcForumContext context, IRoleService roleService,
-            INotificationService notificationService,
-            IGroupPermissionForRoleService GroupPermissionForRoleService, ICacheService cacheService)
+                            INotificationService notificationService, IGroupPermissionForRoleService GroupPermissionForRoleService, 
+                            ICacheService cacheService)
         {
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (roleService is null)
+            {
+                throw new ArgumentNullException(nameof(roleService));
+            }
+
+            if (notificationService is null)
+            {
+                throw new ArgumentNullException(nameof(notificationService));
+            }
+
+            if (GroupPermissionForRoleService is null)
+            {
+                throw new ArgumentNullException(nameof(GroupPermissionForRoleService));
+            }
+
+            if (cacheService is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+
+            _context = context;
             _roleService = roleService;
             _notificationService = notificationService;
             _groupPermissionForRoleService = GroupPermissionForRoleService;
             _cacheService = cacheService;
-            _context = context;
         }
 
         /// <inheritdoc />
@@ -577,21 +607,88 @@ namespace MvcForum.Core.Services
             return filteredCats;
         }
 
-        public bool JoinGroup(string slug, Guid membershipId)
+
+        public async Task JoinGroupAsync(string slug, Guid membershipId, CancellationToken cancellationToken)
         {
-            var group = _context.Group.SingleOrDefault(x => x.Slug == slug);
+            if (string.IsNullOrWhiteSpace(slug))
+            {
+                throw new ArgumentNullException(nameof(slug));
+            }
+            
+            if (Guid.Empty == membershipId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(membershipId));
+            }
+
+            var group = await _context.Group.SingleAsync(x => x.Slug == slug.ToLower(), cancellationToken);
+
+
             group.GroupUsers = new List<GroupUser>();
-            var groupUser = new GroupUser();
-            groupUser.Approved = false;
-            groupUser.Rejected = false;
-            groupUser.Banned = false;
-            groupUser.Locked = false;
-            groupUser.Group = group;
-            groupUser.RequestToJoinDate = DateTime.UtcNow;
-            groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
-            groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
+            var dateTimeUtcNow = DateTime.UtcNow;
+
+            var groupUser = new GroupUser()
+            {
+                Approved = group.PublicGroup,
+                Rejected = false,
+                Banned = false,
+                Locked = false,
+                Group = group,
+                RequestToJoinDate = dateTimeUtcNow,
+                Role = await _context.MembershipRole.SingleAsync(x => x.RoleName == Constants.StandardRoleName, cancellationToken),
+                User = await _context.MembershipUser.SingleAsync(x => x.Id == membershipId, cancellationToken)
+            };
+
+            if (groupUser.Approved)
+            {
+                groupUser.ApprovedToJoinDate = dateTimeUtcNow;
+            }
+
             _context.GroupUser.Add(groupUser);
-            var result = _context.SaveChanges();
+            int resultCount = await _context.SaveChangesAsync(cancellationToken);
+
+            if (resultCount == 0)
+            {
+                throw new DbUpdateException(nameof(groupUser)); 
+            }            
+        }
+
+        public async Task<bool> JoinGroupApproveAsync(Guid groupId, Guid membershipId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == groupId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(groupId));
+            }
+
+            if (Guid.Empty == membershipId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(membershipId));
+            }
+
+            var group = await _context.Group.SingleAsync(x => x.Id == groupId, cancellationToken);
+            group.GroupUsers = new List<GroupUser>();
+            var dateTimeUtcNow = DateTime.UtcNow;
+
+            var groupUser = new GroupUser()
+            {
+                Approved = true,
+                Rejected = false,
+                Banned = false,
+                Locked = false,
+                Group = group,
+                RequestToJoinDate = dateTimeUtcNow,
+                ApprovedToJoinDate = dateTimeUtcNow,
+                Role = await _context.MembershipRole.SingleAsync(x => x.RoleName == Constants.StandardRoleName, cancellationToken),
+                User = await _context.MembershipUser.SingleAsync(x => x.Id == membershipId, cancellationToken)
+            };
+
+            _context.GroupUser.Add(groupUser);
+            int resultCount = await _context.SaveChangesAsync(cancellationToken);
+
+            if (resultCount == 0)
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -602,18 +699,18 @@ namespace MvcForum.Core.Services
 
             foreach (var membershipId in membershipIds)
             {
+                var dateTimeUtcNow = DateTime.UtcNow;
                 var groupUser = new GroupUser();
                 groupUser.Approved = true;
                 groupUser.Rejected = false;
                 groupUser.Banned = false;
                 groupUser.Locked = false;
                 groupUser.Group = group;
-                groupUser.RequestToJoinDate = DateTime.UtcNow;
+                groupUser.RequestToJoinDate = dateTimeUtcNow;
                 groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.AdminRoleName);
                 groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
-                groupUser.ApprovedToJoinDate = DateTime.UtcNow;
-                groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
-                ;
+                groupUser.ApprovedToJoinDate = dateTimeUtcNow;
+                groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);                
 
                 if (@group != null && group.GroupUsers == null || !@group.GroupUsers.Any(x =>
                     x.User.Id == membershipId && x.Group.Id == group.Id))
@@ -634,7 +731,7 @@ namespace MvcForum.Core.Services
                         user.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.AdminRoleName);
                     }
                 }
-                var result = _context.SaveChanges();
+                _ = _context.SaveChanges();
             }
 
 
@@ -645,9 +742,8 @@ namespace MvcForum.Core.Services
 
                 _context.GroupUser.RemoveRange(removedUsers);
 
-                var result = _context.SaveChanges();
+                _ = _context.SaveChanges();
             }
-
 
             return true;
         }
@@ -664,7 +760,7 @@ namespace MvcForum.Core.Services
                 groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
             }
 
-            var result = _context.SaveChanges();
+            _ = _context.SaveChanges();
             return true;
         }
 
@@ -678,7 +774,7 @@ namespace MvcForum.Core.Services
                 groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
             }
 
-            var result = _context.SaveChanges();
+            _ = _context.SaveChanges();
             return true;
         }
 
@@ -689,27 +785,11 @@ namespace MvcForum.Core.Services
             if (groupUser != null)
             {
                 _context.GroupUser.Remove(groupUser);
-                var result = _context.SaveChanges();
+                _ = _context.SaveChanges();
                 return true;
             }
 
             return false;
-        }
-
-        private GroupUserStatus GetUserStatusForGroup(GroupUser user)
-        {
-            if (user == null)
-                return GroupUserStatus.NotJoined;
-            if (user.Approved && !user.Banned && !user.Locked)
-                return GroupUserStatus.Joined;
-            if (!user.Approved && !user.Banned && !user.Locked && !user.Rejected)
-                return GroupUserStatus.Pending;
-            if (user.Approved && user.Banned && !user.Locked)
-                return GroupUserStatus.Banned;
-            if (user.Approved && !user.Banned && user.Locked)
-                return GroupUserStatus.Locked;
-
-            return user.Rejected ? GroupUserStatus.Rejected : GroupUserStatus.NotJoined;
         }
 
         public MembershipRole GetGroupRole(Guid groupId, Guid? membershipId)
@@ -723,7 +803,7 @@ namespace MvcForum.Core.Services
                 return _context.MembershipRole.AsNoTracking().FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
 
 
-            if (GetUserStatusForGroup(groupUser) != GroupUserStatus.Joined)
+            if (groupUser.GetUserStatusForGroup() != GroupUserStatus.Joined)
                 return _context.MembershipRole.AsNoTracking().FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
 
             return groupUser?.Role;
@@ -735,16 +815,16 @@ namespace MvcForum.Core.Services
             return groupUser;
         }
 
-        public async Task<GroupUser> UpdateGroupUser(GroupUser groupUser)
+        public async Task<GroupUser> UpdateGroupUserAsync(GroupUser groupUser, CancellationToken cancellationToken)
         {
             var user = _context.GroupUser.Include(x => x.Role).FirstOrDefault(x => x.Id == groupUser.Id);
-            if (user == null)
+            if (user is null)
                 return null;
             user.Approved = groupUser.Approved;
             user.Locked = groupUser.Locked;
             user.Banned = groupUser.Banned;
             user.Role = _context.MembershipRole.FirstOrDefault(x => x.Id == groupUser.Role.Id);
-            await SaveChanges();
+            _ = await _context.SaveChangesAsync(cancellationToken);
             return user;
         }
     }

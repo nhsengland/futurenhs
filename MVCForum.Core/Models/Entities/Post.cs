@@ -22,7 +22,6 @@
         public bool IsSolution { get; set; }
         public bool IsTopicStarter { get; set; }
         public bool? FlaggedAsSpam { get; set; }
-        public string IpAddress { get; set; }
         public bool? Pending { get; set; }
         public Guid? InReplyTo { get; set; }        
         public Guid? ThreadId { get; set; }

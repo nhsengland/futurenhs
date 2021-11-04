@@ -18,6 +18,8 @@ namespace MvcForum.Core.Models.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Subtitle { get; set; }
+        public string Introduction { get; set; }
         public bool IsLocked { get; set; }
         public bool? ModerateTopics { get; set; }
         public bool? ModeratePosts { get; set; }

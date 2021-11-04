@@ -13,6 +13,8 @@
             Property(x => x.Id).IsRequired();
             Property(x => x.Name).IsRequired().HasMaxLength(450);
             Property(x => x.Description).IsOptional();
+            Property(x => x.Subtitle).IsOptional().HasMaxLength(254);
+            Property(X => X.Introduction).IsRequired().HasMaxLength(4000);
             Property(x => x.DateCreated).IsRequired();
             Property(x => x.Slug).IsRequired().HasMaxLength(450)
                 .HasColumnAnnotation(IndexAnnotation.AnnotationName,

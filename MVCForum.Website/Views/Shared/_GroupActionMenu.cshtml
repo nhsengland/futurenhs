@@ -1,0 +1,71 @@
+﻿@model MvcForum.Web.ViewModels.Shared.ActionMenuModel
+@using MvcForum.Web.ViewModels.Shared
+
+
+	@if (Model.ActionButton != null)
+	{
+		<a href=@Model.ActionButton.Url class="c-button @(Model.ActionButton.Active ? "" : "c-button--outline-white u-disabled")">
+			@Model.ActionButton.Name
+		</a>
+	}
+
+	@if (Model.ActionLinks != null)
+	{
+        <div class="c-action-dropdown">
+            <details>
+                <summary aria-haspopup="true" class="c-action-dropdown_trigger" data-open-icon="icon-chevron-up" data-closed-icon="icon-chevron-down">
+                    Actions
+                    @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-down", "c-ui-icon c-ui-icon--large c-action-dropdown_trigger-icon")); }
+                </summary>
+
+                <ul class="c-action-dropdown_list">
+                @foreach (var actionLink in Model.ActionLinks.OrderBy(x => x.Order))
+                {
+
+                        if(@actionLink.Name == "Leave Group"){
+                            
+                                 <li class="c-action-dropdown_item" role="none">
+                                    <a data-dialog-id="dialog-leave-group" class="c-action-dropdown_link js-dialog" href="@actionLink.Url">@actionLink.Name</a>
+                                </li>
+
+                                <dialog id="dialog-leave-group" class="c-dialog">
+
+                                    <div class="c-dialog_content">
+
+                                        <h3>Leave this group</h3>
+
+                                        <p class="u-text-theme-6">
+                                            Are you sure you would like to leave the group?
+                                        </p>
+                                        
+                                        <div>
+                                            <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+                                                Cancel
+                                            </button>
+                                        </div>
+
+                                        <div>
+                                            <button class="js-dialog-confirm c-button c-button--full-width">
+                                                Yes, leave group
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                
+                                </dialog>
+
+                        } else {
+
+                                <li class="c-action-dropdown_item" role="none">
+                                    <a class="c-action-dropdown_link"   href="@actionLink.Url">@actionLink.Name</a>
+                                </li>
+
+                        }
+
+                }
+
+                </ul>
+            </details>
+        </div>
+	}
+	

@@ -1,7 +1,10 @@
-﻿namespace MvcForum.Core.Interfaces
+﻿using System.Threading;
+
+namespace MvcForum.Core.Interfaces
 {
     using System;
     using System.Data.Entity;
+    using System.Threading;
     using System.Threading.Tasks;
     using Models.Activity;
     using Models.Entities;
@@ -40,12 +43,13 @@
         DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
         DbSet<PostEdit> PostEdit { get; set; }
         DbSet<GroupUser> GroupUser { get; set; }
+        DbSet<GroupInvite> GroupInvite { get; set; }
         DbSet<File> Files { get; set; }
         DbSet<UploadStatus> FileUploadStatus { get; set; }
+        DbSet<SystemPage> SystemPage { get; set; }
 
         int SaveChanges();
-        Task<int> SaveChangesAsync();
-
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         void RollBack();
     }
 }

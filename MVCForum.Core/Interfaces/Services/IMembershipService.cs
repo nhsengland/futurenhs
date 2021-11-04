@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Security.Principal;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using Models.Entities;
@@ -29,11 +30,11 @@
         bool ResetPassword(MembershipUser user, string newPassword);
         void UnlockUser(string username, bool resetPasswordAttempts);
         MembershipUser CreateEmptyUser();
-        Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType);
-        Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image);
+        Task<IPipelineProcess<MembershipUser>> CreateUserAsync(MembershipUser newUser, LoginType loginType, CancellationToken cancellationToken);
+        Task<IPipelineProcess<MembershipUser>> EditUserAsync(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image, CancellationToken cancellationToken);
         string ErrorCodeToString(MembershipCreateStatus createStatus);
         IList<MembershipUser> GetAll();
-        Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize);
+        Task<PaginatedList<MembershipUser>> GetAllAsync(int pageIndex, int pageSize, CancellationToken cancellationToken);
         Task<PaginatedList<MembershipUser>> SearchMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();

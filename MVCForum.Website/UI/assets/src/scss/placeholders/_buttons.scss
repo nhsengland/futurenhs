@@ -153,7 +153,8 @@ $button-shadow-size: 4px;
     }
 
     &:disabled,
-    &.u-disabled { //sass-lint:disable-line 
+    &.u-disabled {
+        //sass-lint:disable-line 
         background-color: $nhsuk-secondary-button-color;
         opacity: (.5);
 
@@ -214,7 +215,8 @@ $button-shadow-size: 4px;
     }
 
     &:disabled,
-    &.u-disabled { //sass-lint:disable-line 
+    &.u-disabled {
+        //sass-lint:disable-line 
         background-color: $nhsuk-reverse-button-color;
         opacity: (.5);
 
@@ -232,6 +234,8 @@ $button-shadow-size: 4px;
             top: 0;
         }
     }
+
+
 }
 
 %toggle-button {
@@ -263,13 +267,13 @@ $button-shadow-size: 4px;
 
     &:focus {
         @extend %nhsuk-focused-button;
-        border: 2px solid $nhsuk-focus-color !important;//sass-lint:disable-line no-important
+        border: 2px solid $nhsuk-focus-color !important; //sass-lint:disable-line no-important
         box-shadow: 0 0 0 2px $nhsuk-focus-color, 0 $nhsuk-focus-width 0 2px $nhsuk-focus-text-color;
     }
 
     &:active {
         background-color: $color_shade_nhsuk-blue-50;
-        border-color: $color_shade_nhsuk-blue-35 !important;//sass-lint:disable-line no-important
+        border-color: $color_shade_nhsuk-blue-35 !important; //sass-lint:disable-line no-important
         color: $color_nhsuk-grey-5;
         top: 0;
 
@@ -281,7 +285,8 @@ $button-shadow-size: 4px;
     }
 
     &:disabled,
-    &.u-disabled { //sass-lint:disable-line 
+    &.u-disabled {
+        //sass-lint:disable-line 
         background-color: $color_nhsuk-white;
         opacity: (.5);
         border-color: $nhsuk-reverse-button-shadow-color;
@@ -301,13 +306,24 @@ $button-shadow-size: 4px;
             top: 0;
         }
     }
+
+    &-white {
+        background-color: transparent;
+        border-color: $color_nhsuk-white;
+        color: $color_nhsuk-white;
+        box-shadow: 0 $button-shadow-size 0 $nhsuk-reverse-button-shadow-color;
+
+
+        &:disabled,
+        &.u-disabled {
+            background-color: transparent;
+            box-shadow: none;
+        }
+    }
+
 }
 
-%toggle-button-white {
-    background-color: transparent;
-    border-color: $color_nhsuk-white;
-    color: $color_nhsuk-white;
-}
+
 
 %nhsuk-focused-button {
     background-color: $nhsuk-focus-color;

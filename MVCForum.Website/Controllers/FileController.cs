@@ -9,6 +9,7 @@
     using Core.Interfaces;
     using Core.Interfaces.Services;
 
+    [Authorize]
     public partial class FileController : BaseController
     {
         private readonly IGroupService _groupService;

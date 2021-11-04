@@ -1,0 +1,52 @@
+﻿@using MvcForum.Core
+@using MvcForum.Core.Constants
+@using MvcForum.Web.Application
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Core.Models.SystemPages.SystemPageWriteViewModel
+@{
+    ViewBag.Title = $"Edit system page";
+}
+
+<div class="backbutton">
+    <a href="@Url.Action("Index")" class="btn-mvc-green">&lt;&lt; Back</a>
+</div>
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("Edit", "AdminSystemPages", FormMethod.Post))
+        {
+            @Html.HiddenFor(x => Model.Id)
+
+            @Html.ValidationSummary(true)
+	        @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Title)
+                @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Title)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Slug)
+                <p>Slug must not contain any special characters or spaces, an example of a valid slug is terms-and-conditions</p>
+                @Html.TextBoxFor(x => x.Slug, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Slug)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Content)
+                @Html.EditorFor(x => x.Content)
+                @Html.ValidationMessageFor(x => x.Content)
+            </div>
+       
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green" value="Save" />
+                <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete this page?')" class="btn-mvc-red" role="button">Delete</a>
+            </div>
+        }
+
+    </div>
+</div>

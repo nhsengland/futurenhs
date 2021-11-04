@@ -21,6 +21,7 @@
         @using (Html.BeginForm("EditGroup", "AdminGroup", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.Id)
 
             @Html.Partial("_GroupFields", Model)

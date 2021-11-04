@@ -2,8 +2,10 @@
 {
     using System;
     using System.Linq;
+    using System.Net.Mail;
     using System.Security.Principal;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
@@ -30,6 +32,7 @@
     /// <summary>
     ///     Members controller
     /// </summary>
+    [Authorize]
     public partial class MembersController : BaseController
     {
         private readonly IGroupService _groupService;
@@ -41,6 +44,7 @@
         private readonly IReportService _reportService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
+        private readonly IGroupInviteService _groupInviteService;
 
         /// <summary>
         ///     Constructor
@@ -77,7 +81,8 @@
             IPollService pollService, 
             IVoteService voteService, 
             IFavouriteService favouriteService,
-            IMvcForumContext context )
+            IMvcForumContext context,
+            IGroupInviteService groupInviteService)
             : base(loggingService, 
                 membershipService, 
                 localizationService, 
@@ -95,6 +100,7 @@
             _pollService = pollService;
             _voteService = voteService;
             _favouriteService = favouriteService;
+            _groupInviteService = groupInviteService ?? throw new ArgumentNullException(nameof(groupInviteService));
         }
 
         /// <summary>
@@ -103,7 +109,10 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = Constants.AdminRoleName)]
-        public virtual async Task<ActionResult> SrubAndBanUser(Guid id)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("ScrubAndBanUser")]
+        public virtual async Task<ActionResult> SrubAndBanUserAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken))
         {
             var user = MembershipService.GetUser(id);
             var scrubResult = await MembershipService.ScrubUsers(user);
@@ -139,7 +148,6 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize]
         public virtual ActionResult BanMember(Guid id)
         {
             var user = MembershipService.GetUser(id);
@@ -182,7 +190,6 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize]
         public virtual ActionResult UnBanMember(Guid id)
         {
             var user = MembershipService.GetUser(id);
@@ -301,6 +308,7 @@
         ///     Add a new user
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         public virtual ActionResult Register()
         {
             if (SettingsService.GetSettings().SuspendRegistration != true)
@@ -310,7 +318,6 @@
                 // Populate empty viewmodel
                 var viewModel = new MemberAddViewModel
                 {
-                    UserName = user.UserName,
                     Email = user.Email,
                     FirstName = user.FirstName,
                     Surname = user.Surname,
@@ -338,11 +345,22 @@
         /// <param name="userModel"></param>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> Register(MemberAddViewModel userModel)
+        [ActionName("Register")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> RegisterAsync(MemberAddViewModel userModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (ModelState.IsValid)
             {
+                var mailAddress = new MailAddress(userModel.Email);
+                if (!await _groupInviteService.InviteExistsForMailAddressAsync(mailAddress, cancellationToken))
+                {
+                    ModelState.AddModelError(nameof(userModel.Email), "This user has not been invited onto the platform. Please check the email address provided.");
+                    return View(userModel);
+                }                
+
                 var settings = SettingsService.GetSettings();
                 if (settings.SuspendRegistration != true &&
                     settings.DisableStandardRegistration != true)
@@ -364,10 +382,10 @@
                     // Get the user model
                     var user = userModel.ToMembershipUser();
 
-                    var pipeline = await MembershipService.CreateUser(user, LoginType.Standard);
+                    var pipeline = await MembershipService.CreateUserAsync(user, LoginType.Standard, cancellationToken);
                     if (!pipeline.Successful)
                     {
-                        ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
+                        ModelState.AddModelError(nameof(userModel.Email), pipeline.ProcessLog.FirstOrDefault());
                         return View();
                     }
 
@@ -384,7 +402,11 @@
         ///     Social login validator which passes view model as temp data
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<ActionResult> SocialLoginValidator()
+        [AllowAnonymous]
+        [ActionName("SocialLoginValidator")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> SocialLoginValidatorAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // Store the viewModel in TempData - Which we'll use in the register logic
             if (TempData[Constants.MemberRegisterViewModel] != null)
@@ -394,7 +416,7 @@
                 // Get the user model
                 var user = userModel.ToMembershipUser();
 
-                var pipeline = await MembershipService.CreateUser(user, userModel.LoginType);
+                var pipeline = await MembershipService.CreateUserAsync(user, userModel.LoginType, cancellationToken);
                 if (!pipeline.Successful)
                 {
                     ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
@@ -413,6 +435,7 @@
         ///     All the logic to regsiter a member
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         public virtual ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
         {
             // We get these from the pipelineprocess and not from the settings as they can be changed during the process (i.e. Social login)
@@ -425,29 +448,12 @@
             SetRegisterViewBagMessage(manuallyAuthoriseMembers == true, memberEmailAuthorisationNeeded == true,
                 pipelineProcess.EntityToProcess);
 
-            // Should we redirect to the home page
-            var homeRedirect = manuallyAuthoriseMembers != true && memberEmailAuthorisationNeeded != true;
-
-            // Get the return url
-            var returnUrl = pipelineProcess.EntityToProcess.GetExtendedDataItem(Constants.ExtendedDataKeys.ReturnUrl);
-
             try
             {
-                // Remove the ReturnUrl from the user
-                pipelineProcess.EntityToProcess.RemoveExtendedDataItem(Constants.ExtendedDataKeys.ReturnUrl);
-
                 // Save any outstanding changes
                 Context.SaveChanges();
 
-                if (homeRedirect)
-                {
-                    if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 &&
-                        returnUrl.StartsWith("/") && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    return RedirectToAction("Index", "Home", new { area = string.Empty });
-                }
+                return RedirectToAction("Index", "Group");
             }
             catch (Exception ex)
             {
@@ -466,6 +472,7 @@
         /// <param name="manuallyAuthoriseMembers"></param>
         /// <param name="memberEmailAuthorisationNeeded"></param>
         /// <param name="userToSave"></param>
+        [AllowAnonymous]
         private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded,
             MembershipUser userToSave)
         {
@@ -628,16 +635,31 @@
         ///     Log on
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         public virtual ActionResult LogOn()
         {
-            // Create the empty view model
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Group");
+            }
+
             var viewModel = new LogOnViewModel();
 
-            // See if a return url is present or not and add it
             var returnUrl = Request["ReturnUrl"];
             if (!string.IsNullOrWhiteSpace(returnUrl))
             {
                 viewModel.ReturnUrl = returnUrl;
+            }
+
+            var returnUrlLocalPath = Request.UrlReferrer?.LocalPath;
+            if (!string.IsNullOrWhiteSpace(returnUrlLocalPath))
+            {
+                viewModel.ReturnUrl = returnUrlLocalPath;
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.ReturnUrl))
+            {
+                viewModel.ReturnUrl = "/group";
             }
 
             return View(viewModel);
@@ -649,8 +671,12 @@
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> LogOn(LogOnViewModel model)
+        [ActionName("LogOn")]
+        public virtual async Task<ActionResult> LogOnAsync(LogOnViewModel model, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (ModelState.IsValid)
             {
@@ -776,7 +802,6 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize]
         public virtual ActionResult Edit(Guid id)
         {
             User.GetMembershipUser(MembershipService);
@@ -804,8 +829,11 @@
         /// <param name="userModel"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
-        public virtual async Task<ActionResult> Edit(MemberFrontEndEditViewModel userModel)
+        [ValidateAntiForgeryToken]
+        [ActionName("Edit")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> EditAsync(MemberFrontEndEditViewModel userModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Get the user to edit from the database            
             var dbUser = MembershipService.GetUser(userModel.Id);
@@ -827,7 +855,7 @@
             }
 
             // Edit the user via the pipelines
-            var pipeline = await MembershipService.EditUser(user, User, avatar);
+            var pipeline = await MembershipService.EditUserAsync(user, User, avatar, cancellationToken);
             if (!pipeline.Successful)
             {
                 ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
@@ -892,7 +920,6 @@
         /// </summary>
         /// <param name="isDropDown"></param>
         /// <returns></returns>
-        [Authorize]
         public virtual PartialViewResult SideAdminPanel(bool isDropDown)
         {
             var moderateCount = 0;
@@ -932,7 +959,6 @@
         /// </summary>
         /// <param name="term"></param>
         /// <returns></returns>
-        [Authorize]
         public virtual string AutoComplete(string term)
         {
             if (!string.IsNullOrWhiteSpace(term))
@@ -960,7 +986,6 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize]
         public virtual ActionResult Report(Guid id)
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
@@ -977,7 +1002,6 @@
         /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
         public virtual ActionResult Report(ReportMemberViewModel viewModel)
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
@@ -1019,12 +1043,13 @@
         /// <param name="p"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        [Authorize]
-        public virtual async Task<ActionResult> Search(int? p, string search)
+        [ActionName("Search")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<ActionResult> SearchAsync(int? p, string search, CancellationToken cancellationToken = default(CancellationToken))
         {
             var pageIndex = p ?? 1;
             var allUsers = string.IsNullOrWhiteSpace(search)
-                ? await MembershipService.GetAll(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
+                ? await MembershipService.GetAllAsync(pageIndex, ForumConfiguration.Instance.AdminListPageSize, cancellationToken)
                 : await MembershipService.SearchMembers(search, pageIndex,
                     ForumConfiguration.Instance.AdminListPageSize);
 
@@ -1065,7 +1090,6 @@
         ///     Change password view
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         public virtual ActionResult ChangePassword()
         {
             return View();
@@ -1077,7 +1101,6 @@
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public virtual ActionResult ChangePassword(ChangePasswordViewModel model)
         {
@@ -1122,6 +1145,7 @@
         ///     Forgot password view
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         public virtual ActionResult ForgotPassword()
         {
             return View();
@@ -1134,6 +1158,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public virtual ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
         {
             if (!ModelState.IsValid)
@@ -1205,6 +1230,7 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [AllowAnonymous]
         public virtual ViewResult PasswordResetSent()
         {
             return View();

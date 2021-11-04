@@ -10,6 +10,8 @@
 (function(exports, undefined) {
 	"use strict";
 
+	console.log("tinymce running");
+
 	var modules = {};
 
 	function require(ids, callback) {
@@ -30967,6 +30969,8 @@ define("tinymce/WindowManager", [
 		self.open = function(args, params) {
 			var win;
 
+			console.log("self.open args?" + args);
+
 			editor.editorManager.setActive(editor);
 
 			args.title = args.title || ' ';
@@ -31064,8 +31068,10 @@ define("tinymce/WindowManager", [
 		self.alert = function(message, callback, scope) {
 			var win;
 
-			win = MessageBox.alert(message, function() {
+			console.log("self.alert message: " + message);
+			win = MessageBox.alert(message + "Alert one", function() {
 				if (callback) {
+					console.log
 					callback.call(scope || this);
 				} else {
 					editor.focus();
@@ -31154,6 +31160,7 @@ define("tinymce/WindowManager", [
 		 * @return {Array} Array of the currently opened windows.
 		 */
 		self.getWindows = function() {
+			console.log("get windows:" + windows)
 			return windows;
 		};
 	};

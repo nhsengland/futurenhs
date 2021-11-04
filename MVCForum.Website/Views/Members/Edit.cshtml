@@ -23,6 +23,7 @@
     <div class="c-grid-block_item l-col-12 l-col-6-t">
         @using (Html.BeginForm("Edit", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "editmemberform" }))
         {
+            @Html.AntiForgeryToken()
             @Html.HiddenFor(x => Model.Id)
 
             @Html.ValidationSummary(true)

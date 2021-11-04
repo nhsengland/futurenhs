@@ -1,10 +1,7 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="FileUploadValidationService.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Services
+﻿namespace MvcForum.Core.Services
 {
+    using MimeDetective;
+    using MvcForum.Core.Interfaces.Helpers;
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Models.General;
     using MvcForum.Core.Utilities;
@@ -14,139 +11,149 @@ namespace MvcForum.Core.Services
     using System.Linq;
     using System.Web;
 
-    public class FileUploadValidationService : IFileUploadValidationService
+    public sealed class FileUploadValidationService : IFileUploadValidationService
     {
+        private const int TwoHundredAndFiftyMb = 250000000;
+        private const int OneHundredCharacters = 100;
+
+        private readonly IValidateFileType _fileTypeValidator;
+
         private readonly ILocalizationService _localizationService;
+
+        /// <summary>
+        /// Maximum file size allowed - from config file.
+        /// </summary>
+        private readonly int _maxFileSizeInBytes;
+
+        /// <summary>
+        /// Maximum file name length allowed - from config file.
+        /// </summary>
+        private readonly int _maxFilenameLength;
+
+        /// <summary>
+        /// valid file types allowed - from config file.
+        /// </summary>
+        private readonly string[] _validFileTypes;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="localizationService"></param>
-        public FileUploadValidationService(ILocalizationService localizationService)
+        public FileUploadValidationService(ILocalizationService localizationService, IValidateFileType fileTypeValidator)
         {
-            _localizationService = localizationService;
-        }
+            if (localizationService is null) throw new ArgumentNullException(nameof(localizationService));
+            if (fileTypeValidator is null) throw new ArgumentNullException(nameof(fileTypeValidator)); 
 
-        /// <summary>
-        /// Validate an uploaded file.
-        /// </summary>
-        /// <param name="file">HttpPostedFileBase to validate</param>
-        /// <param name="simpleValidation">bool - perform simple or complex validation.</param>
-        /// <returns></returns>
-        public UploadBlobResult ValidateUploadedFile(HttpPostedFileBase file, bool simpleValidation)
-        {
-            var result = new UploadBlobResult
-            {
-                ValidationErrors = GetFileValidationErrors(file, simpleValidation)
-            };
-            return result;
+            _localizationService = localizationService;
+            _fileTypeValidator = fileTypeValidator;
+
+            _maxFileSizeInBytes = ConfigUtils.GetAppSettingInt32("FileUpload_FileLimitBytes", TwoHundredAndFiftyMb);
+            _maxFilenameLength = ConfigUtils.GetAppSettingInt32("FileUpload_MaxFilenameLength", OneHundredCharacters);
+
+            var configValidFileTypes = ConfigUtils.GetAppSetting("FileUpload_ValidFileTypes", string.Empty);
+            _validFileTypes = configValidFileTypes?.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
         /// Get any file validation errors.
         /// </summary>
         /// <param name="file">File to validate</param>
-        /// <param name="simpleValidation">Determine if we need to perform complex validation i.e. using MIME DEtective.</param>
         /// <returns></returns>
-        private List<string> GetFileValidationErrors(HttpPostedFileBase file, bool simpleValidation = true)
+        public ValidateBlobResult ValidateUploadedFile(HttpPostedFileBase file)
         {
-            var validationErrors = new List<string>
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+
+            var actualMimeType = default(string);
+            var validationErrors = new List<string>();
+
+            // Simple file type validation
+            if (FileTypeIsNotSupported(Path.GetExtension(file.FileName)))
             {
-                ValidateActualMimeType(file, simpleValidation),
-                ValidateFileTypeAllowed(Path.GetExtension(file.FileName)),
-                ValidateFileSize(file.ContentLength),
-                ValidateFilenameSet(Path.GetFileNameWithoutExtension(file.FileName)),
-                ValidateFilenameLength(file.FileName)
-            };
-
-            // Remove empty values, if any of the above valid empty entries will be added
-            validationErrors = validationErrors.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-
-            return validationErrors;
-        }
-
-        /// <summary>
-        /// Determine if a valid MIME Type uploaded, only perform if complex validation required.
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="simpleValidation"></param>
-        /// <returns></returns>
-        private string ValidateActualMimeType(HttpPostedFileBase file, bool simpleValidation)
-        {
-            if (!simpleValidation)
-            {
-                //TODO - implement MIME-Detective file type validation
+                validationErrors.Add(_localizationService.GetResourceString("File.Error.InvalidType"));
             }
-            return null;
+            else
+            {
+                // Passed simple type validation, perform mime type validation and identify mime type
+                var fileExtension = Path.GetExtension(file.FileName);
+                var fileContent = file.InputStream;
+
+                if (_fileTypeValidator.ContentMatchesExtension(fileContent, fileExtension))
+                {
+                    actualMimeType = MimeMapping.GetMimeMapping(fileExtension);
+                }
+                else
+                {
+                    validationErrors.Add(_localizationService.GetResourceString("File.Error.ContentMatchesExtension"));
+                }
+            }
+
+            // Perform other validation required
+
+            if (FileSizeIsOutOfRange(file.ContentLength))
+            {
+                validationErrors.Add(_localizationService.GetResourceString("File.Error.InvalidSize"));
+            }
+
+            if (FilenameIsEmpty(Path.GetFileNameWithoutExtension(file.FileName)))
+            {
+                validationErrors.Add(_localizationService.GetResourceString("File.Error.NullName"));
+            }
+
+            if (FilenameLengthIsOutOfRange(file.FileName))
+            {
+                validationErrors.Add(_localizationService.GetResourceString("File.Error.NameLength"));
+            }
+
+            return new ValidateBlobResult()
+            {
+                ValidationErrors = validationErrors,
+                MimeType = actualMimeType
+            };
         }
 
         /// <summary>
-        /// Validate that the type of file is allowed to be uploaded.
+        /// Validate if the file type is valid for upload.
         /// </summary>
-        /// <param name="contentType"></param>
+        /// <param name="extension"></param>
         /// <returns></returns>
-        private string ValidateFileTypeAllowed(string extension)
+        private bool FileTypeIsNotSupported(string extension)
         {
-            return !AllowedFileTypes.Contains(extension) ? _localizationService.GetResourceString("File.Error.InvalidType") : null; 
+            if (string.IsNullOrWhiteSpace(extension)) return true;
+
+            return Array.Find(_validFileTypes, _ => _.Equals(extension, StringComparison.OrdinalIgnoreCase)) is null;
         }
 
         /// <summary>
-        /// Validate that the size of the file does not exceed the maximum permitted.
+        /// Validate the file size does not exceed the maximum permitted.
         /// </summary>
         /// <param name="fileSize"></param>
         /// <returns></returns>
-        private string ValidateFileSize(int fileSize)
+        private bool FileSizeIsOutOfRange(int fileSize)
         {
-            return fileSize > MaxFileSize ? _localizationService.GetResourceString("File.Error.InvalidSize") : null;
+            return fileSize > _maxFileSizeInBytes;
         }
 
         /// <summary>
-        /// Validate that the file name is set and is not empty e.g. not ".docx".
+        /// Validate the file name is set and not empty e.g. not ".docx".
+        /// This meets the acceptance criteria where this scenario is not allowed.
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        private string ValidateFilenameSet(string filename)
+        private bool FilenameIsEmpty(string filename)
         {
-            return filename == string.Empty ? _localizationService.GetResourceString("File.Error.NullName") : null;
+            return string.IsNullOrWhiteSpace(filename);
         }
 
         /// <summary>
-        /// Validate that the length of the file name does not exceed the maximum allowed.
+        /// Validate the file name length does not exceed the maximum allowed.
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        private string ValidateFilenameLength(string filename)
+        private bool FilenameLengthIsOutOfRange(string filename)
         {
-            return filename.Length > MaxFilenameLength ? _localizationService.GetResourceString("File.Error.NameLength") : null;
-        }
+            if (string.IsNullOrWhiteSpace(filename)) return true;
 
-        /// <summary>
-        /// Get maximum file size allowed from config file.
-        /// </summary>
-        private int MaxFileSize => ConfigUtils.GetAppSettingInt32("FileUpload_FileLimitBytes", 250000000);
-
-        /// <summary>
-        /// Get maximum file name length allowed from config file.
-        /// </summary>
-        private int MaxFilenameLength => ConfigUtils.GetAppSettingInt32("FileUpload_MaxFilenameLength", 100);
-
-        /// <summary>
-        /// Get allowed file types from config file.
-        /// </summary>
-        private List<string> AllowedFileTypes
-        {
-            get
-            {
-                var allowedTypes = new List<string>();
-                var configValue = ConfigUtils.GetAppSetting("FileUpload_ValidFileTypes", string.Empty);
-
-                if (!string.IsNullOrWhiteSpace(configValue))
-                {
-                    allowedTypes.AddRange(configValue.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList());
-                }
-
-                return allowedTypes;
-            }
+            return filename.Length > _maxFilenameLength;
         }
     }
 }

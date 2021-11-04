@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core;
@@ -48,7 +49,9 @@
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult> ModerateTopic(ModerateActionViewModel viewModel)
+        [ActionName("ModerateTopic")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<ActionResult> ModerateTopicAsync(ModerateActionViewModel viewModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {

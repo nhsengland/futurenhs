@@ -1,21 +1,39 @@
-﻿@using System.Activities.Statements
+﻿@using MvcForum.Core.Models.Enums
 @model MvcForum.Web.ViewModels.Folder.FolderViewModel
 
 <div>
     @{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
 
-    <div class="c-section-break"></div>
-
     @if (Model.Folder != null)
     {
-        <h2>@Model.Folder.FolderName</h2>
+        <h2 class="u-margin-bottom-spacing-0">@Model.Folder.FolderName</h2>
         <hr>
-        <p>@Model.Folder.Description</p>
+
+
+        if (!ViewData.ModelState.IsValid || Model.HasError)
+        {
+            <p class="c-info-message c-info-message--error">
+                @Html.LanguageString("Folder.Error.FailedDelete")
+            </p>
+        }
+
+        if (!Model.IsMember && !Model.IsAdmin)
+        {
+            <p class="c-info-message">
+                @Html.LanguageString("Group.PublicGroup.JoinMessage")
+            </p>
+        }
+
+        <p class="u-margin-bottom-spacing-6">@Model.Folder.Description</p>
 
         @*@Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug, groupId = Model.GroupId }, new { @class = "c-button c-button-outline c-button--min-width" })*@
-        <a href="@Url.RouteUrl("GroupFileUploadUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId})" class="c-button c-button-outline c-button--min-width">
-            Upload file
-        </a>
+
+        if (Model.IsMember || Model.IsAdmin)
+        {
+            <a href="@Url.RouteUrl("GroupFileUploadUrls", new { slug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId })" class="c-button c-button-outline c-button--min-width">
+                Upload file
+            </a>
+        }
     }
     else
     {
@@ -23,6 +41,13 @@
             Files
         </h2>
         <hr>
+
+        if (!Model.IsMember && !Model.IsAdmin)
+        {
+            <p class="c-info-message">
+                @Html.LanguageString("Group.PublicGroup.JoinMessage")
+            </p>
+        }
     }
 
     @if (Model.IsAdmin)
@@ -39,9 +64,34 @@
                 Edit folder
             </a>
             <span>&nbsp;</span>
-            <a href="@Url.RouteUrl("GroupFileDeleteFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
-                Delete folder
-            </a>
+
+            @Html.ActionLink("Delete folder", "DeleteFolder", "Folder", new { @class = "c-button c-button-outline c-button--min-width js-dialog", data_dialog_id = "dialog-delete-confirm" })
+
+            <dialog id="dialog-delete-confirm" class="c-dialog">
+
+                <div class="c-dialog_content c-dialog_content--thin">
+
+                    <h3>Delete Folder</h3>
+
+                    <p class="u-text-bold">
+                        Deleting this folder will also delete all its contents including the contents of any sub-folders.  Do you wish to continue?
+                    </p>
+
+                    <div>
+                        <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+                            Cancel
+                        </button>
+                    </div>
+
+                    <div>
+                        <button class="js-dialog-confirm c-button c-button--full-width">
+                            Yes, Delete
+                        </button>
+                    </div>
+
+                </div>
+
+            </dialog>
         }
     }
 
@@ -136,7 +186,7 @@
                                     </td>
                                     <td role="cell" class="c-table_cell">
                                         <span class="c-table_heading">Uploaded date </span>
-                                        @DatesUi.GetPrettyDate(@file.CreatedDate.ToString())
+                                        @DatesUi.GetPrettyDate(@file.CreatedAtUtc.ToString())
 
                                     </td>
                                 </tr>

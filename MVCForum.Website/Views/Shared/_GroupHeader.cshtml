@@ -3,10 +3,13 @@
 @using Microsoft.Ajax.Utilities
 @using MvcForum.Core.Utilities
 
-<div class="c-page-header u-bg-theme-8 u-padded-left u-padded-top-large">
+<div class="c-page-header u-bg-theme-14 u-padded-left u-padded-top-large">
     <div class="l-col-12">
-        <div class="u-flex">
-            @if (!Model.Image.IsNullEmpty())
+        <div class="u-flex-wrap">
+           
+
+    
+ @if (!Model.Image.IsNullEmpty())
             {
                 <div class="c-page-header_col-1">
                     <div class="c-page-header_image-wrapper">
@@ -16,12 +19,21 @@
             }
             <div class="c-page-header_col-2">
                 <div class="c-page-header_heading">
-                    <h1 class="u-has-subheading u-text-theme-1">@Model.Name</h1>
-                    <p class="u-text-lead">@Html.Raw(Model.Description)</p>
+                    <div class="c-grid-block">
+                        
+                        <div class="c-grid-block_item l-col-12 l-col-8-d">
+                            <h1 class="u-has-subheading u-text-theme-1">@Model.Name</h1>
+                            <p class="u-text-lead">@Html.Raw(Model.Description)</p>    
+                        </div>
+                        <div class="c-grid-block_item l-col-12 l-col-4-d u-justify-center">
+                            @Html.Partial("_GroupActionMenu", Model.ActionMenu)
+                        </div>
+                    </div>
                 </div>
                 @Html.Partial("_TabsMenu", Model.HeaderTabs)
 
-            </div>
+             </div>
+
         </div>
     </div>
 </div>

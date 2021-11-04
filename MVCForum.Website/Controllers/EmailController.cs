@@ -8,6 +8,7 @@
     using Core.Models.Entities;
     using ViewModels.Email;
 
+    [Authorize]
     public partial class EmailController : BaseController
     {
         private readonly INotificationService _notificationService;
@@ -31,7 +32,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public virtual void Subscribe(EmailSubscriptionViewModel subscription)
         {
             if (Request.IsAjaxRequest())
@@ -116,7 +116,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public virtual void UnSubscribe(EmailSubscriptionViewModel subscription)
         {
             if (Request.IsAjaxRequest())

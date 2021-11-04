@@ -16,6 +16,7 @@
     using ViewModels.Vote;
     using MembershipUser = Core.Models.Entities.MembershipUser;
 
+    [Authorize]
     public partial class VoteController : BaseController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
@@ -38,8 +39,10 @@
         }
 
         [HttpPost]
-        [Authorize]
-        public virtual async Task<ActionResult> VoteUpPost(EntityIdViewModel voteUpViewModel)
+        [ActionName("VoteUpPost")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> VoteUpPostAsync(EntityIdViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -65,7 +68,7 @@
                 var postWriter = post.User;
 
                 // Mark the post up or down
-                await MarkPostUpOrDown(post, postWriter, voter, PostType.Positive, LoggedOnReadOnlyUser);
+                _ = await MarkPostUpOrDownAsync(post, postWriter, voter, PostType.Positive, LoggedOnReadOnlyUser);
 
                 try
                 {
@@ -85,8 +88,10 @@
         }
 
         [HttpPost]
-        [Authorize]
-        public virtual async Task<ActionResult> VoteDownPost(EntityIdViewModel voteDownViewModel)
+        [ActionName("VoteDownPost")]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [AsyncTimeout(30000)]
+        public virtual async Task<ActionResult> VoteDownPostAsync(EntityIdViewModel voteDownViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -112,7 +117,7 @@
                 var postWriter = post.User;
 
                 // Mark the post up or down
-                await MarkPostUpOrDown(post, postWriter, voter, PostType.Negative, LoggedOnReadOnlyUser);
+                _ = await MarkPostUpOrDownAsync(post, postWriter, voter, PostType.Negative, LoggedOnReadOnlyUser);
 
                 try
                 {
@@ -130,7 +135,10 @@
             return Content(string.Empty);
         }
 
-        private async Task<bool> MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType,
+        [ActionName("MarkPostUpOrDown")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        private async Task<bool> MarkPostUpOrDownAsync(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType,
             MembershipUser LoggedOnReadOnlyUser)
         {
             var settings = SettingsService.GetSettings();
@@ -190,8 +198,10 @@
         }
 
         [HttpPost]
-        [Authorize]
-        public virtual async Task<ActionResult> MarkAsSolution(EntityIdViewModel markAsSolutionViewModel)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("MarkAsSolution")]
+        public virtual async Task<ActionResult> MarkAsSolutionAsync(EntityIdViewModel markAsSolutionViewModel)
         {
             if (Request.IsAjaxRequest())
             {

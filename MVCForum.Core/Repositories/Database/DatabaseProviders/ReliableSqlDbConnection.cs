@@ -1,16 +1,11 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="ReliableSqlDbConnection.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Database.DatabaseProviders
+﻿namespace MvcForum.Core.Repositories.Database.DatabaseProviders
 {
-    using Polly.Retry;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System;
     using System.Data;
     using System.Data.Common;
     using System.Data.SqlClient;
-    using MvcForum.Core.Interfaces.Providers;
     using MvcForum.Core.Repositories.Database.RetryPolicy;
 
     public class ReliableSqlDbConnection : DbConnection
@@ -65,6 +60,15 @@ namespace MvcForum.Core.Repositories.Database.DatabaseProviders
                     _underlyingConnection.Open();
                 }
             });
+        }
+
+        public override async Task OpenAsync(CancellationToken cancellationToken)
+        {
+            var y = cancellationToken;
+            if (_underlyingConnection.State != ConnectionState.Open)
+            {
+                await _retryPolicy.ExecuteAsync(ct => _underlyingConnection.OpenAsync(ct), cancellationToken);
+            }
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)

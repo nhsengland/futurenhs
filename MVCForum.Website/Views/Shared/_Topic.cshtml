@@ -26,13 +26,11 @@
             <div class="c-card_footer u-text-theme-7">
                  <p class="c-card_footer-item">
                      @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_footer-icon u-fill-theme-10"));} 
-                     <span> @Model.Answers.KiloFormat() </span>
-                     <span class="u-desktop-up-inline-block">  Comments </span>
+                     <span> @Model.Answers.KiloFormat()  Comments </span>
                  </p>
                  <p class="c-card_footer-item">
                      @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-view", "c-card_footer-icon u-fill-theme-10"));}
-                      <span> @Model.Views.KiloFormat() </span>
-                      <span class="u-desktop-up-inline-block">Views </span>
+                      <span> @Model.Views.KiloFormat()  Views </span>
                 </p>
                  <div class="c-card_footer-tags">
                     @if (Model.Topic.IsSticky)

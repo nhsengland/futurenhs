@@ -1,9 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="BreadcrumbsViewModel.cs" company="CDS">
-// Copyright (c) CDS. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-namespace MvcForum.Core.Repositories.Models
+﻿namespace MvcForum.Core.Repositories.Models
 {
     using System.Collections.Generic;
 

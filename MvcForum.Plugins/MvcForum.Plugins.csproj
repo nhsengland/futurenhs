@@ -131,6 +131,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>
     </PackageReference>
+    <PackageReference Include="SendGrid">
+      <Version>9.24.2</Version>
+    </PackageReference>
     <PackageReference Include="Skybrud.Social">
       <Version>0.9.6</Version>
     </PackageReference>
