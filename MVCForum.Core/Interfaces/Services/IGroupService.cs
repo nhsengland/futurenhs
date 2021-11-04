@@ -21,6 +21,8 @@
         IEnumerable<GroupSummary> GetAllMainGroupsInSummary(Guid? membershipId);
         ILookup<Guid, GroupSummary> GetAllMainGroupsInSummaryGroupedBySection(Guid? membershipId);
 
+        IEnumerable<GroupSummary> GetAllMyGroupsInSummary(Guid? membershipId);
+
         /// <summary>
         ///     Gets Groups that the user has access to (i.e. There access is not denied)
         /// </summary>

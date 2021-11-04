@@ -1,0 +1,22 @@
+﻿@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Group
+@model GroupListSummaryViewModel
+
+<h2>All my Groups</h2>
+
+<p class="u-text-lead">@Html.LanguageString("Group.MyGroups.Introduction")</p>
+
+@foreach (var cat in Model.AllPermissionSets.Keys)
+{
+    var permissions = Model.AllPermissionSets[cat];
+
+    @Html.Partial("_Group", new GroupViewModel
+    {
+                                    Group = cat.Group.Group,
+                                    LatestTopic = cat.MostRecentTopic,
+                                    Permissions = permissions,
+                                    PostCount = cat.PostCount,
+                                    TopicCount = cat.TopicCount
+                                })
+
+}

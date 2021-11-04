@@ -38,6 +38,7 @@ namespace MvcForum.Web.Controllers
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
         private readonly IFeatureManager _featureManager;
+        private readonly ILocalizationService _localizationService;
 
         /// <summary>
         ///     Constructor
@@ -75,13 +76,67 @@ namespace MvcForum.Web.Controllers
             _postService = postService;
             _roleService = roleService;
             _featureManager = featureManager;
+            _localizationService = localizationService;
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult Index(string tab = Constants.MyGroupsTab)
         {
-            return View();
+            var model = new GroupsLandingViewModel
+            {
+                CurrentTab = tab,
+                Header = GetGroupsLandingHeader(tab),
+            };
+
+            return View(model);
+        }
+
+        [ChildActionOnly]
+        private GroupHeaderViewModel GetGroupsLandingHeader(string currentTab)
+        {
+            var model = new GroupHeaderViewModel
+            {
+                HeaderTabs = new TabViewModel()
+                {
+                    Tabs = new List<Tab> {
+                        new Tab
+                        {
+                            Name = "My groups",
+                            Order = 1,
+                            Url = Url.Action("Index", "Group", new { tab = Constants.MyGroupsTab }),
+                            Active = currentTab.Equals(Constants.MyGroupsTab),
+                        },
+                        new Tab
+                        {
+                            Name = "Discover new groups",
+                            Order = 2,
+                            Url = Url.Action("Index", "Group", new { tab = Constants.DiscoverGroupsTab }),
+                            Active = currentTab.Equals(Constants.DiscoverGroupsTab),
+                        }
+                    }
+                },
+                Name = currentTab.Equals(Constants.MyGroupsTab) ? _localizationService.GetResourceString("Group.MyGroups.Title") : _localizationService.GetResourceString("Group.DiscoverGroups.Title"),
+                Description = currentTab.Equals(Constants.MyGroupsTab) ? _localizationService.GetResourceString("Group.MyGroups.HeaderIntro") : _localizationService.GetResourceString("Group.DiscoverGroups.Intro")
+            };
+
+            return model;
+        }
+
+        [HttpGet]
+        [ChildActionOnly]
+        public virtual PartialViewResult MyGroupsList()
+        {
+            // TODO - OutputCache and add clear to post/topic/Group delete/create/edit
+
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            var catViewModel = new GroupListSummaryViewModel
+            {
+                AllPermissionSets =
+                    ViewModelMapping.GetPermissionsForGroups(_groupService.GetAllMyGroupsInSummary(LoggedOnReadOnlyUser?.Id),
+                        _roleService, loggedOnUsersRole)
+            };
+            return PartialView("_MyGroups", catViewModel);
         }
 
         [HttpGet]

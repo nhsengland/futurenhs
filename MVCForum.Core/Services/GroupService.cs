@@ -229,6 +229,19 @@ namespace MvcForum.Core.Services
                 .ToLookup(x => x.Group.Group.Section.Id);
         }
 
+        public IEnumerable<GroupSummary> GetAllMyGroupsInSummary(Guid? membershipId)
+        {
+            return GetAllForUser(membershipId)
+                .Select(x => new GroupSummary
+                {
+                    Group = new GroupUserDTO() { Group = x.Group },
+                    TopicCount = x.Group.Topics.Count,
+                    PostCount = x.Group.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
+                    MostRecentTopic = x.Group.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                })
+                .ToList();
+        }
+
         /// <summary>
         ///     Return allowed Groups based on the users role
         /// </summary>

@@ -721,7 +721,7 @@
                     }
 
                     // If not just go to home page
-                    return RedirectToAction("Index", "Home", new { area = string.Empty });
+                    return RedirectToAction("Index", "Group", new { area = string.Empty });
                 }
 
                 // Add the error if we get here

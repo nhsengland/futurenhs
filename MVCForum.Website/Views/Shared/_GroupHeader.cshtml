@@ -21,13 +21,16 @@
                 <div class="c-page-header_heading">
                     <div class="c-grid-block">
                         
-                        <div class="c-grid-block_item l-col-12 l-col-8-d">
+                        <div class="c-grid-block_item l-col-12 @(Model.ActionMenu != null ? "l-col-8-d" : "l-col-12-d")">
                             <h1 class="u-has-subheading u-text-theme-1">@Model.Name</h1>
                             <p class="u-text-lead">@Html.Raw(Model.Description)</p>    
                         </div>
+                        @if (Model.ActionMenu != null)
+                        {
                         <div class="c-grid-block_item l-col-12 l-col-4-d u-justify-center">
                             @Html.Partial("_GroupActionMenu", Model.ActionMenu)
                         </div>
+                        }
                     </div>
                 </div>
                 @Html.Partial("_TabsMenu", Model.HeaderTabs)
