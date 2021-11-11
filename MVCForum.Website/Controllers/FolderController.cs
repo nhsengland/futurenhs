@@ -173,7 +173,7 @@
                 var currentUser = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
 
                 var model = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
-                var groupUserStatus = _groupService.GetAllForUser(currentUser?.Id).FirstOrDefault(x => x.Group.Id == groupId).GetUserStatusForGroup();
+                var groupUserStatus = _groupService.GetAllForUser(currentUser.Id).FirstOrDefault(x => x.Group.Id == groupId).GetUserStatusForGroup();
 
                 model.GroupId = groupId;
                 model.IsAdmin = _folderService.UserIsAdmin(slug, currentUser?.Id);

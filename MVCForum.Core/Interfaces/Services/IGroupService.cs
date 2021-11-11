@@ -14,14 +14,17 @@
 
     public partial interface IGroupService : IContextService
     {
-        List<GroupUser> GetAllForUser(Guid? userId);
+        List<GroupUser> GetAllForUser(Guid userId);
+        List<Group> DiscoverAllForUser(Guid userId);
 
         List<Group> GetAll(Guid? membershipId);
         IEnumerable<Group> GetAllMainGroups(Guid? membershipId);
         IEnumerable<GroupSummary> GetAllMainGroupsInSummary(Guid? membershipId);
         ILookup<Guid, GroupSummary> GetAllMainGroupsInSummaryGroupedBySection(Guid? membershipId);
 
-        IEnumerable<GroupSummary> GetAllMyGroupsInSummary(Guid? membershipId);
+        IEnumerable<GroupSummary> GetAllMyGroupsInSummary(Guid membershipId);
+
+        IEnumerable<GroupSummary> GetDiscoverGroupsInSummary(Guid membershipId);
 
         /// <summary>
         ///     Gets Groups that the user has access to (i.e. There access is not denied)

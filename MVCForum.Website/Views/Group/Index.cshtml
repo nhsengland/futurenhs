@@ -16,5 +16,5 @@
 
 @if (Model.CurrentTab == Constants.DiscoverGroupsTab)
 {
-    @Html.Partial("_DiscoverGroups")
+    Html.RenderAction("DiscoverGroupsList", "Group");
 }

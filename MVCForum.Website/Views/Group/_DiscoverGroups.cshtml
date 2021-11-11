@@ -1,8 +1,22 @@
-﻿
-@{
-    ViewBag.Title = "_DiscoverGroups";
+﻿@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Group
+@model GroupListSummaryViewModel
+
+<h2>Discover new Groups</h2>
+
+<p class="u-text-lead">@Html.LanguageString("Group.DiscoverGroups.Introduction")</p>
+
+@foreach (var cat in Model.AllPermissionSets.Keys)
+{
+    var permissions = Model.AllPermissionSets[cat];
+
+    @Html.Partial("_Group", new GroupViewModel
+                            {
+                                Group = cat.Group.Group,
+                                LatestTopic = cat.MostRecentTopic,
+                                Permissions = permissions,
+                                PostCount = cat.PostCount,
+                                TopicCount = cat.TopicCount
+                            })
+
 }
-
-<h2>_DiscoverGroups</h2>
-
-@Html.Action("ListMainGroups", "Group")

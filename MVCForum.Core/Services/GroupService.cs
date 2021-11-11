@@ -123,19 +123,22 @@ namespace MvcForum.Core.Services
             return cachedGroups;
         }
 
-        public List<GroupUser> GetAllForUser(Guid? userId)
+        public List<GroupUser> GetAllForUser(Guid userId)
         {
-            var cachedGroups = _cacheService.Get<List<GroupUser>>($"GroupList.GetAll{userId}");
+            if (userId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(userId));
 
-            if (cachedGroups != null)
-                return cachedGroups;
-
-            var allGroups = _context.GroupUser.Where(x => x.User.Id == userId)
+            return _context.GroupUser.Where(x => x.User.Id == userId)
                 .AsNoTracking()
                 .OrderBy(x => x.Group.Name).ToList();
+        }
 
+        public List<Group> DiscoverAllForUser(Guid userId)
+        {
+            if (userId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(userId));
 
-            return allGroups;
+            return _context.Group.Where(x => x.GroupUsers.Where(m => m.User.Id == userId).ToList().Count == 0)
+                .AsNoTracking()
+                .OrderBy(x => x.Name).ToList();
         }
 
         public List<Group> GetSubGroups(Group Group, List<Group> allGroups, Guid? membershipId, int level = 2)
@@ -229,8 +232,10 @@ namespace MvcForum.Core.Services
                 .ToLookup(x => x.Group.Group.Section.Id);
         }
 
-        public IEnumerable<GroupSummary> GetAllMyGroupsInSummary(Guid? membershipId)
+        public IEnumerable<GroupSummary> GetAllMyGroupsInSummary(Guid membershipId)
         {
+            if (membershipId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(membershipId));
+
             return GetAllForUser(membershipId)
                 .Select(x => new GroupSummary
                 {
@@ -238,6 +243,21 @@ namespace MvcForum.Core.Services
                     TopicCount = x.Group.Topics.Count,
                     PostCount = x.Group.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
                     MostRecentTopic = x.Group.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                })
+                .ToList();
+        }
+
+        public IEnumerable<GroupSummary> GetDiscoverGroupsInSummary(Guid membershipId)
+        {
+            if (membershipId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(membershipId));
+
+            return DiscoverAllForUser(membershipId)
+                .Select(x => new GroupSummary
+                {
+                    Group = new GroupUserDTO() { Group = x },
+                    TopicCount = x.Topics.Count,
+                    PostCount = x.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
+                    MostRecentTopic = x.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
                 })
                 .ToList();
         }
