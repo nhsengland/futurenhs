@@ -86,39 +86,6 @@
 
 @if (Model.Tab == null)
 {
-
-    if (Model.GroupUserStatus == GroupUserStatus.NotJoined)
-    {
-        <a @Html.Raw(subScribe) href="@Url.Action("Join", "Group", new {slug = @Model.Group.Slug})" class="c-button">
-            @Html.LanguageString("Groups.Join")
-        </a>
-    }
-    if (Model.GroupUserStatus == GroupUserStatus.Joined)
-    {
-        <a @Html.Raw(subScribe) href="@Url.Action("Leave", "Group", new {slug = @Model.Group.Slug})" class="c-button c-button--secondary">
-            @Html.LanguageString("Groups.Leave")
-        </a>
-    }
-
-    if (Model.GroupUserStatus == GroupUserStatus.Pending)
-    {
-        <a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
-            @Html.LanguageString("Pending Approval")
-        </a>
-    }
-    if (Model.GroupUserStatus == GroupUserStatus.Locked)
-    {
-        <a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
-            @Html.LanguageString("Locked Out")
-        </a>
-    }
-    if (Model.GroupUserStatus == GroupUserStatus.Banned)
-    {
-        <a @Html.Raw(subScribe) href="#" class="c-button c-button--secondary u-disabled">
-            @Html.LanguageString("Banned")
-        </a>
-    }
-
     <h3>@Model.Group.Subtitle</h3>
     <p>@Html.Raw(Model.Group.Introduction)</p>
 }
