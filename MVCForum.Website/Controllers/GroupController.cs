@@ -344,8 +344,7 @@ namespace MvcForum.Web.Controllers
                 Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}"
             };
 
-            if (tab != null)
-            {
+         
                 switch (tab)
                 {
                     case Constants.GroupFilesTab:
@@ -361,7 +360,7 @@ namespace MvcForum.Web.Controllers
                         homeTab.Active = true;
                         break;
                 }
-            }
+            
 
             var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
 
