@@ -81,46 +81,9 @@ namespace MvcForum.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index(string tab = Constants.MyGroupsTab)
+        public ActionResult Index()
         {
-            var model = new GroupsLandingViewModel
-            {
-                CurrentTab = tab,
-                Header = GetGroupsLandingHeader(tab),
-            };
-
-            return View(model);
-        }
-
-        [ChildActionOnly]
-        private GroupHeaderViewModel GetGroupsLandingHeader(string currentTab)
-        {
-            var model = new GroupHeaderViewModel
-            {
-                HeaderTabs = new TabViewModel()
-                {
-                    Tabs = new List<Tab> {
-                        new Tab
-                        {
-                            Name = "My groups",
-                            Order = 1,
-                            Url = Url.Action("Index", "Group", new { tab = Constants.MyGroupsTab }),
-                            Active = currentTab.Equals(Constants.MyGroupsTab),
-                        },
-                        new Tab
-                        {
-                            Name = "Discover new groups",
-                            Order = 2,
-                            Url = Url.Action("Index", "Group", new { tab = Constants.DiscoverGroupsTab }),
-                            Active = currentTab.Equals(Constants.DiscoverGroupsTab),
-                        }
-                    }
-                },
-                Name = currentTab.Equals(Constants.MyGroupsTab) ? _localizationService.GetResourceString("Group.MyGroups.Title") : _localizationService.GetResourceString("Group.DiscoverGroups.Title"),
-                Description = currentTab.Equals(Constants.MyGroupsTab) ? _localizationService.GetResourceString("Group.MyGroups.HeaderIntro") : _localizationService.GetResourceString("Group.DiscoverGroups.HeaderIntro")
-            };
-
-            return model;
+            return View();
         }
 
         [HttpGet]

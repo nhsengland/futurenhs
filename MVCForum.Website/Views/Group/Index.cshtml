@@ -1,20 +1,11 @@
-﻿@model MvcForum.Web.ViewModels.Group.GroupsLandingViewModel
-@using MvcForum.Web.ViewModels.Shared
-@{
+﻿@{
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
     ViewBag.Title = Html.Raw(Html.LanguageString("Group.AllGroups"));
 }
-
-@section GroupHeader {
-    @Html.Partial("_GroupHeader", Model.Header)    
-}
-
-@if (Model.CurrentTab == Constants.MyGroupsTab)
+@section side
 {
-    Html.RenderAction("MyGroupsList", "Group");
+    @Html.Action("SideSearch", "Search")
 }
 
-@if (Model.CurrentTab == Constants.DiscoverGroupsTab)
-{
-    Html.RenderAction("DiscoverGroupsList", "Group");
-}
+
+@Html.Action("ListMainGroups", "Group")

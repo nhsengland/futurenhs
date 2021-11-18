@@ -166,7 +166,7 @@
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{tab}", // URL with parameters
-                new { controller = "Group", action = "Index", tab = UrlParameter.Optional } // Parameter defaults
+                new { controller = "Home", action = "Index", tab = UrlParameter.Optional } // Parameter defaults
             );
             //.RouteHandler = new SlugRouteHandler()
         }

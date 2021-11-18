@@ -1092,12 +1092,11 @@
     <Content Include="Views\Vote\GetVotes.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_GenericMessage.cshtml" />
-    <Content Include="Views\Group\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Group\ListGroupSideMenu.cshtml" />
     <Content Include="Views\Group\Show.cshtml" />
     <Content Include="Views\Closed\Index.cshtml" />
     <Content Include="Views\Home\Activity.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Topic\LatestTopics.cshtml" />
     <Content Include="Views\Members\AdminMemberProfileTools.cshtml" />
     <Content Include="Views\Members\ChangePassword.cshtml" />
@@ -1211,6 +1210,8 @@
     <Content Include="Views\FedTest\_Tables.cshtml" />
     <Content Include="Views\Group\_MyGroups.cshtml" />
     <Content Include="Views\Group\_DiscoverGroups.cshtml" />
+    <Content Include="Views\Group\Index.cshtml" />
+    <Content Include="Views\Group\ListMainGroups.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />
