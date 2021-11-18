@@ -127,7 +127,7 @@ namespace MvcForum.Core.Services
         {
             if (userId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(userId));
 
-            return _context.GroupUser.Where(x => x.User.Id == userId)
+            return _context.GroupUser.Where(x => x.User.Id == userId && x.Approved)
                 .AsNoTracking()
                 .OrderBy(x => x.Group.Name).ToList();
         }
@@ -136,7 +136,8 @@ namespace MvcForum.Core.Services
         {
             if (userId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(userId));
 
-            return _context.Group.Where(x => x.GroupUsers.Where(m => m.User.Id == userId).ToList().Count == 0)
+            return _context.Group
+                .Where(x => !x.GroupUsers.Where(m => m.User.Id == userId).Any(y => y.Approved))
                 .AsNoTracking()
                 .OrderBy(x => x.Name).ToList();
         }
