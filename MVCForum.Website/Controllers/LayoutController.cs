@@ -91,11 +91,10 @@
 
         public PartialViewResult SideNavigation()
         {
-            List<Link> model = new List<Link> { 
-                new Link { Name = "Home", Url="/", Icon=Icons.HomeOutline, IconTheme=Themes.FILL_THEME_8 },
-                new Link { Name = "Groups", Url= Url.Action("Index", "Group"), Icon=Icons.Group, IconTheme=Themes.FILL_THEME_11 }
+            List<Link> model = new List<Link> {
+                new Link { Name = "Groups", Url= Url.Action("Index", "Group"), Icon=Icons.Group, IconTheme=Themes.FILL_THEME_11 },
+                new Link { Name = "Latest Discussions", Url = Url.Action("LatestDiscussions", "Home"), Icon=Icons.Forum, IconTheme=Themes.FILL_THEME_8 }
             };
-
 
             return PartialView("_SideBar", model);
         }

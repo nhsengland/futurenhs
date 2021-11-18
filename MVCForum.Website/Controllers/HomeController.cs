@@ -54,6 +54,12 @@
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult LatestDiscussions()
+        {
+            return View();
+        }
+
         [ChildActionOnly]
         private GroupHeaderViewModel GetGroupsLandingHeader(string currentTab)
         {
