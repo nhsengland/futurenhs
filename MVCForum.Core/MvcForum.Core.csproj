@@ -180,6 +180,10 @@
     <Compile Include="Migrations\202110131450352_DeleteFolderStoredProcedure.Designer.cs">
       <DependentUpon>202110131450352_DeleteFolderStoredProcedure.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202111161649391_UpdatesFileEntity.cs" />
+    <Compile Include="Migrations\202111161649391_UpdatesFileEntity.Designer.cs">
+      <DependentUpon>202111161649391_UpdatesFileEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -658,6 +662,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110131450352_DeleteFolderStoredProcedure.resx">
       <DependentUpon>202110131450352_DeleteFolderStoredProcedure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111161649391_UpdatesFileEntity.resx">
+      <DependentUpon>202111161649391_UpdatesFileEntity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

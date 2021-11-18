@@ -12,7 +12,7 @@
     using System.Web;
 
     [TestFixture]
-    public class FileUploadValidationServiceSpec
+    public class FileUploadValidationServiceTests
     {
         private IFileUploadValidationService _fileUploadValidationService;
 
@@ -22,16 +22,20 @@
         private Mock<HttpPostedFileBase> _postedFile;
 
         private const string ValidFileName = "test.pdf";
+        private const string InvalidFileName = "test.zzz";
         private const string LongFileName = "A_really_long_file_name_to_break_the_file_name_length_validation_and_test_that_the_validation_is_working.pdf";
         private const string PdfExtension = ".pdf";
+        private const string InvalidExtensionFileName = "test.abcdefghij";
 
         // Validation errors expected
         private const string InvalidFileTypeError = "Invalid file type";
-        private const string InvalidContentForExtesionTypeError = "Content does not match extension";
+        private const string InvalidContentForExtensionTypeError = "Content does not match extension";
         private const string InvalidFileSizeError = "Invalid file size";
         private const string EmptyFileNameError = "Empty file name";
         private const string FileNameOutOfRangeError = "File name too long";
+        private const string FileExtensionOutOfRangeError = "File extension is too long";
 
+        private const string FileParameterName = "file";
 
         [SetUp]
         public void Setup()
@@ -49,72 +53,88 @@
             _fileUploadValidationService = new FileUploadValidationService(_localizationService.Object, _validateFileType.Object);
 
             _localizationService.Setup(x => x.GetResourceString("File.Error.InvalidType")).Returns(InvalidFileTypeError);
-            _localizationService.Setup(x => x.GetResourceString("File.Error.ContentMatchesExtension")).Returns(InvalidContentForExtesionTypeError);
+            _localizationService.Setup(x => x.GetResourceString("File.Error.ContentMatchesExtension")).Returns(InvalidContentForExtensionTypeError);
             _localizationService.Setup(x => x.GetResourceString("File.Error.InvalidSize")).Returns(InvalidFileSizeError);
             _localizationService.Setup(x => x.GetResourceString("File.Error.NullName")).Returns(EmptyFileNameError);
             _localizationService.Setup(x => x.GetResourceString("File.Error.NameLength")).Returns(FileNameOutOfRangeError);
         }
 
         [Test]
-        public void ValidateUploadedFile_NullFile_Test()
+        public void ValidateUploadedFile_FileParameterIsNullFile_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(delegate { _fileUploadValidationService.ValidateUploadedFile(null); } );
+            var result = Assert.Throws<ArgumentNullException>(delegate { _fileUploadValidationService.ValidateUploadedFile(null); } );
+
+            Assert.IsInstanceOf<ArgumentNullException>(result);
+            Assert.AreEqual(FileParameterName, result.ParamName);
         }
 
         [Test]
-        public void ValidateUploadedFile_ValidationFails_SimpleFileType_Test()
+        public void ValidateUploadedFile_InvalidSimpleFileType_ReturnsError()
         {
-            _postedFile.Setup(x => x.FileName).Returns("test.zzz");
+            _postedFile.Setup(x => x.FileName).Returns(InvalidFileName);
 
             var result = _fileUploadValidationService.ValidateUploadedFile(_postedFile.Object);
 
-            Assert.True(result.ValidationErrors.Contains(InvalidFileTypeError));
+            var hasError = result.ValidationErrors.Contains(InvalidFileTypeError);
+
+            Assert.True(hasError);
             Assert.IsNull(result.MimeType);
         }
 
         [Test]
-        public void ValidateUploadedFile_ValidationFails_ComplexFileType_Test()
+        public void ValidateUploadedFile_InvalidComplexFileType_ReturnsError()
         {
             _validateFileType.Setup(x => x.ContentMatchesExtension(It.IsAny<Stream>(), It.IsAny<string>())).Returns(false);
 
             var result = _fileUploadValidationService.ValidateUploadedFile(_postedFile.Object);
 
-            Assert.True(result.ValidationErrors.Contains(InvalidContentForExtesionTypeError));
+            var hasError = result.ValidationErrors.Contains(InvalidContentForExtensionTypeError);
+
+            Assert.True(hasError);
             Assert.IsNull(result.MimeType);
         }
 
         [Test]
-        public void ValidateUploadedFile_ValidationFails_FileSizeOutOfRange_Test()
+        public void ValidateUploadedFile_FileSizeOutOfRange_ReturnsError()
         {
             _postedFile.Setup(x => x.ContentLength).Returns(250000001);
 
             var result = _fileUploadValidationService.ValidateUploadedFile(_postedFile.Object);
 
-            Assert.True(result.ValidationErrors.Contains(InvalidFileSizeError));
-            Assert.AreEqual(MimeMapping.GetMimeMapping(PdfExtension), result.MimeType);
+            var hasError = result.ValidationErrors.Contains(InvalidFileSizeError);
+            var expectedMimeType = MimeMapping.GetMimeMapping(PdfExtension);
+
+            Assert.True(hasError);
+            Assert.AreEqual(expectedMimeType, result.MimeType);
         }
 
         [Test]
-        public void ValidateUploadedFile_ValidationFails_FileNameEmpty_Test()
+        public void ValidateUploadedFile_FileNameEmpty_ReturnsError()
         {
             // Use extension only to trigger this validation fail
             _postedFile.Setup(x => x.FileName).Returns(PdfExtension);
 
             var result = _fileUploadValidationService.ValidateUploadedFile(_postedFile.Object);
 
-            Assert.True(result.ValidationErrors.Contains(EmptyFileNameError));
-            Assert.AreEqual(MimeMapping.GetMimeMapping(PdfExtension), result.MimeType);
+            var hasError = result.ValidationErrors.Contains(EmptyFileNameError);
+            var expectedMimeType = MimeMapping.GetMimeMapping(PdfExtension);
+
+            Assert.True(hasError);
+            Assert.AreEqual(expectedMimeType, result.MimeType);
         }
 
         [Test]
-        public void ValidateUploadedFile_ValidationFails_FileNameOutOfRange_Test()
+        public void ValidateUploadedFile_FileNameOutOfRange_ReturnsError()
         {
             _postedFile.Setup(x => x.FileName).Returns(LongFileName);
 
             var result = _fileUploadValidationService.ValidateUploadedFile(_postedFile.Object);
 
-            Assert.True(result.ValidationErrors.Contains(FileNameOutOfRangeError));
-            Assert.AreEqual(MimeMapping.GetMimeMapping(PdfExtension), result.MimeType);
+            var hasError = result.ValidationErrors.Contains(FileNameOutOfRangeError);
+            var expectedMimeType = MimeMapping.GetMimeMapping(PdfExtension);
+
+            Assert.True(hasError);
+            Assert.AreEqual(expectedMimeType, result.MimeType);
         }
 
         [TestCase("test.doc")]
@@ -124,7 +144,7 @@
         [TestCase("test.pdf")]
         [TestCase("test.ppt")]
         [TestCase("test.pptx")]
-        public void ValidateUploadedFile_ValidationPasses_Test(string fileName)
+        public void ValidateUploadedFile_SuccessfulValidation_ReturnsNoErrors(string fileName)
         {
             // Mime type for checking result value
             string mimeType = MimeMapping.GetMimeMapping(Path.GetExtension(fileName));
