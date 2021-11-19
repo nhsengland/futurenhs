@@ -92,7 +92,7 @@
         public PartialViewResult SideNavigation()
         {
             List<Link> model = new List<Link> {
-                new Link { Name = "Groups", Url= Url.Action("Index", "Group"), Icon=Icons.Group, IconTheme=Themes.FILL_THEME_11 },
+                new Link { Name = "Groups", Url= Url.Action("Index", "Home"), Icon=Icons.Group, IconTheme=Themes.FILL_THEME_11 },
                 new Link { Name = "Latest Discussions", Url = Url.Action("LatestDiscussions", "Home"), Icon=Icons.Forum, IconTheme=Themes.FILL_THEME_8 }
             };
 
