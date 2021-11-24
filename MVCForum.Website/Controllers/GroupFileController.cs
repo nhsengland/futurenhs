@@ -68,11 +68,11 @@ namespace MvcForum.Web.Controllers
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("Show")]
-        public async Task<ActionResult> ShowAsync(Guid id, string groupSlug, CancellationToken cancellationToken)
+        public async Task<ActionResult> ShowAsync(Guid id, string slug, CancellationToken cancellationToken)
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            if (!UserHasGroupAccess(groupSlug))
+            if (!UserHasGroupAccess(slug))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -84,8 +84,8 @@ namespace MvcForum.Web.Controllers
             var file = new FileViewModel
             {
                 File = dbFile,
-                Slug = groupSlug,
-                Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, groupSlug, dbFile.Title)
+                Slug = slug,
+                Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, slug, dbFile.Title)
             };
             ViewBag.HideSideBar = true;
             return View(file);
