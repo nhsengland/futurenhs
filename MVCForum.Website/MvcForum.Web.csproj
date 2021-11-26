@@ -125,6 +125,7 @@
     <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupsLandingViewModel.cs" />
+    <Compile Include="ViewModels\Group\GroupSummaryViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
     <Compile Include="ViewModels\Shared\Button.cs" />
     <Compile Include="ViewModels\Shared\Link.cs" />
