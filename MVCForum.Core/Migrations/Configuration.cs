@@ -196,7 +196,7 @@ namespace MvcForum.Core.Services.Migrations
                     var settings = new Settings
                     {
                         ForumName = "FutureNHS",
-                        ForumUrl = "http://www.mydomain.com",
+                        ForumUrl = "https://futurenhs.cds.co.uk",
                         IsClosed = false,
                         EnableRSSFeeds = true,
                         DisplayEditedBy = true,

@@ -21,6 +21,7 @@
     using Core.Models.General;
     using Core.Pipeline;
     using Core.Reflection;
+    using MvcForum.Core.Interfaces.Providers;
     using ViewModels;
     using ViewModels.Admin;
     using ViewModels.ExtensionMethods;
@@ -45,27 +46,9 @@
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
         private readonly IGroupInviteService _groupInviteService;
+        private readonly ISendEmailService _sendEmailService;
+        private readonly IConfigurationProvider _configurationProvider;
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        /// <param name="loggingService"></param>
-        /// <param name="membershipService"></param>
-        /// <param name="localizationService"></param>
-        /// <param name="roleService"></param>
-        /// <param name="settingsService"></param>
-        /// <param name="postService"></param>
-        /// <param name="reportService"></param>
-        /// <param name="emailService"></param>
-        /// <param name="privateMessageService"></param>
-        /// <param name="GroupService"></param>
-        /// <param name="topicService"></param>
-        /// <param name="cacheService"></param>
-        /// <param name="notificationService"></param>
-        /// <param name="pollService"></param>
-        /// <param name="voteService"></param>
-        /// <param name="favouriteService"></param>
-        /// <param name="context"></param>
         public MembersController(ILoggingService loggingService, 
             IMembershipService membershipService,
             ILocalizationService localizationService,
@@ -82,7 +65,9 @@
             IVoteService voteService, 
             IFavouriteService favouriteService,
             IMvcForumContext context,
-            IGroupInviteService groupInviteService)
+            IGroupInviteService groupInviteService,
+            ISendEmailService sendEmailService,
+            IConfigurationProvider configurationProvider)
             : base(loggingService, 
                 membershipService, 
                 localizationService, 
@@ -101,6 +86,8 @@
             _voteService = voteService;
             _favouriteService = favouriteService;
             _groupInviteService = groupInviteService ?? throw new ArgumentNullException(nameof(groupInviteService));
+            _sendEmailService = sendEmailService ?? throw new ArgumentNullException(nameof(sendEmailService));
+            _configurationProvider = configurationProvider ?? throw new ArgumentNullException(nameof(configurationProvider));
         }
 
         /// <summary>
@@ -1156,10 +1143,13 @@
         /// </summary>
         /// <param name="forgotPasswordViewModel"></param>
         /// <returns></returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ActionName("ForgotPassword")]
         [AllowAnonymous]
-        public virtual ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]       
+        public virtual async Task<ActionResult> ForgotPasswordAsync(ForgotPasswordViewModel forgotPasswordViewModel, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
@@ -1200,14 +1190,12 @@
                     settings.ForumName));
             sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", url);
 
-            var email = new Email
-            {
-                EmailTo = user.Email,
-                NameTo = user.UserName,
-                Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
-            };
-            email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-            _emailService.SendMail(email);
+            var emailToAddress = new MailAddress(user.Email);
+            var emailFromAddress = new MailAddress(_configurationProvider.SmtpFrom);
+            var emailSubject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject");
+            var emailBodyHtml = _emailService.EmailTemplate(user.FirstName + " " + user.Surname, sb.ToString());
+
+            await _sendEmailService.SendAsync(emailFromAddress, emailToAddress, emailSubject, emailBodyHtml, cancellationToken);
 
             try
             {
@@ -1242,9 +1230,15 @@
         /// <param name="id"></param>
         /// <param name="token"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet]
-        public virtual ViewResult ResetPassword(Guid? id, string token)
+        public virtual ActionResult ResetPassword(Guid? id, string token)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var model = new ResetPasswordViewModel
             {
                 Id = id,
@@ -1265,6 +1259,7 @@
         /// </summary>
         /// <param name="postedModel"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual ActionResult ResetPassword(ResetPasswordViewModel postedModel)
@@ -1301,14 +1296,12 @@
                 {
                     Context.RollBack();
                     LoggingService.Error(ex);
-                    ModelState.AddModelError("",
-                        LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
+                    ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
                     return View(postedModel);
                 }
             }
 
-
-            return RedirectToAction("PasswordChanged", "Members");
+            return RedirectToAction("Logon", "Members");
         }
 
         /// <summary>
