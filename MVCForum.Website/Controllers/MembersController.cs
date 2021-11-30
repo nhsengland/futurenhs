@@ -1300,9 +1300,7 @@
                     return View(postedModel);
                 }
             }
-
-            Response.Headers.Set("ReturnUrl","");
-            return RedirectToAction("LogOn", "Members");
+            return RedirectToAction("Logon", "Members");
         }
 
         /// <summary>
