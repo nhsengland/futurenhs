@@ -206,7 +206,7 @@ namespace MvcForum.Core.Services
                 {
                     Group = group,
                     DiscussionCount = group.Topics.Count,
-                    MemberCount = group.GroupUsers.Count
+                    MemberCount = group.GroupUsers.Count(g => g.Approved == true)
                 })
                 .ToList();
         }
@@ -223,7 +223,7 @@ namespace MvcForum.Core.Services
                 {
                     Group = groupUser.Group,
                     DiscussionCount = groupUser.Group.Topics.Count,
-                    MemberCount = groupUser.Group.GroupUsers.Count
+                    MemberCount = groupUser.Group.GroupUsers.Count(g => g.Approved == true)
                 })
                 .ToList()
                 .ToLookup(groupSummary => groupSummary.Group.Section.Id);
@@ -238,7 +238,7 @@ namespace MvcForum.Core.Services
                 {
                     Group = groupUser.Group,
                     DiscussionCount = groupUser.Group.Topics.Count,
-                    MemberCount = groupUser.Group.GroupUsers.Count
+                    MemberCount = groupUser.Group.GroupUsers.Count(g => g.Approved == true)
                 })
                 .ToList();
         }
