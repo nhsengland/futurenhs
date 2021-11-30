@@ -65,6 +65,26 @@ namespace MvcForum.Core.Constants.UI
         /// </summary>
         public const string BORDER_11 = "u-border-theme-11";
 
+        /// <summary>
+        /// Key for border theme 12
+        /// </summary>
+        public const string BORDER_12 = "u-border-theme-12";
+
+        /// <summary>
+        /// Key for border theme 13
+        /// </summary>
+        public const string BORDER_13 = "u-border-theme-13";
+
+        /// <summary>
+        /// Key for border theme 14
+        /// </summary>
+        public const string BORDER_14 = "u-border-theme-14";
+
+        /// <summary>
+        /// Key for border theme 15
+        /// </summary>
+        public const string BORDER_15 = "u-border-theme-15";
+
         #endregion
 
         #region Fill themes
@@ -123,6 +143,26 @@ namespace MvcForum.Core.Constants.UI
         /// Key for fill theme 11
         /// </summary>
         public const string FILL_THEME_11 = "u-fill-theme-11";
+
+        /// <summary>
+        /// Key for fill theme 12
+        /// </summary>
+        public const string FILL_THEME_12 = "u-fill-theme-12";
+
+        /// <summary>
+        /// Key for fill theme 13
+        /// </summary>
+        public const string FILL_THEME_13 = "u-fill-theme-13";
+
+        /// <summary>
+        /// Key for fill theme 14
+        /// </summary>
+        public const string FILL_THEME_14 = "u-fill-theme-14";
+
+        /// <summary>
+        /// Key for fill theme 15
+        /// </summary>
+        public const string FILL_THEME_15 = "u-fill-theme-15";
 
         #endregion
     }
