@@ -1243,8 +1243,13 @@
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet]
-        public virtual ViewResult ResetPassword(Guid? id, string token)
+        public virtual ActionResult ResetPassword(Guid? id, string token)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var model = new ResetPasswordViewModel
             {
                 Id = id,
@@ -1307,8 +1312,7 @@
                 }
             }
 
-
-            return RedirectToAction("PasswordChanged", "Members");
+            return RedirectToAction("LogOn", "Members");
         }
 
         /// <summary>
