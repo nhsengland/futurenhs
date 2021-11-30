@@ -124,6 +124,8 @@
     <Compile Include="ViewModels\Folder\FolderListViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupHomeCardsViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupMembersViewModel.cs" />
+    <Compile Include="ViewModels\Group\GroupsLandingViewModel.cs" />
+    <Compile Include="ViewModels\Group\GroupSummaryViewModel.cs" />
     <Compile Include="ViewModels\Group\GroupTopicsViewModel.cs" />
     <Compile Include="ViewModels\Shared\Button.cs" />
     <Compile Include="ViewModels\Shared\Link.cs" />
@@ -1091,13 +1093,11 @@
     <Content Include="Views\Vote\GetVotes.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_GenericMessage.cshtml" />
-    <Content Include="Views\Group\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Group\ListGroupSideMenu.cshtml" />
-    <Content Include="Views\Group\ListMainGroups.cshtml" />
     <Content Include="Views\Group\Show.cshtml" />
     <Content Include="Views\Closed\Index.cshtml" />
     <Content Include="Views\Home\Activity.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Topic\LatestTopics.cshtml" />
     <Content Include="Views\Members\AdminMemberProfileTools.cshtml" />
     <Content Include="Views\Members\ChangePassword.cshtml" />
@@ -1188,7 +1188,6 @@
     <Content Include="Views\Topic\AjaxMorePostsForThread.cshtml" />
     <Content Include="Views\Shared\_PostFooter.cshtml" />
     <Content Include="Views\Folder\_Folders.cshtml" />
-    <Content Include="Views\Group\_Files.cshtml" />
     <Content Include="Views\GroupFile\Create.cshtml" />
     <Content Include="Views\GroupFile\Show.cshtml" />
     <Content Include="Views\Folder\_CreateFolder.cshtml" />
@@ -1210,7 +1209,11 @@
     <Content Include="Views\FedTest\_ErrorSummary.cshtml" />
     <Content Include="Views\FedTest\_Forms.cshtml" />
     <Content Include="Views\FedTest\_Tables.cshtml" />
-    <Content Include="Views\Folder\_Folder.cshtml" />
+    <Content Include="Views\Group\_MyGroups.cshtml" />
+    <Content Include="Views\Group\_DiscoverGroups.cshtml" />
+    <Content Include="Views\Group\Index.cshtml" />
+    <Content Include="Views\Group\ListMainGroups.cshtml" />
+    <Content Include="Views\Home\LatestDiscussions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

@@ -9,6 +9,7 @@
 
     string inputError = "c-input--error";
     string formError = "c-form-group--error";
+    string textAreaError = "c-textarea--error";
 }
 
 @section GroupHeader
@@ -22,7 +23,7 @@
 <hr>
 
 <div class="l-row">
-    <div class="l-col-6 js-tinyMCE-container">
+    <div class="l-col-6">
 
         <h3>@Html.LanguageString("File.Upload.Subtitle")</h3>
         <p>@Html.LanguageString("File.Upload.Guidance")</p>
@@ -68,14 +69,14 @@
                         @Html.EditorFor(model => model.FileToUpload.Name, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.FileToUpload.Name, inputError) } })
                     </div>
 
-                    <div class="c-form-group js-tinyMCE-holder @Html.FieldHasError(model => model.FileToUpload.Description, formError)">
+                    <div class="c-form-group @Html.FieldHasError(model => model.FileToUpload.Description, formError)">
                         @Html.LabelFor(model => model.FileToUpload.Description, @Html.LanguageString("File.Upload.FileDescription.Label"), htmlAttributes: new { @class = "c-label" })
                         <div class="c-hint" id="@Html.DisplayNameFor(model => model.FileToUpload.Description)-hint">
                             @Html.LanguageString("File.Upload.FileDescription.Guidance")
                         </div>
 
                         @Html.ValidationMessageFor(model => model.FileToUpload.Description, "", new { @class = "c-error-message" })
-                        @Html.EditorFor(model => model.FileToUpload.Description, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.FileToUpload.Description, inputError) } })
+                        @Html.TextAreaFor(model => model.FileToUpload.Description, new { rows = 5, @class = "c-textarea" + " " + Html.FieldHasError(model => model.FileToUpload.Description, textAreaError) })
                     </div>
 
                 </div>
@@ -85,7 +86,7 @@
             <p class="u-text-small">@Html.LanguageString("File.Upload.Terms.Text") <br> <a target="_blank" href="#">@Html.LanguageString("File.Upload.Terms.LinkText")</a></p>
 
             <div class="c-form-group">
-                <input type="submit" value="@Html.LanguageString("File.Upload.Button.Label")" class="c-button js-tinyMCE-submit" data-mce-requirements="none">
+                <input type="submit" value="@Html.LanguageString("File.Upload.Button.Label")" class="c-button" data-mce-requirements="none">
             </div>
         }
     </div>

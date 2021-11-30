@@ -38,6 +38,7 @@ namespace MvcForum.Web.Controllers
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
         private readonly IFeatureManager _featureManager;
+        private readonly ILocalizationService _localizationService;
 
         /// <summary>
         ///     Constructor
@@ -75,6 +76,7 @@ namespace MvcForum.Web.Controllers
             _postService = postService;
             _roleService = roleService;
             _featureManager = featureManager;
+            _localizationService = localizationService;
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
@@ -86,7 +88,7 @@ namespace MvcForum.Web.Controllers
 
         [HttpGet]
         [ChildActionOnly]
-        public virtual PartialViewResult ListMainGroups()
+        public virtual PartialViewResult MyGroupsList()
         {
             // TODO - OutputCache and add clear to post/topic/Group delete/create/edit
 
@@ -94,7 +96,47 @@ namespace MvcForum.Web.Controllers
             var catViewModel = new GroupListSummaryViewModel
             {
                 AllPermissionSets =
-                    ViewModelMapping.GetPermissionsForGroups(_groupService.GetAllMainGroupsInSummary(LoggedOnReadOnlyUser?.Id),
+                    ViewModelMapping.GetPermissionsForGroups(_groupService.GetAllMyGroupsInSummary(LoggedOnReadOnlyUser.Id),
+                        _roleService, loggedOnUsersRole)
+            };
+            return PartialView("_MyGroups", catViewModel);
+        }
+
+        [HttpGet]
+        [ChildActionOnly]
+        public virtual PartialViewResult DiscoverGroupsList()
+        {
+            // TODO - OutputCache and add clear to post/topic/Group delete/create/edit
+            if (LoggedOnReadOnlyUser is null)
+            {
+                throw new ArgumentNullException(nameof(LoggedOnReadOnlyUser));
+            }
+
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            var catViewModel = new GroupListSummaryViewModel
+            {
+                AllPermissionSets =
+                    ViewModelMapping.GetPermissionsForGroups(_groupService.GetDiscoverGroupsInSummary(LoggedOnReadOnlyUser.Id),
+                        _roleService, loggedOnUsersRole)
+            };
+            return PartialView("_DiscoverGroups", catViewModel);
+        }
+
+        [HttpGet]
+        [ChildActionOnly]
+        public virtual PartialViewResult ListMainGroups()
+        {
+            // TODO - OutputCache and add clear to post/topic/Group delete/create/edit
+            if (LoggedOnReadOnlyUser is null)
+            {
+                throw new ArgumentNullException(nameof(LoggedOnReadOnlyUser));
+            }
+
+            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
+            var catViewModel = new GroupListSummaryViewModel
+            {
+                AllPermissionSets =
+                    ViewModelMapping.GetPermissionsForGroups(_groupService.GetAllMainGroupsInSummary(LoggedOnReadOnlyUser.Id),
                         _roleService, loggedOnUsersRole)
             };
             return PartialView(catViewModel);
@@ -144,7 +186,7 @@ namespace MvcForum.Web.Controllers
             {
                 MyGroupsModel = new MyGroupListViewModel
                 {
-                    MyGroups = _groupService.GetAllForUser(LoggedOnReadOnlyUser?.Id)
+                    MyGroups = _groupService.GetAllForUser(LoggedOnReadOnlyUser.Id)
                 };
             }
             else

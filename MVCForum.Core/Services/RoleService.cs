@@ -292,23 +292,22 @@
         /// <param name="Group">Group could be null when requesting global permissions</param>
         /// <param name="role"></param>
         /// <returns></returns>
-        public PermissionSet GetPermissions(Group Group, MembershipRole role)
+        public PermissionSet GetPermissions(Group group, MembershipRole role)
         {
             // Pass the role in to see select which permissions to apply
             // Going to cache this per request, just to help with performance
 
                 PermissionSet permissions;
-
                 switch (role.RoleName)
                 {
                     case Constants.AdminRoleName:
-                        permissions = GetAdminPermissions(Group, role);
+                        permissions = GetAdminPermissions(group, role);
                         break;
                     case Constants.GuestRoleName:
-                        permissions = GetGuestPermissions(Group, role);
+                        permissions = GetGuestPermissions(group, role);
                         break;
                     default:
-                        permissions = GetOtherPermissions(Group, role);
+                        permissions = GetOtherPermissions(group, role);
                         break;
                 }
 

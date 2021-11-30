@@ -24,15 +24,15 @@
         #region Group
 
 
-        public static Dictionary<GroupSummary, PermissionSet> GetPermissionsForGroups(IEnumerable<GroupSummary> Groups,
+        public static Dictionary<GroupSummary, PermissionSet> GetPermissionsForGroups(IEnumerable<GroupSummary> groupSummaries,
             IRoleService roleService, MembershipRole usersRole, bool removeIfDenyAccess = false)
         {
             // Permissions
             // loop through the Groups and get the permissions
             var permissions = new Dictionary<GroupSummary, PermissionSet>();
-            foreach (var summary in Groups)
+            foreach (var groupSummary in groupSummaries)
             {
-                var permissionSet = roleService.GetPermissions(summary.Group.Group, usersRole);
+                var permissionSet = roleService.GetPermissions(groupSummary.Group, usersRole);
 
                 // Should we add if deny access is ticked
                 if (removeIfDenyAccess)
@@ -44,7 +44,7 @@
                     }
                 }
 
-                permissions.Add(summary, permissionSet);
+                permissions.Add(groupSummary, permissionSet);
             }
             return permissions;
         }

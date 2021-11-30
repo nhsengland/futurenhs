@@ -440,7 +440,7 @@
                 // Save any outstanding changes
                 Context.SaveChanges();
 
-                return RedirectToAction("Index", "Group");
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
@@ -1300,7 +1300,6 @@
                     return View(postedModel);
                 }
             }
-
             return RedirectToAction("Logon", "Members");
         }
 
