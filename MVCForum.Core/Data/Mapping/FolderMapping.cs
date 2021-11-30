@@ -9,8 +9,8 @@
         {
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
-            Property(x => x.Name).IsRequired().HasMaxLength(450);
-            Property(x => x.Description).IsOptional();
+            Property(x => x.Name).IsRequired().HasMaxLength(1000);
+            Property(x => x.Description).IsOptional().HasMaxLength(4000);
             Property(x => x.FileCount).IsRequired();
             Property(x => x.CreatedAtUtc).IsRequired();
             Property(x => x.ParentFolder).IsOptional();

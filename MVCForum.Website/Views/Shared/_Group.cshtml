@@ -1,6 +1,6 @@
 ﻿@using MvcForum.Core.ExtensionMethods
 @using MvcForum.Web.Application.ExtensionMethods
-@model MvcForum.Web.ViewModels.Group.GroupViewModel
+@model MvcForum.Web.ViewModels.Group.GroupSummaryViewModel
 @using MvcForum.Web.ViewModels.Shared
 
 @if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
@@ -8,39 +8,43 @@
     <div class="c-grid-block">
             <div class="c-grid-block_item l-col-12">
 
-                    <div class="c-card u-border-bottom-theme-11">
+                    <div class="c-card c-card--img-left u-border-bottom-theme-8">
+                         <div class="c-card_img-container u-margin-top-spacing-2 u-margin-left-spacing-2 u-margin-bottom-spacing-2">
+                             @if (!string.IsNullOrEmpty(Model.Image))
+                            {
+                                <div class="c-page-header_image-wrapper">
+                                    <img role="presentation" src="@AppHelpers.GroupImage(Model.Image, Model.GroupId, 159)" alt="" class="c-page-header_image u-margin-bottom-spacing-0">
+                                </div>
+                            }
+                        </div>
                         <div class="c-card_content">
                             <h2 class="c-card_heading">
-                                <a class="c-card_link" href="@Model.Group.NiceUrl">
-                                    @Html.Raw(Model.Group.Name)
+                                <a class="c-card_link" href="@Model.NiceUrl">
+                                    @Html.Raw(Model.Name)
                                 </a>
                             </h2>
-                            @if (Model.LatestTopic != null) {
-                                
-                                <div class="c-card_header">
-                                    <div class="c-card_header-content u-text-theme-7">
-                                        <p class="u-text-small u-text-bold u-has-subheading">@Html.LanguageString("Group.MostRecent") <a href="@Model.LatestTopic.NiceUrl">@Html.Raw(Model.LatestTopic.Name)</a> </p>
-                                        <p class="u-text-small u-has-subheading">
-                                            @Html.Raw(string.Format(Html.LanguageString("Topic.StartedBy"),
-                                                        DatesUi.GetPrettyDate(Model.LatestTopic.CreateDate.ToString()),
-                                                        string.Format("<a href='{0}'>{1}</a>", Model.LatestTopic.User.NiceUrl, Model.LatestTopic.User.UserName)))
-                                         </p>
-                                    </div>
+                           
+                            <div class="c-card_header">
+                                <div class="c-card_header-content u-text-theme-7">
+                                    <p class="u-text-small u-has-subheading">
+                                        @Model.Description
+                                    </p>
                                 </div>
-
-                            }
-                            <div class="c-card_footer u-text-theme-7">
-                            
+                            </div>
+                            <div class="c-card_footer u-text-theme-8">
                                 <p class="c-card_footer-item">
-                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-discussion", "c-card_footer-icon u-fill-theme-11"));}
-                                    <span>@string.Format(Html.LanguageString("Rss.Group.Title"), Model.TopicCount)</span>
+                                    @{Html.RenderPartial("_SVGIcon", 
+                                    new SVGIconViewModel("icon-members", "c-card_footer-icon u-fill-theme-8"));}
+                                    <span> @Model.MemberCount member@(Model.MemberCount > 1 || Model.MemberCount == 0 ? "s" : "")</span>
                                 </p>
 
-                                <p class="c-card_footer-item">
-                                    @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-comments", "c-card_footer-icon u-fill-theme-11"));}
-                                    <span> @Model.PostCount @Html.LanguageString("Topic.CommentsDetails")</span>
-                                </p>
-                                
+                                @if (Model.DiscussionCount > 0)
+                                {
+                                    <p class="c-card_footer-item">
+                                        @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-discussion", "c-card_footer-icon u-fill-theme-8"));}
+                                        <span>@Model.DiscussionCount discussion@(Model.DiscussionCount > 1 ? "s" : "")</span>
+                                    </p>
+                                }
                             </div>
                         </div>
                     </div>

@@ -13,6 +13,6 @@
         MembershipRole GetRole(Guid id);
         IList<MembershipUser> GetUsersForRole(string roleName);
         MembershipRole CreateRole(MembershipRole role);
-        PermissionSet GetPermissions(Group Group, MembershipRole role);
+        PermissionSet GetPermissions(Group group, MembershipRole role);
     }
 }

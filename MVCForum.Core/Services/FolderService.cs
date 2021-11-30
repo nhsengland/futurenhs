@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MvcForum.Core.Interfaces;
+﻿using MvcForum.Core.Interfaces;
 using MvcForum.Core.Interfaces.Services;
 using MvcForum.Core.Models.FilesAndFolders;
 using MvcForum.Core.Repositories.Command.Interfaces;
 using MvcForum.Core.Repositories.Models;
 using MvcForum.Core.Repositories.Repository.Interfaces;
 using MvcForum.Web.ViewModels.Folder;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MvcForum.Core.Services
 {
-    public class FolderService : IFolderService
+    public sealed class FolderService : IFolderService
     {
         private readonly IFolderRepository _folderRepository;
         private readonly IFileRepository _fileRepository;
@@ -23,60 +23,68 @@ namespace MvcForum.Core.Services
 
         public FolderService(IFolderRepository folderRepository, IFeatureManager featureManager, IFolderCommand folderCommand, IFileRepository fileRepository)
         {
-            _folderRepository = folderRepository;
-            _featureManager = featureManager;
-            _folderCommand = folderCommand;
-            _fileRepository = fileRepository;
+            _folderRepository = folderRepository ?? throw new ArgumentNullException(nameof(folderRepository));
+            _featureManager = featureManager ?? throw new ArgumentNullException(nameof(featureManager));
+            _folderCommand = folderCommand ?? throw new ArgumentNullException(nameof(folderCommand));
+            _fileRepository = fileRepository ?? throw new ArgumentNullException(nameof(fileRepository));
         }
         
         public async Task<FolderViewModel> GetFolderAsync(string groupSlug, Guid? folderId, CancellationToken cancellationToken)
         {
-            FolderViewModel model;
+            if (string.IsNullOrWhiteSpace(groupSlug))
+            {
+                throw new ArgumentNullException(nameof(groupSlug));
+            }
 
             if (!folderId.HasValue)
             {
-                model = new FolderViewModel
+                return new FolderViewModel
                 {
                     Slug = groupSlug,
                     Folder = null,
-                    ChildFolders = _folderRepository.GetRootFoldersForGroup(groupSlug),
+                    ChildFolders = await _folderRepository.GetRootFoldersForGroupAsync(groupSlug: groupSlug, cancellationToken: cancellationToken),
                     Files = new List<FileReadViewModel>()
                 };
             }
             else
             {
-                model = new FolderViewModel
+                return new FolderViewModel
                 {
                     Slug = groupSlug,
-                    Folder = _folderRepository.GetFolder(folderId.Value),
-                    ChildFolders = _folderRepository.GetChildFoldersForFolder(folderId.Value),
+                    Folder = await _folderRepository.GetFolderAsync(folderId.Value, cancellationToken),
+                    ChildFolders = await _folderRepository.GetChildFoldersForFolderAsync(parentFolderId: folderId.Value, cancellationToken: cancellationToken),
                     Files = (await _fileRepository.GetFilesAsync(folderId.Value, cancellationToken: cancellationToken)).ToList()
                 };
             }
-
-            return model;
         }
 
-        /// <summary>
-        /// Get a file by folder Id only, excludes deleted.
-        /// </summary>
-        /// <param name="folderId"></param>
-        /// <returns></returns>
-        public FolderReadViewModel GetFolder(Guid folderId)
+        public Task<bool> IsFolderNameValidAsync(string folderName, 
+                                                 Guid? parentFolderId,
+                                                 Guid parentGroupId,
+                                                 CancellationToken cancellationToken)
         {
-            return _folderRepository.GetFolder(folderId);
+            if (string.IsNullOrWhiteSpace(folderName))
+            {
+                throw new ArgumentNullException(nameof(folderName));
+            }
+
+            if (Guid.Empty == parentGroupId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(parentGroupId));
+            }
+
+            return _folderRepository.IsFolderNameValidAsync(folderName, parentFolderId, parentGroupId, cancellationToken);
         }
 
-        /// <summary>
-        /// Get folder by Id, folder name and parent - validate folder exists for create/update, i.e. no duplicate names allowed.
-        /// </summary>
-        /// <param name="folderId"></param>
-        /// <param name="folderName"></param>
-        /// <param name="parentFolder"></param>
-        /// <returns></returns>
-        public FolderReadViewModel GetFolder(Guid? folderId, string folderName, Guid? parentFolder)
+        public Task<bool> IsFolderIdValidAsync(Guid folderId,
+                                               CancellationToken cancellationToken)
         {
-            return _folderRepository.GetFolder(folderId, folderName, parentFolder);
+            if (Guid.Empty == folderId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(folderId));
+            }
+
+            return _folderRepository.IsFolderIdValidAsync(folderId, cancellationToken);
         }
 
         public Guid CreateFolder(FolderWriteViewModel model)
@@ -89,26 +97,37 @@ namespace MvcForum.Core.Services
             if (model.FolderId != null) _folderCommand.UpdateFolder(model);
         }
 
-        public IEnumerable<BreadCrumbItem> GenerateBreadcrumbTrail(Guid folderId)
+        public Task<IEnumerable<BreadCrumbItem>> GenerateBreadcrumbTrailAsync(Guid folderId, CancellationToken cancellationToken)
         {
-            return _folderRepository.GenerateBreadcrumbTrail(folderId);
-        }
+            if (Guid.Empty == folderId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(folderId));
+            }
 
+            return _folderRepository.GenerateBreadcrumbTrailAsync(folderId, cancellationToken);
+        }
      
-        public bool UserIsAdmin(string groupSlug, Guid? userId)
+        public async Task<bool> IsUserAdminAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(groupSlug))
-                return false;
+            {
+                throw new ArgumentNullException(nameof(groupSlug));
+            }
+            
+            if (Guid.Empty == userId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(userId));
+            }
 
-            return userId.HasValue && _folderRepository.UserIsAdmin(groupSlug, userId.Value);
+            return await _folderRepository.IsUserAdminAsync(groupSlug, userId, cancellationToken);
         }
 
-        public bool UserHasGroupAccess(string groupSlug, Guid userId)
+		public Task<bool> UserHasGroupAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(groupSlug)) return false;
-            if (Guid.Empty == userId) return false;
+            if (string.IsNullOrWhiteSpace(groupSlug)) return Task.FromResult(false);
+            if (Guid.Empty == userId) return Task.FromResult(false);
 
-            return _folderRepository.UserHasGroupAccess(groupSlug, userId);
+            return _folderRepository.UserHasGroupAccessAsync(groupSlug, userId, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -125,5 +144,6 @@ namespace MvcForum.Core.Services
                 return false;
             }
         }
+
     }
 }

@@ -8,18 +8,21 @@
 <div class="Groupindex">
     <h1>Groups</h1>
 
-    @foreach (var cat in Model.AllPermissionSets.Keys)
+    @foreach (var groupSummary in Model.AllPermissionSets.Keys)
     {
-        var permissions = Model.AllPermissionSets[cat];
+        var permissions = Model.AllPermissionSets[groupSummary];
 
-        @Html.Partial("_Group", new GroupViewModel {
-                                                           Group = cat.Group.Group,
-                                                           LatestTopic = cat.MostRecentTopic,
-                                                           Permissions = permissions,
-                                                           PostCount = cat.PostCount,
-                                                           TopicCount = cat.TopicCount
-                                                       })
-
+        @Html.Partial("_Group", new GroupSummaryViewModel
+        {
+            GroupId = groupSummary.Group.Id,
+            Name = groupSummary.Group.Name,
+            Description = groupSummary.Group.Description,
+            Image = groupSummary.Group.Image,
+            NiceUrl = groupSummary.Group.NiceUrl,
+            DiscussionCount = groupSummary.DiscussionCount,
+            MemberCount = groupSummary.MemberCount,
+            Permissions = permissions            
+        })
     }
 
 </div>

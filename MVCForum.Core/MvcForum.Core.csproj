@@ -172,9 +172,21 @@
     <Compile Include="Migrations\202110061404409_FixMigrationBlank.Designer.cs">
       <DependentUpon>202110061404409_FixMigrationBlank.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110140940381_ChangeMaxLengthForFolderNameDescription.cs" />
+    <Compile Include="Migrations\202110140940381_ChangeMaxLengthForFolderNameDescription.Designer.cs">
+      <DependentUpon>202110140940381_ChangeMaxLengthForFolderNameDescription.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202110131450352_DeleteFolderStoredProcedure.cs" />
     <Compile Include="Migrations\202110131450352_DeleteFolderStoredProcedure.Designer.cs">
       <DependentUpon>202110131450352_DeleteFolderStoredProcedure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111161649391_UpdatesFileEntity.cs" />
+    <Compile Include="Migrations\202111161649391_UpdatesFileEntity.Designer.cs">
+      <DependentUpon>202111161649391_UpdatesFileEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111231532583_FixMigrationsBlank1.cs" />
+    <Compile Include="Migrations\202111231532583_FixMigrationsBlank1.Designer.cs">
+      <DependentUpon>202111231532583_FixMigrationsBlank1.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
@@ -649,8 +661,17 @@
     <EmbeddedResource Include="Migrations\202110061404409_FixMigrationBlank.resx">
       <DependentUpon>202110061404409_FixMigrationBlank.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110140940381_ChangeMaxLengthForFolderNameDescription.resx">
+      <DependentUpon>202110140940381_ChangeMaxLengthForFolderNameDescription.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110131450352_DeleteFolderStoredProcedure.resx">
       <DependentUpon>202110131450352_DeleteFolderStoredProcedure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111161649391_UpdatesFileEntity.resx">
+      <DependentUpon>202111161649391_UpdatesFileEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111231532583_FixMigrationsBlank1.resx">
+      <DependentUpon>202111231532583_FixMigrationsBlank1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
