@@ -24,9 +24,9 @@ namespace MvcForum.Web.Controllers
       
         private bool Database()
         {
-            var settingsService = UnityHelper.Container.Resolve<ISettingsService>();
-            var settings = settingsService.GetSettings(false);
-            return settings != null;
+             var settingsService = UnityHelper.Container.Resolve<ISettingsService>();
+             var settings = settingsService.GetSettings(false);
+             return true;
         }
     }
 }

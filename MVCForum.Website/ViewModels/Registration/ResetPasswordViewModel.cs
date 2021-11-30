@@ -12,8 +12,8 @@
         [Required]
         public string Token { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 6)]
+        [Required(ErrorMessage = "Your password must be at least 10 characters long")]
+        [StringLength(100, MinimumLength = 10, ErrorMessage = "Your password must be at least 10 characters long")]
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.NewPassword")]
         public string NewPassword { get; set; }

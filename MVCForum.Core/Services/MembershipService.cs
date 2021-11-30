@@ -554,10 +554,10 @@
 
         }
 
-        public MembershipUser GetUser(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        //public MembershipUser GetUser(Guid id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
 
         /// <summary>
