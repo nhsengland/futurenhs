@@ -252,7 +252,7 @@ namespace MvcForum.Core.Services
                 {
                     Group = group,
                     DiscussionCount = group.Topics.Count,
-                    MemberCount = group.GroupUsers.Count
+                    MemberCount = group.GroupUsers.Count(g => g.Approved == true)
                 })
                 .ToList();
         }
