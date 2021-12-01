@@ -210,12 +210,12 @@ namespace MvcForum.Web.Tests.Controllers.Folder
         {
             SetUserInContext.SetContext("admin");
             SetRouting<FolderController>.SetupController(_folderController, "GroupUrls", "routeUrl", "routeController", "routeAction");
-            _folderServiceMocks.Setup(x => x.IsUserAdminAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(true));
+            _folderServiceMocks.Setup(x => x.UserHasFolderWriteAccessAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
             _folderServiceMocks.Setup(x => x.GetFolderAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new FolderViewModel()
                 {
-                    Folder = new FolderReadViewModel()
+                    Folder = new FolderReadViewModel(),
+                    Slug = GroupSlugValid
                 }));
 
             var result = (await _folderController.UpdateFolderAsync(GroupSlugValid, GroupIdValid, FolderIdValid, null, CancellationToken.None)) as ViewResult;
@@ -233,8 +233,13 @@ namespace MvcForum.Web.Tests.Controllers.Folder
         {
             SetUserInContext.SetContext("user");
             SetRouting<FolderController>.SetupController(_folderController, "GroupUrls", "routeUrl", "routeController", "routeAction");
-            _folderServiceMocks.Setup(x => x.IsUserAdminAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(false));
+            _folderServiceMocks.Setup(x => x.UserHasFolderWriteAccessAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(false));
+            _folderServiceMocks.Setup(x => x.GetFolderAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(new FolderViewModel()
+                {
+                    Folder = new FolderReadViewModel(),
+                    Slug = GroupSlugValid
+                }));
 
             var result = await _folderController.UpdateFolderAsync(GroupSlugValid, GroupIdValid, FolderIdValid, null, CancellationToken.None);
             var redirectedRouteName = (result as RedirectToRouteResult).RouteName;
@@ -322,8 +327,8 @@ namespace MvcForum.Web.Tests.Controllers.Folder
             };
             SetUserInContext.SetContext("admin");
             SetRouting<FolderController>.SetupController(_folderController, "GroupUrls", "routeUrl", "routeController", "routeAction");
-            _folderServiceMocks.Setup(x => x.IsUserAdminAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(true));
+            _folderServiceMocks.Setup(x => x.UserHasFolderWriteAccessAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
+
             _folderServiceMocks.Setup(x => x.GetFolderAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new FolderViewModel()
                 {
@@ -356,6 +361,7 @@ namespace MvcForum.Web.Tests.Controllers.Folder
                         Slug = GroupSlugValid                        
                     }
                 }));
+            _folderServiceMocks.Setup(x => x.UserHasFolderReadAccessAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
             _groupServiceMocks.Setup(service => service.GetAllForUser(It.IsAny<Guid>())).Returns(
                 (Guid userId) =>
                 {

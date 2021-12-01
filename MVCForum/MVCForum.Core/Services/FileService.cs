@@ -229,5 +229,13 @@ namespace MvcForum.Core.Services
         {
             return _fileUploadValidationService.ValidateUploadedFile(file);
         }
+
+        public Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == fileId) return Task.FromResult(false);
+            if (Guid.Empty == userId) return Task.FromResult(false);
+
+            return _fileRepository.UserHasFileAccessAsync(fileId, userId, cancellationToken);
+        }
     }
 }

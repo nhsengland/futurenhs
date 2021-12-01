@@ -15,8 +15,9 @@
         Task<PaginatedList<FolderReadViewModel>> GetRootFoldersForGroupAsync(string groupSlug, int page = 1, int pageSize = 999, CancellationToken cancellationToken = default(CancellationToken));
         Task<PaginatedList<FolderReadViewModel>> GetChildFoldersForFolderAsync(Guid parentFolderId, int page = 1, int pageSize = 999, CancellationToken cancellationToken = default(CancellationToken));
         Task<bool> IsUserAdminAsync(string groupSlug, Guid userId, CancellationToken cancellationToken);
-        Task<bool> UserHasGroupAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken);
-        Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken);
+        Task<bool> UserHasFolderReadAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken);
+        Task<bool> UserHasFolderWriteAccessAsync(Guid folderId, Guid userId, CancellationToken cancellationToken);
+        Task<bool> UserHasFileWriteAccessAsync(Guid folderId, Guid userId, CancellationToken cancellationToken);
         Task<IEnumerable<BreadCrumbItem>> GenerateBreadcrumbTrailAsync(Guid folderId, CancellationToken cancellationToken);
     }
 }

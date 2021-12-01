@@ -250,77 +250,18 @@
 
         public async Task<bool> IsUserAdminAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
         {
-            var (MembershipRole, GroupRole) = await GetUserRolesAsync(groupSlug, userId, cancellationToken);
+            var roles = await GetUserRolesForGroupAsync(groupSlug, userId, cancellationToken);
 
-            return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin";
+            return roles.MembershipRole?.ToLower() == "admin" || roles.GroupRole?.ToLower() == "admin";
         }
 
-		public async Task<bool> UserHasGroupAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
-        {
-            var (MembershipRole, GroupRole) = await GetUserRolesAsync(groupSlug, userId, cancellationToken);
-
-            return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin" || GroupRole?.ToLower() == "standard members";
-        }
-
-        public async Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
-        {
-            var (MembershipRole, GroupRole) = await GetUserRolesForFileAsync(fileId, userId, cancellationToken);
-
-            return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin" || GroupRole?.ToLower() == "standard members";
-        }
-
-        private async Task<(string MembershipRole, string GroupRole)> GetUserRolesAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
+        public async Task<(string MembershipRole, string GroupRole, bool IsPublic)> GetUserRolesForGroupAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(groupSlug)) throw new ArgumentNullException(nameof(groupSlug));
-            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(groupSlug));
-
-            const string query =
-                @"
-                    SELECT
-                      rolename AS MemberRole
-                    FROM
-                      membershiprole
-                      JOIN membershipusersinroles m ON m.roleidentifier = id
-                    WHERE
-                      m.useridentifier = @UserId;
-
-                    SELECT
-                      mr.rolename AS GroupRole
-                    FROM
-                      groupuser gu
-                      JOIN membershiprole mr ON gu.membershiprole_id = mr.id
-                      JOIN membershipusersinroles mur ON mur.useridentifier = gu.membershipuser_id
-                      JOIN [group] g ON gu.group_id = g.id
-                    WHERE
-                      g.slug = @GroupSlug
-                      AND gu.membershipuser_id = @UserId
-                      AND gu.approved = 1
-                      AND gu.banned = 0
-                      AND gu.locked = 0;
-                ";
-
-            var commandDefinition = new CommandDefinition(query, new
-            {
-                GroupSlug = groupSlug,
-                UserId = userId
-            }, cancellationToken: cancellationToken);
-
-            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
-            using (var result = await dbConnection.QueryMultipleAsync(commandDefinition))
-            {
-                var membershipRole = result.Read<string>().FirstOrDefault();
-                var groupRole = result.Read<string>().FirstOrDefault();
-
-                return (membershipRole, groupRole);
-            }
-        }
-        private async Task<(string MembershipRole, string GroupRole)> GetUserRolesForFileAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
-        {
-            if (Guid.Empty == fileId) throw new ArgumentOutOfRangeException(nameof(fileId));
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
 
             const string query =
-                @"
+                 @"
                     SELECT
                       rolename AS MemberRole
                     FROM
@@ -337,18 +278,24 @@
                       JOIN membershipusersinroles mur ON mur.useridentifier = gu.membershipuser_id
                       JOIN [group] g ON gu.group_id = g.id
 					  JOIN Folder fo on fo.ParentGroup = g.Id
-					  JOIN [File] fi on fi.ParentFolder = fo.Id
                     WHERE
-                      fi.Id = @FileId
+                      g.Slug = @GroupSlug
                       AND gu.membershipuser_id = @UserId
                       AND gu.approved = 1
                       AND gu.banned = 0
                       AND gu.locked = 0;
+
+                    SELECT
+                      g.PublicGroup AS IsPublic
+                    FROM
+                      [group] g 
+                    WHERE
+                      g.Slug = @GroupSlug
                 ";
 
             var commandDefinition = new CommandDefinition(query, new
             {
-                FileId = fileId,
+                GroupSlug = groupSlug,
                 UserId = userId
             }, cancellationToken: cancellationToken);
 
@@ -357,10 +304,80 @@
             {
                 var membershipRole = result.Read<string>().FirstOrDefault();
                 var groupRole = result.Read<string>().FirstOrDefault();
+                var isPublic = result.Read<bool>().FirstOrDefault();
 
-                return (membershipRole, groupRole);
+                return (membershipRole, groupRole, isPublic);
             }
         }
+
+        public async Task<bool> UserHasFolderReadAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
+        {
+            var permissions = await GetUserRolesForGroupAsync(groupSlug, userId, cancellationToken);
+
+            return permissions.MembershipRole?.ToLower() == "admin" || permissions.GroupRole?.ToLower() == "admin" || permissions.GroupRole?.ToLower() == "standard member" || permissions.IsPublic;
+        }
+
+        public async Task<bool> UserHasFolderWriteAccessAsync(Guid folderId, Guid userId, CancellationToken cancellationToken)
+        {
+            var permissions = await GetUserRolesForFolderAsync(folderId, userId, cancellationToken);
+
+            return permissions.MembershipRole.ToLower() == "admin" || permissions.GroupRole.ToLower() == "admin";
+        }
+
+        public async Task<bool> UserHasFileWriteAccessAsync(Guid folderId, Guid userId, CancellationToken cancellationToken)
+        {
+            var permissions = await GetUserRolesForFolderAsync(folderId, userId, cancellationToken);
+
+            return permissions.MembershipRole.ToLower() == "admin" || permissions.GroupRole.ToLower() == "admin" || permissions.GroupRole.ToLower() == "standard member" || permissions.IsPublic;
+        }
+
+        private async Task<(string MembershipRole, string GroupRole, bool IsPublic)> GetUserRolesForFolderAsync(Guid folderId, Guid userId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == folderId) throw new ArgumentOutOfRangeException(nameof(folderId));
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            const string query =
+                 @"
+                    SELECT
+                      rolename AS MemberRole
+                    FROM
+                      membershiprole
+                      JOIN membershipusersinroles m ON m.roleidentifier = id
+                    WHERE
+                      m.useridentifier = @UserId;
+
+                    SELECT
+                      mr.rolename AS GroupRole,
+                      g.PublicGroup AS IsPublic
+                    FROM
+                      groupuser gu
+                      JOIN membershiprole mr ON gu.membershiprole_id = mr.id
+                      JOIN membershipusersinroles mur ON mur.useridentifier = gu.membershipuser_id
+                      JOIN [group] g ON gu.group_id = g.id
+					  JOIN Folder fo on fo.ParentGroup = g.Id
+                    WHERE
+                      fo.Id = @FolderId
+                      AND gu.membershipuser_id = @UserId
+                      AND gu.approved = 1
+                      AND gu.banned = 0
+                      AND gu.locked = 0;
+                ";
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                FolderId = folderId,
+                UserId = userId
+            }, cancellationToken: cancellationToken);
+
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            using (var result = await dbConnection.QueryMultipleAsync(commandDefinition))
+            {
+                var membershipRole = result.Read<string>().FirstOrDefault();
+                var groupInfo = result.Read<(string GroupRole, bool IsPublic)>().FirstOrDefault();
+
+                return (membershipRole, groupInfo.GroupRole, groupInfo.IsPublic);
+            }
+        }        
     }
 }
 

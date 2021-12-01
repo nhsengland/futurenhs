@@ -109,5 +109,71 @@
             catch (Exception) { }
             return null;
         }
+
+        public async Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
+        {
+            var (MembershipRole, GroupRole, IsPublic) = await GetUserRolesForFileAsync(fileId, userId, cancellationToken);
+
+            return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin" || GroupRole?.ToLower() == "standard members" || IsPublic;
+        }
+
+        private async Task<(string MembershipRole, string GroupRole, bool IsPublic)> GetUserRolesForFileAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == fileId) throw new ArgumentOutOfRangeException(nameof(fileId));
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            const string query =
+                @"
+                    SELECT
+                      rolename AS MemberRole
+                    FROM
+                      membershiprole
+                      JOIN membershipusersinroles m ON m.roleidentifier = id
+                    WHERE
+                      m.useridentifier = @UserId;
+
+                    SELECT
+                      mr.rolename AS GroupRole
+                    FROM
+                      groupuser gu
+                      JOIN membershiprole mr ON gu.membershiprole_id = mr.id
+                      JOIN membershipusersinroles mur ON mur.useridentifier = gu.membershipuser_id
+                      JOIN [group] g ON gu.group_id = g.id
+					  JOIN Folder fo on fo.ParentGroup = g.Id
+					  JOIN [File] fi on fi.ParentFolder = fo.Id
+                    WHERE
+                      fi.Id = @FileId
+                      AND gu.membershipuser_id = @UserId
+                      AND gu.approved = 1
+                      AND gu.banned = 0
+                      AND gu.locked = 0;
+
+                    SELECT
+                      g.PublicGroup AS IsPublic
+                    FROM
+                      [File] fi					  
+					  JOIN Folder fo on fo.Id = fi.ParentFolder
+                      JOIN [group] g ON g.Id = fo.ParentGroup
+                    WHERE
+                      fi.Id = @FileId;
+
+                ";
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                FileId = fileId,
+                UserId = userId
+            }, cancellationToken: cancellationToken);
+
+            using (var dbConnection = _connectionFactory.CreateReadOnlyConnection())
+            using (var result = await dbConnection.QueryMultipleAsync(commandDefinition))
+            {
+                var membershipRole = result.Read<string>().FirstOrDefault();
+                var groupRole = result.Read<string>().FirstOrDefault();
+                var isPublic = result.Read<bool>().FirstOrDefault();
+
+                return (membershipRole, groupRole, isPublic);
+            }
+        }
     }
 }

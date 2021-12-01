@@ -171,7 +171,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(false);
+            SetupUserHasFileWriteAccess(false);
 
             var response = await _groupFileController.ShowAsync(_fileId, null, CancellationToken.None) as RedirectToRouteResult;
 
@@ -189,7 +189,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileAccess(true);
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.ShowAsync(_fileId, null, CancellationToken.None));
 
@@ -202,8 +202,9 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
             SetupController();
+            SetupUserHasFileAccess(true);
+
 
             _fileService.Setup(x => x.GetFileAsync(_fileId, CancellationToken.None)).Returns(Task.FromResult(_fileReadViewModel));
 
@@ -214,12 +215,12 @@ namespace MvcForum.Web.Tests.Controllers
         }
 
         // ===========================================================================================================================
-        // Create
-
+        // Create Async Get
+         
         [Test]
         public void Create_UserNotLoggedIn_ThrowsException()
         {
-            var response = Assert.Throws<NullReferenceException>(delegate { _groupFileController.Create(Guid.Empty, null); });
+            var response = Assert.ThrowsAsync<NullReferenceException>(async delegate { await _groupFileController.CreateAsync(Guid.Empty, null); });
 
             Assert.IsInstanceOf<NullReferenceException>(response);
             Assert.AreEqual(UserNotLoggedInError, response.Message);
@@ -230,20 +231,20 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
 
-            var response = Assert.Throws<ApplicationException>(delegate { _groupFileController.Create(Guid.Empty, null); });
+            var response = Assert.ThrowsAsync<ApplicationException>(async delegate { await _groupFileController.CreateAsync(Guid.Empty, null); });
 
             Assert.IsInstanceOf<ApplicationException>(response);
             Assert.AreEqual(UserNotFoundForIdError, response.Message);
         }
 
         [Test]
-        public void Create_UserDoesNotHaveGroupAccess_ReturnsRedirectResult()
+        public async Task Create_UserDoesNotHaveGroupAccess_ReturnsRedirectResult()
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(false);
+            SetupUserHasFileWriteAccess(false);
 
-            var response = _groupFileController.Create(Guid.Empty, null) as RedirectToRouteResult;
+            var response = (await _groupFileController.CreateAsync(Guid.Empty, null)) as RedirectToRouteResult;
 
             var routeValuesCount = response.RouteValues.Count;
             var routeValueAction = response.RouteValues[ActionKey];
@@ -259,9 +260,9 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
 
-            var response = Assert.Throws<ArgumentOutOfRangeException>(delegate { _groupFileController.Create(Guid.Empty, null); });
+            var response = Assert.ThrowsAsync<ArgumentOutOfRangeException>(async delegate { await _groupFileController.CreateAsync(Guid.Empty, null); });
 
             Assert.IsInstanceOf<ArgumentOutOfRangeException>(response);
             Assert.AreEqual(FolderIdParameterName, response.ParamName);
@@ -272,32 +273,32 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
 
-            var response = Assert.Throws<ApplicationException>(delegate { _groupFileController.Create(_folderId, null); });
+            var response = Assert.ThrowsAsync<ApplicationException>( async delegate { await _groupFileController.CreateAsync(_folderId, null); });
 
             Assert.IsInstanceOf<ApplicationException>(response);
             Assert.AreEqual(FolderNotFoundForIdError, response.Message);
         }
 
         [Test]
-        public void Create_Success_ReturnsViewResult()
+        public async Task Create_Success_ReturnsViewResult()
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
             SetupController();
 
             _folderService.Setup(x => x.GetFolderAsync(null, _folderId, CancellationToken.None)).Returns(Task.FromResult(_folderViewModel));
 
-            var response = _groupFileController.Create(_folderId, null) as ViewResult;
+            var response = (await _groupFileController.CreateAsync(_folderId, null)) as ViewResult;
 
             Assert.IsInstanceOf<ActionResult>(response);
             Assert.IsInstanceOf<FileUploadViewModel>(response.Model);
         }
 
         // ===========================================================================================================================
-        // CreateAsync
+        // CreateAsync Post
 
         [Test]
         public void CreateAsync_ModelParameterNull_ThrowsException()
@@ -347,7 +348,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(false);
+            SetupUserHasFileWriteAccess(false);
             _fileUploadViewModel.FileToUpload = _fileWriteViewModel;
 
             var response = await _groupFileController.CreateAsync(_fileUploadViewModel, CancellationToken.None) as RedirectToRouteResult;
@@ -366,7 +367,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
             SetupController();
             _fileUploadViewModel.FileToUpload = _fileWriteViewModel;
 
@@ -392,7 +393,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
             SetupController();
             _fileUploadViewModel.FileToUpload = _fileWriteViewModel;
 
@@ -421,7 +422,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
             SetupController();
             _fileUploadViewModel.FileToUpload = _fileWriteViewModel;
 
@@ -450,7 +451,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
             SetupController();
             SetupPostedFile();
             SetupUploadBlobResult(false);
@@ -472,7 +473,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
             SetupController();
             SetupPostedFile();
             SetupUploadBlobResult(true);
@@ -527,7 +528,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(false);
+            SetupUserHasFileWriteAccess(false);
 
             var response = await _groupFileController.UpdateAsync(_fileId, null, CancellationToken.None) as RedirectToRouteResult;
 
@@ -545,7 +546,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.UpdateAsync(_fileId, null, CancellationToken.None));
 
@@ -558,7 +559,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
             SetupFileForRead(null);
 
             var response = await _groupFileController.UpdateAsync(_fileId, null, CancellationToken.None) as ViewResult;
@@ -608,7 +609,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(false);
+            SetupUserHasFileWriteAccess(false);
 
             var response = _groupFileController.Update(_fileWriteViewModel)as RedirectToRouteResult;
 
@@ -626,7 +627,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
 
             var response = _groupFileController.Update(_fileWriteViewModel);
 
@@ -651,6 +652,8 @@ namespace MvcForum.Web.Tests.Controllers
         [Test]
         public void DeleteAsync_UserNotLoggedIn_ThrowsException()
         {
+            SetupFileForRead(null);
+
             var response = Assert.ThrowsAsync<NullReferenceException>(async () => await _groupFileController.DeleteAsync(_fileId, null, CancellationToken.None));
 
             Assert.IsInstanceOf<NullReferenceException>(response);
@@ -660,6 +663,7 @@ namespace MvcForum.Web.Tests.Controllers
         [Test]
         public void DeleteAsync_UserNotFoundForId_ThrowsException()
         {
+            SetupFileForRead(null);
             SetUserInContext(AddUpdateUserName);
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.DeleteAsync(_fileId, null, CancellationToken.None));
@@ -671,9 +675,10 @@ namespace MvcForum.Web.Tests.Controllers
         [Test]
         public async Task DeleteAsync_UserDoesNotHaveGroupAccess_ReturnsRedirectResult()
         {
+            SetupFileForRead(null);
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(false);
+            SetupUserHasFileWriteAccess(false);
 
             var response = await _groupFileController.DeleteAsync(_fileId, null, CancellationToken.None) as RedirectToRouteResult;
 
@@ -691,7 +696,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.DeleteAsync(_fileId, null, CancellationToken.None));
 
@@ -704,7 +709,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
             SetupFileForRead(null);
 
             var response = await _groupFileController.DeleteAsync(_fileId, null, CancellationToken.None) as ViewResult;
@@ -754,7 +759,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(false);
+            SetupUserHasFileWriteAccess(false);
 
             var response = _groupFileController.Delete(_fileWriteViewModel) as RedirectToRouteResult;
 
@@ -772,7 +777,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileWriteAccess(true);
 
             var response = _groupFileController.Delete(_fileWriteViewModel);
 
@@ -819,7 +824,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(false);
+            SetupUserHasFileAccess(false);
 
             var response = await _groupFileController.DownloadAsync(_fileId, string.Empty, CancellationToken.None) as RedirectToRouteResult;
 
@@ -837,7 +842,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileAccess(true);
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.DownloadAsync(_fileId, string.Empty, CancellationToken.None));
 
@@ -850,7 +855,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileAccess(true);
             SetupFileForRead(null);
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.DownloadAsync(_fileId, string.Empty, CancellationToken.None));
@@ -864,7 +869,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileAccess(true);
             SetupFileForRead(DownloadFileName);
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.DownloadAsync(_fileId, string.Empty, CancellationToken.None));
@@ -878,7 +883,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileAccess(true);
             SetupFileForRead(DownloadFileName, true);
 
             var response = Assert.ThrowsAsync<ApplicationException>(async () => await _groupFileController.DownloadAsync(_fileId, string.Empty, CancellationToken.None));
@@ -892,7 +897,7 @@ namespace MvcForum.Web.Tests.Controllers
         {
             SetUserInContext(AddUpdateUserName);
             SetupLoggedInUser();
-            SetupUserHasGroupAccess(true);
+            SetupUserHasFileAccess(true);
             SetupFileForRead(DownloadFileName, true);
 
             _fileService.Setup(x => x.GetRelativeDownloadUrlAsync(DownloadFileName, Azure.Storage.Sas.BlobSasPermissions.Read, CancellationToken.None)).Returns(Task.FromResult(DownloadLink));
@@ -963,9 +968,14 @@ namespace MvcForum.Web.Tests.Controllers
             _membershipService.Setup(x => x.GetUser(AddUpdateUserName, true)).Returns(new MembershipUser() { Id = _addUpdateUserId });
         }
 
-        private void SetupUserHasGroupAccess(bool hasAccess)
+        private void SetupUserHasFileWriteAccess(bool hasAccess)
         {
-            _folderService.Setup(x => x.UserHasGroupAccessAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(hasAccess));
+            _folderService.Setup(x => x.UserHasFileWriteAccessAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(hasAccess));
+        }
+
+        private void SetupUserHasFileAccess(bool hasAccess)
+        {
+            _fileService.Setup(x => x.UserHasFileAccessAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(hasAccess));
         }
 
         private void SetupPostedFile()

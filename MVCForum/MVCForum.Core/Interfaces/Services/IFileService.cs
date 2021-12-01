@@ -72,5 +72,6 @@
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<string> GetRelativeDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions, CancellationToken cancellationToken);
+        Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken);
     }
 }

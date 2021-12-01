@@ -25,5 +25,6 @@
         /// <param name="fileId">File to get.</param>
         /// <returns>Requested <see cref="FileReadViewModel"/>.</returns>
         Task<FileReadViewModel> GetFileAsync(Guid fileId, CancellationToken cancellationToken);
+        Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken);
     }
 }

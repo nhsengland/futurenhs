@@ -34,7 +34,7 @@ namespace MvcForum.Core.Tests.Services.Folder
         private readonly string InvalidSlug = string.Empty;
         private readonly string InvalidFolderName = string.Empty;
         private readonly Guid InvalidGuid = Guid.Empty;
-        private static readonly Guid InvalidFolderId = Guid.NewGuid();
+        private static readonly Guid InvalidFolderId = Guid.Empty;
 
 
         public FolderServiceTests()
@@ -153,25 +153,25 @@ namespace MvcForum.Core.Tests.Services.Folder
         }
 
         [Test]
-        public async Task UserHasGroupAccessAsync_ValidInput_Handle()
+        public async Task UserHasFolderReadAccessAsync_ValidInput_Handle()
         {
-            var response = await _groupFolderService.UserHasGroupAccessAsync(ValidSlug, ValidNonAdminUserId, CancellationToken.None);
+            var response = await _groupFolderService.UserHasFolderReadAccessAsync(ValidSlug, ValidNonAdminUserId, CancellationToken.None);
 
             Assert.IsTrue(response);
         }
 
         [Test]
-        public async Task UserHasGroupAccessAsync_InvalidGroupSlug_Handle()
+        public async Task UserHasFolderReadAccessAsync_InvalidGroupSlug_Handle()
         {
-            var response = await _groupFolderService.UserHasGroupAccessAsync(InvalidSlug, ValidNonAdminUserId, CancellationToken.None);
+            var response = await _groupFolderService.UserHasFolderReadAccessAsync(InvalidSlug, ValidNonAdminUserId, CancellationToken.None);
 
             Assert.IsFalse(response);
         }
 
         [Test]
-        public async Task UserHasGroupAccessAsync_InvalidUserId_Handle()
+        public async Task UserHasFolderReadAccessAsync_InvalidUserId_Handle()
         {
-            var response = await _groupFolderService.UserHasGroupAccessAsync(ValidSlug, InvalidGuid, CancellationToken.None);
+            var response = await _groupFolderService.UserHasFolderReadAccessAsync(InvalidSlug, InvalidGuid, CancellationToken.None);
 
             Assert.IsFalse(response);
         }
@@ -207,7 +207,7 @@ namespace MvcForum.Core.Tests.Services.Folder
         {
             _mockFolderCommand.Setup(m => m.DeleteFolderAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-            var result = await _groupFolderService.DeleteFolderAsync(InvalidFolderId, CancellationToken.None);
+            var result = await _groupFolderService.DeleteFolderAsync(ValidFolderId, CancellationToken.None);
 
             Assert.IsFalse(result);
         }
@@ -217,7 +217,7 @@ namespace MvcForum.Core.Tests.Services.Folder
         {
             _mockFolderCommand.Setup(m => m.DeleteFolderAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(false); 
 
-            var result = await _groupFolderService.DeleteFolderAsync(InvalidFolderId, CancellationToken.None);
+            var result = await _groupFolderService.DeleteFolderAsync(ValidFolderId, CancellationToken.None);
 
             Assert.IsFalse(result);
         }
