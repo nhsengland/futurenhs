@@ -50,6 +50,7 @@
     <Compile Include="Data\Mapping\GroupInviteMapping.cs" />
     <Compile Include="Data\Mapping\GroupUserMapping.cs" />
     <Compile Include="Data\Mapping\SectionMapping.cs" />
+    <Compile Include="ExtensionMethods\GetCookieContainer.cs" />
     <Compile Include="ExtensionMethods\GroupUserExtensions.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
     <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
     <Compile Include="Interfaces\Providers\IConfigurationProvider.cs" />
     <Compile Include="Interfaces\Providers\ISmtpClient.cs" />
+    <Compile Include="Interfaces\Services\IFileServerService.cs" />
     <Compile Include="Interfaces\Services\ISendEmailService.cs" />
     <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\IFileService.cs" />
@@ -200,6 +202,7 @@
     <Compile Include="Models\Attributes\DescriptionAttribute.cs" />
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
+    <Compile Include="Models\Collabora\FileServerResponse.cs" />
     <Compile Include="Models\Entities\Category.cs" />
     <Compile Include="Models\Entities\File.cs" />
     <Compile Include="Models\Entities\Folder.cs" />
@@ -376,6 +379,7 @@
     <Compile Include="Services\BannedEmailService.cs" />
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
+    <Compile Include="Services\FileServerService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileUploadValidationService.cs" />
     <Compile Include="Services\FolderService.cs" />
@@ -677,6 +681,7 @@
   <ItemGroup>
     <Reference Include="System.Transactions" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
