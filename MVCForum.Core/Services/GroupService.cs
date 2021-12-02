@@ -123,19 +123,21 @@ namespace MvcForum.Core.Services
             return cachedGroups;
         }
 
-        public List<GroupUser> GetAllForUser(Guid? userId)
+        public List<GroupUser> GetAllForUser(Guid userId)
         {
-            var cachedGroups = _cacheService.Get<List<GroupUser>>($"GroupList.GetAll{userId}");
+            if (userId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(userId));
 
-            if (cachedGroups != null)
-                return cachedGroups;
-
-            var allGroups = _context.GroupUser.Where(x => x.User.Id == userId)
-                .AsNoTracking()
+            return _context.GroupUser.Where(x => x.User.Id == userId && x.Approved)
                 .OrderBy(x => x.Group.Name).ToList();
+        }
 
+        public List<Group> DiscoverAllForUser(Guid userId)
+        {
+            if (userId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(userId));
 
-            return allGroups;
+            return _context.Group
+                .Where(x => !x.GroupUsers.Where(m => m.User.Id == userId).Any(y => y.Approved))
+                .OrderBy(x => x.Name).ToList();
         }
 
         public List<Group> GetSubGroups(Group Group, List<Group> allGroups, Guid? membershipId, int level = 2)
@@ -196,16 +198,15 @@ namespace MvcForum.Core.Services
         public IEnumerable<GroupSummary> GetAllMainGroupsInSummary(Guid? membershipId)
         {
             return _context.Group.AsNoTracking()
-                .Include(x => x.ParentGroup)
-                .Include(x => x.Section)
-                .Where(cat => cat.ParentGroup == null)
-                .OrderBy(x => x.SortOrder)
-                .Select(x => new GroupSummary
+                .Include(group => group.ParentGroup)
+                .Include(group => group.Section)
+                .Where(group => group.ParentGroup == null)
+                .OrderBy(group => group.SortOrder)
+                .Select(group => new GroupSummary
                 {
-                    Group = new GroupUserDTO() { Group = x },
-                    TopicCount = x.Topics.Count,
-                    PostCount = x.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
-                    MostRecentTopic = x.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                    Group = group,
+                    DiscussionCount = group.Topics.Count,
+                    MemberCount = group.GroupUsers.Count(g => g.Approved == true)
                 })
                 .ToList();
         }
@@ -214,19 +215,46 @@ namespace MvcForum.Core.Services
         public ILookup<Guid, GroupSummary> GetAllMainGroupsInSummaryGroupedBySection(Guid? membershipId)
         {
             return _context.GroupUser.AsNoTracking()
-                .Include(x => x.Group.ParentGroup)
-                .Include(x => x.Group.Section)
-                .Where(x => x.Group.ParentGroup == null && x.Group.Section != null)
-                .OrderBy(x => x.Group.SortOrder)
-                .Select(x => new GroupSummary
+                .Include(groupUser => groupUser.Group.ParentGroup)
+                .Include(groupUser => groupUser.Group.Section)
+                .Where(groupUser => groupUser.Group.ParentGroup == null && groupUser.Group.Section != null)
+                .OrderBy(groupUser => groupUser.Group.SortOrder)
+                .Select(groupUser => new GroupSummary
                 {
-                    Group = new GroupUserDTO() { Group = x.Group },
-                    TopicCount = x.Group.Topics.Count,
-                    PostCount = x.Group.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
-                    MostRecentTopic = x.Group.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                    Group = groupUser.Group,
+                    DiscussionCount = groupUser.Group.Topics.Count,
+                    MemberCount = groupUser.Group.GroupUsers.Count(g => g.Approved == true)
                 })
                 .ToList()
-                .ToLookup(x => x.Group.Group.Section.Id);
+                .ToLookup(groupSummary => groupSummary.Group.Section.Id);
+        }
+
+        public IEnumerable<GroupSummary> GetAllMyGroupsInSummary(Guid membershipId)
+        {
+            if (membershipId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(membershipId));
+
+            return GetAllForUser(membershipId)
+                .Select(groupUser => new GroupSummary
+                {
+                    Group = groupUser.Group,
+                    DiscussionCount = groupUser.Group.Topics.Count,
+                    MemberCount = groupUser.Group.GroupUsers.Count(g => g.Approved == true)
+                })
+                .ToList();
+        }
+
+        public IEnumerable<GroupSummary> GetDiscoverGroupsInSummary(Guid membershipId)
+        {
+            if (membershipId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(membershipId));
+
+            return DiscoverAllForUser(membershipId)
+                .Select(group => new GroupSummary
+                {
+                    Group = group,
+                    DiscussionCount = group.Topics.Count,
+                    MemberCount = group.GroupUsers.Count(g => g.Approved == true)
+                })
+                .ToList();
         }
 
         /// <summary>

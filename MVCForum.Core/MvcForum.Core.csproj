@@ -50,6 +50,7 @@
     <Compile Include="Data\Mapping\GroupInviteMapping.cs" />
     <Compile Include="Data\Mapping\GroupUserMapping.cs" />
     <Compile Include="Data\Mapping\SectionMapping.cs" />
+    <Compile Include="ExtensionMethods\GetCookieContainer.cs" />
     <Compile Include="ExtensionMethods\GroupUserExtensions.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
     <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
     <Compile Include="Interfaces\Providers\IConfigurationProvider.cs" />
     <Compile Include="Interfaces\Providers\ISmtpClient.cs" />
+    <Compile Include="Interfaces\Services\IFileServerService.cs" />
     <Compile Include="Interfaces\Services\ISendEmailService.cs" />
     <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\IFileService.cs" />
@@ -172,9 +174,21 @@
     <Compile Include="Migrations\202110061404409_FixMigrationBlank.Designer.cs">
       <DependentUpon>202110061404409_FixMigrationBlank.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110140940381_ChangeMaxLengthForFolderNameDescription.cs" />
+    <Compile Include="Migrations\202110140940381_ChangeMaxLengthForFolderNameDescription.Designer.cs">
+      <DependentUpon>202110140940381_ChangeMaxLengthForFolderNameDescription.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202110131450352_DeleteFolderStoredProcedure.cs" />
     <Compile Include="Migrations\202110131450352_DeleteFolderStoredProcedure.Designer.cs">
       <DependentUpon>202110131450352_DeleteFolderStoredProcedure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111161649391_UpdatesFileEntity.cs" />
+    <Compile Include="Migrations\202111161649391_UpdatesFileEntity.Designer.cs">
+      <DependentUpon>202111161649391_UpdatesFileEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111231532583_FixMigrationsBlank1.cs" />
+    <Compile Include="Migrations\202111231532583_FixMigrationsBlank1.Designer.cs">
+      <DependentUpon>202111231532583_FixMigrationsBlank1.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
@@ -188,6 +202,7 @@
     <Compile Include="Models\Attributes\DescriptionAttribute.cs" />
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
+    <Compile Include="Models\Collabora\FileServerResponse.cs" />
     <Compile Include="Models\Entities\Category.cs" />
     <Compile Include="Models\Entities\File.cs" />
     <Compile Include="Models\Entities\Folder.cs" />
@@ -364,6 +379,7 @@
     <Compile Include="Services\BannedEmailService.cs" />
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
+    <Compile Include="Services\FileServerService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileUploadValidationService.cs" />
     <Compile Include="Services\FolderService.cs" />
@@ -649,13 +665,23 @@
     <EmbeddedResource Include="Migrations\202110061404409_FixMigrationBlank.resx">
       <DependentUpon>202110061404409_FixMigrationBlank.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110140940381_ChangeMaxLengthForFolderNameDescription.resx">
+      <DependentUpon>202110140940381_ChangeMaxLengthForFolderNameDescription.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110131450352_DeleteFolderStoredProcedure.resx">
       <DependentUpon>202110131450352_DeleteFolderStoredProcedure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111161649391_UpdatesFileEntity.resx">
+      <DependentUpon>202111161649391_UpdatesFileEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111231532583_FixMigrationsBlank1.resx">
+      <DependentUpon>202111231532583_FixMigrationsBlank1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Transactions" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

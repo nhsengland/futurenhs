@@ -440,7 +440,7 @@
                 // Save any outstanding changes
                 Context.SaveChanges();
 
-                return RedirectToAction("Index", "Group");
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
@@ -1301,7 +1301,8 @@
                 }
             }
 
-            return RedirectToAction("Logon", "Members");
+            Response.Headers.Set("ReturnUrl","");
+            return RedirectToAction("LogOn", "Members");
         }
 
         /// <summary>

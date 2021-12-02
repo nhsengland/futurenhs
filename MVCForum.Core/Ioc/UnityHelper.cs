@@ -135,7 +135,10 @@ namespace MvcForum.Core.Ioc
                 ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString, 
                 ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"], 
                 ConfigurationManager.AppSettings["AzureBlobStorage:FilesPrimaryEndpoint_TO_BE_RETIRED"],
-                ConfigurationManager.AppSettings["Email_SmtpFrom"]));
+                ConfigurationManager.AppSettings["Email_SmtpFrom"],
+                ConfigurationManager.AppSettings["FileServer_TemplateUrl"],
+                ConfigurationManager.AppSettings["FileServer_TemplateUrlFileIdPlaceholder"],
+                ConfigurationManager.AppSettings["AzurePlatform:ApplicationGateway:FQDN"]));
             Container.BindInRequestScope<IDbRetryPolicy, DbRetryPolicy>();
             Container.BindInRequestScope<IDbConnectionFactory, DbConnectionFactory>();
             Container.BindInRequestScope<IFolderRepository, FolderRepository>();
@@ -147,6 +150,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<ISystemPagesCommand, SystemPagesCommand>();
             Container.BindInRequestScope<IGroupAddMemberRepository, GroupAddMemberRepository>();
             Container.BindInRequestScope<IGroupAddMemberCommand, GroupAddMemberCommand>();
+            Container.BindInRequestScope<IFileServerService, FileServerService>();
         }
     }
 

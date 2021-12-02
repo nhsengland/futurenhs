@@ -45,7 +45,12 @@ namespace MvcForum.Web.ViewModels.Shared
             {
                 if (!ActiveTab)
                 {
-                    return !string.IsNullOrEmpty(Url) && HttpContext.Current.Request.Url.LocalPath.Equals(Url);
+                    return !string.IsNullOrEmpty(Url) && 
+                        (
+                            HttpContext.Current.Request.Url.LocalPath.Equals(Url) 
+                            || 
+                            (Url == "/" && HttpContext.Current.Request.Url.LocalPath.ToLower().StartsWith("/home/index"))
+                        );
                 }
 
                 return ActiveTab;

@@ -89,6 +89,9 @@
         public const string GroupMembersTab = "members";
         public const string GroupFilesTab = "files";
 
+        public const string MyGroupsTab = "mygroups";
+        public const string DiscoverGroupsTab = "discovergroups";
+
         /// <summary>
         /// Key of cached UserDelegationKey.
         /// </summary>

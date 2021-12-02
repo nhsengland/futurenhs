@@ -12,6 +12,8 @@
     using Core.Models.Entities;
     using Core.Models.Enums;
     using Core.Models.General;
+    using MvcForum.Web.ViewModels.Group;
+    using MvcForum.Web.ViewModels.Shared;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -25,6 +27,7 @@
         private readonly IActivityService _activityService;
         private readonly IGroupService _groupService;
         private readonly ITopicService _topicService;
+        private readonly ILocalizationService _localizationService;
 
         public HomeController(ILoggingService loggingService, IActivityService activityService,
             IMembershipService membershipService, ITopicService topicService, ILocalizationService localizationService,
@@ -36,11 +39,56 @@
             _topicService = topicService;
             _groupService = GroupService;
             _activityService = activityService;
+            _localizationService = localizationService;
         }
 
-        public virtual ActionResult Index()
+        [HttpGet]
+        public ActionResult Index(string tab = Constants.MyGroupsTab)
+        {
+            var model = new GroupsLandingViewModel
+            {
+                CurrentTab = tab,
+                Header = GetGroupsLandingHeader(tab),
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult LatestDiscussions()
         {
             return View();
+        }
+
+        [ChildActionOnly]
+        private GroupHeaderViewModel GetGroupsLandingHeader(string currentTab)
+        {
+            var model = new GroupHeaderViewModel
+            {
+                HeaderTabs = new TabViewModel()
+                {
+                    Tabs = new List<Tab> {
+                        new Tab
+                        {
+                            Name = "My groups",
+                            Order = 1,
+                            Url = Url.Action("Index", "Home", new { tab = Constants.MyGroupsTab }),
+                            Active = currentTab.Equals(Constants.MyGroupsTab),
+                        },
+                        new Tab
+                        {
+                            Name = "Discover new groups",
+                            Order = 2,
+                            Url = Url.Action("Index", "Home", new { tab = Constants.DiscoverGroupsTab }),
+                            Active = currentTab.Equals(Constants.DiscoverGroupsTab),
+                        }
+                    }
+                },
+                Name = currentTab.Equals(Constants.MyGroupsTab) ? _localizationService.GetResourceString("Group.MyGroups.Title") : _localizationService.GetResourceString("Group.DiscoverGroups.Title"),
+                Description = currentTab.Equals(Constants.MyGroupsTab) ? _localizationService.GetResourceString("Group.MyGroups.HeaderIntro") : _localizationService.GetResourceString("Group.DiscoverGroups.HeaderIntro")
+            };
+
+            return model;
         }
 
         public virtual ActionResult Following()
