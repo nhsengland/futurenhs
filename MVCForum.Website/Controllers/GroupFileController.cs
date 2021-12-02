@@ -1,4 +1,5 @@
-﻿using MvcForum.Core.ExtensionMethods;
+﻿using System.Web.Http.Results;
+using MvcForum.Core.ExtensionMethods;
 using MvcForum.Core.Interfaces.Providers;
 using MvcForum.Core.Repositories.Models;
 using MvcForum.Core.Services;
@@ -69,7 +70,7 @@ namespace MvcForum.Web.Controllers
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            if (!UserHasGroupAccess(slug))
+            if (!UserHasFileAccess(id))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -92,14 +93,23 @@ namespace MvcForum.Web.Controllers
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("LoadFilePreview")]
-        public async Task<PartialViewResult> LoadFilePreview(Guid id, CancellationToken cancellationToken)
+        [HttpGet]
+        public async Task<PartialViewResult> LoadFilePreview(Guid id,string slug, CancellationToken cancellationToken)
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            var cookies = Request.GetCookieContainer(_configurationProvider.ApplicationGatewayFqdn);
+            if (UserHasFileAccess(id))
+            {
+                var cookies = Request.GetCookieContainer(_configurationProvider.ApplicationGatewayFqdn);
 
-            var response = await _fileServerService.GetCollaboraFileUrl(id, cookies);
-            return PartialView("_FilePreview", response);
+                var response = await _fileServerService.GetCollaboraFileUrl(id, cookies, "view");
+                if (response != null)
+                {
+                    return PartialView("_FilePreview", response);
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -387,6 +397,17 @@ namespace MvcForum.Web.Controllers
             if (user is null) throw new ApplicationException("No user found for logged in Id");
 
             return _folderService.UserHasGroupAccessAsync(groupSlug, user.Id, CancellationToken.None).Result;
+        }
+
+        private bool UserHasFileAccess(Guid fileId)
+        {
+            if (System.Web.HttpContext.Current.User is null) throw new NullReferenceException("User not logged in");
+
+            var user = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
+            if (user is null) throw new ApplicationException("No user found for logged in Id");
+
+            return _folderService.UserHasFileAccessAsync(fileId, user.Id, CancellationToken.None).Result;
         }
 
         /// <summary>

@@ -73,10 +73,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$('#FilePreview').load('@Url.Action("LoadFilePreview", "GroupFile", new { id = Model.File.Id,slug2 = Model.Slug })');
+			$('#FilePreview').load('@Url.Action("LoadFilePreview", "GroupFile", new { id = Model.File.Id})');
 		});
 
-		function resizeIframe(obj) {
-			obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-		}
 	</script>

@@ -15,20 +15,22 @@ namespace MvcForum.Core.Services
     public sealed class FileServerService : IFileServerService
     {
         private readonly IConfigurationProvider _configurationProvider;
+        private readonly ILoggingService _loggingService;
         private readonly string _fileUrl;
-        public FileServerService(IConfigurationProvider configurationProvider)
+        public FileServerService(IConfigurationProvider configurationProvider, ILoggingService loggingService)
         {
             _configurationProvider = configurationProvider;
             _fileUrl = configurationProvider.FileServerTemplateUrl;
+            _loggingService = loggingService;
         }
 
-        public async Task<FileServerResponse> GetCollaboraFileUrl(Guid file, CookieContainer cookies)
+        public async Task<FileServerResponse> GetCollaboraFileUrl(Guid file, CookieContainer cookies, string permission)
         {
+            if(string.IsNullOrWhiteSpace(permission))
+                throw new ArgumentNullException(nameof(permission));
             var fileRequestUrl = _fileUrl.Replace(_configurationProvider.FileServerTemplateUrlFileIdPlaceholder, file.ToString());
-            var request = (HttpWebRequest)WebRequest.Create(fileRequestUrl);
-
-            var postData = "permission=" + Uri.EscapeDataString("view");
-
+            var request = (HttpWebRequest)WebRequest.Create($"{fileRequestUrl}?permission={permission}");
+            var postData = "";
 
             var data = Encoding.ASCII.GetBytes(postData);
 
@@ -47,29 +49,37 @@ namespace MvcForum.Core.Services
                 await stream.WriteAsync(data, 0, data.Length);
             }
 
-            using (var response = (HttpWebResponse)request.GetResponse())
+            try
             {
-                if (response.StatusCode == HttpStatusCode.OK)
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    using (var dataStream = response.GetResponseStream())
+                    if (response.StatusCode == HttpStatusCode.OK)
                     {
-                        // Open the stream using a StreamReader for easy access.
-                        using (var reader = new StreamReader(dataStream ?? throw new InvalidOperationException()))
+                        using (var dataStream = response.GetResponseStream())
                         {
-                            // Read the content.
-                            var responseFromServer = await reader.ReadToEndAsync();
-                            var fileServerResponse = JsonConvert.DeserializeObject<FileServerResponse>(responseFromServer);
-                            return fileServerResponse;
+                            // Open the stream using a StreamReader for easy access.
+                            using (var reader = new StreamReader(dataStream ?? throw new InvalidOperationException()))
+                            {
+                                // Read the content.
+                                var responseFromServer = await reader.ReadToEndAsync();
+                                var fileServerResponse =
+                                    JsonConvert.DeserializeObject<FileServerResponse>(responseFromServer);
+                                return fileServerResponse;
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex,"GetFileFromFileServer_Error - ");
             }
 
             return null;
         }
 
-       
-        }
+
     }
+}
 
 

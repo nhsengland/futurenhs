@@ -10,6 +10,6 @@ namespace MvcForum.Core.Interfaces.Services
 {
     public interface IFileServerService
     {
-        Task<FileServerResponse> GetCollaboraFileUrl(Guid file, CookieContainer cookies);
+        Task<FileServerResponse> GetCollaboraFileUrl(Guid file, CookieContainer cookies, string permission);
     }
 }

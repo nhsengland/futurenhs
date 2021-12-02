@@ -130,6 +130,14 @@ namespace MvcForum.Core.Services
             return _folderRepository.UserHasGroupAccessAsync(groupSlug, userId, cancellationToken);
         }
 
+        public Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == fileId) return Task.FromResult(false);
+            if (Guid.Empty == userId) return Task.FromResult(false);
+
+            return _folderRepository.UserHasFileAccessAsync(fileId, userId, cancellationToken);
+        }
+
         /// <inheritdoc />
         public async Task<bool> DeleteFolderAsync(Guid folderId, CancellationToken cancellationToken = default(CancellationToken))
         {
