@@ -16,7 +16,7 @@
         Task<bool> IsUserAdminAsync(string groupSlug, Guid userId, CancellationToken cancellationToken);
         Task<IEnumerable<BreadCrumbItem>> GenerateBreadcrumbTrailAsync(Guid folderId, CancellationToken cancellationToken);
         Task<bool> UserHasGroupAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken);
-
+        Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken);
         Guid CreateFolder(FolderWriteViewModel model);
         void UpdateFolder(FolderWriteViewModel model);
         /// <summary>

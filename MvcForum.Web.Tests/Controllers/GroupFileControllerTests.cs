@@ -1,4 +1,6 @@
-﻿namespace MvcForum.Web.Tests.Controllers
+﻿using MvcForum.Core.Interfaces.Providers;
+
+namespace MvcForum.Web.Tests.Controllers
 {
     using Moq;
     using MvcForum.Core.Interfaces.Services;
@@ -30,6 +32,10 @@
         private Mock<IFolderService> _folderService;
 
         private Mock<ILocalizationService> _localizationService;
+
+        private Mock<IFileServerService> _fileServerService;
+
+        private Mock<IConfigurationProvider> _configurationProvider;
 
         private Mock<HttpPostedFileBase> _postedFile;
 
@@ -102,10 +108,12 @@
             _membershipService = new Mock<IMembershipService>();
             _folderService = new Mock<IFolderService>();
             _localizationService = new Mock<ILocalizationService>();
+            _fileServerService = new Mock<IFileServerService>();
+            _configurationProvider = new Mock<IConfigurationProvider>();
 
-            _postedFile = new Mock<HttpPostedFileBase>();
+        _postedFile = new Mock<HttpPostedFileBase>();
 
-            _groupFileController = new GroupFileController(_fileService.Object, _membershipService.Object, _folderService.Object, _localizationService.Object);
+            _groupFileController = new GroupFileController(_fileService.Object, _membershipService.Object, _folderService.Object, _localizationService.Object, _fileServerService.Object, _configurationProvider.Object);
 
             // Need to reset each time
             _fileId = Guid.NewGuid();
