@@ -11,7 +11,7 @@
     public interface IFolderService
     {
         Task<FolderViewModel> GetFolderAsync(string slug, Guid? folderId, CancellationToken cancellationToken);
-        Task<bool> IsFolderNameValidAsync(string folderName, Guid? parentFolderId, Guid parentGroupId, CancellationToken cancellationToken);
+        Task<bool> IsFolderNameValidAsync(Guid? folderId, string folderName, Guid? parentFolderId, Guid parentGroupId, CancellationToken cancellationToken);
         Task<bool> IsFolderIdValidAsync(Guid folderId, CancellationToken cancellationToken);
         Task<bool> IsUserAdminAsync(string groupSlug, Guid userId, CancellationToken cancellationToken);
         Task<IEnumerable<BreadCrumbItem>> GenerateBreadcrumbTrailAsync(Guid folderId, CancellationToken cancellationToken);

@@ -58,22 +58,14 @@ namespace MvcForum.Core.Services
             }
         }
 
-        public Task<bool> IsFolderNameValidAsync(string folderName, 
-                                                 Guid? parentFolderId,
-                                                 Guid parentGroupId,
-                                                 CancellationToken cancellationToken)
+        public Task<bool> IsFolderNameValidAsync(Guid? folderId, string folderName, Guid? parentFolderId,
+                                                 Guid parentGroupId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(folderName))
-            {
-                throw new ArgumentNullException(nameof(folderName));
-            }
+            if (Guid.Empty == folderId) throw new ArgumentOutOfRangeException(nameof(folderId));
+            if (string.IsNullOrWhiteSpace(folderName)) throw new ArgumentNullException(nameof(folderName));
+            if (Guid.Empty == parentGroupId) throw new ArgumentOutOfRangeException(nameof(parentGroupId));
 
-            if (Guid.Empty == parentGroupId)
-            {
-                throw new ArgumentOutOfRangeException(nameof(parentGroupId));
-            }
-
-            return _folderRepository.IsFolderNameValidAsync(folderName, parentFolderId, parentGroupId, cancellationToken);
+            return _folderRepository.IsFolderNameValidAsync(folderId, folderName, parentFolderId, parentGroupId, cancellationToken);
         }
 
         public Task<bool> IsFolderIdValidAsync(Guid folderId,

@@ -49,8 +49,8 @@ namespace MvcForum.Core.Tests.Services.Folder
                     return new PaginatedList<FolderReadViewModel>(folderList, 20, page, pageSize);
                 });
 
-            mockFolderRepository.Setup(repo => repo.IsFolderNameValidAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(
-                (string folderName, Guid? parentFolderId, Guid parentGroupId, CancellationToken ancellationToken) =>
+            mockFolderRepository.Setup(repo => repo.IsFolderNameValidAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(
+                (Guid? folderId, string folderName, Guid? parentFolderId, Guid parentGroupId, CancellationToken cancellationToken) =>
                 {
                     if (string.IsNullOrEmpty(folderName))
                     {

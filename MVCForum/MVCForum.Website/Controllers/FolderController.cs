@@ -80,7 +80,7 @@
 
             if (ModelState.IsValid) 
             {
-                if (await _folderService.IsFolderNameValidAsync(folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
+                if (await _folderService.IsFolderNameValidAsync(folder.FolderId, folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
                 {
                     folder.AddedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
                     var newId = _folderService.CreateFolder(folder);
@@ -158,7 +158,7 @@
                 if (folder.FolderId == result.Folder.FolderId)
                 {
                     // Ensure folder name is valid
-                    if (await _folderService.IsFolderNameValidAsync(folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
+                    if (await _folderService.IsFolderNameValidAsync(folder.FolderId, folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
                     {
                         folder.IsDeleted = folder.IsDeleted;
                         _folderService.UpdateFolder(folder);

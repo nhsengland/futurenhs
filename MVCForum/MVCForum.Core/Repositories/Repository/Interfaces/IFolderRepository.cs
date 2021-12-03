@@ -10,7 +10,7 @@
     public interface IFolderRepository
     {
         Task<FolderReadViewModel> GetFolderAsync(Guid folderId, CancellationToken cancellationToken);
-        Task<bool> IsFolderNameValidAsync(string folderName, Guid? parentFolderId, Guid parentGroupId, CancellationToken cancellationToken);
+        Task<bool> IsFolderNameValidAsync(Guid? folderId, string folderName, Guid? parentFolderId, Guid parentGroupId, CancellationToken cancellationToken);
         Task<bool> IsFolderIdValidAsync(Guid folderId, CancellationToken cancellationToken);
         Task<PaginatedList<FolderReadViewModel>> GetRootFoldersForGroupAsync(string groupSlug, int page = 1, int pageSize = 999, CancellationToken cancellationToken = default(CancellationToken));
         Task<PaginatedList<FolderReadViewModel>> GetChildFoldersForFolderAsync(Guid parentFolderId, int page = 1, int pageSize = 999, CancellationToken cancellationToken = default(CancellationToken));

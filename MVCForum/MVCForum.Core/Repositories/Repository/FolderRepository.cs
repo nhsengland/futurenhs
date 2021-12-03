@@ -188,10 +188,8 @@
             }
         }
 
-        public async Task<bool> IsFolderNameValidAsync(string folderName, 
-                                                       Guid? parentFolderId,
-                                                       Guid parentGroupId,
-                                                       CancellationToken cancellationToken)
+        public async Task<bool> IsFolderNameValidAsync(Guid? folderId, string folderName, Guid? parentFolderId,
+                                                       Guid parentGroupId, CancellationToken cancellationToken)
         {
             const string query =
                 @"
@@ -200,14 +198,20 @@
                     FROM
                       Folder f
                     WHERE
-                      f.Name = @FolderName
+                      (f.Id != @FolderId OR @FolderId IS NULL)
+                      AND f.Name = @FolderName
                       AND f.IsDeleted = 0
-                      AND (f.ParentFolder = @ParentFolderId OR @ParentFolderId IS NULL)
+                      AND (
+                            f.ParentFolder = @ParentFolderId
+                            OR
+                            (@ParentFolderId IS NULL AND f.ParentFolder IS NULL)
+                          ) 
                       AND f.ParentGroup = @ParentGroupId;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new
             {
+                FolderId = folderId,
                 FolderName = folderName.Trim(),
                 ParentFolderId = parentFolderId,
                 ParentGroupId = parentGroupId

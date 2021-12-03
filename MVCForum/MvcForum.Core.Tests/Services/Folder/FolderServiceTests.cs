@@ -82,7 +82,7 @@ namespace MvcForum.Core.Tests.Services.Folder
         [Test]
         public async Task IsFolderNameValidAsync_ValidInput_Handle()
         {
-            var response = await _groupFolderService.IsFolderNameValidAsync(ValidFolderName, null, ValidGroupId, CancellationToken.None);
+            var response = await _groupFolderService.IsFolderNameValidAsync(ValidFolderId, ValidFolderName, null, ValidGroupId, CancellationToken.None);
 
             Assert.IsTrue(response);
         }
@@ -90,7 +90,7 @@ namespace MvcForum.Core.Tests.Services.Folder
         [Test]
         public void IsFolderNameValidAsync_InvalidFolderName_Exception()
         {
-            var response = Assert.ThrowsAsync<ArgumentNullException>(async () => await _groupFolderService.IsFolderNameValidAsync(InvalidFolderName, null, ValidGroupId, CancellationToken.None));
+            var response = Assert.ThrowsAsync<ArgumentNullException>(async () => await _groupFolderService.IsFolderNameValidAsync(ValidFolderId, InvalidFolderName, null, ValidGroupId, CancellationToken.None));
             Assert.AreEqual("folderName", response.ParamName);
         }
 
@@ -112,7 +112,7 @@ namespace MvcForum.Core.Tests.Services.Folder
         [Test]
         public void IsUserAdminAsync_InvalidParentGroupId_Exception()
         {
-            var response = Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _groupFolderService.IsFolderNameValidAsync(ValidFolderName, null, InvalidGuid, CancellationToken.None));
+            var response = Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _groupFolderService.IsFolderNameValidAsync(ValidFolderId, ValidFolderName, null, InvalidGuid, CancellationToken.None));
             Assert.AreEqual("parentGroupId", response.ParamName);
         }
 

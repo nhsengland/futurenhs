@@ -138,7 +138,7 @@ namespace MvcForum.Web.Tests.Controllers.Folder
             SetUserInContext.SetContext("admin");
             _folderServiceMocks.Setup(x => x.IsUserAdminAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(true));
-            _folderServiceMocks.Setup(x => x.IsFolderNameValidAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            _folderServiceMocks.Setup(x => x.IsFolderNameValidAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(true));
             _folderServiceMocks.Setup(x => x.CreateFolder(It.IsAny<FolderWriteViewModel>()))
                 .Returns(Guid.NewGuid());
@@ -194,7 +194,7 @@ namespace MvcForum.Web.Tests.Controllers.Folder
             SetUserInContext.SetContext("admin");
             _folderServiceMocks.Setup(x => x.IsUserAdminAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(true));
-            _folderServiceMocks.Setup(x => x.IsFolderNameValidAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            _folderServiceMocks.Setup(x => x.IsFolderNameValidAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(false));
 
             var result = (await _folderController.CreateFolderAsync(model, CancellationToken.None)) as ViewResult;
@@ -269,7 +269,7 @@ namespace MvcForum.Web.Tests.Controllers.Folder
                         FolderId = FolderIdValid
                     }
                 }));
-            _folderServiceMocks.Setup(x => x.IsFolderNameValidAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            _folderServiceMocks.Setup(x => x.IsFolderNameValidAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(true));
 
             var result = await _folderController.UpdateFolderAsync(model, CancellationToken.None);
@@ -332,7 +332,7 @@ namespace MvcForum.Web.Tests.Controllers.Folder
                         FolderId = FolderIdValid
                     }
                 }));
-            _folderServiceMocks.Setup(x => x.IsFolderNameValidAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            _folderServiceMocks.Setup(x => x.IsFolderNameValidAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(false));
 
             var result = (await _folderController.UpdateFolderAsync(model, CancellationToken.None)) as ViewResult;
