@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '*.sln'
+  solution: 'FutureNHS.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -18,9 +18,9 @@ steps:
 
 - task: MSBuild@1
   inputs:
-    solution: '*.sln'
+    solution: '$(solution)'
     msbuildArchitecture: 'x64'
-    configuration: 'Release'
+    configuration: '$(buildConfiguration)'
     restoreNugetPackages: true
     createLogFile: true
     logFileVerbosity: 'detailed'
