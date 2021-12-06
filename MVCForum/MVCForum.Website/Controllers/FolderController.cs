@@ -119,6 +119,7 @@
                 FolderId = folderId,
                 Slug = slug,
                 FolderName = result.Folder.FolderName,
+                OriginalFolderName = result.Folder.FolderName,
                 Description = result.Folder.Description,
                 Breadcrumbs = await GetBreadcrumbsAsync(folderId, slug, cancellationToken: cancellationToken),
                 ParentGroup = groupId,
@@ -126,6 +127,8 @@
             };
 
             ViewBag.HideSideBar = true;
+            //ViewBag.FolderName = WriteFolder.FolderName;
+            ViewData.Add("FolderName", WriteFolder.FolderName);
             return View("_UpdateFolder", WriteFolder);            
            
         }

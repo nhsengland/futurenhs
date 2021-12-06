@@ -12,9 +12,10 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.OriginalFolderName)
 
     <div class="form-horizontal">
-        <h4>Update - @Model.FolderName</h4>
+        <h4>Update - @Model.OriginalFolderName</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
