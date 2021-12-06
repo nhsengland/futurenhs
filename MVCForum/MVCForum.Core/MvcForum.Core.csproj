@@ -350,12 +350,8 @@
     <Compile Include="Repositories\Command\Interfaces\IFolderCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IGroupInviteCommand.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\Interfaces\IDbConnectionFactory.cs" />
-    <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbCommand.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbConnection.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbCommand.cs" />
+    <Compile Include="Repositories\Database\DatabaseProviders\ReliableSqlDbConnection.cs" />
     <Compile Include="Repositories\Database\DatabaseProviders\SqlServerConnectionFactory.cs" />
     <Compile Include="Models\Entities\UploadStatus.cs" />
     <Compile Include="Repositories\Models\BreadCrumbItem.cs" />
