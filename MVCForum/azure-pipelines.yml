@@ -1,13 +1,13 @@
 trigger:
  branches:
     include:
-    - TRY-TH-APIBUILD
+    - SPRINT
  paths:
     include:
     - MVCForum/*
 
 jobs:
-- job: getchangepath
+- job: CheckChangesInPaths
   pool:
     vmImage: 'windows-latest'
   steps: 
@@ -15,21 +15,21 @@ jobs:
       $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.1"
       $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
                        
-      $changesFolder = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
+      $changesFolder  = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
      
-      foreach($path in $changesFolder){
+      foreach($path in $changesFolder ){
         if($path -match '/MVCForum'){
           echo "##vso[task.setvariable variable=MVCForum;isOutput=true]$True"
           break
         }
       }
-    name: MyVariable
+    name: ChangesInPaths
 
-- job: client
+- job: BuildMVCForum
   pool :
     vmImage: 'windows-latest'
-  dependsOn: getchangepath
-  condition: eq(dependencies.getchangepath.outputs['Myvariable.MVCForum'], 'true') 
+  dependsOn: CheckChangesInPaths
+  condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.MVCForum'], 'true') 
   steps:
   - task: NuGetToolInstaller@1
     inputs:
@@ -48,7 +48,7 @@ jobs:
   - task: Cache@2
     displayName: npm Cache
     inputs:
-     key: 'npmcache | "$(Agent.OS)" | package.json'
+     key: 'npmcache | "$(Agent.OS)" | $(Build.SourcesDirectory)/MVCForum/package.json'
      path: '$(Build.SourcesDirectory)/MVCForum/node_modules'
      cacheHitVar: 'npm_cache_hit'
 
@@ -62,14 +62,15 @@ jobs:
   - task: gulp@0
     displayName: 'Build front end'
     inputs:
-     gulpFile: 'gulpfile.js'
+     workingDirectory: '$(Build.SourcesDirectory)/MVCForum'
+     gulpFile: '$(Build.SourcesDirectory)/MVCForum/gulpfile.js'
      targets: 'buildWeb'
-     gulpjs: '/MVCForum/node_modules/gulp/bin/gulp.js'
+     gulpjs: '$(Build.SourcesDirectory)/MVCForum/node_modules/gulp/bin/gulp.js'
      enableCodeCoverage: false
-    
+
   - task: MSBuild@1
     inputs:
-     solution: 'MVCForum.sln'
+     solution: '$(Build.SourcesDirectory)/MVCForum/MVCForum.sln'
      msbuildArchitecture: 'x64'
      configuration: 'Release'
      createLogFile: true
@@ -99,7 +100,7 @@ jobs:
     displayName: 'Publish Code Coverage from Front End Unit Tests'
     inputs:
      codeCoverageTool: Cobertura
-     summaryFileLocation: '$(System.DefaultWorkingDirectory)/js-report/cobertura-coverage.xml'
-     pathToSources: '$(System.DefaultWorkingDirectory)'
-     reportDirectory: '$(System.DefaultWorkingDirectory)/js-report/*.htm'
+     summaryFileLocation: '$(System.DefaultWorkingDirectory)/MVCForum/js-report/cobertura-coverage.xml'
+     pathToSources: '$(System.DefaultWorkingDirectory)/MVCForum'
+     reportDirectory: '$(System.DefaultWorkingDirectory)/MVCForum/js-report/*.htm'
      failIfCoverageEmpty: true

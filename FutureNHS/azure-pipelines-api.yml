@@ -4,35 +4,69 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- SPRINT
+ branches:
+    include:
+    - SPRINT
+ paths:
+    include:
+    - FutureNHS/*
 
-pool:
-  vmImage: 'windows-latest'
+jobs:
+- job: CheckChangesInPaths
+  pool:
+    vmImage: 'windows-latest'
+  steps: 
+  - powershell: |
+      $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.1"
+      $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
+                       
+      $changesFolder  = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
+     
+      foreach($path in $changesFolder ){
+        if($path -match '/FutureNHS'){
+          echo "##vso[task.setvariable variable=FutureNHS;isOutput=true]$True"
+          break
+        }
+      }
+    name: ChangesInPaths
 
-variables:
-  solution: 'FutureNHS.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  variables:
+   solution: 'FutureNHS.sln'
+   buildPlatform: 'x64'
+   buildConfiguration: 'Release'
 
-steps:
+- job: BuildFutureNHS
+  pool :
+    vmImage: 'windows-latest'
+  dependsOn: CheckChangesInPaths
+  condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHS'], 'true') 
+  steps:
+   - task: UseDotNet@2
+     inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
 
-- task: MSBuild@1
-  inputs:
-    solution: '/$(working-dir)/$(solution)'
-    msbuildArchitecture: 'x64'
-    configuration: '$(buildConfiguration)'
-    restoreNugetPackages: true
-    createLogFile: true
-    logFileVerbosity: 'detailed'
+   - task: DotNetCoreCLI@2
+     inputs:
+      command: 'restore'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
+      feedsToUse: 'select'
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+   - task: DotNetCoreCLI@2
+     inputs:
+      command: 'build'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
+      feedsToUse: 'select'
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)'
-    artifact: 'FNHSApi'
-    publishLocation: 'pipeline'
+   - task: CopyFiles@2
+     inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+   - task: PublishPipelineArtifact@1
+     inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'FNHSApi'
+      publishLocation: 'pipeline'
+    
