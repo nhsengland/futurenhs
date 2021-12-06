@@ -18,7 +18,7 @@ steps:
 
 - task: MSBuild@1
   inputs:
-    solution: '$(solution)'
+    solution: '/$(working-dir)/$(solution)'
     msbuildArchitecture: 'x64'
     configuration: '$(buildConfiguration)'
     restoreNugetPackages: true
@@ -27,7 +27,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/FutureNHS.Api'
+    SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api'
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
