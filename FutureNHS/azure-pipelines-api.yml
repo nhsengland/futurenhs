@@ -62,6 +62,7 @@ jobs:
    - task: DotNetCoreCLI@2
      inputs:
       command: 'publish'
+      configuration: 'Release'
       publishWebProjects: false
       projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
       zipAfterPublish: false
