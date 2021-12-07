@@ -10,6 +10,7 @@ trigger:
  paths:
     include:
     - FutureNHS/*
+ tag:"${runRelease}"
 
 jobs:
 - job: CheckChangesInPaths
@@ -78,4 +79,8 @@ jobs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: 'FNHSApi'
       publishLocation: 'pipeline'
+      
+  - script: |
+     git tag RUN
+  workingDirectory: $(Build.SourcesDirectory)
     
