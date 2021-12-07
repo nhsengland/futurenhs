@@ -69,7 +69,7 @@ jobs:
 
    - task: CopyFiles@2
      inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api/bin/Release/net6.0/publish'
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api/bin/Debug/net6.0/publish'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
