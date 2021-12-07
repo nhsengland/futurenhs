@@ -87,6 +87,6 @@ jobs:
         -u :$(System.AccessToken)  https://dev.azure.com/cdsdigital/FutureNHS/_apis/build/builds/$(build.buildid)/tags?api-version=6.0 \
         -H 'Accept: application/json' \
         -H 'Content-Type: application/json' \
-        -d ' ["RUN"]'
+        -d '[RUN]'
        failOnStderr: true
     
