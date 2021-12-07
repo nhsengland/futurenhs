@@ -10,7 +10,6 @@ trigger:
  paths:
     include:
     - FutureNHS/*
- tag:"${runRelease}"
 
 jobs:
 - job: CheckChangesInPaths
@@ -80,14 +79,14 @@ jobs:
       artifact: 'FNHSApi'
       publishLocation: 'pipeline'
       
-   -- task: Bash@3
-      inputs:
+   - task: Bash@3
+     inputs:
        targetType: 'inline'
-      script: |
-       curl -X POST \
-       -u :$(System.AccessToken)  https://dev.azure.com/cdsdigital/FutureNHS/_apis/build/builds/$(build.buildid)/tags?api-version=6.0 \
-       -H 'Accept: application/json' \
-       -H 'Content-Type: application/json' \
-       -d ' ["RUN"]'
-      failOnStderr: true
+       script: |
+        curl -X POST \
+        -u :$(System.AccessToken)  https://dev.azure.com/cdsdigital/FutureNHS/_apis/build/builds/$(build.buildid)/tags?api-version=6.0 \
+        -H 'Accept: application/json' \
+        -H 'Content-Type: application/json' \
+        -d ' ["RUN"]'
+       failOnStderr: true
     
