@@ -1,66 +1,60 @@
 trigger:
-- MAIN
+- SPRINT
+- TRY-RI-VNEXT-APP
 
 pool:
-  vmImage: windows-latest
+  vmImage: ubuntu-latest
 
 steps:
 
 - task: NodeTool@0
   inputs:
-    versionSpec: '14.0.0'
+    versionSpec: '14.17.4'
     
-- task: Cache@2
-  displayName: npm Cache
-  inputs:
-    key: 'npmcache | "$(Agent.OS)" | package.json'
-    path: '$(Build.SourcesDirectory)/node_modules'
-    cacheHitVar: 'npm_cache_hit'
-
 - task: Npm@1
   displayName: 'npm install'
-  condition: ne(variables.npm_cache_hit, 'true')
   inputs:
     command: 'install'
-    workingDir: '$(Build.SourcesDirectory)'
+    workingDir: '$(Build.SourcesDirectory)/vNext.App'
     
 - task: gulp@0
   displayName: 'Build client'
   inputs:
-    gulpFile: 'gulpfile.js'
+    gulpFile: '$(Build.SourcesDirectory)/vNext.App/gulpfile.js'
     targets: 'build'
-    gulpjs: 'node_modules/gulp/bin/gulp.js'
-    enableCodeCoverage: false
+    gulpjs: '$(Build.SourcesDirectory)/vNext.App/node_modules/gulp/bin/gulp.js'
 
 - task: Npm@1
   displayName: 'Next build'
   inputs:
-    command: 'run next build'
-    workingDir: '$(Build.SourcesDirectory)'
+    command: 'custom'
+    workingDir: '$(Build.SourcesDirectory)/vNext.App'
+    customCommand: 'run build'
 
 - task: Npm@1
   displayName: 'Unit tests'
   inputs:
-    command: 'run test-js'
-    workingDir: '$(Build.SourcesDirectory)'
+    command: 'custom'
+    workingDir: '$(Build.SourcesDirectory)/vNext.App'
+    customCommand: 'run test-js'
 
-- task: Npm@1
-  displayName: 'Browser tests'
-  inputs:
-    command: 'run test-automation'
-    workingDir: '$(Build.SourcesDirectory)'
-    
+# - task: Npm@1
+#   displayName: 'Browser tests'
+#   inputs:
+#     command: 'run test-automation'
+#     workingDir: '$(Build.SourcesDirectory)'
+
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)'
-    artifact: 'FNHSClient'
+    artifact: 'vNextApp'
     publishLocation: 'pipeline'
 
 - task: PublishTestResults@2
   displayName: 'Publish Unit Test Results'
   inputs:
     testResultsFiles: 'jest-junit.xml'
-    searchFolder: '$(System.DefaultWorkingDirectory)/test-reports/unit'
+    searchFolder: '$(System.DefaultWorkingDirectory)/vNext.App/test-reports/unit'
     testRunTitle: 'Unit Test Run'
   continueOnError: true
 
@@ -68,7 +62,5 @@ steps:
   displayName: 'Publish Code Coverage from Unit Tests'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/test-reports/unit/cobertura-coverage.xml'
-    pathToSources: '$(System.DefaultWorkingDirectory)'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/test-reports/unit/*.htm'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/vNext.App/test-reports/unit/cobertura-coverage.xml'
     failIfCoverageEmpty: true
