@@ -2,10 +2,11 @@ const puppeteer = require('puppeteer');
 const { setUpPage } = require('../helpers/jest/puppeteer');
 const { axeAudit } = require('../helpers/jest/aXe');
 const { lighthouseAudit, getLighthouseResult } = require('../helpers/jest/lighthouse');
+const { getEnvVar } = require('../helpers/util/env');
 
 describe('Log out page', () => {
 
-    const url = `${process.env.APP_URL}/log-out`;
+    const url = `${getEnvVar({ name: 'APP_URL' })}/log-out`;
 
     let browser;
 

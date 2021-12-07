@@ -1,7 +1,8 @@
 import { GetServerSideProps } from 'next';
-import { GetServerSidePropsContext } from '@appTypes/next';
 import { getAuth } from '@services/getAuth';
 import { GetAuthService } from '@services/getAuth';
+import { getEnvVar } from '@helpers/util/env';
+import { GetServerSidePropsContext } from '@appTypes/next';
 
 export const withAuth = (getServerSideProps: GetServerSideProps, dependencies?: {
     getAuthService?: GetAuthService
@@ -20,7 +21,7 @@ export const withAuth = (getServerSideProps: GetServerSideProps, dependencies?: 
             return {
                 redirect: {
                     permanent: false,
-                    destination: process.env.NEXT_PUBLIC_LOGIN_URL
+                    destination: getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL' })
                 }
             }    
     

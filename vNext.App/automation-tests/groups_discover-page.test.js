@@ -2,10 +2,11 @@ const puppeteer = require('puppeteer');
 const { setUpPage, logIn } = require('../helpers/jest/puppeteer');
 const { axeAudit } = require('../helpers/jest/aXe');
 const { lighthouseAudit, getLighthouseResult } = require('../helpers/jest/lighthouse');
+const { getEnvVar } = require('../helpers/util/env');
 
 describe('Groups page', () => {
 
-    const url = `${process.env.APP_URL}/groups/discover`;
+    const url = `${getEnvVar({ name: 'APP_URL' })}/groups/discover`;
 
     let browser;
 
@@ -24,12 +25,12 @@ describe('Groups page', () => {
     test('Is login protected', async () => {
 
         const page = await setUpPage({ browser, url });
-
-        await expect(page.url()).toEqual(process.env.NEXT_PUBLIC_LOGIN_URL);
+        
+        await expect(page.url()).toEqual(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL'}));
         await logIn({
             page: page
         });
-        await expect(page.url()).toEqual(process.env.APP_URL + '/');
+        await expect(page.url()).toEqual(getEnvVar({ name: 'APP_URL'}) + '/');
 
     });
 

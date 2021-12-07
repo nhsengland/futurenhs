@@ -2,10 +2,11 @@ const puppeteer = require('puppeteer');
 const { setUpPage } = require('../helpers/jest/puppeteer');
 const { axeAudit } = require('../helpers/jest/aXe');
 const { lighthouseAudit, getLighthouseResult } = require('../helpers/jest/lighthouse');
+const { getEnvVar } = require('../helpers/util/env');
 
 describe('Privacy policy page', () => {
 
-    const url = `${process.env.APP_URL}/privacy-policy`;
+    const url = `${getEnvVar({ name: 'APP_URL' })}/privacy-policy`;
 
     let browser;
 

@@ -2,10 +2,11 @@ const puppeteer = require('puppeteer');
 const { setUpPage } = require('../helpers/jest/puppeteer');
 const { axeAudit } = require('../helpers/jest/aXe');
 const { lighthouseAudit, getLighthouseResult } = require('../helpers/jest/lighthouse');
+const { getEnvVar } = require('../helpers/util/env');
 
 describe('Contact us page', () => {
 
-    const url = `${process.env.APP_URL}/contact-us`;
+    const url = `${getEnvVar({ name: 'APP_URL'})}/contact-us`;
 
     let browser;
 

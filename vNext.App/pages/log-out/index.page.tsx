@@ -6,6 +6,7 @@ import { Layout } from '@components/Layout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { withLogOut } from '@hofs/withLogOut';
+import { getEnvVar } from '@helpers/util/env';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { Props } from './interfaces';
@@ -33,7 +34,7 @@ const Index: (props: Props) => JSX.Element = ({
                         <h1>{mainHeadingHtml}</h1>
                         <p>Your are now logged out</p>
                         <p className="desktop:u-pb-4">
-                            <Link href={process.env.NEXT_PUBLIC_LOGIN_URL}>
+                            <Link href={getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL' }) as string}>
                                 <a>Log in again</a>
                             </Link>
                         </p>

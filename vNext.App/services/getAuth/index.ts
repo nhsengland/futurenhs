@@ -1,4 +1,5 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { getEnvVar } from '@helpers/util/env';
 import { ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
 
@@ -30,7 +31,7 @@ export const getAuth: GetAuthService = async ({
 
         });
 
-        const { meta, json } = await fetchJSON(process.env.NEXT_PUBLIC_REFRESH_TOKEN_URL, setGetFetchOptions({
+        const { meta, json } = await fetchJSON(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL' }), setGetFetchOptions({
             Cookie: existingCookies
         }), 1000)
 

@@ -1,3 +1,5 @@
+import { getEnvVar } from '../util/env';
+
 export const setUpPage = async ({ browser, url }): Promise<any> => {
 
         const page = await browser.newPage();
@@ -27,10 +29,10 @@ export const logIn = async ({ page }): Promise<{
 
     await page.waitForSelector(userNameField);
     await page.click(userNameField);
-    await page.type(userNameField, process.env.LOGIN_USER_NAME)  
+    await page.type(userNameField, getEnvVar({ name: 'LOGIN_USER_NAME' }))  
     await page.waitForSelector(passWordField);
     await page.click(passWordField);
-    await page.type(passWordField, process.env.LOGIN_PASSWORD);
+    await page.type(passWordField, getEnvVar({ name: 'LOGIN_PASSWORD' }));
     await page.waitForSelector(submitButton);
     await page.click(submitButton);
     await page.waitForNavigation();

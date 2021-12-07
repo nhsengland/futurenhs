@@ -1,4 +1,5 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { getEnvVar } from '@helpers/util/env';
 import { ServiceResponse } from '@appTypes/service';
 import { Group } from '@appTypes/group';
 import { User } from '@appTypes/user';
@@ -26,7 +27,7 @@ export const getGroup = async ({
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
         const id: string = user.id;
-        const apiUrl: string = `http://localhost:9999/collaboration/api/v1/user/${id}/groups/${slug}?page=${page}`;
+        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/${id}/groups/${slug}?page=${page}`;
         const { json, meta } = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const { ok, status, statusText } = meta;
 

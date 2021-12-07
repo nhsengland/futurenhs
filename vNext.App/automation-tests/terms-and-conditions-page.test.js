@@ -2,10 +2,11 @@ const puppeteer = require('puppeteer');
 const { setUpPage } = require('../helpers/jest/puppeteer');
 const { axeAudit } = require('../helpers/jest/aXe');
 const { lighthouseAudit, getLighthouseResult } = require('../helpers/jest/lighthouse');
+const { getEnvVar } = require('../helpers/util/env');
 
 describe('Terms and conditions page', () => {
 
-    const url = `${process.env.APP_URL}/terms-and-conditions`;
+    const url = `${getEnvVar({ name: 'APP_URL' })}/terms-and-conditions`;
 
     let browser;
 
