@@ -1,31 +1,18 @@
-using System.Collections.Immutable;
 using Azure.Identity;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
+using FutureNHS.Api.Models.Pagination.Services;
+using FutureNHS.Infrastructure.Repositories.Database.RetryPolicy;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging.ApplicationInsights;
-using Microsoft.FeatureManagement;
-using FutureNHS.Api.Models.Pagination.Services;
-using FutureNHS.Application.Application;
-using FutureNHS.Application.Interfaces;
-using FutureNHS.Infrastructure;
-using FutureNHS.Infrastructure.Repositories.Database.RetryPolicy;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSwaggerGen();
-
-
-
-
-
 
 var settings = builder.Configuration;
 
@@ -47,7 +34,7 @@ var credential = new DefaultAzureCredential();
 // from just in case the primary is not available.  Hardly ideal, but ACS doesn't support geo-failover so until it 
 // does we have to do the best we can and try to keep settings in sync ourselves :(
 
-if (bool.TryParse(Environment.GetEnvironmentVariable("USE_AZURE_APP_CONFIGURATION"), out var useAppConfig) && useAppConfig)
+if (bool.TryParse(settings.GetValue<string>("USE_AZURE_APP_CONFIGURATION"), out var useAppConfig) && useAppConfig)
 {
     // NB - If the App Configuration Service is being throttled when we start up the application, this method does not appear to ever complete
     //      which stops the startup class from bootstrapping the application which then sits in a zombie state until Azure recycles (and round we go).
