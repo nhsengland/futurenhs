@@ -55,12 +55,20 @@ jobs:
    - task: DotNetCoreCLI@2
      inputs:
       command: 'build'
+      configuration: 'Release'
       projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
       feedsToUse: 'select'
 
+   - task: DotNetCoreCLI@2
+     inputs:
+      command: 'publish'
+      publishWebProjects: false
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
+      zipAfterPublish: false
+
    - task: CopyFiles@2
      inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api'
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api/bin/Release/net6.0/publish'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
