@@ -1,0 +1,28 @@
+.ReactModalPortal { // sass-lint:disable-line class-name-format
+    z-index: 10000;
+}
+
+.c-dialog {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 10000;
+    background-color: $black-tint;
+
+    &_content {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: fit-content;
+        height: fit-content;
+        margin: auto;
+        padding: 20px;
+        box-shadow: 0 $nhsuk-spacing-point-1 $nhsuk-spacing-point-1 0 $black-tint;
+        background-color: $white;
+        border-left: $nhsuk-spacing-point-1 solid $color_nhsuk-red;
+    }
+}

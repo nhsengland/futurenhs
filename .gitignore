@@ -286,3 +286,15 @@ package-lock.json
 *.orig
 
 axeReports/reportResults.json
+
+# next.js app
+/vNext.App/node_modules
+/vNext.App/test-reports/
+/vNext.App/.next/
+/vNext.App/public/
+/vNext.App/build
+/vNext.App/.env.local
+/vNext.App/.env.development.local
+/vNext.App/.env.test.local
+/vNext.App/.env.production.local
+/vNext.App/.vercel

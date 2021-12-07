@@ -1,0 +1,40 @@
+.c-site-header {
+    position: relative;
+    background-color: $t-site-header-background;
+    z-index: 999;
+
+    @include respond-to(desktop) {
+        height: auto;
+    }
+
+    &_content {
+        padding: $nhsuk-spacing-point-3 0;
+        height: $site-header-mobile-height;
+
+        @include respond-to(desktop) {
+            min-height: 94px;
+            height: auto;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    &_logo {
+        display: block;
+        float: left;
+        max-width: calc(100% - 85px);
+        height: $site-logo-mobile-height;
+        box-sizing: content-box;
+    }
+
+    &_nav {
+        display: block;
+        float: right;
+        width: auto;
+
+        @include respond-to(desktop) {
+            flex-grow: 1;
+        }
+    }
+
+}

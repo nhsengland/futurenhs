@@ -1,0 +1,73 @@
+$card-border-width: 1px;
+$card-border-highlight-width: $nhsuk-spacing-point-1;
+$card-border-color: $color_nhsuk-grey-4;
+$card-border-hover-color: $color_nhsuk-grey-3;
+$card-hero-padding: 10px;
+
+.c-card {
+    $self: &;
+    //sass-lint:disable-block nesting-depth force-element-nesting no-combinators no-important
+    display: flex;
+    flex-wrap: wrap;
+    background: $color_nhsuk-white;
+    border: $card-border-width solid $card-border-color;
+    border-bottom-width: $card-border-highlight-width;
+    position: relative;
+    width: 100%;
+    margin-bottom: $nhsuk-spacing-point-4;
+
+    @include respond-to(tablet) {
+        flex-wrap: nowrap;
+    }
+
+    &_hero {
+        flex: 1 1 auto;
+        position: relative;
+        min-width: 200px;
+        padding: $card-hero-padding;
+    }
+
+    &_hero-body {
+        display: block;
+        position: relative;
+        aspect-ratio: 1 / 1; //sass-lint:disable-line no-misspelled-properties
+        background-color: $color_nhsuk-grey-5;
+        border-radius: 4px;
+    }
+
+    &_body {
+        flex: 1 1 auto;
+        position: relative;
+        padding: $nhsuk-spacing-point-4;
+        width: 100%;
+    }
+
+    &_heading {
+        @include medium-heading;
+        margin-bottom: $nhsuk-spacing-point-3;
+    }
+
+    &_content {
+        flex: 1 1 auto;
+        margin: 0 0 $nhsuk-spacing-point-3;
+        line-height: $large-text-line-height;
+        font-size: $large-text;
+    }
+
+    &_footer-item {
+        @include small-text(false);
+        font-weight: $nhsuk-font-bold;
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 48px;
+    }
+
+    &_footer-icon {
+        width: 21px;
+        height: 21px;
+        top: 5px;
+        position: relative;
+        margin-right: 4px;
+    }
+
+}

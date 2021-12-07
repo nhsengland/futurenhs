@@ -1,0 +1,16 @@
+.c-breadcrumb {
+
+    @include clearfix;
+    padding: $nhsuk-spacing-point-3;
+
+    &_path {
+        float: left;
+    }
+
+    &_support-disclaimer {
+        @include small-heading;
+        float: right;
+        text-align: right;
+    }
+
+}

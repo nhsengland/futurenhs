@@ -1,0 +1,62 @@
+﻿@use "sass:math";
+@import "mixins";
+
+/////////////////
+// Semantic.gs // for SCSS: https://github.com/tylertate/semantic.gs http://tylertate.github.io/semantic.gs/
+/////////////////
+
+$columns: 12;
+$column-width: 74px;
+$gutter-width: 46px;
+$total-width: 100%;
+
+@function gridsystem-width($columns:$columns) {
+	@return ($column-width * $columns) + ($gutter-width * $columns);
+}
+
+@mixin row($shouldUseFlex:null, $columns:$columns) {
+    @include clearfix;
+    @if($shouldUseFlex){
+        display: flex;
+        flex-wrap: wrap;
+    } @else {
+        display: block;
+    }
+	width: $total-width*(math.div($gutter-width + gridsystem-width($columns), gridsystem-width($columns)));
+    margin: 0 $total-width*(math.div(($gutter-width*.5), gridsystem-width($columns))*-1);
+}
+
+@mixin column($x, $isFullBleed:null, $columns:$columns) {
+	display: inline;
+	float: left;
+
+    @if($x == 0){
+        width: auto;
+        max-width: fit-content;
+    } @else if($isFullBleed){
+        width: $total-width*(math.div($gutter-width+$column-width*$x, gridsystem-width($columns)));
+        max-width: $total-width*(math.div(((($gutter-width+$column-width)*$x)), gridsystem-width($columns)));
+    } @else {
+        width: $total-width*(math.div(((($gutter-width+$column-width)*$x)-$gutter-width), gridsystem-width($columns)));
+        max-width: $total-width*(math.div(((($gutter-width+$column-width)*$x)-$gutter-width), gridsystem-width($columns)));
+    }
+    @if($isFullBleed){
+        margin: 0;
+    } @else {
+        margin: 0 $total-width*(math.div(($gutter-width*.5), gridsystem-width($columns)));
+    }
+    flex: $x $x auto;
+}
+
+@mixin push($offset:1) {
+	margin-left: $total-width*(math.div((($gutter-width+$column-width)*$offset), gridsystem-width($columns))) + $total-width*(math.div(($gutter-width*.5), gridsystem-width($columns)));
+}
+
+@mixin pull($offset:1) {
+	margin-right: $total-width*(math.div((($gutter-width+$column-width)*$offset), gridsystem-width($columns))) + $total-width*(math.div(($gutter-width*.5), gridsystem-width($columns)));
+}
+
+@mixin squeeze($offset:1) {
+	margin-left: $total-width*((($gutter-width+$column-width)*$offset) / gridsystem-width($columns)) + $total-width*(($gutter-width*.5)/gridsystem-width($columns));
+	margin-right: $total-width*((($gutter-width+$column-width)*$offset) / gridsystem-width($columns)) + $total-width*(($gutter-width*.5)/gridsystem-width($columns));
+}

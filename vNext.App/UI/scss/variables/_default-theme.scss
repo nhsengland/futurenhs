@@ -1,0 +1,133 @@
+///////////////////
+// Default Theme //
+///////////////////
+
+$t-site-header-two: $color_nhsuk-white !default;
+
+$t-site-footer-one: $night-blue !default;
+$t-site-footer-text-one: $white !default;
+$t-site-footer-divider-one: $dark-blue !default;
+
+$t-social-media-icon-one: $aqua !default;
+
+$t-site-background-one: $white !default;
+
+$t-section-divider-one: $aqua !default;
+
+$t-accordion-background-one: $light-grey !default;
+
+$t-border-one: $aqua !default;
+$t-border-two: $sky-blue !default;
+$t-border-three: $digital-water-blue !default;
+
+$t-icon-one: $night-blue !default;
+$t-icon-two: $dark-blue !default;
+$t-icon-three: $digital-water-blue !default;
+
+$t-interaction-one-hover: $digital-water-blue !default;
+$t-interaction-one-active: $digital-water-blue !default;
+$t-interaction-one-focus: $buttercup !default;
+
+$t-interaction-two: $dark-blue !default;
+$t-interaction-two-hover: $night-blue !default;
+$t-interaction-two-active: $night-blue !default;
+
+$form-input-border-one: $night-blue !default;
+$form-input-disabled-border-one: $mid-grey !default;
+
+$t-heading-three: $digital-water-blue !default;
+
+
+$t-text-two: $white !default;
+$t-text-three: $sky-blue !default;
+
+$t-button-text-one: $white !default;
+$t-button-text-two: $night-blue !default;
+$t-button-background-one: $digital-water-blue !default;
+$t-button-background-two: $white !default;
+$t-button-background-hover-one: $night-blue !default;
+$t-button-background-hover-two: $night-blue !default;
+$t-button-background-active-one: $night-blue !default;
+$t-button-background-active-two: $night-blue !default;
+$t-button-background-focus-one: $night-blue !default;
+$t-button-background-focus-two: $night-blue !default;
+
+$t-card-background-one: $white !default;
+$t-card-background-two: $aqua !default;
+$t-card-background-three: $sky-blue !default;
+$t-card-background-four: $light-grey !default;
+
+$t-callout-background-one: $light-grey !default;
+$t-callout-border-info-one: $aqua !default;
+$t-callout-border-success-one: $green !default;
+$t-callout-border-warning-one: $buttercup !default;
+$t-callout-border-error-one: $coral !default;
+
+// $t-site-search-header-background-one: $sky-blue !default;
+// $t-site-search-results-background-one: $white !default;
+
+$t-table-header-background-one: $night-blue;
+$t-table-header-text-one: $white;
+$t-table-row-background-one: $white;
+$t-table-row-background-two: $table-background-skyblue;
+
+$t-tag-text-one: $white;
+$t-tag-background-one: $dark-blue;
+$t-tag-background-two: $night-blue;
+
+$t-blockquote-border-one: $dark-blue;
+$t-blockquote-background-one: $sky-blue;
+
+
+///////////////////
+// Move properties below this line if in use in refactored/redesigned code
+///////////////////
+
+$t-interaction-one: $color_nhsuk-blue !default;
+
+$t-success-color: $color_nhsuk-green !default;
+$t-favourite-color: $color_nhsuk-yellow !default;
+
+$t-icon: $mid-grey !default;
+$t-site-header-background: $color_nhsuk-blue !default;
+$t-site-header-text: $white !default;
+
+$t-heading-one: $color_nhsuk-black !default;
+$t-text-one: $nhsuk-text-color !default;
+
+$t-transparent_nhsuk-grey-4: transparentize($color_nhsuk-grey-4, .5);
+$t-shadow-one: $black-tint !default;
+
+$t-copyright-color: #425462;
+
+$t-utility-themes: (
+    "0": $black,
+    "1": $white,
+    "2": $very-light-grey,
+    "3": $light-grey,
+    "4": $light-mid-grey,
+    "5": $mid-grey,
+    "6": $dark-mid-grey,
+    "7": $dark-grey,
+    "8": $blue,
+    "9": $green,
+    "10": $purple,
+    "11": $aqua,
+    "12": $dark-red,
+    "13": $red,
+    "14": $dark-blue,
+);
+
+$t-utility-spacing: (
+    "0": 0,
+    "1": $nhsuk-spacing-point-1,
+    "2": $nhsuk-spacing-point-2,
+    "3": $nhsuk-spacing-point-3,
+    "4": $nhsuk-spacing-point-4,
+    "5": $nhsuk-spacing-point-5,
+    "6": $nhsuk-spacing-point-6,
+    "7": $nhsuk-spacing-point-7,
+    "8": $nhsuk-spacing-point-8,
+    "9": $nhsuk-spacing-point-9
+);
+

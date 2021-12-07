@@ -1,0 +1,31 @@
+.c-phase-banner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: $nhsuk-spacing-point-2 0;
+
+    &_tag {
+        align-self: flex-start;
+        margin: 0 $nhsuk-spacing-point-2 0 0;
+        padding: $nhsuk-spacing-point-1 $nhsuk-spacing-point-2;
+        outline: 2px solid transparent;
+        color: $color_nhsuk-white;
+        background-color: $color_nhsuk-blue;
+        letter-spacing: 1px;
+        text-decoration: none;
+        text-transform: uppercase;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-weight: 700;
+        font-size: $small-text-size;
+        line-height: 1;
+    }
+
+    &_content {
+        flex-grow: 2;
+        margin: 0 auto;
+        line-height: $large-text-line-height;
+        font-size: $large-text;
+    }
+
+}

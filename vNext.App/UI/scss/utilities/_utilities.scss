@@ -1,0 +1,111 @@
+@use "sass:map";
+
+@tailwind utilities;
+
+.u-mobile-only {
+    @include respond-to(tablet) {
+        display: none;
+    }
+}
+
+.u-desktop-hidden {
+    @include respond-to(desktop) {
+        display: none;
+    }
+}
+
+.u-desktop-up {
+    display: none;
+
+    @include respond-to(desktop) {
+        display: block;
+    }
+}
+
+.u-desktop-up-inline-block {
+    display: none;
+
+    @include respond-to(desktop) {
+        display: inline-block;
+    }
+}
+
+.u-focus-item {
+    @extend %nhsuk-focused-item;
+
+    &:focus {
+        background: none;
+    }
+}
+
+.u-text-bold {
+    font-weight: $nhsuk-font-bold;
+}
+
+.u-text-normal {
+    font-weight: $nhsuk-font-normal;
+}
+
+.u-max-height {
+    height: 100%;
+}
+
+@each $number, $theme in $t-utility-themes {
+    .u-bg-theme-#{$number} {
+        background-color: $theme;
+    }
+
+    .u-fill-theme-#{$number} {
+        fill: $theme;
+    }
+
+    .u-text-theme-#{$number} {
+        color: $theme !important; //sass-lint:disable-line no-important
+    }
+
+    .u-border-theme-#{$number} {
+        border-color: $theme;
+    }
+
+    .u-border-left-theme-#{$number} {
+        border-left-color: $theme;
+    }
+
+    .u-border-bottom-theme-#{$number} {
+        border-bottom-color: $theme;
+    }
+}
+
+@each $number, $spaceing in $t-utility-spacing {
+    .u-margin-top-spacing-#{$number} {
+        margin-top: $spaceing;
+    }
+
+    .u-margin-bottom-spacing-#{$number} {
+        margin-bottom: $spaceing;
+    }
+
+    .u-margin-left-spacing-#{$number} {
+        margin-left: $spaceing;
+    }
+
+    .u-margin-right-spacing-#{$number} {
+        margin-right: $spaceing;
+    }
+
+    .u-padding-top-spacing-#{$number} {
+        padding-top: $spaceing;
+    }
+
+    .u-padding-bottom-spacing-#{$number} {
+        padding-bottom: $spaceing;
+    }
+
+    .u-padding-left-spacing-#{$number} {
+        padding-left: $spaceing;
+    }
+
+    .u-padding-right-spacing-#{$number} {
+        padding-right: $spaceing;
+    }
+}
