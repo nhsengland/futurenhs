@@ -1,3 +1,5 @@
+import { getEnvVar } from '@helpers/util/env';
+
 export interface FetchOptions {
     method: string;
     credentials: RequestCredentials;
@@ -69,7 +71,10 @@ export const getFetchHeadersForJSON = (customHeaders: object = {}): Headers => {
 
     const headers: Headers = new Headers(Object.assign({}, {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${getEnvVar({
+            name: 'SharedSecrets:ApiSecret'
+        })}`
     }, customHeaders));
 
     return headers;
