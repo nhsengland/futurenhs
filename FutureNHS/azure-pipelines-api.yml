@@ -13,6 +13,7 @@ trigger:
 
 jobs:
 - job: CheckChangesInPaths
+  displayName: 'Check commit contains changes for FutureNHS Api'
   pool:
     vmImage: 'windows-latest'
   steps: 
@@ -36,23 +37,27 @@ jobs:
    buildConfiguration: 'Release'
 
 - job: BuildFutureNHS
+  displayName: 'Build and deploy artifact for FutureNHS Api'
   pool :
     vmImage: 'windows-latest'
   dependsOn: CheckChangesInPaths
   condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHS'], 'true') 
   steps:
    - task: UseDotNet@2
+     displayName: 'Set dotnet SDK to v6.0'
      inputs:
       packageType: 'sdk'
       version: '6.0.x'
 
    - task: DotNetCoreCLI@2
+     displayName: 'Nuget restore'
      inputs:
       command: 'restore'
       projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
       feedsToUse: 'select'
 
    - task: DotNetCoreCLI@2
+     displayName: 'Build FutureNHS Api'
      inputs:
       command: 'build'
       configuration: 'Release'
@@ -60,6 +65,7 @@ jobs:
       feedsToUse: 'select'
 
    - task: DotNetCoreCLI@2
+     displayName: 'Publish FutureNHS Api'
      inputs:
       command: 'publish'
       configuration: 'Release'
@@ -68,18 +74,21 @@ jobs:
       zipAfterPublish: false
 
    - task: CopyFiles@2
+     displayName: 'Copy files for artifact'
      inputs:
       SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api/bin/Debug/net6.0/publish'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
    - task: PublishPipelineArtifact@1
+     displayName: 'Publish artifact'
      inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: 'FNHSApi'
       publishLocation: 'pipeline'
       
    - task: PowerShell@2
+     displayName: 'Add RUN Tag to trigger Release'
      env:
       SYSTEM_ACCESSTOKEN: $(System.AccessToken)
      inputs:
