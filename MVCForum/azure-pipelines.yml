@@ -8,7 +8,7 @@ trigger:
 
 jobs:
 - job: CheckChangesInPaths
-  displayName: 'Check commit contains changes for MVCForum'
+  displayName: 'Check the commit contains changes for MVCForum'
   pool:
     vmImage: 'windows-latest'
   steps: 
