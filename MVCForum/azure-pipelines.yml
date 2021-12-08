@@ -8,6 +8,7 @@ trigger:
 
 jobs:
 - job: CheckChangesInPaths
+  displayName: 'Check commit contains changes for MVCForum'
   pool:
     vmImage: 'windows-latest'
   steps: 
@@ -26,6 +27,7 @@ jobs:
     name: ChangesInPaths
 
 - job: BuildMVCForum
+  displayName: 'Build and deploy artifact'
   pool :
     vmImage: 'windows-latest'
   dependsOn: CheckChangesInPaths
@@ -36,12 +38,14 @@ jobs:
      versionSpec:
 
   - task: NuGetCommand@2
+    displayName: 'Nuget restore'
     inputs:
      command: 'restore'
      restoreSolution: 'MVCForum/MVCForum.sln'
      feedsToUse: 'select'
 
   - task: NodeTool@0
+    displayName: 'Install node'
     inputs:
      versionSpec: '12.22.1'
     
@@ -69,6 +73,7 @@ jobs:
      enableCodeCoverage: false
 
   - task: MSBuild@1
+    displayName: 'Build MVCForum'
     inputs:
      solution: '$(Build.SourcesDirectory)/MVCForum/MVCForum.sln'
      msbuildArchitecture: 'x64'
@@ -77,12 +82,14 @@ jobs:
      logFileVerbosity: 'diagnostic'
 
   - task: CopyFiles@2
+    displayName: 'Copy files for artifact'
     inputs:
      SourceFolder: '$(Build.SourcesDirectory)/MVCForum/MVCForum.Website'
      Contents: '**'
      TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
   - task: PublishPipelineArtifact@1
+    displayName: 'Publish artifact'
     inputs:
      targetPath: '$(Build.ArtifactStagingDirectory)'
      artifact: 'FNHS'
@@ -104,3 +111,30 @@ jobs:
      pathToSources: '$(System.DefaultWorkingDirectory)/MVCForum'
      reportDirectory: '$(System.DefaultWorkingDirectory)/MVCForum/js-report/*.htm'
      failIfCoverageEmpty: true
+
+  - task: PowerShell@2
+    displayName: 'Add RUN Tag to trigger Release'
+    env:
+     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    inputs:
+     targetType: 'inline'
+     script: |
+       $user = ""
+       $token = $env:SYSTEM_ACCESSTOKEN
+
+       $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$token)))
+
+       $org = "$(System.CollectionUri)"
+       $teamProject = "$(System.TeamProject)"
+       $buildId = "$(Build.BuildId)"
+       $tagName = "RUN"
+
+       $restApiUpdateBuild = "$org/$teamProject/_apis/build/builds/$buildId/tags/$tagName`?api-version=6.0"
+
+       function InvokePutReques ($PutUrl)
+       {   
+           return Invoke-RestMethod -Uri $PutUrl -Method Put -ContentType "application/json" -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+       }
+
+       $result = InvokePutReques $restApiUpdateBuild
+     pwsh: true
