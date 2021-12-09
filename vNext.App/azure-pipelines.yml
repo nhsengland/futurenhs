@@ -72,7 +72,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'vNextApp'
+      artifact: 'FNHSvNextApp'
       publishLocation: 'pipeline'
 
   - task: PublishTestResults@2
