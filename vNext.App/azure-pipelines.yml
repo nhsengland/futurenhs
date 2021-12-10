@@ -69,6 +69,13 @@ jobs:
 #     command: 'run test-automation'
 #     workingDir: '$(Build.SourcesDirectory)'
 
+  - task: CopyFiles@2
+    displayName: 'Copy files for artifact'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/vNext.App'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)/vNext.App'
