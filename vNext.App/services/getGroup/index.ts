@@ -27,7 +27,7 @@ export const getGroup = async ({
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
         const id: string = user.id;
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/${id}/groups/${slug}?page=${page}`;
+        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/${id}/groups/${slug}?page=${page}`;
         const { json, meta } = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const { ok, status, statusText } = meta;
 

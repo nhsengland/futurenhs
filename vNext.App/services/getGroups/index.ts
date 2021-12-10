@@ -32,7 +32,7 @@ export const getGroups = async ({
 
         const id: string = user.id;
         const resource: string = filters?.isMember ? 'groups' : 'discover/groups';
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/user/${id}/${resource}?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/user/${id}/${resource}?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
         const { json, meta } = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const { ok, status, statusText } = meta;
