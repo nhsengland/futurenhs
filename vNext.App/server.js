@@ -31,7 +31,6 @@ const generateCSP = (nonce) => {
 
 };
 
-const PORT = 5000;
 const app = express();
 const csrfProtection = csrf({ 
     cookie: {
@@ -110,7 +109,7 @@ nextApp
 
         });
 
-        server = app.listen(PORT, (error) => {
+        server = app.listen(process.env.PORT, (error) => {
 
             if (error) {
 
@@ -119,7 +118,7 @@ nextApp
                 
             }
 
-            console.log('Listening on port ' + PORT);
+            console.log('Listening on port ' + process.env.PORT);
 
         });
             
