@@ -6,6 +6,7 @@
     "build": "rimraf ./public && gulp build && next build",
     "start:dev": "cross-env NODE_ENV=development node server.js",
     "start:prod": "cross-env NODE_ENV=production node server.js",
+    "start": "npm run start:prod",
     "lint": "next lint",
     "test-automation": "npm run kill && npm run build && jest --run-in-band --detectOpenHandles --selectProjects automation",
     "test-js": "jest --selectProjects js"
