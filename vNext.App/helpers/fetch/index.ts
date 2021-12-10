@@ -73,7 +73,7 @@ export const getFetchHeadersForJSON = (customHeaders: object = {}): Headers => {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': `Basic ${getEnvVar({
-            name: 'SharedSecrets:ApiSecret'
+            name: 'SHAREDSECRETS_APIAPPLICATION'
         })}`
     }, customHeaders));
 
