@@ -71,7 +71,7 @@ jobs:
 
   - task: PublishPipelineArtifact@1
     inputs:
-      targetPath: '$(Build.ArtifactStagingDirectory)'
+      targetPath: '$(Build.ArtifactStagingDirectory)/vNext.App'
       artifact: 'FNHSvNextApp'
       publishLocation: 'pipeline'
 
