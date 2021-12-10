@@ -114,6 +114,10 @@ Group.DiscoverGroups.Title,Discover Groups
 Group.DiscoverGroups.HeaderIntro,Discover new groups to join
 Group.MyGroups.Introduction,Browse currently subscribed groups
 Group.DiscoverGroups.Introduction,Discover new groups to join
+Group.EditGroup.Title,Edit group
+Group.EditGroup.Introduction,Edit your group title, description, introduction and logo.
+Group.EditGroup.LogoIntroduction,Please upload your logo. If not we will use our default icon.
+Group.EditGroup.IntroHelpText,Please note this will be used to search for this group so use keywords.
 GroupTabs.Home,Home
 GroupTabs.Forum,Forum
 GroupTabs.Files,Files

@@ -22,6 +22,7 @@ namespace MvcForum.Web.Controllers
     using Core.Models.Entities;
     using Core.Models.Enums;
     using Core.Models.General;
+    using MvcForum.Core.Models.Groups;
     using ViewModels.Breadcrumb;
     using ViewModels.Group;
     using ViewModels.Mapping;
@@ -209,7 +210,7 @@ namespace MvcForum.Web.Controllers
         [ChildActionOnly]
         public virtual PartialViewResult GetSubscribedGroups()
         {
-            var viewModel = new List<GroupViewModel>();
+            var viewModel = new List<ViewModels.Group.GroupViewModel>();
 
             var groups = LoggedOnReadOnlyUser.GroupNotifications.Select(x => x.Group);
             foreach (var group in groups)
@@ -220,7 +221,7 @@ namespace MvcForum.Web.Controllers
                 var latestTopicInGroup =
                     group.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
                 var postCount = group.Topics.SelectMany(x => x.Posts).Count() - 1;
-                var model = new GroupViewModel
+                var model = new ViewModels.Group.GroupViewModel
                 {
                     Group = group,
                     LatestTopic = latestTopicInGroup,
@@ -267,7 +268,7 @@ namespace MvcForum.Web.Controllers
         public virtual async Task<ActionResult> LeaveAsync(string slug, int? p)
         {
 
-            _groupService.LeaveGroup(slug, LoggedOnReadOnlyUser.Id);
+            await _groupService.LeaveGroupAsync(slug, LoggedOnReadOnlyUser.Id);
             return RedirectToAction("show", new { slug = slug, p = p });
         }
 
@@ -352,6 +353,11 @@ namespace MvcForum.Web.Controllers
                         Name = "Invite new user",
                         Url = Url.RouteUrl("GroupInviteUrls", new { slug = @group.Slug, groupId = @group.Id }),
                         Order = 3
+                    });
+                    model.ActionLinks.Add(new ActionLink
+                    {
+                        Name = "Edit group information",
+                        Url = Url.RouteUrl("GroupEditUrls", new { slug = @group.Slug })
                     });
                 }
             }
@@ -544,7 +550,7 @@ namespace MvcForum.Web.Controllers
             {
                 var groupUser = group.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
                 // Create the main view model for the Group
-                var viewModel = new GroupViewModel
+                var viewModel = new ViewModels.Group.GroupViewModel
                 {
                     Permissions = permissions,
                     Group = group.Group,
@@ -714,6 +720,70 @@ namespace MvcForum.Web.Controllers
 
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
             return loggedOnUsersRole.RoleName == MvcForum.Core.Constants.Constants.AdminRoleName ? loggedOnUsersRole : role;
+        }
+
+        [HttpGet]
+        [AsyncTimeout(30000)]
+        [ActionName("Edit")]
+        public async Task<ActionResult> EditAsync(string slug, string tab, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+            if (string.IsNullOrWhiteSpace(tab)) throw new ArgumentNullException(nameof(tab));
+
+            if (!_groupService.UserIsAdmin(slug, LoggedOnReadOnlyUser.Id)) return new HttpUnauthorizedResult();
+
+            var group = await _groupService.GetAsync(slug, cancellationToken);
+
+            if (group is null) return HttpNotFound();
+
+            var model = new GroupWriteViewModel
+            {
+                Id = group.Id,
+                Description = group.Description,
+                Image = group.Image,
+                Introduction = group.Introduction,
+                Name = group.Name,
+                PublicGroup = group.PublicGroup,
+                Slug = group.Slug,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [AsyncTimeout(30000)]
+        [ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditAsync(GroupWriteViewModel model, string slug, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (model is null) throw new ArgumentNullException(nameof(model));
+
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
+            if (this.ModelState.IsValid)
+            {
+                if (!_groupService.UserIsAdmin(slug, LoggedOnReadOnlyUser.Id)) return new HttpUnauthorizedResult();
+
+                if (model.Files != null)
+                {
+                    var uploadResult = _groupService.UploadGroupImage(model.Files, model.Id);
+                    if (uploadResult.UploadSuccessful)
+                    {
+                        model.Image = uploadResult.UploadedFileName;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(nameof(model.Files), "Failed to upload file");
+                    }
+                }
+
+                if (ModelState.IsValid && await _groupService.UpdateAsync(model, slug, cancellationToken))
+                {
+                    return RedirectToAction("Show", "Group", new { slug = slug, tab = String.Empty });
+                }
+            }
+
+            return View(model);
         }
 
     }

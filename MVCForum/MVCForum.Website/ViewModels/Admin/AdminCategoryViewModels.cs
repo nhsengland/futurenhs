@@ -41,8 +41,7 @@
         public string Subtitle { get; set; }
 
         [DisplayName("Group introduction")]
-        [UIHint(Constants.EditorType)]
-        [AllowHtml]
+        [DataType(DataType.MultilineText)]
         [Required(ErrorMessage = "Please provide an introduction to your group")]
         [StringLength(4000, ErrorMessage = "The group introduction must not be greater than 4000 characters.")]
         public string Introduction { get; set; }
@@ -84,7 +83,7 @@
         public IEnumerable<SelectListItem> AllSections { get; set; }
 
         public IEnumerable<SelectListItem> Users { get; set; }
-        
+
         public byte[] RowVersion { get; set; }
 
         [DisplayName("Group is public")]

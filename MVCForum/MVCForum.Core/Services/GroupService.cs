@@ -6,11 +6,13 @@ namespace MvcForum.Core.Services
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
+    using System.Web.Hosting;
     using System.Web.Mvc;
     using Constants;
     using Interfaces;
@@ -21,6 +23,9 @@ namespace MvcForum.Core.Services
     using Models.Entities;
     using Models.General;
     using MvcForum.Core.ExtensionMethods;
+    using MvcForum.Core.Models.Groups;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
     using Pipeline;
     using Reflection;
     using Utilities;
@@ -30,8 +35,11 @@ namespace MvcForum.Core.Services
         private readonly ICacheService _cacheService;
         private readonly INotificationService _notificationService;
         private readonly IGroupPermissionForRoleService _groupPermissionForRoleService;
+        private readonly IGroupRepository _groupRepository;
+        private readonly IGroupCommand _groupCommand;
         private IMvcForumContext _context;
         private readonly IRoleService _roleService;
+        private readonly ILocalizationService _localizationService;
 
         /// <summary>
         ///     Constructor
@@ -42,40 +50,18 @@ namespace MvcForum.Core.Services
         /// <param name="GroupPermissionForRoleService"></param>
         /// <param name="cacheService"></param>
         public GroupService(IMvcForumContext context, IRoleService roleService,
-                            INotificationService notificationService, IGroupPermissionForRoleService GroupPermissionForRoleService, 
-                            ICacheService cacheService)
+                            INotificationService notificationService, IGroupPermissionForRoleService GroupPermissionForRoleService,
+                            ICacheService cacheService, IGroupRepository groupRepository, ILocalizationService localizationService,
+                            IGroupCommand groupCommand)
         {
-            if (context is null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            if (roleService is null)
-            {
-                throw new ArgumentNullException(nameof(roleService));
-            }
-
-            if (notificationService is null)
-            {
-                throw new ArgumentNullException(nameof(notificationService));
-            }
-
-            if (GroupPermissionForRoleService is null)
-            {
-                throw new ArgumentNullException(nameof(GroupPermissionForRoleService));
-            }
-
-            if (cacheService is null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-
-            _context = context;
-            _roleService = roleService;
-            _notificationService = notificationService;
-            _groupPermissionForRoleService = GroupPermissionForRoleService;
-            _cacheService = cacheService;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+            _groupPermissionForRoleService = GroupPermissionForRoleService ?? throw new ArgumentNullException(nameof(GroupPermissionForRoleService));
+            _cacheService = cacheService ?? throw new ArgumentNullException(nameof(context));
+            _groupRepository = groupRepository ?? throw new ArgumentNullException(nameof(groupRepository));
+            _localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
+            _groupCommand = groupCommand ?? throw new ArgumentNullException(nameof(groupCommand));
         }
 
         /// <inheritdoc />
@@ -480,9 +466,23 @@ namespace MvcForum.Core.Services
         /// </summary>
         /// <param name="slug"></param>
         /// <returns></returns>
-        public Group Get(string slug)
+        public async Task<GroupViewModel> GetAsync(string slug, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return GetBySlug(slug);
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
+            return await GetBySlugAsync(slug, cancellationToken);
+        }
+
+        /// <summary>
+        ///     Return Group by Url slug
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public async Task<GroupViewModel> GetAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Guid.Empty == id) throw new ArgumentOutOfRangeException(nameof(id));
+
+            return await _groupRepository.GetGroupAsync(id, cancellationToken);
         }
 
         /// <summary>
@@ -542,10 +542,12 @@ namespace MvcForum.Core.Services
             return await pipeline.Process(piplineModel);
         }
 
-        public Group GetBySlug(string slug)
+        public async Task<GroupViewModel> GetBySlugAsync(string slug, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
             slug = StringUtils.GetSafeHtml(slug);
-            return _context.Group.AsNoTracking().FirstOrDefault(x => x.Slug == slug);
+            return await _groupRepository.GetGroupAsync(slug, cancellationToken);
         }
 
         public IList<Group> GetBySlugLike(string slug)
@@ -806,9 +808,12 @@ namespace MvcForum.Core.Services
             return true;
         }
 
-        public bool LeaveGroup(string slug, Guid membershipId)
+        public async Task<bool> LeaveGroupAsync(string slug, Guid membershipId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var group = GetBySlug(slug);
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+            if (Guid.Empty == membershipId) throw new ArgumentOutOfRangeException(nameof(membershipId));
+
+            var group = await GetBySlugAsync(slug);
             var groupUser = _context.GroupUser.FirstOrDefault(x => x.Group.Id == group.Id && x.User.Id == membershipId);
             if (groupUser != null)
             {
@@ -854,6 +859,46 @@ namespace MvcForum.Core.Services
             user.Role = _context.MembershipRole.FirstOrDefault(x => x.Id == groupUser.Role.Id);
             _ = await _context.SaveChangesAsync(cancellationToken);
             return user;
+        }
+
+        public bool UserIsAdmin(string groupSlug, Guid userId)
+        {
+            if (string.IsNullOrWhiteSpace(groupSlug)) throw new ArgumentNullException(nameof(groupSlug));
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            return _groupRepository.UserIsAdmin(groupSlug, userId);
+        }
+
+        public bool UserHasGroupAccess(string groupSlug, Guid userId)
+        {
+            if (string.IsNullOrWhiteSpace(groupSlug)) throw new ArgumentNullException(nameof(groupSlug));
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            return _groupRepository.UserHasGroupAccess(groupSlug, userId);
+        }
+
+        public async Task<bool> UpdateAsync(GroupWriteViewModel model, string slug, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
+            if (model is null) throw new ArgumentNullException(nameof(model));
+
+            return await _groupCommand.UpdateAsync(model, slug, cancellationToken);
+        }
+
+        public UploadFileResult UploadGroupImage(HttpPostedFileBase file, Guid groupId)
+        {
+            if (file is null) throw new ArgumentNullException(nameof(file));
+            if (Guid.Empty == groupId) throw new ArgumentOutOfRangeException(nameof(groupId));
+
+            // Before we save anything, check the user already has an upload folder and if not create one
+            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath, groupId));
+            if (!Directory.Exists(uploadFolderPath))
+            {
+                Directory.CreateDirectory(uploadFolderPath ?? throw new InvalidOperationException());
+            }
+
+            return file.UploadFile(uploadFolderPath, _localizationService, true);
         }
     }
 }

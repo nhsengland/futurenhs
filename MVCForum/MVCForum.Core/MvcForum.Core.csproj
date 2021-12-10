@@ -202,6 +202,8 @@
     <Compile Include="Models\Attributes\DescriptionAttribute.cs" />
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
+    <Compile Include="Models\Attributes\ValidateFileLengthAttribute.cs" />
+    <Compile Include="Models\Attributes\ValidateFileTypeAttribute.cs" />
     <Compile Include="Models\Collabora\FileServerResponse.cs" />
     <Compile Include="Models\Entities\Category.cs" />
     <Compile Include="Models\Entities\File.cs" />
@@ -323,6 +325,8 @@
     <Compile Include="Models\Entities\PollAnswer.cs" />
     <Compile Include="Models\Entities\PollVote.cs" />
     <Compile Include="Models\Groups\GroupUserDTO.cs" />
+    <Compile Include="Models\Groups\GroupViewModel.cs" />
+    <Compile Include="Models\Groups\GroupWriteViewModel.cs" />
     <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
     <Compile Include="Models\PostType.cs" />
@@ -341,7 +345,9 @@
     <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Repositories\Command\FileCommand.cs" />
     <Compile Include="Repositories\Command\GroupAddMemberCommand.cs" />
+    <Compile Include="Repositories\Command\GroupCommand.cs" />
     <Compile Include="Repositories\Command\Interfaces\IGroupAddMemberCommand.cs" />
+    <Compile Include="Repositories\Command\Interfaces\IGroupCommand.cs" />
     <Compile Include="Repositories\Command\SystemPagesCommand.cs" />
     <Compile Include="Repositories\Command\FolderCommand.cs" />
     <Compile Include="Repositories\Command\GroupInviteCommand.cs" />
@@ -363,8 +369,10 @@
     <Compile Include="Repositories\Repository\FolderRepository.cs" />
     <Compile Include="Repositories\Repository\GroupAddMemberRepository.cs" />
     <Compile Include="Repositories\Repository\GroupInviteRepository.cs" />
+    <Compile Include="Repositories\Repository\GroupRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFileRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IGroupAddMemberRepository.cs" />
+    <Compile Include="Repositories\Repository\Interfaces\IGroupRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\ISystemPagesRepository.cs" />
     <Compile Include="Repositories\Repository\Interfaces\IFolderRepository.cs" />
     <Compile Include="Repositories\Database\RetryPolicy\DbRetryPolicy.cs" />

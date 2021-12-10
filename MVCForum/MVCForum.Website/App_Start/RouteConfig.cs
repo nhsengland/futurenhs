@@ -19,7 +19,7 @@
             //routes.MapMvcAttributeRoutes();
 
 
-            
+
 
             routes.MapRoute(
                 "TermsAndConditionsUrl", // Route name
@@ -60,6 +60,12 @@
                 "GroupUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}"), // URL with parameters
                 new { controller = "Group", action = "Show", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "GroupEditUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/edit"), // URL with parameters
+                new { controller = "Group", action = "Edit", slug = UrlParameter.Optional, tab = "edit" } // Parameter defaults
             );
 
             routes.MapRoute(
@@ -108,7 +114,7 @@
                 "TopicUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{group}/{tab}/{slug}"), // URL with parameters
                 new { controller = "Topic", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
-            );            
+            );
 
             routes.MapRoute(
                 "GroupMembersUrls", // Route name

@@ -51,7 +51,7 @@ namespace MvcForum.Core.Ioc
         public static void InitialiseUnityContainer(HttpConfiguration config)
         {
             Container = new UnityContainer();
-            
+
             DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
             config.DependencyResolver = new HttpDependencyResolver(Container);
             // Bit annoying having just this here but we need this early in the startup for seed method
@@ -94,9 +94,9 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IBannedWordService, BannedWordService>();
             Container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
             Container.BindInRequestScope<IFavouriteService, FavouriteService>();
-            Container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();            
+            Container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
             Container.BindInRequestScope<INotificationService, NotificationService>();
-            Container.BindInRequestScope<IBlockService, BlockService>();            
+            Container.BindInRequestScope<IBlockService, BlockService>();
             Container.BindInRequestScope<IPostEditService, PostEditService>();
             Container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
             Container.BindInRequestScope<ISpamService, SpamService>();
@@ -130,10 +130,10 @@ namespace MvcForum.Core.Ioc
             Container.RegisterInstance<IConfigurationProvider>(new ConfigurationProvider(
                 ConfigurationManager.ConnectionStrings["MVCForumContextReadOnly"].ConnectionString,
                 ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString,
-                Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]), 
-                Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"]), 
-                ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString, 
-                ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"], 
+                Convert.ToInt32(ConfigurationManager.AppSettings["Polly_RetryAttempts"]),
+                Convert.ToInt32(ConfigurationManager.AppSettings["Polly_DelayBetweenAttempts"]),
+                ConfigurationManager.ConnectionStrings["AzureBlobStorage:FilesPrimaryConnectionString_TO_BE_RETIRED"].ConnectionString,
+                ConfigurationManager.AppSettings["AzureBlobStorage:FilesContainerName_TO_BE_RETIRED"],
                 ConfigurationManager.AppSettings["AzureBlobStorage:FilesPrimaryEndpoint_TO_BE_RETIRED"],
                 ConfigurationManager.AppSettings["Email_SmtpFrom"],
                 ConfigurationManager.AppSettings["FileServer_TemplateUrl"],
@@ -149,8 +149,9 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<ISystemPagesRepository, SystemPagesRepository>();
             Container.BindInRequestScope<ISystemPagesCommand, SystemPagesCommand>();
             Container.BindInRequestScope<IGroupAddMemberRepository, GroupAddMemberRepository>();
+            Container.BindInRequestScope<IGroupRepository, GroupRepository>();
             Container.BindInRequestScope<IGroupAddMemberCommand, GroupAddMemberCommand>();
-            Container.BindInRequestScope<IFileServerService, FileServerService>();
+            Container.BindInRequestScope<IGroupCommand, GroupCommand>();
         }
     }
 
