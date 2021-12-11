@@ -23,7 +23,5 @@ module.exports = withPWA({
     images: {
         domains: ['localhost', 'picsum.photos'],
     },
-    serverRuntimeConfig: {
-        basePath: process.env.NEXT_BASE_PATH
-    }
+    basePath: process.env.NEXT_BASE_PATH
 });
