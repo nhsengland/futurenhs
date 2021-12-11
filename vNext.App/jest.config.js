@@ -18,5 +18,13 @@ module.exports = {
         '<rootDir>/node_modules/',
         '<rootDir>/UI/'
     ],
-    coverageReporters: ['json', 'lcov', 'text', 'clover', 'cobertura']
+    coverageReporters: ['json', 'lcov', 'text', 'clover', 'cobertura'],
+    reporters: [
+        'default', 
+        ['jest-junit', { 
+            suiteName: 'Jest tests',
+            outputDirectory: './test-reports/unit',
+            outputName: 'jest-junit.xml'
+        }]
+    ],
 }
