@@ -10,7 +10,8 @@ const props: Props = {
         titleText: 'mockTitle',
         metaDescriptionText: 'mockMetaDescriptionText',
         mainHeadingHtml: 'mockMainHeading',
-    }
+    },
+    logOutUrl: '/mock'
 };
 
 describe('Log out page', () => {

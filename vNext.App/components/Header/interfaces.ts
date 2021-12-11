@@ -5,6 +5,15 @@ export interface Props {
         id: string;
         text: string;
     }>;
+    navMenuList: Array<{
+        url: string;
+        text: string;
+        isActive?: boolean;
+        meta?: {
+            themeId?: number | string;
+            iconName?: string;
+        }
+    }>;
     content: { 
         editProfileText: string;
         logOutText: string;

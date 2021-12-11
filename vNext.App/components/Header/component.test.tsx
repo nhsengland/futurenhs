@@ -22,6 +22,7 @@ const testProps: Props = {
             altText: 'Image of Mock Name'
         }
     },
+    navMenuList: [],
     shouldRenderSearch: true,
     shouldRenderNavigation: true
 };

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Router from 'next/router'
+import classNames from 'classnames';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -31,6 +31,7 @@ export const Header: (props: Props) => JSX.Element = ({
     ],
     shouldRenderSearch = true,
     shouldRenderNavigation = true,
+    navMenuList,
     content,
     user
 }) => {
@@ -153,18 +154,36 @@ export const Header: (props: Props) => JSX.Element = ({
                                                             </div>
                                                     </Accordion>
                                                 </li>
-                                                <li role="none" className={`${cssUtilityClasses.DESKTOP_HIDDEN}`}>
-                                                    <a role="menuitem" href="/" className="c-site-header-nav_root-nav-trigger u-border-theme-8">
-                                                        <SVGIcon name="icon-home" className="c-site-header-nav_root-nav-content-icon u-fill-theme-8" />
-                                                        Home
-                                                    </a>
-                                                </li>
-                                                <li role="none" className={`${cssUtilityClasses.DESKTOP_HIDDEN}`}>
-                                                    <a role="menuitem" href="/groups" className="c-site-header-nav_root-nav-trigger u-border-theme-11">
-                                                        <SVGIcon name="icon-group" className="c-site-header-nav_root-nav-content-icon u-fill-theme-11" />
-                                                        Groups
-                                                    </a>
-                                                </li>
+                                                {navMenuList?.map(({ url, text, isActive, meta }, index) => {
+
+                                                    const { themeId, iconName } = meta ?? {};
+
+                                                    const generatedClasses = {
+                                                        link: classNames('c-site-header-nav_root-nav-trigger u-border-theme-8', {
+                                                            [`c-site-header-nav_root-nav-trigger--active`]: isActive,
+                                                            [`u-border-theme-8-${themeId}`]: typeof themeId !== 'undefined'
+                                                        }),
+                                                        icon: classNames('c-site-header-nav_root-nav-content-icon', {
+                                                            [`u-fill-theme-${themeId}`]: typeof themeId !== 'undefined'
+                                                        })
+                                                    }
+
+                                                    return (
+
+                                                        <li key={index} role="none" className={cssUtilityClasses.DESKTOP_HIDDEN}>
+                                                            <Link href={url}>
+                                                                <a role="menuitem" aria-current={isActive} className={generatedClasses.link}>
+                                                                    {iconName &&
+                                                                        <SVGIcon name={iconName} className={generatedClasses.icon} />
+                                                                    }
+                                                                    {text}
+                                                                </a>
+                                                            </Link>
+                                                        </li>
+
+                                                    )
+
+                                                })}
                                                 <li role="none" className={`u-margin-top-spacing-4 ${cssUtilityClasses.DESKTOP_HIDDEN}`}>
                                                     <span className={cssUtilityClasses.TEXT_BOLD}>Need help? </span>
                                                     <a target="_blank" rel="noopener" href="https://futurenhstest.service-now.com/csm/?id=futurenhs_test">Visit our support site</a>

@@ -12,7 +12,8 @@ import { GetServerSidePropsContext } from '@appTypes/next';
 import { Props } from './interfaces';
 
 const Index: (props: Props) => JSX.Element = ({
-    content
+    content,
+    logOutUrl
 }) => {
 
     const { titleText, 
@@ -34,7 +35,7 @@ const Index: (props: Props) => JSX.Element = ({
                         <h1>{mainHeadingHtml}</h1>
                         <p>Your are now logged out</p>
                         <p className="desktop:u-pb-4">
-                            <Link href={getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL' }) as string}>
+                            <Link href={logOutUrl}>
                                 <a>Log in again</a>
                             </Link>
                         </p>
@@ -54,7 +55,8 @@ export const getServerSideProps: GetServerSideProps = withLogOut(async(context: 
                 titleText: 'Logged out', 
                 metaDescriptionText: 'Log out',
                 mainHeadingHtml: 'Logged out'
-            }
+            },
+            logOutUrl: getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL' })
         }
     }
 

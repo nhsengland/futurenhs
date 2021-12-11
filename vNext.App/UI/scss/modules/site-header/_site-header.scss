@@ -8,6 +8,7 @@
     }
 
     &_content {
+        display: flex;
         padding: $nhsuk-spacing-point-3 0;
         height: $site-header-mobile-height;
 
@@ -20,11 +21,16 @@
     }
 
     &_logo {
-        display: block;
+        display: flex;
         float: left;
-        max-width: calc(100% - 85px);
-        height: $site-logo-mobile-height;
+        max-width: 50%;
         box-sizing: content-box;
+
+        @include respond-to(tablet) {
+            max-width: calc(100% - 85px);
+            height: $site-logo-mobile-height;
+        }
+
     }
 
     &_nav {

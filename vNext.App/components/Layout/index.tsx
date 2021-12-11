@@ -70,7 +70,8 @@ export const Layout: (props: Props) => JSX.Element = ({
                 }}
                 user={user}
                 shouldRenderSearch={shouldRenderSearch} 
-                shouldRenderNavigation={shouldRenderUserNavigation} />
+                shouldRenderNavigation={shouldRenderUserNavigation}
+                navMenuList={mainNavMenuList} />
             <main id="main" className={generatedClasses.wrapper}>
                 {shouldRenderPhaseBanner &&
                     <div className="u-bg-theme-3">
