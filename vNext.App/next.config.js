@@ -23,5 +23,5 @@ module.exports = withPWA({
     images: {
         domains: ['localhost', 'picsum.photos'],
     },
-    assetPrefix: process.env.NEXT_BASE_PATH
+    assetPrefix: process.env.IS_LOCAL_DEV ? '' : '/gateway/web'
 });

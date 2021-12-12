@@ -1,3 +1,13 @@
+variables:
+- name: NEXT_PUBLIC_ASSET_PREFIX
+  value: '/gateway/web'
+- name: NEXT_PUBLIC_API_BASE_URL
+  value: 'mockForTests'
+- name: NEXT_PUBLIC_MVC_FORUM_LOGIN_URL
+  value: 'mockForTests'
+- name: NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL
+  value: 'mockForTests'
+
 trigger:
   branches:
     include:
@@ -37,20 +47,20 @@ jobs:
       versionSpec: '14.17.4'
     
   - task: Npm@1
-    displayName: 'npm install'
+    displayName: 'Npm install'
     inputs:
       command: 'install'
       workingDir: '$(Build.SourcesDirectory)/vNext.App'
     
   - task: gulp@0
-    displayName: 'Build client'
+    displayName: 'Build front end assets'
     inputs:
       gulpFile: '$(Build.SourcesDirectory)/vNext.App/gulpfile.js'
       targets: 'build'
       gulpjs: '$(Build.SourcesDirectory)/vNext.App/node_modules/gulp/bin/gulp.js'
 
   - task: Npm@1
-    displayName: 'Next build'
+    displayName: 'Build Next.js assets'
     inputs:
       command: 'custom'
       workingDir: '$(Build.SourcesDirectory)/vNext.App'

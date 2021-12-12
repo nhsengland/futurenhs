@@ -9,7 +9,6 @@ import { Footer } from '@components/Footer';
 import { MainNav } from '@components/MainNav';
 import { LayoutWidthContainer } from '@components/LayoutWidthContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-import { getEnvVar } from '@helpers/util/env';
 import { mainNavMenuList, footerNavMenuList } from '@constants/navigation';
 
 import { Props } from './interfaces';
@@ -27,10 +26,7 @@ export const Layout: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
     const currentPathName: string = router?.pathname;
-    const basePath: string = getEnvVar({
-        name: 'NEXT_BASE_PATH',
-        isRequired: false 
-    }) as string ?? '';
+    const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || '';
     const breadCrumbDescriptionHtml: string = "<span class=\"u-text-bold\">Need help?</span> <a target=\"_blank\" rel=\"noopener\" href=\"https://futurenhstest.service-now.com/csm/?id=futurenhs_test\">Visit our support site</a>" 
 
     mainNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
@@ -62,8 +58,9 @@ export const Layout: (props: Props) => JSX.Element = ({
     return (
 
         <>
-            <Head basePath={basePath} />
+            <Head assetPath={assetPath} />
             <Header
+                assetPath={assetPath}
                 skipLinkList={skipLinkList}
                 content={{
                     editProfileText: 'Edit profile',

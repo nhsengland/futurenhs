@@ -27,13 +27,7 @@ describe('SVG Icon component', () => {
         });
         const wrapper = shallow(<SVGIcon {...testProps} />);
         const wrapperNoIconUrl = shallow(<SVGIcon {...propsNoIconUrl} />);
-
-        const basePath: string = getEnvVar({
-            name: 'NEXT_BASE_PATH',
-            isRequired: false
-        }) as string;
-
-        const url: string = basePath ? basePath + '/icons/icons.svg' : '/icons/icons.svg';
+        const url: string = process.env.NEXT_PUBLIC_ASSET_PREFIX ? process.env.NEXT_PUBLIC_ASSET_PREFIX + '/icons/icons.svg' : '/icons/icons.svg';
 
         expect(wrapper.find('svg.c-svg-icon use').prop('xlinkHref')).toEqual(`${url}#mock-icon`);
         expect(wrapperNoIconUrl.find('svg.c-svg-icon use').prop('xlinkHref')).toEqual('#mock-icon');

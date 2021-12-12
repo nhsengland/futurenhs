@@ -23,6 +23,7 @@ export interface Props {
         logOutConfirmText: string;
     };
     user: User;
+    assetPath?: string;
     shouldRenderSearch?: boolean;
     shouldRenderNavigation?: boolean; 
     className?: string; 
