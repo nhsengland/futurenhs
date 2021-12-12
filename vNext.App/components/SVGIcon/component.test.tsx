@@ -1,6 +1,7 @@
 import { shallow } from 'enzyme';
 
 import { SVGIcon } from './index';
+import { getEnvVar } from '@helpers/util/env';
 
 import { Props } from './interfaces';
 
@@ -27,7 +28,14 @@ describe('SVG Icon component', () => {
         const wrapper = shallow(<SVGIcon {...testProps} />);
         const wrapperNoIconUrl = shallow(<SVGIcon {...propsNoIconUrl} />);
 
-        expect(wrapper.find('svg.c-svg-icon use').prop('xlinkHref')).toEqual('/icons/icons.svg#mock-icon');
+        const basePath: string = getEnvVar({
+            name: 'NEXT_BASE_PATH',
+            isRequired: false
+        }) as string;
+
+        const url: string = basePath ? basePath + '/icons/icons.svg' : '/icons/icons.svg';
+
+        expect(wrapper.find('svg.c-svg-icon use').prop('xlinkHref')).toEqual(`${url}#mock-icon`);
         expect(wrapperNoIconUrl.find('svg.c-svg-icon use').prop('xlinkHref')).toEqual('#mock-icon');
 
     });
