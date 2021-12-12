@@ -21,7 +21,7 @@
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value is HttpPostedFileBase file && !_validTypes.Any(e => file.FileName.EndsWith(e)))
+            if (value is HttpPostedFileBase file && !_validTypes.Any(e => file.FileName.EndsWith(e, StringComparison.OrdinalIgnoreCase)))
             {
                 return new ValidationResult(ErrorMessageString);
             }
