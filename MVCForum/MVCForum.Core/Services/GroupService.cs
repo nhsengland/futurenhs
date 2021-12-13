@@ -473,6 +473,14 @@ namespace MvcForum.Core.Services
             return await GetBySlugAsync(slug, cancellationToken);
         }
 
+        public GroupViewModel Get(string slug)
+        {
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
+            return GetBySlug(slug);
+
+        }
+
         /// <summary>
         ///     Return Group by Url slug
         /// </summary>
@@ -548,6 +556,14 @@ namespace MvcForum.Core.Services
 
             slug = StringUtils.GetSafeHtml(slug);
             return await _groupRepository.GetGroupAsync(slug, cancellationToken);
+        }
+
+        public GroupViewModel GetBySlug(string slug)
+        {
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
+            slug = StringUtils.GetSafeHtml(slug);
+            return _groupRepository.GetGroup(slug);
         }
 
         public IList<Group> GetBySlugLike(string slug)

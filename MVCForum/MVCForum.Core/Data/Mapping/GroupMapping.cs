@@ -28,7 +28,8 @@
             Property(x => x.Path).IsOptional().HasMaxLength(2500);
             Property(x => x.Colour).IsOptional().HasMaxLength(50);
             Property(x => x.Image).IsOptional().HasMaxLength(200);
-            
+            Property(x => x.AboutUs).IsRequired().HasMaxLength(5000);
+
 
             HasOptional(x => x.ParentGroup)
                 .WithMany()

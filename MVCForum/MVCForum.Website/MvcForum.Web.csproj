@@ -1216,6 +1216,7 @@
     <Content Include="Views\Home\LatestDiscussions.cshtml" />
     <Content Include="Views\GroupFile\_FilePreview.cshtml" />
     <Content Include="Views\Group\Edit.cshtml" />
+    <Content Include="Views\Group\_AboutUs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

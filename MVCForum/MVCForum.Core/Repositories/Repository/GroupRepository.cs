@@ -27,6 +27,7 @@
                                 [Name],
                                 [Description],
                                 [Introduction],
+                                [AboutUs],
                                 [Slug],
                                 [Image],
                                 [PublicGroup],
@@ -49,6 +50,7 @@
                                 [Name],
                                 [Description],
                                 [Introduction],
+                                [AboutUs],
                                 [Slug],
                                 [Image],
                                 [PublicGroup],
@@ -60,6 +62,29 @@
             using (var conn = this._connectionFactory.CreateReadOnlyConnection())
             {
                 return await conn.QuerySingleAsync<GroupViewModel>(sql, new { slug = slug });
+            }
+        }
+
+        public GroupViewModel GetGroup(string slug)
+        {
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
+            var sql = @"SELECT  [Id],
+                                [Name],
+                                [Description],
+                                [Introduction],
+                                [AboutUs],
+                                [Slug],
+                                [Image],
+                                [PublicGroup],
+                                [IsDeleted]
+                        FROM [dbo].[Group] 
+                        WHERE [slug] = @slug
+                        AND [IsDeleted] = 0";
+
+            using (var conn = this._connectionFactory.CreateReadOnlyConnection())
+            {
+                return conn.QuerySingle<GroupViewModel>(sql, new { slug = slug });
             }
         }
 

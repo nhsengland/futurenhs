@@ -28,7 +28,8 @@
                             [Description] = @description,
                             [Image] = @image,
                             [PublicGroup] = @publicGroup,
-                            [Introduction] = @introduction
+                            [Introduction] = @introduction,
+                            [AboutUs] = @aboutUs
                         WHERE [Slug] = @slug";
 
             var param = new
@@ -38,6 +39,7 @@
                 image = model.Image,
                 publicGroup = model.PublicGroup,
                 introduction = model.Introduction,
+                aboutUs = model.AboutUs,
                 slug = slug
             };
 

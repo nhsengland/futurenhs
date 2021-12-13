@@ -63,29 +63,6 @@
                 // new LinkGroup { IconTheme=Themes.FILL_THEME_9, Icon = Icons.Star, Order = 15, Name = "Favourites", Url = "/", BorderTheme=Themes.BORDER_9 }
             };
 
-            RouteData routeData = RouteTable.Routes.GetRouteData(HttpContext);
-            if ((string)routeData.Values["controller"] == "Group" && (string)routeData.Values["action"] == "Show")
-            {
-                var slug = routeData.Values["slug"];
-
-                navItems.Add(new LinkGroup()
-                {
-                    Name = "Groups",
-                    Icon = Icons.Group,
-                    IconTheme = Themes.FILL_THEME_8,
-                    BorderTheme = Themes.BORDER_8,
-                    Order = 5,
-                    ChildItems = new List<Link>()
-                    {
-                        new Link { Name = "Home", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional }) },
-                        new Link { Name = "Forum", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupForumTab }) },
-                        new Link { Name = "Files", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupFilesTab }) },
-                        new Link { Name = "Members", Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab= Constants.GroupMembersTab }) }
-
-                    }
-                });
-            }
-
             return navItems;
         }
 

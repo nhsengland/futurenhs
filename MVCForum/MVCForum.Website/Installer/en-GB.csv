@@ -100,12 +100,14 @@ Following.PageTitle,Topics & Groups
 Following.Topics,Topics you are following
 Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
 Groups.Leave,Leave Group
+Group.AboutUs,About us
 Group.AllGroups,All Groups
 Group.Forum,All discussions
 Group.GroupsSideHeading,Groups
 Group.MostRecent,Most recent:
 Group.Members,Group Members
 Group.NoDiscussions,Currently no discussions in this Group
+Group.GroupRules,Group Rules
 Group.SubGroupsHeading,Sub Groups In
 Group.PublicGroup.JoinMessage,Please join the group to contribute
 Group.MyGroups.Title,My Groups
@@ -118,10 +120,12 @@ Group.EditGroup.Title,Edit group
 Group.EditGroup.Introduction,Edit your group title, description, introduction and logo.
 Group.EditGroup.LogoIntroduction,Please upload your logo. If not we will use our default icon.
 Group.EditGroup.IntroHelpText,Please note this will be used to search for this group so use keywords.
+Group.EditGroup.AboutUsHelpText, This is the content that will be displayed on the group's about us page.
 GroupTabs.Home,Home
 GroupTabs.Forum,Forum
 GroupTabs.Files,Files
 GroupTabs.Members,Members
+GroupTabs.AboutUs,About us
 Header.Phasebanner.FeedbackLink,http://www.google.co.uk
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss

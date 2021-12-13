@@ -392,8 +392,16 @@ namespace MvcForum.Web.Controllers
                 Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}"
             };
 
-         
-                switch (tab)
+            var aboutUsTab = new Tab
+            {
+                Name = "GroupTabs.AboutUs",
+                Order = 5,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.AboutUsTab })}"
+            };
+
+
+
+            switch (tab)
                 {
                     case Constants.GroupFilesTab:
                         filesTab.Active = true;
@@ -404,13 +412,16 @@ namespace MvcForum.Web.Controllers
                     case Constants.GroupMembersTab:
                         membersTab.Active = true;
                         break;
-                    default:
+                    case Constants.AboutUsTab:
+                        aboutUsTab.Active = true;
+                        break;
+                default:
                         homeTab.Active = true;
                         break;
                 }
             
 
-            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab, aboutUsTab } };
 
             return tabsViewModel;
         }
@@ -594,11 +605,23 @@ namespace MvcForum.Web.Controllers
                 {
                     ViewBag.HideSideBar = true;
                 }
-
+                if (tab == Constants.AboutUsTab)
+                {
+                    ViewBag.HideSideBar = true;
+                }
                 return View(viewModel);
             }
 
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+        }
+
+
+        [HttpGet]
+        [ChildActionOnly]
+        public virtual PartialViewResult AboutUs(string slug)
+        {  // Get the Group
+            var group =  _groupService.Get(slug);
+            return PartialView("_AboutUs", group);
         }
 
         [HttpGet]
@@ -742,6 +765,7 @@ namespace MvcForum.Web.Controllers
                 Description = group.Description,
                 Image = group.Image,
                 Introduction = group.Introduction,
+                AboutUs = group.AboutUs,
                 Name = group.Name,
                 PublicGroup = group.PublicGroup,
                 Slug = group.Slug,

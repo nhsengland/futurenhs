@@ -49,6 +49,7 @@
         IList<Group> Get(IList<Guid> ids, bool fullGraph = false);
         Task<GroupViewModel> GetAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken));
         Task<GroupViewModel> GetAsync(string slug, CancellationToken cancellationToken = default(CancellationToken));
+        GroupViewModel Get(string slug);
         GroupWithSubGroups GetBySlugWithSubGroups(string slug, Guid? membershipId);
         List<Group> GetGroupParents(Group Group, List<Group> allowedGroups);
         Task<IPipelineProcess<Group>> Delete(Group Group);

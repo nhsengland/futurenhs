@@ -88,6 +88,7 @@
         public const string GroupForumTab = "forum";
         public const string GroupMembersTab = "members";
         public const string GroupFilesTab = "files";
+        public const string AboutUsTab = "aboutus";
 
         public const string MyGroupsTab = "mygroups";
         public const string DiscoverGroupsTab = "discovergroups";

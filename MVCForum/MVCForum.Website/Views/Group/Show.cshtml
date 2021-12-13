@@ -105,5 +105,10 @@
     @Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
 }
 
+@if (Model.Tab == Constants.AboutUsTab)
+{
+	@Html.Action("AboutUs", new { groupId = Model.Group.Id })
+}
+
 
 

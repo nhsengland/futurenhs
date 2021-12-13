@@ -190,6 +190,10 @@
     <Compile Include="Migrations\202111231532583_FixMigrationsBlank1.Designer.cs">
       <DependentUpon>202111231532583_FixMigrationsBlank1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202112122228345_AddAboutUsColumn.cs" />
+    <Compile Include="Migrations\202112122228345_AddAboutUsColumn.Designer.cs">
+      <DependentUpon>202112122228345_AddAboutUsColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -680,6 +684,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202111231532583_FixMigrationsBlank1.resx">
       <DependentUpon>202111231532583_FixMigrationsBlank1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112122228345_AddAboutUsColumn.resx">
+      <DependentUpon>202112122228345_AddAboutUsColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

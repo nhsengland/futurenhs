@@ -35,6 +35,12 @@
         [StringLength(5000, ErrorMessage = "The group introduction must not be greater than 5000 characters.")]
         public string Introduction { get; set; }
 
+        [DisplayName("Group rules")]
+        [Required(ErrorMessage = "Please provide group rules for your group.")]
+        [AllowHtml]
+        [StringLength(5000, ErrorMessage = "The group rules must not be greater than 5000 characters.")]
+        public string AboutUs { get; set; }
+
         [DisplayName("Logo")]
         [ValidateFileType("JPEG,JPG,PNG", ErrorMessage = "The selected file must be a JPG or PNG.")]
         [ValidateFileLength(5 * 1024 * 100, ErrorMessage = "The logo file is too large.  It must not be greater then 500KB.")]

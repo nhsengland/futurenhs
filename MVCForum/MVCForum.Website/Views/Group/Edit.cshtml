@@ -1,76 +1,89 @@
 ﻿@model MvcForum.Core.Models.Groups.GroupWriteViewModel
 @{
-    ViewBag.Title = "Edit";
-    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+	ViewBag.Title = "Edit";
+	Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
 
-    string inputError = "c-input--error";
-    string textAreaError = "c-textarea--error";
-    string formError = "c-form-group--error";
+	string inputError = "c-input--error";
+	string textAreaError = "c-textarea--error";
+	string formError = "c-form-group--error";
 }
 
 @section GroupHeader {
-    @{
-        Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = String.Empty });
-    }
+	@{
+		Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = String.Empty });
+	}
 }
 
 @if (!ViewData.ModelState.IsValid)
 {
-    <div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert" tabindex="-1">
-        <h2 id="error-summary-title" class="c-error-summary_title">
-            There is a problem
-        </h2>
-        <div class="c-error-summary_body">
-            <ul class="c-error-summary_list">
+	<div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert" tabindex="-1">
+		<h2 id="error-summary-title" class="c-error-summary_title">
+			There is a problem
+		</h2>
+		<div class="c-error-summary_body">
+			<ul class="c-error-summary_list">
 
-                @Html.Raw(Html.CustomValidationSummary("c-error-summary_error-text"))
+				@Html.Raw(Html.CustomValidationSummary("c-error-summary_error-text"))
 
-            </ul>
-        </div>
-    </div>
+			</ul>
+		</div>
+	</div>
 }
-
-<h2>@Html.LanguageString("Group.EditGroup.Title")</h2>
-
-<p class="u-text-lead">@Html.LanguageString("Group.EditGroup.Introduction")</p>
-
-@using (Html.BeginForm("Edit", "Group", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-
-    @Html.HiddenFor(m => m.Id)
-    @Html.HiddenFor(m => m.Image)
+<div class="c-card">
+	<div class="c-card_content">
 
 
-    <div class="c-form-group @Html.FieldHasError(model => model.Name, formError)">
-        @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "c-label" })
-        @Html.ValidationMessageFor(model => model.Name, "", htmlAttributes: new { @class = "c-error-message" })
-        @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Name, inputError) } })
-    </div>
-    <div class="c-form-group @Html.FieldHasError(model => model.Description, formError)">
-        @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "c-label" })
-        @Html.ValidationMessageFor(model => model.Description, "", htmlAttributes: new { @class = "c-error-message" })
-        @Html.TextAreaFor(m => m.Description, htmlAttributes: new { rows = 3, @class = "c-textarea" + " " + Html.FieldHasError(model => model.Description, textAreaError) })
-    </div>
+		<h2>@Html.LanguageString("Group.EditGroup.Title")</h2>
 
-    <div class="c-form-group @Html.FieldHasError(model => model.Files, formError)">
-        @Html.LabelFor(model => model.Files, htmlAttributes: new { @class = "c-label u-margin-bottom-spacing-2" })
-        <span class="c-hint-message">@Html.LanguageString("Group.EditGroup.LogoIntroduction")</span>
-        @Html.ValidationMessageFor(model => model.Files, "", htmlAttributes: new { @class = "c-error-message" })
-        @Html.TextBoxFor(model => model.Files, new { type = "file", name = "File", @class = "" })
-    </div>
+		<p class="u-text-lead">@Html.LanguageString("Group.EditGroup.Introduction")</p>
 
-    <div class="c-form-group @Html.FieldHasError(model => model.Introduction, formError)">
-        @Html.LabelFor(m => m.Introduction, htmlAttributes: new { @class = "c-label" })
-        <span class="c-hint-message">@Html.LanguageString("Group.EditGroup.IntroHelpText")</span>
-        @Html.ValidationMessageFor(model => model.Introduction, "", htmlAttributes: new { @class = "c-error-message" })
-        @Html.TextAreaFor(m => m.Introduction, htmlAttributes: new { rows = 6, @class = "c-textarea" + " " + Html.FieldHasError(model => model.Introduction, textAreaError) })
-    </div>
+		@using (Html.BeginForm("Edit", "Group", FormMethod.Post, new { enctype = "multipart/form-data" }))
+		{
+			@Html.AntiForgeryToken()
 
-    <div class="c-form-group">
-        @Html.LabelFor(m => m.PublicGroup, htmlAttributes: new { @class = "c-label" })
-        @Html.CheckBoxFor(m => m.PublicGroup)
-    </div>
+			@Html.HiddenFor(m => m.Id)
+			@Html.HiddenFor(m => m.Image)
 
-    <input class="c-button c-button--success" type="submit" value="Save and close" />
-}
+
+			<div class="c-form-group @Html.FieldHasError(model => model.Name, formError)">
+				@Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "c-label" })
+				@Html.ValidationMessageFor(model => model.Name, "", htmlAttributes: new { @class = "c-error-message" })
+				@Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Name, inputError) } })
+			</div>
+			<div class="c-form-group @Html.FieldHasError(model => model.Description, formError)">
+				@Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "c-label" })
+				@Html.ValidationMessageFor(model => model.Description, "", htmlAttributes: new { @class = "c-error-message" })
+				@Html.TextAreaFor(m => m.Description, htmlAttributes: new { rows = 3, @class = "c-textarea" + " " + Html.FieldHasError(model => model.Description, textAreaError) })
+			</div>
+
+
+			<div class="c-form-group @Html.FieldHasError(model => model.Files, formError)">
+
+				@Html.LabelFor(model => model.Files, htmlAttributes: new { @class = "c-label u-margin-bottom-spacing-2" })
+				<span class="c-hint-message">@Html.LanguageString("Group.EditGroup.LogoIntroduction")</span>
+				@Html.ValidationMessageFor(model => model.Files, "", htmlAttributes: new { @class = "c-error-message" })
+				@Html.TextBoxFor(model => model.Files, new { type = "file", name = "File", @class = "" })
+			</div>
+
+			<div class="c-form-group @Html.FieldHasError(model => model.Introduction, formError)">
+				@Html.LabelFor(m => m.Introduction, htmlAttributes: new { @class = "c-label" })
+				<span class="c-hint-message">@Html.LanguageString("Group.EditGroup.IntroHelpText")</span>
+				@Html.ValidationMessageFor(model => model.Introduction, "", htmlAttributes: new { @class = "c-error-message" })
+				@Html.TextAreaFor(m => m.Introduction, htmlAttributes: new { rows = 6, @class = "c-textarea" + " " + Html.FieldHasError(model => model.Introduction, textAreaError) })
+			</div>
+
+			<div class="c-form-group @Html.FieldHasError(model => model.AboutUs, formError)">
+				@Html.LabelFor(m => m.AboutUs, htmlAttributes: new { @class = "c-label" })
+				@Html.ValidationMessageFor(model => model.AboutUs, "", htmlAttributes: new { @class = "c-error-message" })
+				@Html.TextAreaFor(m => m.AboutUs, htmlAttributes: new { rows = 6, @class = "c-textarea" + " " + Html.FieldHasError(model => model.AboutUs, textAreaError) })
+			</div>
+
+			<div class="c-form-group">
+				@Html.LabelFor(m => m.PublicGroup, htmlAttributes: new { @class = "c-label" })
+				@Html.CheckBoxFor(m => m.PublicGroup)
+			</div>
+
+			<input class="c-button c-button--success" type="submit" value="Save and close" />
+		}
+	</div>
+</div>
