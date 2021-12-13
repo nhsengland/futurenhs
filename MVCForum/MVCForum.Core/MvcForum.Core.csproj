@@ -194,6 +194,10 @@
     <Compile Include="Migrations\202112122228345_AddAboutUsColumn.Designer.cs">
       <DependentUpon>202112122228345_AddAboutUsColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202112130746147_SetAboutUsAOptional.cs" />
+    <Compile Include="Migrations\202112130746147_SetAboutUsAOptional.Designer.cs">
+      <DependentUpon>202112130746147_SetAboutUsAOptional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -687,6 +691,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202112122228345_AddAboutUsColumn.resx">
       <DependentUpon>202112122228345_AddAboutUsColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112130746147_SetAboutUsAOptional.resx">
+      <DependentUpon>202112130746147_SetAboutUsAOptional.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

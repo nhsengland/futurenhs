@@ -36,7 +36,6 @@
         public string Introduction { get; set; }
 
         [DisplayName("Group rules")]
-        [Required(ErrorMessage = "Please provide group rules for your group.")]
         [AllowHtml]
         [StringLength(5000, ErrorMessage = "The group rules must not be greater than 5000 characters.")]
         public string AboutUs { get; set; }
