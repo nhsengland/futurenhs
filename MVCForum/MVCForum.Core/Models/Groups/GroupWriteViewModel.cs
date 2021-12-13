@@ -32,12 +32,12 @@
         [DisplayName("Group introduction")]
         [Required(ErrorMessage = "Please provide an introduction to your group.")]
         [AllowHtml]
-        [StringLength(5000, ErrorMessage = "The group introduction must not be greater than 5000 characters.")]
+        [StringLength(4000, ErrorMessage = "The group introduction must not be greater than 4000 characters.")]
         public string Introduction { get; set; }
 
         [DisplayName("Group rules")]
         [AllowHtml]
-        [StringLength(5000, ErrorMessage = "The group rules must not be greater than 5000 characters.")]
+        [StringLength(4000, ErrorMessage = "The group rules must not be greater than 4000 characters.")]
         public string AboutUs { get; set; }
 
         [DisplayName("Logo")]
