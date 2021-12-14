@@ -47,7 +47,7 @@ namespace MvcForum.Web
             UnityHelper.InitialiseUnityContainer(System.Web.Http.GlobalConfiguration.Configuration);
 
             // Make DB update to latest migration
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
+            // Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
 
             // Set the rest of the Ioc
             UnityHelper.BuildUnityContainer();
