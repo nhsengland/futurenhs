@@ -89,7 +89,9 @@
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Attributes\ApiAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiControllers\AutomationController.cs" />
+    <Compile Include="Controllers\ApiControllers\AuthController.cs" />
     <Compile Include="Controllers\FedTestController.cs" />
     <Compile Include="Controllers\SystemPagesController.cs" />
     <Compile Include="Controllers\FolderController.cs" />
@@ -1221,6 +1223,7 @@
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />
     <Folder Include="Content\languagepacks\" />
+    <Folder Include="Views\MVCForumAuthApi\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Web.config" />

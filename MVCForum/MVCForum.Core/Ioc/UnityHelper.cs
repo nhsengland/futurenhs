@@ -155,6 +155,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IGroupAddMemberCommand, GroupAddMemberCommand>();
             Container.BindInRequestScope<IGroupCommand, GroupCommand>();
             Container.BindInRequestScope<IFileServerService, FileServerService>();
+            Container.BindInRequestScope<IUserRepository, UserRepository>();
         }
     }
 
