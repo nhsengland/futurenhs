@@ -33,8 +33,7 @@ export const Header: (props: Props) => JSX.Element = ({
     shouldRenderNavigation = true,
     navMenuList,
     content,
-    user,
-    assetPath
+    user
 }) => {
 
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -48,7 +47,6 @@ export const Header: (props: Props) => JSX.Element = ({
             logOutCancelText,
             logOutConfirmText } = content ?? {};
 
-    const logoSrc: string = assetPath ? `${assetPath}/images/logo.svg` : `/images/logo.svg`;
     const headerAccordionId: string = 'header-accordion';
     const userAccordionId: string = 'user-accordion';
     const logOutRoute: string = routes.LOG_OUT;
@@ -78,7 +76,7 @@ export const Header: (props: Props) => JSX.Element = ({
                 <Link href="/">
                     <a className="c-site-header_logo u-focus-item">
                         <Image 
-                            src={logoSrc} 
+                            src="/images/logo.svg" 
                             height={41} 
                             width={231} 
                             alt="Future NHS home page" />

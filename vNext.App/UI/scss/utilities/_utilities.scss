@@ -14,6 +14,14 @@
     }
 }
 
+.u-tablet-up {
+    display: none;
+
+    @include respond-to(tablet) {
+        display: block;
+    }
+}
+
 .u-desktop-up {
     display: none;
 

@@ -50,7 +50,7 @@ export const Layout: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames('u-flex-grow', 'u-bg-theme-3', className),
-        breadCrumb: classNames('u-bg-theme-1'),
+        breadCrumb: classNames('u-bg-theme-1', 'u-tablet-up'),
         main: classNames('u-flex u-flex-grow'),
         content: classNames('u-w-0')
     };
@@ -60,7 +60,6 @@ export const Layout: (props: Props) => JSX.Element = ({
         <>
             <Head assetPath={assetPath} />
             <Header
-                assetPath={assetPath}
                 skipLinkList={skipLinkList}
                 content={{
                     editProfileText: 'Edit profile',
