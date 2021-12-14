@@ -1,6 +1,9 @@
 const path = require('path');
 const withPWA = require('next-pwa');
 
+const productionAssetprefix = '/gateway/web';
+const assetPrefix = process.env.IS_LOCAL_DEV ? '' : productionAssetprefix;
+
 module.exports = withPWA({
     pwa: {
         disable: process.env.NODE_ENV === 'development'
@@ -21,7 +24,8 @@ module.exports = withPWA({
         quietDeps: true
     },
     images: {
-        domains: ['localhost', 'picsum.photos'],
+        domains: ['localhost'],
+        path: `${assetPrefix}/_next/image`
     },
-    assetPrefix: process.env.IS_LOCAL_DEV ? '' : '/gateway/web'
+    assetPrefix: assetPrefix
 });
