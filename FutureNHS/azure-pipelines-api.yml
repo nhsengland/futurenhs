@@ -64,29 +64,13 @@ jobs:
       projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
       feedsToUse: 'select'
 
-   - task: DotNetCoreCLI@2
-     displayName: 'Publish FutureNHS Api'
-     inputs:
-      command: 'publish'
-      configuration: 'Release'
-      publishWebProjects: false
-      projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
-      zipAfterPublish: false
-
-   - task: CopyFiles@2
-     displayName: 'Copy files for artifact'
-     inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api/bin/Debug/net6.0/publish'
-      Contents: '**'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
 # Run all tests with "/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura" to generate the code coverage file
    - task: DotNetCoreCLI@2
      displayName: dotnet test
      inputs:
       command: test
       arguments: '--collect:"XPlat Code Coverage'
-      projects: '$(Build.SourcesDirectory)/$(working-dir)/TestResults/**/*.csproj'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Tests/FutureNHS.Tests.csproj'
       nobuild: true
 
    - script: |
@@ -103,6 +87,22 @@ jobs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
+      
+   - task: DotNetCoreCLI@2
+     displayName: 'Publish FutureNHS Api'
+     inputs:
+      command: 'publish'
+      configuration: 'Release'
+      publishWebProjects: false
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
+      zipAfterPublish: false
+
+   - task: CopyFiles@2
+     displayName: 'Copy files for artifact'
+     inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api/bin/Debug/net6.0/publish'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
    - task: PublishPipelineArtifact@1
      displayName: 'Publish artifact'
