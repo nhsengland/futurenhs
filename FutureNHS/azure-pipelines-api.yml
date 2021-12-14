@@ -75,7 +75,7 @@ jobs:
 
    - script: |
        dotnet tool install -g dotnet-reportgenerator-globaltool
-       reportgenerator -reports:*/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
+       reportgenerator -reports:**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
      displayName: Create Code coverage report
 
 # Publish the code coverage result (summary and web site)
