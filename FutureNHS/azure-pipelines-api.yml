@@ -85,8 +85,8 @@ jobs:
      displayName: dotnet test
      inputs:
       command: test
-      arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
-      projects: 'TestResults/**/*.csproj'
+      arguments: '--configuration $(BuildConfiguration) --collect:"XPlat Code Coverage'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/TestResults/**/*.csproj'
       nobuild: true
 
    - task: DotNetCoreCLI@2
