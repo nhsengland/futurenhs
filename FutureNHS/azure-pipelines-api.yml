@@ -93,7 +93,7 @@ jobs:
      displayName: 'Create Code coverage report'
      inputs:
       command: 'custom'
-      custom: 'dotnet tool install -g dotnet-reportgenerator-globaltool'
+      custom: 'tool install -g dotnet-reportgenerator-globaltool'
       arguments: 'reportgenerator -reports:$(Build.SourcesDirectory)/$(working-dir)/TestResults/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura'
 
 # Publish the code coverage result (summary and web site)
