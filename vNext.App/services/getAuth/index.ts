@@ -49,13 +49,13 @@ export const getAuth: GetAuthService = async ({
 
         return {
             data: {
-                id: json?.Id,
-                fullNameText: json?.FullNameText,
-                initialsText: json?.InitialsText,
-                image: {
-                    source: json?.UserAvatar?.Source,
-                    altText: json?.UserAvatar?.AltText
-                }
+                id: json?.Id ?? null,
+                fullNameText: json?.FullName ?? null,
+                initialsText: json?.Initials ?? null,
+                image: json?.UserAvatar ? {
+                    source: json?.UserAvatar?.Source ?? null,
+                    altText: json?.UserAvatar?.AltText ?? null
+                } : null
             }
         }
 
