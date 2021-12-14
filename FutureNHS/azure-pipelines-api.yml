@@ -85,7 +85,7 @@ jobs:
      displayName: dotnet test
      inputs:
       command: test
-      arguments: '--configuration $(BuildConfiguration) --collect:"XPlat Code Coverage'
+      arguments: '--collect:"XPlat Code Coverage'
       projects: '$(Build.SourcesDirectory)/$(working-dir)/TestResults/**/*.csproj'
       nobuild: true
 
