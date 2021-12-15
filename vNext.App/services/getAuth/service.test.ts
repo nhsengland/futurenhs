@@ -110,8 +110,8 @@ describe('getAuth service', () => {
                 meta: response,
                 json: {
                     Id: 'mockId',
-                    FullNameText: 'mockFullNameText',
-                    InitialsText: 'mockInitialsText',
+                    FullName: 'mockFullNameText',
+                    Initials: 'mockInitialsText',
                     UserAvatar: {
                         Source: '/mockSrc',
                         AltText: 'mockAltText'
