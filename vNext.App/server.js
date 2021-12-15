@@ -5,10 +5,14 @@ const { join } = require('path');
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const { randomBytes } = require('crypto');
+const { AbortController } = require('node-abort-controller');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isTest = process.env.NODE_ENV === 'test';
 
+/**
+ * Generate Content Security Policy settings
+ */
 const generateNonce = () => randomBytes(16).toString('base64');
 const generateCSP = (nonce) => {
 
@@ -31,7 +35,14 @@ const generateCSP = (nonce) => {
 
 };
 
+/**
+ * Create an Express app instance
+ */
 const app = express();
+
+/**
+ * Create a CSRF handler
+ */
 const csrfProtection = csrf({ 
     cookie: {
         secure: true
@@ -40,19 +51,31 @@ const csrfProtection = csrf({
 
 let server = undefined;
 
+/**
+ * Bind middleware
+ */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 
+/**
+ * Create a Next.js app instance
+ */
 const nextApp = next({ 
     dev: isDevelopment 
 });
 const handle = nextApp.getRequestHandler();
 
+/**
+ * Initialise Next
+ */
 nextApp
     .prepare()
     .then(() => {
 
+        /**
+         * Set response headers
+         */
         app.use((req, res, next) => {
 
             const nonce = generateNonce();
@@ -74,24 +97,84 @@ nextApp
 
         });
 
+        /**
+         * Handle GET requests
+         */
         app.get('*', csrfProtection, (req, res) => {
 
             const token = req.csrfToken();
             const parsedUrl = url.parse(req.url, true);
             const { pathname } = parsedUrl;
 
+            /**
+             * Set CSRF cookie
+             */
             res.cookie('XSRF-TOKEN', token, {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict'
             });
 
+            /**
+             * Handle health-check pings
+             * Check MVCForum and API services are still running
+             */
             if(pathname === '/health-check'){
 
-                return res.status(200).json({});
+                const endPoints = [
+                    {
+                        name: 'mvcForum',
+                        url: process.env.MVC_FORUM_HEALTH_CHECK_URL
+                    }, 
+                    {
+                        name: 'api',
+                        url: process.env.API_HEALTH_CHECK_URL
+                    }
+                ];
+        
+                return Promise.allSettled(endPoints.map(({ url }) => {
+
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                    return fetch(url, { signal: controller.signal })
+
+                })).then((responses) => {
+
+                    let statusToReturn = 200;
+                    let data = {};
+
+                    responses?.forEach(({ 
+                        status, 
+                        reason, 
+                        value }, index) => {
+
+                            const metaData = {
+                                ok: true
+                            };
+
+                            if(status === 'rejected' || (value && !value.ok)){
+
+                                statusToReturn = 503;
+
+                                metaData.ok = false;
+                                metaData.error = reason || value.statusText;
+
+                            }
+
+                            data[endPoints[index].name] = metaData;
+
+                        });
+
+                    return res.status(statusToReturn).json(data);
+        
+                });
 
             }
 
+            /**
+             * Handle returning the service worker
+             */
             if(!isDevelopment && pathname === '/sw.js' || /^\/(workbox|worker|fallback)-\w+\.js$/.test(pathname)) {
                 
                 const filePath = join(__dirname, '.next', pathname);
@@ -103,12 +186,18 @@ nextApp
 
         });
 
+        /**
+         * Handle POST requests
+         */
         app.post('*', csrfProtection, (req, res) => {
 
             return handle(req, res);
 
         });
 
+        /**
+         * Start listening for requests
+         */
         server = app.listen(process.env.PORT, (error) => {
 
             if (error) {
@@ -120,6 +209,6 @@ nextApp
 
             console.log('Listening on port ' + process.env.PORT);
 
-        });
-            
-    }); 
+        });    
+
+    });

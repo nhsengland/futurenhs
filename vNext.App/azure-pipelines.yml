@@ -12,6 +12,7 @@ trigger:
   branches:
     include:
     - SPRINT
+    - TRY-RI-VNEXT-APP
 
   paths:
     include:
