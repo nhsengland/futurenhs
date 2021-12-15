@@ -71,11 +71,12 @@ jobs:
       command: test
       arguments: '--collect:"XPlat Code Coverage'
       projects: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Tests/FutureNHS.Tests.csproj'
+      workingDirectory: '$(Build.SourcesDirectory)/$(working-dir)'
       nobuild: true
 
    - script: |
        dotnet tool install -g dotnet-reportgenerator-globaltool
-       reportgenerator -reports:**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
+       reportgenerator -reports:$(Build.SourcesDirectory)/$(working-dir)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
      displayName: Create Code coverage report
 
 # Publish the code coverage result (summary and web site)
