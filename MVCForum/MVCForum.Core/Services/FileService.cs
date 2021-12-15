@@ -79,7 +79,7 @@ namespace MvcForum.Core.Services
         }
 
         /// <summary>
-        /// Method to create a new <see cref="FileReadViewModel"/> in the database.
+        /// Method to update a <see cref="FileReadViewModel"/> in the database.
         /// </summary>
         /// <param name="file">The file to create.</param>
         /// <returns>The file id.</returns>
@@ -88,6 +88,18 @@ namespace MvcForum.Core.Services
             if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
             return _fileCommand.Update(file);
+        }
+
+        /// <summary>
+        /// Method to update a <see cref="FileReadViewModel"/> in the database.
+        /// </summary>
+        /// <param name="file">The file to create.</param>
+        /// <returns>Bool - success/fail.</returns>
+        public async Task<bool> UpdateAsync(FileUpdateViewModel file, CancellationToken cancellationToken = default)
+        {
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+
+            return await _fileCommand.UpdateAsync(file, cancellationToken);
         }
 
         /// <summary>

@@ -31,6 +31,13 @@
         Guid Update(FileWriteViewModel file);
 
         /// <summary>
+        /// Method to update an existing File in the db.
+        /// </summary>
+        /// <param name="file">The updated file.</param>
+        /// <returns>Bool success/fail.</returns>
+        Task<bool> UpdateAsync(FileUpdateViewModel file, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Method to get a File by id.
         /// </summary>
         /// <param name="id">The id of the File.</param>

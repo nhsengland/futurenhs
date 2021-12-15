@@ -85,7 +85,8 @@ namespace MvcForum.Web.Controllers
             {
                 File = dbFile,
                 Slug = slug,
-                Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, slug, dbFile.Title)
+                Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, slug, dbFile.Title),
+                IsUpdatable = await UserHasFileUpdateAccessAsync(id, cancellationToken)
             };
 
             ViewBag.HideSideBar = true;
@@ -245,47 +246,63 @@ namespace MvcForum.Web.Controllers
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            if (!UserHasFileWriteAccess(id))
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
             var file = await _fileService.GetFileAsync(id, cancellationToken);
 
             if (file is null) throw new ApplicationException("No file found for update for supplied Id");
 
-            var viewModel = new FileWriteViewModel
+            if (!(await UserHasFileUpdateAccessAsync(file.Id, cancellationToken)))
             {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var viewModel = new FileUpdateViewModel
+            {
+                OriginalFileTitle = file.Title,
                 FileId = file.Id,
                 Name = file.Title,
                 Description = file.Description,
                 FolderId = file.ParentFolder,
-                Slug = slug
+                GroupSlug = slug,
+                Breadcrumbs = GetBreadcrumbs(file.ParentFolder, slug, "Edit file"),
             };
 
             return View(viewModel);
         }
 
         [HttpPost]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Update")]
         [ValidateAntiForgeryToken]
-        public ActionResult Update(FileWriteViewModel file)
+        public async Task<ActionResult> UpdateAsync(Guid id, string slug, FileUpdateViewModel file, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Guid.Empty == id) throw new ArgumentOutOfRangeException(nameof(id));
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+            if (file is null) throw new ArgumentNullException(nameof(file));
+
+            var fileFromDb = await _fileService.GetFileAsync(id, cancellationToken);
+
+            if (fileFromDb is null) throw new ApplicationException("No file found for update for supplied Id");
+
             if (ModelState.IsValid)
             {
-                if (file is null) throw new ArgumentNullException(nameof(file));
-
-                if (!UserHasFileWriteAccess(file.FolderId))
+                if (!(await UserHasFileUpdateAccessAsync(id, cancellationToken)))
                 {
                     return RedirectToAction("Index", "Home");
                 }
 
+                file.FileId = id;
                 file.ModifiedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-                _fileService.Update(file);
 
-                return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
+                if (await _fileService.UpdateAsync(file, cancellationToken))
+                {
+                    return RedirectToRoute("GroupFileUrls", new { slug = slug, tab = Constants.GroupFilesTab, id = id });
+                }
             }
 
-            return View();
+            file.GroupSlug = slug;
+            file.Breadcrumbs = GetBreadcrumbs(fileFromDb.ParentFolder, slug, "Edit file");
+            return View(file);
         }
 
         [AsyncTimeout(30000)]
@@ -416,6 +433,28 @@ namespace MvcForum.Web.Controllers
 
             if (user is null) throw new ApplicationException("No user found for logged in Id");
             return _folderService.UserHasFileWriteAccessAsync(folderId, user.Id, CancellationToken.None).Result;
+        }
+
+        private async Task<bool> UserHasFileUpdateAccessAsync(Guid fileId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Guid.Empty == fileId) throw new ArgumentOutOfRangeException(nameof(fileId));
+
+            if (System.Web.HttpContext.Current.User is null) throw new NullReferenceException("User not logged in");
+
+            var user = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
+            if (user is null) throw new ApplicationException("No user found for logged in Id");
+
+            var file = await _fileService.GetFileAsync(fileId, cancellationToken);
+
+            if (file is null) throw new ApplicationException("No file found for update for supplied Id");
+
+            var loggedInUser = user.Id;
+
+            // If has folder write access then either admin or group admin
+            var hasFolderWriteAccess = await _folderService.UserHasFolderWriteAccessAsync(file.ParentFolder, user.Id, cancellationToken);
+
+            return hasFolderWriteAccess || file.CreatedBy == loggedInUser;
         }
 
         /// <summary>

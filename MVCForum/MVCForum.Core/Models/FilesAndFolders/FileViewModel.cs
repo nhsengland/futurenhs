@@ -15,5 +15,7 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public string Slug { get; set; }
 
         public BreadcrumbsViewModel Breadcrumbs { get; set; }
+
+        public bool IsUpdatable { get; set; }
     }
 }

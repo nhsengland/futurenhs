@@ -75,6 +75,12 @@
             );
 
             routes.MapRoute(
+                "GroupFileEditFileUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/UpdateFile/{id}"), // URL with parameters
+                new { controller = "GroupFile", action = "Update", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
                 "GroupFileUploadUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.GroupUrlIdentifier, "/{slug}/{tab}/Upload/{folderId}"), // URL with parameters
                 new { controller = "GroupFile", action = "Create", slug = UrlParameter.Optional, tab = UrlParameter.Optional } // Parameter defaults

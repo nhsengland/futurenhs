@@ -53,6 +53,7 @@
         private Mock<IMemoryCache> _memoryCache;
 
         private Mock<FileWriteViewModel> _fileWriteViewModel;
+        private FileUpdateViewModel _fileUpdateViewModel;
 
         private readonly Guid _fileId = Guid.NewGuid();
         private readonly Guid _folderd = Guid.NewGuid();
@@ -78,6 +79,7 @@
                                             _fileUploadValidationService.Object, _configurationProvider.Object, _memoryCache.Object);
 
             _fileWriteViewModel = new Mock<FileWriteViewModel>();
+            _fileUpdateViewModel = new FileUpdateViewModel();
 
             _fileCommand.Setup(x => x.Create(_fileWriteViewModel.Object)).Returns(_fileId);
             _fileCommand.Setup(x => x.Update(_fileWriteViewModel.Object)).Returns(_fileId);
@@ -125,6 +127,35 @@
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<Guid>(result);
             Assert.AreEqual(_fileId, result);
+        }
+
+        [Test]
+        public void UpdateAsync_FileParameterNUll_ThrowsException()
+        {
+            var response = Assert.ThrowsAsync<ArgumentNullException>(async () => await _fileService.UpdateAsync(null, CancellationToken.None));
+
+            Assert.IsInstanceOf<ArgumentNullException>(response);
+            Assert.AreEqual(FileParameterName, response.ParamName);
+        }
+
+        [Test]
+        public void UpdateAsync_Fails_ReturnsBoolean()
+        {
+            _fileCommand.Setup(x => x.UpdateAsync(It.IsAny<FileUpdateViewModel>(), CancellationToken.None)).Returns(Task.FromResult(false));
+
+            var response = _fileService.UpdateAsync(_fileUpdateViewModel, CancellationToken.None).Result;
+
+            Assert.IsFalse(response);
+        }
+
+        [Test]
+        public void UpdateAsync_Success_ReturnsBoolean()
+        {
+            _fileCommand.Setup(x => x.UpdateAsync(It.IsAny<FileUpdateViewModel>(), CancellationToken.None)).Returns(Task.FromResult(true));
+
+            var response = _fileService.UpdateAsync(_fileUpdateViewModel, CancellationToken.None).Result;
+
+            Assert.IsTrue(response);
         }
 
         [Test]

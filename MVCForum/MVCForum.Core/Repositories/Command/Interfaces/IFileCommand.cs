@@ -1,6 +1,8 @@
 ﻿namespace MvcForum.Core.Repositories.Command.Interfaces
 {
     using System;
+    using System.Threading;
+    using System.Threading.Tasks;
     using MvcForum.Core.Models.Entities;
     using MvcForum.Core.Models.FilesAndFolders;
 
@@ -28,5 +30,7 @@
         /// </summary>
         /// <param name="file">The <see cref="File"/> to delete.</param>
         void Delete(FileWriteViewModel file);
+
+        Task<bool> UpdateAsync(FileUpdateViewModel model, CancellationToken cancellationToken = default);
     }
 }

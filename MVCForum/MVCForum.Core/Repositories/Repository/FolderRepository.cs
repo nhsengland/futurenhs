@@ -328,7 +328,7 @@
         {
             var permissions = await GetUserRolesForFolderAsync(folderId, userId, cancellationToken);
 
-            return permissions.MembershipRole.ToLower() == "admin" || permissions.GroupRole.ToLower() == "admin" || permissions.GroupRole.ToLower() == "standard member" || permissions.IsPublic;
+            return permissions.MembershipRole.ToLower() == "admin" || permissions.GroupRole?.ToLower() == "admin" || permissions.GroupRole?.ToLower() == "standard members" || permissions.IsPublic;
         }
 
         private async Task<(string MembershipRole, string GroupRole, bool IsPublic)> GetUserRolesForFolderAsync(Guid folderId, Guid userId, CancellationToken cancellationToken)
