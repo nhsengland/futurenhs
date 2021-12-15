@@ -86,7 +86,7 @@ jobs:
      displayName: 'Publish code coverage'
      inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
+      summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
       
    - task: DotNetCoreCLI@2
