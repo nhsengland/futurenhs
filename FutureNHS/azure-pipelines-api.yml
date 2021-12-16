@@ -66,17 +66,18 @@ jobs:
 
 # Run all tests with "/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura" to generate the code coverage file
    - task: DotNetCoreCLI@2
-     displayName: dotnet test
+     displayName: Test
      inputs:
       command: test
-      arguments: '--collect:"XPlat Code Coverage'
+      configuration: 'Release'
+      arguments: '--collect:"XPlat Code Coverage"'
       projects: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Tests/FutureNHS.Tests.csproj'
       workingDirectory: '$(Build.SourcesDirectory)/$(working-dir)'
       nobuild: true
 
    - script: |
-       dotnet tool install -g dotnet-reportgenerator-globaltool
-       reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
+       dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8
+       reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
      displayName: Create Code coverage report
 
 # Publish the code coverage result (summary and web site)
@@ -86,8 +87,7 @@ jobs:
      displayName: 'Publish code coverage'
      inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
+      summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
       
    - task: DotNetCoreCLI@2
      displayName: 'Publish FutureNHS Api'
