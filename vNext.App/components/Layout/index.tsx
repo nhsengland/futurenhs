@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
 import Head from '@components/DocumentHead';
+import { ErrorBoundary } from '@components/ErrorBoundary';
 import { Header } from '@components/Header';
 import { PhaseBanner } from '@components/PhaseBanner';
 import { BreadCrumb } from '@components/BreadCrumb';
@@ -77,34 +78,40 @@ export const Layout: (props: Props) => JSX.Element = ({
                 {shouldRenderPhaseBanner &&
                     <div className="u-bg-theme-3">
                         <LayoutWidthContainer>
-                            <PhaseBanner content={{
-                                tagText: 'alpha',
-                                bodyHtml: 'This is a new service – your <a href="http://www.google.co.uk">feedback</a> will help us to improve it.'
-                            }} />
+                            <ErrorBoundary>
+                                <PhaseBanner content={{
+                                    tagText: 'alpha',
+                                    bodyHtml: 'This is a new service – your <a href="http://www.google.co.uk">feedback</a> will help us to improve it.'
+                                }} />
+                            </ErrorBoundary>
                         </LayoutWidthContainer>
                     </div>
                 }
                 {shouldRenderBreadCrumb &&
                     <div className={generatedClasses.breadCrumb}>
                         <LayoutWidthContainer>
-                            <BreadCrumb
-                                navMenuList={[]} 
-                                content={{
-                                    descriptionHtml: breadCrumbDescriptionHtml
-                                }} />
+                            <ErrorBoundary>
+                                <BreadCrumb
+                                    navMenuList={[]} 
+                                    content={{
+                                        descriptionHtml: breadCrumbDescriptionHtml
+                                    }} />
+                            </ErrorBoundary>
                         </LayoutWidthContainer>
                     </div>
                 }
                 <div className="u-overflow-hidden u-flex u-h-full">
                     <LayoutWidthContainer className={generatedClasses.main}>
-                        {shouldRenderMainNav &&
-                            <LayoutColumn hasGutters={false} mobile={0}>
-                                <MainNav navMenuList={mainNavMenuList}/>
+                        <ErrorBoundary>
+                            {shouldRenderMainNav &&
+                                <LayoutColumn hasGutters={false} mobile={0}>
+                                    <MainNav navMenuList={mainNavMenuList}/>
+                                </LayoutColumn>
+                            }
+                            <LayoutColumn className={generatedClasses.content}>
+                                    {children}
                             </LayoutColumn>
-                        }
-                        <LayoutColumn className={generatedClasses.content}>
-                            {children}
-                        </LayoutColumn>
+                        </ErrorBoundary>
                     </LayoutWidthContainer>
                 </div>
             </main>

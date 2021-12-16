@@ -1,3 +1,10 @@
+const isProduction = process.env.NODE_ENV === 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
+const isTest = process.env.NODE_ENV === 'test';
+
+/**
+ * Import dependencies
+ */
 const express = require('express');
 const next = require('next');
 const url = require('url');
@@ -6,15 +13,14 @@ const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const { randomBytes } = require('crypto');
 const { AbortController } = require('node-abort-controller');
-const sslRootCAs = require('ssl-root-cas')
-
-const isDevelopment = process.env.NODE_ENV === 'development';
-const isTest = process.env.NODE_ENV === 'test';
+const sslRootCAs = require('ssl-root-cas');
 
 /**
- * Inject common root certificate authorities
+ * Inject root certificate authorities required in Azure environment
  */
-sslRootCAs.inject();
+sslRootCAs
+    .inject()
+    .addFile(__dirname + '/ssl/SectigoRSADomainValidationSecureServerCA.crt');
 
 /**
  * Generate Content Security Policy settings
@@ -78,6 +84,18 @@ const handle = nextApp.getRequestHandler();
 nextApp
     .prepare()
     .then(() => {
+
+        let appInsightsClient;
+
+        /**
+         * Start application insights before other dependencies are imported
+         */
+        if(isProduction && process.env.APPINSIGHTS_INSTRUMENTATIONKEY){
+
+            appInsightsClient = require('applicationinsights');
+            appInsightsClient.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
+
+        }
 
         /**
          * Set response headers
@@ -171,6 +189,9 @@ nextApp
                             data[endPoints[index].name] = metaData;
 
                         });
+
+                    appInsightsClient?.trackTrace?.(data);
+                    appInsightsClient?.flush?.();
 
                     return res.status(statusToReturn).json(data);
         
