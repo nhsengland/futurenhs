@@ -59,8 +59,7 @@
         {
             List<LinkGroup> navItems = new List<LinkGroup>() {
                 new LinkGroup { IconTheme=Themes.FILL_THEME_8, Icon = Icons.Group, Name = "Groups", Url="/", Order = 1, BorderTheme = Themes.BORDER_8 },
-                new LinkGroup { IconTheme = Themes.FILL_THEME_15, Icon=Icons.ForumOutline, Name = "Discussions", Order = 10, BorderTheme=Themes.BORDER_15 , ChildItems = new List<Link> { new Link { Url="/" } } },
-                // new LinkGroup { IconTheme=Themes.FILL_THEME_9, Icon = Icons.Star, Order = 15, Name = "Favourites", Url = "/", BorderTheme=Themes.BORDER_9 }
+                new LinkGroup { IconTheme = Themes.FILL_THEME_15, Icon=Icons.ForumOutline, Name = "Discussions", Url = Url.Action("LatestDiscussions", "Home"), Order = 10, BorderTheme=Themes.BORDER_15 },
             };
 
             return navItems;
