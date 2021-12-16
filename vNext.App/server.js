@@ -13,14 +13,6 @@ const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const { randomBytes } = require('crypto');
 const { AbortController } = require('node-abort-controller');
-const sslRootCAs = require('ssl-root-cas');
-
-/**
- * Inject root certificate authorities required in Azure environment
- */
-sslRootCAs
-    .inject()
-    .addFile(__dirname + '/ssl/SectigoRSADomainValidationSecureServerCA.crt');
 
 /**
  * Generate Content Security Policy settings
@@ -166,7 +158,7 @@ nextApp
                 })).then((responses) => {
 
                     let statusToReturn = 200;
-                    let data = {};
+                    let data = [];
 
                     responses?.forEach(({ 
                         status, 
@@ -174,6 +166,7 @@ nextApp
                         value }, index) => {
 
                             const metaData = {
+                                id: endPoints[index].name,
                                 ok: true
                             };
 
@@ -186,14 +179,16 @@ nextApp
 
                             }
 
-                            data[endPoints[index].name] = metaData;
+                            data.push(metaData);
 
                         });
 
                     appInsightsClient?.trackTrace?.(data);
                     appInsightsClient?.flush?.();
 
-                    return res.status(statusToReturn).json(data);
+                    return res.status(statusToReturn).json({
+                        data: data
+                    });
         
                 });
 
