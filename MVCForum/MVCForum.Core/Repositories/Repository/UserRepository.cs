@@ -24,7 +24,7 @@
                 @"
                     SELECT 
                         Id AS Id,
-                        FirstName, +' '+ Surname AS FullName,
+                        FirstName +' '+ Surname AS FullName,
                         Initials AS Initials
                     FROM MembershipUser where Username = @Username
                 ";
