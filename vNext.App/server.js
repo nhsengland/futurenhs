@@ -6,9 +6,15 @@ const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const { randomBytes } = require('crypto');
 const { AbortController } = require('node-abort-controller');
+const sslRootCAs = require('ssl-root-cas')
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isTest = process.env.NODE_ENV === 'test';
+
+/**
+ * Inject common root certificate authorities
+ */
+sslRootCAs.inject();
 
 /**
  * Generate Content Security Policy settings
