@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.SessionState;
 using ImageProcessor.Common.Exceptions;
 using Microsoft.Ajax.Utilities;
+using MvcForum.Core.Interfaces.Services;
 using MvcForum.Core.Repositories.Repository.Interfaces;
 using MvcForum.Core.Services;
 using MvcForum.Web.Attributes;
 
 namespace MvcForum.Web.Controllers.ApiControllers
 {
-    using System.Diagnostics;
-    using Core.Interfaces.Services;
-
+    [SessionState(SessionStateBehavior.ReadOnly)]
     public class AuthController : Controller
     {
         private readonly IUserRepository _userRepository;
-        private ILoggingService _loggingService;
+        private readonly ILoggingService _loggingService;
 
         public AuthController(IUserRepository userRepository, ILoggingService loggingService)
         {
