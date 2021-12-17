@@ -36,7 +36,7 @@ namespace MvcForum.Core.Services
 
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = data.Length;
-            request.Timeout = 3000;
+            request.Timeout = 10000;
             request.Method = "POST";
             request.CookieContainer = cookies;
 
