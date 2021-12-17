@@ -15,7 +15,7 @@ using MvcForum.Web.Attributes;
 
 namespace MvcForum.Web.Controllers.ApiControllers
 {
-    [SessionState(SessionStateBehavior.ReadOnly)]
+    [SessionState(SessionStateBehavior.Disabled)]
     public class AuthController : Controller
     {
         private readonly IUserRepository _userRepository;
