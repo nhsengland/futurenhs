@@ -16,9 +16,11 @@ namespace MvcForum.Web.Controllers
     using Status = Core.Models.Enums.UploadStatus;
     using System.Threading.Tasks;
     using System.Threading;
+    using System.Web.SessionState;
     using MvcForum.Web.ViewModels.Folder;
 
     [Authorize]
+    [SessionState(SessionStateBehavior.ReadOnly)]
     public sealed class GroupFileController : AsyncController
     {
 
