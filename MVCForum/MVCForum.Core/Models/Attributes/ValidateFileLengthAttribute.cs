@@ -7,19 +7,29 @@
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class ValidateFileLengthAttribute : ValidationAttribute
     {
+        private const string ZERO_CONTENT_LENGTH_ERROR = "The file size must be greater than zero bytes.";
+
         // max file length, defaults to 500kb (512000 bytes)
-        private readonly long MAX_LENGTH_BYTES = 5 * 1024 * 100;
+        private readonly long _maxLengthBytes = 5 * 1024 * 100;
 
         public ValidateFileLengthAttribute(long maxLengthBytes)
         {
-            this.MAX_LENGTH_BYTES = maxLengthBytes;
+            _maxLengthBytes = maxLengthBytes;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value is HttpPostedFileBase file && file.ContentLength > this.MAX_LENGTH_BYTES)
+            if (value is HttpPostedFileBase file)
             {
-                return new ValidationResult(ErrorMessageString);
+                if (file.ContentLength == 0)
+                {
+                    return new ValidationResult(ZERO_CONTENT_LENGTH_ERROR);
+                }
+
+                if (file.ContentLength > _maxLengthBytes)
+                {
+                    return new ValidationResult(ErrorMessageString);
+                }
             }
 
             return ValidationResult.Success;

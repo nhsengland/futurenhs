@@ -31,7 +31,7 @@
         void UnlockUser(string username, bool resetPasswordAttempts);
         MembershipUser CreateEmptyUser();
         Task<IPipelineProcess<MembershipUser>> CreateUserAsync(MembershipUser newUser, LoginType loginType, CancellationToken cancellationToken);
-        Task<IPipelineProcess<MembershipUser>> EditUserAsync(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image, CancellationToken cancellationToken);
+        Task<IPipelineProcess<MembershipUser>> EditUserAsync(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image, bool removeImage = false, CancellationToken cancellationToken = default(CancellationToken));
         string ErrorCodeToString(MembershipCreateStatus createStatus);
         IList<MembershipUser> GetAll();
         Task<PaginatedList<MembershipUser>> GetAllAsync(int pageIndex, int pageSize, CancellationToken cancellationToken);

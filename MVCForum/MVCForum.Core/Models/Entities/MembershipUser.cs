@@ -78,6 +78,8 @@ namespace MvcForum.Core.Models.Entities
 
         public bool IsTrustedUser { get; set; }
 
+        public string Pronouns { get; set; }
+
         public virtual IList<MembershipRole> Roles { get; set; }
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<Topic> Topics { get; set; }
@@ -102,12 +104,9 @@ namespace MvcForum.Core.Models.Entities
 
         public string GetFullName()
         {
-            if (!String.IsNullOrEmpty(this.FirstName) && !String.IsNullOrEmpty(this.Surname))
-            {
-                return String.Format("{0} {1}", this.FirstName, this.Surname).CapitaliseEachWord();
-            }
+            var fullName = $"{this.FirstName} {this.Surname}".CapitaliseEachWord();
 
-            return this.UserName;
+            return string.IsNullOrWhiteSpace(fullName) ? this.UserName : fullName;
         }
 
         public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Member, Slug);

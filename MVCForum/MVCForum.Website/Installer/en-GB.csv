@@ -161,7 +161,7 @@ Members.AlreadyRegistered,You are already registered? Why would you want to do i
 Members.BanUser,Ban User
 Members.CantUnlock,User does not exist - cannot unlock.
 Members.ChangePassword.Error,The current password is incorrect or the new password is invalid.
-Members.ChangePassword.Link,Click here if you want to {0}
+Members.ChangePassword.Link,You can change your password here
 Members.ChangePassword.Success,Password Changed
 Members.ChangePassword.Text,New passwords are required to be a minimum of {0} characters in length.
 Members.ChangePassword.Title,Change Password
@@ -199,16 +199,21 @@ Members.Label.CurrentPassword,Current Password
 Members.Label.DateJoined,Date Joined
 Members.Label.DisableEmailNotifications,Disable Email Notifications
 Members.Label.EmailAddress,Email address
-Members.Label.FirstName,Firstname
-Members.Label.Surname,Surname
 Members.Label.EmailAddressBlank,Enter your email address
 Members.Label.Facebook,Facebook Page
-Members.Label.Location,Location
+Members.Label.FirstName,First name
+Members.Label.Joined,Joined
+Members.Label.LastOnline,Last onlineMembers.Label.Location,Location
 Members.Label.NewPassword,New Password
 Members.Label.Password,Password
+Members.Label.ProfileImage,Image
+Members.Label.Pronouns,Preferred pronouns
+Members.Label.PronounsEdit,Preferred pronouns (optional)
 Members.Label.RememberMe,Remember Me?
 Members.Label.Roles,Roles
 Members.Label.Signature,Signature
+Members.Label.Surname,Last name
+Members.Label.SurnameEdit,Last name (optional)
 Members.Label.Twitter,Twitter Url
 Members.Label.UploadNewAvatar,Upload a new profile image
 Members.Label.UserIsApproved,User is Approved
@@ -239,14 +244,18 @@ Members.Points,Points
 Members.Profile.Age,Age:
 Members.Profile.Badges,Badges
 Members.Profile.DiscussionActivity,Discussion Activity
+Members.Profile.EditMyProfile,Edit my profile
 Members.Profile.Facebook,Facebook:
+Members.Profile.ImageGuidanceText,Please select an image file that is not greater than 64kb
 Members.Profile.IsSocialAccount,Social Account
 Members.Profile.Joined,Joined:
 Members.Profile.LastOnline,Last Online
 Members.Profile.Location,Location:
 Members.Profile.Points,Points:
 Members.Profile.Posts,Posts:
+Members.Profile.RemoveImage,Remove image
 Members.Profile.Twitter,Twitter
+Members.Profile.ViewMyProfile,My profile
 Members.Profile.Website,Website
 Members.ProfileTitle,Profile
 Members.Register,Register now

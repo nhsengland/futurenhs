@@ -40,7 +40,7 @@ else
     </li>
     *@
     <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
-        <a role="menuitem" class="c-site-header-nav_sub-nav-child" href="@Url.Action("Edit", "Members", new { id = Model.CurrentUser.Id })">@Html.LanguageString("Buttons.Edit") @Model.CurrentUser.UserName</a>
+        <a role="menuitem" class="c-site-header-nav_sub-nav-child" href="@Model.CurrentUser.NiceUrl">@Html.LanguageString("Members.Profile.ViewMyProfile")</a>
     </li>
     if (Model.ModerateCount > 0)
     {

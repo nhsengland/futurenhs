@@ -1,0 +1,42 @@
+.c-edit-profile {
+  .c-avatar {
+    margin-bottom: $nhsuk-spacing-point-4;
+    &_initials{
+      font-size: $nhsuk-spacing-point-9;
+
+      @media (min-width:  $break-point-desktop) {
+        font-size: 6.25rem;
+      }
+        
+      @media (max-width:  $break-point-tablet) {
+        font-size: $nhsuk-spacing-point-9
+      }
+      font-weight: $nhsuk-font-bold;
+    }
+  }
+  .profile-upload-wrapper {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    vertical-align: middle;
+    height: 192px;
+    
+    @media (min-width:  $break-point-tablet) {
+      margin-top: $nhsuk-spacing-point-4;
+    }
+  }
+
+  .edit-profile-button {
+    box-shadow: 0 $button-shadow-size 0 $color_nhsuk-grey-3;
+    color: $black;
+
+    &:hover{
+      color: $white !important;
+    }
+
+    @media (max-width:  $break-point-tablet) {
+      width: 100%;
+    }
+  }
+
+}

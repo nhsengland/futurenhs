@@ -17,22 +17,18 @@
         public static MembershipUser ToMembershipUser(this MemberFrontEndEditViewModel viewModel, MembershipUser user)
         {
             user.Id = viewModel.Id;
-            user.UserName = viewModel.UserName;
             user.FirstName = viewModel.FirstName;
-            user.Surname = viewModel.Surname;
-            user.Email = viewModel.Email;
-            user.Signature = viewModel.Signature;
-            user.Age = viewModel.Age;
-            user.Location = viewModel.Location;
-            user.Website = viewModel.Website;
-            user.Twitter = viewModel.Twitter;
-            user.Facebook = viewModel.Facebook;
-            user.Initials = string.Format("{0}{1}", viewModel.FirstName[0], viewModel.Surname[0]).ToUpper();
+            user.Surname = viewModel.Surname ?? null;
+            var surnameInitial = string.IsNullOrEmpty(user.Surname) ? string.Empty : user.Surname[0].ToString();
+            user.Initials = $"{user.FirstName[0]}{surnameInitial}".ToUpper();
             if (!string.IsNullOrWhiteSpace(viewModel.Avatar))
             {
                 user.Avatar = viewModel.Avatar;
-            }           
-            user.DisableEmailNotifications = viewModel.DisableEmailNotifications;      
+            }
+
+            user.HasAgreedToTermsAndConditions = viewModel.HasAgreedToTermsAndConditions;
+            user.Pronouns = viewModel.Pronouns;
+
             return user;
         }
 
@@ -46,21 +42,13 @@
             var viewModel = new MemberFrontEndEditViewModel
             {
                 Id = user.Id,
-                UserName = user.UserName,
                 FirstName = user.FirstName,
                 Surname = user.Surname,
                 Initials = user.Initials,
                 Email = user.Email,
-                Signature = user.Signature,
-                Age = user.Age,
-                Location = user.Location,
-                Website = user.Website,
-                Twitter = user.Twitter,
-                Facebook = user.Facebook,
                 DisableFileUploads = user.DisableFileUploads == true,
                 Avatar = user.Avatar,
-                DisableEmailNotifications = user.DisableEmailNotifications == true,
-                AmountOfPoints = user.TotalPoints
+                Pronouns = user.Pronouns,
             };
             return viewModel;
         }

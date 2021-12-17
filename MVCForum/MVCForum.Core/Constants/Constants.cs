@@ -146,6 +146,11 @@
             public const string PostedFiles = "PostedFiles";
 
             /// <summary>
+            /// Key to remove an existing image
+            /// </summary>
+            public const string ImageToRemove = "ImageToRemove";
+            
+            /// <summary>
             /// Key for tags
             /// </summary>
             public const string Tags = "Tags";

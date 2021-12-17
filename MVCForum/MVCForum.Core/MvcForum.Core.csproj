@@ -202,6 +202,14 @@
     <Compile Include="Migrations\202112131148217_UpdateMaxLengthAboutUs.Designer.cs">
       <DependentUpon>202112131148217_UpdateMaxLengthAboutUs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202112151104393_AddPronounsToMembershipTable.cs" />
+    <Compile Include="Migrations\202112151104393_AddPronounsToMembershipTable.Designer.cs">
+      <DependentUpon>202112151104393_AddPronounsToMembershipTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202112200955066_UpdateMembershipNameFields.cs" />
+    <Compile Include="Migrations\202112200955066_UpdateMembershipNameFields.Designer.cs">
+      <DependentUpon>202112200955066_UpdateMembershipNameFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -709,6 +717,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202112131148217_UpdateMaxLengthAboutUs.resx">
       <DependentUpon>202112131148217_UpdateMaxLengthAboutUs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112151104393_AddPronounsToMembershipTable.resx">
+      <DependentUpon>202112151104393_AddPronounsToMembershipTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112200955066_UpdateMembershipNameFields.resx">
+      <DependentUpon>202112200955066_UpdateMembershipNameFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

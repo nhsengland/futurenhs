@@ -50,7 +50,7 @@
                                      f.CreatedBy,
                                      f.ParentFolder,
 									 f.FileStatus AS Status,
-                                     m.FirstName + ' ' + m.Surname AS UserName,
+                                     TRIM(ISNULL(m.FirstName, '') + ' ' + ISNULL(m.Surname, '')) AS UserName,
                                      m.Slug AS UserSlug,
 									 CASE 
 										WHEN f.ModifiedAtUtc IS NULL 
@@ -59,8 +59,8 @@
 									 END AS LastModifiedAtUtc,
 									 CASE
 										WHEN f.ModifiedBy IS NULL
-										THEN (SELECT FirstName + ' ' + Surname FROM MembershipUser WHERE Id = CreatedBy)
-										ELSE (SELECT FirstName + ' ' + Surname FROM MembershipUser WHERE Id = ModifiedBy)
+										THEN (SELECT TRIM(ISNULL(FirstName, '') + ' ' + ISNULL(Surname, '')) FROM MembershipUser WHERE Id = CreatedBy)
+										ELSE (SELECT TRIM(ISNULL(FirstName, '') + ' ' + ISNULL(Surname, '')) FROM MembershipUser WHERE Id = ModifiedBy)
 									 END AS ModifiedUserName,
 									 CASE
 										WHEN f.ModifiedBy IS NULL
@@ -94,7 +94,7 @@
                                      f.Title, 
                                      f.CreatedAtUtc, 
                                      f.CreatedBy, 
-                                     m.FirstName + ' ' + m.Surname AS UserName,
+                                     TRIM(ISNULL(m.FirstName, '') + ' ' + ISNULL(m.Surname, '')) AS UserName,
                                      m.Slug AS UserSlug 
                             FROM [File] f 
                             JOIN MembershipUser m ON m.Id = f.CreatedBy 

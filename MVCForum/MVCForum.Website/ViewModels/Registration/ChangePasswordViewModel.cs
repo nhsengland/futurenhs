@@ -16,6 +16,7 @@
         [ForumMvcResourceDisplayName("Members.Label.NewPassword")]
         public string NewPassword { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
         [Compare("NewPassword")]

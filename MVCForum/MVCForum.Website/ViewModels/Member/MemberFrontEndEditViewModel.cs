@@ -3,72 +3,54 @@
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.Web;
-    using System.Web.Mvc;
     using Application;
-    using Core.Constants;
+    using MvcForum.Core.Models.Attributes;
 
     public class MemberFrontEndEditViewModel
     {
         [Required]
         public Guid Id { get; set; }
 
-        [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Username")]
-        [StringLength(150, MinimumLength = 4)]
-        public string UserName { get; set; }
-
-        [Required]
         [ForumMvcResourceDisplayName("Members.Label.FirstName")]
+        [Required(ErrorMessage = "Please provide a first name")]
+        [StringLength(255, ErrorMessage = "The first name must not be greater than 255 characters.")]
         public string FirstName { get; set; }
 
-        [Required]
         [ForumMvcResourceDisplayName("Members.Label.Surname")]
+        [StringLength(255, ErrorMessage = "The last name must not be greater than 255 characters.")]
         public string Surname { get; set; }
 
+        [ForumMvcResourceDisplayName("Members.Label.Pronouns")]
+        [StringLength(255, ErrorMessage = "The Pronouns must not be greater than 255 characters.")]
+        public string Pronouns { get; set; }
+
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
-        [EmailAddress]
-        [Required]
         public string Email { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.Signature")]
-        [StringLength(1000)]
-        [UIHint(Constants.EditorType)]
-        [AllowHtml]
-        public string Signature { get; set; }
-
-        [ForumMvcResourceDisplayName("Members.Label.Age")]
-        [Range(0, int.MaxValue)]
-        public int? Age { get; set; }
-
-        [ForumMvcResourceDisplayName("Members.Label.Location")]
-        [StringLength(100)]
-        public string Location { get; set; }
-
-        [ForumMvcResourceDisplayName("Members.Label.Website")]
-        [Url]
-        [StringLength(100)]
-        public string Website { get; set; }
-
-        [ForumMvcResourceDisplayName("Members.Label.Twitter")]
-        [Url]
-        [StringLength(60)]
-        public string Twitter { get; set; }
-
-        [ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
-        public HttpPostedFileBase[] Files { get; set; }
-
-        [ForumMvcResourceDisplayName("Members.Label.Facebook")]
-        [Url]
-        [StringLength(60)]
-        public string Facebook { get; set; }
+        [ValidateFileType("JPEG,JPG,PNG", ErrorMessage = "The selected file must be a JPG or PNG.")]
+        [ValidateFileLength(65536, ErrorMessage = "The image file is too large, it must not be greater than 64KB.")]
+        [ForumMvcResourceDisplayName("Members.Label.ProfileImage")]
+        public HttpPostedFileBase ProfileImage { get; set; }
 
         public string Avatar { get; set; }
+
         public bool DisableFileUploads { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.DisableEmailNotifications")]
-        public bool DisableEmailNotifications { get; set; }
-
         public string Initials { get; set; }
-        public int AmountOfPoints { get; set; }
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Please confirm that all changes are in line with the platform terms and conditions.")]
+        public bool HasAgreedToTermsAndConditions { get; set; }
+
+        public string ImageUploadGuidance { get; set; }
+
+        public bool ShowImageUploadGuidance()
+        {
+            return !string.IsNullOrWhiteSpace(ImageUploadGuidance);
+        }
+
+        public bool ShowPronouns()
+        {
+            return !string.IsNullOrWhiteSpace(Pronouns);
+        }
     }
 }

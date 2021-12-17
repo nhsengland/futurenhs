@@ -24,24 +24,24 @@
                         </div>
                         @if (!string.IsNullOrEmpty(Model.Post.User.Avatar))
                         {
-                            <img role="presentation" class="c-avatar_image" src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="Avatar image of member: @Model.Post.User.FirstName @Model.Post.User.Surname">
+                            <img role="presentation" class="c-avatar_image" src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="Avatar image of member: @Model.Post.User.GetFullName()">
                         }
                     </div>
                 </div>
                 <div class="c-card_header-content u-text-theme-7">
                     <p class="u-text-small u-text-bold u-has-subheading u-text-theme-8">
-                        <a href="@Html.Raw(Model.Post.User.NiceUrl)">@Model.Post.User.FirstName @Model.Post.User.Surname</a>
+                        <a href="@Html.Raw(Model.Post.User.NiceUrl)">@Model.Post.User.GetFullName()</a>
                     </p>
                     <p class="u-text-small u-text-bold">@DatesUi.GetPrettyDate(Model.Post.DateCreated.ToString())</p>
                 </div>
             </div>
-            <p class="c-card_quote u-text-bold u-text-theme-7">
+            <p class="c-card_quote u-text-bold u-text-theme-7">You’re replying to
                 @if (Model.ReplyingTo != null)
                 {
                     // This is awful but not much else I can do, this logic ideally needs to be dealt with in the DB or DAL/Repository
                     var strippedText = Regex.Replace(Model.ReplyingTo.PostContent, @"<[^>]*>", String.Empty);
                     var splitText = strippedText.Split(' ');
-                    @Html.Raw($"Reply to {Model.ReplyingTo.User.FirstName} {Model.ReplyingTo.User.Surname} “{string.Join(" ", splitText.Take(5))} {(splitText.Count() > 5 ? "..." : "")}”");
+                    @Html.Raw($"Reply to {Model.ReplyingTo.User.GetFullName()} “{string.Join(" ", splitText.Take(5))} {(splitText.Count() > 5 ? "..." : "")}”");
                 }
             </p>
             <p class="c-card_description">

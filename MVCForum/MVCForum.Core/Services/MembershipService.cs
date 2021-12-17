@@ -334,7 +334,7 @@
 
         /// <inheritdoc />
         public async Task<IPipelineProcess<MembershipUser>> EditUserAsync(MembershipUser userToEdit, IPrincipal loggedInUser,
-            HttpPostedFileBase image, CancellationToken cancellationToken)
+            HttpPostedFileBase image, bool removeImage = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -342,15 +342,20 @@
             var pipes = ForumConfiguration.Instance.PipelinesUserUpdate;
 
             // The model to process
-            var piplineModel = new PipelineProcess<MembershipUser>(userToEdit);
+            var pipelineModel = new PipelineProcess<MembershipUser>(userToEdit);
 
             // Add the user object
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, loggedInUser.Identity.Name);
+            pipelineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, loggedInUser.Identity.Name);
 
             // Add the file to the extended data
             if (image != null)
             {
-                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, image);
+                pipelineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, image);
+            }
+
+            if (!string.IsNullOrWhiteSpace(userToEdit.Avatar) && removeImage)
+            {
+                pipelineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ImageToRemove, userToEdit.Avatar);
             }
 
             // Get instance of the pipeline to use
@@ -369,7 +374,7 @@
             }
 
             // Process the pipeline
-            return await pipeline.Process(piplineModel);
+            return await pipeline.Process(pipelineModel);
         }
 
         /// <summary>
