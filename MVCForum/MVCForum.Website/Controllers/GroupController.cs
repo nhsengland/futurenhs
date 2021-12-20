@@ -1,21 +1,7 @@
-﻿using System;
-using CommonServiceLocator;
-using Microsoft.Ajax.Utilities;
-using MvcForum.Core.Constants;
-using MvcForum.Web.ViewModels.Shared;
-using MvcForum.Web.ViewModels.Topic;
-using Constants = MvcForum.Core.Constants.Constants;
-
+﻿
 namespace MvcForum.Web.Controllers
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Web.Mvc;
-    using Application.CustomActionResults;
     using Core;
-    using Core.Constants.UI;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -23,9 +9,18 @@ namespace MvcForum.Web.Controllers
     using Core.Models.Enums;
     using Core.Models.General;
     using MvcForum.Core.Models.Groups;
+    using MvcForum.Web.ViewModels.Shared;
+    using MvcForum.Web.ViewModels.Topic;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
     using ViewModels.Breadcrumb;
     using ViewModels.Group;
     using ViewModels.Mapping;
+    using Constants = MvcForum.Core.Constants.Constants;
 
     [Authorize]
     public partial class GroupController : BaseController
