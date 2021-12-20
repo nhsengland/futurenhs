@@ -10,6 +10,6 @@
 
         public int Width { get; init; }
 
-        public string Format { get; init; }
+        public string MediaType { get; init; }
     }
 }

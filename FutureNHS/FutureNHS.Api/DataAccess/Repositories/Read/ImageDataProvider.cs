@@ -20,7 +20,7 @@ namespace FutureNHS.Infrastructure.Repositories.Read
         public async Task<Image> GetImageAsync(Guid id, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT Id, Format, Data
+                @"SELECT Id, MediaType, Data
 				FROM Image
                 WHERE Id = @ImageId AND Deleted = 0";
 

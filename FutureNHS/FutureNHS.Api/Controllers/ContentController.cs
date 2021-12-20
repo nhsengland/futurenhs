@@ -23,7 +23,7 @@ namespace FutureNHS.Api.Controllers
         {
             var image = await _imageDataProvider.GetImageAsync(id);
 
-            return File(image.Data, image.Format);
+            return File(image.Data, image.MediaType);
         }
 
     }
