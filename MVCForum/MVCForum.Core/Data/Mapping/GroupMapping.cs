@@ -29,7 +29,7 @@
             Property(x => x.Colour).IsOptional().HasMaxLength(50);
             Property(x => x.Image).IsOptional().HasMaxLength(200);
             Property(x => x.AboutUs).IsOptional().HasMaxLength(4000);
-
+            Property(x => x.HeaderImage).IsOptional();
 
             HasOptional(x => x.ParentGroup)
                 .WithMany()

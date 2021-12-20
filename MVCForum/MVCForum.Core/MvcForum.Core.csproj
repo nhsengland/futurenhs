@@ -45,6 +45,7 @@
     <Compile Include="Constants\UI\Themes.cs" />
     <Compile Include="Data\Mapping\CategoryMapping.cs" />
     <Compile Include="Data\Mapping\FileMapping.cs" />
+    <Compile Include="Data\Mapping\ImageMapping.cs" />
     <Compile Include="Data\Mapping\SystemPageMapping.cs" />
     <Compile Include="Data\Mapping\FolderMapping.cs" />
     <Compile Include="Data\Mapping\GroupInviteMapping.cs" />
@@ -210,6 +211,10 @@
     <Compile Include="Migrations\202112200955066_UpdateMembershipNameFields.Designer.cs">
       <DependentUpon>202112200955066_UpdateMembershipNameFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202112201708192_AddImageTable.cs" />
+    <Compile Include="Migrations\202112201708192_AddImageTable.Designer.cs">
+      <DependentUpon>202112201708192_AddImageTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -230,6 +235,7 @@
     <Compile Include="Models\Entities\Folder.cs" />
     <Compile Include="Models\Entities\GroupInvite.cs" />
     <Compile Include="Models\Entities\GroupPermissions.cs" />
+    <Compile Include="Models\Entities\Image.cs" />
     <Compile Include="Models\Entities\SystemPage.cs" />
     <Compile Include="Models\Entities\GroupUser.cs" />
     <Compile Include="Models\Enums\GroupUserStatus.cs" />
@@ -723,6 +729,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202112200955066_UpdateMembershipNameFields.resx">
       <DependentUpon>202112200955066_UpdateMembershipNameFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112201708192_AddImageTable.resx">
+      <DependentUpon>202112201708192_AddImageTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
