@@ -1,20 +1,28 @@
-using Microsoft.AspNetCore.Mvc;
 using FutureNHS.Infrastructure.Repositories.Read.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
 {
     [ApiController]
     public sealed class HealthCheckController : ControllerBase
-    {
-        public HealthCheckController()
+    { 
+        private readonly IHealthCheckDataProvider _healthCheckDataProvider;
+
+        public HealthCheckController(IHealthCheckDataProvider healthCheckDataProvider)
         {
+            _healthCheckDataProvider = healthCheckDataProvider;
         }
 
         [HttpGet]
         [Route("health-check")]
-        public IActionResult GetImageAsync(Guid id)
+        public async Task<IActionResult> HeartBeat(CancellationToken cancellationToken)
         {
-            return Ok();
+            var connectionSuccessful = await _healthCheckDataProvider.CheckDatabaseConnectionAsync(cancellationToken);
+            
+            if(connectionSuccessful)
+                return Ok();
+
+            return StatusCode(500);
         }
     }
 }

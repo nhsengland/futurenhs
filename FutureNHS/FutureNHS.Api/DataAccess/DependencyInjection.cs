@@ -12,6 +12,7 @@ namespace FutureNHS.Api.DataAccess
             //services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
             services.AddScoped<IGroupDataProvider, GroupDataProvider>();
             services.AddScoped<IImageDataProvider, ImageDataProvider>();
+            services.AddScoped<IHealthCheckDataProvider, HealthCheckDataProvider>();
 
             return services;
         }

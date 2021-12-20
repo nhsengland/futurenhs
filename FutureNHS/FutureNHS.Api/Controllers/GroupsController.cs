@@ -30,7 +30,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("user/{id}/groups")]
+        [Route("users/{id}/groups")]
 
         public async Task<IActionResult> GetGroupsForUserAsync(Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
@@ -44,7 +44,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("user/{id}/discover/groups")]
+        [Route("users/{id}/discover/groups")]
         public async Task<IActionResult> DiscoverNewGroupsForUserAsync(Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
@@ -57,7 +57,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("user/{id}/groups/{slug}")]
+        [Route("users/{id}/groups/{slug}")]
         public async Task<IActionResult> GetGroupAsync(Guid id, string slug, [FromQuery] string page, CancellationToken cancellationToken)
         {
             //var route = Request.Path.Value;
