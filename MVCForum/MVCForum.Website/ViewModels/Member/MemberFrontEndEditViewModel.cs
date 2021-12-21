@@ -41,13 +41,6 @@
         [Range(typeof(bool), "true", "true", ErrorMessage = "Please confirm that all changes are in line with the platform terms and conditions.")]
         public bool HasAgreedToTermsAndConditions { get; set; }
 
-        public string ImageUploadGuidance { get; set; }
-
-        public bool ShowImageUploadGuidance()
-        {
-            return !string.IsNullOrWhiteSpace(ImageUploadGuidance);
-        }
-
         public bool ShowPronouns()
         {
             return !string.IsNullOrWhiteSpace(Pronouns);

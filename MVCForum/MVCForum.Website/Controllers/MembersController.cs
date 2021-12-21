@@ -804,10 +804,6 @@
                 var user = MembershipService.GetUser(id);
                 var viewModel = user.PopulateMemberViewModel();
 
-                viewModel.ImageUploadGuidance = LocalizationService.GetResourceString("Members.Profile.ImageGuidanceText") != "Members.Profile.ImageGuidanceText" 
-                        ? LocalizationService.GetResourceString("Members.Profile.ImageGuidanceText") 
-                        : null;
-
                 return View(viewModel);
             }
 
@@ -858,21 +854,21 @@
         [ActionName("Edit")]
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        public virtual async Task<ActionResult> EditAsync(MemberFrontEndEditViewModel userModel, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ActionResult> EditAsync(Guid id, MemberFrontEndEditViewModel userModel, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (userModel is null) throw new ArgumentNullException(nameof(userModel));
+
+            // Only allow if editing own profile, tweak for admins in the future?
+            var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
+            if (loggedOnUserId != userModel.Id) return new HttpUnauthorizedResult();
+
+            // Get the user to edit from the database            
+            var dbUser = MembershipService.GetUser(userModel.Id);
+
+            if (dbUser is null) return HttpNotFound();
+
             if (ModelState.IsValid)
             {
-                if (userModel is null) throw new ArgumentNullException(nameof(userModel));
-
-                // Only allow if editing own profile, tweak for admins in the future?
-                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
-                if (loggedOnUserId != userModel.Id) return new HttpUnauthorizedResult();
-
-                // Get the user to edit from the database            
-                var dbUser = MembershipService.GetUser(userModel.Id);
-
-                if (dbUser is null) return HttpNotFound();
-
                 // Map across the viewmodel to the user
                 var user = userModel.ToMembershipUser(dbUser);
 
@@ -889,6 +885,9 @@
 
             }
 
+            userModel.Avatar = dbUser.Avatar;
+            userModel.Initials = dbUser.Initials;
+            userModel.Email = dbUser.Email;
             return View(userModel);
         }
 

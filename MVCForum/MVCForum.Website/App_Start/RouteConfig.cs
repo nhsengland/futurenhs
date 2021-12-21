@@ -146,6 +146,12 @@
             );
 
             routes.MapRoute(
+                "MemberEditProfileUrls", // Route name
+                string.Concat(ForumConfiguration.Instance.MemberUrlIdentifier, "/Edit/{id}"), // URL with parameters
+                new { controller = "Members", action = "Edit", slug = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
                 "tagUrls", // Route name
                 string.Concat(ForumConfiguration.Instance.TagsUrlIdentifier, "/{tag}"), // URL with parameters
                 new { controller = "Topic", action = "TopicsByTag", tag = UrlParameter.Optional } // Parameter defaults

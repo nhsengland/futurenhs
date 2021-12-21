@@ -27,10 +27,6 @@
     @using (Html.BeginForm("Edit", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "editmemberform" }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(x => Model.Id)
-        @Html.HiddenFor(x => Model.Avatar)
-        @Html.HiddenFor(x => Model.Initials)
-        @Html.HiddenFor(x => Model.ImageUploadGuidance)
 
         if (!ViewData.ModelState.IsValid)
         {
@@ -45,12 +41,9 @@
         }
         <div class="l-row u-margin-left-spacing-0 @Html.FieldHasError(model => model.ProfileImage, formError)">
             @Html.LabelFor(model => model.ProfileImage, htmlAttributes: new { @class = "c-label u-margin-bottom-spacing-2" })
-            @if (Model.ShowImageUploadGuidance())
-            {
-                <div class="c-hint" id="@Html.DisplayNameFor(model => model.ProfileImage)-hint">
-                    @Model.ImageUploadGuidance
-                </div>
-            }
+            <div class="c-hint" id="@Html.DisplayNameFor(model => model.ProfileImage)-hint">
+                @Html.LanguageString("Members.Profile.ImageGuidanceText")
+            </div>
 
             @Html.ValidationMessageFor(
                 model => model.ProfileImage,
