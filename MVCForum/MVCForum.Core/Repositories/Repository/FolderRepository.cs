@@ -314,7 +314,7 @@
         {
             var permissions = await GetUserRolesForGroupAsync(groupSlug, userId, cancellationToken);
 
-            return permissions.MembershipRole?.ToLower() == "admin" || permissions.GroupRole?.ToLower() == "admin" || permissions.GroupRole?.ToLower() == "standard member" || permissions.IsPublic;
+            return permissions.MembershipRole?.ToLower() == "admin" || permissions.GroupRole?.ToLower() == "admin" || permissions.GroupRole?.ToLower() == "standard members" || permissions.IsPublic;
         }
 
         public async Task<bool> UserHasFolderWriteAccessAsync(Guid folderId, Guid userId, CancellationToken cancellationToken)
