@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+﻿import React from 'react';
 import htmlTags from 'html-tags';
 import classNames from 'classnames';
 

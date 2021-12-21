@@ -1,0 +1,28 @@
+import * as React from 'react';
+import { render, screen } from '@testing-library/react';
+
+import { LoggedOutTemplate } from './index';
+
+import { Props } from './interfaces';
+
+const props: Props = {
+    id: 'mockId',
+    content: {
+        titleText: 'mockTitle',
+        metaDescriptionText: 'mockMetaDescriptionText',
+        mainHeadingHtml: 'mockMainHeading',
+    },
+    logOutUrl: '/mock'
+};
+
+describe('Logged out template', () => {
+
+    it('renders correctly', () => {
+
+        render(<LoggedOutTemplate {...props} />);
+
+        expect(screen.getAllByText('mockMainHeading').length).toEqual(1);
+
+    });
+    
+});

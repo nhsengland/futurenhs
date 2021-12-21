@@ -1,9 +1,9 @@
-import { Field } from '@appTypes/form';
+import { FormField } from '@appTypes/form';
 
 export interface Props {
     csrfToken: string;
     initialValues?: any;
-    fields: Array<Field>;
+    fields: Array<FormField>;
     errors: Record<string, string>;
     content: {
         errorSummary: {
@@ -18,5 +18,7 @@ export interface Props {
     submitAction: any;
     changeAction?: any;
     className?: string;
+    bodyClassName?: string;
+    submitButtonClassName?: string;
     children?: any;
 }

@@ -1,91 +1,98 @@
-import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
 
-import { Layout } from '@components/Layout';
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
-import { PageHeader } from '@components/PageHeader';
+import { defaultGroupLogos } from '@constants/icons';
 import { withAuth } from '@hofs/withAuth';
 import { getGroup } from '@services/getGroup';
-import { selectUser } from '@selectors/context';
+import { getGroupMembers } from '@services/getGroupMembers';
+import { getPendingGroupMembers } from '@services/getPendingGroupMembers';
+import { selectUser, selectPagination } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-const Index: (props) => JSX.Element = ({
-    user,
-    content
-}) => {
+import { GroupMembersTemplate } from '@components/_pageTemplates/GroupMembersTemplate';
+import { Props } from '@components/_pageTemplates/GroupMembersTemplate/interfaces';  
 
-    const router = useRouter();
-    const currentPathName: string = router.asPath;
-
-    const { titleText, 
-            metaDescriptionText, 
-            mainHeadingHtml,
-            strapLineText } = content ?? {};
-
-    return (
-
-        <Layout user={user}>
-            <Head>
-                <title>{titleText}</title>
-                <meta name="description" content={metaDescriptionText} />
-            </Head>
-            <LayoutColumnContainer>
-                <PageHeader 
-                    id="members"
-                    content={{
-                        mainHeadingHtml: mainHeadingHtml, 
-                        descriptionHtml: strapLineText,
-                        navMenuTitleText: 'Group menu'
-                    }} 
-                    navMenuList={[
-                        {
-                            url: `${currentPathName.replace('/members', '/')}`,
-                            text: 'Home'
-                        },
-                        {
-                            url: `${currentPathName.replace('/members', '/forum')}`,
-                            text: 'Forum'
-                        },
-                        {
-                            url: `${currentPathName.replace('/members', '/files')}`,
-                            text: 'Files'
-                        },
-                        {
-                            url: `${currentPathName}`,
-                            text: 'Members'
-                        }
-                    ]}
-                    className="u-bg-theme-14" />
-                <LayoutColumn tablet={8} className="u-px-4 u-py-10">
-                </LayoutColumn>
-            </LayoutColumnContainer>
-        </Layout>
-
-    )
-
-}
-
+/**
+ * Get props to inject into page on the initial server-side request
+ */
 export const getServerSideProps: GetServerSideProps = withAuth(async (context: GetServerSidePropsContext) => {
 
+    const id: string = '3d4a3b47-ba2c-43fa-97cf-90de93eeb4f8';
+
+    /**
+     * Get data from request context
+     */
     const pathElements: Array<string> = context.resolvedUrl.split('/');
     const slug: string = pathElements[pathElements.length - 2];
     const user: User = selectUser(context);
-    const { data } = await getGroup({
-        user: user,
-        slug: slug,
-        page: 'members'
-    });
+    const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
+    const initialPageSize: number = selectPagination(context).pageSize ?? 10;
 
-    return {
-        props: {
-            user: user,
-            content: data.content
-        }
+    /**
+     * Create page data
+     */
+    const props: Props = {
+        id: id,
+        user: user,
+        content: null,
+        image: null,
+        members: null,
+        pendingMembers: null,
+        pagination: null,
+        errors: null
+    };
+
+    /**
+     * Get data from services
+     */
+    try {
+
+        const [
+            groupData,
+            groupMembers,
+            groupPendingMembers
+        ] = await Promise.all([
+            getGroup({
+                user: user,
+                slug: slug,
+                page: 'members'
+            }),
+            getGroupMembers({
+                user: user,
+                slug: slug,
+                pagination: {
+                    pageNumber: initialPageNumber,
+                    pageSize: initialPageSize
+                }
+            }),
+            getPendingGroupMembers({
+                user: user,
+                slug: slug
+            })
+        ]);
+
+        props.content = groupData.data.content;
+        props.image = groupData.data.image ?? defaultGroupLogos.small;
+        props.members = groupMembers.data;
+        props.pagination = groupMembers.pagination;
+        props.pendingMembers = groupPendingMembers.data;
+    
+    } catch (error) {
+        
+        props.errors = error;
+
     }
 
+    /**
+     * Return data to page template
+     */
+    return {
+        props: props
+    };
+    
 });
 
-export default Index;
+/**
+ * Export page template
+ */
+export default GroupMembersTemplate;

@@ -1,0 +1,37 @@
+.c-pagination {
+
+    &_list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &_item {
+        display: inline-block;
+        padding-right: $nhsuk-spacing-point-2;
+        line-height: 24px;
+        font-size: 16px;
+
+        @include respond-to(tablet) {
+            padding-right: $nhsuk-spacing-point-3;
+            line-height: 32px;
+            font-size: 24px;
+        }
+
+    }
+
+    &_icon {
+
+        height: 16px;
+        width: 24px;
+        vertical-align: middle;
+        fill: currentColor;
+
+        @include respond-to(tablet) {
+            height: 24px;
+            width: 32px;
+        }
+
+    }
+
+}

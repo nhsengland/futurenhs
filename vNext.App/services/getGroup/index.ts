@@ -7,7 +7,7 @@ import { User } from '@appTypes/user';
 declare type Options = ({
     user: User;
     slug: string;
-    page: 'home' | 'forum' | 'files' | 'members'
+    page: 'home' | 'forum' | 'files' | 'members';
 });
 
 declare type Dependencies = ({
@@ -27,7 +27,8 @@ export const getGroup = async ({
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
         const id: string = user.id;
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/${id}/groups/${slug}?page=${page}`;
+        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/users/${id}/groups/${slug}?page=${page}`;
+
         const { json, meta } = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const { ok, status, statusText } = meta;
 
@@ -46,10 +47,10 @@ export const getGroup = async ({
                 titleText: json.pageHeader.nameText, 
                 metaDescriptionText: 'A Future NHS group',
                 mainHeadingHtml: json.pageHeader.nameText,
-                strapLineText: json.pageHeader.strapLineText
+                strapLineText: 'Testing unreleased features of the FutureNHS platform'//json.pageHeader.strapLineText
             },
             image: json.pageHeader?.image ? {
-                src: `${process.env.NEXT_PUBLIC_API_ORIGIN}${json.pageHeader.image?.source}`,
+                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${json.pageHeader.image?.source}`,
                 height: json.pageHeader?.image?.height ?? null,
                 width: json.pageHeader?.image?.width ?? null,
                 altText: 'TBC'

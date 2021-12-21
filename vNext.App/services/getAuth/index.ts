@@ -33,7 +33,7 @@ export const getAuth: GetAuthService = async ({
 
         const { meta, json } = await fetchJSON(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL' }), setGetFetchOptions({
             Cookie: existingCookies
-        }), 1000)
+        }), 1000);
 
         const { ok, status, statusText } = meta;
 

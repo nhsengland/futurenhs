@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import Link from 'next/link';
 
+import { Link } from '@components/Link';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { LayoutWidthContainer } from '@components/LayoutWidthContainer';

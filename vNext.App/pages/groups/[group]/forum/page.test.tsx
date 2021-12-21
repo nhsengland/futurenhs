@@ -3,7 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
 import Page from './index.page';
-import { Props } from './interfaces';
+import { Props } from '@components/_pageTemplates/GroupForumTemplate/interfaces';
 
 describe('Group forum page', () => {
 
@@ -13,6 +13,7 @@ describe('Group forum page', () => {
     }));
 
     const props: Props = {
+        id: 'mockId',
         user: undefined,
         content: {
             titleText: 'Mock title text',
@@ -21,7 +22,9 @@ describe('Group forum page', () => {
             introHtml: 'Mock intro html',
             navMenuTitleText: 'Mock nav menu title text',
             secondaryHeadingHtml: 'Mock secondary heading html'
-        }
+        },
+        image: null,
+        discussionsList: []
     };
 
     it('renders correctly', () => {

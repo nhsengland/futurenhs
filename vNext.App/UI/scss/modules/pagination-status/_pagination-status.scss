@@ -1,0 +1,12 @@
+.c-pagination-status {
+    margin: 0;
+    line-height: $lead-text-line-height;
+    font-size: $lead-text-size;
+    color: $dark-grey;
+
+    @include respond-to(tablet) {
+        line-height: 32px;
+        font-size: 24px;
+    }
+
+}

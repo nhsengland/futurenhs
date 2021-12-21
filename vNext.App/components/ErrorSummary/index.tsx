@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import { RichText } from '@components/RichText';
@@ -12,14 +12,16 @@ export const ErrorSummary = React.forwardRef(({
     className
 }: Props, ref) => {
 
-    const { bodyHtml } = content;
+    const { bodyHtml } = content ?? {};
 
     const generatedClasses: any = {
-        wrapper: classNames('c-info-message', 'c-info-message--error', className),
-        list: classNames('u-m-0', 'u-p-0', 'u-list-none')
+        wrapper: classNames('c-error-summary', className),
+        list: classNames('c-error-summary_list', 'u-m-0', 'u-p-0', 'u-list-none'),
+        listItem: classNames('c-error-summary_list-item'),
+        link: classNames('c-error-summary_link')
     };
 
-    const hasErrors: boolean = Boolean(Object.keys(errors).length > 0);
+    const hasErrors: boolean = errors && Boolean(Object.keys(errors).length > 0);
 
     return (
 
@@ -31,18 +33,23 @@ export const ErrorSummary = React.forwardRef(({
             tabIndex={-1}>
                 {hasErrors &&
                     <div className={generatedClasses.wrapper}>
-                        <RichText bodyHtml={bodyHtml} wrapperElementType="p" />
+                        {bodyHtml &&
+                            <RichText 
+                                bodyHtml={bodyHtml} 
+                                wrapperElementType="p"
+                                className="u-text-bold u-text-lead" />
+                        }
                         <ul className={generatedClasses.list}>
                             {Object.keys(errors).map((key: string, index: number) => {
 
                                 return (
 
-                                    <li key={index}>
+                                    <li key={index} className={generatedClasses.listItem}>
                                         {relatedNames.includes(key)
                                         
-                                            ?   <a href={`#${key}`}>{errors[key]}</a>
+                                            ?   <a href={`#${key}`} className={generatedClasses.link}>{errors[key]}</a>
                                             
-                                            :   <span>{errors[key]}</span> 
+                                            :   <span className={generatedClasses.link}>{errors[key]}</span> 
                                         
                                         }
                                     </li>

@@ -28,7 +28,8 @@
         "@hooks/*": ["hooks/*"],
         "@hofs/*": ["hofs/*"],
         "@lib/*": ["lib/*"],
-        "@appTypes/*": ["types/*"]
+        "@appTypes/*": ["types/*"],
+        "@formConfigs/*": ["form-configs/*"]
     }
   },
   "include": [

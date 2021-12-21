@@ -11,7 +11,8 @@ module.exports = {
             "./components/**/*.js",
             "./components/**/*.ts",
             "./components/**/*.jsx",
-            "./components/**/*.tsx"
+            "./components/**/*.tsx",
+            "./helpers/renderers/**/*.tsx"
         ]
     },    
     darkMode: false,

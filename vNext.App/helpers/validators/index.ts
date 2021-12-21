@@ -1,4 +1,4 @@
-import { Field } from '@appTypes/form';
+import { FormField } from '@appTypes/form';
 
 import { required } from './required';
 import { email } from './email';
@@ -8,7 +8,7 @@ const validationFunctions: any = {
     email: email
 };
 
-export const validate = (submission: any, fields: Array<Field>): any => {
+export const validate = (submission: any, fields: Array<FormField>): any => {
 
     const errors: any = {};
 

@@ -3,7 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
 import Page from './index.page';
-import { Props } from './interfaces';
+import { Props } from '@components/_pageTemplates/GroupHomeTemplate/interfaces';
 
 describe('Group page', () => {
 
@@ -11,6 +11,7 @@ describe('Group page', () => {
     (nextRouter as any).useRouter.mockImplementation(() => ({ route: '/' }));
 
     const props: Props = {
+        id: 'mockId',
         user: undefined,
         content: {
             titleText: 'Mock title text',
@@ -19,7 +20,8 @@ describe('Group page', () => {
             introHtml: 'Mock intro html',
             navMenuTitleText: 'Mock nav menu title text',
             secondaryHeadingHtml: 'Mock secondary heading html'
-        }
+        },
+        image: null
     };
 
     it('renders correctly', () => {

@@ -1,8 +1,12 @@
 import { withApplicationInsights } from 'next-applicationinsights';
-import '../UI/scss/screen.scss';
 import { getEnvVar } from '@helpers/util/env';
+import '../UI/scss/screen.scss';
 
-const App = ({ Component, pageProps }) => <Component {...pageProps} />
+const App = ({ Component, pageProps }) => {
+
+    return <Component {...pageProps} key={pageProps.id} />
+    
+}
 
 export default withApplicationInsights({ 
     instrumentationKey: getEnvVar({ 

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import Link from 'next/link';
 
+import { Link } from '@components/Link';
 import { SVGIcon } from '@components/SVGIcon';
 
 import { Props } from './interfaces';

@@ -21,22 +21,22 @@ export const Card: (props: Props) => JSX.Element = ({
 
     return (
 
-        <article className={generatedClasses.wrapper}>
-            <div className={generatedClasses.hero}>
-                <div className={generatedClasses.heroBody}>
-                    {image &&
-                        <Image 
-                            src={src} 
-                            alt={altText} 
-                            height={height} 
-                            width={width} />
-                    }
+        <div className={generatedClasses.wrapper}>
+            {image &&
+                <div className={generatedClasses.hero}>
+                    <div className={generatedClasses.heroBody}>
+                            <Image 
+                                src={src} 
+                                alt={altText} 
+                                height={height} 
+                                width={width} />
+                    </div>
                 </div>
-            </div>
+            }
             <div className={generatedClasses.body}>
                 {children}
             </div>
-        </article>
+        </div>
 
     );
 }

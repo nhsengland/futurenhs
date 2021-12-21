@@ -3,9 +3,10 @@ import { render, screen } from '@testing-library/react';
 
 import Page, { getServerSideProps } from './index.page';
 
-import { Props } from './interfaces';
+import { Props } from '@components/_pageTemplates/LoggedOutTemplate/interfaces';
 
 const props: Props = {
+    id: 'mockId',
     content: {
         titleText: 'mockTitle',
         metaDescriptionText: 'mockMetaDescriptionText',

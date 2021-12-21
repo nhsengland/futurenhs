@@ -3,7 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
 import Page from './index.page';
-import { Props } from './interfaces';
+import { Props } from '@components/_pageTemplates/GroupMembersTemplate/interfaces';  
 
 describe('Group members page', () => {
 
@@ -13,7 +13,10 @@ describe('Group members page', () => {
     }));
 
     const props: Props = {
+        id: 'mockPageId',
         user: undefined,
+        members: [],
+        pendingMembers: [],
         content: {
             titleText: 'Mock title text',
             metaDescriptionText: 'Mock meta description text',
@@ -21,7 +24,8 @@ describe('Group members page', () => {
             introHtml: 'Mock intro html',
             navMenuTitleText: 'Mock nav menu title text',
             secondaryHeadingHtml: 'Mock secondary heading html'
-        }
+        },
+        image: null
     };
 
     it('renders correctly', () => {

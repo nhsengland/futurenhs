@@ -1,56 +1,68 @@
-import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
-import { Layout } from '@components/Layout';
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
+import { HomeTemplate } from '@components/_pageTemplates/HomeTemplate';
 import { withAuth } from '@hofs/withAuth';
-import { selectUser } from '@selectors/context';
+import { selectUser, selectLocale } from '@selectors/context';
+import { getPageContent } from '@services/getPageContent';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-const Index: (props) => JSX.Element = ({
-    content,
-    user
-}) => {
+import { Props } from '@components/_pageTemplates/HomeTemplate/interfaces';
 
-    const { titleText, 
-            metaDescriptionText, 
-            mainHeadingHtml } = content ?? {};
-
-    return (
-
-        <Layout user={user}>
-            <Head>
-                <title>{titleText}</title>
-                <meta name="description" content={metaDescriptionText} />
-            </Head>
-            <LayoutColumnContainer>
-                <LayoutColumn className="u-px-4 u-py-10">
-                    <h1>{mainHeadingHtml}</h1>
-                </LayoutColumn>
-            </LayoutColumnContainer>
-        </Layout>
-
-    )
-
-}
-
+/**
+ * Get props to inject into page on the initial server-side request
+ */
 export const getServerSideProps: GetServerSideProps = withAuth(async (context: GetServerSidePropsContext) => {
 
-    const user: User = selectUser(context);
+    const id: string = '749bd865-27b8-4af6-960b-3f0458f8e92f';
 
+    /**
+     * Get data from request context
+     */
+    const user: User = selectUser(context);
+    const locale: string = selectLocale(context);
+
+    /**
+     * Create page data
+     */
+    const props: Props = {
+        id: id,
+        user: user,
+        content: null
+    };
+
+    /**
+     * Get data from services
+     */
+    try {
+
+        const [
+            pageContent
+        ] = await Promise.all([
+            getPageContent({
+                id: id,
+                locale: locale
+            })
+        ]);
+
+        props.content = pageContent.data;
+    
+    } catch (error) {
+        
+        props.errors = error;
+
+    }
+
+    /**
+     * Return data to page template
+     */
     return {
-        props: {
-            user: user,
-            content: {
-                titleText: 'Future NHS Home', 
-                metaDescriptionText: 'Your Future NHS home page',
-                mainHeadingHtml: 'TODO: dashboard'
-            }
-        }
+        props: props
     }
 
 });
 
-export default Index;
+/**
+ * Export page template
+ */
+export default HomeTemplate;

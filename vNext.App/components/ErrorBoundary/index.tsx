@@ -1,5 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import classNames from 'classnames';
+import { ErrorSummary } from '@components/ErrorSummary';
 
 import { Props, State } from './interfaces';
 
@@ -53,7 +54,13 @@ export class ErrorBoundary extends React.PureComponent<Props, State> {
 
         if(hasError){
 
-            return <p className={generatedClasses.wrapper}>{errorText}</p>
+            return (
+            
+                <ErrorSummary content={{
+                    bodyHtml: errorText
+                }} className={generatedClasses.wrapper} />
+
+            )
 
         }
 

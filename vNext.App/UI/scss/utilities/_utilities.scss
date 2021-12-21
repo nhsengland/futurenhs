@@ -46,12 +46,20 @@
     }
 }
 
+.u-text-lead {
+    @include lead-text;
+}
+
 .u-text-bold {
     font-weight: $nhsuk-font-bold;
 }
 
 .u-text-normal {
     font-weight: $nhsuk-font-normal;
+}
+
+.u-drop-shadow {
+    box-shadow: 0 4px 0 0 $color_nhsuk-grey-3;
 }
 
 .u-max-height {
@@ -84,36 +92,3 @@
     }
 }
 
-@each $number, $spaceing in $t-utility-spacing {
-    .u-margin-top-spacing-#{$number} {
-        margin-top: $spaceing;
-    }
-
-    .u-margin-bottom-spacing-#{$number} {
-        margin-bottom: $spaceing;
-    }
-
-    .u-margin-left-spacing-#{$number} {
-        margin-left: $spaceing;
-    }
-
-    .u-margin-right-spacing-#{$number} {
-        margin-right: $spaceing;
-    }
-
-    .u-padding-top-spacing-#{$number} {
-        padding-top: $spaceing;
-    }
-
-    .u-padding-bottom-spacing-#{$number} {
-        padding-bottom: $spaceing;
-    }
-
-    .u-padding-left-spacing-#{$number} {
-        padding-left: $spaceing;
-    }
-
-    .u-padding-right-spacing-#{$number} {
-        padding-right: $spaceing;
-    }
-}

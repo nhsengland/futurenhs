@@ -1,95 +1,72 @@
-import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
 
-import { Layout } from '@components/Layout';
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
-import { PageHeader } from '@components/PageHeader';
+import { defaultGroupLogos } from '@constants/icons';
 import { withAuth } from '@hofs/withAuth';
 import { getGroup } from '@services/getGroup';
 import { selectUser } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-const Index: (props) => JSX.Element = ({
-    user,
-    content,
-    image
-}) => {
+import { GroupHomeTemplate } from '@components/_pageTemplates/GroupHomeTemplate';
+import { Props } from '@components/_pageTemplates/GroupHomeTemplate/interfaces';
 
-    const router = useRouter();
-    const currentPathName: string = router.asPath;
-
-    const { titleText, 
-            metaDescriptionText, 
-            mainHeadingHtml,
-            strapLineText } = content ?? {};
-
-    return (
-
-        <Layout user={user}>
-            <Head>
-                <title>{titleText}</title>
-                <meta name="description" content={metaDescriptionText} />
-            </Head>
-            <LayoutColumnContainer>
-                <PageHeader 
-                    id="group"
-                    image={image}
-                    content={{
-                        mainHeadingHtml: mainHeadingHtml, 
-                        descriptionHtml: strapLineText,
-                        navMenuTitleText: 'Group menu'
-                    }} 
-                    navMenuList={[
-                        {
-                            url: `${currentPathName}`,
-                            text: 'Home'
-                        },
-                        {
-                            url: `${currentPathName}/forum`,
-                            text: 'Forum'
-                        },
-                        {
-                            url: `${currentPathName}/files`,
-                            text: 'Files'
-                        },
-                        {
-                            url: `${currentPathName}/members`,
-                            text: 'Members'
-                        }
-                    ]}
-                    className="u-bg-theme-14" />
-                <LayoutColumn tablet={8} className="u-px-4 u-py-10">
-                </LayoutColumn>
-            </LayoutColumnContainer>
-        </Layout>
-
-    )
-
-}
-
+/**
+ * Get props to inject into page on the initial server-side request
+ */
 export const getServerSideProps: GetServerSideProps = withAuth(async (context: GetServerSidePropsContext) => {
 
-    const slug: string = context.resolvedUrl.substring(context.resolvedUrl.lastIndexOf('/') + 1);
+    const id: string = '7a9bdd18-45ea-4976-9810-2fcb66242e27';
+
+    /**
+     * Get data from request context
+     */
+    const slug: string = context.resolvedUrl.substring(context.resolvedUrl.lastIndexOf('/') + 1).split('?')[0];
     const user: User = selectUser(context);
-    const { data, errors } = await getGroup({
+
+    /**
+     * Create page data
+     */
+    const props: Props = {
+        id: id,
         user: user,
-        slug: slug,
-        page: 'home'
-    });
+        content: null,
+        image: null
+    };
 
-    console.log(slug, user);
+    /**
+     * Get data from services
+     */
+    try {
 
+        const [
+            groupData
+        ] = await Promise.all([
+            getGroup({
+                user: user,
+                slug: slug,
+                page: 'home'
+            })
+        ]);
+
+        props.content = groupData.data.content;
+        props.image = groupData.data.image ?? defaultGroupLogos.small;
+    
+    } catch (error) {
+
+        console.log(error);
+        
+    }
+
+    /**
+     * Return data to page template
+     */
     return {
-        props: {
-            user: user,
-            content: data?.content ?? null,
-            image: data?.image ?? null
-        }
+        props: props
     }
 
 });
 
-export default Index;
+/**
+ * Export page template
+ */
+export default GroupHomeTemplate;

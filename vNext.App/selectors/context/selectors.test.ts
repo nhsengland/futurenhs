@@ -8,7 +8,7 @@ describe('Selectors', () => {
             user: {
                 id: 1234
             },
-            body: {
+            query: {
                 pageNumber: 2,
                 pageSize: 5  
             }
@@ -37,8 +37,8 @@ describe('Selectors', () => {
         expect(selectPagination({
             req: {}
         } as any)).toStrictEqual({
-            pageNumber: 1,
-            pageSize: 10  
+            pageNumber: null,
+            pageSize: null  
         });
 
     });

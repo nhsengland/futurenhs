@@ -1,38 +1,67 @@
 import { GetServerSideProps } from 'next';
 
-import { GenericContentPage } from '@components/GenericContentPage';
+import { getPageContent } from '@services/getPageContent';
+import { selectUser, selectLocale } from '@selectors/context';
+import { GetServerSidePropsContext } from '@appTypes/next';
+import { User } from '@appTypes/user';
 
-import { Props } from './interfaces';
+import { GenericContentTemplate } from '@components/_pageTemplates/GenericContentTemplate';
+import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfaces';
 
-const Index: (props: Props) => JSX.Element = ({
-    user,
-    content
-}) => {
+/**
+ * Get props to inject into page on the initial server-side request
+ */
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
 
-    const isAuthenticated: boolean = Boolean(user);
+    const id: string = 'c0e49c49-f9cb-40c0-bafe-4f603b495b1f';
 
-    return (
+    /**
+     * Get data from request context
+     */
+    const user: User = selectUser(context);
+    const locale: string = selectLocale(context);
 
-        <GenericContentPage 
-            isAuthenticated={isAuthenticated}
-            content={content}/>
+    /**
+     * Create page data
+     */
+    const props: Props = {
+        id: id,
+        user: user,
+        content: null
+    };
 
-    )
+    /**
+     * Get data from services
+     */
+    try {
 
-}
+        const [
+            pageContent
+        ] = await Promise.all([
+            getPageContent({
+                id: id,
+                locale: locale
+            })
+        ]);
 
-export const getServerSideProps: GetServerSideProps = async ({}) => {
+        props.content = pageContent.data;
+    
+    } catch (error) {
+        
+        props.errors = error;
 
+    }
+
+    /**
+     * Return data to page template
+     */
     return {
-        props: {
-            content: {
-                metaDescriptionText: 'The terms and conditions for using Future NHS',
-                titleText: 'Terms and conditions',
-                mainHeadingHtml: 'Terms and conditions'
-            }
-        }
+        props: props
     }
 
 }
 
-export default Index;
+/**
+ * Export page template
+ */
+export default GenericContentTemplate;

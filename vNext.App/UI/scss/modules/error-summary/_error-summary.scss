@@ -8,7 +8,13 @@
         list-style-type: none;
     }
 
-    &_error-text {
+    &_list-item {
+        &:last-child {
+            margin: 0;
+        }
+    }
+
+    &_link {
         color: $red;
         font-weight: $nhsuk-font-bold;
         text-decoration: underline;

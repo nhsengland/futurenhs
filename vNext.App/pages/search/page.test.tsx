@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import Page, { getServerSideProps } from './index.page';
-import { Props } from './interfaces';
+import Page from './index.page';
+import { Props } from '@components/_pageTemplates/SearchTemplate/interfaces';
 
 describe('Search page', () => {
 
     const props: Props = {
+        id: 'mockPageId',
         user: undefined,
         term: 'mockTerm',
         content: {

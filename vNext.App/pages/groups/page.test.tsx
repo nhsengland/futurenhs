@@ -1,12 +1,17 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
+import * as nextRouter from 'next/router';
 
 import Page from './index.page';
-import { Props } from './interfaces';
+import { Props } from '@components/_pageTemplates/GroupListingTemplate/interfaces';
 
 describe('Groups page', () => {
 
+    (nextRouter as any).useRouter = jest.fn();
+    (nextRouter as any).useRouter.mockImplementation(() => ({ route: '/groups' }));
+
     const props: Props = {
+        id: 'mockPageId',
         user: undefined,
         content: {
             titleText: 'Mock title text',
@@ -16,18 +21,18 @@ describe('Groups page', () => {
             navMenuTitleText: 'Mock nav menu title text',
             secondaryHeadingHtml: 'Mock secondary heading html'
         },
-        groupsList: {
-            data: [
-                {
-                    content: {
-                        mainHeadingHtml: 'Mock Group card heading 1'
-                    },
-                    slug: 'mock-group',
-                    totalDiscussionCount: 3,
-                    totalMemberCount: 4
-                }
-            ]
-        }
+        groupsList: [
+            {
+                content: {
+                    metaDescriptionText: 'Mock meta description test',
+                    titleText: 'Mock title text',
+                    mainHeadingHtml: 'Mock Group card heading 1'
+                },
+                slug: 'mock-group',
+                totalDiscussionCount: 3,
+                totalMemberCount: 4
+            }
+        ]
     };
 
     it('renders correctly', () => {

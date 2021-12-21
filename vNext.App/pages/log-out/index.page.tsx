@@ -1,65 +1,69 @@
-import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import Link from 'next/link';
 
-import { Layout } from '@components/Layout';
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
-import { withLogOut } from '@hofs/withLogOut';
-import { getEnvVar } from '@helpers/util/env';
+import { getPageContent } from '@services/getPageContent';
+import { selectLocale, selectUser } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
+import { User } from '@appTypes/user';
 
-import { Props } from './interfaces';
+import { LoggedOutTemplate } from '@components/_pageTemplates/LoggedOutTemplate';
+import { Props } from '@components/_pageTemplates/LoggedOutTemplate/interfaces';
 
-const Index: (props: Props) => JSX.Element = ({
-    content,
-    logOutUrl
-}) => {
+/**
+ * Get props to inject into page on the initial server-side request
+ */
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
 
-    const { titleText, 
-            metaDescriptionText, 
-            mainHeadingHtml } = content ?? {};
+    const id: string = '9ecf0edb-3e8d-4c3b-b4e6-371e38ac0af4';
 
-    return (
+    /**
+     * Get data from request context
+     */
+    const user: User = selectUser(context);
+    const locale: string = selectLocale(context);
 
-        <Layout 
-            shouldRenderSearch={false}
-            shouldRenderUserNavigation={false}
-            shouldRenderMainNav={false}>
-                <Head>
-                    <title>{titleText}</title>
-                    <meta name="description" content={metaDescriptionText} />
-                </Head>
-                <LayoutColumnContainer justify="centre">
-                    <LayoutColumn tablet={6} className="u-py-10">
-                        <h1>{mainHeadingHtml}</h1>
-                        <p>Your are now logged out</p>
-                        <p className="desktop:u-pb-4">
-                            <Link href={logOutUrl}>
-                                <a>Log in again</a>
-                            </Link>
-                        </p>
-                    </LayoutColumn>
-                </LayoutColumnContainer>
-        </Layout>
+    /**
+     * Create page data
+     */
+    const props: Props = {
+        id: id,
+        user: user,
+        content: null,
+        logOutUrl: process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL
+    };
 
-    )
+    /**
+     * Get data from services
+     */
+    try {
+
+        const [
+            pageContent
+        ] = await Promise.all([
+            getPageContent({
+                id: id,
+                locale: locale
+            })
+        ]);
+
+        props.content = pageContent.data;
+    
+    } catch (error) {
+        
+        props.errors = error;
+
+    }
+
+    /**
+     * Return data to page template
+     */
+    return {
+        props: props
+    }
 
 }
 
-export const getServerSideProps: GetServerSideProps = withLogOut(async(context: GetServerSidePropsContext) => {
+/**
+ * Export page template
+ */
+export default LoggedOutTemplate;
 
-    return {
-        props: {
-            content: {
-                titleText: 'Logged out', 
-                metaDescriptionText: 'Log out',
-                mainHeadingHtml: 'Logged out'
-            },
-            logOutUrl: getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL' })
-        }
-    }
-
-});
-
-export default Index;

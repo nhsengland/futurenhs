@@ -1,8 +1,7 @@
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
 
-import { Input } from '@components/Input';
-import { HiddenInput } from '@components/HiddenInput';
+import { formComponents } from '@components/_formComponents';
 import { validate } from '@helpers/validators';
 
 import { Props } from './interfaces';
@@ -16,7 +15,9 @@ export const Form: (props: Props) => JSX.Element = ({
     changeAction,
     submitAction,
     content,
-    className
+    className,
+    bodyClassName,
+    submitButtonClassName
 }) => {
 
     const handleChange = (props: any): any => changeAction?.(props);
@@ -25,7 +26,9 @@ export const Form: (props: Props) => JSX.Element = ({
     const { submitButtonText } = content ?? {};
 
     const generatedClasses: any = {
-        wrapper: classNames('c-form', className)
+        wrapper: classNames('c-form', className),
+        body: classNames('c-form_body', bodyClassName),
+        submitButton: classNames('c-form_submit-button', 'c-button', 'c-button--min-width', submitButtonClassName)
     };
 
     return (
@@ -40,30 +43,39 @@ export const Form: (props: Props) => JSX.Element = ({
                     action={action} 
                     method={method}
                     onSubmit={handleSubmit} 
-                    className={generatedClasses.form}>
+                    className={generatedClasses.wrapper}>
                         <Field
                             key="_csrf"
                             name="_csrf"
-                            component={(HiddenInput as any)} 
+                            component={formComponents.hidden} 
                             defaultValue={csrfToken} />
-                        {fields.map(({ name, inputType, content }) => {
+                        <div className={generatedClasses.body}>
+                            {fields.map(({ 
+                                name, 
+                                inputType, 
+                                content, 
+                                component,
+                                className 
+                            }) => {
 
-                            return (
+                                return (
 
-                                <Field
-                                    key={name}
-                                    name={name}
-                                    inputType={inputType}
-                                    content={content}
-                                    component={(Input as any)} />
+                                    <Field
+                                        key={name}
+                                        name={name}
+                                        inputType={inputType}
+                                        content={content}
+                                        component={formComponents[component]}
+                                        className={className} />
 
-                            )
+                                )
 
-                        })}
+                            })}
+                        </div>
                         <button 
                             disabled={submitting}
                             type="submit" 
-                            className="c-button c-button--min-width">
+                            className={generatedClasses.submitButton}>
                                 {submitButtonText}
                         </button>
                         <FormSpy

@@ -109,20 +109,8 @@ li {
 }
 
 hr {
-    @extend %nhsuk-section-break;
-    @extend %nhsuk-section-break-regular;
-    @extend %nhsuk-section-break--visible;
-}
-
-.c-section-break {
-    @extend %nhsuk-section-break;
-    @extend %nhsuk-section-break-regular;
-
-    &--small {
-        @extend %nhsuk-section-break-small;
-    }
-
-    &--visible {
-        @extend %nhsuk-section-break--visible;
-    }
+    margin: $nhsuk-spacing-point-3 0;
+    border: 0;
+    height: 2px;
+    background-color: $mid-grey;
 }

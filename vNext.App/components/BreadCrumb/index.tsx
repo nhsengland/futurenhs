@@ -20,7 +20,7 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
                     <RichText 
                         wrapperElementType="p" 
                         bodyHtml={descriptionHtml} 
-                        className="u-margin-bottom-spacing-0" />
+                        className="u-mb-0" />
                 </div>
             }   
         </div>

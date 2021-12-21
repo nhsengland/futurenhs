@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import classNames from 'classnames';
-import Link from 'next/link';
 import Image from 'next/image';
 
+import { Link } from '@components/Link';
 import { LayoutWidthContainer } from '@components/LayoutWidthContainer';
 import { ErrorBoundary } from '@components/ErrorBoundary';
 import { Search } from '@components/Search';

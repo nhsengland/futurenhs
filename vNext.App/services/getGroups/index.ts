@@ -1,6 +1,7 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { getEnvVar } from '@helpers/util/env';
 import { ServicePaginatedResponse } from '@appTypes/service';
+import { Pagination } from '@appTypes/pagination';
 import { Group } from '@appTypes/group';
 import { User } from '@appTypes/user';
 
@@ -9,8 +10,7 @@ declare type Options = ({
     filters?: {
         isMember?: boolean;
     };
-    pageNumber?: number;
-    pageSize?: number;
+    pagination?: Pagination;
 });
 
 declare type Dependencies = ({
@@ -21,8 +21,7 @@ declare type Dependencies = ({
 export const getGroups = async ({
     user,
     filters,
-    pageNumber = 1,
-    pageSize = 10
+    pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<Group>>> => {
 
     try {
@@ -30,9 +29,11 @@ export const getGroups = async ({
         const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
+        const { pageNumber, pageSize } = pagination;
+
         const id: string = user.id;
         const resource: string = filters?.isMember ? 'groups' : 'discover/groups';
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/user/${id}/${resource}?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/users/${id}/${resource}?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
         const { json, meta } = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const { ok, status, statusText } = meta;
@@ -58,7 +59,7 @@ export const getGroups = async ({
                 totalMemberCount: datum.memberCount ?? 0,
                 totalDiscussionCount: datum.discussionCount ?? 0,
                 image: datum.image ? {
-                    src: `${process.env.NEXT_PUBLIC_API_ORIGIN}${datum.image?.source}`,
+                    src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${datum.image?.source}`,
                     height: datum.image?.height ?? null,
                     width: datum.image?.width ?? null,
                     altText: 'TBC'
@@ -66,6 +67,12 @@ export const getGroups = async ({
             } as Group;
 
         });
+
+        json.pagination = {
+            pageNumber: json.pageNumber,
+            pageSize: json.pageSize,
+            totalRecords: json.totalRecords
+        }
 
         return json;
 

@@ -17,7 +17,6 @@ $button-shadow-size: 4px;
 %nhsuk-button {
     font-size: $base-font-size;
     line-height: $base-font-line-height;
-    margin-bottom: 20px;
     background-color: $nhsuk-button-color;
     border: $nhsuk-border-width-form-element solid transparent;
     border-radius: 4px;
@@ -27,7 +26,6 @@ $button-shadow-size: 4px;
     cursor: pointer;
     display: inline-block;
     font-weight: 600;
-    margin-top: 0;
     position: relative;
     text-align: center;
     vertical-align: top;
@@ -240,7 +238,7 @@ $button-shadow-size: 4px;
 
 %toggle-button {
     background-color: $nhsuk-reverse-button-color;
-    color: $color_nhsuk-blue;
+    color: $black;
     border: 2px solid $color_nhsuk-blue;
     border-radius: $nhsuk-border-radius;
     cursor: pointer;

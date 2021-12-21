@@ -1,61 +1,68 @@
-import Head from 'next/head';
-import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 
-import { Layout } from '@components/Layout';
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
-import { withAuth } from '@hofs/withAuth';
+import { getPageContent } from '@services/getPageContent';
+import { selectUser, selectLocale } from '@selectors/context';
+import { GetServerSidePropsContext } from '@appTypes/next';
+import { User } from '@appTypes/user';
 
-const Index: (props) => JSX.Element = ({
-    term,
-    content
-}) => {
+import { SearchTemplate } from '@components/_pageTemplates/SearchTemplate';
+import { Props } from '@components/_pageTemplates/SearchTemplate/interfaces';
 
-    const { metaDescriptionText, 
-            titleText, 
-            mainHeadingHtml } = content ?? {};
+/**
+ * Get props to inject into page on the initial server-side request
+ */
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
 
-    return (
+    const id: string = '246485b1-2a13-4844-95d0-1fb401c8fdea';
 
-        <Layout>
-            <Head>
-                <title>{titleText}</title>
-                <meta name="description" content={metaDescriptionText} />
-            </Head>
-            <LayoutColumnContainer>
-                <LayoutColumn desktop={8}>
-                    <h1>{`${mainHeadingHtml}: ${term} - 0 Results Found`}</h1>
-                    <p>Sorry no results found</p>
-                </LayoutColumn>
-                <LayoutColumn desktop={4}>
-                    <aside>
-                        <h2>Groups</h2>
-                        <p>
-                            <Link href="/groups">View All Groups</Link>
-                        </p>
-                    </aside>
-                </LayoutColumn>
-            </LayoutColumnContainer>
-        </Layout>
+    /**
+     * Get data from request context
+     */
+    const user: User = selectUser(context);
+    const locale: string = selectLocale(context);
 
-    )
+    /**
+     * Create page data
+     */
+    const props: Props = {
+        id: id,
+        user: user,
+        content: null,
+        term: context.query.term
+    };
+
+    /**
+     * Get data from services
+     */
+    try {
+
+        const [
+            pageContent
+        ] = await Promise.all([
+            getPageContent({
+                id: id,
+                locale: locale
+            })
+        ]);
+
+        props.content = pageContent.data;
+    
+    } catch (error) {
+        
+        props.errors = error;
+
+    }
+
+    /**
+     * Return data to page template
+     */
+    return {
+        props: props
+    }
 
 }
 
-export const getServerSideProps: GetServerSideProps = withAuth(async ({ query }) => {
-
-    return {
-        props: {
-            term: query.term,
-            content: {
-                metaDescriptionText: 'Search Future NHS',
-                titleText: 'Search',
-                mainHeadingHtml: 'Searching'
-            }
-        }
-    }
-
-});
-
-export default Index;
+/**
+ * Export page template
+ */
+export default SearchTemplate;

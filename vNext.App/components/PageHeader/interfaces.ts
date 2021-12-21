@@ -11,6 +11,7 @@ export interface Props {
     navMenuList?: Array<{
         url: string;
         text: string;
+        isActive?: boolean;
     }>;
     className?: string;
 }

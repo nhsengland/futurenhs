@@ -1,3 +1,7 @@
+@import 'node_modules/nhsuk-frontend/packages/core/settings/all';
+@import 'node_modules/nhsuk-frontend/packages/core/tools/all';
+//@import 'node_modules/nhsuk-frontend/packages/core/utilities/all';
+
 @import 'variables/variables';
 @import 'mixins/mixins';
 @import 'typography/font';
@@ -24,6 +28,9 @@
 @import 'modules/page-header/page-header';
 @import 'modules/tabbed-nav/tabbed-nav';
 @import 'modules/card/card';
+@import 'modules/table/table';
+@import 'modules/pagination/pagination';
+@import 'modules/pagination-status/pagination-status';
 
 @import 'objects/objects';
 @import 'utilities/utilities';

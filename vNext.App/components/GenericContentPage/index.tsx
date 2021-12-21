@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import { Layout } from '@components/Layout';
+import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 
@@ -17,7 +17,7 @@ export const GenericContentPage: (props: Props) => JSX.Element = ({
 
     return (
 
-        <Layout 
+        <StandardLayout 
             shouldRenderSearch={isAuthenticated}
             shouldRenderUserNavigation={isAuthenticated}
             shouldRenderMainNav={isAuthenticated}>
@@ -28,7 +28,7 @@ export const GenericContentPage: (props: Props) => JSX.Element = ({
                 <LayoutColumnContainer className="u-py-10">
                     <h1>{mainHeadingHtml}</h1>
                 </LayoutColumnContainer>
-        </Layout>
+        </StandardLayout>
 
     )
 

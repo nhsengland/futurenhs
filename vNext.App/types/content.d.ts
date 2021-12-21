@@ -5,7 +5,8 @@ export interface GenericPageContent {
 }
 
 export interface GroupsPageContent extends GenericPageContent {
-    introHtml: string;
-    navMenuTitleText: string;
-    secondaryHeadingHtml: string;
+    introHtml?: string;
+    navMenuTitleText?: string;
+    secondaryHeadingHtml?: string;
+    strapLineText?: string;
 }

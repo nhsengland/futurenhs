@@ -101,7 +101,7 @@ describe('getGroup service', () => {
                 json: {
                     pageHeader: {
                         nameText: 'mockNameText', 
-                        strapLineText: 'mockStrapLineText',
+                        strapLineText: 'Testing unreleased features of the FutureNHS platform',
                         image: {
                             source: '/mockSource',
                             height: 100,
@@ -127,11 +127,11 @@ describe('getGroup service', () => {
             content: {
                 mainHeadingHtml: 'mockNameText',
                 metaDescriptionText: 'A Future NHS group',
-                strapLineText: 'mockStrapLineText',
+                strapLineText: 'Testing unreleased features of the FutureNHS platform',
                 titleText: 'mockNameText'
             },
             image: {
-                src: `${process.env.NEXT_PUBLIC_API_ORIGIN}/mockSource`,
+                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}/mockSource`,
                 altText: 'TBC',
                 height: 100,
                 width: 100,
