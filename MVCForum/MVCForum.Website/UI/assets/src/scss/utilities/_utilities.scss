@@ -301,3 +301,16 @@
         padding-right: $spaceing;
     }
 }
+
+
+@each $number, $spaceing in $t-utility-numbers {
+    .o-truncated-text-lines-#{$number} {
+            display: -webkit-box;
+            -webkit-line-clamp: $spaceing;
+            /* autoprefixer: off */
+            -webkit-box-orient: vertical;
+            /* autoprefixer: on */ 
+            overflow:hidden;
+      
+    }
+ }

@@ -26,7 +26,7 @@
                            
                             <div class="c-card_header">
                                 <div class="c-card_header-content u-text-theme-7">
-                                    <p class="u-text-small u-has-subheading">
+                                    <p class="u-text-small u-has-subheading o-truncated-text-lines-2">
                                         @Model.Description
                                     </p>
                                 </div>
@@ -35,14 +35,14 @@
                                 <p class="c-card_footer-item">
                                     @{Html.RenderPartial("_SVGIcon", 
                                     new SVGIconViewModel("icon-members", "c-card_footer-icon u-fill-theme-8"));}
-                                    <span> @Model.MemberCount member@(Model.MemberCount > 1 || Model.MemberCount == 0 ? "s" : "")</span>
+                                    <span class="u-text-theme-0"> @Model.MemberCount member@(Model.MemberCount > 1 || Model.MemberCount == 0 ? "s" : "")</span>
                                 </p>
 
                                 @if (Model.DiscussionCount > 0)
                                 {
                                     <p class="c-card_footer-item">
                                         @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-discussion", "c-card_footer-icon u-fill-theme-8"));}
-                                        <span>@Model.DiscussionCount discussion@(Model.DiscussionCount > 1 ? "s" : "")</span>
+                                        <span class="u-text-theme-0">@Model.DiscussionCount discussion@(Model.DiscussionCount > 1 ? "s" : "")</span>
                                     </p>
                                 }
                             </div>
