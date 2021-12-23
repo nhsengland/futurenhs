@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Link>
 @using MvcForum.Core.Models.General
 @using MvcForum.Core.Constants.UI
-@using MvcForum.Web.ViewModels.Shared 
+@using MvcForum.Web.ViewModels.Shared
 
 
 <div class="c-main-nav u-bg-theme-2">
@@ -10,8 +10,14 @@
             @foreach (var link in Model)
             {
                 <li role="none">
-                    <a href="@link.Url" role="menuitem" @(link.Active ? "aria-current=true" : String.Empty) aria-label="@link.Name" title="@link.Name" class="c-main-nav_level-1-link u-text-theme-8 @(link.Active ? "c-main-nav_level-1-link--active" : String.Empty)">
-                        @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel(link.Icon, String.Format("c-main-nav_level-1-icon {0}", link.IconTheme != null ? link.IconTheme : Themes.FILL_THEME_1))); }
+                    <a href="@link.Url" role="menuitem" @(link.Active ? "aria-current=true" : String.Empty)
+                    aria-label="@link.Name" title="@link.Name" class="c-main-nav_level-1-link @(link.Active ? "c-main-nav_level-1-link--active" : String.Empty)  @(link.Active && link.IconTheme != null ? link.IconTheme : Themes.FILL_THEME_8) @(link.Active && link.IconTheme != null && link.IconTheme == "u-fill-theme-15" ? "u-border-theme-15"
+                    : Themes.FILL_THEME_8)">
+                        @{
+                            Html.RenderPartial("_SVGIcon", new SVGIconViewModel(link.Icon,
+                String.Format("c-main-nav_level-1-icon {0}", link.IconTheme != null ? link.IconTheme :
+                Themes.FILL_THEME_1)));
+                        }
                     </a>
                 </li>
             }
@@ -20,13 +26,15 @@
     @* TODO collapsible menu *@
     <!-- <details class="">
         <summary aria-label="Toggle the menu" aria-haspopup="true" class="c-main-nav_level-2-toggle-trigger" data-open-icon="icon-chevron-left" data-closed-icon="icon-chevron-right">
-            @{ Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right", "c-main-nav_level-2-toggle-icon u-fill-theme-6")); }
+    @{
+        Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right", "c-main-nav_level-2-toggle-icon u-fill-theme-6")); 
+    }
         </summary>
         <div class="c-main-nav_level-2-content">
-            @if (User.Identity.IsAuthenticated) {
-                Html.Action("ListGroupSideMenu", "Group");
-            }
+    @if (User.Identity.IsAuthenticated)
+    {
+        Html.Action("ListGroupSideMenu", "Group");
+    }
         </div>
     </details> -->
 </div>
-
