@@ -18,7 +18,7 @@
             Property(x => x.DateCreated).IsRequired();
             Property(x => x.Slug).IsRequired().HasMaxLength(450)
                 .HasColumnAnnotation(IndexAnnotation.AnnotationName,
-                    new IndexAnnotation(new IndexAttribute("IX_Group_Slug", 1) {IsUnique = true}));
+                    new IndexAnnotation(new IndexAttribute("IX_Group_Slug", 1) { IsUnique = true }));
             Property(x => x.SortOrder).IsRequired();
             Property(x => x.IsLocked).IsRequired();
             Property(x => x.ModerateTopics).IsRequired();
@@ -61,6 +61,7 @@
                 .Map(x => x.MapKey("Group_Id"))
                 .WillCascadeOnDelete(false);
 
+ 
 
             Property(x => x.IsDeleted).IsRequired();
             Property(x => x.RowVersion).IsRowVersion();

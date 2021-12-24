@@ -219,6 +219,18 @@
     <Compile Include="Migrations\202112210944276_UpdateFileEntity.Designer.cs">
       <DependentUpon>202112210944276_UpdateFileEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202112241443504_AddCompositeGroupUserKey.cs" />
+    <Compile Include="Migrations\202112241443504_AddCompositeGroupUserKey.Designer.cs">
+      <DependentUpon>202112241443504_AddCompositeGroupUserKey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202112241728578_ForceEFToIgnoreMappingNotRepresentingGroupUserCompositePK.cs" />
+    <Compile Include="Migrations\202112241728578_ForceEFToIgnoreMappingNotRepresentingGroupUserCompositePK.Designer.cs">
+      <DependentUpon>202112241728578_ForceEFToIgnoreMappingNotRepresentingGroupUserCompositePK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202112241943485_SetLimitOnTextFieldsInGroupUsers.cs" />
+    <Compile Include="Migrations\202112241943485_SetLimitOnTextFieldsInGroupUsers.Designer.cs">
+      <DependentUpon>202112241943485_SetLimitOnTextFieldsInGroupUsers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -740,6 +752,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202112210944276_UpdateFileEntity.resx">
       <DependentUpon>202112210944276_UpdateFileEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112241443504_AddCompositeGroupUserKey.resx">
+      <DependentUpon>202112241443504_AddCompositeGroupUserKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112241728578_ForceEFToIgnoreMappingNotRepresentingGroupUserCompositePK.resx">
+      <DependentUpon>202112241728578_ForceEFToIgnoreMappingNotRepresentingGroupUserCompositePK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112241943485_SetLimitOnTextFieldsInGroupUsers.resx">
+      <DependentUpon>202112241943485_SetLimitOnTextFieldsInGroupUsers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
