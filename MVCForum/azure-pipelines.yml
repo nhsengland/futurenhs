@@ -13,9 +13,16 @@ jobs:
     vmImage: 'windows-latest'
   steps: 
   - powershell: |
+     $builds = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds?resultFilter=succeeded&queryOrder=descending&api-version=6.0-preview"
+     $build = $builds.value[0]
+     echo "Build to check from: $(build)"
+     $commits = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$(build)&api-version=6.0-preview.2"
+     foreach($commit in $commits)
+     {
+      echo "Checking commit for changes: $(build)"
       $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.1"
       $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
-                       
+     
       $changesFolder  = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
      
       foreach($path in $changesFolder ){
@@ -23,7 +30,8 @@ jobs:
           echo "##vso[task.setvariable variable=MVCForum;isOutput=true]$True"
           break
         }
-      }
+       }
+     }
     name: ChangesInPaths
 
 - job: BuildMVCForum
