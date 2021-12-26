@@ -24,8 +24,8 @@ jobs:
      
      foreach($commit in $commitsresult)
      {
-      echo "Checking commit for changes: $(commit)"
-      $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.1"
+      echo "Checking commit for changes: $commit"
+      $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$commit/changes?api-version=5.1"
       $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
       $changesFolder  = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
