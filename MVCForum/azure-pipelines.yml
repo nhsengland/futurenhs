@@ -21,9 +21,9 @@ jobs:
      $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$buildId&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
      $commitsresult = Invoke-RestMethod -Uri $commitsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
-     foreach($commit.value in $commitsresult)
+     foreach($commit in $commitsresult)
      {
-      echo "Checking commit for changes: $commit"
+      echo "Checking commit for changes: $commit.value"
       $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$commit/changes?api-version=5.1"
       $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
