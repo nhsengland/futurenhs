@@ -13,10 +13,14 @@ jobs:
     vmImage: 'windows-latest'
   steps: 
   - powershell: |
-     $builds = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds?resultFilter=succeeded&queryOrder=descending&api-version=6.0-preview"
-     $build = $builds.value[0]
+     $buildsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds?resultFilter=succeeded&queryOrder=descending&api-version=6.0-preview"
+     $buildsresult = Invoke-RestMethod -Uri $buildsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
+     
+     $build = $buildsresult.value[0]
      echo "Build to check from: $(build)"
-     $commits = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$(build)&api-version=6.0-preview.2"
+     $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$(build)&api-version=6.0-preview.2"
+     $commitsresult = Invoke-RestMethod -Uri $commitsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
+     
      foreach($commit in $commits)
      {
       echo "Checking commit for changes: $(build)"
