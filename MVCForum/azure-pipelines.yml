@@ -18,7 +18,7 @@ jobs:
      
      $build = $buildsresult.value[0].id
      echo "Build to check from: $build"
-     $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$build&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
+     $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId={$build}&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
      $commitsresult = Invoke-RestMethod -Uri $commitsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
      foreach($commit in $commitsresult)
