@@ -17,9 +17,9 @@ jobs:
      $buildsresult = Invoke-RestMethod -Uri $buildsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
      $buildId = $buildsresult.value[0].id
-     echo "##vso[task.setvariable variable=fromBuildId]$buildId"
      echo "Build to check from: $buildId to: $(Build.BuildId)"
-     $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId={$fromBuildId}&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
+     $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$(buildId)&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
+      echo "url: $(commitsUrl)"
      $commitsresult = Invoke-RestMethod -Uri $commitsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
      foreach($commit in $commitsresult)
