@@ -23,7 +23,7 @@ jobs:
      
      foreach($commit in $commitsresult.value)
      {
-       @commitId = $commit.id
+       $commitId = $commit.id
       echo "Checking commit for changes: $commitId"
       $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$commitId/changes?api-version=5.1"
       $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
