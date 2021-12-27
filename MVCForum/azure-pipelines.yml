@@ -32,13 +32,13 @@ jobs:
       $matchFound=$False
       foreach($path in $changesFolder ){
         if($path -match '/MVCForum'){
-          $matchFound=$True
+          $matchFound=$true
           echo "##vso[task.setvariable variable=MVCForum;isOutput=true]$True"
           break
         }
         if($matchFound)
         {
-          echo "Changed detected in MVCorum in commit: $commitId"
+          echo "Changed detected in MVCorum in commit: $commitId - Stopping..."
           break
         }
        }
