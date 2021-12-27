@@ -18,17 +18,36 @@ jobs:
     vmImage: 'windows-latest'
   steps: 
   - powershell: |
-      $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.1"
-      $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
-                       
-      $changesFolder  = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
+     $buildsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds?resultFilter=succeeded&queryOrder=descending&api-version=6.0-preview"
+     $buildsresult = Invoke-RestMethod -Uri $buildsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
+     $buildId = $buildsresult.value[0].id
+     echo "Build to check from: $buildId to: $(Build.BuildId)"
+     $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$buildId&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
+     $commitsresult = Invoke-RestMethod -Uri $commitsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
+     
+     foreach($commit in $commitsresult.value)
+     {
+       $commitId = $commit.id
+      echo "Checking commit for changes: $commitId"
+      $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$commitId/changes?api-version=5.1"
+      $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
+     
+      $changesFolder  = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
+      $matchFound=$False
       foreach($path in $changesFolder ){
         if($path -match '/FutureNHS'){
-          echo "##vso[task.setvariable variable=FutureNHS;isOutput=true]$True"
+          $matchFound=$true
+          echo "##vso[task.setvariable variable=MVCForum;isOutput=true]$True"         
+          break
+        }       
+       }
+       if($matchFound)
+        {
+          echo "Changed detected in FutureNHS Api in commit: $commitId - Stopping..."
           break
         }
-      }
+     }
     name: ChangesInPaths
 
   variables:
