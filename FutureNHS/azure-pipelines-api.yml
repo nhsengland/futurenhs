@@ -107,6 +107,7 @@ jobs:
      inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+      failIfCoverageEmpty: false # Optional
       
    - task: DotNetCoreCLI@2
      displayName: 'Publish FutureNHS Api'
