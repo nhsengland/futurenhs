@@ -76,6 +76,14 @@ Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not ad
 Favourites.NoMemberFavourites,You have not starred any posts
 Favourites.PageTitle,My Favourites
 File.SuccessfullyDeleted,File deleted
+Folder.Create.Title,Add folder
+Folder.Edit.Title,Edit folder
+Folder.CreateEdit.Guidance,Create/Edit folder guidance text
+Folder.CreateEdit.FileTitle.Label,Enter folder title
+Folder.CreateEdit.FileTitle.Guidance, This is a hint offering some short guidance to users
+Folder.CreateEdit.FolderDescription.Label,Enter folder description (optional)
+Folder.CreateEdit.FolderDescription.Guidance, This is a hint offering some short guidance to users
+Folder.CreateEdit.Submit,Save and continue
 File.Error.NullTitle,Please provide a title.
 File.Error.InvalidType,The file above was not uploaded because the type is not allowed.
 File.Error.InvalidSize,The file above was not uploaded because the file size is too big.
