@@ -6,16 +6,18 @@
 	string textAreaError = "c-textarea--error";
 }
 @section GroupHeader {
-	@{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
+@{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = Constants.GroupFilesTab }); }
 }
 
-@{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
+@{
+	Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); 
+}
 
 <h2 class="u-margin-bottom-spacing-0">@Html.LanguageString("Folder.Create.Title")</h2>
 <hr>
 
 <div class="l-row">
-	<div class="l-col-6">
+	<div class="l-col-12-lm l-col-6-d">
 
 		<p>@Html.LanguageString("Folder.CreateEdit.Guidance")</p>
 
@@ -28,7 +30,8 @@
 
 			if (!ViewData.ModelState.IsValid)
 			{
-				<div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert" tabindex="-1">
+				<div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert"
+			tabindex="-1">
 					<h2 id="error-summary-title" class="c-error-summary_title">
 						There is a problem
 					</h2>
@@ -44,30 +47,36 @@
 			<div class="c-card">
 				<div class="c-card_content">
 					<div class="c-form-group @Html.FieldHasError(model => model.FolderName, formError)">
-						@Html.LabelFor(model => model.FolderName, @Html.LanguageString("Folder.CreateEdit.FileTitle.Label"), htmlAttributes: new { @class = "c-label" })
+						@Html.LabelFor(model => model.FolderName, @Html.LanguageString("Folder.CreateEdit.FileTitle.Label"),
+					htmlAttributes: new { @class = "c-label" })
 						<div class="c-hint" id="@Html.DisplayNameFor(model => model.FolderName)-hint">
 							@Html.LanguageString("Folder.CreateEdit.FileTitle.Guidance")
 						</div>
 
 						@Html.ValidationMessageFor(model => model.FolderName, "", new { @class = "c-error-message" })
-						@Html.EditorFor(model => model.FolderName, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.FolderName, inputError) } })
+						@Html.EditorFor(model => model.FolderName, new { htmlAttributes = new { @class = "c-input" + " " +
+					Html.FieldHasError(model => model.FolderName, inputError) } })
 					</div>
 
 					<div class="c-form-group @Html.FieldHasError(model => model.Description, formError)">
-						@Html.LabelFor(model => model.Description, @Html.LanguageString("Folder.CreateEdit.FolderDescription.Label"), htmlAttributes: new { @class = "c-label" })
+						@Html.LabelFor(model => model.Description,
+					@Html.LanguageString("Folder.CreateEdit.FolderDescription.Label"), htmlAttributes: new { @class =
+					"c-label" })
 						<div class="c-hint" id="@Html.DisplayNameFor(model => model.Description)-hint">
 							@Html.LanguageString("Folder.CreateEdit.FolderDescription.Guidance")
 						</div>
 
 						@Html.ValidationMessageFor(model => model.Description, "", new { @class = "c-error-message" })
-						@Html.TextAreaFor(model => model.Description, new { rows = 5, @class = "c-textarea" + " " + Html.FieldHasError(model => model.Description, textAreaError) })
+						@Html.TextAreaFor(model => model.Description, new { rows = 5, @class = "c-textarea" + " " +
+					Html.FieldHasError(model => model.Description, textAreaError) })
 					</div>
 
 				</div>
 			</div>
 
 			<div class="c-form-group">
-				<input type="submit" value="@Html.LanguageString("Folder.CreateEdit.Submit")" class="c-button" data-mce-requirements="none">
+				<input type="submit" value="@Html.LanguageString("Folder.CreateEdit.Submit")" class="c-button"
+				data-mce-requirements="none">
 			</div>
 		}
 	</div>
