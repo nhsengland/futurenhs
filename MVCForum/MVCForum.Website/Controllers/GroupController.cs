@@ -9,6 +9,8 @@ namespace MvcForum.Web.Controllers
     using Core.Models.Enums;
     using Core.Models.General;
     using MvcForum.Core.Models.Groups;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Models;
     using MvcForum.Web.ViewModels.Shared;
     using MvcForum.Web.ViewModels.Topic;
     using System;
@@ -35,6 +37,7 @@ namespace MvcForum.Web.Controllers
         private readonly IVoteService _voteService;
         private readonly IFeatureManager _featureManager;
         private readonly ILocalizationService _localizationService;
+        private readonly IImageCommand _imageCommand;
 
         /// <summary>
         ///     Constructor
@@ -59,7 +62,8 @@ namespace MvcForum.Web.Controllers
             ICacheService cacheService,
             IPostService postService,
             IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
-            IMvcForumContext context, INotificationService notificationService, IFeatureManager featureManager)
+            IMvcForumContext context, INotificationService notificationService, IFeatureManager featureManager,
+            IImageCommand imageCommand)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
@@ -74,6 +78,7 @@ namespace MvcForum.Web.Controllers
             _featureManager = featureManager;
             _localizationService = localizationService;
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+            _imageCommand = imageCommand ?? throw new ArgumentNullException(nameof(imageCommand));
         }
 
         [HttpGet]

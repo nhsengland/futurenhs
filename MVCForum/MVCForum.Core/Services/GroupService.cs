@@ -40,6 +40,9 @@ namespace MvcForum.Core.Services
         private IMvcForumContext _context;
         private readonly IRoleService _roleService;
         private readonly ILocalizationService _localizationService;
+        private readonly IImageService _imageService;
+        private readonly IImageCommand _imageCommand;
+        private readonly IImageRepository _imageRepository;
 
         /// <summary>
         ///     Constructor
@@ -52,7 +55,8 @@ namespace MvcForum.Core.Services
         public GroupService(IMvcForumContext context, IRoleService roleService,
                             INotificationService notificationService, IGroupPermissionForRoleService GroupPermissionForRoleService,
                             ICacheService cacheService, IGroupRepository groupRepository, ILocalizationService localizationService,
-                            IGroupCommand groupCommand)
+                            IGroupCommand groupCommand, IImageService imageService, IImageCommand imageCommand,
+                            IImageRepository imageRepository)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
@@ -62,6 +66,9 @@ namespace MvcForum.Core.Services
             _groupRepository = groupRepository ?? throw new ArgumentNullException(nameof(groupRepository));
             _localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
             _groupCommand = groupCommand ?? throw new ArgumentNullException(nameof(groupCommand));
+            _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
+            _imageCommand = imageCommand ?? throw new ArgumentNullException(nameof(imageCommand));
+            _imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
         }
 
         /// <inheritdoc />
@@ -140,7 +147,6 @@ namespace MvcForum.Core.Services
             }
 
             return catsToReturn;
-
         }
 
         public List<SelectListItem> GetBaseSelectListGroups(List<Group> allowedGroups, Guid? membershipId)
@@ -914,7 +920,7 @@ namespace MvcForum.Core.Services
                 Directory.CreateDirectory(uploadFolderPath ?? throw new InvalidOperationException());
             }
 
-            return file.UploadFile(uploadFolderPath, _localizationService, true);
+            return file.UploadFile(uploadFolderPath, _localizationService, _imageCommand, _imageRepository, _imageService, false, groupId);
         }
     }
 }

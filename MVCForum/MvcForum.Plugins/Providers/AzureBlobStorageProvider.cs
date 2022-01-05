@@ -1,14 +1,15 @@
-﻿using System.Configuration;
-using MvcForum.Core.Utilities;
+﻿using MvcForum.Core.Utilities;
+using System.Configuration;
 
 namespace MvcForum.Plugins.Providers
 {
     using Azure.Storage.Blobs;
+    using Azure.Storage.Blobs.Models;
     using Core;
     using Core.Interfaces.Providers;
+    using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Web;
     using System.Web.Hosting;
 
 
@@ -53,13 +54,15 @@ namespace MvcForum.Plugins.Providers
             InitialiseConnection();
 
             // Get a reference to a blob
-            var blobClient = _blobServiceClient.GetBlobContainerClient(_container);
+            var blobServiceClient = _blobServiceClient.GetBlobContainerClient(_container);
+            file.Position = 0;
+            var blobClient = blobServiceClient.GetBlobClient(fileName);
 
-            var response = blobClient.UploadBlob(fileName, file);
+            _ = blobClient.Upload(file, true);
 
             file.Dispose();
 
-            return $"{blobClient.Uri}/{fileName}";
+            return $"{blobServiceClient.Uri}/{fileName}";
         }
 
         private void InitialiseConnection()
@@ -69,8 +72,7 @@ namespace MvcForum.Plugins.Providers
                 _endpoint = ConfigurationManager.ConnectionStrings["AzureBlobStorage:PrimaryConnectionString"].ConnectionString;
                 _container = ConfigurationManager.AppSettings["BlobContainer"];
                 _blobServiceClient = new BlobServiceClient(_endpoint);
-            }
-           
+            }           
         }
     }
 }

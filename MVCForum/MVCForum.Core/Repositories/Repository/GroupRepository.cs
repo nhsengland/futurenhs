@@ -88,6 +88,21 @@
             }
         }
 
+        public async Task<Guid> GetGroupImageIdAsync(string slug)
+        {
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
+            var sql = @"SELECT  [ImageId]
+                        FROM [dbo].[Group] 
+                        WHERE [slug] = @slug
+                        AND [IsDeleted] = 0";
+
+            using (var conn = _connectionFactory.CreateReadOnlyConnection())
+            {
+                return await conn.QuerySingleAsync<Guid>(sql, new { slug = slug });
+            }
+        }
+
         public bool UserIsAdmin(string groupSlug, Guid userId)
         {
             if (string.IsNullOrWhiteSpace(groupSlug)) throw new ArgumentNullException(nameof(groupSlug));

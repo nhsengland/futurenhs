@@ -26,6 +26,9 @@
         private readonly Mock<IGroupRepository> _groupRepository;
         private readonly Mock<IMvcForumContext> _context;
         private readonly Mock<IGroupCommand> _groupCommand;
+        private readonly Mock<IImageService> _imageService;
+        private readonly Mock<IImageCommand> _imageCommand;
+        private readonly Mock<IImageRepository> _imageRepository;
 
         private Mock<HttpPostedFileBase> _postedFile;
 
@@ -59,6 +62,10 @@
             _groupRepository = new Mock<IGroupRepository>();
             _context = new Mock<IMvcForumContext>();
             _groupCommand = new Mock<IGroupCommand>();
+            _imageService = new Mock<IImageService>();
+            _imageCommand = new Mock<IImageCommand>();
+            _imageRepository = new Mock<IImageRepository>();
+
         }
 
         [SetUp]
@@ -90,7 +97,10 @@
                 _cacheService.Object,
                 _groupRepository.Object,
                 _localizationService.Object,
-                _groupCommand.Object
+                _groupCommand.Object,
+                _imageService.Object,
+                _imageCommand.Object,
+                _imageRepository.Object
             );
 
             _postedFile = new Mock<HttpPostedFileBase>();

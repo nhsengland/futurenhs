@@ -80,6 +80,8 @@ namespace MvcForum.Core.Models.Entities
 
         public string Pronouns { get; set; }
 
+        public Guid? ImageId { get; set; }
+
         public virtual IList<MembershipRole> Roles { get; set; }
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<Topic> Topics { get; set; }

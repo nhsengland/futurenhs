@@ -41,7 +41,7 @@ namespace MvcForum.Core.Models.Entities
         public virtual MembershipUser GroupOwner { get; set; }
         public int Level { get; set; }
         public string AboutUs { get; set; }
-        public Guid? HeaderImage { get; set; }
+        public Guid? ImageId { get; set; }
 
 
         public bool PublicGroup { get; set; }

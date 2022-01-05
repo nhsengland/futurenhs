@@ -109,6 +109,8 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IRegistrationEmailService, RegistrationEmailService>();
             Container.BindInRequestScope<ISmtpClientFactory, SmtpClientFactory>();
             Container.BindInRequestScope<IGroupAddMemberService, GroupAddMemberService>();
+            Container.BindInRequestScope<IImageService, ImageService>();
+
 
             Container.RegisterSingleton<IValidateFileType, FileTypeValidator>();
 
@@ -156,6 +158,8 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IGroupCommand, GroupCommand>();
             Container.BindInRequestScope<IFileServerService, FileServerService>();
             Container.BindInRequestScope<IUserRepository, UserRepository>();
+            Container.BindInRequestScope<IImageRepository, ImageRepository>();
+            Container.BindInRequestScope<IImageCommand, ImageCommand>();
         }
     }
 

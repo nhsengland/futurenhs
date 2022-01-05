@@ -1,12 +1,18 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
     using System;
+    using System.Drawing;
     using System.IO;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Web;
     using Constants;
     using Interfaces.Services;
     using Models.General;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Models;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
     using Providers.Storage;
 
     public static class HttpExtensionMethods
@@ -87,10 +93,11 @@
         /// <param name="onlyImages"></param>
         /// <returns></returns>
         public static UploadFileResult UploadFile(this HttpPostedFileBase file, string uploadFolderPath,
-            ILocalizationService localizationService, bool onlyImages = false)
+            ILocalizationService localizationService, IImageCommand imageCommand = null, IImageRepository imageRepository = null,  IImageService imageService = null, 
+            bool isAvatar = false, Guid imageSaveId = default(Guid))
         {
             var extension = Path.GetExtension(file.FileName);
-            var fileName = $"{Guid.NewGuid().ToString()}{extension}";
+            var fileName = $"{Guid.NewGuid()}{extension}";
             var upResult = new UploadFileResult { UploadSuccessful = true };
             var storageProvider = StorageProvider.Current;
 
@@ -104,16 +111,72 @@
                 var fileExtension = fileOkResult.FileExtension;
 
                 // Store these here as we may change the values within the image manipulation
-                string newFileName;
+                string newFileName = string.Empty;
 
                 // See if this is an image, if so then do some extra checks
-                if (fileOkResult.IsImage) {
-                    // convert to image and strip metadata
-                    var sourceimage = file.ToImage().StripMetaData();
+                if (fileOkResult.IsImage) 
+                {
+                    var sourceimage = file.ToImage();
 
-                    newFileName = fileName.CreateFilename();
-                    upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, sourceimage.ToMemoryStream());
-                } else {
+                    if (!(imageService is null) && !(imageRepository is null))
+                    {
+                        var newFileId = imageSaveId != default(Guid) ? imageSaveId : Guid.NewGuid();
+                        newFileName = $"{newFileId}.webp";
+
+                        var transformedImage = isAvatar ? imageService.TransformImageForAvatar(new Bitmap(sourceimage)) :
+                                                          imageService.TransformImageForGroupHeader(new Bitmap(sourceimage));
+                        
+                        var imageStream = new MemoryStream();
+                        imageStream.Write(transformedImage.Bytes, 0, transformedImage.Bytes.Length);
+                        upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, imageStream);
+
+                        var imageVM = new ImageViewModel(upResult.UploadedFileName, "user avatar")
+                        {
+                            FileName = newFileName,
+                            FileSizeBytes = Convert.ToInt32(file.ContentLength),
+                            Height = transformedImage.Height,
+                            Width = transformedImage.Width,
+                            MediaType = transformedImage.MediaType
+                        };
+
+                        if (isAvatar)
+                        {
+                            var membershipUserImageId = imageRepository.GetMembershipUserImageId(imageSaveId);
+                            if (!(membershipUserImageId is null))
+                            {
+                                imageVM.Id = (Guid)membershipUserImageId;
+                                _ = imageCommand.Update(imageVM);
+                            }
+                            else
+                            {
+                                var imageId = imageCommand.Create(imageVM);
+                                _ = imageCommand.UpdateMembershipUserImageId(imageSaveId, imageId);
+                            }
+                        }
+                        else
+                        {
+                            var groupImageId = imageRepository.GetGroupImageId(imageSaveId);
+                            if (!(groupImageId is null))
+                            {
+                                imageVM.Id = (Guid)groupImageId;
+                                _ = imageCommand.Update(imageVM);
+                            }
+                            else
+                            {
+                                var imageId = imageCommand.Create(imageVM);
+                                _ = imageCommand.UpdateGroupImageId(imageSaveId, imageId);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        sourceimage.StripMetaData();
+                        newFileName = fileName.CreateFilename();
+                        upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, sourceimage.ToMemoryStream());
+                    }
+                } 
+                else 
+                {
                     // Sort the file name
                     newFileName = fileName.CreateFilename();
                     upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, file.InputStream);

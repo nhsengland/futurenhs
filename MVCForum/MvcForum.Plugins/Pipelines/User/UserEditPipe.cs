@@ -3,6 +3,7 @@
     using System;
     using System.Data.Entity;
     using System.IO;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
@@ -13,6 +14,9 @@
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Models;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
 
     public class UserEditPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
@@ -20,13 +24,21 @@
         private readonly ILocalizationService _localizationService;
         private readonly IActivityService _activityService;
         private readonly ILoggingService _loggingService;
+        private readonly IImageService _imageService;
+        private readonly IImageCommand _imageCommand;
+        private readonly IImageRepository _imageRepository;
 
-        public UserEditPipe(IMembershipService membershipService, ILocalizationService localizationService, IActivityService activityService, ILoggingService loggingService)
+        public UserEditPipe(IMembershipService membershipService, ILocalizationService localizationService, 
+            IActivityService activityService, ILoggingService loggingService, IImageService imageService,
+            IImageCommand imageCommand, IImageRepository imageRepository)
         {
             _membershipService = membershipService;
             _localizationService = localizationService;
             _activityService = activityService;
             _loggingService = loggingService;
+            _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
+            _imageCommand = imageCommand ?? throw new ArgumentNullException(nameof(imageCommand));
+            _imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
         }
 
         /// <inheritdoc />
@@ -50,7 +62,7 @@
                     {
                         // Before we save anything, check the user already has an upload folder and if not create one
                         // If successful then upload the file                    
-                        var uploadResult = avatar.UploadFile(uploadFolderPath, _localizationService, true);
+                        var uploadResult = avatar.UploadFile(uploadFolderPath, _localizationService, _imageCommand, _imageRepository, _imageService, true, input.EntityToProcess.Id);
 
                         // throw error if unsuccessful
                         if (!uploadResult.UploadSuccessful)
@@ -113,16 +125,6 @@
                 {
                     input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
                 }
-
-                // Delete existing image if requested or if new image uploaded
-                if (!string.IsNullOrWhiteSpace(existingImage))
-                {
-                    var (Success, Message) = DeletePhysicalProfileImage(uploadFolderPath, existingImage);
-                    if (!Success)
-                    {
-                        input.AddError(string.IsNullOrWhiteSpace(Message) ? "Unknown error removing existing profile image" : Message);
-                    }
-                }
             }
             catch (System.Exception ex)
             {
@@ -131,33 +133,6 @@
             }
 
             return input;
-        }
-
-        private (bool Success, string Message) DeletePhysicalProfileImage(string filePath, string fileName)
-        {
-            if (string.IsNullOrWhiteSpace(filePath)) throw new ArgumentNullException(nameof(filePath));
-            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
-            var fullFilePath = $"{filePath}\\{fileName}";
-            try
-            {
-                if (!Directory.Exists(filePath))
-                {
-                    return (false, "Directory does not exist for user");
-                }
-                if (System.IO.File.Exists(fullFilePath))
-                {
-                    System.IO.File.Delete(fullFilePath);
-                    return (true, null);
-                }
-                else
-                {
-                    return (false, "Image does not exist for user");
-                }
-            }
-            catch (Exception ex)
-            {
-                return (false, ex.Message);
-            }
         }
     }
 }
