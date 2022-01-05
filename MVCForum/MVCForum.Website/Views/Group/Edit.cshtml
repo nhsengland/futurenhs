@@ -79,8 +79,14 @@
 			</div>
 
 			<div class="c-form-group">
-				@Html.LabelFor(m => m.PublicGroup, htmlAttributes: new { @class = "c-label" })
-				@Html.CheckBoxFor(m => m.PublicGroup)
+				<div class="c-checkboxes__item">
+					@Html.CheckBoxFor(model => model.PublicGroup, new { @class = "c-checkboxes__input", @name = "@Model.HasAgreedToTermsAndConditions", })
+
+					<label class="c-label c-checkboxes__label" for="PublicGroup">
+						Group is public?
+					</label>
+
+				</div>
 			</div>
 
 			<input class="c-button c-button--success" type="submit" value="Save and close" />

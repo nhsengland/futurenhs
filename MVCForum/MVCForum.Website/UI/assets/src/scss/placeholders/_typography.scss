@@ -2,7 +2,7 @@
     color: $nhsuk-link-color;
 
     &:visited {
-        color: $nhsuk-link-visited-color;
+        color: $nhsuk-link-color;
     }
 
     &:hover {
@@ -18,14 +18,13 @@
         }
 
         &:visited {
-            color: $nhsuk-focus-text-color;
+            color: $nhsuk-link-color;
         }
     }
 
     &:active {
         color: $nhsuk-link-active-color;
     }
-
 }
 
 %svg-base {
@@ -63,7 +62,7 @@
     color: $nhsuk-link-color;
 
     &:visited {
-        color: $nhsuk-link-visited-color;
+        color: $nhsuk-link-color;
     }
 
     &:hover {
@@ -81,7 +80,6 @@
         &:visited {
             color: $nhsuk-focus-text-color;
         }
-
         // .nhsuk-icon {
         //     fill: $nhsuk-focus-text-color;
         // }

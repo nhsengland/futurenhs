@@ -68,8 +68,8 @@
         public PartialViewResult SideNavigation()
         {
             List<Link> model = new List<Link> {
-                new Link { Name = "Groups", Url= Url.Action("Index", "Home"), Icon=Icons.Group, IconTheme=Themes.FILL_THEME_8 },
-                new Link { Name = "Latest Discussions", Url = Url.Action("LatestDiscussions", "Home"), Icon=Icons.ForumOutline, IconTheme=Themes.FILL_THEME_15 }
+                new Link { Name = "Groups", Url= Url.Action("Index", "Home"), Icon=Icons.Group, IconTheme=Themes.FILL_THEME_8, BorderTheme = Themes.BORDER_8 },
+                new Link { Name = "Latest Discussions", Url = Url.Action("LatestDiscussions", "Home"), Icon=Icons.ForumOutline, IconTheme=Themes.FILL_THEME_15, BorderTheme=Themes.BORDER_15  }
             };
 
             return PartialView("_SideBar", model);

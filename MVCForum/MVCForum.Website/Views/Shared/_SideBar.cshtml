@@ -11,8 +11,7 @@
             {
                 <li role="none">
                     <a href="@link.Url" role="menuitem" @(link.Active ? "aria-current=true" : String.Empty)
-                    aria-label="@link.Name" title="@link.Name" class="c-main-nav_level-1-link @(link.Active ? "c-main-nav_level-1-link--active" : String.Empty)  @(link.Active && link.IconTheme != null ? link.IconTheme : Themes.FILL_THEME_8) @(link.Active && link.IconTheme != null && link.IconTheme == "u-fill-theme-15" ? "u-border-theme-15"
-                    : Themes.FILL_THEME_8)">
+                    aria-label="@link.Name" title="@link.Name" class="c-main-nav_level-1-link @(link.Active ? "c-main-nav_level-1-link--active" : String.Empty)  @(link.Active && link.IconTheme != null ? link.IconTheme : Themes.FILL_THEME_8) @(link.Active && link.BorderTheme != null ? link.BorderTheme : "")">
                         @{
                             Html.RenderPartial("_SVGIcon", new SVGIconViewModel(link.Icon,
                 String.Format("c-main-nav_level-1-icon {0}", link.IconTheme != null ? link.IconTheme :

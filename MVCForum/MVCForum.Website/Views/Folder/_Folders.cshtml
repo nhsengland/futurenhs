@@ -6,198 +6,249 @@
 
     @if (Model.Folder != null)
     {
-        <h2 class="u-margin-bottom-spacing-0">@Model.Folder.FolderName</h2>
-        <hr>
+	   
+	    <div class="l-row">
+		    <div class="l-col-12 l-col-8-d">
+			    <h2 class="u-margin-bottom-spacing-0">@Model.Folder.FolderName</h2>
+		    </div>
+		    <div class="l-col-12 l-col-4-d">
+			    @if (Model.IsAdmin)
+			    {
+				    <span>&nbsp;</span>
+				    <a href="@Url.RouteUrl("GroupFileNewFolderUrls", new { slug = Model.Slug, tab = Constants.GroupFilesTab, parentId = Model.Folder?.FolderId, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
+					    Add folder
+				    </a>
+				    <span>&nbsp;</span>
+
+				    if (Model.Folder != null)
+				    {
+					    <a href="@Url.RouteUrl("GroupFileEditFolderUrls", new { slug = Model.Slug, tab = Constants.GroupFilesTab, parentId = Model.Folder?.ParentId, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
+						    Edit folder
+					    </a>
+					    <span>&nbsp;</span>
+
+					    @Html.ActionLink("Delete folder", "DeleteFolder", "Folder", new { @class = "c-button c-button-outline c-button--min-width js-dialog", data_dialog_id = "dialog-delete-confirm" })
+
+					    <dialog id="dialog-delete-confirm" class="c-dialog">
+
+						    <div class="c-dialog_content c-dialog_content--thin">
+
+							    <h3>Delete Folder</h3>
+
+							    <p class="u-text-bold">
+								    Deleting this folder will also delete all its contents including the contents of any sub-folders. Do you wish to continue?
+							    </p>
+
+							    <div>
+								    <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+									    Cancel
+								    </button>
+							    </div>
+
+							    <div>
+								    <button class="js-dialog-confirm c-button c-button--full-width">
+									    Yes, Delete
+								    </button>
+							    </div>
+
+						    </div>
+
+					    </dialog>
+				    }
+			    }
+		    </div>
+	    </div>
+		    <hr>
 
 
-        if (!ViewData.ModelState.IsValid || Model.HasError)
-        {
-            <p class="c-info-message c-info-message--error">
-                @Html.LanguageString("Folder.Error.FailedDelete")
-            </p>
-        }
+		    if (!ViewData.ModelState.IsValid || Model.HasError)
+		    {
+		    <p class="c-info-message c-info-message--error">
+			    @Html.LanguageString("Folder.Error.FailedDelete")
+		    </p>
+		    }
 
-        if (!Model.IsMember && !Model.IsAdmin)
-        {
-            <p class="c-info-message">
-                @Html.LanguageString("Group.PublicGroup.JoinMessage")
-            </p>
-        }
+		    if (!Model.IsMember && !Model.IsAdmin)
+		    {
+		    <p class="c-info-message">
+			    @Html.LanguageString("Group.PublicGroup.JoinMessage")
+		    </p>
+		    }
 
-        <p class="u-margin-bottom-spacing-6">@Model.Folder.Description</p>
+		    <p class="u-margin-bottom-spacing-6">@Model.Folder.Description</p>
 
-        @*@Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug, groupId = Model.GroupId }, new { @class = "c-button c-button-outline c-button--min-width" })*@
+		    @*@Html.ActionLink("Upload file", "Create", "GroupFile", new { folderId = Model.Folder.FolderId, slug = Model.Slug, groupId = Model.GroupId }, new { @class = "c-button c-button-outline c-button--min-width" })*@
 
-        if (Model.IsMember || Model.IsAdmin)
-        {
-            <a href="@Url.RouteUrl("GroupFileUploadUrls", new { groupSlug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId })" class="c-button c-button-outline c-button--min-width">
-                Upload file
-            </a>
-        }
-    }
-    else
-    {
-        <h2>
-            Files
-        </h2>
-        <hr>
+		    if (Model.IsMember || Model.IsAdmin)
+		    {
+		    <a href="@Url.RouteUrl("GroupFileUploadUrls", new { groupSlug = Model.Slug, tab = Constants.GroupFilesTab, folderId = Model.Folder.FolderId })" class="c-button c-button-outline c-button--min-width">
+			    Upload file
+		    </a>
+		    }
+		    }
+		    else
+		    {
+		    <h2>
+			    Files
+		    </h2>
+		    <hr>
 
-        if (!Model.IsMember && !Model.IsAdmin)
-        {
-            <p class="c-info-message">
-                @Html.LanguageString("Group.PublicGroup.JoinMessage")
-            </p>
-        }
-    }
+		    if (!Model.IsMember && !Model.IsAdmin)
+		    {
+		    <p class="c-info-message">
+			    @Html.LanguageString("Group.PublicGroup.JoinMessage")
+		    </p>
+		    }
+		    }
 
-    @if (Model.IsAdmin)
-    {
-        <span>&nbsp;</span>
-        <a href="@Url.RouteUrl("GroupFileNewFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, parentId = Model.Folder?.FolderId, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
-            Add folder
-        </a>
-        <span>&nbsp;</span>
+		    @if (Model.IsAdmin)
+		    {
+			    <span>&nbsp;</span>
+			    <a href="@Url.RouteUrl("GroupFileNewFolderUrls", new { slug = Model.Slug, tab = Constants.GroupFilesTab, parentId = Model.Folder?.FolderId, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
+				    Add folder
+			    </a>
+			    <span>&nbsp;</span>
 
-        if (Model.Folder != null)
-        {
-            <a href="@Url.RouteUrl("GroupFileEditFolderUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, parentId = Model.Folder?.ParentId, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
-                Edit folder
-            </a>
-            <span>&nbsp;</span>
+			    if (Model.Folder != null)
+			    {
+				    <a href="@Url.RouteUrl("GroupFileEditFolderUrls", new { slug = Model.Slug, tab = Constants.GroupFilesTab, parentId = Model.Folder?.ParentId, groupId = Model.GroupId })" class="c-button c-button-outline c-button--min-width">
+					    Edit folder
+				    </a>
+				    <span>&nbsp;</span>
 
-            @Html.ActionLink("Delete folder", "DeleteFolder", "Folder", new { @class = "c-button c-button-outline c-button--min-width js-dialog", data_dialog_id = "dialog-delete-confirm" })
+				    @Html.ActionLink("Delete folder", "DeleteFolder", "Folder", new { @class = "c-button c-button-outline c-button--min-width js-dialog", data_dialog_id = "dialog-delete-confirm" })
 
-            <dialog id="dialog-delete-confirm" class="c-dialog" >
+				    <dialog id="dialog-delete-confirm" class="c-dialog">
 
-                <div class="c-dialog_content c-dialog_content--thin">
+					    <div class="c-dialog_content c-dialog_content--thin">
 
-                    <h3>Delete Folder</h3>
+						    <h3>Delete Folder</h3>
 
-                    <p class="u-text-bold">
-                        Deleting this folder will also delete all its contents including the contents of any sub-folders.  Do you wish to continue?
-                    </p>
+						    <p class="u-text-bold">
+							    Deleting this folder will also delete all its contents including the contents of any sub-folders. Do you wish to continue?
+						    </p>
 
-                    <div>
-                        <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
-                            Cancel
-                        </button>
-                    </div>
+						    <div>
+							    <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">
+								    Cancel
+							    </button>
+						    </div>
 
-                    <div>
-                        <button class="js-dialog-confirm c-button c-button--full-width">
-                            Yes, Delete
-                        </button>
-                    </div>
+						    <div>
+							    <button class="js-dialog-confirm c-button c-button--full-width">
+								    Yes, Delete
+							    </button>
+						    </div>
 
-                </div>
+					    </div>
 
-            </dialog>
-        }
-    }
+				    </dialog>
+			    }
+		    }
 
-    @if (Model.ChildFolders.Any())
-    {
-        <div class="c-grid-block">
-            <div class="c-grid-block_item l-col-12">
-                <div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
-                    <table role="table" class="c-table c-table--files">
-                        <caption class="c-table_caption u-visually-hidden">
-                            Group Folders
-                        </caption>
-                        <thead role="rowgroup" class="c-table_head">
-                            <tr role="row">
-                                <th role="columnheader" class="c-table_th" scope="col">
-                                    Name
-                                </th>
-                                <th role="columnheader" class="c-table_th" scope="col">
-                                    Number of files
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="c-table_body">
-                            @foreach (var folder in Model.ChildFolders)
-                            {
-                                <tr role="row" class="c-table_row">
-                                    <td role="cell" class="c-table_cell">
+		    @if (Model.ChildFolders.Any())
+		    {
+			    <div class="c-grid-block">
+				    <div class="c-grid-block_item l-col-12">
+					    <div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
+						    <table role="table" class="c-table c-table--files">
+							    <caption class="c-table_caption u-visually-hidden">
+								    Group Folders
+							    </caption>
+							    <thead role="rowgroup" class="c-table_head">
+							    <tr role="row">
+								    <th role="columnheader" class="c-table_th" scope="col">
+									    Name
+								    </th>
+								    <th role="columnheader" class="c-table_th" scope="col">
+									    Number of files
+								    </th>
+							    </tr>
+							    </thead>
+							    <tbody class="c-table_body">
+							    @foreach (var folder in Model.ChildFolders)
+							    {
+								    <tr role="row" class="c-table_row">
+									    <td role="cell" class="c-table_cell">
 
-                                        <span class="c-table_heading">Name </span>
-                                        <a href="@Url.RouteUrl("GroupUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId})" class="">
-                                            @folder.FolderName
-                                        </a>
+										    <span class="c-table_heading">Name </span>
+										    <a href="@Url.RouteUrl("GroupUrls", new { slug = Model.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId })" class="">
+											    @folder.FolderName
+										    </a>
 
-                                    </td>
-                                    <td role="cell" class="c-table_cell">
-                                        <span class="c-table_heading">Number of files</span>
-                                        <span>@folder.FileCount</span>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
+									    </td>
+									    <td role="cell" class="c-table_cell">
+										    <span class="c-table_heading">Number of files</span>
+										    <span>@folder.FileCount</span>
+									    </td>
+								    </tr>
+							    }
+							    </tbody>
 
-                    </table>
-                </div>
-            </div>
-        </div>
-    }
+						    </table>
+					    </div>
+				    </div>
+			    </div>
+		    }
 
-    @if (Model.Files.Any())
-    {
-        <div class="c-grid-block">
-            <div class="c-grid-block_item l-col-12">
-                <div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
-                    <table role="table" class="c-table c-table--files">
-                        <caption class="c-table_caption u-visually-hidden">
-                            Group Files
-                        </caption>
-                        <thead role="rowgroup" class="c-table_head">
-                            <tr role="row">
-                                <th role="columnheader" class="c-table_th" scope="col">
-                                    Name
-                                </th>
-                                <th role="columnheader" class="c-table_th" scope="col">
-                                    Uploaded by
-                                </th>
-                                <th role="columnheader" class="c-table_th" scope="col">
-                                    Uploaded date
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="c-table_body">
-                            @foreach (var file in Model.Files)
-                            {
-                                <tr role="row" class="c-table_row">
-                                    <td role="cell" class="c-table_cell">
-                                        <span class="c-table_heading">Name </span>
+		    @if (Model.Files.Any())
+		    {
+			    <div class="c-grid-block">
+				    <div class="c-grid-block_item l-col-12">
+					    <div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
+						    <table role="table" class="c-table c-table--files">
+							    <caption class="c-table_caption u-visually-hidden">
+								    Group Files
+							    </caption>
+							    <thead role="rowgroup" class="c-table_head">
+							    <tr role="row">
+								    <th role="columnheader" class="c-table_th" scope="col">
+									    Name
+								    </th>
+								    <th role="columnheader" class="c-table_th" scope="col">
+									    Uploaded by
+								    </th>
+								    <th role="columnheader" class="c-table_th" scope="col">
+									    Uploaded date
+								    </th>
+							    </tr>
+							    </thead>
+							    <tbody class="c-table_body">
+							    @foreach (var file in Model.Files)
+							    {
+								    <tr role="row" class="c-table_row">
+									    <td role="cell" class="c-table_cell">
+										    <span class="c-table_heading">Name </span>
 
-                                        <a href="@Url.RouteUrl("GroupFileUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab, id = file.Id})" class="">
-                                            @file.Title
-                                        </a>
+										    <a href="@Url.RouteUrl("GroupFileUrls", new { slug = Model.Slug, tab = Constants.GroupFilesTab, id = file.Id })" class="">
+											    @file.Title
+										    </a>
 
-                                        @*<a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
+										    @*<a href="@Url.Action("Show", "GroupFile", new { id = file.Id, slug = Model.Slug })" class="">
                                                 @file.Title
                                             </a>*@
-                                    </td>
-                                    <td role="cell" class="c-table_cell">
-                                        <span class="c-table_heading">Uploaded by </span>
+									    </td>
+									    <td role="cell" class="c-table_cell">
+										    <span class="c-table_heading">Uploaded by </span>
 
-                                        <a href="@Url.Action("GetByName", "Members", new { slug = @file.UserSlug })" class="">
-                                            @file.UserName
-                                        </a>
-                                    </td>
-                                    <td role="cell" class="c-table_cell">
-                                        <span class="c-table_heading">Uploaded date </span>
-                                        @DatesUi.GetPrettyDate(@file.CreatedAtUtc.ToString())
+										    <a href="@Url.Action("GetByName", "Members", new { slug = @file.UserSlug })" class="">
+											    @file.UserName
+										    </a>
+									    </td>
+									    <td role="cell" class="c-table_cell">
+										    <span class="c-table_heading">Uploaded date </span>
+										    @DatesUi.GetPrettyDate(@file.CreatedAtUtc.ToString())
 
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    }
-</div>
+									    </td>
+								    </tr>
+							    }
+							    </tbody>
+						    </table>
+					    </div>
+				    </div>
+			    </div>
+		    }
+	    </div>
 
 
 

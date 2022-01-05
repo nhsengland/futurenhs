@@ -45,7 +45,6 @@
         [ValidateFileLength(5 * 1024 * 100, ErrorMessage = "The logo file is too large.  It must not be greater then 500KB.")]
         public HttpPostedFileBase Files { get; set; }
 
-        [DisplayName("Group is public?")]
         public bool PublicGroup { get; set; }
         public string Image { get; set; }
 
