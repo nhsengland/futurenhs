@@ -8,8 +8,6 @@
     {
         public Guid FileId { get; set; }
 
-        public string OriginalFileTitle { get; set; }
-
         [Required(ErrorMessage = "Please provide a file name")]
         [MaxLength(45, ErrorMessage = "The file title must not be more than 45 characters.")]
         public string Name { get; set; }

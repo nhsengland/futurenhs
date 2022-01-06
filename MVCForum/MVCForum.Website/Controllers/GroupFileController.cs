@@ -257,7 +257,6 @@ namespace MvcForum.Web.Controllers
 
             var viewModel = new FileUpdateViewModel
             {
-                OriginalFileTitle = file.Title,
                 FileId = file.Id,
                 Name = file.Title,
                 Description = file.Description,

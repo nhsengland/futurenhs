@@ -14,7 +14,7 @@
 
 @{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
 
-<h2>Update - @Model.OriginalFileTitle</h2>
+<h2>Edit file</h2>
 <div class="l-row">
 	<div class="l-col-12 l-col-8-d">
 		<div class="c-card">
@@ -22,7 +22,6 @@
 				@using (Html.BeginForm())
 				{
 					@Html.AntiForgeryToken()
-					@Html.HiddenFor(model => model.OriginalFileTitle)
 
 					if (!ViewData.ModelState.IsValid)
 					{
