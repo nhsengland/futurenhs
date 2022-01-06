@@ -13,7 +13,7 @@ jobs:
     vmImage: 'windows-latest'
   steps: 
   - powershell: |
-     $buildsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds?definitions=$(System.DefinitionId)&resultFilter=succeeded&queryOrder=descending&api-version=6.0-preview"
+     $buildsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds?definitions=$(System.DefinitionId)&reasonFilter=batchedCI&resultFilter=succeeded&queryOrder=descending&api-version=6.0-preview"
      $buildsresult = Invoke-RestMethod -Uri $buildsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
      $buildId = $buildsresult.value[0].id
