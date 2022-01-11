@@ -23,14 +23,13 @@
 
 	xhr.open('GET', collabora_source);
 	xhr.onreadystatechange = handler;
-	xhr.responseType = "document";
 	xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 	xhr.send();
 
 	function handler() {
 		if (this.readyState === this.DONE) {
 			if (this.status === 200) {
-				var data_url = URL.createObjectURL(this.response);
+				var data_url = "data:text/html;charset=utf-8," + escape(this.responseText);
 				document.querySelector('#output-frame-id').src = data_url;
 			} else {
 				console.error('no document ');
