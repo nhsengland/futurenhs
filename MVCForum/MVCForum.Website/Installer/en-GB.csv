@@ -1,311 +1,225 @@
-Activity.ActivityTitle,Activity
+﻿Activity.ActivityTitle,Activity
 Activity.Badge,badge 
+Activity.UserJoined,is a new member in the forum
 Activity.ProfileUpdated,has an updated profile
 Activity.UserAwardedBadge,has been awarded the
-Activity.UserJoined,is a new member in the forum
-Admin,Admin
-Ajax.PleaseWait,Please Wait...
-Badge.AuthorMarkAsSolution.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
+Badge.OneThousandPoints.Name,Thousand Pointer
+Badge.PosterMarkAsSolution.Name,Post Selected As Answer
+Badge.MemberForAYear.Name,First Anniversary
 Badge.AuthorMarkAsSolution.Name,Your Question Solved
 Badge.BadegEnumNoClass,The badge enum type {0} has no corresponding class specified.
-Badge.FavouriteFirstPost.Desc,You have Favourited your first post
-Badge.FavouriteFirstPost.Name,First Favourite
-Badge.JediMaster.Desc,Had 50 or more posts successfully marked as an answer
-Badge.JediMaster.Name,Jedi Master
-Badge.MemberForAYear.Desc,This badge is awarded to a user after their first year anniversary
-Badge.MemberForAYear.Name,First Anniversary
+Badge.AuthorMarkAsSolution.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
 Badge.OneThousandPoints.Desc,This badge is awarded to users who have received 1000 points
-Badge.OneThousandPoints.Name,Thousand Pointer
+Badge.TheGrouch.Name,The Grouch
+Badge.FavouriteFirstPost.Desc,You have Favourited your first post
+Badge.TheGrouch.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
+Badge.PostMentionsUmbraco.Name,Umbraco Fan
+Ajax.PleaseWait,Please Wait...
+Badge.Photogenic.Name,Photogenic
+Badge.PosterVoteUp.Name,First Vote Up Received
+Badge.UnknownBadge,Unknown badge type {0}
+Badge.JediMaster.Name,Jedi Master
+Badge.PosterVoteUp.Desc,This badge is awarded to users after they receive their first vote up from another user
 Badge.Padawan.Desc,Had 10 or more posts successfully marked as an answer
+Badge.FavouriteFirstPost.Name,First Favourite
+Badge.PostMentionsUmbraco.Desc,This badge is awarded to a user who mentions Umbraco in their latest post
 Badge.Padawan.Name,Padawan
 Badge.Photogenic.Desc,Little things like uploading a profile picture make the community a better place. Thanks!
-Badge.Photogenic.Name,Photogenic
+Badge.MemberForAYear.Desc,This badge is awarded to a user after their first year anniversary
+Admin,Admin
 Badge.PosterMarkAsSolution.Desc,This badge is awarded to a user when their post is marked as the solution to a topic
-Badge.PosterMarkAsSolution.Name,Post Selected As Answer
-Badge.PosterVoteUp.Desc,This badge is awarded to users after they receive their first vote up from another user
-Badge.PosterVoteUp.Name,First Vote Up Received
-Badge.PostMentionsUmbraco.Desc,This badge is awarded to a user who mentions Umbraco in their latest post
-Badge.PostMentionsUmbraco.Name,Umbraco Fan
-Badge.TheGrouch.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
-Badge.TheGrouch.Name,The Grouch
-Badge.UnknownBadge,Unknown badge type {0}
-Badge.UserVoteUp.Desc,This badge is awarded to users after they make their first vote up
+Badge.JediMaster.Desc,Had 50 or more posts successfully marked as an answer
 Badge.UserVoteUp.Name,You've Given Your First Vote Up
-Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member
+Badge.UserVoteUp.Desc,This badge is awarded to users after they make their first vote up
 Badge.YourPostFavourited.Name,Favourited Post
-Badge.YourPostFavouritedTenTimes.Desc,One or more of your posts have been Favourited by 10 or more people
-Badge.YourPostFavouritedTenTimes.Name,Recognised Post
-Badges.AwardsPoints,Awards {0} points
-Badges.PageTitle,Badges
-Badges.UnableToAward,Unable to award badges as badge collection is null for user {0}
-Buttons.Approve, Approve
-Buttons.ChangePassword,Change Password
-Buttons.Continue,Continue
-Buttons.CreatePost,Add comment
-Buttons.ClearPost,Clear
 Buttons.Edit,Edit
-Buttons.LogOn,Log On
-Buttons.Report,Report
-Buttons.ResetPassword,Reset Password
-Buttons.Reject, Reject
-Buttons.Save,Save
+Badge.YourPostFavouritedTenTimes.Desc,One or more of your posts have been Favourited by 10 or more people
+Buttons.Continue,Continue
+Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member
+Badges.PageTitle,Badges
+Buttons.ChangePassword,Change Password
+Badges.AwardsPoints,Awards {0} points
+Buttons.CreatePost,Add comment
+Badge.YourPostFavouritedTenTimes.Name,Recognised Post
+Badges.UnableToAward,Unable to award badges as badge collection is null for user {0}
+Group.AllGroups,All Groups
 Buttons.Search,Search
+Group.MostRecent,Most recent:
+Buttons.Report,Report
 Buttons.Send,Send
+Group.NoDiscussions,Currently no discussions in this Group
+Buttons.LogOn,Log On
+Group.GroupsSideHeading,Groups
+Group.SubGroupsHeading,Sub Groups In
+Buttons.ResetPassword,Reset Password
+Buttons.Save,Save
 Confirmation.DeleteMembersPosts,Are you sure? This will delete all the members posts and topics!
-Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
+Date.JustNow,Just now
 Date.DaysAgo,{0} days ago
 Date.HoursAgo,{0} hours ago
-Date.JustNow,Just now
 Date.MinutesAgo,{0} minutes ago
+Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
 Date.OneHourAgo,1 hour ago
 Date.OneMinuteAgo,1 minute ago
-Date.WeeksAgo,{0} weeks ago
 Date.Yesterday,yesterday
+Date.WeeksAgo,{0} weeks ago
 Editor.NeedHelp,Need formatting help?
-Email.Invite.Subject,Join the FutureNHS platform
-Email.Invite.Body,You have been invited to join the FutureNHS collaboration platform.
-Email.Invite.Link,Register
-Error.EmailIsBanned,The email address or domain you are trying to use is banned
-Error.WrongAnswerRegistration,There was an error with your answer. Please try again
 Errors.GenericMessage,Sorry an error occured
+Errors.NoPermissionPolls,Topic Created. But you do not have permission to create polls
+Error.EmailIsBanned,The email address or domain you are trying to use is banned
+Errors.NothingToDisplay,Nothing To Display
+Error.WrongAnswerRegistration,There was an error with your answer. Please try again
 Errors.NoAccess,No Access
 Errors.NoPermission,You do not have permission to perform this action
-Errors.NoPermissionPolls,Topic Created. But you do not have permission to create polls
-Errors.NothingToDisplay,Nothing To Display
-Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the forum.config
-Favourites.NoMemberFavourites,You have not starred any posts
 Favourites.PageTitle,My Favourites
-File.SuccessfullyDeleted,File deleted
-Folder.Create.Title,Add folder
-Folder.Edit.Title,Edit folder
-Folder.CreateEdit.Guidance,Create/Edit folder guidance text
-Folder.CreateEdit.FileTitle.Label,Enter folder title
-Folder.CreateEdit.FileTitle.Guidance, This is a hint offering some short guidance to users
-Folder.CreateEdit.FolderDescription.Label,Enter folder description (optional)
-Folder.CreateEdit.FolderDescription.Guidance, This is a hint offering some short guidance to users
-Folder.CreateEdit.Submit,Save and continue
-File.Error.NullTitle,Please provide a title.
-File.Error.InvalidType,The file above was not uploaded because the type is not allowed.
-File.Error.InvalidSize,The file above was not uploaded because the file size is too big.
-File.Error.NullFile,Please select to upload a file.
-File.Error.NullName,The file must have a name.
-File.Error.NameLength,The name of the file cannot be more than 100 characters.
-File.Upload.Button.Label,Upload
-File.Upload.FileDescription.Guidance,This is the description as seen by users when they select the file title in the folder. Try to be as descriptive as possible.
-File.Upload.FileDescription.Label,Enter file description (optional)
-File.Upload.FileTitle.Guidance,This is the file title as seen by users and listed in the folder. Try to be as descriptive as possible. Avoid including underscores, hyphens, or document type details (.doc, .pdf etc)
-File.Upload.FileTitle.Label,Enter file title
-File.Upload.Guidance,Guidance on file formats, size, don't upload sensitive data.
-File.Upload.Subtitle,Upload file
-File.Upload.Terms.Link,/terms-and-conditions
-File.Upload.Terms.LinkText,Open terms and conditions in a new window
-File.Upload.Terms.Text,All uploaded content must conform to the platform's terms and conditions.
-Folder.Error.NullTitle,Please provide a folder title.
-Folder.Error.DuplicateTitle,A folder with this name already exists in this folder.
-Folder.Error.FailedDelete,The folder and its contents cannot be deleted at the moment.  Please try again later.
-Following.Groups,Groups you are following
-Following.PageTitle,Topics & Groups
-Following.Topics,Topics you are following
 Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
-Groups.Leave,Leave Group
-Group.AboutUs,About us
-Group.AllGroups,All Groups
-Group.Forum,All discussions
-Group.GroupsSideHeading,Groups
-Group.MostRecent,Most recent:
-Group.Members,Group Members
-Group.NoDiscussions,Currently no discussions in this Group
-Group.GroupRules,Group Rules
-Group.SubGroupsHeading,Sub Groups In
-Group.PublicGroup.JoinMessage,Please join the group to contribute
-Group.MyGroups.Title,My Groups
-Group.MyGroups.HeaderIntro,Share ideas, get advice and support from your peers
-Group.DiscoverGroups.Title,Discover Groups
-Group.DiscoverGroups.HeaderIntro,Discover new groups to join
-Group.MyGroups.Introduction,Browse currently subscribed groups
-Group.DiscoverGroups.Introduction,Discover new groups to join
-Group.EditGroup.Title,Edit group
-Group.EditGroup.Introduction,Edit your group title, description, introduction and logo.
-Group.EditGroup.LogoIntroduction,Please upload your logo. If not we will use our default icon.
-Group.EditGroup.IntroHelpText,Please note this will be used to search for this group so use keywords.
-Group.EditGroup.AboutUsHelpText, This is the content that will be displayed on the group's about us page.
-GroupTabs.Home,Home
-GroupTabs.Forum,Forum
-GroupTabs.Files,Files
-GroupTabs.Members,Members
-GroupTabs.AboutUs,About us
-Header.Phasebanner.FeedbackLink,http://www.google.co.uk
-Home.LatestDiscussions,Latest Discussions
-Home.Rss,Rss
-Language.Change,Change Language
+Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the forum.config
+Following.PageTitle,Topics & Groups
+File.SuccessfullyDeleted,File deleted
+Following.Groups,Groups you are following
+Following.Topics,Topics you are following
+Favourites.NoMemberFavourites,You have not starred any posts
 Language.Changed,Language Changed
+Home.LatestDiscussions,Latest Discussions
+Language.Change,Change Language
+Home.Rss,Rss
 Layout.CreateButton,New Discussion
 Layout.Nav.Activity,Activity
-Layout.Nav.Admin,Admin
-Layout.Nav.Badges,Badges
-Layout.Nav.Home,Home
-Layout.Nav.Leaderboard,Leaderboard
 Layout.Nav.Logon,Log On
+Layout.Nav.Home,Home
+Layout.Nav.Badges,Badges
 Layout.Nav.Register,Register
+Layout.Nav.Leaderboard,Leaderboard
+Layout.Nav.Admin,Admin
 Layout.Nav.Utilities,Utilities
 Layout.PoweredBy,Powered by 
-Layout.GroupInvite,Invite new member
 Leaderboard.LeaderboardTitle,Global Leaderboard
-Leaderboard.ThisWeeksStars,This Weeks Stars
-Leaderboard.ThisYearsStars,This Years Rock Stars
 LogOn.LogOff,Log Off
-LogOn.LogOn,Log In
-LogOn.Button.Text,Log In
-LogOn.Error.UnableToLogIn.Text, Unable to log in. Please check your details.
-LogOn.Introduction.Text, Log in text TBC
-LogOn.ForgotPassword.Text, Forgot your password?
-LogOn.RegisterInterest.Link, mailto:support@futurenhs.zendesk.com?subject=Register Interest
-LogOn.Title.Text,Log In
 Member.HasNewPrivateMessages,You have new unread Private messages
+LogOn.LogOn,Log In
+Leaderboard.ThisYearsStars,This Years Rock Stars
+Leaderboard.ThisWeeksStars,This Weeks Stars
 Member.ProfileUpdated,Profile Updated
 Members.Admin,Admin
-Members.Action,Action
-Members.AlreadyRegistered,You are already registered? Why would you want to do it again?
 Members.BanUser,Ban User
-Members.CantUnlock,User does not exist - cannot unlock.
-Members.ChangePassword.Error,The current password is incorrect or the new password is invalid.
-Members.ChangePassword.Link,You can change your password here
-Members.ChangePassword.Success,Password Changed
+Members.AlreadyRegistered,You are already registered? Why would you want to do it again?
 Members.ChangePassword.Text,New passwords are required to be a minimum of {0} characters in length.
-Members.ChangePassword.Title,Change Password
-Members.DateApplied,Date Applied
-Members.DateJoined,Date Joined
+Members.ChangePassword.Link,You can change your password here
+Members.CantUnlock,User does not exist - cannot unlock.
+Members.ChangePassword.Success,Password Changed
+Members.ChangePassword.Error,The current password is incorrect or the new password is invalid.
 Members.DeleteAllPosts,Delete All Posts
-Members.EditMember,Edit Member
 Members.EditProfile,Edit Profile
+Members.ChangePassword.Title,Change Password
+Members.DateJoined,Joined
+Members.EditMember,Edit Member
+Members.Errors.InvalidAnswer,The password retrieval answer provided is invalid. Please check the value and try again.
+Members.Errors.InvalidPassword,The password provided is invalid. Please enter a valid password value.
+Members.Errors.InvalidEmail,The e-mail address provided is invalid. Please check the value and try again.
 Members.Errors.DuplicateEmail,This email address is already registered.  Please provide another email address or login
 Members.Errors.DuplicateUserName,This email address is already registered.  Please provide another email address or login
-Members.Errors.InvalidAnswer,The password retrieval answer provided is invalid. Please check the value and try again.
-Members.Errors.InvalidEmail,The e-mail address provided is invalid. Please check the value and try again.
-Members.Errors.InvalidPassword,The password provided is invalid. Please enter a valid password value.
 Members.Errors.InvalidQuestion,The password retrieval question provided is invalid. Please check the value and try again.
+Members.Errors.PasswordIncorrect,The user or password provided is incorrect.
+Members.Errors.PasswordAttemptsExceeded,The maximum number of password attempts has been exceeded.
 Members.Errors.InvalidUserName,The user name provided is invalid. Please check the value and try again.
 Members.Errors.LogonGeneric,Unable to login.
-Members.Errors.PasswordAttemptsExceeded,The maximum number of password attempts has been exceeded.
-Members.Errors.PasswordIncorrect,The user or password provided is incorrect.
-Members.Errors.ProviderError,The authentication provider returned an error. Please verify your entry and try again. If the problem persists please contact your system administrator.
-Members.Errors.Unknown,An unknown error occurred. Please verify your entry and try again. If the problem persists please contact your system administrator.
-Members.Errors.UserLockedOut,User is locked out.
 Members.Errors.UserNotApproved,User has not been approved.
-Members.Errors.UserRejected,The user creation request has been canceled. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.Errors.Unknown,An unknown error occurred. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.Errors.ProviderError,The authentication provider returned an error. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.Errors.UserLockedOut,User is locked out.
+Members.ForgotPassword.Link,Forgot your password?
 Members.ForgotPassword.Email,You have requested that your password is reset on {0}. Your new password is below
 Members.ForgotPassword.ErrorMessage,Error resetting password
-Members.ForgotPassword.Link,Forgot your password?
+Members.Errors.UserRejected,The user creation request has been canceled. Please verify your entry and try again. If the problem persists please contact your system administrator.
 Members.ForgotPassword.Subject,Password Reset
 Members.ForgotPassword.SuccessMessage,A new password has been emailed to you
-Members.ForgotPassword.Title,Forgot Password
+Members.Label.ConfirmNewPassword,Confirm New Password
 Members.Label.Age,Age
 Members.Label.Comment,Comment
-Members.Label.ConfirmNewPassword,Confirm New Password
 Members.Label.ConfirmPassword,Confirm Password
-Members.Label.CurrentPassword,Current Password
-Members.Label.DateJoined,Date Joined
+Members.ForgotPassword.Title,Forgot Password
 Members.Label.DisableEmailNotifications,Disable Email Notifications
-Members.Label.EmailAddress,Email address
-Members.Label.EmailAddressBlank,Enter your email address
+Members.Label.DateJoined,Joined
+Members.Label.CurrentPassword,Current Password
 Members.Label.Facebook,Facebook Page
-Members.Label.FirstName,First name
-Members.Label.Joined,Joined
-Members.Label.LastOnline,Last onlineMembers.Label.Location,Location
-Members.Label.NewPassword,New Password
-Members.Label.Password,Password
-Members.Label.ProfileImage,Image
-Members.Label.Pronouns,Preferred pronouns
-Members.Label.PronounsEdit,Preferred pronouns (optional)
-Members.Label.RememberMe,Remember Me?
-Members.Label.Roles,Roles
-Members.Label.Signature,Signature
+Members.Label.EmailAddress,Email address
 Members.Label.Surname,Last name
-Members.Label.SurnameEdit,Last name (optional)
-Members.Label.Twitter,Twitter Url
-Members.Label.UploadNewAvatar,Upload a new profile image
+Members.Label.FirstName,First name
+Members.Label.EmailAddressBlank,Enter your email address
+Members.Label.Password,Password
+Members.Label.NewPassword,New Password
+Members.Label.Location,Location
+Members.Label.RememberMe,Remember Me?
+Members.Label.Signature,Signature
+Members.Label.Roles,Roles
 Members.Label.UserIsApproved,User is Approved
+Members.Label.UploadNewAvatar,Upload a new profile image
+Members.Label.Twitter,Twitter Url
 Members.Label.Username,Username
+Members.LoginOrText,Or
 Members.Label.Users,Users
 Members.Label.Website,Website
-Members.LoginOrText,Or
-Members.LogonFacebookButton,Login with Facebook
-Members.LogonGoogleButton,Login with Google
 Members.LogOnMessage,Please enter your user name and password. Or {0} if you don't have an account
+Members.LogonGoogleButton,Login with Google
 Members.LogonMicrosoftButton,Login with Microsoft
+Members.LogonFacebookButton,Login with Facebook
 Members.MemberEmailAuthorisation.EmailBody,You have registered on {0} - In order to continue you must confirm your email address by clicking the link below. {1}
-Members.MemberEmailAuthorisation.Subject,Email Confirmation
 Members.MemberEmailAuthorisationNeeded,We have sent you a confirmation email - please click the confirmation link in your email to approve your account.
-Members.MemberEmailAuthorisationNeededMessage,Click the link in your confirmation email to approve your account.
+Members.MemberEmailAuthorisation.Subject,Email Confirmation
 Members.MemberEmailAuthorisationResend,Resend Confirmation Email
 Members.MessageMe,Message Me
 Members.NewMemberRegistered,New member registered on {0} ({1})
+Members.MemberEmailAuthorisationNeededMessage,Click the link in your confirmation email to approve your account.
 Members.NewMemberSubject,New Member Registered
 Members.NowApproved,Your account has now been approved - Thank you
 Members.NowBanned,Member is now banned
-Members.NowLoggedIn,You are now logged in
 Members.NowLoggedOut,You are now logged out
+Members.NowLoggedIn,You are now logged in
 Members.NowRegistered,You are now registered
 Members.NowRegisteredNeedApproval,You are now registered. But the forum admin must authorise your account
 Members.NowUnBanned,Member is now NOT banned
 Members.Points,Points
 Members.Profile.Age,Age:
 Members.Profile.Badges,Badges
-Members.Profile.DiscussionActivity,Discussion Activity
-Members.Profile.EditMyProfile,Edit my profile
 Members.Profile.Facebook,Facebook:
-Members.Profile.ImageGuidanceText,Please select an image file that is not greater than 64kb
+Members.Profile.DiscussionActivity,Discussion Activity
 Members.Profile.IsSocialAccount,Social Account
 Members.Profile.Joined,Joined:
-Members.Profile.LastOnline,Last Online
 Members.Profile.Location,Location:
+Members.Profile.LastOnline,Last Online
 Members.Profile.Points,Points:
 Members.Profile.Posts,Posts:
-Members.Profile.RemoveImage,Remove image
-Members.Profile.Twitter,Twitter
-Members.Profile.ViewMyProfile,My profile
-Members.Profile.Website,Website
 Members.ProfileTitle,Profile
-Members.Register,Register now
-Members.Register.InvalidEmail,Please provide a valid email address
-Members.Register.EmailExists,This email address is already registered.  Please provide another email address or login.
-Members.Register.PasswordShort,Your password must be at least 10 characters long
-Members.Register.PasswordMismatch,Your passwords do not match
-Members.Register.FirstnameNull,Please provide your first name
-Members.Register.SurnameNull,Please provide your surname
-Members.Register.ErrorTitle,There is a problem
+Members.Profile.Website,Website
+Members.Profile.Twitter,Twitter
 Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
+Members.Register,Register now
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
+Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
 Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.
 Members.ResetPassword.SuccessText,Your password has been changed.
-Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
 Members.ResetPassword.Title,Password reset request sent
-Members.Role,Role
 Members.SearchMembers,Search Members
 Members.SrubAndBan,Scrub Member
-Members.Status,Status
 Members.SuccessfulSrub,All done
-Members.Table.Pending,Pending members
-Members.Table.Admins,Group Administrators
-Members.Table.Users,Group Members
 Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions
 Members.UnBanUser,Unban User
 Members.Users,Users
 Microsoft.Error.EnabledButNotAddedKeys,You have enabled Microsoft login but not added your AppId or Secret key to the forum.config
-Moderate.AwaitingModeration,Your post is currently awaiting moderation. Once approved it will appear on the site
 Moderate.NavText,Pending Posts/Topics
+Moderate.AwaitingModeration,Your post is currently awaiting moderation. Once approved it will appear on the site
 Moderate.NothingHere,Nothing here at the moment
 Moderate.Posts,Posts
 Moderate.Title,Moderate
-Moderate.Topics,Topics
 Notification.Subscribe,Follow
-Notification.UnSubscribe,UnFollow
+Moderate.Topics,Topics
 Notifications.NoActiveMembers,No one online at the moment
-PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox allowance
+Notification.UnSubscribe,UnFollow
 PM.AboutToExceedInboxSizeSubject,Private Message Inbox Allowance
+PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox allowance
 PM.BackToInbox,Back To Inbox
-PM.Block,Block
 PM.Blocked,Blocked
+PM.Block,Block
 PM.BlockedMessage,Unable to send message
 PM.Create,Create
 PM.CreatePrivateMessage,Create Private Message
@@ -313,8 +227,8 @@ PM.Date,Date
 PM.Delete,Delete
 PM.From,From: 
 PM.LastActivity,Last Activity
-PM.MemberIsOnline,Online
 PM.MessageSent,Message Sent
+PM.MemberIsOnline,Online
 PM.MessageSubject,Subject
 PM.NewPrivateMessage,New Private Message
 PM.NewPrivateMessageBody,{0} has just sent you a private message.
@@ -326,55 +240,55 @@ PM.Read,Read
 PM.ReceivedItemsOverCapcity,{0} has exceeded their inbox size - unable to send message
 PM.ReceivedPrivateMessages,Received Private Messages
 PM.RecipientUsername,Recipient Username
-PM.Reply,Reply
 PM.Send,Send
-PM.SendingToQuickly,You are trying to send messages to quickly
-PM.Sent,Sent:
+PM.Reply,Reply
 PM.SentItemsOverCapcity,Your sent items is over capacity - delete messages to be able to send
+PM.Sent,Sent:
+PM.SendingToQuickly,You are trying to send messages to quickly
 PM.SentPrivateMessages,Sent Private Messages
 PM.ShowMore,Show More Messages
 PM.ShowMoreLoading,Loading...
 PM.Subject,Subject
 PM.TalkToSelf,Talking to yourself is a bit weird. isn't it?
-PM.Title,Message: 
 PM.To,To
 PM.UnableFindMember,Unable to find that member
+PM.Title,Message: 
 Points.ThisWeeksHighEarners,This Weeks High Earners
-Poll.Button.Create,Add A Poll To This Topic
 Poll.Button.Remove,Remove Poll From Topic
+Poll.Button.Create,Add A Poll To This Topic
 Poll.Button.Vote,Submit Vote
 Poll.Placeholder.TypeAnswerHere,Type A Poll Answer Here
-Post.Attach,Attach
 Post.AttachedFiles,Attached Files
-Post.Browse,Browse...
+Post.Attach,Attach
 Post.Delete,Delete
+Post.Browse,Browse...
 Post.DeleteConfirmation,Are you sure you want to delete?
 Post.Deleted,Post Deleted
-Post.Edit,Edit
 Post.Favourite,Favourite
+Post.Edit,Edit
 Post.Favourited,Favourited
 Post.FilesUploaded,Files uploaded successfully
-Post.IsSolution,Is Solution
 Post.Trusted,Trusted
+Post.IsSolution,Is Solution
 Post.TrustedUser,Trusted User
 Post.Label.IsStickyTopic,Is Sticky Topic
 Post.Label.LockTopic,Lock Topic
 Post.label.TopicGroup,Topic Group
 Post.Label.TopicName,Topic Name
 Post.LastEdited,Last edited
-Post.LikedBy,Liked by
 Post.MemberIsOnline,Online
+Post.LikedBy,Liked by
 Post.Move,Move
 Post.Move.Description,Move post to an existing topic, or create a new one.
 Post.Move.Label.NewTopicTitle,Create New Topic
 Post.Move.Label.ReplyToPosts,Move Replies and Quotes Too
 Post.Move.Label.Topic,Topic
-Post.Move.PostTitle,Move Post
 Post.Notification.NewPosts,A new post has been created in the {0} topic
+Post.Move.PostTitle,Move Post
 Post.Notification.Subject,New Post On 
-Post.Options,View Post Options
-Post.OthersLiked,and {0} others
 Post.Permalink,Permalink
+Post.OthersLiked,and {0} others
+Post.Options,View Post Options
 Post.PleaseWait,Please Wait...
 Post.Points,Points
 Post.PostedThis,posted this
@@ -385,8 +299,8 @@ Post.ReplyingTo,Replying To:
 Post.Report,Report
 Post.Updated,Post Updated
 Post.Upload,Upload Files
-Post.UploadBannedFileExtension,File extension not allowed
 Post.UploadFileTooBig,File upload is too big
+Post.UploadBannedFileExtension,File extension not allowed
 Post.VotedDown,Disliked
 Post.VoteDown,Dislike
 Post.VotedUp,Liked
@@ -394,18 +308,18 @@ Post.VoteUp,Like
 PostedIn.PageTitle,Topics & Posts you have posted in
 PostEdit.EditedBy,Edited By
 PostEdit.EditedVersion,Edited
-PostEdit.None,This post has not post edit history at the moment
 PostEdit.OriginalVersion,Original
-PostEdit.Panel.Name,Post Edit History
+PostEdit.None,This post has not post edit history at the moment
 PostFilter.Newest,Newest
+PostEdit.Panel.Name,Post Edit History
 PostFilter.OrderBy,Order By:
-PostFilter.Standard,Standard
 PostFilter.Votes,Votes
+PostFilter.Standard,Standard
 Report.Admin,Admin
-Report.MemberReport,Member Report
 Report.MemberReported,Member Reported
-Report.PostReport,Post Report
+Report.MemberReport,Member Report
 Report.PostReported,Post Reported In
+Report.PostReport,Post Report
 Report.Reason,Reason
 Report.Report,Report 
 Report.Reporter,Reporter
@@ -413,11 +327,11 @@ Report.ReportPostBy,Report Post By:
 Report.ReportSent,Report Sent
 Rss.Group.Description,Latest discussions happening in the {0} Group
 Rss.Group.Title,{0} Discussions
-Rss.LatestActivity.Description,Recent discussions
 Rss.LatestActivity.Title,Latest Forum Discussions
+Rss.LatestActivity.Description,Recent discussions
 Search.InTopic,In Topic
-Search.NoResults,Sorry no results found
 Search.Results,Results Found
+Search.NoResults,Sorry no results found
 Search.Searching,Searching
 Side.Search,Search
 Side.Search.Go,Go
@@ -427,8 +341,8 @@ Site.MvcForum,MvcForum
 SlidePanel.CloseConfirmation,Are you sure you want to close?
 Spam.FloodTestFailed,You are posting too quickly
 Stats.FooterActiveUsersText,Members Currently Online:
-Stats.FooterMainStatText,Our {0} members have posted {1} times in {2} discussions
 Stats.LatestMembers,Latest Members:
+Stats.FooterMainStatText,Our {0} members have posted {1} times in {2} discussions
 StopWord.Error,You have tried to enter a word or url that is not allowed on this site
 SubNav.Favourites,My Favourites
 SubNav.Following,Following
@@ -442,25 +356,25 @@ Tasks.MarkAsSolutionReminderJob.EmailBody,Your topic {0} on {1} has {2} replies 
 Tasks.MarkAsSolutionReminderJob.Subject,Your post on {0}
 TermsAndConditions.Label.Agree,I have read and agree to the site Terms and Conditions
 TermsAndConditions.Label.AgreeError,You must Agree to the Terms and Conditions
-TermsAndConditions.PageTitle,Agree to Terms and Conditions
 TinyMCE.InsertImage.Browse,Browse
+TermsAndConditions.PageTitle,Agree to Terms and Conditions
 TinyMCE.InsertImage.ButtonClose,Close
 TinyMCE.InsertImage.ButtonOk,Ok
 TinyMCE.InsertImage.ButtonTitle,Insert Image
 TinyMCE.InsertImage.EnterValidUrl,Please enter a valid url
 TinyMCE.InsertImage.ExternalImage,External Image
 TinyMCE.InsertImage.ImageDescription,Image Description
-TinyMCE.InsertImage.LabelUploadImage,Upload Image
 TinyMCE.InsertImage.MaxFileSize,Max image file size is 2mb
+TinyMCE.InsertImage.LabelUploadImage,Upload Image
 TinyMCE.InsertImage.OnlyImages,Only JPEG, PNG and GIF images can be uploaded
 TinyMCE.InsertImage.SelectFile,Please select a file
 Topic.AlreadyAnswered,Questions that may already have your answer
-Topic.Group,Group
 Topic.Choose,Choose Existing Topic
+Topic.Group,Group
 Topic.Comment,Answer
 Topic.Comments,Answers
-Topic.CommentsDetails,Comments
 Topic.CreateDiscussion,Add Discussion
+Topic.CommentsDetails,Comments
 Topic.Deleted,Topic Deleted
 Topic.DiscussionTaggedWith,Discussions Tagged With: 
 Topic.HotTopics,Hot Topics
@@ -474,20 +388,116 @@ Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave 
 Topic.Label.SubscribeToTopic,Get notified of replies?
 Topic.Label.Tags,Add Tag
 Topic.Label.TopicTitle,Title
-Topic.Label.UploadFiles,Upload Files
 Topic.LastPost,Last Post
+Topic.Label.UploadFiles,Upload Files
 Topic.LatestBy,Latest By
-Topic.Notification.NewTopics,A new topic or tag has been created in the {0} Group
 Topic.Notification.Subject,New Discussion On 
+Topic.Notification.NewTopics,A new topic or tag has been created in the {0} Group
 Topic.OptionsHeading,Topic Options
 Topic.PollClosed,Closed
 Topic.ShowMorePosts,Show More Posts
-Topic.ShowMorePostsLoading,Loading Posts...
 Topic.StartedBy,Started {0} by {1}
+Topic.ShowMorePostsLoading,Loading Posts...
 Topic.Subscribe,Follow
 Topic.TagThisTopic,Tag this topic
 Topic.TitleFallBack,Discussion Topic
 Topic.UnSubscribe,UnFollow
-Topic.Views,Views
 Topic.Votes,Votes
+Topic.Views,Views
 Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the forum.config
+Buttons.Approve, Approve
+Buttons.Reject, Reject
+Groups.Leave,Leave Group
+Group.Forum,All discussions
+Group.Members,Group Members
+GroupTabs.Home,Home
+GroupTabs.Forum,Forum
+GroupTabs.Members,Members
+Members.Action,Action
+Members.DateApplied,Date Applied
+Members.Role,Role
+Members.Status,Status
+Members.Table.Pending,Pending members
+Members.Table.Admins,Group Administrators
+Members.Table.Users,Group Members
+Buttons.ClearPost,Clear
+GroupTabs.Files,Files
+File.Error.NullTitle,Please provide a title.
+File.Error.InvalidType,The file above was not uploaded because the type is not allowed.
+File.Error.InvalidSize,The file above was not uploaded because the file size is too big.
+File.Error.NullName,The file must have a name.
+File.Error.NullFile,Please select to upload a file.
+Folder.Error.NullTitle,Please provide a folder title.
+File.Error.NameLength,The name of the file cannot be more than 100 characters.
+Folder.Error.DuplicateTitle,A folder with this name already exists in this folder.
+Email.Invite.Subject,Join the FutureNHS platform
+Email.Invite.Body,You have been invited to join the FutureNHS collaboration platform.
+Layout.GroupInvite,Invite new member
+Members.Register.InvalidEmail,Please provide a valid email address
+Members.Register.EmailExists,This email address is already registered.  Please provide another email address or login.
+Members.Register.PasswordShort,Your password must be at least 10 characters long
+Members.Register.PasswordMismatch,Your passwords do not match
+Members.Register.FirstnameNull,Please provide your first name
+Members.Register.SurnameNull,Please provide your surname
+Members.Register.ErrorTitle,There is a problem
+Group.PermissionDenied,You must be a member of this group to access this content
+Groups.Join,Join Group
+File.Label.Owner,File Owner
+File.Label.Name,File name
+File.Label.UploadedBy,Uploaded by
+File.Label.UploadedDate,Uploaded date
+File.Label.Download,Download file
+Email.Invite.Link,Register
+LogOn.Button.Text,Log In
+LogOn.Error.UnableToLogIn.Text, Unable to log in. Please check your details.
+LogOn.Introduction.Text, Log in text TBC
+LogOn.ForgotPassword.Text, Forgot your password?
+LogOn.ContactSupport.Link, #
+LogOn.RegisterInterest.Link, mailto:support@futurenhs.zendesk.com?subject=Register Interest
+LogOn.Title.Text,Log In
+File.Error.ContentMatchesExtension,The file above was not uploaded because the type could not be identified
+Group.PublicGroup.JoinMessage,Please join the group to contribute
+Header.Phasebanner.FeedbackLink,http://www.google.co.uk
+File.Upload.Button.Label,Upload
+File.Upload.FileDescription.Guidance,This is the description as seen by users when they select the file title in the folder. Try to be as descriptive as possible.
+File.Upload.FileTitle.Guidance,This is the file title as seen by users and listed in the folder. Try to be as descriptive as possible. Avoid including underscores, hyphens, or document type details (.doc, .pdf etc)
+File.Upload.FileDescription.Label,Enter file description (optional)
+File.Upload.Guidance,Guidance on file formats, size, don't upload sensitive data.
+File.Upload.FileTitle.Label,Enter file title
+File.Upload.Subtitle,Upload file
+File.Upload.Terms.Link,/terms-and-conditions
+File.Upload.Terms.LinkText,Open terms and conditions in a new window
+File.Upload.Terms.Text,All uploaded content must conform to the platform's terms and conditions.
+Folder.Error.FailedDelete,The folder and its contents cannot be deleted at the moment.  Please try again later.
+Group.MyGroups.Title,My Groups
+Group.MyGroups.HeaderIntro,Share ideas, get advice and support from your peers
+Group.DiscoverGroups.HeaderIntro,Discover new groups to join
+Group.DiscoverGroups.Title,Discover Groups
+Group.MyGroups.Introduction,Browse currently subscribed groups
+Group.DiscoverGroups.Introduction,Browse and join groups you are not currently a member of
+Group.AboutUs,About us
+Group.GroupRules,Group Rules
+Group.EditGroup.Title,Edit group
+Group.EditGroup.Introduction,Edit your group title, description, introduction and logo.
+Group.EditGroup.LogoIntroduction,Please upload your logo. If not we will use our default icon.
+Group.EditGroup.IntroHelpText,Please note this will be used to search for this group so use keywords.
+Group.EditGroup.AboutUsHelpText, This is the content that will be displayed on the group's about us page.
+GroupTabs.AboutUs,About us
+Members.Label.Joined,Joined
+Members.Label.LastOnline,Last online
+Members.Label.ProfileImage,Image
+Members.Label.Pronouns,Preferred pronouns
+Members.Label.PronounsEdit,Preferred pronouns (optional)
+Members.Label.SurnameEdit,Last name (optional)
+Members.Profile.EditMyProfile,Edit my profile
+Members.Profile.ImageGuidanceText,Please select an image file that is not greater than 64kb
+Members.Profile.RemoveImage,Remove image
+Members.Profile.ViewMyProfile,My profile
+Folder.Create.Title,Add folder
+Folder.Edit.Title,Edit folder
+Folder.CreateEdit.Guidance,Create/Edit folder guidance text
+Folder.CreateEdit.FileTitle.Label,Enter folder title
+Folder.CreateEdit.FileTitle.Guidance, This is a hint offering some short guidance to users
+Folder.CreateEdit.FolderDescription.Label,Enter folder description (optional)
+Folder.CreateEdit.FolderDescription.Guidance, This is a hint offering some short guidance to users
+Folder.CreateEdit.Submit,Save and continue
