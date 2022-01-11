@@ -112,10 +112,10 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " Include="Data\SeedData.sql" />
-    <PostDeploy Condition=" '$(Configuration)|$(Platform)' == 'Automation|AnyCPU' " Include="Data\AutomationData.sql" />
+    <PostDeploy Condition=" '$(Configuration)|$(Platform)' == 'Automation|AnyCPU' " Include="Data\AutomationSeedData.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\AutomationData.sql" />
+    <None Include="Data\AutomationSeedData.sql" />
     <None Include="FutureNHS.Data.MvcForum.publish.xml" />
   </ItemGroup>
 </Project>
