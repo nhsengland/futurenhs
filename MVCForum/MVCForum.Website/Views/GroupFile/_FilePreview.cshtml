@@ -19,10 +19,11 @@
 <script type="text/javascript">
 	var xhr = new XMLHttpRequest();
 	var token = document.getElementById('collabora_token').value;
+	var collabora_source = document.getElementById('collabora_url').value;
 
-	xhr.open('GET', 'page.html');
+	xhr.open('GET', collabora_source);
 	xhr.onreadystatechange = handler;
-	xhr.responseType = document.getElementById('collabora_url').value;
+	xhr.responseType = "document";
 	xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 	xhr.send();
 
