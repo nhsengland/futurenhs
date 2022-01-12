@@ -94,7 +94,7 @@
                         Folder F
                         INNER JOIN BreadCrumbs BC ON BC.ParentFolder = F.Id
                     )
-                    SELECT
+                    SELECT TOP 4
                       Id,
                       Name
                     FROM

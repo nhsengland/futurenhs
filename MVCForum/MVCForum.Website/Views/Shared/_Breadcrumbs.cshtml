@@ -1,4 +1,5 @@
 ﻿@model MvcForum.Core.Repositories.Models.BreadcrumbsViewModel
+@using MvcForum.Web.ViewModels.Shared
 
 @if (Model != null)
 {
@@ -8,19 +9,20 @@
         {
             foreach (var breadcrumb in Model.BreadcrumbLinks)
             {
-                <a href=@breadcrumb.Url class="u-text-small">
-                    @breadcrumb.Name &rsaquo;
+                <a href=@breadcrumb.Url class="u-text-theme-8 u-no-decoration">
+                    <span class="u-text-lead text-capitalize">@breadcrumb.Name </span>
                 </a>
+                <span class="u-text-theme-0">@{
+                        Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-chevron-right",
+                                    "c-ui-icon c-ui-icon--large u-fill-theme-0 u-margin-right-spacing-3"));
+                    }
+                </span>
             }
         }
         @if (!string.IsNullOrWhiteSpace(Model.LastEntry))
         {
-            <a class="u-text-small u-text-theme-0">
-                @Model.LastEntry
-            </a>
+            <span class="u-text-lead text-capitalize u-text-theme-8">@Model.LastEntry</span>
         }
-        
+
     </div>
 }
-
-

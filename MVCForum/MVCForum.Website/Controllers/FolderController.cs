@@ -250,6 +250,10 @@
 
             if (!(bc is null))
             {
+                if (bc.Count() == 4)
+                {
+                    bc.First().Name = "...";
+                }
                 if (!string.IsNullOrWhiteSpace(lastEntry))
                 {
                     // Last entry not passed in use all the folder heirarchy as links with last entry - add only

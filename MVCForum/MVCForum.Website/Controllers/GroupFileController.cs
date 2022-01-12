@@ -474,6 +474,10 @@ namespace MvcForum.Web.Controllers
 
                 if (bc != null)
                 {
+                    if (bc.Count() == 4)
+                    {
+                        bc.First().Name = "...";
+                    }
                     breadCrumbs.BreadcrumbLinks.AddRange(bc.Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
                 }
             }
