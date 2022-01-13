@@ -1,16 +1,33 @@
 .c-breadcrumb {
 
-    @include clearfix;
-    padding: $nhsuk-spacing-point-3;
-
-    &_path {
-        float: left;
+    &_list {
+        margin: 0 0 -#{$nhsuk-spacing-point-2};
+        padding: 0;
+        list-style: none;
     }
 
-    &_support-disclaimer {
-        @include small-heading;
-        float: right;
-        text-align: right;
+    &_item {
+        display: inline-block;
+        margin: 0 0 $nhsuk-spacing-point-2;
+    }
+
+    &_link {
+        display: inline-block;
+        max-width: 300px;
+        vertical-align: middle;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: $large-text-line-height;
+        font-size: $large-text;
+    }
+
+    &_icon {
+        height: $nhsuk-spacing-point-2;
+        width: $nhsuk-spacing-point-2;
+        margin: 0 $nhsuk-spacing-point-3;
+        vertical-align: middle;
+        fill: $mid-grey;
     }
 
 }

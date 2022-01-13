@@ -59,7 +59,7 @@ export const GroupMembersTemplate: (props: Props) => JSX.Element = ({
 
     }), [pendingMembers]);
 
-    const memberRowList = useMemo(() => members?.map(({ 
+    const memberRowList = useMemo(() => membersList?.map(({ 
         id, 
         fullName,
         role,

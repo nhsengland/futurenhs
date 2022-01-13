@@ -7,15 +7,15 @@ export const enum iconNames {
 
 export const defaultGroupLogos = {
     small: {
-        src: '/images/default-group-logo.png',
+        src: '/images/group-logo.svg',
         height: 100,
         width: 100,
-        altText: 'logo'
+        altText: 'Group logo'
     },
     large: {
-        src: '/images/default-group-logo.png',
+        src: '/images/group-logo.svg',
         height: 180,
         width: 180,
-        altText: 'logo'
+        altText: 'Group logo'
     }
 }

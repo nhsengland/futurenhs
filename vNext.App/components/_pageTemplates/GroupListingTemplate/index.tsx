@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
+import { defaultGroupLogos } from '@constants/icons';
 import { Link } from '@components/Link';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
@@ -98,12 +99,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
 
                                 const { mainHeadingHtml, strapLineText } = content ?? {};
                                 
-                                const imageToUse = image ? image : {
-                                    src: '/images/default-group-logo.png',
-                                    height: 180,
-                                    width: 180,
-                                    altText: 'logo'
-                                }
+                                const imageToUse = image ? image : defaultGroupLogos.large;
 
                                 return (
 

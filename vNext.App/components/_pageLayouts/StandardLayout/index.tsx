@@ -9,7 +9,9 @@ import { BreadCrumb } from '@components/BreadCrumb';
 import { Footer } from '@components/Footer';
 import { MainNav } from '@components/MainNav';
 import { LayoutWidthContainer } from '@components/LayoutWidthContainer';
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { RichText } from '@components/RichText';
 import { mainNavMenuList, footerNavMenuList } from '@constants/navigation';
 
 import { Props } from './interfaces';
@@ -26,6 +28,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
+
     const currentPathName: string = router?.pathname;
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || '';
     const breadCrumbDescriptionHtml: string = "<span class=\"u-text-bold\">Need help?</span> <a target=\"_blank\" rel=\"noopener\" href=\"https://futurenhstest.service-now.com/csm/?id=futurenhs_test\">Visit our support site</a>" 
@@ -33,7 +36,32 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     mainNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
     footerNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
 
+    const currentRoutePathElements: Array<string> = router?.asPath.split('/').filter((item) => item);
     const skipLinkList: Array<any> = [];
+
+    let breadCrumbPathElementList: Array<any> = [];
+
+    if(currentRoutePathElements.length){
+
+        breadCrumbPathElementList.push({
+            element: '',
+            text: 'Home'
+        });
+
+        currentRoutePathElements.forEach((item, index) => {
+
+            if(index < currentRoutePathElements.length -1){
+    
+                breadCrumbPathElementList.push({
+                    element: item,
+                    text: item.replace('-', ' ')
+                });
+    
+            }
+    
+        });
+
+    }
 
     if(shouldRenderMainNav){
 
@@ -94,11 +122,22 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                     <div className={generatedClasses.breadCrumb}>
                         <LayoutWidthContainer>
                             <ErrorBoundary>
-                                <BreadCrumb
-                                    navMenuList={[]} 
-                                    content={{
-                                        descriptionHtml: breadCrumbDescriptionHtml
-                                    }} />
+                                <LayoutColumnContainer className="u-py-4">
+                                    <LayoutColumn tablet={8}>
+                                        <BreadCrumb 
+                                            content={{
+                                                ariaLabelText: 'Site breadcrumb'
+                                            }}
+                                            pathElementList={breadCrumbPathElementList}
+                                            className="u--mt-0.5" />
+                                    </LayoutColumn>
+                                    <LayoutColumn tablet={4} className="u-text-right">
+                                        <RichText 
+                                            wrapperElementType="p" 
+                                            bodyHtml={breadCrumbDescriptionHtml} 
+                                            className="u-mb-0" />
+                                    </LayoutColumn>
+                                </LayoutColumnContainer>
                             </ErrorBoundary>
                         </LayoutWidthContainer>
                     </div>
