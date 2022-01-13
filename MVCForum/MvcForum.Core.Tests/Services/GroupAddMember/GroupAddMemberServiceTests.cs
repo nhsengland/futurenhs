@@ -43,7 +43,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidGroupSlug_GroupAddMemberQueryAsync()
+        public void Exception_InvalidGroupSlug_GroupAddMemberQueryAsync()
         {
             var invitedUserMailAddress = new MailAddress("user@email.com");
             var invitedToGroupSlug = string.Empty;
@@ -53,7 +53,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidMailAddress_GroupAddMemberQueryAsync()
+        public void Exception_InvalidMailAddress_GroupAddMemberQueryAsync()
         {
             MailAddress invitedUserMailAddress = null;
             var invitedToGroupSlug = "group-slug";
@@ -77,7 +77,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidAdmin_IsCurrentMemberAdminAsync()
+        public void Exception_InvalidAdmin_IsCurrentMemberAdminAsync()
         {
             var currentMemberUsername = string.Empty;
             var invitedToGroupSlug = "group-slug";
@@ -87,7 +87,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidGroupSlug_IsCurrentMemberAdminAsync()
+        public void Exception_InvalidGroupSlug_IsCurrentMemberAdminAsync()
         {
             var currentMemberUsername = "admin@email.com";
             var invitedToGroupSlug = string.Empty;
@@ -118,7 +118,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidMailAddress_AddMemberToGroupAsync()
+        public void Exception_InvalidMailAddress_AddMemberToGroupAsync()
         {
             MailAddress invitedUserMailAddress = null;
             var invitedUserRoleName = "Standard Members";
@@ -136,7 +136,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidRoleName_AddMemberToGroupAsync()
+        public void Exception_InvalidRoleName_AddMemberToGroupAsync()
         {
             var invitedUserMailAddress = new MailAddress("user@email.com");
             var invitedUserRoleName = string.Empty;
@@ -154,7 +154,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidUsername_AddMemberToGroupAsync()
+        public void Exception_InvalidUsername_AddMemberToGroupAsync()
         {
             var invitedUserMailAddress = new MailAddress("user@email.com");
             var invitedUserRoleName = "Standard Member";
@@ -172,7 +172,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidGroupSlug_AddMemberToGroupAsync()
+        public void Exception_InvalidGroupSlug_AddMemberToGroupAsync()
         {
             var invitedUserMailAddress = new MailAddress("user@email.com");
             var invitedUserRoleName = "Standard Member";
@@ -209,7 +209,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidMailAddress_ApproveGroupMemberAsync()
+        public void Exception_InvalidMailAddress_ApproveGroupMemberAsync()
         {
             MailAddress invitedUserMailAddress = null;
             var approvedByUsername = "admin";
@@ -225,7 +225,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidUsername_ApproveGroupMemberAsync()
+        public void Exception_InvalidUsername_ApproveGroupMemberAsync()
         {
             var invitedUserMailAddress = new MailAddress("user@email.com");
             var approvedByUsername = string.Empty;
@@ -241,7 +241,7 @@ namespace MvcForum.Core.Tests.Services.GroupAddMember
         }
 
         [Test]
-        public async Task Exception_InvalidGroupSlug_ApproveGroupMemberAsync()
+        public void Exception_InvalidGroupSlug_ApproveGroupMemberAsync()
         {
             var invitedUserMailAddress = new MailAddress("user@email.com");
             var approvedByUsername = "admin";

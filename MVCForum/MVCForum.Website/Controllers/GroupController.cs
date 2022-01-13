@@ -253,7 +253,7 @@ namespace MvcForum.Web.Controllers
         public virtual async Task<ActionResult> JoinAsync(string slug, int? p, CancellationToken cancellationToken)
         {
             await _groupService.JoinGroupAsync(slug, LoggedOnReadOnlyUser.Id, cancellationToken);
-            return RedirectToAction("show", new { slug = slug, p = p });
+            return RedirectToAction("show", new { slug, p });
         }
 
         [HttpGet]
@@ -264,7 +264,7 @@ namespace MvcForum.Web.Controllers
         {
 
             await _groupService.LeaveGroupAsync(slug, LoggedOnReadOnlyUser.Id);
-            return RedirectToAction("show", new { slug = slug, p = p });
+            return RedirectToAction("show", new { slug, p });
         }
 
         public PartialViewResult GroupHeader(string slug, string tab = null)
@@ -366,13 +366,13 @@ namespace MvcForum.Web.Controllers
             var homeTab = new Tab
             {
                 Name = "GroupTabs.Home", Order = 1,
-                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}"
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = UrlParameter.Optional })}"
             };
 
             var forumTab = new Tab
             {
                 Name = "GroupTabs.Forum", Order = 2,
-                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}"
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupForumTab })}"
             };
 
             var filesTab = new Tab
@@ -384,14 +384,14 @@ namespace MvcForum.Web.Controllers
             var membersTab = new Tab
             {
                 Name = "GroupTabs.Members", Order = 4,
-                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}"
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupMembersTab })}"
             };
 
             var aboutUsTab = new Tab
             {
                 Name = "GroupTabs.AboutUs",
                 Order = 5,
-                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.AboutUsTab })}"
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.AboutUsTab })}"
             };
 
 
@@ -426,9 +426,9 @@ namespace MvcForum.Web.Controllers
         {
             var viewModel = new GroupHomeCardsViewModel 
             { 
-                ForumCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab }), Name = "Join in the conversation" },
-                MembersCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab }), Name = "Meet the members" },
-                FilesCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "View Files" },
+                ForumCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupForumTab }), Name = "Join in the conversation" },
+                MembersCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupMembersTab }), Name = "Meet the members" },
+                FilesCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupFilesTab }), Name = "View Files" },
             };
 
             return PartialView("_GroupHomeCards", viewModel);
@@ -536,12 +536,9 @@ namespace MvcForum.Web.Controllers
         }
 
         [HttpGet]
-        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        [AsyncTimeout(30000)]
         [ActionName("Show")]
-        public async virtual Task<ActionResult> ShowAsync(string slug, int? p, string tab = null, Guid? folder = null, bool? hasError = null, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual ActionResult Show(string slug, int? p, string tab = null, Guid? folder = null, bool? hasError = null)
         {
-
             // Get the Group
             var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
             var loggedOnUsersRole = GetGroupMembershipRole(group.Group.Id);
@@ -694,14 +691,14 @@ namespace MvcForum.Web.Controllers
         public virtual ActionResult ApproveUser(Guid groupUserId, string slug)
         {
             _groupService.ApproveJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
-            return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab });
+            return RedirectToRoute("GroupUrls", new { slug, tab = Constants.GroupMembersTab });
         }
 
         [HttpGet]
         public virtual ActionResult RejectUser(Guid groupUserId, string slug)
         {
             _groupService.RejectJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
-            return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab });
+            return RedirectToRoute("GroupUrls", new { slug, tab = Constants.GroupMembersTab });
         }
 
         [HttpPost]
@@ -798,7 +795,7 @@ namespace MvcForum.Web.Controllers
 
                 if (ModelState.IsValid && await _groupService.UpdateAsync(model, slug, cancellationToken))
                 {
-                    return RedirectToAction("Show", "Group", new { slug = slug, tab = String.Empty });
+                    return RedirectToAction("Show", "Group", new { slug, tab = String.Empty });
                 }
             }
 

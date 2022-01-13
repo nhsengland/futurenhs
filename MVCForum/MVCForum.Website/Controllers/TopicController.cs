@@ -835,8 +835,8 @@ namespace MvcForum.Web.Controllers
                 ? EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order)
                 : PostOrderBy.Standard;
 
-            var posts = Task.Run(() => _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex,
-                settings.PostsPerPage, int.MaxValue, topic.Id, orderBy)).Result;
+            var posts = await _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex,
+                settings.PostsPerPage, int.MaxValue, topic.Id, orderBy);
             var postIds = posts.Select(x => x.Id).ToList();
             var votes = _voteService.GetVotesByPosts(postIds);
             var favs = _favouriteService.GetAllPostFavourites(postIds);

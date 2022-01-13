@@ -46,7 +46,7 @@ namespace MvcForum.Core.Repositories.Command
                 response.Response = ResponseType.Success;
 
             }
-            catch (DbEntityValidationException ex)
+            catch (DbEntityValidationException)
             {
                 response.Response = ResponseType.Error;
             }
@@ -81,7 +81,7 @@ namespace MvcForum.Core.Repositories.Command
                 response.Response = ResponseType.DoesntExist;
                 return response;
             }
-            catch (DbEntityValidationException ex)
+            catch (DbEntityValidationException)
             {
                 response.Response = ResponseType.Error;
             }
@@ -108,7 +108,7 @@ namespace MvcForum.Core.Repositories.Command
                 response.Response = ResponseType.DoesntExist;
                 return response;
             }
-            catch (DbEntityValidationException ex)
+            catch (DbEntityValidationException)
             {
                 response.Response = ResponseType.Error;
             }
