@@ -35,13 +35,13 @@
         [HttpGet]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [AsyncTimeout(30000)]
-        public virtual async Task<ActionResult> Index(int? p, string siteSearch)
+        public virtual async Task<ActionResult> Index(int? p, string term)
         {
-            if (!string.IsNullOrWhiteSpace(siteSearch))
+            if (!string.IsNullOrWhiteSpace(term))
             {
-                if (!string.IsNullOrWhiteSpace(siteSearch))
+                if (!string.IsNullOrWhiteSpace(term))
                 {
-                    siteSearch = siteSearch.Trim();
+                    term = term.Trim();
                 }
 
                 var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
@@ -60,7 +60,7 @@
                 var posts = await _postService.SearchPosts(pageIndex,
                     ForumConfiguration.Instance.SearchListSize,
                     int.MaxValue,
-                    siteSearch,
+                    term,
                     allowedGroups);
 
                 // Get all the permissions for these topics
@@ -88,7 +88,7 @@
                     PageIndex = pageIndex,
                     TotalCount = posts.TotalCount,
                     TotalPages = posts.TotalPages,
-                    Term = siteSearch
+                    Term = term
                 };
 
                 return View(viewModel);
