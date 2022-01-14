@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import Page from './index.page';
-import { Props } from '@components/_pageTemplates/SearchTemplate/interfaces';
+import { Props } from '@components/_pageTemplates/SearchListingTemplate/interfaces';
 
 describe('Search page', () => {
 
@@ -10,6 +10,7 @@ describe('Search page', () => {
         id: 'mockPageId',
         user: undefined,
         term: 'mockTerm',
+        resultsList: [],
         content: {
             titleText: 'Search',
             metaDescriptionText: 'Search Future NHS',
@@ -21,7 +22,7 @@ describe('Search page', () => {
 
         render(<Page {...props} />);
 
-        expect(screen.getAllByText('Searching: mockTerm - 0 Results Found').length).toEqual(1);
+        expect(screen.getAllByText('Searching: mockTerm - 0 results found').length).toEqual(1);
 
     });
     

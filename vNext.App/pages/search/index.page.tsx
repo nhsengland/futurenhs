@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { getPageContent } from '@services/getPageContent';
 import { getSearchResults } from '@services/getSearchResults';
-import { selectUser, selectLocale } from '@selectors/context';
+import { selectUser, selectLocale, selectSearchTerm } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
      */
     const user: User = selectUser(context);
     const locale: string = selectLocale(context);
-    const term: string | string [] = context.query.term;
+    const term: string | string [] = selectSearchTerm(context);
 
     /**
      * Create page data

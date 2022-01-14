@@ -32,7 +32,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
         paramName: 'group' 
     });
     
-    const currentRoutePathElements: Array<string> = groupRoute?.split('/').filter((item) => item);
+    const currentRoutePathElements: Array<string> = groupRoute?.split('/')?.filter((item) => item) ?? [];
     const breadCrumbList: BreadCrumbList = getBreadCrumbList({ pathElementList: currentRoutePathElements });
 
     const { titleText, 

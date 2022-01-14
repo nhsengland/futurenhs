@@ -3,7 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
 import Page from './index.page';
-import { Props } from '@components/_pageTemplates/GroupMembersTemplate/interfaces';  
+import { Props } from '@components/_pageTemplates/GroupMemberListingTemplate/interfaces';  
 
 describe('Group members page', () => {
 

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import { Link } from '@components/Link';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
@@ -24,6 +25,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     pagination
 }) => {
 
+    const { asPath } = useRouter();
     const [membersList, setMembersList] = useState(members);
     const [dynamicPagination, setPagination] = useState(pagination);
 
@@ -35,7 +37,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
             const rows = [
                 {
-                    children: <Link href={`members/${id}`}>{fullName}</Link>,
+                    children: <Link href={`${asPath}/${id}`}>{fullName}</Link>,
                     className: 'u-w-1/4'
                 },
                 {
@@ -69,7 +71,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
             const rows = [
                 {
-                    children: <Link href={`members/${id}`}>{fullName}</Link>,
+                    children: <Link href={`${asPath}/${id}`}>{fullName}</Link>,
                     className: 'u-w-1/4'
                 },
                 {

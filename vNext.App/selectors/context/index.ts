@@ -7,6 +7,7 @@ export const selectCsrfToken = (context: GetServerSidePropsContext): string => c
 export const selectUser = (context: GetServerSidePropsContext): User => context.req?.user ?? null;
 export const selectFolderId = (context: GetServerSidePropsContext): string => (context.params as any)?.folderId ?? null;
 export const selectFileId = (context: GetServerSidePropsContext): string => (context.params as any)?.fileId ?? null;
+export const selectSearchTerm = (context: GetServerSidePropsContext): string => context.req?.query?.term ? decodeURIComponent(context.req?.query?.term) : null;
 export const selectPagination = (context: GetServerSidePropsContext): Pagination => {
 
     const pagination = {

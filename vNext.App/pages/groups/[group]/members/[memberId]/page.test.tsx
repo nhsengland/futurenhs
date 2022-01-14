@@ -3,7 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
 import Page from './index.page';
-import { Props } from '@components/_pageTemplates/GroupMembersTemplate/interfaces';  
+import { Props } from '@components/_pageTemplates/GroupMemberTemplate/interfaces';  
 
 describe('Group members page', () => {
 
@@ -15,8 +15,6 @@ describe('Group members page', () => {
     const props: Props = {
         id: 'mockPageId',
         user: undefined,
-        members: [],
-        pendingMembers: [],
         content: {
             titleText: 'Mock title text',
             metaDescriptionText: 'Mock meta description text',

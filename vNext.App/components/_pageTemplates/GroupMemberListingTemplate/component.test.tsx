@@ -23,7 +23,9 @@ describe('Group member listing template', () => {
             navMenuTitleText: 'Mock nav menu title text',
             secondaryHeadingHtml: 'Mock secondary heading html'
         },
-        image: null
+        image: null,
+        pendingMembers: [],
+        members: []
     };
 
     it('renders correctly', () => {

@@ -10,7 +10,17 @@ describe('Search listing template', () => {
         id: 'mockPageId',
         user: undefined,
         term: 'mockTerm',
-        resultsList: [],
+        resultsList: [
+            {
+                example: '1'
+            },
+            {
+                example: '2'
+            },
+            {
+                example: '3'
+            }
+        ],
         content: {
             titleText: 'Search',
             metaDescriptionText: 'Search Future NHS',
@@ -22,7 +32,7 @@ describe('Search listing template', () => {
 
         render(<SearchListingTemplate {...props} />);
 
-        expect(screen.getAllByText('Searching: mockTerm - 0 Results Found').length).toEqual(1);
+        expect(screen.getAllByText('Searching: mockTerm - 3 results found').length).toEqual(1);
 
     });
     

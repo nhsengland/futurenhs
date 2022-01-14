@@ -2,10 +2,10 @@ import * as React from 'react';
 import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
-import { GroupMemberListingTemplate } from './index';
+import { GroupMemberTemplate } from './index';
 import { Props } from './interfaces';
 
-describe('Group member listing template', () => {
+describe('Group member template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
@@ -15,8 +15,6 @@ describe('Group member listing template', () => {
     const props: Props = {
         id: 'mockPageId',
         user: undefined,
-        members: [],
-        pendingMembers: [],
         content: {
             titleText: 'Mock title text',
             metaDescriptionText: 'Mock meta description text',
@@ -30,7 +28,7 @@ describe('Group member listing template', () => {
 
     it('renders correctly', () => {
 
-        render(<GroupMemberListingTemplate {...props} />);
+        render(<GroupMemberTemplate {...props} />);
 
         expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
 
