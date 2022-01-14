@@ -19,25 +19,25 @@
 
 <script type="text/javascript">
 	var xhr = new XMLHttpRequest();
+	var data = new FormData();
 	var token = document.getElementById('collabora_token').value;
-	var params = 'access_token=' + token;
 	var collabora_source = document.getElementById('collabora_url').value;
 
-	xhr.open('POST', collabora_source);
-	xhr.onreadystatechange = handler;
-	xhr.responseType = 'document';
-	xhr.send(params);
+	data.append('access_token', token);
 
+	xhr.open('POST', collabora_source);
+	xhr.send(data);
+
+	var iframe = document.getElementById("output-frame-id");
 	function handler() {
-		var iframe = document.getElementById("output-frame-id");
-		function handler() {
-		if (this.readyState === this.DONE) {
-			if (this.status === 200) {
-				var data_url = URL.createObjectURL(this.response);
-				document.getElementById('output-frame-id').src = data_url;
-			} else {
-				console.error('no document ');
-			}
+	if (this.readyState === this.DONE) {
+		if (this.status === 200) {
+			var content = iframe.contentWindow || iframe.contentDocument.document || iframe.contentDocument;
+			content.document.open();
+			content.document.write(this.response.documentElement.innerHTML);
+			content.document.close();
+		} else {
+			iframe.setAttribute('srcdoc', '<html><head></head><body>Error loading page.</body></html>');
 		}
 	}
 	}
