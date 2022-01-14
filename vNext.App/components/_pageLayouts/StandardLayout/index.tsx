@@ -13,6 +13,8 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
 import { mainNavMenuList, footerNavMenuList } from '@constants/navigation';
+import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb';
+import { BreadCrumbList } from '@appTypes/routing';
 
 import { Props } from './interfaces';
 
@@ -23,6 +25,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderBreadCrumb = true, 
     shouldRenderMainNav = true,
     user,
+    breadCrumbList,
     className, 
     children 
 }) => {
@@ -36,32 +39,9 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     mainNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
     footerNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
 
-    const currentRoutePathElements: Array<string> = router?.asPath.split('/').filter((item) => item);
+    const currentRoutePathElements: Array<string> = router?.asPath?.split('/').filter((item) => item);
+    const breadCrumbListToUse: BreadCrumbList = breadCrumbList ?? getBreadCrumbList({ pathElementList: currentRoutePathElements });
     const skipLinkList: Array<any> = [];
-
-    let breadCrumbPathElementList: Array<any> = [];
-
-    if(currentRoutePathElements.length){
-
-        breadCrumbPathElementList.push({
-            element: '',
-            text: 'Home'
-        });
-
-        currentRoutePathElements.forEach((item, index) => {
-
-            if(index < currentRoutePathElements.length -1){
-    
-                breadCrumbPathElementList.push({
-                    element: item,
-                    text: item.replace('-', ' ')
-                });
-    
-            }
-    
-        });
-
-    }
 
     if(shouldRenderMainNav){
 
@@ -128,7 +108,10 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                             content={{
                                                 ariaLabelText: 'Site breadcrumb'
                                             }}
-                                            pathElementList={breadCrumbPathElementList}
+                                            breadCrumbList={breadCrumbListToUse}
+                                            truncationMinPathLength={8}
+                                            truncationStartIndex={2}
+                                            truncationEndIndex={6}
                                             className="u--mt-0.5" />
                                     </LayoutColumn>
                                     <LayoutColumn tablet={4} className="u-text-right">

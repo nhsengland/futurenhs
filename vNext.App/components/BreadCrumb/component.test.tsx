@@ -6,20 +6,20 @@ import { Props } from './interfaces';
 
 const testProps: Props = {
     content: {
-        descriptionHtml: 'mockContent'    
+        ariaLabelText: 'mockContent'    
     },
-    navMenuList: []
+    breadCrumbList: []
 };
 
 describe('BreadCrumb', () => {
 
-    it('renders description Html', () => {
+    it('renders aria label', () => {
 
         const props = Object.assign({}, testProps);
 
         render(<BreadCrumb {...props} />);
 
-        expect(screen.getByText('mockContent'));
+        expect(screen.getByLabelText('mockContent'));
 
     });
     

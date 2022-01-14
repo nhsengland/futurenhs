@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import classNames from 'classnames';
 
 import { Link } from '@components/Link';
@@ -7,7 +8,7 @@ import { capitalise } from '@helpers/formatters/capitalise';
 import { Props } from './interfaces';
 
 export const BreadCrumb: (props: Props) => JSX.Element = ({
-    pathElementList,
+    breadCrumbList,
     content,
     seperatorIconName = 'icon-chevron-right',
     truncationMinPathLength,
@@ -18,7 +19,7 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
 
     const { ariaLabelText, truncationText } = content ?? {};
 
-    const hasBreadCrumbElements: boolean = pathElementList.length > 0;
+    const hasBreadCrumbElements: boolean = breadCrumbList.length > 0;
 
     const generatedClasses: any = {
         wrapper: classNames('c-breadcrumb', className),
@@ -28,14 +29,14 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
         seperatorIcon: classNames('c-breadcrumb_icon')
     };
 
-    const truncationTextToUse: string = truncationText ?? '...';
-    const isTruncateable: boolean = 
+    const isTruncateable: boolean = useMemo(() =>
             Number.isInteger(truncationMinPathLength) 
-            && pathElementList.length > truncationMinPathLength
+            && breadCrumbList.length > truncationMinPathLength
             && Number.isInteger(truncationStartIndex) 
             && truncationStartIndex > -1 
             && Number.isInteger(truncationEndIndex) 
-            && truncationEndIndex > truncationStartIndex;
+            && truncationEndIndex > truncationStartIndex
+            && truncationEndIndex < breadCrumbList.length, [truncationStartIndex, truncationEndIndex, truncationMinPathLength, breadCrumbList]);
 
     let href: string = '';
 
@@ -44,7 +45,7 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
         <nav className={generatedClasses.wrapper} aria-label={ariaLabelText}>
             {hasBreadCrumbElements &&
                 <ol className={generatedClasses.list}>
-                    {pathElementList.map(({ element, text }, index) => {
+                    {breadCrumbList.map(({ element, text }, index) => {
 
                         if(isTruncateable && index > truncationStartIndex && index < truncationEndIndex){
 
@@ -52,8 +53,9 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
 
                         }
 
-                        const shouldRenderSeperator: boolean = index < pathElementList.length - 1;
-                        const textToUse: string = (isTruncateable && index === truncationStartIndex) ? truncationTextToUse : text ? capitalise()(text) : capitalise()(element);
+                        const shouldRenderSeperator: boolean = index < breadCrumbList.length - 1;
+                        const isTruncationPoint: boolean = isTruncateable && index === truncationStartIndex;
+                        const textToUse: string = text ? capitalise()(text) : capitalise()(element);
                         
                         href += href === '/' ? `${element}` : `/${element}`;
 
@@ -61,7 +63,18 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
 
                             <li key={index} className={generatedClasses.item}>
                                 <Link href={href}>
-                                    <a className={generatedClasses.link}>{textToUse}</a>
+                                    <a className={generatedClasses.link}>{
+
+                                        isTruncationPoint
+
+                                            ?   <>
+                                                    <span aria-hidden="true">{truncationText ?? '...'}</span>
+                                                    <span className="u-sr-only">{textToUse}</span>
+                                                </>
+
+                                            :   textToUse
+
+                                    }</a>
                                 </Link>
                                 {shouldRenderSeperator &&
                                     <SVGIcon name={seperatorIconName} className={generatedClasses.seperatorIcon} />

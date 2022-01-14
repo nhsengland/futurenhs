@@ -1,12 +1,13 @@
 import { GetServerSideProps } from 'next';
 
 import { getPageContent } from '@services/getPageContent';
+import { getSearchResults } from '@services/getSearchResults';
 import { selectUser, selectLocale } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-import { SearchTemplate } from '@components/_pageTemplates/SearchTemplate';
-import { Props } from '@components/_pageTemplates/SearchTemplate/interfaces';
+import { SearchListingTemplate } from '@components/_pageTemplates/SearchListingTemplate';
+import { Props } from '@components/_pageTemplates/SearchListingTemplate/interfaces';
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -20,6 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
      */
     const user: User = selectUser(context);
     const locale: string = selectLocale(context);
+    const term: string | string [] = context.query.term;
 
     /**
      * Create page data
@@ -28,7 +30,8 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
         id: id,
         user: user,
         content: null,
-        term: context.query.term
+        term: term,
+        resultsList: []
     };
 
     /**
@@ -37,15 +40,21 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
     try {
 
         const [
-            pageContent
+            pageContent,
+            searchResults
         ] = await Promise.all([
             getPageContent({
                 id: id,
                 locale: locale
+            }),
+            getSearchResults({
+                user: user,
+                term: term as string
             })
         ]);
 
         props.content = pageContent.data;
+        props.resultsList = searchResults.data;
     
     } catch (error) {
         
@@ -65,4 +74,4 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
 /**
  * Export page template
  */
-export default SearchTemplate;
+export default SearchListingTemplate;

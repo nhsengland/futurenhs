@@ -9,8 +9,8 @@ import { selectUser, selectPagination } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-import { GroupMembersTemplate } from '@components/_pageTemplates/GroupMembersTemplate';
-import { Props } from '@components/_pageTemplates/GroupMembersTemplate/interfaces';  
+import { GroupMemberListingTemplate } from '@components/_pageTemplates/GroupMemberListingTemplate';
+import { Props } from '@components/_pageTemplates/GroupMemberListingTemplate/interfaces';  
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -95,4 +95,4 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context: G
 /**
  * Export page template
  */
-export default GroupMembersTemplate;
+export default GroupMemberListingTemplate;

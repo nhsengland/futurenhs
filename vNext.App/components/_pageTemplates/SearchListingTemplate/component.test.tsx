@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { SearchTemplate } from './index';
+import { SearchListingTemplate } from './index';
 import { Props } from './interfaces';
 
-describe('Search template', () => {
+describe('Search listing template', () => {
 
     const props: Props = {
         id: 'mockPageId',
         user: undefined,
         term: 'mockTerm',
+        resultsList: [],
         content: {
             titleText: 'Search',
             metaDescriptionText: 'Search Future NHS',
@@ -19,7 +20,7 @@ describe('Search template', () => {
 
     it('renders correctly', () => {
 
-        render(<SearchTemplate {...props} />);
+        render(<SearchListingTemplate {...props} />);
 
         expect(screen.getAllByText('Searching: mockTerm - 0 Results Found').length).toEqual(1);
 

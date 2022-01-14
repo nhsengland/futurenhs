@@ -6,6 +6,9 @@ import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { PageHeader } from '@components/PageHeader';
 import { getGroupNavMenuList } from '@helpers/routing/getGroupNavMenuList';
+import { getRouteToParam } from '@helpers/routing/getRouteToParam';
+import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb';
+import { BreadCrumbList } from '@appTypes/routing';
 
 import { Props } from './interfaces';
 
@@ -17,10 +20,20 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     ...rest 
 }) => {
 
+    const router = useRouter();
+
     const navMenuList = getGroupNavMenuList({
-        router: useRouter(),
+        router: router,
         activeId: id
     });
+
+    const groupRoute: string = getRouteToParam({ 
+        router: router,
+        paramName: 'group' 
+    });
+    
+    const currentRoutePathElements: Array<string> = groupRoute?.split('/').filter((item) => item);
+    const breadCrumbList: BreadCrumbList = getBreadCrumbList({ pathElementList: currentRoutePathElements });
 
     const { titleText, 
             metaDescriptionText, 
@@ -29,7 +42,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
 
     return (
 
-        <StandardLayout {...rest}>
+        <StandardLayout breadCrumbList={breadCrumbList} {...rest}>
             <Head>
                 <title>{titleText}</title>
                 <meta name="description" content={metaDescriptionText} />

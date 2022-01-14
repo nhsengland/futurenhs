@@ -1,8 +1,7 @@
+import { BreadCrumbList } from '@appTypes/routing';
+
 export interface Props {
-    pathElementList: Array<{
-        element: string;
-        text: string;
-    }>;
+    breadCrumbList: BreadCrumbList;
     content: {
         ariaLabelText: string;
         truncationText?: string;

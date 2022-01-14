@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import { Link } from '@components/Link';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -12,9 +13,9 @@ import { capitalise } from '@helpers/formatters/capitalise';
 import { Props } from './interfaces';  
 
 /**
- * Group members template
+ * Group member listing template
  */
-export const GroupMembersTemplate: (props: Props) => JSX.Element = ({
+export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     user,
     pendingMembers,
     members,
@@ -34,7 +35,7 @@ export const GroupMembersTemplate: (props: Props) => JSX.Element = ({
 
             const rows = [
                 {
-                    children: <a href={id}>{fullName}</a>,
+                    children: <Link href={`members/${id}`}>{fullName}</Link>,
                     className: 'u-w-1/4'
                 },
                 {
@@ -68,7 +69,7 @@ export const GroupMembersTemplate: (props: Props) => JSX.Element = ({
 
             const rows = [
                 {
-                    children: <a href={id}>{fullName}</a>,
+                    children: <Link href={`members/${id}`}>{fullName}</Link>,
                     className: 'u-w-1/4'
                 },
                 {

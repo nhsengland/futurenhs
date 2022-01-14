@@ -2,10 +2,10 @@ import * as React from 'react';
 import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
-import { GroupMembersTemplate } from './index';
+import { GroupMemberListingTemplate } from './index';
 import { Props } from './interfaces';
 
-describe('Group members template', () => {
+describe('Group member listing template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
@@ -30,7 +30,7 @@ describe('Group members template', () => {
 
     it('renders correctly', () => {
 
-        render(<GroupMembersTemplate {...props} />);
+        render(<GroupMemberListingTemplate {...props} />);
 
         expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
 
