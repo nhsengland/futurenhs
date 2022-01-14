@@ -1,4 +1,4 @@
-using FutureNHS.Infrastructure.Repositories.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
@@ -7,10 +7,12 @@ namespace FutureNHS.Api.Controllers
     public sealed class HealthCheckController : ControllerBase
     { 
         private readonly IHealthCheckDataProvider _healthCheckDataProvider;
+        private readonly ILogger<HealthCheckController> _logger;
 
-        public HealthCheckController(IHealthCheckDataProvider healthCheckDataProvider)
+        public HealthCheckController(IHealthCheckDataProvider healthCheckDataProvider, ILogger<HealthCheckController> logger)
         {
             _healthCheckDataProvider = healthCheckDataProvider;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -19,10 +21,7 @@ namespace FutureNHS.Api.Controllers
         {
             var connectionSuccessful = await _healthCheckDataProvider.CheckDatabaseConnectionAsync(cancellationToken);
             
-            if(connectionSuccessful)
-                return Ok();
-
-            return StatusCode(500);
+            return connectionSuccessful ? Ok() : StatusCode(500);
         }
     }
 }

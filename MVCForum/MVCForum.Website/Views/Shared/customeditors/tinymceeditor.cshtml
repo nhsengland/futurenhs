@@ -2,21 +2,31 @@
 
 <script src="@Url.Content("~/scripts/tinymce/tinymce.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/tinymceplugins/ImageUpload/imageupload.js")" type="text/javascript"></script>
-<script type="text/javascript">        
-        tinymce.init({
-            selector: "textarea.js-tinyMCE",
-            browser_spellcheck: true,
-            plugins: [
-                "autosave link image lists hr anchor forumimageinsert",
-                "wordcount visualblocks visualchars fullscreen media nonbreaking"
-            ],
-            toolbar1: "bold italic underline strikethrough numlist bullist hr | link unlink @(ViewBag.ImageUploadType ?? "image") code blockquote",
-            remove_linebreaks: false,
+<script type="text/javascript">
+	var app_base = '@Url.Content("~/")';
+	tinymce.init({
+		selector: "textarea.js-tinyMCE",
+		browser_spellcheck: true,
+		plugins: [
+			"autosave link image lists hr anchor",
+			"wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons imagetools charmap"
+		],
+		toolbar1: 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
+		toolbar_mode: 'floating',
+		remove_linebreaks: false,
+		emoticons_database: 'emojis',
+		table_border_styles: [
+			{ title: 'Solid', value: 'solid' },
+			{ title: 'Dotted', value: 'dotted' },
+			{ title: 'Dashed', value: 'dashed' }
+        ],
+
+		images_upload_url: app_base + 'api/TinyMce/UploadImage',
             relative_urls: false,
             menubar: false,
             toolbar_items_size: 'small',
             content_css: "/content/tinymce.css",
-            height: 175,
+            height: 300,
             nonbreaking_force_tab: true
             //setup: function(editor) {
             //    editor.on( 'keydown', function(editor, evt) {

@@ -1,7 +1,4 @@
-﻿using FutureNHS.Application.Application.HardCodedSettings;
-using FutureNHS.Infrastructure.Models;
-
-namespace FutureNHS.Infrastructure.Repositories.Read.Interfaces
+﻿namespace FutureNHS.Api.DataAccess.Repositories.Read.Interfaces
 {
     public interface IHealthCheckDataProvider
     {

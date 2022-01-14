@@ -1,4 +1,6 @@
-﻿using MvcForum.Core.Models.Entities;
+﻿using System.Web.Http.Results;
+using System.Web.Mvc;
+using MvcForum.Core.Models.Entities;
 using MvcForum.Core.Services;
 
 namespace MvcForum.Web.Controllers.ApiControllers
@@ -41,7 +43,7 @@ namespace MvcForum.Web.Controllers.ApiControllers
         //GET api/TinyMce/UploadImage
         [Route("UploadImage")]
         [HttpPost]
-        public virtual string UploadImage()
+        public virtual JsonResult<UploadImageResult> UploadImage()
         {
             var memberService = UnityHelper.Container.Resolve<IMembershipService>();
             var roleService = UnityHelper.Container.Resolve<IRoleService>();
@@ -84,7 +86,7 @@ namespace MvcForum.Web.Controllers.ApiControllers
                             var uploadResult = photo.UploadFile(uploadFolderPath, localizationService);
                             if (!uploadResult.UploadSuccessful)
                             {
-                                return string.Empty;
+                                return Json(new UploadImageResult());
                             }
 
                             // Add the filename to the database
@@ -93,12 +95,19 @@ namespace MvcForum.Web.Controllers.ApiControllers
                                 Filename = uploadResult.UploadedFileName,
                                 MembershipUser = LoggedOnReadOnlyUser
                             };
-                            uploadService.Add(uploadedFile);
+           
+                            uploadedFile.DateCreated = DateTime.UtcNow;
+                            
+                            var user = context.MembershipUser.FirstOrDefault(x => x.Id == LoggedOnReadOnlyUser.Id);
+                            uploadedFile.MembershipUser = user;
 
+                            context.UploadedFile.Add(uploadedFile);
                             // Commit the changes
                             context.SaveChanges();
-
-                            return uploadResult.UploadedFileUrl;
+                            var result = new UploadImageResult { location = uploadResult.UploadedFileUrl };
+                            return Json(result);
+      
+                         
                         }
                     }
                 }
@@ -110,7 +119,7 @@ namespace MvcForum.Web.Controllers.ApiControllers
             }
 
 
-            return string.Empty;
+            return Json(new UploadImageResult());
         }
     }
 }

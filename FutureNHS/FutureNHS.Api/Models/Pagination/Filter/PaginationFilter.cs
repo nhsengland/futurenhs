@@ -1,23 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FutureNHS.Application.Application.HardCodedSettings;
+using FutureNHS.Api.Application.Application.HardCodedSettings;
 
 namespace FutureNHS.Api.Models.Pagination.Filter
 {
     public class PaginationFilter
     {
-        [Range(PaginationSettings.MinPageNumber, int.MaxValue)]
-        public int PageNumber { get; set; }
-        [Range(PaginationSettings.MinPageSize, PaginationSettings.MaxPageSize)]
-        public int PageSize { get; set; }
+        [Range(PaginationSettings.MinOffset, int.MaxValue)]
+        public uint Offset { get; set; }
+        [Range(PaginationSettings.MinLimit, PaginationSettings.MaxLimit)]
+        public uint Limit { get; set; }
         public PaginationFilter()
         {
-            PageNumber = PaginationSettings.MinPageNumber;
-            PageSize = PaginationSettings.DefaultPageSize;
+            Offset = PaginationSettings.MinOffset;
+            Limit = PaginationSettings.DefaultPageSize;
         }
-        public PaginationFilter(int pageNumber, int pageSize)
+        public PaginationFilter(uint offset, uint limit)
         {
-            PageNumber = pageNumber;
-            PageSize = pageSize;
+            Offset = offset;
+            Limit = limit;
 
         }
     }

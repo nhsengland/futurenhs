@@ -116,8 +116,8 @@ namespace MvcForum.Web
             EventManager.Instance.Initialize(loggingService, assemblies);
 
             // Finally trigger any Cron jobs
-            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6),
-                queue: "solutionreminders");
+            //RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6),
+            //    queue: "solutionreminders");
         }
 
         private static UserManager<IdentityUser> CreateManager(IdentityFactoryOptions<UserManager<IdentityUser>> options, IOwinContext context)

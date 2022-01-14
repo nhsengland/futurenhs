@@ -1,20 +1,20 @@
 ﻿using Dapper;
+using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
-using FutureNHS.Application.Application.HardCodedSettings;
-using FutureNHS.Application.Interfaces;
+using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using FutureNHS.Infrastructure.Models;
-using FutureNHS.Infrastructure.Repositories.Database.DatabaseProviders.Interfaces;
-using FutureNHS.Infrastructure.Repositories.Read.Interfaces;
 
-namespace FutureNHS.Infrastructure.Repositories.Read
+namespace FutureNHS.Api.DataAccess.Repositories.Read
 {
     public class ImageDataProvider : IImageDataProvider
     { 
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
+        private readonly ILogger<ImageDataProvider> _logger;
 
-        public ImageDataProvider(IAzureSqlDbConnectionFactory connectionFactory)
+        public ImageDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<ImageDataProvider> logger)
         {
             _connectionFactory = connectionFactory;
+            _logger = logger;
         }
 
         public async Task<Image> GetImageAsync(Guid id, CancellationToken cancellationToken = default)

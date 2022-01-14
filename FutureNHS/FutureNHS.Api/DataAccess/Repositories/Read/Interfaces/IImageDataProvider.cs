@@ -1,7 +1,6 @@
-﻿using FutureNHS.Application.Application.HardCodedSettings;
-using FutureNHS.Infrastructure.Models;
+﻿using FutureNHS.Api.DataAccess.Models;
 
-namespace FutureNHS.Infrastructure.Repositories.Read.Interfaces
+namespace FutureNHS.Api.DataAccess.Repositories.Read.Interfaces
 {
     public interface IImageDataProvider
     {

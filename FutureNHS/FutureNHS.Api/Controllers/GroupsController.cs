@@ -1,14 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
+using FutureNHS.Api.DataAccess.Models.GroupUser;
+using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
-using FutureNHS.Api.Models.Pagination.Services;
-using FutureNHS.Application.Application;
-using FutureNHS.Infrastructure.Repositories.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Models;
-using FutureNHS.Infrastructure.Models;
-using FutureNHS.Api.DataAccess.Models.GroupPages;
-using FutureNHS.Infrastructure.Models.GroupPages;
+using FutureNHS.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
 {
@@ -20,88 +15,62 @@ namespace FutureNHS.Api.Controllers
     {
         private readonly ILogger<GroupsController> _logger;
         private readonly IGroupDataProvider _groupDataProvider;
-        private readonly IUriService _uriService;
+        private readonly IPermissionsService _permissionsService;
 
-        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider, IUriService uriService)
+        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService)
         {
             _logger = logger;
             _groupDataProvider = groupDataProvider;
-            _uriService = uriService;
+            _permissionsService = permissionsService;
         }
 
         [HttpGet]
-        [Route("users/{id}/groups")]
+        [Route("users/{userId:guid}/groups")]
 
-        public async Task<IActionResult> GetGroupsForUserAsync(Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetGroupsForUserAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
 
-            var (totalGroups, groupSummaries) = await _groupDataProvider.GetGroupsForUserAsync(id, filter.PageNumber, filter.PageSize, cancellationToken);
+            var (totalGroups, groupSummaries) = await _groupDataProvider.GetGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
 
-            var pagedResponse = PaginationHelper.CreatePagedReponse(groupSummaries, filter, totalGroups, _uriService, route);
+            var pagedResponse = PaginationHelper.CreatePagedResponse(groupSummaries, filter, totalGroups,route);
 
             return Ok(pagedResponse);
         }
 
         [HttpGet]
-        [Route("users/{id}/discover/groups")]
-        public async Task<IActionResult> DiscoverNewGroupsForUserAsync(Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        [Route("users/{userId:guid}/discover/groups")]
+        public async Task<IActionResult> DiscoverNewGroupsForUserAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
 
-            var (totalGroups, groupSummaries) = await _groupDataProvider.DiscoverGroupsForUserAsync(id, filter.PageNumber, filter.PageSize, cancellationToken);
+            var (totalGroups, groupSummaries) = await _groupDataProvider.DiscoverGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
 
-            var pagedResponse = PaginationHelper.CreatePagedReponse(groupSummaries, filter, totalGroups, _uriService, route);
+            var pagedResponse = PaginationHelper.CreatePagedResponse(groupSummaries, filter, totalGroups, route);
 
             return Ok(pagedResponse);
         }
 
         [HttpGet]
-        [Route("users/{id}/groups/{slug}")]
-        public async Task<IActionResult> GetGroupAsync(Guid id, string slug, [FromQuery] string page, CancellationToken cancellationToken)
+        [Route("groups/{slug}")]
+        public async Task<IActionResult> GetGroupAsync(string slug, CancellationToken cancellationToken)
         {
-            //var route = Request.Path.Value;
+            var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
+   
+            var groupUser = new GroupUser { Group = group };
 
-            //var (totalGroups, groupSummaries = await _groupDataProvider.DiscoverGroupsForUserAsync(id, filter.PageNumber, filter.PageSize, cancellationToken);
+            return Ok(groupUser);
+        }
 
-            var groupHeader = await _groupDataProvider.GetGroupHeaderForUserAsync(id, slug, cancellationToken);
-            if (groupHeader.UserStatus == "Approved-member")
-                groupHeader.UserGroupActions = new List<UrlLink> { new UrlLink { Name = "Leave Group", Url = "Leave-the-group-url" } };
+        [HttpGet]
+        [Route("users/{userId:guid}/groups/{slug}/actions")]
+        public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        {
+            var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
 
-            if (page.ToLower() == "home")
-            {
-                var groupHome = await _groupDataProvider.GetGroupHomePage(slug, cancellationToken);
+            var permissions = await _permissionsService.GetUserPermissionsForGroupAsync(userId, group.Id, cancellationToken);
 
-                var groupHomePage = new GroupPage<GroupHomePage> { PageHeader = groupHeader, PageBody = groupHome };
-                return Ok(groupHomePage);
-            }
-
-            if (page.ToLower() == "forum")
-            {
-                var groupForum = new GroupForumPage { SubtitleText = "Forum", BodyHtml = "Holding page for Files & Folders" };
-
-                var groupForumPage = new GroupPage<GroupForumPage> { PageHeader = groupHeader, PageBody = groupForum };
-                return Ok(groupForumPage);
-            }
-
-            if (page.ToLower() == "files")
-            {
-                var groupFiles = new GroupFilesPage { SubtitleText = "Files & Folders", BodyHtml = "Holding page for Files & Folders" };
-
-                var groupFilesPage = new GroupPage<GroupFilesPage> { PageHeader = groupHeader, PageBody = groupFiles };
-                return Ok(groupFilesPage);
-            }
-
-            if (page.ToLower() == "members")
-            {
-                var groupMembers = new GroupMembersPage { SubtitleText = "Members", BodyHtml = "Holding page for Members" };
-
-                var groupMembersPage = new GroupPage<GroupMembersPage> { PageHeader = groupHeader, PageBody = groupMembers };
-                return Ok(groupMembersPage);
-            }
-
-            var groupPage = new GroupPage<string> { PageHeader = groupHeader, PageBody = page };
-            return Ok(groupPage);
+            return Ok(permissions);
         }
     }
 }

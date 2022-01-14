@@ -3,7 +3,7 @@ using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
-using FutureNHS.Api.Models.Pagination.Services;
+using FutureNHS.Api.Services;
 using FutureNHS.Infrastructure.Repositories.Database.RetryPolicy;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Mvc;
@@ -151,15 +151,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IUriService>(o =>
-{
-    var accessor = o.GetRequiredService<IHttpContextAccessor>();
-    var request = accessor.HttpContext?.Request;
-    var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
-    return new UriService(uri);
-
-});
-
 builder.Services.AddApiVersioning(config =>
 {
     config.DefaultApiVersion = new ApiVersion(1, 0);
@@ -168,6 +159,7 @@ builder.Services.AddApiVersioning(config =>
 });
 
 builder.Services.DataAccess();
+builder.Services.Services();
 
 var app = builder.Build();
 

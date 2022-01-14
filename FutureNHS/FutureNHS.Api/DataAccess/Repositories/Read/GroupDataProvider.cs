@@ -1,36 +1,31 @@
 ﻿using Dapper;
-using FutureNHS.Api.DataAccess.Models.GroupPages;
+using FutureNHS.Api.Application.Application.HardCodedSettings;
+using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
-using FutureNHS.Application.Application.HardCodedSettings;
-using FutureNHS.Application.Interfaces;
-using FutureNHS.Infrastructure.Models;
+using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using FutureNHS.Infrastructure.Models.GroupPages;
-using FutureNHS.Infrastructure.Repositories.Database.DatabaseProviders.Interfaces;
-using FutureNHS.Infrastructure.Repositories.Read.Interfaces;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Read
 {
     public class GroupDataProvider : IGroupDataProvider
     {
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
+        private readonly ILogger<GroupDataProvider> _logger;
 
-        public GroupDataProvider(IAzureSqlDbConnectionFactory connectionFactory)
+        public GroupDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<GroupDataProvider> logger)
         {
+            _logger = logger;
             _connectionFactory = connectionFactory;
         }
-        public async Task<(int totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid id, int page, int pageSize, CancellationToken cancellationToken = default)
+
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
         {
-            if (page < PaginationSettings.MinPageNumber)
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
-                throw new ArgumentOutOfRangeException(nameof(page));
+                throw new ArgumentOutOfRangeException(nameof(limit));
             }
 
-            if (pageSize is < PaginationSettings.MinPageSize or > PaginationSettings.MaxPageSize)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize));
-            }
-
-            int totalCount;
+            uint totalCount;
 
             IEnumerable<GroupSummary> groups;
 
@@ -45,7 +40,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 WHERE groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1 
                 ORDER BY g.Name
                 OFFSET @Offset ROWS
-                FETCH NEXT @PageSize ROWS ONLY;
+                FETCH NEXT @Limit ROWS ONLY;
 
                 SELECT COUNT(*) FROM GroupUser groupUser
                 WHERE groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1";
@@ -53,8 +48,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             {
                 using var reader = await dbConnection.QueryMultipleAsync(query, new
                 {
-                    Offset = (page - 1) * pageSize,
-                    PageSize = pageSize,
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
                     UserId = id
                 });
                 groups = reader.Read<GroupSummary, ImageData, GroupSummary>(
@@ -71,25 +66,20 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     }, splitOn: "id");
 
-                totalCount = await reader.ReadFirstAsync<int>();
+                totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<uint>());
             }
 
             return (totalCount, groups);
         }
 
-        public async Task<(int totalGroups, IEnumerable<GroupSummary> groupSummaries)> DiscoverGroupsForUserAsync(Guid id, int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> DiscoverGroupsForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
         {
-            if (page < PaginationSettings.MinPageNumber)
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
-                throw new ArgumentOutOfRangeException(nameof(page));
+                throw new ArgumentOutOfRangeException(nameof(limit));
             }
 
-            if (pageSize is < PaginationSettings.MinPageSize or > PaginationSettings.MaxPageSize)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize));
-            }
-
-            int totalCount;
+            uint totalCount;
 
             IEnumerable<GroupSummary> groups;
 
@@ -103,7 +93,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 WHERE NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)
                 ORDER BY g.Name
                 OFFSET @Offset ROWS
-                FETCH NEXT @PageSize ROWS ONLY;
+                FETCH NEXT @Limit ROWS ONLY;
 
                 SELECT COUNT(*) FROM [Group] g
                 WHERE NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)";
@@ -112,8 +102,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             {
                 using var reader = await dbConnection.QueryMultipleAsync(query, new
                 {
-                    Offset = (page - 1) * pageSize,
-                    PageSize = pageSize,
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
                     UserId = id
                 });
                 groups = reader.Read<GroupSummary, ImageData, GroupSummary>(
@@ -130,69 +120,43 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     }, splitOn: "id");
 
-                totalCount = await reader.ReadFirstAsync<int>();
+                totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
             }
 
             return (totalCount, groups);
         }
 
-        public async Task<GroupHeader> GetGroupHeaderForUserAsync(Guid userId, string slug, CancellationToken cancellationToken = default)
+        public async Task<Group> GetGroupAsync(string slug, CancellationToken cancellationToken = default)
         {
-            GroupHeader group;
-
             const string query =
-                @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS NameText, g.Description AS StrapLineText, GroupUser.Approved as UserApproved,		
+                @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS Name, g.Description AS StrapLine, g.PublicGroup AS IsPublic,		
                 image.Id, image.Height AS Height, image.Width AS Width, image.MediaType AS MediaType
 				FROM [Group] g
-                LEFT JOIN GroupUser groupUser ON groupUser.Group_Id = g.Id AND GroupUser.MembershipUser_Id = @UserId
                 LEFT JOIN Image image ON image.Id = g.HeaderImage 
-                WHERE g.Slug = @Slug";
+                WHERE g.Slug = @Slug AND g.IsDeleted = 0";
 
-            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
-            {
-                var reader = await dbConnection.QueryAsync<GroupHeader,Image,GroupHeader>(query, 
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryAsync<Group, Image, Group>(query,
                 (group, image) =>
+                {
+                    if (image is not null)
                     {
-                        if (image is not null)
-                        {
-                            var groupWithImage = group with { Image = image };
+                        var groupWithImage = @group with { Image = image };
 
-                            return groupWithImage;
-                        }
+                        return groupWithImage;
+                    }
 
-                        return group;
+                    return @group;
 
-                    }, new
-                    {
-                        UserId = userId,
-                        Slug = slug
-                    }, splitOn: "id");
-
-                group = reader.First();
-            }
-
-            return group;
-        }
-
-
-        public async Task<GroupHomePage> GetGroupHomePage(string slug, CancellationToken cancellationToken = default)
-        {
-            GroupHomePage groupHomePage;
-
-            const string query =
-                @"SELECT g.Subtitle AS SubtitleText, g.Introduction AS BodyHtml
-                FROM [Group] g
-                WHERE g.Slug = @Slug";
-
-            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
-            {
-                groupHomePage = await dbConnection.QuerySingleAsync<GroupHomePage>(query,new
+                }, new
                 {
                     Slug = slug
-                });
-            }
+                }, splitOn: "id");
 
-            return groupHomePage;
+            var @group = reader.First();
+
+            return group;
         }
     }
 }

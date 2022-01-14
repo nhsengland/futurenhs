@@ -686,7 +686,7 @@ namespace MvcForum.Core.Services
                 Locked = false,
                 Group = group,
                 RequestToJoinDate = dateTimeUtcNow,
-                Role = await _context.MembershipRole.SingleAsync(x => x.RoleName == Constants.StandardRoleName, cancellationToken),
+                Role = await _context.MembershipRole.SingleAsync(x => x.RoleName == Constants.GuestRoleName, cancellationToken),
                 User = await _context.MembershipUser.SingleAsync(x => x.Id == membershipId, cancellationToken)
             };
 

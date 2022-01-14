@@ -13,6 +13,9 @@
         public Uri? GeoRedundantServiceUrl { get; set; }
     }
 
+
+
+
     public sealed class AzureSqlConfiguration
     {
         public string? ReadWriteConnectionString { get; set; }
