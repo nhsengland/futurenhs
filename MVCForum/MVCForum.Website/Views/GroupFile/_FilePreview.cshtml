@@ -20,21 +20,22 @@
 <script type="text/javascript">
 	var xhr = new XMLHttpRequest();
 	var token = document.getElementById('collabora_token').value;
+	var params = 'access_token=' + token;
 	var collabora_source = document.getElementById('collabora_url').value;
 
 	xhr.open('POST', collabora_source);
 	xhr.onreadystatechange = handler;
 	xhr.responseType = 'document';
-	xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-	xhr.send();
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(params);
 
 	function handler() {
 		var iframe = document.getElementById("output-frame-id");
 		if (this.readyState === this.DONE) {
 			if (this.status === 200) {
 				var content = iframe.contentWindow
-					iframe.contentDocument.document
-					iframe.contentDocument;
+				iframe.contentDocument.document
+				iframe.contentDocument;
 				content.document.open();
 				content.document.write(this.response.documentElement.innerHTML);
 				content.document.close();
