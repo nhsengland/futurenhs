@@ -79,7 +79,7 @@
                             <label class="c-button c-button--outline edit-profile-button u-text-theme-0">
                                 Upload an image
                                 <span class="u-visually-hidden">
-                                    @Html.TextBoxFor(model => model.ProfileImage, new { type = "file", name = "File", @class = "" })
+                                    @Html.TextBoxFor(model => model.ProfileImage, new { id="FileToUpload_PostedFile", type = "file", name = "File", @class = "" })
                                 </span>
                             </label>
                         }

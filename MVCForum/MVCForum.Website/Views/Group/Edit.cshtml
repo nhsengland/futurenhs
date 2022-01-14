@@ -9,9 +9,9 @@
 }
 
 @section GroupHeader {
-	@{
-		Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = String.Empty });
-	}
+@{
+Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug, tab = String.Empty });
+}
 }
 
 @if (!ViewData.ModelState.IsValid)
@@ -48,12 +48,15 @@
 			<div class="c-form-group @Html.FieldHasError(model => model.Name, formError)">
 				@Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "c-label" })
 				@Html.ValidationMessageFor(model => model.Name, "", htmlAttributes: new { @class = "c-error-message" })
-				@Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Name, inputError) } })
+				@Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "c-input" + " " +
+			Html.FieldHasError(model => model.Name, inputError) } })
 			</div>
 			<div class="c-form-group @Html.FieldHasError(model => model.Description, formError)">
 				@Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "c-label" })
-				@Html.ValidationMessageFor(model => model.Description, "", htmlAttributes: new { @class = "c-error-message" })
-				@Html.TextAreaFor(m => m.Description, htmlAttributes: new { rows = 3, @class = "c-textarea" + " " + Html.FieldHasError(model => model.Description, textAreaError) })
+				@Html.ValidationMessageFor(model => model.Description, "", htmlAttributes: new { @class = "c-error-message"
+			})
+				@Html.TextAreaFor(m => m.Description, htmlAttributes: new { rows = 3, @class = "c-textarea" + " " +
+			Html.FieldHasError(model => model.Description, textAreaError) })
 			</div>
 
 
@@ -62,28 +65,33 @@
 				@Html.LabelFor(model => model.Files, htmlAttributes: new { @class = "c-label u-margin-bottom-spacing-2" })
 				<span class="c-hint-message">@Html.LanguageString("Group.EditGroup.LogoIntroduction")</span>
 				@Html.ValidationMessageFor(model => model.Files, "", htmlAttributes: new { @class = "c-error-message" })
-				@Html.TextBoxFor(model => model.Files, new { type = "file", name = "File", @class = "" })
+				@Html.TextBoxFor(model => model.Files, new { id="FileToUpload_PostedFile", type = "file", name = "File",
+			@class = "" })
 			</div>
 
 			<div class="c-form-group @Html.FieldHasError(model => model.Introduction, formError)">
 				@Html.LabelFor(m => m.Introduction, htmlAttributes: new { @class = "c-label" })
 				<span class="c-hint-message">@Html.LanguageString("Group.EditGroup.IntroHelpText")</span>
-				@Html.ValidationMessageFor(model => model.Introduction, "", htmlAttributes: new { @class = "c-error-message" })
-				@Html.TextAreaFor(m => m.Introduction, htmlAttributes: new { rows = 6, @class = "c-textarea" + " " + Html.FieldHasError(model => model.Introduction, textAreaError) })
+				@Html.ValidationMessageFor(model => model.Introduction, "", htmlAttributes: new { @class = "c-error-message"
+			})
+				@Html.TextAreaFor(m => m.Introduction, htmlAttributes: new { rows = 6, @class = "c-textarea" + " " +
+			Html.FieldHasError(model => model.Introduction, textAreaError) })
 			</div>
 
 			<div class="c-form-group @Html.FieldHasError(model => model.AboutUs, formError)">
 				@Html.LabelFor(m => m.AboutUs, htmlAttributes: new { @class = "c-label" })
 				@Html.ValidationMessageFor(model => model.AboutUs, "", htmlAttributes: new { @class = "c-error-message" })
-				@Html.TextAreaFor(m => m.AboutUs, htmlAttributes: new { rows = 6, @class = "c-textarea" + " " + Html.FieldHasError(model => model.AboutUs, textAreaError) })
+				@Html.TextAreaFor(m => m.AboutUs, htmlAttributes: new { rows = 6, @class = "c-textarea" + " " +
+			Html.FieldHasError(model => model.AboutUs, textAreaError) })
 			</div>
 
 			<div class="c-form-group">
 				<div class="c-checkboxes__item">
-					@Html.CheckBoxFor(model => model.PublicGroup, new { @class = "c-checkboxes__input", @name = "@Model.HasAgreedToTermsAndConditions", })
+					@Html.CheckBoxFor(model => model.PublicGroup, new { @class = "c-checkboxes__input", @name =
+				"@Model.HasAgreedToTermsAndConditions", })
 
 					<label class="c-label c-checkboxes__label" for="PublicGroup">
-						Group is public?
+						Is the group public?
 					</label>
 
 				</div>
