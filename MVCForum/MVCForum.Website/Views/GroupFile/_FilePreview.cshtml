@@ -26,23 +26,20 @@
 	xhr.open('POST', collabora_source);
 	xhr.onreadystatechange = handler;
 	xhr.responseType = 'document';
-	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.send(params);
 
 	function handler() {
 		var iframe = document.getElementById("output-frame-id");
+		function handler() {
 		if (this.readyState === this.DONE) {
 			if (this.status === 200) {
-				var content = iframe.contentWindow
-				iframe.contentDocument.document
-				iframe.contentDocument;
-				content.document.open();
-				content.document.write(this.response.documentElement.innerHTML);
-				content.document.close();
+				var data_url = URL.createObjectURL(this.response);
+				document.getElementById('output-frame-id').src = data_url;
 			} else {
-				iframe.setAttribute('srcdoc', '<html><head></head><body>Error loading page.</body></html>');
+				console.error('no document ');
 			}
 		}
+	}
 	}
 	$(document).ready(function () {
 		handler();
