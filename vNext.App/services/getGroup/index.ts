@@ -2,12 +2,9 @@ import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelp
 import { getEnvVar } from '@helpers/util/env';
 import { ServiceResponse } from '@appTypes/service';
 import { Group } from '@appTypes/group';
-import { User } from '@appTypes/user';
 
 declare type Options = ({
-    user: User;
     slug: string;
-    page: 'home' | 'forum' | 'files' | 'members';
 });
 
 declare type Dependencies = ({
@@ -16,9 +13,7 @@ declare type Dependencies = ({
 });
 
 export const getGroup = async ({
-    user,
-    slug,
-    page
+    slug
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Group>> => {
 
     try {
@@ -26,8 +21,7 @@ export const getGroup = async ({
         const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
-        const id: string = user.id;
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/users/${id}/groups/${slug}?page=${page}`;
+        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/groups/${slug}`;
 
         const { json, meta } = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const { ok, status, statusText } = meta;
@@ -44,15 +38,15 @@ export const getGroup = async ({
 
         const data = {
             content: {
-                titleText: json.pageHeader.nameText, 
+                titleText: json.name, 
                 metaDescriptionText: 'A Future NHS group',
-                mainHeadingHtml: json.pageHeader.nameText,
+                mainHeadingHtml: json.name,
                 strapLineText: 'Testing unreleased features of the FutureNHS platform'//json.pageHeader.strapLineText
             },
-            image: json.pageHeader?.image ? {
-                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${json.pageHeader.image?.source}`,
-                height: json.pageHeader?.image?.height ?? null,
-                width: json.pageHeader?.image?.width ?? null,
+            image: json.image ? {
+                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${json.image?.source}`,
+                height: json?.image?.height ?? null,
+                width: json?.image?.width ?? null,
                 altText: 'TBC'
             } : null
         };

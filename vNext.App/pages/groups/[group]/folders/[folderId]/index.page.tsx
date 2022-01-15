@@ -29,9 +29,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context: G
      * Get data from services
      */
     const { data: { content } } = await getGroup({
-        user: user,
-        slug: slug,
-        page: 'files'
+        slug: slug
     });
 
     const { data: files, pagination } = await getGroupFiles({

@@ -69,8 +69,8 @@ export const getGroups = async ({
         });
 
         json.pagination = {
-            pageNumber: json.pageNumber,
-            pageSize: json.pageSize,
+            pageNumber: json.offset,
+            pageSize: json.limit,
             totalRecords: json.totalRecords
         }
 

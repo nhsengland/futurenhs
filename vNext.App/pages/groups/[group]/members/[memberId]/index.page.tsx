@@ -44,9 +44,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context: G
             groupData
         ] = await Promise.all([
             getGroup({
-                user: user,
-                slug: slug,
-                page: 'members'
+                slug: slug
             })
         ]);
 

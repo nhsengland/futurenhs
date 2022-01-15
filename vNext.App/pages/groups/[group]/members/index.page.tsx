@@ -53,9 +53,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context: G
             groupPendingMembers
         ] = await Promise.all([
             getGroup({
-                user: user,
-                slug: slug,
-                page: 'members'
+                slug: slug
             }),
             getGroupMembers({
                 user: user,
