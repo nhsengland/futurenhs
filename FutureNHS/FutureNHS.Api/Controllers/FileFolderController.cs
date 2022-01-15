@@ -30,6 +30,11 @@ namespace FutureNHS.Api.Controllers
         {
            var folder = await _fileAndFolderDataProvider.GetFolderAsync(id, cancellationToken);
 
+            if (folder is null)
+            {
+                return NotFound();
+            }
+
             return Ok(folder);
         }
 
@@ -38,9 +43,14 @@ namespace FutureNHS.Api.Controllers
 
         public async Task<IActionResult> GetFileAsync(Guid id, CancellationToken cancellationToken)
         {
-            var folder = await _fileAndFolderDataProvider.GetFileAsync(id, cancellationToken);
+            var file = await _fileAndFolderDataProvider.GetFileAsync(id, cancellationToken);
 
-            return Ok(folder);
+            if (file is null)
+            { 
+                return NotFound();
+            }
+
+            return Ok(file);
         }
 
         [HttpGet]

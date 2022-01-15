@@ -27,6 +27,11 @@ namespace FutureNHS.Api.Controllers
         public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(Guid userId, CancellationToken cancellationToken)
         {
             var permissions = await _permissionsService.GetUserPermissionsAsync(userId, cancellationToken);
+           
+            if (permissions is null)
+            {
+                return NotFound();
+            }
 
             return Ok(permissions);
         }

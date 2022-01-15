@@ -25,7 +25,7 @@ namespace FutureNHS.Api.Services
             _logger = logger;
         }
 
-        public async Task<IEnumerable<string>> GetUserPermissionsForGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>?> GetUserPermissionsForGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken)
         {
             if (userId == Guid.Empty) throw new ArgumentException("Cannot be EMPTY", nameof(userId));
             if (groupId == Guid.Empty) throw new ArgumentException("Cannot be EMPTY", nameof(groupId));
@@ -33,6 +33,11 @@ namespace FutureNHS.Api.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var (userRoles, groupUserRoles) = await _roleDataProvider.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken);
+
+            if (userRoles is null || !userRoles.Any())
+            {
+                return null;
+            }
 
             var permissions = new List<string>();
 
@@ -42,13 +47,18 @@ namespace FutureNHS.Api.Services
             return permissions.Distinct();
         }
 
-        public async Task<IEnumerable<string>> GetUserPermissionsAsync(Guid userId,CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>?> GetUserPermissionsAsync(Guid userId,CancellationToken cancellationToken)
         {
             if (userId == Guid.Empty) throw new ArgumentException("Cannot be EMPTY", nameof(userId));
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var userRoles = await _roleDataProvider.GetUserRolesAsync(userId,  cancellationToken);
+
+            if (userRoles is null || !userRoles.Any())
+            {
+                return null;
+            }
 
             var permissions = await GetSitePermissionsForRoles(userRoles);
 
@@ -118,7 +128,7 @@ namespace FutureNHS.Api.Services
                         permissions.AddRange(permissionsForRole);
                     }
                 }
-                // If user not approved then set their role to guest and add their user status as a claim
+                // If user not approved then set their role to guest
                 else
                 {
                     var permissionsForRole = await _permissionsDataProvider.GetPermissionsForGroupRole(GuestRole, groupId);

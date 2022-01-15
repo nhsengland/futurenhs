@@ -126,7 +126,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             return (totalCount, groups);
         }
 
-        public async Task<Group> GetGroupAsync(string slug, CancellationToken cancellationToken = default)
+        public async Task<Group?> GetGroupAsync(string slug, CancellationToken cancellationToken = default)
         {
             const string query =
                 @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS Name, g.Description AS StrapLine, g.PublicGroup AS IsPublic,		
@@ -154,7 +154,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     Slug = slug
                 }, splitOn: "id");
 
-            var @group = reader.First();
+            var @group = reader.FirstOrDefault();
 
             return group;
         }

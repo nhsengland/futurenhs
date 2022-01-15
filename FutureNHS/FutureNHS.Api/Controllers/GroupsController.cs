@@ -56,10 +56,13 @@ namespace FutureNHS.Api.Controllers
         public async Task<IActionResult> GetGroupAsync(string slug, CancellationToken cancellationToken)
         {
             var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
-   
-            var groupUser = new GroupUser { Group = group };
 
-            return Ok(groupUser);
+            if (group is null)
+            { 
+                return NotFound();
+            }
+
+            return Ok(group);
         }
 
         [HttpGet]
@@ -68,7 +71,17 @@ namespace FutureNHS.Api.Controllers
         {
             var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
 
+            if (group is null)
+            {
+                return NotFound();
+            }
+
             var permissions = await _permissionsService.GetUserPermissionsForGroupAsync(userId, group.Id, cancellationToken);
+
+            if (permissions is null)
+            {
+                return NotFound();
+            }
 
             return Ok(permissions);
         }

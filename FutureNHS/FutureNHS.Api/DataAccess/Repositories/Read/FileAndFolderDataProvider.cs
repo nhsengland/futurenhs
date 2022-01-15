@@ -236,15 +236,18 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 FileId = fileId
             });
 
-            var fileData = await reader.ReadSingleAsync<FileData>();
+            var fileData = await reader.ReadFirstOrDefaultAsync<FileData>();
             var pathToFile = await reader.ReadAsync<FolderPathItem>();
+
+            if (fileData is null)
+                return null;
 
             return GenerateFileModelFromData(fileData, pathToFile);
 
         }
 
         private File GenerateFileModelFromData(FileData fileData, IEnumerable<FolderPathItem> pathToFile)
-        {
+        { 
             new FileExtensionContentTypeProvider().Mappings.TryGetValue(fileData.FileExtension, out var mimeType);
 
             var file = new File
