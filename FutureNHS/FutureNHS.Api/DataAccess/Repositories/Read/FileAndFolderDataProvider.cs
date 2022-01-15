@@ -27,22 +27,22 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             }
 
             const string query =
-                @"
+                @$"
                    SELECT
-                    folder.Id AS Id,
-                    'Folder' AS type, 
-                    folder.Name AS Name, 
-                    folder.Description AS Description,
-                    folder.CreatedAtUtc AS CreatedAtUtc, 
-                    folder.AddedBy AS CreatedById,
-                    createUser.FirstName + ' ' + createUser.Surname AS CreatedByName,
-                    createUser.Slug AS CreatedBySlug,
-                    null AS ModifiedAtUtc,
-                    null AS ModifiedById,
-                    null AS ModifiedByName,
-                    null AS ModifiedBySlug,
-                    null AS FileName,
-                    null AS FileExtension
+                    folder.Id AS {nameof(FolderContentsData.Id)},
+                    'Folder' AS {nameof(FolderContentsData.Type)}, 
+                    folder.Name AS {nameof(FolderContentsData.Name)}, 
+                    folder.Description AS {nameof(FolderContentsData.Description)},
+                    FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(Models.FileAndFolder.Properties.AtUtc)},
+                    folder.AddedBy AS {nameof(FolderContentsData.CreatedById)},
+                    createUser.FirstName + ' ' + createUser.Surname AS {nameof(FolderContentsData.CreatedByName)},
+                    createUser.Slug AS {nameof(FolderContentsData.CreatedBySlug)},
+                    null AS {nameof(FolderContentsData.ModifiedAtUtc)},
+                    null AS {nameof(FolderContentsData.ModifiedById)},
+                    null AS {nameof(FolderContentsData.ModifiedByName)},
+                    null AS {nameof(FolderContentsData.ModifiedBySlug)},
+                    null AS {nameof(FolderContentsData.ModifiedBySlug)},
+                    null AS {nameof(FolderContentsData.FileExtension)}
                    FROM Folder folder
                     LEFT JOIN MembershipUser CreateUser ON CreateUser.Id = folder.AddedBy
                     JOIN [Group] groups on groups.Id = folder.ParentGroup
@@ -74,15 +74,15 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         public async Task<Folder?> GetFolderAsync(Guid folderId, CancellationToken cancellationToken)
         {
             const string query =
-                @"
+                @$"
                            SELECT
-                            folders.Id AS Id,
-                            Name AS Name,
-                            Description,
-                            folders.CreatedAtUtc AS ActionAtUtc,
-                            mu.Id AS Id,
-                            mu.FirstName + ' ' + mu.Surname AS Name,
-                            mu.Slug AS Slug                         
+                            folders.Id AS {nameof(Folder.Id)},
+                            folders.Name AS {nameof(Folder.Name)},
+                            folders.Description AS {nameof(Folder.Description)},
+                            FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(Models.FileAndFolder.Properties.AtUtc)},
+                            mu.Id AS {nameof(UserNavProperty.Id)},
+                            mu.FirstName + ' ' + mu.Surname AS {nameof(UserNavProperty.Name)},
+                            mu.Slug AS {nameof(UserNavProperty.Slug)}                         
                            FROM
                             Folder folders
                             JOIN MembershipUser mu ON mu.Id = folders.AddedBy
@@ -94,23 +94,23 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                              SELECT
                                Id,
                                Name,
-                               ParentFolder AS ParentFolder
+                               ParentFolder
                              FROM
                                Folder
                              WHERE
                                Id = @FolderId
                              UNION ALL
                              SELECT
-                               F.Id AS PK,
-                               F.[Name] AS Name,
-                               F.ParentFolder AS ParentFK
+                               folder.Id AS PK,
+                               folder.[Name] AS Name,
+                               folder.ParentFolder AS ParentFK
                              FROM
-                               Folder F
-                               INNER JOIN BreadCrumbs BC ON BC.ParentFolder = F.Id
+                               Folder folder
+                               INNER JOIN BreadCrumbs Breadcrumb ON Breadcrumb.ParentFolder = folder.Id
                            )
                            SELECT
-                             Id,
-                             Name
+                             Id AS {nameof(FolderPathItem.Id)},
+                             Name AS {nameof(FolderPathItem.Name)}
                            FROM
                              BreadCrumbs;
                        ";
@@ -129,7 +129,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     {
                         if (userNavProperty is not null)
                         {
-                            var folderWithUserInfo = folderDetails with { FirstRegistered = folderProperties with { By = userNavProperty } };
+                            var folderWithUserInfo = folderDetails with { FirstRegistered = folderProperties with {By = userNavProperty } };
                             return folderWithUserInfo;
                         }
                         folderDetails = folderDetails with { FirstRegistered = folderProperties };
@@ -138,7 +138,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     return folderDetails;
 
-                }, splitOn: "ActionAtUtc, id");
+                }, splitOn: $"{nameof(Models.FileAndFolder.Properties.AtUtc)}, {nameof(Folder.Id)}");
 
             var folder = folders.FirstOrDefault();
 
@@ -160,22 +160,22 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             }
 
             const string query =
-                @"
+                @$"
                    SELECT
-                    folder.Id AS Id,
-                    'Folder' AS type, 
-                    Name AS Name, 
-                    Description AS Description,
-                    CreatedAtUtc AS CreatedAtUtc, 
-                    AddedBy AS CreatedById,
-                    createUser.FirstName + ' ' + createUser.Surname AS CreatedByName,
-                    createUser.Slug AS CreatedBySlug,
-                    null AS ModifiedAtUtc,
-                    null AS ModifiedById,
-                    null AS ModifiedByName,
-                    null AS ModifiedBySlug,
-                    null AS FileName,
-                    null AS FileExtension
+                    folder.Id AS {nameof(FolderContentsData.Id)},
+                    'Folder' AS {nameof(FolderContentsData.Type)}, 
+                    folder.Name AS {nameof(FolderContentsData.Name)}, 
+                    folder.Description AS {nameof(FolderContentsData.Description)},
+                    FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(FolderContentsData.CreatedAtUtc)}, 
+                    folder.AddedBy AS {nameof(FolderContentsData.CreatedById)},
+                    createUser.FirstName + ' ' + createUser.Surname AS {nameof(FolderContentsData.CreatedByName)},
+                    createUser.Slug AS {nameof(FolderContentsData.CreatedBySlug)},
+                    null AS {nameof(FolderContentsData.ModifiedAtUtc)},
+                    null AS {nameof(FolderContentsData.ModifiedById)},
+                    null AS {nameof(FolderContentsData.ModifiedByName)},
+                    null AS {nameof(FolderContentsData.ModifiedBySlug)},
+                    null AS {nameof(FolderContentsData.ModifiedBySlug)},
+                    null AS {nameof(FolderContentsData.FileExtension)}
                    FROM Folder folder
                     LEFT JOIN MembershipUser CreateUser ON CreateUser.Id = folder.AddedBy
                    WHERE ParentFolder = @FolderId AND IsDeleted = 0
@@ -185,11 +185,11 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     'File',
                     Title, 
                     Description,
-                    CreatedAtUtc, 
+                    FORMAT(files.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'), 
                     CreatedBy,
                     CreateUser.FirstName + ' ' + createUser.Surname,
                     CreateUser.Slug, 
-                    ModifiedAtUtc, 
+                    FORMAT(files.ModifiedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
                     ModifiedBy,
                     ModifyUser.FirstName + ' ' + createUser.Surname,
                     ModifyUser.Slug,
@@ -231,22 +231,21 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         public async Task<File?> GetFileAsync(Guid fileId, CancellationToken cancellationToken)
         {
             const string query =
-                @"
+                @$"
                          SELECT
-                            files.Id AS Id, 
-                            files.Title AS Title, 
-                            files.Description AS Description,                           
-                            files.CreatedAtUtc AS CreatedAtUtc,
-                            createUser.Id AS CreatorId,
-                            createUser.FirstName + ' ' + createUser.Surname AS CreatorName,
-                            createUser.Slug AS CreatorSlug,  
-                            files.ModifiedAtUtc AS ModifiedAtUtc,
-                            modifyUser.Id AS ModifierId,
-                            modifyUser.FirstName + ' ' + modifyUser.Surname AS ModifierName,
-                            modifyUser.Slug AS ModifierSlug,
-							files.Id AS VersionId,
-							files.FileName As FileName,
-							files.FileExtension AS FileExtension			
+                            files.Id AS {nameof(FileData.Id)}, 
+                            files.Title AS {nameof(FileData.Title)}, 
+                            files.Description AS {nameof(FileData.Description)}, 
+                            FORMAT(files.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(FileData.CreatedAtUtc)},
+                            createUser.Id AS {nameof(FileData.CreatorId)},
+                            createUser.FirstName + ' ' + createUser.Surname AS {nameof(FileData.CreatorName)},
+                            createUser.Slug AS {nameof(FileData.CreatorSlug)},  
+                            FORMAT(files.ModifiedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(FileData.ModifiedAtUtc)},
+                            modifyUser.Id AS {nameof(FileData.ModifierId)},
+                            modifyUser.FirstName + ' ' + modifyUser.Surname AS {nameof(FileData.ModifierName)},
+                            modifyUser.Slug AS {nameof(FileData.ModifierSlug)},
+							files.FileName As {nameof(FileData.FileName)},
+							files.FileExtension AS {nameof(FileData.FileExtension)}			
                            FROM
                             [File] files
                             LEFT JOIN MembershipUser createUser ON createUser.Id = files.CreatedBy
@@ -266,12 +265,12 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                files.Id = @FileId
                              UNION ALL
                              SELECT
-                               F.Id AS PK,
-                               F.[Name] AS Name,
-                               F.ParentFolder AS ParentFK
+                               folder.Id AS PK,
+                               folder.[Name] AS Name,
+                               folder.ParentFolder AS ParentFK
                              FROM
-                               Folder F
-                               INNER JOIN BreadCrumbs BC ON BC.ParentFolder = F.Id
+                               Folder folder
+                               INNER JOIN BreadCrumbs Breadcrumb ON Breadcrumb.ParentFolder = folder.Id
                            )
                            SELECT
                              Id,
@@ -307,7 +306,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 Description = fileData.Description,
                 FirstRegistered = new Models.FileAndFolder.Properties
                 {
-                    AtUtc = fileData.CreatedAtUtc?.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz"),
+                    AtUtc = fileData.CreatedAtUtc,
                     By = new UserNavProperty
                     {
                         Id = fileData.CreatorId,
@@ -321,7 +320,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     Name = fileData.FileName,
                     FirstRegistered = new Models.FileAndFolder.Properties
                     {
-                        AtUtc = fileData.CreatedAtUtc?.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz"),
+                        AtUtc = fileData.CreatedAtUtc,
                         By = new UserNavProperty
                         {
                             Id = fileData.CreatorId,
@@ -338,13 +337,13 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 Path = pathToFile
             };
 
-            if (fileData.ModifiedAtUtc.HasValue)
+            if (fileData.ModifiedAtUtc is not null)
             {
                 file = file with
                 {
                     LastUpdated = new Models.FileAndFolder.Properties
                     {
-                        AtUtc = fileData.ModifiedAtUtc?.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz"),
+                        AtUtc = fileData.ModifiedAtUtc,
                         By = new UserNavProperty
                         {
                             Id = fileData.ModifierId.GetValueOrDefault(),
@@ -371,7 +370,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     Description = item.Description,
                     FirstRegistered = new Models.FileAndFolder.Properties
                     {
-                        AtUtc = item.CreatedAtUtc?.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz"),
+                        AtUtc = item.CreatedAtUtc,
                         By = new UserNavProperty
                         {
                             Id = item.CreatedById,
@@ -381,13 +380,13 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     }
                 };
 
-                if (item.ModifiedAtUtc.HasValue)
+                if (item.ModifiedAtUtc is not null)
                 {
                     file = file with
                     {
                         LastUpdated = new Models.FileAndFolder.Properties
                         {
-                            AtUtc = item.ModifiedAtUtc?.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz"),
+                            AtUtc = item.ModifiedAtUtc,
                             By = new UserNavProperty
                             {
                                 Id = item.ModifiedById.GetValueOrDefault(),
