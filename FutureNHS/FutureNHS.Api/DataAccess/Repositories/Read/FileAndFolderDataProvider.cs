@@ -92,10 +92,11 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(UserNavProperty.Name)}]                    = mu.FirstName + ' ' + mu.Surname,
                                 [{nameof(UserNavProperty.Slug)}]                    = mu.Slug  
 
-                    FROM         Folder folders
-                    JOIN         MembershipUser mu ON mu.Id = folders.AddedBy
-                    WHERE        folders.Id = @FolderId
-                    AND          folders.IsDeleted = 0;
+                    FROM        Folder folders
+                    JOIN        MembershipUser mu 
+                    ON          mu.Id = folders.AddedBy
+                    WHERE       folders.Id = @FolderId
+                    AND         folders.IsDeleted = 0;
 
                     WITH BreadCrumbs AS 
                     (
