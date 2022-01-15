@@ -24,7 +24,21 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("folders/{id:guid}")]
+        [Route("users/{userId}/groups/{slug}/folders")]
+
+        public async Task<IActionResult> GetFolderContentsAsync(string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        {
+            var route = Request.Path.Value;
+
+            var (total, folderContents) = await _fileAndFolderDataProvider.GetRootFoldersAsync(slug, filter.Offset, filter.Limit, cancellationToken);
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(folderContents, filter, total, route);
+
+            return Ok(pagedResponse);
+        }
+
+        [HttpGet]
+        [Route("users/{userId}/groups/{slug}/folders/{id:guid}")]
 
         public async Task<IActionResult> GetFolderAsync(Guid id, CancellationToken cancellationToken)
         {
@@ -39,7 +53,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("files/{id:guid}")]
+        [Route("users/{userId}/groups/{slug}/files/{id:guid}")]
 
         public async Task<IActionResult> GetFileAsync(Guid id, CancellationToken cancellationToken)
         {
@@ -54,7 +68,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("folders/{id:guid}/contents")]
+        [Route("users/{userId}/groups/{slug}/folders/{id:guid}/contents")]
 
         public async Task<IActionResult> GetFolderContentsAsync(Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {

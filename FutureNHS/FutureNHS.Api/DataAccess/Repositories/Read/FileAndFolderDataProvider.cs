@@ -19,6 +19,57 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             _logger = logger;
             _connectionFactory = connectionFactory;
         }
+        public async Task<(uint total, IEnumerable<FolderContentsItem>?)> GetRootFoldersAsync(string groupSlug, uint offset, uint limit, CancellationToken cancellationToken)
+        {
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit));
+            }
+
+            const string query =
+                @"
+                   SELECT
+                    folder.Id AS Id,
+                    'Folder' AS type, 
+                    folder.Name AS Name, 
+                    folder.Description AS Description,
+                    folder.CreatedAtUtc AS CreatedAtUtc, 
+                    folder.AddedBy AS CreatedById,
+                    createUser.FirstName + ' ' + createUser.Surname AS CreatedByName,
+                    createUser.Slug AS CreatedBySlug,
+                    null AS ModifiedAtUtc,
+                    null AS ModifiedById,
+                    null AS ModifiedByName,
+                    null AS ModifiedBySlug,
+                    null AS FileName,
+                    null AS FileExtension
+                   FROM Folder folder
+                    LEFT JOIN MembershipUser CreateUser ON CreateUser.Id = folder.AddedBy
+                    JOIN [Group] groups on groups.Id = folder.ParentGroup
+                   WHERE groups.Slug = @Slug AND folder.ParentFolder IS NULL AND folder.IsDeleted = 0
+                   ORDER BY Name
+                   OFFSET @Offset ROWS
+                   FETCH NEXT @Limit ROWS ONLY;
+
+                   SELECT COUNT(*) FROM Folder folder
+                   JOIN [Group] groups on groups.Id = folder.ParentGroup
+                   WHERE groups.Slug = @Slug AND folder.ParentFolder IS NULL AND folder.IsDeleted = 0";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryMultipleAsync(query, new
+            {
+                Offset = Convert.ToInt32(offset),
+                Limit = Convert.ToInt32(limit),
+                Slug = groupSlug
+            });
+
+            var contents = await reader.ReadAsync<FolderContentsData>();
+
+            var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
+
+            return (totalCount, GenerateContentsModelFromData(contents));
+        }
 
         public async Task<Folder?> GetFolderAsync(Guid folderId, CancellationToken cancellationToken)
         {
@@ -243,7 +294,6 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 return null;
 
             return GenerateFileModelFromData(fileData, pathToFile);
-
         }
 
         private File GenerateFileModelFromData(FileData fileData, IEnumerable<FolderPathItem> pathToFile)
