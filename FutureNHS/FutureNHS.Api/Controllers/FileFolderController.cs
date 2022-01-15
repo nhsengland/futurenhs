@@ -4,6 +4,7 @@ using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace FutureNHS.Api.Controllers
 {
@@ -29,7 +30,6 @@ namespace FutureNHS.Api.Controllers
         public async Task<IActionResult> GetFolderContentsAsync(string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
-
             var (total, folderContents) = await _fileAndFolderDataProvider.GetRootFoldersAsync(slug, filter.Offset, filter.Limit, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(folderContents, filter, total, route);

@@ -1,9 +1,11 @@
+using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.GroupUser;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace FutureNHS.Api.Controllers
 {
@@ -27,26 +29,31 @@ namespace FutureNHS.Api.Controllers
         [HttpGet]
         [Route("users/{userId:guid}/groups")]
 
-        public async Task<IActionResult> GetGroupsForUserAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetGroupsForUserAsync(Guid userId, [FromQuery] PaginationFilter filter, [FromQuery] bool isMember = true, CancellationToken cancellationToken = default)
         {
             var route = Request.Path.Value;
+            route = QueryHelpers.AddQueryString(route, "isMember", isMember.ToString());
 
-            var (totalGroups, groupSummaries) = await _groupDataProvider.GetGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
+            uint total;
+            IEnumerable<GroupSummary> groups;
+            
+            if (isMember)
+            {
+                var (totalGroups, groupSummaries) = await _groupDataProvider.GetGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
+                
+                total = totalGroups;
+                groups = groupSummaries;
 
-            var pagedResponse = PaginationHelper.CreatePagedResponse(groupSummaries, filter, totalGroups,route);
+            }
+            else
+            {
+                var (totalGroups, groupSummaries) = await _groupDataProvider.DiscoverGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
+                
+                total = totalGroups;
+                groups = groupSummaries;
+            }
 
-            return Ok(pagedResponse);
-        }
-
-        [HttpGet]
-        [Route("users/{userId:guid}/discover/groups")]
-        public async Task<IActionResult> DiscoverNewGroupsForUserAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
-        {
-            var route = Request.Path.Value;
-
-            var (totalGroups, groupSummaries) = await _groupDataProvider.DiscoverGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
-
-            var pagedResponse = PaginationHelper.CreatePagedResponse(groupSummaries, filter, totalGroups, route);
+            var pagedResponse = PaginationHelper.CreatePagedResponse(groups, filter, total, route);
 
             return Ok(pagedResponse);
         }
@@ -68,6 +75,27 @@ namespace FutureNHS.Api.Controllers
         [HttpGet]
         [Route("users/{userId:guid}/groups/{slug}/actions")]
         public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        {
+            var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
+
+            if (group is null)
+            {
+                return NotFound();
+            }
+
+            var permissions = await _permissionsService.GetUserPermissionsForGroupAsync(userId, group.Id, cancellationToken);
+
+            if (permissions is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(permissions);
+        }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/groups/{slug}/members")]
+        public async Task<IActionResult> GetMembersInGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
         {
             var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
 

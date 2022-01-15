@@ -158,5 +158,78 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
             return group;
         }
+
+        public async Task<Group> GetGroupMembersAsync(string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken = default)
+        {
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit));
+            }
+
+            const string query =
+                @$" SELECT
+  SELECT member.Id,member.Slug ,member.FirstName +' ' +  member.Surname AS Name, groupUser.ApprovedToJoinDate, member.LastLoginDate, memberRoles.RoleName
+  FROM GroupUser groupUser
+  JOIN [Group] groups 
+  ON groups.Id = groupUser.Group_Id
+  JOIN MembershipUser member 
+  ON member.Id = groupUser.MembershipUser_Id
+  JOIN MembershipRole memberRoles 
+  ON memberRoles.Id = groupUser.MembershipRole_Id 
+  WHERE groups.Slug = 'example-group' 
+  AND groupUser.Approved = 1
+  ORDER BY RoleName asc, Name asc
+
+                                [{nameof(FolderContentsData.Id)}]                   = folder.Id,
+                                [{nameof(FolderContentsData.Type)}]                 = 'Folder', 
+                                [{nameof(FolderContentsData.Name)}]                 = folder.Name, 
+                                [{nameof(FolderContentsData.Description)}]          = folder.Description,
+                                [{nameof(FolderContentsData.CreatedAtUtc)}]         = FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(FolderContentsData.CreatedById)}]          = folder.AddedBy,
+                                [{nameof(FolderContentsData.CreatedByName)}]        = createUser.FirstName + ' ' + createUser.Surname,
+                                [{nameof(FolderContentsData.CreatedBySlug)}]        = createUser.Slug,
+                                [{nameof(FolderContentsData.ModifiedAtUtc)}]        = NULL,
+                                [{nameof(FolderContentsData.ModifiedById)}]         = NULL,
+                                [{nameof(FolderContentsData.ModifiedByName)}]       = NULL,
+                                [{nameof(FolderContentsData.ModifiedBySlug)}]       = NULL,
+                                [{nameof(FolderContentsData.ModifiedBySlug)}]       = NULL,
+                                [{nameof(FolderContentsData.FileExtension)}]        = NULL
+                    FROM        Folder folder
+                    LEFT JOIN   MembershipUser CreateUser 
+                    ON          CreateUser.Id = folder.AddedBy
+                    JOIN        [Group] groups 
+                    ON          groups.Id = folder.ParentGroup
+                    WHERE       groups.Slug = @Slug 
+                    AND         folder.ParentFolder IS NULL 
+                    AND         folder.IsDeleted = 0
+                    ORDER BY    Name
+
+                    OFFSET      @Offset ROWS
+                    FETCH NEXT  @Limit ROWS ONLY;
+
+                    SELECT      COUNT(*) 
+
+                    FROM        Folder folder
+                    JOIN        [Group] groups 
+                    ON          groups.Id = folder.ParentGroup
+                    WHERE       groups.Slug = @Slug 
+                    AND         folder.ParentFolder IS NULL 
+                    AND         folder.IsDeleted = 0";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryMultipleAsync(query, new
+            {
+                Offset = Convert.ToInt32(offset),
+                Limit = Convert.ToInt32(limit),
+                Slug = groupSlug
+            });
+
+            var contents = await reader.ReadAsync<FolderContentsData>();
+
+            var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
+
+            return (totalCount, GenerateContentsModelFromData(contents));
+        }
     }
 }

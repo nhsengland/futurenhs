@@ -17,14 +17,14 @@ namespace FutureNHS.Api.Models.Pagination.Helpers
 
                 response.NextPage =
                 validFilter.Offset + validFilter.Limit <= totalRecords
-                    ? BuildRoute(new PaginationFilter(validFilter.Offset + validFilter.Limit, validFilter.Limit), route)
+                    ? BuildRoute(new PaginationFilter(validFilter.Offset + validFilter.Limit, validFilter.Limit, validFilter.Sort), route)
                     : null;
             response.PreviousPage =
                 validFilter.Offset != 0 && validFilter.Offset <= roundedTotalPages
-                    ? BuildRoute(new PaginationFilter(validFilter.Offset - validFilter.Limit, validFilter.Limit), route)
+                    ? BuildRoute(new PaginationFilter(validFilter.Offset - validFilter.Limit, validFilter.Limit, validFilter.Sort), route)
                     : null;
-            response.FirstPage = BuildRoute(new PaginationFilter(0, validFilter.Limit), route);
-            response.LastPage = BuildRoute(new PaginationFilter(finalOffset, validFilter.Limit), route);
+            response.FirstPage = BuildRoute(new PaginationFilter(0, validFilter.Limit, validFilter.Sort), route);
+            response.LastPage = BuildRoute(new PaginationFilter(finalOffset, validFilter.Limit, validFilter.Sort), route);
             response.TotalPages = roundedTotalPages;
             response.TotalRecords = totalRecords;
             return response;
