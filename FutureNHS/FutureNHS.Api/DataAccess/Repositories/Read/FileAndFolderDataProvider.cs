@@ -26,34 +26,43 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 throw new ArgumentOutOfRangeException(nameof(limit));
             }
 
-            const string query =
-                @$"
-                   SELECT
-                    folder.Id AS {nameof(FolderContentsData.Id)},
-                    'Folder' AS {nameof(FolderContentsData.Type)}, 
-                    folder.Name AS {nameof(FolderContentsData.Name)}, 
-                    folder.Description AS {nameof(FolderContentsData.Description)},
-                    FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(Models.FileAndFolder.Properties.AtUtc)},
-                    folder.AddedBy AS {nameof(FolderContentsData.CreatedById)},
-                    createUser.FirstName + ' ' + createUser.Surname AS {nameof(FolderContentsData.CreatedByName)},
-                    createUser.Slug AS {nameof(FolderContentsData.CreatedBySlug)},
-                    null AS {nameof(FolderContentsData.ModifiedAtUtc)},
-                    null AS {nameof(FolderContentsData.ModifiedById)},
-                    null AS {nameof(FolderContentsData.ModifiedByName)},
-                    null AS {nameof(FolderContentsData.ModifiedBySlug)},
-                    null AS {nameof(FolderContentsData.ModifiedBySlug)},
-                    null AS {nameof(FolderContentsData.FileExtension)}
-                   FROM Folder folder
-                    LEFT JOIN MembershipUser CreateUser ON CreateUser.Id = folder.AddedBy
-                    JOIN [Group] groups on groups.Id = folder.ParentGroup
-                   WHERE groups.Slug = @Slug AND folder.ParentFolder IS NULL AND folder.IsDeleted = 0
-                   ORDER BY Name
-                   OFFSET @Offset ROWS
-                   FETCH NEXT @Limit ROWS ONLY;
+            const string query = 
+                @$" SELECT
+                                [{nameof(FolderContentsData.Id)}]                   = folder.Id,
+                                [{nameof(FolderContentsData.Type)}]                 = 'Folder', 
+                                [{nameof(FolderContentsData.Name)}]                 = folder.Name, 
+                                [{nameof(FolderContentsData.Description)}]          = folder.Description,
+                                [{nameof(FolderContentsData.CreatedAtUtc)}]         = FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(FolderContentsData.CreatedById)}]          = folder.AddedBy,
+                                [{nameof(FolderContentsData.CreatedByName)}]        = createUser.FirstName + ' ' + createUser.Surname,
+                                [{nameof(FolderContentsData.CreatedBySlug)}]        = createUser.Slug,
+                                [{nameof(FolderContentsData.ModifiedAtUtc)}]        = NULL,
+                                [{nameof(FolderContentsData.ModifiedById)}]         = NULL,
+                                [{nameof(FolderContentsData.ModifiedByName)}]       = NULL,
+                                [{nameof(FolderContentsData.ModifiedBySlug)}]       = NULL,
+                                [{nameof(FolderContentsData.ModifiedBySlug)}]       = NULL,
+                                [{nameof(FolderContentsData.FileExtension)}]        = NULL
+                    FROM        Folder folder
+                    LEFT JOIN   MembershipUser CreateUser 
+                    ON          CreateUser.Id = folder.AddedBy
+                    JOIN        [Group] groups 
+                    ON          groups.Id = folder.ParentGroup
+                    WHERE       groups.Slug = @Slug 
+                    AND         folder.ParentFolder IS NULL 
+                    AND         folder.IsDeleted = 0
+                    ORDER BY    Name
 
-                   SELECT COUNT(*) FROM Folder folder
-                   JOIN [Group] groups on groups.Id = folder.ParentGroup
-                   WHERE groups.Slug = @Slug AND folder.ParentFolder IS NULL AND folder.IsDeleted = 0";
+                    OFFSET      @Offset ROWS
+                    FETCH NEXT  @Limit ROWS ONLY;
+
+                    SELECT      COUNT(*) 
+
+                    FROM        Folder folder
+                    JOIN        [Group] groups 
+                    ON          groups.Id = folder.ParentGroup
+                    WHERE       groups.Slug = @Slug 
+                    AND         folder.ParentFolder IS NULL 
+                    AND         folder.IsDeleted = 0";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -74,46 +83,43 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         public async Task<Folder?> GetFolderAsync(Guid folderId, CancellationToken cancellationToken)
         {
             const string query =
-                @$"
-                           SELECT
-                            folders.Id AS {nameof(Folder.Id)},
-                            folders.Name AS {nameof(Folder.Name)},
-                            folders.Description AS {nameof(Folder.Description)},
-                            FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(Models.FileAndFolder.Properties.AtUtc)},
-                            mu.Id AS {nameof(UserNavProperty.Id)},
-                            mu.FirstName + ' ' + mu.Surname AS {nameof(UserNavProperty.Name)},
-                            mu.Slug AS {nameof(UserNavProperty.Slug)}                         
-                           FROM
-                            Folder folders
-                            JOIN MembershipUser mu ON mu.Id = folders.AddedBy
-                           WHERE
-                             folders.Id = @FolderId
-                             AND folders.IsDeleted = 0;
+                @$" SELECT
+                                [{nameof(Folder.Id)}]                               = folders.Id,
+                                [{nameof(Folder.Name)}]                             = folders.Name,
+                                [{nameof(Folder.Description)}]                      = folders.Description,
+                                [{nameof(Models.FileAndFolder.Properties.AtUtc)}]   = FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(UserNavProperty.Id)}]                      = mu.Id,
+                                [{nameof(UserNavProperty.Name)}]                    = mu.FirstName + ' ' + mu.Surname,
+                                [{nameof(UserNavProperty.Slug)}]                    = mu.Slug  
 
-                           WITH BreadCrumbs AS (
-                             SELECT
-                               Id,
-                               Name,
-                               ParentFolder
-                             FROM
-                               Folder
-                             WHERE
-                               Id = @FolderId
-                             UNION ALL
-                             SELECT
-                               folder.Id AS PK,
-                               folder.[Name] AS Name,
-                               folder.ParentFolder AS ParentFK
-                             FROM
-                               Folder folder
-                               INNER JOIN BreadCrumbs Breadcrumb ON Breadcrumb.ParentFolder = folder.Id
-                           )
-                           SELECT
-                             Id AS {nameof(FolderPathItem.Id)},
-                             Name AS {nameof(FolderPathItem.Name)}
-                           FROM
-                             BreadCrumbs;
-                       ";
+                    FROM         Folder folders
+                    JOIN         MembershipUser mu ON mu.Id = folders.AddedBy
+                    WHERE        folders.Id = @FolderId
+                    AND          folders.IsDeleted = 0;
+
+                    WITH BreadCrumbs AS 
+                    (
+                    SELECT      
+                                Id,
+                                Name,
+                                ParentFolder
+
+                    FROM        Folder
+                    WHERE       Id = @FolderId
+                    UNION ALL
+                    SELECT
+                                folder.Id AS PK,
+                                folder.[Name] AS Name,
+                                folder.ParentFolder AS ParentFK
+
+                    FROM        Folder folder
+                    INNER JOIN  BreadCrumbs Breadcrumb 
+                    ON          Breadcrumb.ParentFolder = folder.Id
+                    )
+                    SELECT
+                                [{nameof(FolderPathItem.Id)}]    = Id,
+                                [{nameof(FolderPathItem.Name)}]  = Name
+                    FROM        BreadCrumbs;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -160,57 +166,73 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             }
 
             const string query =
-                @$"
-                   SELECT
-                    folder.Id AS {nameof(FolderContentsData.Id)},
-                    'Folder' AS {nameof(FolderContentsData.Type)}, 
-                    folder.Name AS {nameof(FolderContentsData.Name)}, 
-                    folder.Description AS {nameof(FolderContentsData.Description)},
-                    FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(FolderContentsData.CreatedAtUtc)}, 
-                    folder.AddedBy AS {nameof(FolderContentsData.CreatedById)},
-                    createUser.FirstName + ' ' + createUser.Surname AS {nameof(FolderContentsData.CreatedByName)},
-                    createUser.Slug AS {nameof(FolderContentsData.CreatedBySlug)},
-                    null AS {nameof(FolderContentsData.ModifiedAtUtc)},
-                    null AS {nameof(FolderContentsData.ModifiedById)},
-                    null AS {nameof(FolderContentsData.ModifiedByName)},
-                    null AS {nameof(FolderContentsData.ModifiedBySlug)},
-                    null AS {nameof(FolderContentsData.ModifiedBySlug)},
-                    null AS {nameof(FolderContentsData.FileExtension)}
-                   FROM Folder folder
-                    LEFT JOIN MembershipUser CreateUser ON CreateUser.Id = folder.AddedBy
-                   WHERE ParentFolder = @FolderId AND IsDeleted = 0
-                   UNION ALL
-                   SELECT 
-                    files.Id,
-                    'File',
-                    Title, 
-                    Description,
-                    FORMAT(files.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'), 
-                    CreatedBy,
-                    CreateUser.FirstName + ' ' + createUser.Surname,
-                    CreateUser.Slug, 
-                    FORMAT(files.ModifiedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
-                    ModifiedBy,
-                    ModifyUser.FirstName + ' ' + createUser.Surname,
-                    ModifyUser.Slug,
-                    FileName,
-                    FileExtension
-                   FROM [File] files
-                    LEFT JOIN MembershipUser CreateUser ON CreateUser.Id = files.CreatedBy
-                    LEFT JOIN MembershipUser ModifyUser ON ModifyUser.Id = files.ModifiedBy
-                   WHERE ParentFolder = @FolderId AND FileStatus = 4
-                   ORDER BY type DESC, Name
-                   OFFSET @Offset ROWS
-                   FETCH NEXT @Limit ROWS ONLY;
+                @$"SELECT
+                                [{nameof(FolderContentsData.Id)}]               = folder.Id,
+                                [{nameof(FolderContentsData.Type)}]             = 'Folder', 
+                                [{nameof(FolderContentsData.Name)}]             = folder.Name, 
+                                [{nameof(FolderContentsData.Description)}]      = folder.Description,
+                                [{nameof(FolderContentsData.CreatedAtUtc)}]     = FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'), 
+                                [{nameof(FolderContentsData.CreatedById)}]      = folder.AddedBy,
+                                [{nameof(FolderContentsData.CreatedByName)}]    = createUser.FirstName + ' ' + createUser.Surname,
+                                [{nameof(FolderContentsData.CreatedBySlug)}]    = createUser.Slug,
+                                [{nameof(FolderContentsData.ModifiedAtUtc)}]    = null,
+                                [{nameof(FolderContentsData.ModifiedById)}]     = null,
+                                [{nameof(FolderContentsData.ModifiedByName)}]   = null,
+                                [{nameof(FolderContentsData.ModifiedBySlug)}]   = null,
+                                [{nameof(FolderContentsData.ModifiedBySlug)}]   = null,
+                                [{nameof(FolderContentsData.FileExtension)}]    = null
 
-                SELECT SUM(items) FROM
-                (
-                 SELECT COUNT(*) AS items FROM Folder folder
-                 WHERE ParentFolder = @FolderId AND IsDeleted = 0
-                 UNION ALL
-                 SELECT COUNT(*) FROM [File] files
-                 WHERE ParentFolder = @FolderId AND FileStatus = 4
-                ) AS TOTAL"; 
+                    FROM        Folder folder
+                    LEFT JOIN   MembershipUser CreateUser 
+                    ON          CreateUser.Id = folder.AddedBy
+                    WHERE       ParentFolder = @FolderId 
+                    AND         IsDeleted = 0
+                    UNION ALL
+                    SELECT 
+                                files.Id,
+                                'File',
+                                Title, 
+                                Description,
+                                FORMAT(files.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'), 
+                                CreatedBy,
+                                CreateUser.FirstName + ' ' + createUser.Surname,
+                                CreateUser.Slug, 
+                                FORMAT(files.ModifiedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                ModifiedBy,
+                                ModifyUser.FirstName + ' ' + createUser.Surname,
+                                ModifyUser.Slug,
+                                FileName,
+                                FileExtension
+
+                    FROM        [File] files
+                    LEFT JOIN   MembershipUser CreateUser 
+                    ON          CreateUser.Id = files.CreatedBy
+                    LEFT JOIN   MembershipUser ModifyUser 
+                    ON          ModifyUser.Id = files.ModifiedBy
+                    WHERE       ParentFolder = @FolderId 
+                    AND         FileStatus = 4
+                    ORDER BY    type DESC, Name
+
+                    OFFSET @Offset ROWS
+                    FETCH NEXT @Limit ROWS ONLY;
+
+                    SELECT SUM(items) 
+                    FROM
+                    (
+                    SELECT      COUNT(*) 
+
+                    AS          items 
+                    FROM        Folder folder
+                    WHERE       ParentFolder = @FolderId 
+                    AND         IsDeleted = 0
+                    UNION ALL
+                    SELECT      COUNT(*) 
+
+                    FROM        [File] files
+                    WHERE       ParentFolder = @FolderId 
+                    AND         FileStatus = 4
+                    ) 
+                    AS          TOTAL"; 
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -231,53 +253,56 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         public async Task<File?> GetFileAsync(Guid fileId, CancellationToken cancellationToken)
         {
             const string query =
-                @$"
-                         SELECT
-                            files.Id AS {nameof(FileData.Id)}, 
-                            files.Title AS {nameof(FileData.Title)}, 
-                            files.Description AS {nameof(FileData.Description)}, 
-                            FORMAT(files.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(FileData.CreatedAtUtc)},
-                            createUser.Id AS {nameof(FileData.CreatorId)},
-                            createUser.FirstName + ' ' + createUser.Surname AS {nameof(FileData.CreatorName)},
-                            createUser.Slug AS {nameof(FileData.CreatorSlug)},  
-                            FORMAT(files.ModifiedAtUtc,'yyyy-MM-ddTHH:mm:ssZ') AS {nameof(FileData.ModifiedAtUtc)},
-                            modifyUser.Id AS {nameof(FileData.ModifierId)},
-                            modifyUser.FirstName + ' ' + modifyUser.Surname AS {nameof(FileData.ModifierName)},
-                            modifyUser.Slug AS {nameof(FileData.ModifierSlug)},
-							files.FileName As {nameof(FileData.FileName)},
-							files.FileExtension AS {nameof(FileData.FileExtension)}			
-                           FROM
-                            [File] files
-                            LEFT JOIN MembershipUser createUser ON createUser.Id = files.CreatedBy
-							LEFT JOIN MembershipUser modifyUser ON modifyUser.Id = files.ModifiedBy
-                           WHERE
-                             files.Id = @FileId AND FileStatus = 4;
+                @$"SELECT
+                                [{nameof(FileData.Id)}]             = files.Id, 
+                                [{nameof(FileData.Title)}]          = files.Title, 
+                                [{nameof(FileData.Description)}]    = files.Description, 
+                                [{nameof(FileData.CreatedAtUtc)}]   = FORMAT(files.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(FileData.CreatorId)}]      = createUser.Id,
+                                [{nameof(FileData.CreatorName)}]    = createUser.FirstName + ' ' + createUser.Surname,
+                                [{nameof(FileData.CreatorSlug)}]    = createUser.Slug,  
+                                [{nameof(FileData.ModifiedAtUtc)}]  = FORMAT(files.ModifiedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(FileData.ModifierId)}]     = modifyUser.Id,
+                                [{nameof(FileData.ModifierName)}]   = modifyUser.FirstName + ' ' + modifyUser.Surname,
+                                [{nameof(FileData.ModifierSlug)}]   = modifyUser.Slug,
+				                [{nameof(FileData.FileName)}]       = files.FileName,
+				                [{nameof(FileData.FileExtension)}]  = files.FileExtension
 
-                           WITH BreadCrumbs AS (
-                             SELECT
-                               folder.Id,
-                               folder.Name,
-                               folder.ParentFolder AS ParentFolder
-                             FROM
-                               Folder folder
-                            JOIN [File] files on files.ParentFolder = folder.Id
-                             WHERE
-                               files.Id = @FileId
-                             UNION ALL
-                             SELECT
-                               folder.Id AS PK,
-                               folder.[Name] AS Name,
-                               folder.ParentFolder AS ParentFK
-                             FROM
-                               Folder folder
-                               INNER JOIN BreadCrumbs Breadcrumb ON Breadcrumb.ParentFolder = folder.Id
-                           )
-                           SELECT
-                             Id,
-                             Name
-                           FROM
-                             BreadCrumbs;
-                       ";
+                    FROM        [File] files
+                    LEFT JOIN   MembershipUser createUser 
+                    ON          createUser.Id = files.CreatedBy
+					LEFT JOIN   MembershipUser modifyUser 
+                    ON          modifyUser.Id = files.ModifiedBy
+                    WHERE       files.Id = @FileId 
+                    AND         FileStatus = 4;                    
+                    WITH BreadCrumbs
+                    AS 
+                    (
+                    SELECT
+                                folder.Id,
+                                folder.Name,
+                                folder.ParentFolder AS ParentFolder
+
+                    FROM        Folder folder
+                    JOIN        [File] files 
+                    ON          files.ParentFolder = folder.Id
+                    WHERE       files.Id = @FileId
+                    UNION ALL
+                    SELECT
+                                PK = folder.Id,
+                                Name = folder.[Name],
+                                ParentFK = folder.ParentFolder
+
+                    FROM        Folder folder
+                    INNER JOIN  BreadCrumbs Breadcrumb 
+                    ON          Breadcrumb.ParentFolder = folder.Id
+                    )
+                    
+                    SELECT
+                                [{nameof(FolderPathItem.Id)}]    = Id,
+                                [{nameof(FolderPathItem.Name)}]  = Name
+
+                    FROM        BreadCrumbs;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
