@@ -194,7 +194,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     FROM        GroupUser groupUser
                     JOIN        [Group] groups 
                     ON          groups.Id = groupUser.Group_Id
-                    WHERE       groups.Slug = @Slug";
+                    WHERE       groups.Slug = @Slug
+                    AND         groupUser.Approved = 1;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 

@@ -9,6 +9,7 @@ namespace MvcForum.Core.Repositories.Models
     public class User
     {
         public Guid Id { get; }
+        public string Username { get; }
         public string FullName { get; }
         public string Initials { get; }
         public ImageViewModel UserAvatar { get; }
