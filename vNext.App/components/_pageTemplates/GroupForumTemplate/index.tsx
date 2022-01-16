@@ -48,7 +48,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
             content={content}
             image={image} 
             className="u-bg-theme-3">
-                <LayoutColumn tablet={8} className="u-px-4 u-py-10">
+                <LayoutColumn tablet={8} className="c-page-body">
                     <h2>Latest Discussions</h2>
                     <AriaLiveRegion>
                         {dynamicDiscussionsList?.map?.(({ 

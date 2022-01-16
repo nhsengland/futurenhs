@@ -27,7 +27,7 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
                     <title>{titleText}</title>
                     <meta name="description" content={metaDescriptionText} />
                 </Head>
-                <LayoutColumnContainer className="u-py-10">
+                <LayoutColumnContainer className="c-page-body">
                     <h1>{mainHeadingHtml}</h1>
                 </LayoutColumnContainer>
         </StandardLayout>

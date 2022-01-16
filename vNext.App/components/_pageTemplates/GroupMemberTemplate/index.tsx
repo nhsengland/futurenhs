@@ -1,6 +1,7 @@
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { BackLink } from '@components/BackLink';
 import { Avatar } from '@components/Avatar';
 
 import { Props } from './interfaces';  
@@ -22,10 +23,17 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             content={content}
             image={image} 
             className="u-bg-theme-3">
-                <div className="u-px-4 u-py-10 u-w-full">
+                <div className="c-page-body">
+                    <LayoutColumn>
+                        <BackLink 
+                            href="/"
+                            content={{
+                                linkText: "Back"
+                            }} />
+                    </LayoutColumn>
                     <LayoutColumnContainer justify="centre">
                         <LayoutColumn tablet={3} desktop={2}>
-                            <Avatar initials="ri" />
+                            <Avatar image={null} initials="ri" />
                         </LayoutColumn>
                         <LayoutColumn tablet={7} desktop={8}>
                             <h2>My profile</h2>

@@ -35,7 +35,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
             content={content}
             image={image} 
             className="u-bg-theme-3">
-                <LayoutColumn className="u-px-4 u-py-10">
+                <LayoutColumn className="c-page-body">
                     <h2>File title</h2>
                     <hr />
                     <RichText wrapperElementType="p" bodyHtml="The description of the file added by the user when uploading the document. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />

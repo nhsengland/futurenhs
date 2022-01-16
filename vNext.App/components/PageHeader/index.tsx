@@ -28,7 +28,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
 
     const generatedClasses: any = {
-        wrapper: classNames('c-page-header', 'u-w-full', className),
+        wrapper: classNames('c-page-header', className),
         header: classNames('c-page-header_header'),
         heading: classNames('u-mb-1', 'u-text-theme-1'),
         hero: classNames('c-page-header_hero'),

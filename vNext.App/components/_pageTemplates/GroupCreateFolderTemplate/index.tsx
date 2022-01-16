@@ -27,7 +27,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
             content={content}
             image={image} 
             className="u-bg-theme-3">            
-                <LayoutColumn className="u-px-4 u-py-10">
+                <LayoutColumn className="c-page-body">
                     <LayoutColumnContainer>
                         <LayoutColumn tablet={8}>
                             <FormWithErrorSummary

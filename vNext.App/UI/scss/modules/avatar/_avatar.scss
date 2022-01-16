@@ -4,10 +4,6 @@
     padding-bottom: 100%;
     font-size: $base-font-size;
 
-    &--large {
-        font-size: $nhsuk-spacing-point-9;
-    }
-
     &_fallback {
         display: block;
         position: absolute;
@@ -18,14 +14,10 @@
         z-index: 1;
     }
 
-    &_initials {
-        color: $white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        font-size: inherit;
-        height: 100%;
+    &_fallback-initials {
+        fill: $white;
+        font-size: 1000%;
+        text-transform: uppercase;
     }
 
     &_image {
@@ -36,4 +28,5 @@
         border-radius: 50%;
         z-index: 2;
     }
+
 }
