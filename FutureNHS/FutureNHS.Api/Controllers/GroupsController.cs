@@ -95,23 +95,15 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("users/{userId:guid}/groups/{slug}/members")]
-        public async Task<IActionResult> GetMembersInGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMembersInGroupAsync(Guid userId, string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
-            var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
+            var route = Request.Path.Value;
 
-            if (group is null)
-            {
-                return NotFound();
-            }
+            var (total, groupmembers) = await _groupDataProvider.GetGroupMembersAsync(slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
 
-            var permissions = await _permissionsService.GetUserPermissionsForGroupAsync(userId, group.Id, cancellationToken);
+            var pagedResponse = PaginationHelper.CreatePagedResponse(groupmembers, filter, total, route);
 
-            if (permissions is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(permissions);
+            return Ok(pagedResponse);
         }
     }
 }

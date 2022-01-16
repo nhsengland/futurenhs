@@ -9,7 +9,7 @@ namespace FutureNHS.Api.Models.Pagination.Filter
         public uint Offset { get; set; }
         [Range(PaginationSettings.MinLimit, PaginationSettings.MaxLimit)]
         public uint Limit { get; set; }
-        public string Sort { get; set; }
+        public string? Sort { get; set; }
         public PaginationFilter()
         {
             Offset = PaginationSettings.MinOffset;

@@ -6,10 +6,6 @@ namespace FutureNHS.Infrastructure.Models.GroupPages
 {
     public record Group
     {
-        public Group()
-        {
-        }
-
         public Guid Id { get; init; }
         public string Name{ get; init; }
         public string StrapLine { get; init; }
