@@ -2,7 +2,6 @@
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
-using FutureNHS.Infrastructure.Models;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Read
 {
@@ -24,15 +23,12 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 				FROM Image
                 WHERE Id = @ImageId AND Deleted = 0";
 
-            Image image;
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
+            var image = await dbConnection.QuerySingleAsync<Image>(query, new
             {
-                image = await dbConnection.QuerySingleAsync<Image>(query, new
-                {
-                    ImageId = id
-                });
-            }
+                ImageId = id
+            });
 
             return image;
         }

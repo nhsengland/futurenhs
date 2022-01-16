@@ -1,9 +1,9 @@
 ﻿using Dapper;
 using FutureNHS.Api.Application.Application.HardCodedSettings;
 using FutureNHS.Api.DataAccess.Models;
+using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
-using FutureNHS.Infrastructure.Models.GroupPages;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Read
 {
@@ -207,6 +207,64 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             });
 
             var members = await reader.ReadAsync<GroupMember>();
+
+            var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
+
+            return (totalCount, members);
+        }
+
+        public async Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken = default)
+        {
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit));
+            }
+
+            const string query =
+                @$" SELECT
+                                [{nameof(PendingGroupMember.Id)}]                   = member.Id,
+                                [{nameof(PendingGroupMember.Slug)}]                 = member.Slug, 
+                                [{nameof(PendingGroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
+                                [{nameof(PendingGroupMember.ApplicationDateUtc)}]   = FORMAT(groupUser.RequestToJoinDate,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(PendingGroupMember.LastLoginUtc)}]         = FORMAT(member.LastLoginDate,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(PendingGroupMember.Email)}]                = member.Email
+
+                    FROM        GroupUser groupUser
+                    JOIN        [Group] groups 
+                    ON          groups.Id = groupUser.Group_Id
+                    JOIN        MembershipUser member 
+                    ON          member.Id = groupUser.MembershipUser_Id      
+                    WHERE       groups.Slug = @Slug
+                    AND         groupUser.Approved = 0
+                    AND         groupUser.Rejected = 0
+                    AND         groupUser.Locked = 0
+                    AND         groupUser.Banned = 0
+                    ORDER BY    groupUser.RequestToJoinDate desc
+
+                    OFFSET      @Offset ROWS
+                    FETCH NEXT  @Limit ROWS ONLY;
+
+                    SELECT      COUNT(*) 
+
+                    FROM        GroupUser groupUser
+                    JOIN        [Group] groups 
+                    ON          groups.Id = groupUser.Group_Id
+                    WHERE       groups.Slug = @Slug
+                    AND         groupUser.Approved = 0
+                    AND         groupUser.Rejected = 0
+                    AND         groupUser.Locked = 0
+                    AND         groupUser.Banned = 0";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryMultipleAsync(query, new
+            {
+                Offset = Convert.ToInt32(offset),
+                Limit = Convert.ToInt32(limit),
+                Slug = slug
+            });
+
+            var members = await reader.ReadAsync<PendingGroupMember>();
 
             var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
 

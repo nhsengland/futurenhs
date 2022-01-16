@@ -1,5 +1,5 @@
 using FutureNHS.Api.DataAccess.Models;
-using FutureNHS.Api.DataAccess.Models.GroupUser;
+using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
@@ -99,9 +99,22 @@ namespace FutureNHS.Api.Controllers
         {
             var route = Request.Path.Value;
 
-            var (total, groupmembers) = await _groupDataProvider.GetGroupMembersAsync(slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+            var (total, groupMembers) = await _groupDataProvider.GetGroupMembersAsync(slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
 
-            var pagedResponse = PaginationHelper.CreatePagedResponse(groupmembers, filter, total, route);
+            var pagedResponse = PaginationHelper.CreatePagedResponse(groupMembers, filter, total, route);
+
+            return Ok(pagedResponse);
+        }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/groups/{slug}/members/pending")]
+        public async Task<IActionResult> GetPendingMembersInGroupAsync(Guid userId, string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        {
+            var route = Request.Path.Value;
+
+            var (total, pendingGroupMembers) = await _groupDataProvider.GetPendingGroupMembersAsync(slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(pendingGroupMembers, filter, total, route);
 
             return Ok(pagedResponse);
         }

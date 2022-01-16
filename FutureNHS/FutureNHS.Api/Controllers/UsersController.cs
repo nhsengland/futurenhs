@@ -1,7 +1,3 @@
-using FutureNHS.Api.DataAccess.Models.GroupUser;
-using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
-using FutureNHS.Api.Models.Pagination.Filter;
-using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

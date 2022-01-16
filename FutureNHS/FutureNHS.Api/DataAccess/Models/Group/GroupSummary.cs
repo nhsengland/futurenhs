@@ -1,4 +1,4 @@
-﻿namespace FutureNHS.Api.DataAccess.Models
+﻿namespace FutureNHS.Api.DataAccess.Models.Group
 {
     public record GroupSummary
     {

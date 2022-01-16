@@ -1,8 +1,4 @@
-﻿
-using FutureNHS.Api.DataAccess.Models;
-using FutureNHS.Api.DataAccess.Models.GroupUser;
-
-namespace FutureNHS.Infrastructure.Models.GroupPages
+﻿namespace FutureNHS.Api.DataAccess.Models.Group
 {
     public record Group
     {
