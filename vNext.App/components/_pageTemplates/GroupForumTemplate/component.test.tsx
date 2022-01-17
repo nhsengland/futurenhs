@@ -9,7 +9,10 @@ describe('Group forum template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
-        asPath: '/groups/group/forum' 
+        asPath: '/groups/group/forum',
+        query: {
+            groupId: 'group'
+        } 
     }));
 
     const props: Props = {

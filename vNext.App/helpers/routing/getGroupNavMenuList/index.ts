@@ -1,23 +1,16 @@
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
-
 declare interface Config {
-    router: any;
+    groupRoute: string;
     activeId?: 'index' | 'forum' | 'files' | 'members';
 }
 
 export const getGroupNavMenuList = ({
-    router,
+    groupRoute,
     activeId
 }: Config): Array<{
     url: string;
     text: string;
     isActive: boolean;
 }> => {
-
-    const baseGroupRoute: string = getRouteToParam({ 
-        router, 
-        paramName: 'group' 
-    });
 
     const navConfig: Array<{
         id: Config["activeId"],
@@ -26,22 +19,22 @@ export const getGroupNavMenuList = ({
     }> = [
         {
             id: 'index',
-            url: baseGroupRoute,
+            url: groupRoute,
             text: 'Home'
         },
         {
             id: 'forum',
-            url: `${baseGroupRoute}/forum`,
+            url: `${groupRoute}/forum`,
             text: 'Forum'
         },
         {
             id: 'files',
-            url: `${baseGroupRoute}/folders`,
+            url: `${groupRoute}/folders`,
             text: 'Files'
         },
         {
             id: 'members',
-            url: `${baseGroupRoute}/members`,
+            url: `${groupRoute}/members`,
             text: 'Members'
         }
     ]

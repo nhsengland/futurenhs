@@ -1,21 +1,34 @@
 declare interface Config {
     router: any;
-    paramName: string
+    paramName: string;
+    shouldIncludeParam?: boolean;
 }
 
 export const getRouteToParam = ({
     router,
-    paramName
+    paramName,
+    shouldIncludeParam
 }: Config): string => {
 
     try {
-
+        
         const currentPathName: string = router?.asPath;
-        const route: string = currentPathName?.slice(0, router.pathname?.indexOf(`[${paramName}]`)) + router?.query[paramName];
+        const paramValue: string = router?.query[paramName];
+
+        if(!paramValue){
+
+            throw new Error(`Param ${paramName} does not exist in router params ${router.query}`);
+
+        }
+
+        const endSliceIndex: number = currentPathName.indexOf(paramValue) + (shouldIncludeParam ? paramValue.length : -1);
+        const route: string = currentPathName?.slice(0, endSliceIndex);
     
         return route;
 
     } catch(error){
+
+        console.error(error)
 
         return '';
 

@@ -1,15 +1,16 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { getEnvVar } from '@helpers/util/env';
-import { ServicePaginatedResponse } from '@appTypes/service';
+import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
+import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
+import { FetchResponse } from '@appTypes/fetch';
+import { ApiPaginatedResponse, ServicePaginatedResponse } from '@appTypes/service';
 import { Pagination } from '@appTypes/pagination';
 import { Group } from '@appTypes/group';
 import { User } from '@appTypes/user';
 
 declare type Options = ({
     user: User;
-    filters?: {
-        isMember?: boolean;
-    };
+    isMember?: boolean;
     pagination?: Pagination;
 });
 
@@ -20,23 +21,29 @@ declare type Dependencies = ({
 
 export const getGroups = async ({
     user,
-    filters,
+    isMember,
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<Group>>> => {
 
     try {
 
+        const serviceResponse: ServicePaginatedResponse<Array<Group>> = {
+            data: []
+        };
+
         const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
-        const { pageNumber, pageSize } = pagination;
-
         const id: string = user.id;
-        const resource: string = filters?.isMember ? 'groups' : 'discover/groups';
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/users/${id}/${resource}?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+        const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
+        const memberShipQueryParam: string = isMember ? '&ismember=true' : '&ismember=false';
 
-        const { json, meta } = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
-        const { ok, status, statusText } = meta;
+        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/users/${id}/groups?${paginationQueryParams}${memberShipQueryParam}`;
+        const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
+        const apiData: ApiPaginatedResponse<any> = apiResponse.json;
+        const apiMeta: any = apiResponse.meta;
+
+        const { ok, status, statusText } = apiMeta;
 
         if(!ok){
 
@@ -48,14 +55,14 @@ export const getGroups = async ({
 
         }
 
-        json.data.forEach((datum, index) => {
+        apiData.data?.forEach((datum) => {
 
-            json.data[index] = {
+            serviceResponse.data.push({
                 content: {
                     mainHeadingHtml: datum.nameText,
                     strapLineText: datum.strapLineText
-                },
-                slug: datum.slug,
+                } as any,
+                groupId: datum.slug,
                 totalMemberCount: datum.memberCount ?? 0,
                 totalDiscussionCount: datum.discussionCount ?? 0,
                 image: datum.image ? {
@@ -64,17 +71,13 @@ export const getGroups = async ({
                     width: datum.image?.width ?? null,
                     altText: 'TBC'
                 } : null
-            } as Group;
+            });
 
         });
 
-        json.pagination = {
-            pageNumber: json.offset,
-            pageSize: json.limit,
-            totalRecords: json.totalRecords
-        }
+        serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
 
-        return json;
+        return serviceResponse;
 
     } catch(error){
 

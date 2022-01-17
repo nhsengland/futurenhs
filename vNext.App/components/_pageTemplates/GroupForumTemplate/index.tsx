@@ -54,7 +54,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                         {dynamicDiscussionsList?.map?.(({ 
                             image, 
                             content, 
-                            slug, 
+                            groupId, 
                             totalDiscussionCount, 
                             totalMemberCount 
                         }, index) => {
@@ -65,7 +65,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
                                 <Card key={index} image={image} className="u-border-bottom-theme-8">
                                     <h3 className="c-card_heading">
-                                        <Link href={`/groups/${slug}`}>
+                                        <Link href={`/groups/${groupId}`}>
                                             <a>{mainHeadingHtml}</a>
                                         </Link>        
                                     </h3>

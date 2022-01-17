@@ -24,7 +24,8 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     user,
     content,
     groupsList,
-    pagination
+    pagination,
+    errors
 }) => {
 
     const { pathname } = useRouter();
@@ -89,44 +90,48 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                         <h2>{secondaryHeadingHtml}</h2>
                         <p className="u-text-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
                         <AriaLiveRegion>
-                            {dynamicGroupsList?.map?.(({ 
-                                image, 
-                                content, 
-                                slug, 
-                                totalDiscussionCount, 
-                                totalMemberCount 
-                            }, index) => {
+                            <ul className="u-list-none u-p-0">
+                                {dynamicGroupsList?.map?.(({ 
+                                    image, 
+                                    content, 
+                                    groupId, 
+                                    totalDiscussionCount, 
+                                    totalMemberCount 
+                                }, index) => {
 
-                                const { mainHeadingHtml, strapLineText } = content ?? {};
-                                
-                                const imageToUse = image ? image : defaultGroupLogos.large;
+                                    const { mainHeadingHtml, strapLineText } = content ?? {};
+                                    
+                                    const imageToUse = image ? image : defaultGroupLogos.large;
 
-                                return (
+                                    return (
 
-                                    <Card key={index} image={imageToUse} className="u-border-bottom-theme-8">
-                                        <h3 className="c-card_heading">
-                                            <Link href={`/groups/${slug}`}>
-                                                <a>{mainHeadingHtml}</a>
-                                            </Link>        
-                                        </h3>
-                                        <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                            {strapLineText}
-                                        </p>
-                                        <div className="c-card_footer u-text-theme-7">
-                                            <p className="c-card_footer-item">
-                                                <SVGIcon name="icon-account" className="c-card_footer-icon u-fill-theme-8" />
-                                                <span>{`${totalMemberCount} Members`}</span>
-                                            </p>
-                                            <p className="c-card_footer-item">
-                                                <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-8" />
-                                                <span>{`${totalDiscussionCount} Discussions`}</span>
-                                            </p>
-                                        </div>
-                                    </Card>
+                                        <li key={index}>
+                                            <Card image={imageToUse} className="u-border-bottom-theme-8">
+                                                <h3 className="c-card_heading">
+                                                    <Link href={`/groups/${groupId}`}>
+                                                        <a>{mainHeadingHtml}</a>
+                                                    </Link>        
+                                                </h3>
+                                                <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                    {strapLineText}
+                                                </p>
+                                                <div className="c-card_footer u-text-theme-7">
+                                                    <p className="c-card_footer-item">
+                                                        <SVGIcon name="icon-account" className="c-card_footer-icon u-fill-theme-8" />
+                                                        <span>{`${totalMemberCount} Members`}</span>
+                                                    </p>
+                                                    <p className="c-card_footer-item">
+                                                        <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-8" />
+                                                        <span>{`${totalDiscussionCount} Discussions`}</span>
+                                                    </p>
+                                                </div>
+                                            </Card>
+                                        </li>
 
-                                )
+                                    )
 
-                            })}
+                                })}
+                            </ul>
                         </AriaLiveRegion>
                         <PaginationWithStatus 
                             id="group-list-pagination"

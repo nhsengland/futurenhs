@@ -1,8 +1,12 @@
+import { useRouter } from 'next/router';
+
+import { routeParams } from '@constants/routes';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BackLink } from '@components/BackLink';
 import { Avatar } from '@components/Avatar';
+import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';  
 
@@ -12,8 +16,21 @@ import { Props } from './interfaces';
 export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
     user,
     content,
+    member,
     image
 }) => {
+
+    const router = useRouter();
+    const backLinkHref: string = getRouteToParam({
+        router: router,
+        paramName: routeParams.MEMBERID
+    });
+
+    const { initials,
+            firstName, 
+            lastName, 
+            pronouns, 
+            email } = member ?? {};
 
     return (
 
@@ -26,26 +43,42 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                 <div className="c-page-body">
                     <LayoutColumn>
                         <BackLink 
-                            href="/"
+                            href={backLinkHref}
                             content={{
                                 linkText: "Back"
                             }} />
                     </LayoutColumn>
                     <LayoutColumnContainer justify="centre">
                         <LayoutColumn tablet={3} desktop={2}>
-                            <Avatar image={null} initials="ri" />
+                            <Avatar image={null} initials={initials} />
                         </LayoutColumn>
                         <LayoutColumn tablet={7} desktop={8}>
                             <h2>My profile</h2>
                             <dl>
-                                <dt className="u-text-bold">First name</dt>
-                                <dd>Richard</dd>
-                                <dt className="u-text-bold">Last name</dt>
-                                <dd>Iles</dd>
-                                <dt className="u-text-bold">Preferred pronouns</dt>
-                                <dd>he/ him</dd>
-                                <dt className="u-text-bold">Email address</dt>
-                                <dd>richard.iles@cds.co.uk</dd>
+                                {firstName &&
+                                    <>
+                                        <dt className="u-text-bold">First name</dt>
+                                        <dd>{firstName}</dd>
+                                    </>
+                                }
+                                {lastName &&
+                                    <>
+                                        <dt className="u-text-bold">Last name</dt>
+                                        <dd>{lastName}</dd>
+                                    </>
+                                }
+                                {pronouns &&
+                                    <>
+                                        <dt className="u-text-bold">Preferred pronouns</dt>
+                                        <dd>{pronouns}</dd>
+                                    </>
+                                }
+                                {email &&
+                                    <>
+                                        <dt className="u-text-bold">Email address</dt>
+                                        <dd>{email}</dd>
+                                    </>
+                                }
                             </dl>
                         </LayoutColumn>
                     </LayoutColumnContainer>

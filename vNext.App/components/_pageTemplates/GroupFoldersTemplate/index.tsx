@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+import { routeParams } from '@constants/routes';
+import { BreadCrumb } from '@components/BreadCrumb';
 import { SVGIcon } from '@components/SVGIcon';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
@@ -11,8 +13,9 @@ import { LayoutColumn } from '@components/LayoutColumn';
 import { DataGrid } from '@components/DataGrid';
 import { RichText } from '@components/RichText';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
-import { getGroupFiles } from '@services/getGroupFiles';
+import { getGroupFolders } from '@services/getGroupFolders';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
+import { BreadCrumbList } from '@appTypes/routing';
 
 import { Props } from './interfaces';
 
@@ -21,9 +24,11 @@ import { Props } from './interfaces';
  */
 export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
     user,
+    groupId,
     content,
     image,
     folderId,
+    folder,
     files,
     pagination
 }) => {
@@ -32,9 +37,39 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
     const [fileList, setFileList] = useState(files);
     const [dynamicPagination, setPagination] = useState(pagination);
 
+    const { 
+        id, 
+        name, 
+        path, 
+        bodyHtml 
+    } = folder ?? {};
+    
+    const hasFolders: boolean = files?.length > 0;
+
     const groupBasePath: string = getRouteToParam({
         router: router,
-        paramName: 'group'
+        paramName: routeParams.GROUPID,
+        shouldIncludeParam: true
+    });
+
+    const folderBasePath: string = folderId ? getRouteToParam({
+        router: router,
+        paramName: routeParams.FOLDERID
+    }) : `${groupBasePath}/folders`;
+
+    const breadCrumbList: BreadCrumbList = []; 
+    
+    path?.forEach(({ element, text }) => {
+
+        if(element !== id){
+
+            breadCrumbList.push({
+                element: `${folderBasePath}/${element}`,
+                text: text
+            });
+
+        }
+
     });
 
     const gridRowList = useMemo(() => fileList?.map(({ 
@@ -47,7 +82,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
         createdBy }) => {
 
             const isFolder: boolean = type === 'folder';
-            const href: string = `${groupBasePath}/${isFolder ? 'folders' : 'files'}/${encodeURIComponent(id)}`;
+            const href: string = `${folderBasePath}/${encodeURIComponent(id)}`;
 
             return [
                 {
@@ -78,11 +113,10 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize 
     }) => {
 
-        const { data: additionalFiles, pagination } = await getGroupFiles({
+        const { data: additionalFiles, pagination } = await getGroupFolders({
             user: user,
-            filters: {
-                folderId: folderId
-            },
+            groupId: groupId,
+            folderId: folderId,
             pagination: {
                 pageNumber: requestedPageNumber,
                 pageSize: requestedPageSize
@@ -103,11 +137,17 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
+                    <BreadCrumb 
+                        content={{
+                            ariaLabelText: 'Folders'
+                        }}
+                        breadCrumbList={breadCrumbList}
+                        className="u-mb-10" />
                     {folderId &&
                         <>
                             <LayoutColumnContainer>
                                 <LayoutColumn tablet={6} desktop={8} className="u-self-center">
-                                    <h2>Folder name</h2>
+                                    <h2>{name}</h2>
                                 </LayoutColumn>
                                 <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
                                     <p className="u-mb-0">
@@ -121,7 +161,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
                             <hr />
                         </>
                     }
-                    <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
+                    <RichText wrapperElementType="p" bodyHtml={bodyHtml} />
                     <p className="u-mb-10">
                         <Link href={`${groupBasePath}/folders/create`}>
                             <a className="c-button c-button--outline u-mr-2 u-w-72 u-drop-shadow">Add folder</a>
@@ -130,35 +170,40 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
                             <a href="/" className="c-button c-button--outline u-min-w-70 u-w-72 u-drop-shadow">Upload file</a>
                         }
                     </p>
-                    <AriaLiveRegion>
-                        <DataGrid 
-                            content={{
-                                captionHtml: 'Group folders'
-                            }}
-                            columnList={[
-                                {
-                                    children: 'Type'
-                                },
-                                {
-                                    children: 'Name'
-                                },
-                                {
-                                    children: 'Description'
-                                },
-                                {
-                                    children: 'Modified'
-                                },
-                                {
-                                    children: 'Download'
-                                }
-                            ]}
-                            rowList={gridRowList} />
-                    </AriaLiveRegion>
-                    <PaginationWithStatus 
-                        id="file-list-pagination"
-                        shouldEnableLoadMore={true}
-                        getPageAction={handleGetPage}
-                        {...dynamicPagination} />
+                    {hasFolders &&
+                        <>
+                            <AriaLiveRegion>
+                                <DataGrid 
+                                    content={{
+                                        captionHtml: 'Group folders'
+                                    }}
+                                    columnList={[
+                                        {
+                                            children: 'Type',
+                                            className: 'u-text-center'
+                                        },
+                                        {
+                                            children: 'Name'
+                                        },
+                                        {
+                                            children: 'Description'
+                                        },
+                                        {
+                                            children: 'Modified'
+                                        },
+                                        {
+                                            children: 'Download'
+                                        }
+                                    ]}
+                                    rowList={gridRowList} />
+                            </AriaLiveRegion>
+                            <PaginationWithStatus 
+                                id="file-list-pagination"
+                                shouldEnableLoadMore={true}
+                                getPageAction={handleGetPage}
+                                {...dynamicPagination} />
+                        </>
+                    }
                 </LayoutColumn>
         </GroupLayout>
 

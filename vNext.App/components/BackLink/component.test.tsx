@@ -13,13 +13,13 @@ const testProps: Props = {
 
 describe('BackLink', () => {
 
-    it('renders aria label', () => {
+    it('renders link text', () => {
 
         const props = Object.assign({}, testProps);
 
         render(<BackLink {...props} />);
 
-        expect(screen.getByLabelText('mockContent'));
+        expect(screen.getByText('mockContent'));
 
     });
     

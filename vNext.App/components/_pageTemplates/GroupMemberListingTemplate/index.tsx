@@ -17,6 +17,7 @@ import { Props } from './interfaces';
  * Group member listing template
  */
 export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
+    groupId,
     user,
     pendingMembers,
     members,
@@ -102,7 +103,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
         const { data: additionalMembers, pagination } = await getGroupMembers({
             user: user,
-            slug: '',
+            groupId: groupId,
             pagination: {
                 pageNumber: requestedPageNumber,
                 pageSize: requestedPageSize

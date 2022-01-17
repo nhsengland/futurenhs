@@ -9,7 +9,10 @@ describe('Group member listing template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
-        asPath: '/groups/group/members' 
+        asPath: '/groups/group/members',
+        query: {
+            groupId: 'group'
+        } 
     }));
 
     const props: Props = {

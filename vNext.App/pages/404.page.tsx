@@ -17,6 +17,8 @@ const Index: (props) => JSX.Element = ({
         <StandardLayout
             shouldRenderPhaseBanner={false}
             shouldRenderMainNav={false}
+            shouldRenderSearch={false}
+            shouldRenderUserNavigation={false}
             className="u-bg-theme-1">
                 <Head>
                     <title>Page not found</title>

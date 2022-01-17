@@ -9,3 +9,10 @@ export const enum routes {
     TERMS_AND_CONDITIONS = '/terms-and-conditions',
     API_LOGIN = '/api/log-in'
 }
+
+export const enum routeParams {
+    GROUPID = 'groupId',
+    FOLDERID = 'folderId',
+    FILEID = 'fileId',
+    MEMBERID = 'memberId'
+}

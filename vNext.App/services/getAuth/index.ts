@@ -1,6 +1,6 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
-import { getEnvVar } from '@helpers/util/env';
-import { ServiceResponse } from '@appTypes/service';
+import { FetchResponse } from '@appTypes/fetch';
+import { ApiResponse, ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
 
 export type Options = ({
@@ -16,7 +16,7 @@ export type GetAuthService = (options: Options, dependencies?: Dependencies) => 
 
 export const getAuth: GetAuthService = async ({
     cookies
-}, dependencies) => {
+}, dependencies): Promise<ServiceResponse<User>> => {
 
     try {
 
@@ -31,11 +31,14 @@ export const getAuth: GetAuthService = async ({
 
         });
 
-        const { meta, json } = await fetchJSON(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL' }), setGetFetchOptions({
+        const apiUrl: string = process.env.NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL;
+        const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({
             Cookie: existingCookies
         }), 1000);
+        const apiData: ApiResponse<any> = apiResponse.json;
+        const apiMeta: any = apiResponse.meta;
 
-        const { ok, status, statusText } = meta;
+        const { ok, status, statusText } = apiMeta;
 
         if(!ok){
 
@@ -49,12 +52,12 @@ export const getAuth: GetAuthService = async ({
 
         return {
             data: {
-                id: json?.Id ?? null,
-                fullNameText: 'Richard Iles',//json?.FullName ?? null,
-                initialsText: 'RI',//json?.Initials ?? null,
-                image: json?.UserAvatar ? {
-                    source: json?.UserAvatar?.Source ?? null,
-                    altText: json?.UserAvatar?.AltText ?? null
+                id: apiData?.Id ?? null,
+                fullNameText: apiData?.FullName ?? null,
+                initialsText: apiData?.Initials ?? null,
+                image: apiData?.UserAvatar ? {
+                    source: apiData?.UserAvatar?.Source ?? null,
+                    altText: apiData?.UserAvatar?.AltText ?? null
                 } : null
             }
         }

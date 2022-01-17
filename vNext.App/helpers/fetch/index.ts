@@ -1,12 +1,4 @@
-import { getEnvVar } from '@helpers/util/env';
-
-export interface FetchOptions {
-    method: string;
-    credentials: RequestCredentials;
-    headers: Headers;
-    mode?: 'cors' | 'no-cors' | 'same-origin';
-    body?: string;
-}
+import { FetchOptions, FetchResponse } from '@appTypes/fetch';
 
 /**
  * Generic wrapper for Fetch which will reject on timeOut
@@ -27,10 +19,7 @@ export const fetchWithTimeOut = (url: string, options: FetchOptions, timeOut: nu
 /**
  * Custom wrapper for Fetch to abstract error handling and JSON parsing
  */
-export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): Promise<{
-    meta: Response;
-    json: any;
-}> => {
+export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): Promise<FetchResponse> => {
 
     return fetchWithTimeOut(url, options, timeOut)
         .then((response: Response) => {

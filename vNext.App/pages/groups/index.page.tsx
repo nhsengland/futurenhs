@@ -27,35 +27,55 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context: G
     const initialPageSize: number = selectPagination(context).pageSize ?? 10;
 
     /**
+     * Create page data
+     */
+    const props: Props = {
+        id: id,
+        user: user,
+        content: null,
+        groupsList: [],
+        pagination: null,
+        errors: null
+    };
+
+    /**
      * Get data from services
      */
-    const { data: content, errors } = await getPageContent({
-        id: id,
-        locale: locale
-    });
+    try {
 
-    const { data: groupsList, pagination } = await getGroups({
-        user: user,
-        filters: {
-            isMember: true
-        },
-        pagination: {
-            pageNumber: initialPageNumber,
-            pageSize: initialPageSize
-        }
-    });
+        const [
+            pageContent,
+            groupsList,
+        ] = await Promise.all([
+            getPageContent({
+                id: id,
+                locale: locale
+            }),
+            getGroups({
+                user: user,
+                isMember: true,
+                pagination: {
+                    pageNumber: initialPageNumber,
+                    pageSize: initialPageSize
+                }
+            })
+        ]);
+
+        props.content = pageContent.data;
+        props.groupsList = groupsList.data;
+        props.pagination = groupsList.pagination;
+    
+    } catch (error) {
+        
+        props.errors = error;
+
+    }
 
     /**
      * Return data to page template
      */
     return {
-        props: {
-            id: id,
-            user: user,
-            content: content,
-            groupsList: groupsList,
-            pagination: pagination
-        } as Props
+        props: props
     }
 
 });

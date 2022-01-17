@@ -118,7 +118,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                             toggleChildren={
                                                                 <>
                                                                     <span className="c-site-header-nav_root-nav-image">
-                                                                        <Avatar initials={initialsText} />
+                                                                        <Avatar image={null} initials={initialsText} />
                                                                     </span>
                                                                     <span>{fullNameText}</span>
                                                                     <SVGIcon name={getAccordionIcon(isUserAccordionOpen)} className="c-site-header-nav_root-nav-icon" />

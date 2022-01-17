@@ -9,13 +9,15 @@ describe('Group folders template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
-        asPath: '/groups/group/files' 
+        asPath: '/groups/group/files',
+        query: {
+            groupId: 'group'
+        } 
     }));
 
     const props: Props = {
         id: 'mockId',
         folderId: 'mockId',
-        files: [],
         user: undefined,
         content: {
             titleText: 'Mock title text',

@@ -36,9 +36,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(async (context: G
 
     const { data: groupsList, pagination } = await getGroups({
         user: user,
-        filters: {
-            isMember: false
-        },
+        isMember: false,
         pagination: {
             pageNumber: initialPageNumber,
             pageSize: initialPageSize

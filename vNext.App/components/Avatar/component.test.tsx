@@ -5,7 +5,8 @@ import { Avatar } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    initials: 'mockInitials'
+    initials: 'mockInitials',
+    image: null
 };
 
 describe('Avatar', () => {

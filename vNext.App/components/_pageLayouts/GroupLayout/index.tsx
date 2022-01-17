@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
+import { routeParams } from '@constants/routes';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { PageHeader } from '@components/PageHeader';
@@ -22,14 +23,15 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
-    const navMenuList = getGroupNavMenuList({
-        router: router,
-        activeId: id
-    });
-
     const groupRoute: string = getRouteToParam({ 
         router: router,
-        paramName: 'group' 
+        paramName: routeParams.GROUPID,
+        shouldIncludeParam: true
+    });
+
+    const navMenuList = getGroupNavMenuList({
+        groupRoute: groupRoute,
+        activeId: id
     });
     
     const currentRoutePathElements: Array<string> = groupRoute?.split('/')?.filter((item) => item) ?? [];

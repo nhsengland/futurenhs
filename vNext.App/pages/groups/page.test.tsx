@@ -28,7 +28,7 @@ describe('Groups page', () => {
                     titleText: 'Mock title text',
                     mainHeadingHtml: 'Mock Group card heading 1'
                 },
-                slug: 'mock-group',
+                groupId: 'mock-group',
                 totalDiscussionCount: 3,
                 totalMemberCount: 4
             }

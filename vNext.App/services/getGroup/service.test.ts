@@ -41,9 +41,7 @@ describe('getGroup service', () => {
         })
 
         const response = await getGroup({
-            user: mockUser,
-            slug: 'mock-slug',
-            page: 'home'
+            groupId: 'mock-slug'
         },
         {
             setGetFetchOptions: mockSetGetFetchOptions,
@@ -69,9 +67,7 @@ describe('getGroup service', () => {
         })
 
         const response = await getGroup({
-            user: mockUser,
-            slug: 'mock-slug',
-            page: 'home'
+            groupId: 'mock-slug'
         },
         {
             setGetFetchOptions: mockSetGetFetchOptions,
@@ -99,14 +95,12 @@ describe('getGroup service', () => {
             resolve({
                 meta: response,
                 json: {
-                    pageHeader: {
-                        nameText: 'mockNameText', 
-                        strapLineText: 'Testing unreleased features of the FutureNHS platform',
-                        image: {
-                            source: '/mockSource',
-                            height: 100,
-                            width: 100
-                        }
+                    name: 'mockNameText', 
+                    strapLineText: 'Testing unreleased features of the FutureNHS platform',
+                    image: {
+                        source: '/mockSource',
+                        height: 100,
+                        width: 100
                     }
                 }
             });
@@ -114,9 +108,7 @@ describe('getGroup service', () => {
         })
 
         const response = await getGroup({
-            user: mockUser,
-            slug: 'mock-slug',
-            page: 'home'
+            groupId: 'mock-slug'
         },
         {
             setGetFetchOptions: mockSetGetFetchOptions,

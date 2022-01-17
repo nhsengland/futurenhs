@@ -5,6 +5,7 @@ import { Image } from './image';
 
 export interface Page {
     id: string;
+    groupId?: string;
     csrfToken?: string;
     pagination?: Pagination;
     errors?: Record<string>;

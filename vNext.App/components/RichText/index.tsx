@@ -25,7 +25,7 @@ export const RichText: (props: Props) => JSX.Element = ({
 
     const isHtml = (string: string): boolean => {
 
-        string = string.trim().slice(0, 1000);
+        string = string?.trim().slice(0, 1000) ?? '';
 
         return basic.test(string) || full.test(string);
 

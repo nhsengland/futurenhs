@@ -9,12 +9,17 @@ describe('Group member template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
-        asPath: '/groups/group/members' 
+        asPath: '/groups/group/members/member',
+        query: {
+            groupId: 'group',
+            memberId: 'member'
+        }
     }));
 
     const props: Props = {
         id: 'mockPageId',
         user: undefined,
+        member: null,
         content: {
             titleText: 'Mock title text',
             metaDescriptionText: 'Mock meta description text',

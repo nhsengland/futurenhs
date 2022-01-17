@@ -1,10 +1,10 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
-import { getEnvVar } from '@helpers/util/env';
-import { ServiceResponse } from '@appTypes/service';
+import { FetchResponse } from '@appTypes/fetch';
+import { ApiResponse, ServiceResponse } from '@appTypes/service';
 import { Group } from '@appTypes/group';
 
 declare type Options = ({
-    slug: string;
+    groupId: string;
 });
 
 declare type Dependencies = ({
@@ -13,18 +13,20 @@ declare type Dependencies = ({
 });
 
 export const getGroup = async ({
-    slug
+    groupId
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Group>> => {
 
     try {
 
         const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
+        
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/groups/${groupId}`;
+        const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
+        const apiData: ApiResponse<any> = apiResponse.json;
+        const apiMeta: any = apiResponse.meta;
 
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/groups/${slug}`;
-
-        const { json, meta } = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
-        const { ok, status, statusText } = meta;
+        const { ok, status, statusText } = apiMeta;
 
         if(!ok){
 
@@ -38,15 +40,15 @@ export const getGroup = async ({
 
         const data = {
             content: {
-                titleText: json.name, 
+                titleText: apiData.name, 
                 metaDescriptionText: 'A Future NHS group',
-                mainHeadingHtml: json.name,
+                mainHeadingHtml: apiData.name,
                 strapLineText: 'Testing unreleased features of the FutureNHS platform'//json.pageHeader.strapLineText
             },
-            image: json.image ? {
-                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${json.image?.source}`,
-                height: json?.image?.height ?? null,
-                width: json?.image?.width ?? null,
+            image: apiData.image ? {
+                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${apiData.image?.source}`,
+                height: apiData?.image?.height ?? null,
+                width: apiData?.image?.width ?? null,
                 altText: 'TBC'
             } : null
         };
