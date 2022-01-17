@@ -38,15 +38,15 @@
 			cache: false,
 			async: false,
 			success: function (res) {
-				iframe.setAttribute('srcdoc', res);
-				iframe.setAttribute('src', res);
+				// iframe.setAttribute('srcdoc', res);
+				// iframe.setAttribute('src', res);
 				console.log({ res });
 				console.log('myres', this.response);
 				console.log('inner', res.documentElement.innerHTML);
 				var content = iframe.contentWindow || iframe.contentDocument.document || iframe.contentDocument;
 				content.document.open();
 				// content.document.write(this.response.documentElement.innerHTML);
-				content.document.write(res);
+				iframe.write(res);
 				content.document.close();
 			},
 			error: function (e) {
