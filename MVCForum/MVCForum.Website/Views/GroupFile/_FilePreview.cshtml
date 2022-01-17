@@ -9,12 +9,7 @@
 				<input id="collabora_token" name="access_token" value="@Model.AccessToken" type="hidden">
 			</form>
 
-			<iframe id="output-frame-id" src="" name="collabora_host_frame" allowfullscreen="" width="100%"
-				height="1250px">
-			</iframe>
-
-			<iframe id="output-frame-id2" src="" name="collabora_host_frame" allowfullscreen="" width="100%"
-				height="1250px">
+			<iframe id="output-frame-id" name="collabora_host_frame" allowfullscreen="" width="100%" height="1250px">
 			</iframe>
 
 		</div>
@@ -31,7 +26,6 @@
 
 	function handler() {
 		var iframe = document.getElementById("output-frame-id");
-		var iframe2 = document.getElementById("output-frame-id2");
 
 		$.ajax({
 			url: collabora_source,
@@ -44,11 +38,11 @@
 			async: false,
 			success: function (res) {
 				var doc = iframe.contentWindow.document;
+				doc.src = "about:blank";
 				doc.open();
 				doc.write(res);
 				doc.close();
-				console.log('myres', this.res);
-				iframe2.src = "data:text/html;charset=utf-8," + escape(res);
+
 			},
 			error: function (e) {
 				console.log("ERROR : ", e);
