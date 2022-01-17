@@ -38,8 +38,7 @@
 			cache: false,
 			async: false,
 			success: function (data) {
-				iframe.setAttribute('srcdoc', responseText);
-				iframe.setAttribute('src', 'data:text/html;charset=utf-8,' + encodeURI(responseData));
+				iframe.html(data);
 			},
 			error: function (e) {
 				console.log("ERROR : ", e);
