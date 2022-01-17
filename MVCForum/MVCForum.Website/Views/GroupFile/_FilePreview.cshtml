@@ -25,21 +25,27 @@
 
 	data.append('access_token', token);
 
-	xhr.open('POST', collabora_source);
-	xhr.send(data);
-
-	var iframe = document.getElementById("output-frame-id");
 	function handler() {
-	if (this.readyState === this.DONE) {
-		if (this.status === 200) {
-			var content = iframe.contentWindow || iframe.contentDocument.document || iframe.contentDocument;
-			content.document.open();
-			content.document.write(this.response.documentElement.innerHTML);
-			content.document.close();
-		} else {
-			iframe.setAttribute('srcdoc', '<html><head></head><body>Error loading page.</body></html>');
-		}
-	}
+		var iframe = document.getElementById("output-frame-id");
+
+		$.ajax({
+			url: collabora_source,
+			data: data,
+			type: "POST",
+			enctype: 'multipart/form-data',
+			contentType: false,
+			processData: false,
+			cache: false,
+			async: false,
+			success: function (data) {
+				iframe.setAttribute('srcdoc', responseText);
+				iframe.setAttribute('src', 'data:text/html;charset=utf-8,' + encodeURI(responseData));
+			},
+			error: function (e) {
+				console.log("ERROR : ", e);
+				iframe.setAttribute('srcdoc', '<html><head></head><body>Error loading page.</body></html>');
+			},
+		});
 	}
 	$(document).ready(function () {
 		handler();
