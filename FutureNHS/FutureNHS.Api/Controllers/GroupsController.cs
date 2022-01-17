@@ -118,5 +118,17 @@ namespace FutureNHS.Api.Controllers
 
             return Ok(pagedResponse);
         }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/groups/{slug}/members/{id:guid}")]
+        public async Task<IActionResult> GetMemberInGroupAsync(Guid userId, string slug, Guid Id, CancellationToken cancellationToken)
+        {
+            var member = await _groupDataProvider.GetGroupMemberAsync(slug, Id, cancellationToken);
+
+            if(member is null)
+                return NotFound();
+
+            return Ok(member);
+        }
     }
 }

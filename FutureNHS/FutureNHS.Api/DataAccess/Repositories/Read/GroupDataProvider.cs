@@ -270,5 +270,42 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
             return (totalCount, members);
         }
+
+        public async Task<GroupMemberDetails?> GetGroupMemberAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(GroupMemberDetails.Id)}]                   = member.Id,
+                                [{nameof(GroupMemberDetails.Slug)}]                 = member.Slug, 
+                                [{nameof(GroupMemberDetails.FirstName)}]            = member.FirstName,
+                                [{nameof(GroupMemberDetails.LastName)}]             = member.Surname,
+                                [{nameof(GroupMemberDetails.Initials)}]             = member.Initials, 
+                                [{nameof(GroupMemberDetails.Email)}]                = member.Email, 
+                                [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
+                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDate,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDate,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName
+
+                    FROM        GroupUser groupUser
+                    JOIN        [Group] groups 
+                    ON          groups.Id = groupUser.Group_Id
+                    JOIN        MembershipUser member 
+                    ON          member.Id = groupUser.MembershipUser_Id
+                    JOIN        MembershipRole memberRoles 
+                    ON          memberRoles.Id = groupUser.MembershipRole_Id 
+                    WHERE       groups.Slug = @Slug
+                    AND         member.Id = @UserId
+                    AND         groupUser.Approved = 1;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var member = await dbConnection.QueryFirstOrDefaultAsync<GroupMemberDetails>(query, new
+            {
+                UserId = userId,
+                Slug = slug
+            });
+
+            return member;
+        }
     }
 }
