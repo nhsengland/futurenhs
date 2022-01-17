@@ -43,12 +43,12 @@
 			cache: false,
 			async: false,
 			success: function (res) {
-				// iframe.setAttribute('srcdoc', res);
-				// iframe.setAttribute('src', res);
-				console.log({ res });
+				var doc = iframe.contentWindow.document;
+				doc.open();
+				doc.write(res);
+				doc.close();
 				console.log('myres', this.res);
-				iframe.src = "data:text/html;charset=utf-8," + escape(res);
-				iframe2.setAttribute('srcdoc', res);
+				iframe2.src = "data:text/html;charset=utf-8," + escape(res);
 			},
 			error: function (e) {
 				console.log("ERROR : ", e);
