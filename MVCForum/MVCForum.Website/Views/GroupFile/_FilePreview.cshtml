@@ -9,7 +9,8 @@
 				<input id="collabora_token" name="access_token" value="@Model.AccessToken" type="hidden">
 			</form>
 
-			<iframe id="output-frame-id" name="collabora_host_frame" allowfullscreen="" width="100%" height="1250px">
+			<iframe id="output-frame-id" name="collabora_host_frame" src="@Model.WopiClientUrlForFile"
+				allowfullscreen="" width="100%" height="1250px">
 			</iframe>
 
 		</div>
@@ -28,11 +29,7 @@
 
 		$.ajax({
 			url: collabora_source,
-			data:
-			{
-				action: collabora_source,
-				access_token: token,
-			},
+			data: data,
 			type: "POST",
 			enctype: 'multipart/form-data',
 			contentType: false,
@@ -44,7 +41,7 @@
 			},
 			success: function (res) {
 				var doc = iframe.contentWindow.document;
-				doc.src = "about:blank";
+				iframe.src = collabora_source;
 				doc.open();
 				doc.write(res);
 				doc.close();
