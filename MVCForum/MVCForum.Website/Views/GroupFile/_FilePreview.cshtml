@@ -17,7 +17,6 @@
 </div>
 
 <script type="text/javascript">
-	var xhr = new XMLHttpRequest();
 	var data = new FormData();
 	var token = document.getElementById('collabora_token').value;
 	var collabora_source = document.getElementById('collabora_url').value;
@@ -29,13 +28,20 @@
 
 		$.ajax({
 			url: collabora_source,
-			data: data,
+			data:
+			{
+				action: collabora_source,
+				access_token: token,
+			},
 			type: "POST",
 			enctype: 'multipart/form-data',
 			contentType: false,
 			processData: false,
 			cache: false,
 			async: false,
+			beforeSend: function (xhr) {
+				xhr.withCredentials = true;
+			},
 			success: function (res) {
 				var doc = iframe.contentWindow.document;
 				doc.src = "about:blank";
