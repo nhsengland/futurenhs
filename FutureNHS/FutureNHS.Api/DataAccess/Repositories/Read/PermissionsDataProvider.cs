@@ -59,6 +59,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/delete");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
+                    permissions.Add($"{Schema}/members/{DefaultApiVerison}/add");
                     break;
                 case "Standard Members":
                     break;
