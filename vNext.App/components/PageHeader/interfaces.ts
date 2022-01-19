@@ -8,6 +8,11 @@ export interface Props {
         descriptionHtml?: string;
         navMenuTitleText: string;   
     };
+    shouldRenderActionsMenu?: boolean;
+    actionsMenuList?: Array<{
+        url: string;
+        text: string;
+    }>;
     navMenuList?: Array<{
         url: string;
         text: string;

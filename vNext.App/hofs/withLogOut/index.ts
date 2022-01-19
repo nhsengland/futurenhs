@@ -1,6 +1,9 @@
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { GetServerSideProps } from 'next';
+import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
 
-export const withLogOut: (getServerSideProps: GetServerSideProps) => GetServerSideProps = (getServerSideProps: GetServerSideProps) => {
+export const withLogOut = (config: HofConfig, dependencies?: {}): GetServerSideProps => {
+
+    const { getServerSideProps } = config;
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 

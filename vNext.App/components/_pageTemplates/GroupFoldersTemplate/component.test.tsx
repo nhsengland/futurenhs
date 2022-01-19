@@ -22,6 +22,7 @@ describe('Group folders template', () => {
         folder: null,
         files: [],
         user: undefined,
+        actions: [],
         content: {
             titleText: 'Mock title text',
             metaDescriptionText: 'Mock meta description text',

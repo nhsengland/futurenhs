@@ -34,25 +34,10 @@
         padding: $nhsuk-spacing-point-6 $nhsuk-spacing-point-3 0;
     }
 
-    &_col-1 {
-        flex: 0 0 auto;
-        margin-right: $nhsuk-spacing-point-4;
-
-        @include respond-to(desktop) {
-            margin-right: $nhsuk-spacing-point-8;
-        }
-    }
-
-    &_col-2 {
-        flex: 12 1 auto;
-        display: flex;
-        flex-direction: column;
-    }
-
     &_hero {
         display: block;
         float: left;
-        margin: 0 32px 0 0;
+        margin: 0 $nhsuk-spacing-point-5 0 0;
     }
 
     &_hero-body {
@@ -63,11 +48,11 @@
         overflow: hidden;
         aspect-ratio: 1 / 1; //sass-lint:disable-line no-misspelled-properties
         background-color: $color_nhsuk-grey-5;
-        border-radius: 4px;
+        border-radius: $nhsuk-spacing-point-1;
     }
 
     &_header {
-        margin-bottom: $nhsuk-spacing-point-9;
+        margin-bottom: $nhsuk-spacing-point-6;
         @include respond-to(desktop) {
             margin-top: $nhsuk-spacing-point-4;
         }
@@ -79,8 +64,8 @@
 
     &_nav-trigger {
         position: relative;
-        border: 4px solid transparent;
-        padding: 14px 16px;
+        border: $nhsuk-spacing-point-1 solid transparent;
+        padding: 14px $nhsuk-spacing-point-3;
         @include respond-to(desktop) {
             display: none;
         }
@@ -88,14 +73,54 @@
 
     &_nav-trigger-icon {
         position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 16px;
-        right: 16px;
+        width: $nhsuk-spacing-point-3;
+        height: $nhsuk-spacing-point-3;
+        top: 50%;
+        right: $nhsuk-spacing-point-3;
+        margin: -#{$nhsuk-spacing-point-2} 0 0;
     }
 
     &_nav-content {
         border-top: 2px solid $white;
+    }
+
+    &_actions {
+        
+    }
+
+    &_actions-trigger {
+        @include standard-text;
+        margin: 0;
+        position: relative;
+        border: solid $nhsuk-spacing-point-1 $white;
+        border-radius: $nhsuk-spacing-point-1;
+        padding: 14px $nhsuk-spacing-point-3;
+    }
+
+    &_actions-trigger-icon {
+        position: absolute;
+        width: $nhsuk-spacing-point-3;
+        height: $nhsuk-spacing-point-3;
+        top: 50%;
+        right: $nhsuk-spacing-point-3;
+        margin: -#{$nhsuk-spacing-point-2} 0 0;
+    }
+
+    &_actions-content {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        margin: -#{$nhsuk-spacing-point-1} 0 0;
+        padding: 0;
+        color: $t-text-one;
+        background-color: $white;
+        border-bottom-left-radius: $nhsuk-spacing-point-1;
+        border-bottom-right-radius: $nhsuk-spacing-point-1;
+    }
+
+    &_actions-content-item {
+        @include standard-text;
+        padding: 14px 20px;
     }
 
 }

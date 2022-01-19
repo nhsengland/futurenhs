@@ -2,13 +2,15 @@ import { GetServerSideProps } from 'next';
 import { getAuth } from '@services/getAuth';
 import { GetAuthService } from '@services/getAuth';
 import { getEnvVar } from '@helpers/util/env';
-import { GetServerSidePropsContext } from '@appTypes/next';
+import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
 
-export const withAuth = (getServerSideProps: GetServerSideProps, dependencies?: {
+export const withAuth = (config: HofConfig, dependencies?: {
     getAuthService?: GetAuthService
 }): GetServerSideProps => {
 
     const getAuthService = dependencies?.getAuthService ?? getAuth;
+
+    const { getServerSideProps } = config;
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 

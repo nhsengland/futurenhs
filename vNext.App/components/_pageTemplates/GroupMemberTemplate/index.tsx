@@ -17,6 +17,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
     user,
     content,
     member,
+    actions,
     image
 }) => {
 
@@ -37,6 +38,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
         <GroupLayout 
             id="members"
             user={user}
+            actions={actions}
             content={content}
             image={image} 
             className="u-bg-theme-3">

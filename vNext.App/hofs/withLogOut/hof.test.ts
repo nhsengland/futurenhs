@@ -17,7 +17,9 @@ describe('withLogOut hof', () => {
             }
         }
 
-        const withOutput = withLogOut(mockGetServerSideProps);
+        const withOutput = withLogOut({
+            getServerSideProps: mockGetServerSideProps
+        });
         
         await withOutput(mockContext);
 

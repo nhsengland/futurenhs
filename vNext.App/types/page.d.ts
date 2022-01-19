@@ -16,4 +16,5 @@ export interface Page {
 export interface GroupPage extends Page {
     image: Image;
     content: GroupsPageContent;
+    actions: Array<any>;
 }

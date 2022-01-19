@@ -18,6 +18,7 @@ describe('Group forum template', () => {
     const props: Props = {
         id: 'mockId',
         user: undefined,
+        actions: [],
         discussionsList: [],
         content: {
             titleText: 'Mock title text',

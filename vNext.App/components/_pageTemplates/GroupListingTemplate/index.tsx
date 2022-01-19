@@ -88,7 +88,9 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                 <PageBody>
                     <LayoutColumn tablet={8}>
                         <h2>{secondaryHeadingHtml}</h2>
-                        <p className="u-text-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+                        {introHtml &&
+                            <p className="u-text-lead u-text-theme-7 u-mb-4">{introHtml}</p>
+                        }
                         <AriaLiveRegion>
                             <ul className="u-list-none u-p-0">
                                 {dynamicGroupsList?.map?.(({ 
@@ -106,7 +108,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                     return (
 
                                         <li key={index}>
-                                            <Card image={imageToUse} className="u-border-bottom-theme-8">
+                                            <Card image={imageToUse} className="u-border-bottom-theme-8 u-mb-4">
                                                 <h3 className="c-card_heading">
                                                     <Link href={`/groups/${groupId}`}>
                                                         <a>{mainHeadingHtml}</a>

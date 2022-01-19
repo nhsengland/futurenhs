@@ -14,7 +14,6 @@ $card-hero-padding: 10px;
     border-bottom-width: $card-border-highlight-width;
     position: relative;
     width: 100%;
-    margin-bottom: $nhsuk-spacing-point-4;
 
     @include respond-to(tablet) {
         flex-wrap: nowrap;
@@ -55,7 +54,7 @@ $card-hero-padding: 10px;
     }
 
     &_footer-item {
-        @include small-text(false);
+        @include small-text;
         font-weight: $nhsuk-font-bold;
         display: inline-block;
         margin-bottom: 0;

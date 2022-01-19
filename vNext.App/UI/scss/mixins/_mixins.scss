@@ -261,57 +261,34 @@ $no-js-style: false !default;
     }
 }
 
-@mixin standard-text($margin: true) {
+@mixin standard-text() {
     line-height: $base-font-line-height;
     font-size: $base-font-size;
-
-    @if ($margin) {
-        margin: 0 0 $base-font-margin-bottom;
-    }
 
     @include respond-to(desktop) {
         line-height: $base-font-line-height-desktop;
         font-size: $base-font-size-desktop;
-
-        @if ($margin) {
-            margin: 0 0 $base-font-margin-bottom-desktop;
-        }
     }
 }
 
-@mixin lead-text($margin: true) {
+@mixin lead-text() {
+    margin: 0 0 $nhsuk-spacing-point-4;
     line-height: $lead-text-line-height;
     font-size: $lead-text-size;
-    
-    @if ($margin) {
-        margin: 0 0 $lead-text-margin-bottom;
-    }
 
     @include respond-to(desktop) {
         line-height: $lead-text-line-height-desktop;
         font-size: $lead-text-size-desktop;
-
-        @if ($margin) {
-            margin: 0 0 $lead-text-margin-bottom-desktop;
-        }
     }
 }
 
-@mixin small-text($margin: true) {
+@mixin small-text() {
     line-height: $small-text-line-height;
     font-size: $small-text-size;
-
-    @if ($margin) {
-        margin: 0 0 $small-text-margin-bottom;
-    }
 
     @include respond-to(desktop) {
         line-height: $small-text-line-height-desktop;
         font-size: $small-text-size-desktop;
-
-        @if ($margin) {
-            margin: 0 0 $small-text-margin-bottom-desktop;
-        }
     }
 }
 

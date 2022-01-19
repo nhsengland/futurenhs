@@ -15,6 +15,7 @@ import { Props } from './interfaces';
  */
 export const GroupFileTemplate: (props: Props) => JSX.Element = ({
     user,
+    actions,
     content,
     image
 }) => {
@@ -32,6 +33,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
         <GroupLayout 
             id="files"
             user={user}
+            actions={actions}
             content={content}
             image={image} 
             className="u-bg-theme-3">

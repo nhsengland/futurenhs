@@ -28,7 +28,9 @@ describe('withAuth hof', () => {
     
         });
 
-        const withOutput = withAuth(mockGetServerSideProps, {
+        const withOutput = withAuth({
+            getServerSideProps: mockGetServerSideProps
+        }, {
             getAuthService: mockGetAuthService
         });
 
@@ -55,7 +57,9 @@ describe('withAuth hof', () => {
     
         });
 
-        const withOutput = withAuth(mockGetServerSideProps, {
+        const withOutput = withAuth({
+            getServerSideProps: mockGetServerSideProps
+        }, {
             getAuthService: mockGetAuthService
         });
 

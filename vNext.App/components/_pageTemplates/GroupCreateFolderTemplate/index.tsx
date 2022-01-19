@@ -13,6 +13,7 @@ import { Props } from './interfaces';
 export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     csrfToken,
     user,
+    actions,
     content,
     image
 }) => {
@@ -24,6 +25,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
         <GroupLayout 
             id="files"
             user={user}
+            actions={actions}
             content={content}
             image={image} 
             className="u-bg-theme-3">            

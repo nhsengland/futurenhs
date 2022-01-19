@@ -78,6 +78,7 @@ h6 {
 
 p {
     @include standard-text;
+    margin: 0 0 $nhsuk-spacing-point-3;
 }
 
 a {
@@ -104,7 +105,7 @@ ol {
 }
 
 li {
-    @include standard-text(false);
+    @include standard-text();
     margin-bottom: $nhsuk-spacing-point-2;
 }
 

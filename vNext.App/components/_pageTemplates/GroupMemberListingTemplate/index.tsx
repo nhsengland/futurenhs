@@ -19,6 +19,7 @@ import { Props } from './interfaces';
 export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     groupId,
     user,
+    actions,
     pendingMembers,
     members,
     content,
@@ -120,6 +121,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
         <GroupLayout 
             id="members"
             user={user}
+            actions={actions}
             content={content}
             image={image} 
             className="u-bg-theme-3">

@@ -18,6 +18,7 @@ describe('Group member listing template', () => {
     const props: Props = {
         id: 'mockPageId',
         user: undefined,
+        actions: [],
         content: {
             titleText: 'Mock title text',
             metaDescriptionText: 'Mock meta description text',

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+import { actions as userActions } from '@constants/actions';
 import { routeParams } from '@constants/routes';
 import { BreadCrumb } from '@components/BreadCrumb';
 import { SVGIcon } from '@components/SVGIcon';
@@ -30,6 +31,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
     folderId,
     folder,
     files,
+    actions,
     pagination
 }) => {
 
@@ -37,14 +39,16 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
     const [fileList, setFileList] = useState(files);
     const [dynamicPagination, setPagination] = useState(pagination);
 
-    const { 
-        id, 
-        name, 
-        path, 
-        bodyHtml 
-    } = folder ?? {};
+    const { id, 
+            name, 
+            path, 
+            bodyHtml } = folder ?? {};
     
     const hasFolders: boolean = files?.length > 0;
+    const hasAddFileAction: boolean = actions?.includes(userActions.GROUPS_FILES_ADD);
+    const hasAddFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_ADD);
+    const hasEditFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_EDIT);
+    const hasDeleteFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_DELETE);
 
     const groupBasePath: string = getRouteToParam({
         router: router,
@@ -57,20 +61,31 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
         paramName: routeParams.FOLDERID
     }) : `${groupBasePath}/folders`;
 
-    const breadCrumbList: BreadCrumbList = []; 
+    const breadCrumbList: BreadCrumbList = [];
+
+    if(path?.length > 0){
+
+        breadCrumbList.push({
+            element: folderBasePath,
+            text: 'Files'
+        });
+
+    }
     
     path?.forEach(({ element, text }) => {
 
         if(element !== id){
 
             breadCrumbList.push({
-                element: `${folderBasePath}/${element}`,
+                element: `/${element}`,
                 text: text
             });
 
         }
 
     });
+
+    const hasBreadCrumb: boolean = breadCrumbList.length > 0;
 
     const gridRowList = useMemo(() => fileList?.map(({ 
         id,
@@ -133,43 +148,57 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
         <GroupLayout 
             id="files"
             user={user}
+            actions={actions}
             content={content}
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
-                    <BreadCrumb 
-                        content={{
-                            ariaLabelText: 'Folders'
-                        }}
-                        breadCrumbList={breadCrumbList}
-                        className="u-mb-10" />
+                    {hasBreadCrumb &&
+                        <BreadCrumb 
+                            content={{
+                                ariaLabelText: 'Folders'
+                            }}
+                            breadCrumbList={breadCrumbList}
+                            className="u-text-lead u-mb-10" />
+                    }
                     {folderId &&
                         <>
                             <LayoutColumnContainer>
                                 <LayoutColumn tablet={6} desktop={8} className="u-self-center">
-                                    <h2>{name}</h2>
+                                    <h2 className="u-m-0">{name}</h2>
                                 </LayoutColumn>
-                                <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
-                                    <p className="u-mb-0">
-                                        <Link href={`${groupBasePath}/folders/create`}>
-                                            <a className="c-button c-button--outline u-mr-2 u-drop-shadow">Delete folder</a>
-                                        </Link>
-                                        <a href="/" className="c-button c-button--outline u-drop-shadow">Edit folder</a>
-                                    </p> 
-                                </LayoutColumn>
+                                {(folderId && (hasEditFolderAction || hasDeleteFolderAction)) &&
+                                    <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
+                                        <p className="u-mb-0">
+                                            <Link href={`${groupBasePath}/folders/create`}>
+                                                <a className="c-button c-button--outline u-mr-2 u-drop-shadow">Delete folder</a>
+                                            </Link>
+                                            <a href="/" className="c-button c-button--outline u-drop-shadow">Edit folder</a>
+                                        </p> 
+                                    </LayoutColumn>
+                                }
                             </LayoutColumnContainer>
                             <hr />
                         </>
                     }
-                    <RichText wrapperElementType="p" bodyHtml={bodyHtml} />
-                    <p className="u-mb-10">
-                        <Link href={`${groupBasePath}/folders/create`}>
-                            <a className="c-button c-button--outline u-mr-2 u-w-72 u-drop-shadow">Add folder</a>
-                        </Link>
-                        {folderId &&
-                            <a href="/" className="c-button c-button--outline u-min-w-70 u-w-72 u-drop-shadow">Upload file</a>
-                        }
-                    </p>
+                    {!folderId &&
+                        <h2>Files</h2>
+                    }
+                    {bodyHtml &&
+                        <RichText wrapperElementType="p" bodyHtml={bodyHtml} />
+                    }
+                    {(hasAddFolderAction || hasAddFileAction) &&
+                        <p className="u-mb-10">
+                            {hasAddFolderAction &&
+                                <Link href={`${groupBasePath}/folders/create`}>
+                                    <a className="c-button c-button--outline u-mr-2 u-w-72 u-drop-shadow">Add folder</a>
+                                </Link>
+                            }
+                            {(folderId && hasAddFileAction) &&
+                                <a href="/" className="c-button c-button--outline u-min-w-70 u-w-72 u-drop-shadow">Upload file</a>
+                            }
+                        </p>
+                    }
                     {hasFolders &&
                         <>
                             <AriaLiveRegion>

@@ -1,10 +1,14 @@
+import { useRouter } from 'next/router';
 import { withApplicationInsights } from 'next-applicationinsights';
+
 import { getEnvVar } from '@helpers/util/env';
 import '../UI/scss/screen.scss';
 
 const App = ({ Component, pageProps }) => {
 
-    return <Component {...pageProps} key={pageProps.id} />
+    const router = useRouter();
+
+    return <Component {...pageProps} key={router.asPath} />
     
 }
 

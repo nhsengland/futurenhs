@@ -1,7 +1,9 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
 import { SVGIcon } from '@components/SVGIcon';
@@ -17,15 +19,28 @@ export const PageHeader: (props: Props) => JSX.Element = ({
     id,
     image,
     content,
+    shouldRenderActionsMenu,
+    actionsMenuList,
     navMenuList,
     className
 }) => {
 
+    const [isActionsAccordionOpen, setIsActionsAccordionOpen] = useState(false);
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true);
 
-    const { mainHeadingHtml, descriptionHtml, navMenuTitleText } = content ?? {};
+    const actionsMenuTitleText: string = 'Actions';
+    const { mainHeadingHtml, 
+            descriptionHtml, 
+            navMenuTitleText } = content ?? {};
+
+    const hasActionsMenuItems: boolean = actionsMenuList?.length > 0;
     const hasMenuItems: boolean = navMenuList?.length > 0;
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
+
+    const generatedIds: any = {
+        actionsAccordion: `${id}-actions`,
+        menuAccordion: `${id}-menu`
+    };
 
     const generatedClasses: any = {
         wrapper: classNames('c-page-header', className),
@@ -33,14 +48,23 @@ export const PageHeader: (props: Props) => JSX.Element = ({
         heading: classNames('u-mb-1', 'u-text-theme-1'),
         hero: classNames('c-page-header_hero'),
         heroBody: classNames('c-page-header_hero-body'),
-        description: classNames('c-page-header_description'),
+        description: classNames('c-page-header_description', 'o-truncated-text-lines-2', 'u-m-0'),
+        actions: classNames('c-page-header_actions', 'u-relative'),
+        actionsTrigger: classNames('c-page-header_actions-trigger'),
+        actionsTriggerIcon: classNames('c-page-header_actions-trigger-icon'),
+        actionsContent: classNames('c-page-header_actions-content', 'u-list-none', 'u-pt-1.5'),
         navTrigger: classNames('c-page-header_nav-trigger'),
         navTriggerIcon: classNames('c-page-header_nav-trigger-icon'),
         navContent: classNames('c-page-header_nav-content')
     };
 
-    const getAccordionIcon = useCallback((isOpen: boolean) => isOpen ? iconNames.CHEVRON_UP : iconNames.CHEVRON_DOWN, [isMenuAccordionOpen]);
-    const handleAccordionToggle = useCallback((_, isOpen: boolean) => setIsMenuAccordionOpen(isOpen), [isMenuAccordionOpen]);
+    const getAccordionIcon = useCallback((isOpen: boolean) => isOpen ? iconNames.CHEVRON_UP : iconNames.CHEVRON_DOWN, [isActionsAccordionOpen, isMenuAccordionOpen]);
+    const handleAccordionToggle = useCallback((id, isOpen: boolean) => {
+        
+        id === generatedIds.actionsAccordion && setIsActionsAccordionOpen(isOpen);
+        id === generatedIds.menuAccordion && setIsMenuAccordionOpen(isOpen);
+        
+    }, [isActionsAccordionOpen, isMenuAccordionOpen]);
 
     useEffect(() => {
 
@@ -52,31 +76,68 @@ export const PageHeader: (props: Props) => JSX.Element = ({
 
         <div className={generatedClasses.wrapper}>
             <LayoutColumn>
-                <div className={generatedClasses.header}>
-                    {image &&
-                        <div className={generatedClasses.hero}>
-                            <div className={generatedClasses.heroBody}>
-                                <Image 
-                                    src={image.src} 
-                                    alt={image.altText}
-                                    height={image.height}
-                                    width={image.width} />
+                <LayoutColumnContainer className={generatedClasses.header}>
+                    <LayoutColumn tablet={8} desktop={9}>
+                        {image &&
+                            <div className={generatedClasses.hero}>
+                                <div className={generatedClasses.heroBody}>
+                                    <Image 
+                                        src={image.src} 
+                                        alt={image.altText}
+                                        height={image.height}
+                                        width={image.width} />
+                                </div>
                             </div>
-                        </div>
+                        }
+                        <h1 className={generatedClasses.heading}>
+                            {mainHeadingHtml}
+                        </h1>
+                        {descriptionHtml &&
+                            <RichText 
+                                className={generatedClasses.description} 
+                                wrapperElementType="p"
+                                bodyHtml={descriptionHtml} />
+                        }
+                    </LayoutColumn>
+                    {(shouldRenderActionsMenu && hasActionsMenuItems) &&
+                        <LayoutColumn tablet={4} desktop={3} className="u-self-end">
+                            <Accordion  
+                                id={generatedIds.actionsAccordion}
+                                isOpen={isActionsAccordionOpen}
+                                shouldCloseOnLeave={true}
+                                toggleAction={handleAccordionToggle}
+                                toggleClassName={generatedClasses.actionsTrigger}
+                                toggleChildren={
+                                    <>
+                                        {actionsMenuTitleText}
+                                        <SVGIcon name={getAccordionIcon(isActionsAccordionOpen)} className={generatedClasses.actionsTriggerIcon} />
+                                    </>
+                                }
+                                className={generatedClasses.actions}>
+                                    <ul className={generatedClasses.actionsContent}>
+                                        {actionsMenuList.map(({ url, text }, index) => {
+
+                                            return (
+
+                                                <li key={index} className="u-m-0">
+                                                    <Link href={url}>
+                                                        <a className="c-page-header_actions-content-item u-m-0 u-block u-break-words">
+                                                            {text}
+                                                        </a>
+                                                    </Link>
+                                                </li>
+
+                                            )
+
+                                        })}
+                                    </ul>
+                            </Accordion>
+                        </LayoutColumn>
                     }
-                    <h1 className={generatedClasses.heading}>
-                        {mainHeadingHtml}
-                    </h1>
-                    {descriptionHtml &&
-                        <RichText 
-                            className={generatedClasses.description} 
-                            wrapperElementType="p"
-                            bodyHtml={descriptionHtml} />
-                    }
-                </div>
+                </LayoutColumnContainer>
                 {hasMenuItems &&
                     <Accordion  
-                        id={id}
+                        id={generatedIds.menuAccordion}
                         isOpen={isMenuAccordionOpen}
                         toggleAction={handleAccordionToggle}
                         toggleClassName={generatedClasses.navTrigger}

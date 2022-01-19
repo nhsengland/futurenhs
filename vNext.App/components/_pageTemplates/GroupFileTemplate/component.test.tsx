@@ -20,6 +20,7 @@ describe('Group file template', () => {
         fileId: 'mockId',
         file: {},
         user: undefined,
+        actions: [],
         content: {
             titleText: 'Mock title text',
             metaDescriptionText: 'Mock meta description text',

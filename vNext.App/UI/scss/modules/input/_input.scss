@@ -1,5 +1,5 @@
 .c-input {
-    @include standard-text(false);
+    @include standard-text;
     appearance: none;
     border: $nhsuk-border-width-form-element solid $nhsuk-form-border-color;
     border-radius: 0;

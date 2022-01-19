@@ -5,7 +5,7 @@
     padding: 0;
 
     &_legend {
-        @include standard-text(false);
+        @include standard-text;
         box-sizing: border-box;
         color: $color_nhsuk-black;
         display: table;
@@ -47,7 +47,7 @@
 }
 
 .c-error-message {
-    @include standard-text(false);
+    @include standard-text;
     font-weight: $nhsuk-font-bold;
     clear: both;
     color: $nhsuk-error-color;
@@ -56,7 +56,7 @@
 }
 
 .c-hint-message {
-    @include standard-text(false);
+    @include standard-text;
     color: $dark-grey;
 }
 
@@ -82,13 +82,13 @@
 
 
 .c-label {
-    @include standard-text(false);
+    @include standard-text;
     display: block;
     margin-bottom: $nhsuk-spacing-point-1;
 }
 
 .c-hint {
-    @include standard-text(false);
+    @include standard-text;
     color: $nhsuk-secondary-text-color;
     display: block;
     margin-bottom: $nhsuk-spacing-point-3;

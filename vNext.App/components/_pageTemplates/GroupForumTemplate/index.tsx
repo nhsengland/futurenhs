@@ -16,6 +16,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     content,
     image,
     pagination,
+    actions,
     discussionsList
 }) => {
 
@@ -45,6 +46,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
         <GroupLayout 
             id="forum"
             user={user}
+            actions={actions}
             content={content}
             image={image} 
             className="u-bg-theme-3">

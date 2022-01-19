@@ -6,15 +6,17 @@ import { GetServerSidePropsContext } from '@appTypes/next';
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withAuth(async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = withAuth({
+    getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-    return {
-        redirect: {
-            permanent: false,
-            destination: '/'
-        }
-    }  
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/'
+            }
+        }  
 
+    }
 });
 
 /**

@@ -6,6 +6,7 @@ import { routeParams } from '@constants/routes';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { PageHeader } from '@components/PageHeader';
+import { getActionNavMenuList } from '@helpers/actions/getActionNavMenuList';
 import { getGroupNavMenuList } from '@helpers/routing/getGroupNavMenuList';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb';
@@ -17,6 +18,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     id,
     content,
     image,
+    actions,
     children,
     ...rest 
 }) => {
@@ -27,6 +29,10 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
         router: router,
         paramName: routeParams.GROUPID,
         shouldIncludeParam: true
+    });
+
+    const actionsMenuList = getActionNavMenuList({
+        actions: actions
     });
 
     const navMenuList = getGroupNavMenuList({
@@ -58,6 +64,8 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                         navMenuTitleText: 'Group menu'
                     }}
                     image={image}
+                    shouldRenderActionsMenu={true}
+                    actionsMenuList={actionsMenuList}
                     navMenuList={navMenuList}
                     className="u-bg-theme-14" />
                 {children}

@@ -1,10 +1,12 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
-import { Group } from '@appTypes/group';
+import { Actions } from '@appTypes/actions';
+import { User } from '@appTypes/user';
 
 declare type Options = ({
     groupId: string;
+    user: User;
 });
 
 declare type Dependencies = ({
@@ -12,18 +14,21 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export type GetGroupService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<Group>>;
+export type GetGroupActionsService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<Actions>>;
 
-export const getGroup = async ({
-    groupId
-}: Options, dependencies?: Dependencies): Promise<ServiceResponse<Group>> => {
+export const getGroupActions = async ({
+    groupId,
+    user
+}: Options, dependencies?: Dependencies): Promise<ServiceResponse<Actions>> => {
 
     try {
 
         const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
         
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/groups/${groupId}`;
+        const { id } = user;
+
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}/actions`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
@@ -40,20 +45,7 @@ export const getGroup = async ({
 
         }
 
-        const data = {
-            content: {
-                titleText: apiData.name, 
-                metaDescriptionText: 'A Future NHS group',
-                mainHeadingHtml: apiData.name,
-                strapLineText: 'Testing unreleased features of the FutureNHS platform'//json.pageHeader.strapLineText
-            },
-            image: apiData.image ? {
-                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${apiData.image?.source}`,
-                height: apiData?.image?.height ?? null,
-                width: apiData?.image?.width ?? null,
-                altText: 'TBC'
-            } : null
-        };
+        const data = apiData;
 
         return {
             data: data,

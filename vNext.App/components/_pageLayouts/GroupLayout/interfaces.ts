@@ -9,6 +9,7 @@ export interface Props {
     shouldRenderBreadCrumb?: boolean; 
     shouldRenderMainNav?: boolean;
     user?: any;
+    actions?: any;
     className?: string;
     content?: GroupsPageContent;
     image?: Image;

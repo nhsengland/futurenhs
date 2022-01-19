@@ -20,6 +20,7 @@ describe('Group member template', () => {
         id: 'mockPageId',
         user: undefined,
         member: null,
+        actions: [],
         content: {
             titleText: 'Mock title text',
             metaDescriptionText: 'Mock meta description text',
