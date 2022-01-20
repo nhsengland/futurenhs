@@ -20,12 +20,12 @@ declare type Dependencies = ({
 });
 
 export const getSearchResults = async ({
+    user,
     term,
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<SearchResult>>> => {
 
     try {
-
         const serviceResponse: ServicePaginatedResponse<Array<any>> = {
             data: []
         };
@@ -35,14 +35,14 @@ export const getSearchResults = async ({
 
         const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
 
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/search?term=${term}${paginationQueryParams}`;
+        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/search?term=${term}&${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiPaginatedResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
 
         const { ok, status, statusText } = apiMeta;
 
-        if(!ok){
+        if (!ok) {
 
             return {
                 errors: {
@@ -52,16 +52,75 @@ export const getSearchResults = async ({
 
         }
 
-        // TODO - this is a basic mapping example
-        serviceResponse.data = apiData.data.results.map(({ name }) => ({
-            example: name
-        }));
+
+        // TODO - this is a basic mapping example //map the actual data
+
+        // data[(apiData.offset + index) % data.length]
+        serviceResponse.data = apiData.data.results.map((item, index) => {
+            // console.log(item)
+
+            if(item.type.match(/discussion-comment/gi)){
+                console.log("discussion-comment: ", item)
+                return {
+                    type: "comment",
+                    entityIds: {
+                        commentId: item.id
+                    },
+                    meta: {
+                        type: "discussion",
+                        entityIds: {
+                            discussionId: item.id
+                        },
+                        meta: {
+                            type: "group",
+                            entityIds: {
+                                groupId: item.group.slug
+                            },
+                            content: {
+                                title: item.group.name,
+                                body: item.group.description || "Auto generated group description"
+                            }
+                        },
+                        content: {
+                            title: item.name,
+                            body: item.description || "Auto generated description"
+                        }
+                    },
+                    content: {
+                        title: item.name,
+                        body: item.description || "Auto generated description"
+                    }
+                }
+            }
+
+            return {
+                type: item.type,
+                entityIds: {
+                    [item.type+'Id']: item.id
+                },
+                meta:{
+                    type: "group",
+                    entityIds:{
+                        groupId: item.group.slug
+                    },
+                    content: {
+                        title: item.group.name,
+                        body: item.group.description || "Auto populated description"
+                    }
+                },
+                content: {
+                    title: item.name,
+                    body: item.description || "Auto populated description text"
+                }
+            }
+        });
+
+        console.log(serviceResponse.data)
 
         serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
-
         return serviceResponse;
 
-    } catch(error){
+    } catch (error) {
 
         const { message } = error;
 
@@ -70,5 +129,4 @@ export const getSearchResults = async ({
         };
 
     }
-
 }

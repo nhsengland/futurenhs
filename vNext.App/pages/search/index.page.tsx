@@ -14,7 +14,7 @@ const routeId: string = '246485b1-2a13-4844-95d0-1fb401c8fdea';
 /**
  * Get props to inject into page on the initial server-side request
  */
- export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withAuth({
     getServerSideProps: async (context: GetServerSidePropsContext) => {
 
         /**
@@ -41,16 +41,18 @@ const routeId: string = '246485b1-2a13-4844-95d0-1fb401c8fdea';
                 }),
                 getSearchResults({
                     user: user,
-                    term: term as string
+                    term: term as string,
                 })
             ]);
 
             props.text = pageTextContent.data ?? null;
             props.term = term;
             props.resultsList = searchResults.data ?? [];
+            props.pagination = searchResults.pagination;
         
         } catch (error) {
-            
+
+            console.log(error)
             props.errors = error;
 
         }
