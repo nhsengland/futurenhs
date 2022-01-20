@@ -13,6 +13,8 @@ namespace FutureNHS.Api.DataAccess
             services.AddScoped<IRolesDataProvider, RolesDataProvider>();
             services.AddScoped<IPermissionsDataProvider, PermissionsDataProvider>();
             services.AddScoped<IFileAndFolderDataProvider, FileAndFolderDataProvider>();
+            services.AddScoped<ISearchDataProvider, SearchDataProvider>();
+            
             return services;
         }
     }

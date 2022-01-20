@@ -40,4 +40,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Search\" />
+  </ItemGroup>
+
 </Project>
