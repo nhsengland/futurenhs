@@ -26,6 +26,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderMainNav = true,
     user,
     breadCrumbList,
+    searchTerm,
     className, 
     children 
 }) => {
@@ -84,7 +85,8 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 user={user}
                 shouldRenderSearch={shouldRenderSearch} 
                 shouldRenderNavigation={shouldRenderUserNavigation}
-                navMenuList={mainNavMenuList} />
+                navMenuList={mainNavMenuList}
+                searchTerm={searchTerm} />
             <main id="main" className={generatedClasses.wrapper}>
                 {shouldRenderPhaseBanner &&
                     <div className="u-bg-theme-3">

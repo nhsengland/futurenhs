@@ -24,6 +24,7 @@ export interface Props {
     };
     user: User;
     shouldRenderSearch?: boolean;
-    shouldRenderNavigation?: boolean; 
+    shouldRenderNavigation?: boolean;
+    searchTerm?: any;
     className?: string; 
 }

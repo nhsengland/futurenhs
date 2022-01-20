@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 
 import { SVGIcon } from '@components/SVGIcon';
@@ -6,6 +6,7 @@ import { SVGIcon } from '@components/SVGIcon';
 import { Props } from './interfaces';
 
 export const Search: (props: Props) => JSX.Element = ({
+    value,
     method,
     action,
     id,
@@ -13,7 +14,11 @@ export const Search: (props: Props) => JSX.Element = ({
     className
 }) => {
 
+    const [dynamicValue, setDynamicValue] = useState(value);
+    
     const { labelText, placeholderText } = content ?? {};
+
+    const handleSearchUpdate = (event) => setDynamicValue(event.target.value);
 
     const generatedClasses: any = {
         wrapper: classNames(`c-site-header-nav_search-wrapper`, className),
@@ -32,9 +37,11 @@ export const Search: (props: Props) => JSX.Element = ({
                     aria-label="Search" 
                     className={generatedClasses.input} 
                     id={id} 
-                    name={id} 
+                    name={id}
+                    value={dynamicValue} 
                     placeholder={placeholderText} 
-                    type="search" />
+                    type="search"
+                    onChange={handleSearchUpdate} />
                 <button 
                     type="submit" 
                     aria-label="Search button" 

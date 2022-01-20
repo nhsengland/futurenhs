@@ -27,7 +27,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <StandardLayout className="u-bg-theme-3">
+        <StandardLayout className="u-bg-theme-3" searchTerm={term}>
             <Head>
                 <title>{titleText}</title>
                 <meta name="description" content={metaDescriptionText} />

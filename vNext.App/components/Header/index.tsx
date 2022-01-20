@@ -34,7 +34,8 @@ export const Header: (props: Props) => JSX.Element = ({
     shouldRenderNavigation = true,
     navMenuList,
     content,
-    user
+    user,
+    searchTerm
 }) => {
 
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -100,6 +101,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                 method="GET" 
                                                 action="/search/" 
                                                 id="term"
+                                                value={searchTerm}
                                                 content={{
                                                     labelText: "Search the NHS website",
                                                     placeholderText: "Search for..."

@@ -8,6 +8,7 @@ export interface Props {
     shouldRenderMainNav?: boolean;
     user?: any;
     breadCrumbList?: BreadCrumbList;
+    searchTerm?: any;
     className?: string; 
     children: any;
 }
