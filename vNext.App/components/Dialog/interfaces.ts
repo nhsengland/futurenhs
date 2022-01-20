@@ -3,9 +3,9 @@ export interface Props {
     isOpen?: boolean;
     children?: any;
     appElement?: HTMLElement;
-    content: {
-        confirmButtonText: string;
-        cancelButtonText?: string;
+    text: {
+        confirmButton: string;
+        cancelButton?: string;
     };
     confirmAction?: any;
     cancelAction?: any;

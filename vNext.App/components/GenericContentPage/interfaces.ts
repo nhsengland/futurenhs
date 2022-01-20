@@ -1,8 +1,8 @@
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
-interface Content extends GenericPageContent {}
+interface Text extends GenericPageTextContent {}
 
 export interface Props {
     isAuthenticated: boolean;
-    content: Content;
+    text: Text;
 }

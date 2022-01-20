@@ -1,7 +1,7 @@
 export interface Props {
     ref?: any;
-    content?: {
-        bodyHtml: string;
+    text?: {
+        body: string;
     };
     errors?: Record<string, string>;
     relatedNames?: Array<string>;

@@ -1,8 +1,8 @@
 import { Image } from './image';
-import { GroupsPageContent } from '@appTypes/content'; 
+import { GroupsPageTextContent } from '@appTypes/content'; 
 
 export interface Group {
-    content: GroupsPageContent;
+    text: GroupsPageTextContent;
     groupId?: string; 
     image?: Image;
     totalDiscussionCount?: number; 

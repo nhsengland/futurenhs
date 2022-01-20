@@ -1,6 +1,6 @@
 export interface Props {
-    content?: {
-        errorText?: string;
+    text?: {
+        error?: string;
     };
     children?: any;
     className?: string;

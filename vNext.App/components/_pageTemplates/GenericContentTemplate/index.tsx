@@ -7,14 +7,14 @@ import { Props } from './interfaces';
 
 export const GenericContentTemplate: (props: Props) => JSX.Element = ({
     user,
-    content
+    text
 }) => {
 
     const isAuthenticated: boolean = Boolean(user);
 
-    const { metaDescriptionText, 
-            titleText, 
-            mainHeadingHtml } = content ?? {};
+    const { metaDescription, 
+            title, 
+            mainHeading } = text ?? {};
 
     return (
 
@@ -24,11 +24,11 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
             shouldRenderMainNav={isAuthenticated}
             className="u-bg-theme-3">
                 <Head>
-                    <title>{titleText}</title>
-                    <meta name="description" content={metaDescriptionText} />
+                    <title>{title}</title>
+                    <meta name="description" content={metaDescription} />
                 </Head>
                 <LayoutColumnContainer className="c-page-body">
-                    <h1>{mainHeadingHtml}</h1>
+                    <h1>{mainHeading}</h1>
                 </LayoutColumnContainer>
         </StandardLayout>
 

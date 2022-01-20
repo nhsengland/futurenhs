@@ -8,12 +8,12 @@ export const Dialog: (props: Props) => JSX.Element = ({
     isOpen,
     appElement = typeof document !== 'undefined' ? document.body : undefined,
     children,
-    content,
+    text,
     confirmAction,
     cancelAction
 }) => {
 
-    const { confirmButtonText, cancelButtonText } = content ?? {};
+    const { confirmButton, cancelButton } = text ?? {};
 
     const handleCancel = () => cancelAction?.();
     const handleConfirm = () => confirmAction?.();
@@ -27,14 +27,14 @@ export const Dialog: (props: Props) => JSX.Element = ({
             appElement={appElement}>
                 <div className="c-dialog_content">
                     {children}
-                    {(cancelAction && cancelButtonText) &&
+                    {(cancelAction && cancelButton) &&
                         <button className="c-button c-button--outline c-button--full-width" onClick={handleCancel}>
-                            {cancelButtonText}
+                            {cancelButton}
                         </button>
                     }
-                    {(confirmAction && confirmButtonText) &&
+                    {(confirmAction && confirmButton) &&
                         <button className="c-button c-button--full-width" onClick={handleConfirm}>
-                            {confirmButtonText}
+                            {confirmButton}
                         </button>
                     }
                 </div>

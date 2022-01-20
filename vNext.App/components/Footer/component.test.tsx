@@ -16,9 +16,9 @@ const testProps: Props = {
             text: 'Link 2'
         }
     ],
-    content: {
-        titleText: 'Footer',
-        navMenuAriaLabelText: 'Links'
+    text: {
+        title: 'Footer',
+        navMenuAriaLabel: 'Links'
     }
 };
 

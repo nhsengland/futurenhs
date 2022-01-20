@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { withAuth } from '@hofs/withAuth';
-import { getPageContent } from '@services/getPageContent';
+import { getPageTextContent } from '@services/getPageTextContent';
 import { getSearchResults } from '@services/getSearchResults';
 import { selectUser, selectLocale, selectSearchTerm, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -32,10 +32,10 @@ const routeId: string = '246485b1-2a13-4844-95d0-1fb401c8fdea';
         try {
 
             const [
-                pageContent,
+                pageTextContent,
                 searchResults
             ] = await Promise.all([
-                getPageContent({
+                getPageTextContent({
                     id: routeId,
                     locale: locale
                 }),
@@ -45,7 +45,7 @@ const routeId: string = '246485b1-2a13-4844-95d0-1fb401c8fdea';
                 })
             ]);
 
-            props.content = pageContent.data ?? null;
+            props.text = pageTextContent.data ?? null;
             props.term = term;
             props.resultsList = searchResults.data ?? [];
         

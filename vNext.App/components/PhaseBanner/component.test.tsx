@@ -5,9 +5,9 @@ import { PhaseBanner } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    content: {
-        tagText: 'beta',
-        bodyHtml: '<p>Mock content</p>'
+    text: {
+        tag: 'beta',
+        body: '<p>Mock content</p>'
     }
 };
 

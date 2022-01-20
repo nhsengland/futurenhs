@@ -2,9 +2,9 @@ import { BreadCrumbList } from '@appTypes/routing';
 
 export interface Props {
     breadCrumbList: BreadCrumbList;
-    content: {
-        ariaLabelText: string;
-        truncationText?: string;
+    text: {
+        ariaLabel: string;
+        truncation?: string;
     };
     seperatorIconName?: string;
     truncationMinPathLength?: number;

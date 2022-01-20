@@ -7,8 +7,8 @@ import { Props, State } from './interfaces';
 export class ErrorBoundary extends React.PureComponent<Props, State> {
 
     static defaultProps = {
-        content: {
-            errorText: 'Something went wrong'
+        text: {
+            error: 'Something went wrong'
         }
     };
 
@@ -44,8 +44,8 @@ export class ErrorBoundary extends React.PureComponent<Props, State> {
      */
     public render() {
 
-        const { content, children, className } = this.props;
-        const { errorText } = content;
+        const { text, children, className } = this.props;
+        const { error } = text;
         const { hasError } = this.state;
 
         const generatedClasses: any = {
@@ -56,8 +56,8 @@ export class ErrorBoundary extends React.PureComponent<Props, State> {
 
             return (
             
-                <ErrorSummary content={{
-                    bodyHtml: errorText
+                <ErrorSummary text={{
+                    body: error
                 }} className={generatedClasses.wrapper} />
 
             )

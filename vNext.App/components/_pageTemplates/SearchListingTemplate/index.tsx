@@ -13,7 +13,7 @@ import { Props } from './interfaces';
  */
 export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     term,
-    content,
+    text,
     resultsList = [],
     pagination
 }) => {
@@ -21,19 +21,19 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     const resultsCount: number = resultsList.length;
     const hasResults: boolean = resultsCount > 0;
 
-    const { metaDescriptionText, 
-            titleText, 
-            mainHeadingHtml } = content ?? {};
+    const { metaDescription, 
+            title, 
+            mainHeading } = text ?? {};
 
     return (
 
         <StandardLayout className="u-bg-theme-3" searchTerm={term}>
             <Head>
-                <title>{titleText}</title>
-                <meta name="description" content={metaDescriptionText} />
+                <title>{title}</title>
+                <meta name="description" content={metaDescription} />
             </Head>
             <div className="u-px-4 u-py-10">
-                <h1>{`${mainHeadingHtml}: ${term} - ${resultsCount} results found`}</h1>
+                <h1>{`${mainHeading}: ${term} - ${resultsCount} results found`}</h1>
                 {!hasResults &&
                     <p>Sorry no results found</p>
                 }

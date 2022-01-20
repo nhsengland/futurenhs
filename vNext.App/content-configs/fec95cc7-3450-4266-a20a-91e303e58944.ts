@@ -1,7 +1,7 @@
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    titleText: 'Contact us',
-    metaDescriptionText: 'Contact us',
-    mainHeadingHtml: 'Contact us'
-} as GenericPageContent;
+    title: 'Contact us',
+    metaDescription: 'Contact us',
+    mainHeading: 'Contact us'
+} as GenericPageTextContent;

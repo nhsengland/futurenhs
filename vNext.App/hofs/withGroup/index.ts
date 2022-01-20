@@ -17,7 +17,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
 }): GetServerSideProps => {
 
     const getGroupService = dependencies?.getGroupService ?? getGroup;
-    const getGroupActionsService = dependencies?.getGroupService ?? getGroupActions;
+    const getGroupActionsService = dependencies?.getGroupActionsService ?? getGroupActions;
 
     const { routeId, getServerSideProps } = config;
 
@@ -35,9 +35,9 @@ export const withGroup = (config: HofConfig, dependencies?: {
         const props: Partial<GroupPage> = {
             id: routeId,
             user: user,
-            content: null,
+            text: null,
             image: null,
-            actions: null
+            actions: []
         };
 
         /**
@@ -69,9 +69,9 @@ export const withGroup = (config: HofConfig, dependencies?: {
 
             }
 
-            props.content = groupData.data.content ?? null;
+            props.text = groupData.data.text ?? null;
             props.image = groupData.data.image ?? defaultGroupLogos.small;
-            (props as any).actions = actionsData.data ?? null;
+            props.actions = actionsData.data ?? null;
 
         } catch (error) {
 

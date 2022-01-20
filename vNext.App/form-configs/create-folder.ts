@@ -7,8 +7,8 @@ export const createFolderForm: Form = {
                 {
                     name: 'name',
                     inputType: 'text',
-                    content: {
-                        labelText: 'Enter a folder title',
+                    text: {
+                        label: 'Enter a folder title',
                         hintHtml: 'This is a hint offering some short guidance to users'
                     },
                     component: 'input',
@@ -21,8 +21,8 @@ export const createFolderForm: Form = {
                 },
                 {
                     name: 'description',
-                    content: {
-                        labelText: 'Enter a folder description',
+                    text: {
+                        label: 'Enter a folder description',
                         hintHtml: 'This is a hint offering some short guidance to users'
                     },
                     component: 'textArea'

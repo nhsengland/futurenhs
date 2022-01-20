@@ -15,8 +15,8 @@ const testProps: Props = {
         submitError: '',
         touched: false
     },
-    content: {
-        labelText: 'mockLabel'
+    text: {
+        label: 'mockLabel'
     }
 };
 

@@ -7,10 +7,10 @@ import { Props } from './interfaces';
 
 const props: Props = {
     isAuthenticated: true,
-    content: {
-        titleText: 'mockTitle',
-        metaDescriptionText: 'mockMetaDescriptionText',
-        mainHeadingHtml: 'mockMainHeading',
+    text: {
+        title: 'mockTitle',
+        metaDescription: 'mockMetaDescriptionText',
+        mainHeading: 'mockMainHeading',
     }
 };
 

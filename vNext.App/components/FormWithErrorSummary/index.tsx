@@ -14,7 +14,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     fields,
     errors,
     submitAction,
-    content,
+    text,
     children,
     className,
     bodyClassName,
@@ -44,7 +44,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
 
     }, [errors]);
 
-    const { errorSummary: errorSummaryContent, form: formContent } = content ?? {};
+    const { errorSummary: errorSummaryText, form: formText } = text ?? {};
 
     const generatedClasses: any = {
         form: classNames('c-form', className)
@@ -57,7 +57,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 ref={errorSummaryRef}
                 errors={validationErrors}
                 relatedNames={relatedNames}
-                content={errorSummaryContent} 
+                text={errorSummaryText} 
                 className="u-mb-6"/>
             {children}
             <Form 
@@ -66,7 +66,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 initialValues={initialValues}
                 csrfToken={csrfToken}
                 fields={fields}
-                content={formContent}
+                text={formText}
                 className={generatedClasses.form}
                 bodyClassName={bodyClassName}
                 submitButtonClassName={submitButtonClassName}

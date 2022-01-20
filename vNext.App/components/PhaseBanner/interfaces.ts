@@ -1,7 +1,7 @@
 export interface Props {
-    content: {
-        tagText: string;
-        bodyHtml: string;
+    text: {
+        tag: string;
+        body: string;
     };
     className?: string;
 }

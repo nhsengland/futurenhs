@@ -1,13 +1,13 @@
 import { Page } from '@appTypes/page';
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 import { User } from '@appTypes/user';
 import { SearchResult } from '@appTypes/search';
 
-interface Content extends GenericPageContent {}
+interface Text extends GenericPageTextContent {}
 
 export interface Props extends Page {
     user: User;
     term: string | Array<string>;
-    content: Content;
+    text: Text;
     resultsList: Array<SearchResult>;
 }

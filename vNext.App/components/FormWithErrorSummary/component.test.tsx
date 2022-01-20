@@ -13,17 +13,17 @@ const testProps: Props = {
         {
             name: 'mockFieldName',
             component: 'input',
-            content: {
-                labelText: 'mockLabel'
+            text: {
+                label: 'mockLabel'
             }
         }
     ],
-    content: {
+    text: {
         errorSummary: {
-            bodyHtml: 'An error occurred'
+            body: 'An error occurred'
         },
         form: {
-            submitButtonText: 'Submit'
+            submitButton: 'Submit'
         }
     },
     submitAction: jest.fn()

@@ -22,7 +22,7 @@ import { Props } from './interfaces';
  */
 export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     user,
-    content,
+    text,
     groupsList,
     pagination,
     errors
@@ -32,12 +32,12 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     const [dynamicGroupsList, setGroupsList] = useState(groupsList);
     const [dynamicPagination, setPagination] = useState(pagination);
 
-    const { titleText, 
-            metaDescriptionText, 
-            mainHeadingHtml,
-            introHtml,
-            secondaryHeadingHtml,
-            navMenuTitleText } = content ?? {};
+    const { title, 
+            metaDescription, 
+            mainHeading,
+            intro,
+            secondaryHeading,
+            navMenuTitle } = text ?? {};
 
     const handleGetPage = async ({ 
         pageNumber: requestedPageNumber, 
@@ -61,16 +61,16 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
 
         <StandardLayout user={user} className="u-bg-theme-3">
             <Head>
-                <title>{titleText}</title>
-                <meta name="description" content={metaDescriptionText} />
+                <title>{title}</title>
+                <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>
                 <PageHeader 
                     id="my-groups"
-                    content={{
-                        mainHeadingHtml: mainHeadingHtml, 
-                        descriptionHtml: introHtml,
-                        navMenuTitleText: navMenuTitleText
+                    text={{
+                        mainHeading: mainHeading, 
+                        description: intro,
+                        navMenuTitle: navMenuTitle
                     }} 
                     navMenuList={[
                         {
@@ -87,21 +87,21 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                     className="u-bg-theme-14" />
                 <PageBody>
                     <LayoutColumn tablet={8}>
-                        <h2>{secondaryHeadingHtml}</h2>
-                        {introHtml &&
-                            <p className="u-text-lead u-text-theme-7 u-mb-4">{introHtml}</p>
+                        <h2>{secondaryHeading}</h2>
+                        {intro &&
+                            <p className="u-text-lead u-text-theme-7 u-mb-4">{intro}</p>
                         }
                         <AriaLiveRegion>
                             <ul className="u-list-none u-p-0">
                                 {dynamicGroupsList?.map?.(({ 
                                     image, 
-                                    content, 
+                                    text, 
                                     groupId, 
                                     totalDiscussionCount, 
                                     totalMemberCount 
                                 }, index) => {
 
-                                    const { mainHeadingHtml, strapLineText } = content ?? {};
+                                    const { mainHeading, strapLine } = text ?? {};
                                     
                                     const imageToUse = image ? image : defaultGroupLogos.large;
 
@@ -111,11 +111,11 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                             <Card image={imageToUse} className="u-border-bottom-theme-8 u-mb-4">
                                                 <h3 className="c-card_heading">
                                                     <Link href={`/groups/${groupId}`}>
-                                                        <a>{mainHeadingHtml}</a>
+                                                        <a>{mainHeading}</a>
                                                     </Link>        
                                                 </h3>
                                                 <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                    {strapLineText}
+                                                    {strapLine}
                                                 </p>
                                                 <div className="c-card_footer u-text-theme-7">
                                                     <p className="c-card_footer-item">

@@ -8,9 +8,9 @@ const testProps: Props = {
     method: 'POST',
     action: '/',
     id: 'mockId',
-    content: {
-        labelText: 'mockLabel',
-        placeholderText: 'mockPlaceholder'
+    text: {
+        label: 'mockLabel',
+        placeholder: 'mockPlaceholder'
     }
 };
 

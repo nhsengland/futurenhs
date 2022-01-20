@@ -1,7 +1,7 @@
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    titleText: 'Future NHS Home', 
-    metaDescriptionText: 'Your Future NHS home page',
-    mainHeadingHtml: 'TODO: dashboard'
-} as GenericPageContent;
+    title: 'Future NHS Home', 
+    metaDescription: 'Your Future NHS home page',
+    mainHeading: 'TODO: dashboard'
+} as GenericPageTextContent;

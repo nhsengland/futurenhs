@@ -2,10 +2,10 @@ import { Pagination } from '@appTypes/pagination';
 
 export interface Props extends Pagination {
     id: string;
-    content?: {
-        loadMoreText?: string;
-        previousText?: string;
-        nextText?: string;    
+    text?: {
+        loadMore?: string;
+        previous?: string;
+        next?: string;    
     };
     visiblePages?: number;
     shouldEnableLoadMore?: boolean;

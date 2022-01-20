@@ -2,8 +2,8 @@ export const logInFormFieldConfig = [
     {
         component: 'input',
         name: 'userName',
-        content: {
-            labelText: 'Email address'
+        text: {
+            label: 'Email address'
         },
         validators: [
             {
@@ -16,8 +16,8 @@ export const logInFormFieldConfig = [
         component: 'input',
         name: 'passWord',
         inputType: 'password',
-        content: {
-            labelText: 'Password'
+        text: {
+            label: 'Password'
         },
         validators: [
             {

@@ -6,11 +6,11 @@ import { RichText } from '@components/RichText';
 import { Props } from './interfaces';
 
 export const PhaseBanner: (props: Props) => JSX.Element = ({
-    content,
+    text,
     className,
 }) => {
 
-    const { tagText, bodyHtml } = content;
+    const { tag, body } = text;
 
     const generatedClasses: any = {
         wrapper: classNames('c-phase-banner', className),
@@ -22,9 +22,9 @@ export const PhaseBanner: (props: Props) => JSX.Element = ({
 
         <div className={generatedClasses.wrapper}>
             <p className={generatedClasses.tag}>
-                <strong>{tagText}</strong>
+                <strong>{tag}</strong>
             </p>
-            <RichText className={generatedClasses.content}wrapperElementType="p" bodyHtml={bodyHtml} />
+            <RichText className={generatedClasses.content}wrapperElementType="p" bodyHtml={body} />
         </div>
 
     );

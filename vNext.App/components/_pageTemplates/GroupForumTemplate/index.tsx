@@ -13,7 +13,7 @@ import { Props } from './interfaces';
 
 export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     user,
-    content,
+    text,
     image,
     pagination,
     actions,
@@ -47,7 +47,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
             id="forum"
             user={user}
             actions={actions}
-            content={content}
+            text={text}
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn tablet={8} className="c-page-body">
@@ -61,18 +61,18 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                             totalMemberCount 
                         }, index) => {
 
-                            const { mainHeadingHtml, strapLineText } = content ?? {};
+                            const { mainHeading, strapLine } = content ?? {};
 
                             return (
 
                                 <Card key={index} image={image} className="u-border-bottom-theme-8">
                                     <h3 className="c-card_heading">
                                         <Link href={`/groups/${groupId}`}>
-                                            <a>{mainHeadingHtml}</a>
+                                            <a>{mainHeading}</a>
                                         </Link>        
                                     </h3>
                                     <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                        {strapLineText}
+                                        {strapLine}
                                     </p>
                                     <div className="c-card_footer u-text-theme-7">
                                         <p className="c-card_footer-item">

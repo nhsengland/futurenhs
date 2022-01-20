@@ -10,13 +10,13 @@ const testProps: Props = {
         {
             name: 'mockFieldName',
             component: 'input',
-            content: {
-                labelText: 'mockLabel'
+            text: {
+                label: 'mockLabel'
             }
         }
     ],
-    content: {
-        submitButtonText: 'Submit'
+    text: {
+        submitButton: 'Submit'
     },
     submitAction: jest.fn()
 };

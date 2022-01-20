@@ -1,10 +1,12 @@
 import { actions as userActions } from '@constants/actions';
 
 declare interface Config {
+    groupRoute: string;
     actions: Array<userActions>;
 }
 
 export const getActionNavMenuList = ({
+    groupRoute,
     actions
 }: Config): Array<{
     url: string;
@@ -19,7 +21,7 @@ export const getActionNavMenuList = ({
     if(actions?.includes(userActions.GROUPS_EDIT)){
 
         actionsMenuList.push({
-            url: '/',
+            url: `${groupRoute}/update`,
             text: 'Edit group information'
         });
 

@@ -14,7 +14,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     csrfToken,
     user,
     actions,
-    content,
+    text,
     image
 }) => {
 
@@ -26,7 +26,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
             id="files"
             user={user}
             actions={actions}
-            content={content}
+            text={text}
             image={image} 
             className="u-bg-theme-3">            
                 <LayoutColumn className="c-page-body">
@@ -36,12 +36,12 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                                 csrfToken={csrfToken}
                                 fields={fields}
                                 errors={{}}
-                                content={{
+                                text={{
                                     errorSummary: {
-                                        bodyHtml: 'There is a problem'
+                                        body: 'There is a problem'
                                     },
                                     form: {
-                                        submitButtonText: 'Save and continue'
+                                        submitButton: 'Save and continue'
                                     }
                                 }} 
                                 submitAction={() => {}}

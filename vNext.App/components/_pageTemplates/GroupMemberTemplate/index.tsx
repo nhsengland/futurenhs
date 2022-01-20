@@ -15,7 +15,7 @@ import { Props } from './interfaces';
  */
 export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
     user,
-    content,
+    text,
     member,
     actions,
     image
@@ -39,15 +39,15 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             id="members"
             user={user}
             actions={actions}
-            content={content}
+            text={text}
             image={image} 
             className="u-bg-theme-3">
                 <div className="c-page-body">
                     <LayoutColumn>
                         <BackLink 
                             href={backLinkHref}
-                            content={{
-                                linkText: "Back"
+                            text={{
+                                link: "Back"
                             }} />
                     </LayoutColumn>
                     <LayoutColumnContainer justify="centre">

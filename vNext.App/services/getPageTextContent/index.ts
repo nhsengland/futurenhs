@@ -1,5 +1,5 @@
 import { ServiceResponse } from '@appTypes/service';
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
 declare type Options = ({
     id: string;
@@ -11,10 +11,10 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const getPageContent = async ({
+export const getPageTextContent = async ({
     id,
     locale
-}: Options, dependencies?: Dependencies): Promise<ServiceResponse<GenericPageContent>> => {
+}: Options, dependencies?: Dependencies): Promise<ServiceResponse<GenericPageTextContent>> => {
 
     // TODO: use locale to return appropriate content
 

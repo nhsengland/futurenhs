@@ -33,7 +33,7 @@ export const Header: (props: Props) => JSX.Element = ({
     shouldRenderSearch = true,
     shouldRenderNavigation = true,
     navMenuList,
-    content,
+    text,
     user,
     searchTerm
 }) => {
@@ -42,12 +42,12 @@ export const Header: (props: Props) => JSX.Element = ({
     const [isUserAccordionOpen, setIsUserAccordionOpen] = useState(false);
 
     const { initialsText, fullNameText } = user ?? {};
-    const { editProfileText,
-            logOutText,
-            logOutHeadingText, 
-            logOutBodyText,
-            logOutCancelText,
-            logOutConfirmText } = content ?? {};
+    const { editProfile,
+            logOut,
+            logOutHeading, 
+            logOutBody,
+            logOutCancel,
+            logOutConfirm } = text ?? {};
 
     const headerAccordionId: string = 'header-accordion';
     const userAccordionId: string = 'user-accordion';
@@ -102,9 +102,9 @@ export const Header: (props: Props) => JSX.Element = ({
                                                 action="/search/" 
                                                 id="term"
                                                 value={searchTerm}
-                                                content={{
-                                                    labelText: "Search the NHS website",
-                                                    placeholderText: "Search for..."
+                                                text={{
+                                                    label: "Search the NHS website",
+                                                    placeholder: "Search for..."
                                                 }} />
                                         }
                                         {shouldRenderNavigation &&
@@ -132,26 +132,26 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                     <ul className={`u-list-none u-p-0 u-m-0`} role="menu" aria-label="Account navigation">
                                                                         <li className="c-site-header-nav_sub-nav-item" role="none">
                                                                             <Link href="/todo">
-                                                                                <a role="menuitem" className="c-site-header-nav_sub-nav-child">{editProfileText}</a>
+                                                                                <a role="menuitem" className="c-site-header-nav_sub-nav-child">{editProfile}</a>
                                                                             </Link>
                                                                         </li>
                                                                         <li className="c-site-header-nav_sub-nav-item" role="none">
                                                                             <Link href={logOutRoute}>
                                                                                 <a className="c-button c-button--outline c-site-header-nav_sub-nav-child" onClick={handleLogoutRequest}>
-                                                                                    {logOutText}
+                                                                                    {logOut}
                                                                                 </a>
                                                                             </Link>
                                                                             <Dialog 
                                                                                 id="dialog-logout"
                                                                                 isOpen={isLogoutModalOpen}
-                                                                                content={{
-                                                                                    cancelButtonText: logOutCancelText,
-                                                                                    confirmButtonText: logOutConfirmText
+                                                                                text={{
+                                                                                    cancelButton: logOutCancel,
+                                                                                    confirmButton: logOutConfirm
                                                                                 }}
                                                                                 cancelAction={handleLogoutCancel}
                                                                                 confirmAction={handleLogoutConfirm}>
-                                                                                    <h3>{logOutHeadingText}</h3>
-                                                                                    <p className={cssUtilityClasses.TEXT_BOLD}>{logOutBodyText}</p>
+                                                                                    <h3>{logOutHeading}</h3>
+                                                                                    <p className={cssUtilityClasses.TEXT_BOLD}>{logOutBody}</p>
                                                                             </Dialog>
                                                                         </li>
                                                                     </ul>

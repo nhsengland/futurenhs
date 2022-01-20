@@ -7,10 +7,10 @@ import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfa
 const props: Props = {
     id: 'mockId',
     user: undefined,
-    content: {
-        titleText: 'mockTitle',
-        metaDescriptionText: 'mockMetaDescriptionText',
-        mainHeadingHtml: 'mockMainHeading',
+    text: {
+        title: 'mockTitle',
+        metaDescription: 'mockMetaDescriptionText',
+        mainHeading: 'mockMainHeading',
     }
 };
 
@@ -28,7 +28,7 @@ describe('Contact us page', () => {
 
         const serverSideProps = await getServerSideProps({} as any);
                 
-        expect(serverSideProps).toHaveProperty('props.content');
+        expect(serverSideProps).toHaveProperty('props.text');
 
     });
     

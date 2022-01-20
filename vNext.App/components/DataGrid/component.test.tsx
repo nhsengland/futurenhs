@@ -6,8 +6,8 @@ import { DataGrid } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    content: {
-        captionHtml: 'Mock caption'
+    text: {
+        caption: 'Mock caption'
     },
     columnList: [],
     rowList: []

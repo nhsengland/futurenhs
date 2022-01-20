@@ -5,13 +5,13 @@ import { Header } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    content: {
-        editProfileText: 'Edit profile',
-        logOutText: 'Log out',
-        logOutHeadingText: 'Log out',
-        logOutBodyText: 'Do you want to log out?',
-        logOutCancelText: 'Cancel',
-        logOutConfirmText: 'Yes, log out'
+    text: {
+        editProfile: 'Edit profile',
+        logOut: 'Log out',
+        logOutHeading: 'Log out',
+        logOutBody: 'Do you want to log out?',
+        logOutCancel: 'Cancel',
+        logOutConfirm: 'Yes, log out'
     },
     user: {
         id: '12345',

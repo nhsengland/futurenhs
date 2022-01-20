@@ -21,10 +21,10 @@ describe('Search listing template', () => {
                 example: '3'
             }
         ],
-        content: {
-            titleText: 'Search',
-            metaDescriptionText: 'Search Future NHS',
-            mainHeadingHtml: 'Searching'
+        text: {
+            title: 'Search',
+            metaDescription: 'Search Future NHS',
+            mainHeading: 'Searching'
         }
     };
 

@@ -16,13 +16,13 @@ export const TextArea: (props: Props) => JSX.Element = ({
         error,
         submitError
     },
-    content,
+    text,
     isRequired,
     shouldRenderRemainingCharacterCount,
     className
 }) => {
 
-    const { labelText, hintHtml } = content ?? {};
+    const { label, hint } = text ?? {};
     const id: string = name;
     const shouldRenderError: boolean = (Boolean(error) || Boolean(submitError)) && touched;
 
@@ -45,7 +45,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     };
 
     const ariaInputProps: any = getAriaFieldAttributes(isRequired, shouldRenderError, [
-        Boolean(hintHtml) ? generatedIds.hint : null,
+        Boolean(hint) ? generatedIds.hint : null,
         shouldRenderError ? generatedIds.errorLabel : null,
         shouldRenderRemainingCharacterCount ? generatedIds.remainingCharacters : null
     ]);
@@ -56,13 +56,13 @@ export const TextArea: (props: Props) => JSX.Element = ({
             <label 
                 htmlFor={id} 
                 className={generatedClasses.label}>
-                    {labelText}
+                    {label}
             </label>
-            {hintHtml &&
+            {hint &&
                 <RichText
                     id={generatedIds.hintId}
                     className={generatedClasses.hint}
-                    bodyHtml={hintHtml}
+                    bodyHtml={hint}
                     wrapperElementType="span" />
             }
             {shouldRenderError &&

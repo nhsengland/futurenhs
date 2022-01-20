@@ -5,12 +5,12 @@ export interface Props {
     initialValues?: any;
     fields: Array<FormField>;
     errors: Record<string, string>;
-    content: {
+    text: {
         errorSummary: {
-            bodyHtml: string;
+            body: string;
         },
         form: {
-            submitButtonText: string;
+            submitButton: string;
         }
     }
     action?: string;

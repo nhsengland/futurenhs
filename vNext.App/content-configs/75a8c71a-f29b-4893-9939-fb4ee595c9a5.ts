@@ -1,7 +1,7 @@
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    titleText: 'Accessibility',
-    metaDescriptionText: 'Accessibility',
-    mainHeadingHtml: 'Accessibility'
-} as GenericPageContent;
+    title: 'Accessibility',
+    metaDescription: 'Accessibility',
+    mainHeading: 'Accessibility'
+} as GenericPageTextContent;

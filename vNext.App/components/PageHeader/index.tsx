@@ -18,7 +18,7 @@ import { Props } from './interfaces';
 export const PageHeader: (props: Props) => JSX.Element = ({
     id,
     image,
-    content,
+    text,
     shouldRenderActionsMenu,
     actionsMenuList,
     navMenuList,
@@ -29,9 +29,9 @@ export const PageHeader: (props: Props) => JSX.Element = ({
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true);
 
     const actionsMenuTitleText: string = 'Actions';
-    const { mainHeadingHtml, 
-            descriptionHtml, 
-            navMenuTitleText } = content ?? {};
+    const { mainHeading, 
+            description, 
+            navMenuTitle } = text ?? {};
 
     const hasActionsMenuItems: boolean = actionsMenuList?.length > 0;
     const hasMenuItems: boolean = navMenuList?.length > 0;
@@ -90,13 +90,13 @@ export const PageHeader: (props: Props) => JSX.Element = ({
                             </div>
                         }
                         <h1 className={generatedClasses.heading}>
-                            {mainHeadingHtml}
+                            {mainHeading}
                         </h1>
-                        {descriptionHtml &&
+                        {description &&
                             <RichText 
                                 className={generatedClasses.description} 
                                 wrapperElementType="p"
-                                bodyHtml={descriptionHtml} />
+                                bodyHtml={description} />
                         }
                     </LayoutColumn>
                     {(shouldRenderActionsMenu && hasActionsMenuItems) &&
@@ -143,14 +143,14 @@ export const PageHeader: (props: Props) => JSX.Element = ({
                         toggleClassName={generatedClasses.navTrigger}
                         toggleChildren={
                             <>
-                                {navMenuTitleText}
+                                {navMenuTitle}
                                 <SVGIcon name={getAccordionIcon(isMenuAccordionOpen)} className={generatedClasses.navTriggerIcon} />
                             </>
                         }
                         className={generatedClasses.navContent}>
                             <TabbedNav 
-                                content={{
-                                    ariaLabelText: navMenuTitleText
+                                text={{
+                                    ariaLabel: navMenuTitle
                                 }}
                                 navMenuList={navMenuList} />
                     </Accordion>

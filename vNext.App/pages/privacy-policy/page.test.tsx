@@ -8,10 +8,10 @@ import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfa
 const props: Props = {
     id: 'mockPageId',
     user: undefined,
-    content: {
-        titleText: 'mockTitle',
-        metaDescriptionText: 'mockMetaDescriptionText',
-        mainHeadingHtml: 'mockMainHeading',
+    text: {
+        title: 'mockTitle',
+        metaDescription: 'mockMetaDescriptionText',
+        mainHeading: 'mockMainHeading',
     }
 };
 
@@ -29,7 +29,7 @@ describe('Privacy policy page', () => {
 
         const serverSideProps = await getServerSideProps({} as any);
                 
-        expect(serverSideProps).toHaveProperty('props.content');
+        expect(serverSideProps).toHaveProperty('props.text');
 
     });
     

@@ -1,10 +1,10 @@
 import { Page } from '@appTypes/page';
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
+import { User } from '@appTypes/user';
 
-interface Content extends GenericPageContent {
-    
-}
+interface Text extends GenericPageTextContent {}
 
 export interface Props extends Page {
-    content: Content;
+    user: User;
+    text: Text;
 }

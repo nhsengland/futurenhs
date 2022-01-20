@@ -11,13 +11,13 @@ import { Props } from './interfaces';
  * Logged out template
  */
 export const LoggedOutTemplate: (props: Props) => JSX.Element = ({
-    content,
+    text,
     logOutUrl
 }) => {
 
-    const { titleText, 
-            metaDescriptionText, 
-            mainHeadingHtml } = content ?? {};
+    const { title, 
+            metaDescription, 
+            mainHeading } = text ?? {};
 
     return (
 
@@ -27,12 +27,12 @@ export const LoggedOutTemplate: (props: Props) => JSX.Element = ({
             shouldRenderMainNav={false}
             className="u-bg-theme-3">
                 <Head>
-                    <title>{titleText}</title>
-                    <meta name="description" content={metaDescriptionText} />
+                    <title>{title}</title>
+                    <meta name="description" content={metaDescription} />
                 </Head>
                 <LayoutColumnContainer justify="centre">
                     <LayoutColumn tablet={6} className="u-py-10">
-                        <h1>{mainHeadingHtml}</h1>
+                        <h1>{mainHeading}</h1>
                         <p>Your are now logged out</p>
                         <p className="desktop:u-pb-4">
                             <Link href={logOutUrl}>

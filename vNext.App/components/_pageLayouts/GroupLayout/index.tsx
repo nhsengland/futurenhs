@@ -16,7 +16,7 @@ import { Props } from './interfaces';
 
 export const GroupLayout: (props: Props) => JSX.Element = ({
     id,
-    content,
+    text,
     image,
     actions,
     children,
@@ -32,6 +32,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     });
 
     const actionsMenuList = getActionNavMenuList({
+        groupRoute: groupRoute,
         actions: actions
     });
 
@@ -43,25 +44,25 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     const currentRoutePathElements: Array<string> = groupRoute?.split('/')?.filter((item) => item) ?? [];
     const breadCrumbList: BreadCrumbList = getBreadCrumbList({ pathElementList: currentRoutePathElements });
 
-    const { titleText, 
-            metaDescriptionText, 
-            mainHeadingHtml,
-            strapLineText } = content ?? {};
+    const { title, 
+            metaDescription, 
+            mainHeading,
+            strapLine } = text ?? {};
 
     return (
 
         <StandardLayout breadCrumbList={breadCrumbList} {...rest}>
             <Head>
-                <title>{titleText}</title>
-                <meta name="description" content={metaDescriptionText} />
+                <title>{title}</title>
+                <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>
                 <PageHeader 
                     id="group"
-                    content={{
-                        mainHeadingHtml: mainHeadingHtml, 
-                        descriptionHtml: strapLineText,
-                        navMenuTitleText: 'Group menu'
+                    text={{
+                        mainHeading: mainHeading, 
+                        description: strapLine,
+                        navMenuTitle: 'Group menu'
                     }}
                     image={image}
                     shouldRenderActionsMenu={true}

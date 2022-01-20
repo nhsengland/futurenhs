@@ -74,13 +74,13 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
             <Head assetPath={assetPath} />
             <Header
                 skipLinkList={skipLinkList}
-                content={{
-                    editProfileText: 'Edit profile',
-                    logOutText: 'Log out',
-                    logOutHeadingText: 'Log out', 
-                    logOutBodyText: 'Are you sure you would like to log out?',
-                    logOutCancelText: 'Cancel',
-                    logOutConfirmText: 'Yes, log out'
+                text={{
+                    editProfile: 'Edit profile',
+                    logOut: 'Log out',
+                    logOutHeading: 'Log out', 
+                    logOutBody: 'Are you sure you would like to log out?',
+                    logOutCancel: 'Cancel',
+                    logOutConfirm: 'Yes, log out'
                 }}
                 user={user}
                 shouldRenderSearch={shouldRenderSearch} 
@@ -92,9 +92,9 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                     <div className="u-bg-theme-3">
                         <LayoutWidthContainer>
                             <ErrorBoundary>
-                                <PhaseBanner content={{
-                                    tagText: 'alpha',
-                                    bodyHtml: 'This is a new service – your <a href="http://www.google.co.uk">feedback</a> will help us to improve it.'
+                                <PhaseBanner text={{
+                                    tag: 'alpha',
+                                    body: 'This is a new service – your <a href="http://www.google.co.uk">feedback</a> will help us to improve it.'
                                 }} />
                             </ErrorBoundary>
                         </LayoutWidthContainer>
@@ -107,8 +107,8 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                 <LayoutColumnContainer className="u-py-4">
                                     <LayoutColumn tablet={8}>
                                         <BreadCrumb 
-                                            content={{
-                                                ariaLabelText: 'Site breadcrumb'
+                                            text={{
+                                                ariaLabel: 'Site breadcrumb'
                                             }}
                                             breadCrumbList={breadCrumbListToUse}
                                             truncationMinPathLength={8}
@@ -150,10 +150,10 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 </div>
             </main>
             <Footer
-                content={{
-                    titleText: 'Footer Navigation',
-                    copyrightText: 'Crown copyright',
-                    navMenuAriaLabelText: 'Footer legal links'
+                text={{
+                    title: 'Footer Navigation',
+                    copyright: 'Crown copyright',
+                    navMenuAriaLabel: 'Footer legal links'
                 }}
                 navMenuList={footerNavMenuList} />
         </>

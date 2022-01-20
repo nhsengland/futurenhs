@@ -5,8 +5,8 @@ import { BackLink } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    content: {
-        linkText: 'mockContent'    
+    text: {
+        link: 'mockContent'    
     },
     href: ''
 };

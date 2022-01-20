@@ -8,8 +8,8 @@ export type DataRow = Array<DataCell>;
 export interface Props {
     columnList: DataRow;
     rowList: Array<DataRow>
-    content: {
-        captionHtml: string;
+    text: {
+        caption: string;
     };
     shouldRenderCaption?: boolean;
     id?: string;

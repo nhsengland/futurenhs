@@ -1,6 +1,6 @@
 export interface Props {
-    content: {
-        linkText: string;
+    text: {
+        link: string;
     };
     href: string;
     className?: string;

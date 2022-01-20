@@ -1,7 +1,7 @@
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    metaDescriptionText: 'Search Future NHS',
-    titleText: 'Search',
-    mainHeadingHtml: 'Searching'
-} as GenericPageContent;
+    metaDescription: 'Search Future NHS',
+    title: 'Search',
+    mainHeading: 'Searching'
+} as GenericPageTextContent;

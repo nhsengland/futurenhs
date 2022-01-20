@@ -1,10 +1,10 @@
 import { Pagination } from '@appTypes/pagination';
 
 export interface Props extends Pagination {
-    content?: {
-        prefixText: string; 
-        infixText: string;
-        suffixText: string;  
+    text?: {
+        prefix: string; 
+        infix: string;
+        suffix: string;  
     };
     shouldEnableLoadMore?: boolean;
 }

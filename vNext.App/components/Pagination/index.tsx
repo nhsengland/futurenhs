@@ -7,10 +7,10 @@ import { Props } from './interfaces';
 
 export const Pagination: (props: Props) => JSX.Element = ({
     id,
-    content = {
-        loadMoreText: 'Load more',
-        previousText: 'Previous',
-        nextText: 'Next'
+    text = {
+        loadMore: 'Load more',
+        previous: 'Previous',
+        next: 'Next'
     },
     visiblePages = 3,
     pageNumber,
@@ -24,7 +24,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
 
     const [isLoadMoreEnabled, setIsLoadMoreEnabled] = useState(false);
 
-    const { loadMoreText, previousText, nextText } = content;
+    const { loadMore, previous, next } = text;
 
     const queryString: string = `?pageNumber=`;
     const currentPaginationGroup: number = Math.ceil(pageNumber / visiblePages);
@@ -96,7 +96,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
         return (
 
             <button disabled={shouldDisable} onClick={handleLoadMore} className="c-button c-button--secondary u-w-72">
-                {loadMoreText}
+                {loadMore}
             </button>
 
         )
@@ -112,7 +112,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
                     <li className={generatedClasses.prevItem}>
                         <a className={generatedClasses.link} href={`${queryString}${(currentPaginationGroup -1) * visiblePages}`}>
                             <SVGIcon name="icon-arrow-left" className={generatedClasses.prevIcon} />
-                            {previousText}<span className="u-sr-only"> set of pages</span>
+                            {previous}<span className="u-sr-only"> set of pages</span>
                         </a>
                     </li>
                 }
@@ -120,7 +120,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
                 {((currentPaginationGroup * visiblePages) - visiblePages < totalPages - visiblePages) &&
                     <li className={generatedClasses.nextItem}>
                         <a className={generatedClasses.link} href={`${queryString}${(currentPaginationGroup * visiblePages) + 1}`}>
-                            {nextText}<span className="u-sr-only"> set of pages</span>
+                            {next}<span className="u-sr-only"> set of pages</span>
                             <SVGIcon name="icon-arrow-right" className={generatedClasses.nextIcon} />
                         </a>
                     </li>

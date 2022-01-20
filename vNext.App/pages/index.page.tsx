@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import { HomeTemplate } from '@components/_pageTemplates/HomeTemplate';
 import { withAuth } from '@hofs/withAuth';
 import { selectLocale, selectProps } from '@selectors/context';
-import { getPageContent } from '@services/getPageContent';
+import { getPageTextContent } from '@services/getPageTextContent';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 const routeId: string = '749bd865-27b8-4af6-960b-3f0458f8e92f';
@@ -27,15 +27,15 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         try {
 
             const [
-                pageContent
+                pageTextContent
             ] = await Promise.all([
-                getPageContent({
+                getPageTextContent({
                     id: routeId,
                     locale: locale
                 })
             ]);
 
-            props.content = pageContent.data;
+            props.text = pageTextContent.data;
         
         } catch (error) {
             

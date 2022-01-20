@@ -2,18 +2,17 @@ import Head from 'next/head';
 
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
 
 import { Props } from './interfaces';
 
 export const GenericContentPage: (props: Props) => JSX.Element = ({
     isAuthenticated,
-    content
+    text
 }) => {
 
-    const { metaDescriptionText, 
-            titleText, 
-            mainHeadingHtml } = content ?? {};
+    const { metaDescription, 
+            title, 
+            mainHeading } = text ?? {};
 
     return (
 
@@ -22,11 +21,11 @@ export const GenericContentPage: (props: Props) => JSX.Element = ({
             shouldRenderUserNavigation={isAuthenticated}
             shouldRenderMainNav={isAuthenticated}>
                 <Head>
-                    <title>{titleText}</title>
-                    <meta name="description" content={metaDescriptionText} />
+                    <title>{title}</title>
+                    <meta name="description" content={metaDescription} />
                 </Head>
                 <LayoutColumnContainer className="u-py-10">
-                    <h1>{mainHeadingHtml}</h1>
+                    <h1>{mainHeading}</h1>
                 </LayoutColumnContainer>
         </StandardLayout>
 

@@ -1,8 +1,8 @@
 import { Page } from '@appTypes/page';
-import { GroupsPageContent } from '@appTypes/content';
+import { GroupsPageTextContent } from '@appTypes/content';
 import { Group } from '@appTypes/group';
 
 export interface Props extends Page {
-    content: GroupsPageContent;
+    text: GroupsPageTextContent;
     groupsList: Array<Group>;
 }

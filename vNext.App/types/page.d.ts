@@ -1,7 +1,9 @@
-import { Pagination } from '@appTypes/pagination';
-import { GenericPageContent, GroupsPageContent } from '@appTypes/content';
-import { User } from '@appTypes/user';
+import { actions } from '@constants/actions';
 import { Image } from './image';
+
+import { Pagination } from '@appTypes/pagination';
+import { GenericPageTextContent, GroupsPageTextContent } from '@appTypes/content';
+import { User } from '@appTypes/user';
 
 export interface Page {
     id: string;
@@ -9,12 +11,12 @@ export interface Page {
     csrfToken?: string;
     pagination?: Pagination;
     errors?: Record<string>;
-    content?: GenericPageContent;
+    text?: GenericPageTextContent;
     user?: User;
 }
 
 export interface GroupPage extends Page {
     image: Image;
-    content: GroupsPageContent;
-    actions: Array<any>;
+    text: GroupsPageTextContent;
+    actions: Array<actions>;
 }

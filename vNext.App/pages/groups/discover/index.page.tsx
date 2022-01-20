@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { withAuth } from '@hofs/withAuth';
 import { getGroups } from '@services/getGroups';
-import { getPageContent } from '@services/getPageContent';
+import { getPageTextContent } from '@services/getPageTextContent';
 import { selectLocale, selectProps } from '@selectors/context';
 import { selectUser, selectPagination } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -34,10 +34,10 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         try {
 
             const [
-                pageContent,
+                pageTextContent,
                 groupsList,
             ] = await Promise.all([
-                getPageContent({
+                getPageTextContent({
                     id: routeId,
                     locale: locale
                 }),
@@ -51,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 })
             ]);
 
-            props.content = pageContent.data ?? null;
+            props.text = pageTextContent.data ?? null;
             props.groupsList = groupsList.data ?? [];
             props.pagination = groupsList.pagination ?? null;
         

@@ -14,13 +14,13 @@ export interface Props {
             iconName?: string;
         }
     }>;
-    content: { 
-        editProfileText: string;
-        logOutText: string;
-        logOutHeadingText: string; 
-        logOutBodyText: string;
-        logOutCancelText: string;
-        logOutConfirmText: string;
+    text: { 
+        editProfile: string;
+        logOut: string;
+        logOutHeading: string; 
+        logOutBody: string;
+        logOutCancel: string;
+        logOutConfirm: string;
     };
     user: User;
     shouldRenderSearch?: boolean;

@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 
-import { getPageContent } from '@services/getPageContent';
+import { getPageTextContent } from '@services/getPageTextContent';
 import { selectUser, selectLocale } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
@@ -8,13 +8,13 @@ import { User } from '@appTypes/user';
 import { GenericContentTemplate } from '@components/_pageTemplates/GenericContentTemplate';
 import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfaces';
 
+const routeId: string = 'fec95cc7-3450-4266-a20a-91e303e58944';
+
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
-
-    const id: string = 'fec95cc7-3450-4266-a20a-91e303e58944';
-
+    
     /**
      * Get data from request context
      */
@@ -25,9 +25,9 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
      * Create page data
      */
     const props: Props = {
-        id: id,
+        id: routeId,
         user: user,
-        content: null
+        text: null
     };
 
     /**
@@ -36,15 +36,15 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
     try {
 
         const [
-            pageContent
+            pageTextContent
         ] = await Promise.all([
-            getPageContent({
-                id: id,
+            getPageTextContent({
+                id: routeId,
                 locale: locale
             })
         ]);
 
-        props.content = pageContent.data;
+        props.text = pageTextContent.data;
     
     } catch (error) {
         

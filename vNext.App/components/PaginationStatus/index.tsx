@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 import { Props } from './interfaces';
 
 export const PaginationStatus: (props: Props) => JSX.Element = ({
-    content = {
-        prefixText: 'Showing',
-        infixText: 'of',
-        suffixText: 'items'
+    text = {
+        prefix: 'Showing',
+        infix: 'of',
+        suffix: 'items'
     },
     shouldEnableLoadMore,
     pageNumber,
@@ -22,7 +22,7 @@ export const PaginationStatus: (props: Props) => JSX.Element = ({
 
     const [isLoadMoreEnabled, setIsLoadMoreEnabled] = useState(false);
     
-    const { prefixText, infixText, suffixText } = content;
+    const { prefix, infix, suffix } = text;
 
     const currentEnd: number = pageNumber * pageSize;
     const start: number = pageNumber === 1 || isLoadMoreEnabled ? 1 : ((pageNumber - 1) * pageSize) + 1;
@@ -37,7 +37,7 @@ export const PaginationStatus: (props: Props) => JSX.Element = ({
     return (
 
         <p className="c-pagination-status"> 
-            <span className="u-text-bold">{`${prefixText} ${start} - ${end}`}</span> {`${infixText}`} <span className="u-text-bold">{totalRecords}</span> {`${suffixText}`}   
+            <span className="u-text-bold">{`${prefix} ${start} - ${end}`}</span> {`${infix}`} <span className="u-text-bold">{totalRecords}</span> {`${suffix}`}   
         </p>
 
     )

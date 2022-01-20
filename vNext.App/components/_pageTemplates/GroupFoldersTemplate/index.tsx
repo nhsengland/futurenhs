@@ -26,7 +26,7 @@ import { Props } from './interfaces';
 export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
     user,
     groupId,
-    content,
+    text,
     image,
     folderId,
     folder,
@@ -149,14 +149,14 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
             id="files"
             user={user}
             actions={actions}
-            content={content}
+            text={text}
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
                     {hasBreadCrumb &&
                         <BreadCrumb 
-                            content={{
-                                ariaLabelText: 'Folders'
+                            text={{
+                                ariaLabel: 'Folders'
                             }}
                             breadCrumbList={breadCrumbList}
                             className="u-text-lead u-mb-10" />
@@ -203,8 +203,8 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
                         <>
                             <AriaLiveRegion>
                                 <DataGrid 
-                                    content={{
-                                        captionHtml: 'Group folders'
+                                    text={{
+                                        caption: 'Group folders'
                                     }}
                                     columnList={[
                                         {

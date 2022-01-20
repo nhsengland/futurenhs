@@ -9,7 +9,7 @@ import { Props } from './interfaces';
 
 export const BreadCrumb: (props: Props) => JSX.Element = ({
     breadCrumbList,
-    content,
+    text,
     seperatorIconName = 'icon-chevron-right',
     truncationMinPathLength,
     truncationStartIndex,
@@ -17,7 +17,7 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
     className
 }) => {
 
-    const { ariaLabelText, truncationText } = content ?? {};
+    const { ariaLabel, truncation } = text ?? {};
 
     const hasBreadCrumbElements: boolean = breadCrumbList.length > 0;
 
@@ -42,7 +42,7 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
 
     return (
 
-        <nav className={generatedClasses.wrapper} aria-label={ariaLabelText}>
+        <nav className={generatedClasses.wrapper} aria-label={ariaLabel}>
             {hasBreadCrumbElements &&
                 <ol className={generatedClasses.list}>
                     {breadCrumbList.map(({ element, text }, index) => {
@@ -68,7 +68,7 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
                                         isTruncationPoint
 
                                             ?   <>
-                                                    <span aria-hidden="true">{truncationText ?? '...'}</span>
+                                                    <span aria-hidden="true">{truncation ?? '...'}</span>
                                                     <span className="u-sr-only">{textToUse}</span>
                                                 </>
 

@@ -1,7 +1,7 @@
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    titleText: 'Privacy policy',
-    metaDescriptionText: 'Read our privacy policy',
-    mainHeadingHtml: 'Privacy policy'
-} as GenericPageContent;
+    title: 'Privacy policy',
+    metaDescription: 'Read our privacy policy',
+    mainHeading: 'Privacy policy'
+} as GenericPageTextContent;

@@ -7,11 +7,11 @@ import { Props } from './interfaces';
 
 export const BackLink: (props: Props) => JSX.Element = ({
     href,
-    content,
+    text,
     className
 }) => {
 
-    const { linkText } = content ?? {};
+    const { link } = text ?? {};
 
     const generatedClasses: any = {
         wrapper: classNames('c-back-link', className),
@@ -24,7 +24,7 @@ export const BackLink: (props: Props) => JSX.Element = ({
             <Link href={href}>
                 <a className={generatedClasses.wrapper}>
                     <SVGIcon name="icon-chevron-left" className={generatedClasses.icon} />
-                    {linkText}
+                    {link}
                 </a>
             </Link>
         </p>

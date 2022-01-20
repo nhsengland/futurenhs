@@ -3,10 +3,10 @@ import { Image } from '@appTypes/image';
 export interface Props {
     id: string;
     image?: Image;
-    content?: {
-        mainHeadingHtml: string;
-        descriptionHtml?: string;
-        navMenuTitleText: string;   
+    text?: {
+        mainHeading: string;
+        description?: string;
+        navMenuTitle: string;   
     };
     shouldRenderActionsMenu?: boolean;
     actionsMenuList?: Array<{

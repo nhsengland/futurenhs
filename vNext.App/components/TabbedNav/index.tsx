@@ -5,11 +5,11 @@ import { Link } from '@components/Link';
 import { Props } from './interfaces';
 
 export const TabbedNav: (props: Props) => JSX.Element = ({
-    content,
+    text,
     navMenuList
 }) => {
 
-    const { ariaLabelText } = content;
+    const { ariaLabel } = text;
 
     const generatedClasses: any = {
         wrapper: classNames('c-tabbed-nav'),
@@ -18,7 +18,7 @@ export const TabbedNav: (props: Props) => JSX.Element = ({
 
     return (
 
-        <nav className="c-tabbed-nav_nav" aria-label={ariaLabelText}>
+        <nav className="c-tabbed-nav_nav" aria-label={ariaLabel}>
             <ul role="menu" className="u-list-plain c-tabbed-nav_list">
                 {navMenuList.map(({ 
                     url, 

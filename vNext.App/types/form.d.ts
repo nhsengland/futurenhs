@@ -6,8 +6,8 @@ export interface FormField {
     component: Component;
     inputType?: InputType;
     name: string;
-    content: {
-        labelText?: string;
+    text: {
+        label?: string;
         hintHtml?: string;
     };
     validators?: Array<{

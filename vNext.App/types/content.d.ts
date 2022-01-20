@@ -1,12 +1,12 @@
-export interface GenericPageContent {
-    metaDescriptionText: string;
-    titleText: string;
-    mainHeadingHtml: string;
+export interface GenericPageTextContent {
+    metaDescription: string;
+    title: string;
+    mainHeading: string;
 }
 
-export interface GroupsPageContent extends GenericPageContent {
-    introHtml?: string;
-    navMenuTitleText?: string;
-    secondaryHeadingHtml?: string;
-    strapLineText?: string;
+export interface GroupsPageTextContent extends GenericPageTextContent {
+    intro?: string;
+    navMenuTitle?: string;
+    secondaryHeading?: string;
+    strapLine?: string;
 }

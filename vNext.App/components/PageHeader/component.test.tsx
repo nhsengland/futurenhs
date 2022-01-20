@@ -6,10 +6,10 @@ import { Props } from './interfaces';
 
 const testProps: Props = {
     id: 'mockId',
-    content: {
-        mainHeadingHtml: 'mockHeading',
-        descriptionHtml: 'mockDescripton',
-        navMenuTitleText: 'mockNavMenuTitleText'   
+    text: {
+        mainHeading: 'mockHeading',
+        description: 'mockDescripton',
+        navMenuTitle: 'mockNavMenuTitleText'   
     },
     navMenuList: []
 };

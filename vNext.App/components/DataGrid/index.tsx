@@ -3,7 +3,7 @@
 import { Props } from './interfaces';
 
 export const DataGrid: (props: Props) => JSX.Element = ({ 
-    content,
+    text,
     columnList = [],
     rowList = [],
     id,
@@ -13,7 +13,7 @@ export const DataGrid: (props: Props) => JSX.Element = ({
 
     const hasColumnList: boolean = columnList.length > 0;
 
-    const { captionHtml } = content ?? {}; 
+    const { caption } = text ?? {}; 
 
     const generatedClasses = {
         wrapper: classNames('c-table', className),
@@ -25,7 +25,7 @@ export const DataGrid: (props: Props) => JSX.Element = ({
     return (
 
         <table id={id} className={generatedClasses.wrapper}>
-            <caption className={generatedClasses.caption}>{captionHtml}</caption>
+            <caption className={generatedClasses.caption}>{caption}</caption>
             {hasColumnList &&
                 <thead>
                     <tr>

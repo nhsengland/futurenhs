@@ -5,8 +5,8 @@ import { BreadCrumb } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    content: {
-        ariaLabelText: 'mockContent'    
+    text: {
+        ariaLabel: 'mockContent'    
     },
     breadCrumbList: []
 };

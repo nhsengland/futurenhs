@@ -19,13 +19,15 @@ describe('Group member listing template', () => {
         id: 'mockPageId',
         user: undefined,
         actions: [],
-        content: {
-            titleText: 'Mock title text',
-            metaDescriptionText: 'Mock meta description text',
-            mainHeadingHtml: 'Mock main heading html',
-            introHtml: 'Mock intro html',
-            navMenuTitleText: 'Mock nav menu title text',
-            secondaryHeadingHtml: 'Mock secondary heading html'
+        text: {
+            title: 'Mock title text',
+            metaDescription: 'Mock meta description text',
+            mainHeading: 'Mock main heading html',
+            intro: 'Mock intro html',
+            navMenuTitle: 'Mock nav menu title text',
+            secondaryHeading: 'Mock secondary heading html',
+            membersHeading: 'Mock members heading',
+            pendingMemberRequestsHeading: 'Mock pending members heading'
         },
         image: null,
         pendingMembers: [],

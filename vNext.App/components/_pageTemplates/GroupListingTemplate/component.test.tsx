@@ -15,20 +15,20 @@ describe('GroupListingTemplate', () => {
     const props: Props = {
         id: 'mockPageId',
         user: undefined,
-        content: {
-            titleText: 'Mock title text',
-            metaDescriptionText: 'Mock meta description text',
-            mainHeadingHtml: 'Mock main heading html',
-            introHtml: 'Mock intro html',
-            navMenuTitleText: 'Mock nav menu title text',
-            secondaryHeadingHtml: 'Mock secondary heading html'
+        text: {
+            title: 'Mock title text',
+            metaDescription: 'Mock meta description text',
+            mainHeading: 'Mock main heading html',
+            intro: 'Mock intro html',
+            navMenuTitle: 'Mock nav menu title text',
+            secondaryHeading: 'Mock secondary heading html'
         },
         groupsList: [
             {
-                content: {
-                    metaDescriptionText: 'Mock meta description text',
-                    titleText: 'Mock title text',
-                    mainHeadingHtml: 'Mock Group card heading 1'
+                text: {
+                    metaDescription: 'Mock meta description text',
+                    title: 'Mock title text',
+                    mainHeading: 'Mock Group card heading 1'
                 },
                 groupId: 'mock-group',
                 totalDiscussionCount: 3,

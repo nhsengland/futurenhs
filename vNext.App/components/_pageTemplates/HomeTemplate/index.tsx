@@ -10,24 +10,24 @@ import { Props } from './interfaces';
  * Home page template
  */
 export const HomeTemplate: (props: Props) => JSX.Element = ({
-    content,
+    text,
     user
 }) => {
 
-    const { titleText, 
-            metaDescriptionText, 
-            mainHeadingHtml } = content ?? {};
+    const { title, 
+            metaDescription, 
+            mainHeading } = text ?? {};
 
     return (
 
         <StandardLayout user={user} className="u-bg-theme-3">
             <Head>
-                <title>{titleText}</title>
-                <meta name="description" content={metaDescriptionText} />
+                <title>{title}</title>
+                <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>
                 <LayoutColumn className="u-px-4 u-py-10">
-                    <h1>{mainHeadingHtml}</h1>
+                    <h1>{mainHeading}</h1>
                 </LayoutColumn>
             </LayoutColumnContainer>
         </StandardLayout>

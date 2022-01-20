@@ -8,11 +8,11 @@ import { Props } from './interfaces';
 export const ErrorSummary = React.forwardRef(({ 
     errors = {},
     relatedNames = [],
-    content,
+    text,
     className
 }: Props, ref) => {
 
-    const { bodyHtml } = content ?? {};
+    const { body } = text ?? {};
 
     const generatedClasses: any = {
         wrapper: classNames('c-error-summary', className),
@@ -33,9 +33,9 @@ export const ErrorSummary = React.forwardRef(({
             tabIndex={-1}>
                 {hasErrors &&
                     <div className={generatedClasses.wrapper}>
-                        {bodyHtml &&
+                        {body &&
                             <RichText 
-                                bodyHtml={bodyHtml} 
+                                bodyHtml={body} 
                                 wrapperElementType="p"
                                 className="u-text-bold u-text-lead" />
                         }

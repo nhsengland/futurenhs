@@ -1,8 +1,8 @@
 export interface Props {
-    content: {
-        titleText: string;
-        navMenuAriaLabelText: string;
-        copyrightText?: string;
+    text: {
+        title: string;
+        navMenuAriaLabel: string;
+        copyright?: string;
     };
     navMenuList: Array<{
         url: string;

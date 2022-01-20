@@ -5,8 +5,8 @@ import { ErrorSummary } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    content: {
-        bodyHtml: '<p>Mock description</p>'
+    text: {
+        body: '<p>Mock description</p>'
     },
     errors: {
         field1: 'Mock error 1',

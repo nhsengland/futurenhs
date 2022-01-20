@@ -10,8 +10,8 @@ describe('Validate helpers', () => {
             {
                 name: 'mockField',
                 component: 'textInput',
-                content: {
-                    labelText: 'mockLabelText'
+                text: {
+                    label: 'mockLabelText'
                 },
                 validators: [
                     {
@@ -34,8 +34,8 @@ describe('Validate helpers', () => {
             {
                 name: 'mockField',
                 component: 'textInput',
-                content: {
-                    labelText: 'mockLabelText'
+                text: {
+                    label: 'mockLabelText'
                 },
                 validators: [
                     {

@@ -1,7 +1,7 @@
+import { actions } from '@constants/actions';
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
-import { Actions } from '@appTypes/actions';
 import { User } from '@appTypes/user';
 
 declare type Options = ({
@@ -14,12 +14,12 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export type GetGroupActionsService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<Actions>>;
+export type GetGroupActionsService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<Array<actions>>>;
 
 export const getGroupActions = async ({
     groupId,
     user
-}: Options, dependencies?: Dependencies): Promise<ServiceResponse<Actions>> => {
+}: Options, dependencies?: Dependencies): Promise<ServiceResponse<Array<actions>>> => {
 
     try {
 

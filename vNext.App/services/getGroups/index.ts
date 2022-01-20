@@ -58,9 +58,9 @@ export const getGroups = async ({
         apiData.data?.forEach((datum) => {
 
             serviceResponse.data.push({
-                content: {
-                    mainHeadingHtml: datum.nameText,
-                    strapLineText: datum.strapLineText
+                text: {
+                    mainHeading: datum.nameText,
+                    strapLine: datum.strapLine
                 } as any,
                 groupId: datum.slug,
                 totalMemberCount: datum.memberCount ?? 0,

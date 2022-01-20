@@ -1,7 +1,7 @@
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    metaDescriptionText: 'The terms and conditions for using Future NHS',
-    titleText: 'Terms and conditions',
-    mainHeadingHtml: 'Terms and conditions'
-} as GenericPageContent;
+    metaDescription: 'The terms and conditions for using Future NHS',
+    title: 'Terms and conditions',
+    mainHeading: 'Terms and conditions'
+} as GenericPageTextContent;

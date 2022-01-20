@@ -9,7 +9,7 @@ import { Props } from './interfaces';
 
 export const PaginationWithStatus: (props: Props) => JSX.Element = ({
     id,
-    content,
+    text,
     visiblePages = 3,
     pageNumber,
     pageSize,
@@ -47,7 +47,7 @@ export const PaginationWithStatus: (props: Props) => JSX.Element = ({
             <LayoutColumn tablet={6} className={generatedClasses.controls}>
                 <Pagination 
                     id={id}
-                    content={content} 
+                    text={text} 
                     shouldEnableLoadMore={shouldEnableLoadMore}
                     shouldDisable={shouldDisable}
                     pageNumber={pageNumber}

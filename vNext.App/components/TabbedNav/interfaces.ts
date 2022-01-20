@@ -1,6 +1,6 @@
 export interface Props {
-    content: {
-        ariaLabelText: string;
+    text: {
+        ariaLabel: string;
     }
     navMenuList?: Array<{
         url: string;

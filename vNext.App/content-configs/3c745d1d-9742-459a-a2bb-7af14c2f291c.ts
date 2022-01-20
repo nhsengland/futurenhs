@@ -1,10 +1,10 @@
-import { GenericPageContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    titleText: 'Future NHS | My groups', 
-    metaDescriptionText: 'A list of groups you belong to',
-    mainHeadingHtml: 'My groups',
-    introHtml: 'Share ideas, get advice and support from your peers',
-    navMenuTitleText: 'Group menu',
-    secondaryHeadingHtml: 'All my Groups'
-} as GenericPageContent;
+    title: 'Future NHS | My groups', 
+    metaDescription: 'A list of groups you belong to',
+    mainHeading: 'My groups',
+    intro: 'Share ideas, get advice and support from your peers',
+    navMenuTitle: 'Group menu',
+    secondaryHeading: 'All my Groups'
+} as GenericPageTextContent;

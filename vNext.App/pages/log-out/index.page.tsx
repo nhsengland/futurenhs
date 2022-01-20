@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { withLogOut } from '@hofs/withLogOut';
-import { getPageContent } from '@services/getPageContent';
+import { getPageTextContent } from '@services/getPageTextContent';
 import { selectLocale, selectUser } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
@@ -9,13 +9,13 @@ import { User } from '@appTypes/user';
 import { LoggedOutTemplate } from '@components/_pageTemplates/LoggedOutTemplate';
 import { Props } from '@components/_pageTemplates/LoggedOutTemplate/interfaces';
 
+const routeId: string = '9ecf0edb-3e8d-4c3b-b4e6-371e38ac0af4';
+
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withLogOut({
     getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-        const id: string = '9ecf0edb-3e8d-4c3b-b4e6-371e38ac0af4';
 
         /**
          * Get data from request context
@@ -27,9 +27,9 @@ export const getServerSideProps: GetServerSideProps = withLogOut({
          * Create page data
          */
         const props: Props = {
-            id: id,
+            id: routeId,
             user: user,
-            content: null,
+            text: null,
             logOutUrl: process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL
         };
 
@@ -39,15 +39,15 @@ export const getServerSideProps: GetServerSideProps = withLogOut({
         try {
 
             const [
-                pageContent
+                pageTextContent
             ] = await Promise.all([
-                getPageContent({
-                    id: id,
+                getPageTextContent({
+                    id: routeId,
                     locale: locale
                 })
             ]);
 
-            props.content = pageContent.data;
+            props.text = pageTextContent.data;
         
         } catch (error) {
             

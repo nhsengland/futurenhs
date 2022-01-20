@@ -9,10 +9,10 @@ export interface Props {
         submitError: string;
         touched: boolean;
     };
-    content: {
-        labelText: string;
-        hintHtml?: string;
-        errorText?: string;
+    text: {
+        label: string;
+        hint?: string;
+        error?: string;
     };
     isRequired?: boolean;
     shouldRenderRemainingCharacterCount?: boolean;

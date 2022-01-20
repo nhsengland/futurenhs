@@ -11,10 +11,10 @@ describe('Search page', () => {
         user: undefined,
         term: 'mockTerm',
         resultsList: [],
-        content: {
-            titleText: 'Search',
-            metaDescriptionText: 'Search Future NHS',
-            mainHeadingHtml: 'Searching'
+        text: {
+            title: 'Search',
+            metaDescription: 'Search Future NHS',
+            mainHeading: 'Searching'
         }
     };
 

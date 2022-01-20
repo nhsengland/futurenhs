@@ -4,8 +4,8 @@ export interface Props {
     csrfToken: string;
     initialValues?: any;
     fields: Array<FormField>;
-    content: {
-        submitButtonText: string;
+    text: {
+        submitButton: string;
     };
     action?: string;
     method?: string;

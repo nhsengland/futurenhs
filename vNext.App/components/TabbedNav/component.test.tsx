@@ -5,8 +5,8 @@ import { TabbedNav } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    content: {
-        ariaLabelText: 'mockLabel'    
+    text: {
+        ariaLabel: 'mockLabel'    
     },
     navMenuList: []
 };

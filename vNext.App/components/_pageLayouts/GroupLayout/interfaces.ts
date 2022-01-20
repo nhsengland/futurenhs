@@ -1,4 +1,4 @@
-import { GroupsPageContent } from "@appTypes/content";
+import { GroupsPageTextContent } from "@appTypes/content";
 import { Image } from "@appTypes/image";
 
 export interface Props {
@@ -11,7 +11,7 @@ export interface Props {
     user?: any;
     actions?: any;
     className?: string;
-    content?: GroupsPageContent;
+    text?: GroupsPageTextContent;
     image?: Image;
     children?: any;
 }

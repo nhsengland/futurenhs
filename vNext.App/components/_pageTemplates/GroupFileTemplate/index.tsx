@@ -16,7 +16,7 @@ import { Props } from './interfaces';
 export const GroupFileTemplate: (props: Props) => JSX.Element = ({
     user,
     actions,
-    content,
+    text,
     image
 }) => {
 
@@ -34,7 +34,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
             id="files"
             user={user}
             actions={actions}
-            content={content}
+            text={text}
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
@@ -46,8 +46,8 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                         <Link href="/members/todo">Jane Richardson</Link>
                     </p>
                     <DataGrid
-                        content={{
-                            captionHtml: 'File data'
+                        text={{
+                            caption: 'File data'
                         }} 
                         shouldRenderCaption={true}
                         columnList={[

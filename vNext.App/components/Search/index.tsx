@@ -10,13 +10,13 @@ export const Search: (props: Props) => JSX.Element = ({
     method,
     action,
     id,
-    content,
+    text,
     className
 }) => {
 
     const [dynamicValue, setDynamicValue] = useState(value);
     
-    const { labelText, placeholderText } = content ?? {};
+    const { label, placeholder } = text ?? {};
 
     const handleSearchUpdate = (event) => setDynamicValue(event.target.value);
 
@@ -32,14 +32,14 @@ export const Search: (props: Props) => JSX.Element = ({
 
         <form method={method} action={action} className={generatedClasses.wrapper}>
             <div className="c-site-header-nav_search-item">
-                <label className={generatedClasses.label} htmlFor={id}>{labelText}</label>
+                <label className={generatedClasses.label} htmlFor={id}>{label}</label>
                 <input 
                     aria-label="Search" 
                     className={generatedClasses.input} 
                     id={id} 
                     name={id}
                     value={dynamicValue} 
-                    placeholder={placeholderText} 
+                    placeholder={placeholder} 
                     type="search"
                     onChange={handleSearchUpdate} />
                 <button 

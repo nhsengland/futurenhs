@@ -5,7 +5,7 @@ import { Props } from './interfaces';
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     user,
-    content,
+    text,
     image,
     actions
 }) => {
@@ -15,7 +15,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         <GroupLayout 
             id="index"
             user={user}
-            content={content}
+            text={text}
             image={image}
             actions={actions}
             className="u-bg-theme-3">

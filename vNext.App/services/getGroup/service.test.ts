@@ -96,7 +96,7 @@ describe('getGroup service', () => {
                 meta: response,
                 json: {
                     name: 'mockNameText', 
-                    strapLineText: 'Testing unreleased features of the FutureNHS platform',
+                    strapLine: 'Testing unreleased features of the FutureNHS platform',
                     image: {
                         source: '/mockSource',
                         height: 100,
@@ -116,11 +116,11 @@ describe('getGroup service', () => {
         });
 
         await expect(response.data).toStrictEqual({
-            content: {
-                mainHeadingHtml: 'mockNameText',
-                metaDescriptionText: 'A Future NHS group',
-                strapLineText: 'Testing unreleased features of the FutureNHS platform',
-                titleText: 'mockNameText'
+            text: {
+                mainHeading: 'mockNameText',
+                metaDescription: 'A Future NHS group',
+                strapLine: 'Testing unreleased features of the FutureNHS platform',
+                title: 'mockNameText'
             },
             image: {
                 src: `${process.env.NEXT_PUBLIC_API_BASE_URL}/mockSource`,

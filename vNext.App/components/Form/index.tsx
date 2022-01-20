@@ -14,7 +14,7 @@ export const Form: (props: Props) => JSX.Element = ({
     fields,
     changeAction,
     submitAction,
-    content,
+    text,
     className,
     bodyClassName,
     submitButtonClassName
@@ -23,7 +23,7 @@ export const Form: (props: Props) => JSX.Element = ({
     const handleChange = (props: any): any => changeAction?.(props);
     const handleValidate = (submission: any): any => validate(submission, fields);
 
-    const { submitButtonText } = content ?? {};
+    const { submitButton } = text ?? {};
 
     const generatedClasses: any = {
         wrapper: classNames('c-form', className),
@@ -53,7 +53,7 @@ export const Form: (props: Props) => JSX.Element = ({
                             {fields.map(({ 
                                 name, 
                                 inputType, 
-                                content, 
+                                text, 
                                 component,
                                 className 
                             }) => {
@@ -64,7 +64,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                         key={name}
                                         name={name}
                                         inputType={inputType}
-                                        content={content}
+                                        text={text}
                                         component={formComponents[component]}
                                         className={className} />
 
@@ -76,7 +76,7 @@ export const Form: (props: Props) => JSX.Element = ({
                             disabled={submitting}
                             type="submit" 
                             className={generatedClasses.submitButton}>
-                                {submitButtonText}
+                                {submitButton}
                         </button>
                         <FormSpy
                             subscription={{ 

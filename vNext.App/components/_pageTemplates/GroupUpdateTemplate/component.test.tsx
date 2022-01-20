@@ -1,25 +1,24 @@
-import * as React from 'react';
+import React from 'react';
 import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
-import { GroupMemberTemplate } from './index';
+import { GroupUpdateTemplate } from './index';
 import { Props } from './interfaces';
 
-describe('Group member template', () => {
+describe('Group update template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
-        asPath: '/groups/group/members/member',
+        asPath: '/groups/group/update',
         query: {
-            groupId: 'group',
-            memberId: 'member'
-        }
+            groupId: 'group'
+        } 
     }));
 
     const props: Props = {
-        id: 'mockPageId',
+        id: 'mockId',
+        folderId: 'mockId',
         user: undefined,
-        member: null,
         actions: [],
         text: {
             title: 'Mock title text',
@@ -34,7 +33,7 @@ describe('Group member template', () => {
 
     it('renders correctly', () => {
 
-        render(<GroupMemberTemplate {...props} />);
+        render(<GroupUpdateTemplate {...props} />);
 
         expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
 

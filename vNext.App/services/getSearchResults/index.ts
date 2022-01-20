@@ -42,8 +42,6 @@ export const getSearchResults = async ({
 
         const { ok, status, statusText } = apiMeta;
 
-        console.log(apiData.data.results);
-
         if(!ok){
 
             return {
