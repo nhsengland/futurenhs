@@ -4,7 +4,8 @@ import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceR
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { getGroupMember } from '@services/getGroupMember';
-import { selectUser, selectGroupId, selectMemberId } from '@selectors/context';
+import { getPageTextContent } from '@services/getPageTextContent';
+import { selectUser, selectGroupId, selectMemberId, selectLocale } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -26,6 +27,7 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
                 const groupId: string = selectGroupId(context);
                 const memberId: string = selectMemberId(context);
                 const user: User = selectUser(context);
+                const locale: string = selectLocale(context);
 
                 /**
                  * Get data from services
@@ -33,12 +35,17 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
                 try {
 
                     const [
-                        memberData
+                        memberData,
+                        pageTextContent
                     ] = await Promise.all([
                         getGroupMember({
                             groupId: groupId,
                             user: user,
                             memberId: memberId
+                        }),
+                        getPageTextContent({
+                            id: routeId,
+                            locale: locale
                         })
                     ]);
 
@@ -54,6 +61,7 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
                     }
 
                     props.member = memberData.data;
+                    props.text = Object.assign({}, props.text, pageTextContent.data ?? {});
                 
                 } catch (error) {
                     

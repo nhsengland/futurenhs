@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import classNames from 'classnames';
 
 import { SVGIcon } from '@components/SVGIcon';
@@ -69,7 +70,9 @@ export const Pagination: (props: Props) => JSX.Element = ({
                 {isActive 
                 
                     ?   <span aria-current="true" aria-label={`Current page, page ${i}`}>{i}</span> 
-                    :   <a className={generatedClasses.link} href={`${queryString}${encodeURIComponent(i)}`}>{i}</a>
+                    :   <Link href={`${queryString}${encodeURIComponent(i)}`} shallow={true}>
+                            <a className={generatedClasses.link}>{i}</a>
+                        </Link>
                     
                 }
             </li>

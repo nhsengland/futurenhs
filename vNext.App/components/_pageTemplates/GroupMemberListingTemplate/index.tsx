@@ -118,12 +118,12 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
             const rows = [
                 {
-                    children: <Link href={`${asPath}/${id}`}>{fullName}</Link>,
+                    children: <Link href={`${asPath}/${id}`}>{fullName || role}</Link>,
                     className: 'u-w-1/4'
                 },
                 {
                     children: `${capitalise()(role)}`,
-                    className: 'u-w-1/4'
+                    className: 'u-w-1/8'
                 },
                 {
                     children: `${dateTime({})(joinDate)}`,
@@ -196,7 +196,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                                         shouldRenderCaption={false}
                                         className="u-mb-11" />
 
-                                :   <p>There are none</p>
+                                :   <p>This group currently has no outstanding membership requests</p>
 
                             }
                         </div>
@@ -220,7 +220,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                                         {...dynamicPagination} />
                                 </>
 
-                            :   <p>There are none</p>
+                            :   <p>This group currently contains no members</p>
 
                         }
                     </AriaLiveRegion>

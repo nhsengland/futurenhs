@@ -1,4 +1,5 @@
 import { Image } from './image';
+import { Member } from '@appTypes/member'; 
 import { GroupsPageTextContent } from '@appTypes/content'; 
 
 export interface Group {
@@ -9,15 +10,4 @@ export interface Group {
     totalMemberCount?: number;    
 }
 
-export interface GroupMember {
-    id: string;
-    role: string;
-    firstName?: string;
-    lastName?: string;
-    fullName?: string;
-    initials?: string;
-    pronouns?: string;
-    email: string;
-    joinDate: string;
-    lastLogInDate: string;
-}
+export interface GroupMember extends Member {}

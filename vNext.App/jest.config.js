@@ -5,7 +5,6 @@ module.exports = {
 	],
     collectCoverage: true,
     collectCoverageFrom: [
-        '<rootDir>/pages/**/*.{ts,tsx,js,jsx}',
         '<rootDir>/components/**/*.{ts,tsx,js,jsx}',
         '<rootDir>/helpers/**/*.{ts,tsx,js,jsx}',
         '<rootDir>/hooks/**/*.{ts,tsx,js,jsx}',

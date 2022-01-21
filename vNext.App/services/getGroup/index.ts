@@ -42,10 +42,10 @@ export const getGroup = async ({
 
         const data = {
             text: {
-                title: apiData.name, 
+                title: apiData.name ?? null, 
                 metaDescription: 'A Future NHS group',
-                mainHeading: apiData.name,
-                strapLine: 'Testing unreleased features of the FutureNHS platform'//json.pageHeader.strapLine
+                mainHeading: apiData.name ?? null,
+                strapLine: apiData?.strapLine ?? null
             },
             image: apiData.image ? {
                 src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${apiData.image?.source}`,

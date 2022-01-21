@@ -1,0 +1,26 @@
+.c-profile {
+
+    &_image {
+        width: 210px;
+        height: 210px;
+    }
+
+    &_heading {
+        margin: 0 0 $nhsuk-spacing-point-5;
+        line-height: $h1-line-height-desktop;
+        font-size: $h1-font-size-desktop;
+    }
+
+    &_data {
+        @include standard-text;
+    }
+
+    &_data-label {
+        margin: 0 0 $nhsuk-spacing-point-1;
+    }
+
+    &_data-value {
+        margin: 0 0 $nhsuk-spacing-point-3;
+    }
+
+}

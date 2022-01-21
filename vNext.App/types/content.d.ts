@@ -9,4 +9,8 @@ export interface GroupsPageTextContent extends GenericPageTextContent {
     navMenuTitle?: string;
     secondaryHeading?: string;
     strapLine?: string;
+    firstNameLabel?: string; 
+    lastNameLabel?: string;
+    pronounsLabel?: string; 
+    emailLabel?: string;
 }

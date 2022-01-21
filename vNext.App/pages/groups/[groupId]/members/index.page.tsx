@@ -4,7 +4,8 @@ import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { getGroupMembers } from '@services/getGroupMembers';
 import { getPendingGroupMembers } from '@services/getPendingGroupMembers';
-import { selectUser, selectPagination, selectGroupId } from '@selectors/context';
+import { getPageTextContent } from '@services/getPageTextContent';
+import { selectUser, selectPagination, selectGroupId, selectLocale } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -24,6 +25,7 @@ const routeId: string = '3d4a3b47-ba2c-43fa-97cf-90de93eeb4f8';
 
                 const groupId: string = selectGroupId(context);
                 const user: User = selectUser(context);
+                const locale: string = selectLocale(context);
                 const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
                 const initialPageSize: number = selectPagination(context).pageSize ?? 10;
 
@@ -34,7 +36,8 @@ const routeId: string = '3d4a3b47-ba2c-43fa-97cf-90de93eeb4f8';
 
                     const [
                         groupMembers,
-                        groupPendingMembers
+                        groupPendingMembers,
+                        pageTextContent
                     ] = await Promise.all([
                         getGroupMembers({
                             user: user,
@@ -47,12 +50,17 @@ const routeId: string = '3d4a3b47-ba2c-43fa-97cf-90de93eeb4f8';
                         getPendingGroupMembers({
                             user: user,
                             groupId: groupId
+                        }),
+                        getPageTextContent({
+                            id: routeId,
+                            locale: locale
                         })
                     ]);
 
                     props.members = groupMembers.data;
                     props.pagination = groupMembers.pagination;
                     props.pendingMembers = groupPendingMembers.data;
+                    props.text = Object.assign({}, props.text, pageTextContent.data);
                 
                 } catch (error) {
                     
