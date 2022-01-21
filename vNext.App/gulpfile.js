@@ -76,6 +76,17 @@ const fonts = () => {
 
 gulp.task(fonts);
 
+// Copy tinymce files from node_modules to dist folder
+const tinyMce = () => {
+
+    return gulp
+        .src('./node_modules/tinymce/**/*')
+        .pipe(gulp.dest(`${uiAssetsDistPath}/js/tinymce`));
+
+};
+
+gulp.task(tinyMce);
+
 // Generate favicon set
 const favicon = () => {
 
@@ -147,7 +158,7 @@ gulp.task(icons);
 // Build task - runs all the web tasks
 const build = (done) => { 
 
-    gulp.series(scss, images, icons, fonts, favicon)();
+    gulp.series(scss, images, icons, fonts, tinyMce, favicon)();
 
     done();
 

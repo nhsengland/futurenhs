@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import { Link } from '@components/Link';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
@@ -19,6 +20,8 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     actions,
     discussionsList
 }) => {
+
+    const { asPath } = useRouter();
 
     const [dynamicDiscussionsList, setDiscussionsList] = useState(discussionsList);
     const [dynamicPagination, setPagination] = useState(pagination);
@@ -97,7 +100,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                         {...dynamicPagination} />                
                 </LayoutColumn>
                 <LayoutColumn tablet={4} className="u-px-4 u-py-10">
-                    <button className="c-button u-w-full">New discussion</button>
+                    <Link href={`${asPath}/create`}>
+                        <a className="c-button u-w-full">New discussion</a>
+                    </Link>
                 </LayoutColumn>
         </GroupLayout>
 

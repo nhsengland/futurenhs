@@ -104,7 +104,7 @@ nextApp
                 'X-Frame-Options': 'SAMEORIGIN',
                 'X-Content-Type-Options': 'nosniff',
                 'Referrer-Policy': 'origin-when-cross-origin',
-                'Content-Security-Policy': generateCSP(nonce)
+                //'Content-Security-Policy': generateCSP(nonce)
             });
 
             res.locals.nonce = nonce;

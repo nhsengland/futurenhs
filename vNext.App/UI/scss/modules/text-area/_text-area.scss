@@ -1,4 +1,5 @@
-.c-textarea {
+.c-textarea, 
+.c-form-group .tox-tinymce {
     @include standard-text;
     -webkit-appearance: none;
     border: $nhsuk-border-width-form-element solid $nhsuk-form-border-color;
@@ -9,6 +10,7 @@
     padding: $nhsuk-spacing-point-1;
     resize: vertical;
     width: 100%;
+    min-height: 200px;
 
     &:focus {
         @include nhsuk-focused-input;

@@ -1,7 +1,7 @@
 export interface Props {
     input: {
         name: string;
-        value: string | number;
+        value: any;
         onChange: any;
     };
     meta: {

@@ -1,4 +1,6 @@
+import { useRef, useState, useEffect } from 'react';
 import classNames from 'classnames';
+import { Editor } from '@tinymce/tinymce-react';
 
 import { RichText } from '@components/RichText';
 import { getAriaFieldAttributes } from '@helpers/util/form';
@@ -22,9 +24,24 @@ export const TextArea: (props: Props) => JSX.Element = ({
     className
 }) => {
 
+    const editorRef = useRef(null);
+    const [shouldLoadRte, setShouldLoadRte] = useState(false);
+
     const { label, hint } = text ?? {};
     const id: string = name;
     const shouldRenderError: boolean = (Boolean(error) || Boolean(submitError)) && touched;
+
+    const handleRteChange = () => {
+
+        if (editorRef.current) {
+
+            const rteContent = editorRef.current.getContent();
+
+            onChange(rteContent);
+
+        }
+
+    }
 
     const generatedIds: any = {
         hint: `${name}-hint`,
@@ -50,13 +67,19 @@ export const TextArea: (props: Props) => JSX.Element = ({
         shouldRenderRemainingCharacterCount ? generatedIds.remainingCharacters : null
     ]);
 
+    useEffect(() => {
+
+        setShouldLoadRte(true);
+
+    }, []);
+
     return (
 
         <div className={generatedClasses.wrapper}>
-            <label 
-                htmlFor={id} 
+            <label
+                htmlFor={id}
                 className={generatedClasses.label}>
-                    {label}
+                {label}
             </label>
             {hint &&
                 <RichText
@@ -67,13 +90,33 @@ export const TextArea: (props: Props) => JSX.Element = ({
             }
             {shouldRenderError &&
                 <span className={generatedClasses.error}>{error || submitError}</span>
-            } 
-            <textarea 
-                id={id} 
-                name={name} 
-                value={value} 
-                onChange={onChange}
-                className={generatedClasses.input} />
+            }
+            {shouldLoadRte
+            
+                ?   <Editor
+                        tinymceScriptSrc="/js/tinymce/tinymce.min.js"
+                        onInit={(event, editor) => editorRef.current = editor}
+                        textareaName={name}
+                        onChange={handleRteChange}
+                        init={{
+                            height: 500,
+                            menubar: false,
+                            plugins: ['autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap'],
+                            toolbar: 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
+                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                        }}
+                    />
+
+                :   <textarea
+                        {...ariaInputProps}
+                        id={id}
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        className={generatedClasses.input} />
+            
+            }
+
         </div>
 
     )
