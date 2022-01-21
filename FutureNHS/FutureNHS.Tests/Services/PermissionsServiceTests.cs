@@ -124,14 +124,14 @@ namespace FutureNHS.Tests.Services
             List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole>();
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                     .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsFalse(permissions.Any());
+            Assert.IsTrue(permissions is null);
         }
 
         [TestMethod]
@@ -154,16 +154,15 @@ namespace FutureNHS.Tests.Services
             List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> ();
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-admin"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-guest"));
-            Assert.IsTrue(permissions.Count() == 2);
+            
+            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
         }
 
         [TestMethod]
@@ -186,16 +185,15 @@ namespace FutureNHS.Tests.Services
             List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Approved = true} };
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-user"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-admin"));
-            Assert.IsTrue(permissions.Count() == 2);
+            
+            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
         }
 
         [TestMethod]
@@ -218,17 +216,15 @@ namespace FutureNHS.Tests.Services
             List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = false } };
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-user"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-guest"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-pending"));
-            Assert.IsTrue(permissions.Count() == 3);
+            
+            Assert.IsTrue(!permissions.Any());
         }
 
         [TestMethod]
@@ -251,17 +247,15 @@ namespace FutureNHS.Tests.Services
             List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = false, Banned = true } };
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-user"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-guest"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-banned"));
-            Assert.IsTrue(permissions.Count() == 3);
+
+            Assert.IsTrue(!permissions.Any());
         }
 
         [TestMethod]
@@ -284,17 +278,15 @@ namespace FutureNHS.Tests.Services
             List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = true, Locked = true } };
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-user"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-guest"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-locked"));
-            Assert.IsTrue(permissions.Count() == 3);
+            
+            Assert.IsTrue(!permissions.Any());
         }
 
         [TestMethod]
@@ -317,17 +309,15 @@ namespace FutureNHS.Tests.Services
             List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = true, Rejected = true } };
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-user"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-guest"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-rejected"));
-            Assert.IsTrue(permissions.Count() == 3);
+
+            Assert.IsTrue(!permissions.Any());
         }
 
         [TestMethod]
@@ -350,18 +340,17 @@ namespace FutureNHS.Tests.Services
             var groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Approved = true}, new GroupUserRole { RoleName = "Standard Members", Approved = true} };
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-user"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-admin"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-admin"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-user"));
-            Assert.IsTrue(permissions.Count() == 4);
+
+            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/members/v1/add"));
+            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/delete"));
+
         }
 
         [TestMethod]
@@ -384,16 +373,14 @@ namespace FutureNHS.Tests.Services
             var groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Banned = true }, new GroupUserRole { RoleName = "Standard Members", Approved = true, Banned = true } };
 
             rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupRolesAsync(userId, groupId, cancellationToken))
+                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-user"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-guest"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "group-banned"));
-            Assert.IsTrue(permissions.Count() == 3);
+
+            Assert.IsTrue(!permissions.Any());
         }
 
         [TestMethod]
@@ -464,8 +451,7 @@ namespace FutureNHS.Tests.Services
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsAsync(userId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-guest"));
-            Assert.IsTrue(permissions.Count() == 1);
+            Assert.IsTrue(permissions is null);
         }
 
         [TestMethod]
@@ -494,9 +480,7 @@ namespace FutureNHS.Tests.Services
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
             var permissions = await permissionsService.GetUserPermissionsAsync(userId, cancellationToken);
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-user"));
-            Assert.IsTrue(permissions.Any(x => x.Type == ClaimTypes.Role && x.Value == "site-admin"));
-            Assert.IsTrue(permissions.Count() == 2);
+            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/admin/v1/view"));
         }
     }
 }
