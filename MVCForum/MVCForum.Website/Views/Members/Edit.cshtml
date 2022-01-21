@@ -1,5 +1,4 @@
-﻿
-@model MvcForum.Web.ViewModels.Member.MemberFrontEndEditViewModel
+﻿@model MvcForum.Web.ViewModels.Member.MemberFrontEndEditViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
@@ -30,142 +29,143 @@
 
         if (!ViewData.ModelState.IsValid)
         {
-            <div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert" tabindex="-1">
-                <h2 id="error-summary-title" class="c-error-summary_title">There is a problem</h2>
-                <div class="c-error-summary_body">
-                    <ul class="c-error-summary_list">
+                    <div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert" tabindex="-1">
+                        <h2 id="error-summary-title" class="c-error-summary_title">There is a problem</h2>
+                        <div class="c-error-summary_body">
+                            <ul class="c-error-summary_list">
                         @Html.Raw(Html.CustomValidationSummary("c-error-summary_error-text"))
-                    </ul>
-                </div>
-            </div>
+                            </ul>
+                        </div>
+                    </div>
         }
-        <div class="l-row u-margin-left-spacing-0 @Html.FieldHasError(model => model.ProfileImage, formError)">
+            <div class="l-row u-margin-left-spacing-0 @Html.FieldHasError(model => model.ProfileImage, formError)">
             @Html.LabelFor(model => model.ProfileImage, htmlAttributes: new { @class = "c-label u-margin-bottom-spacing-2" })
-            <div class="c-hint" id="@Html.DisplayNameFor(model => model.ProfileImage)-hint">
+                <div class="c-hint" id="@Html.DisplayNameFor(model => model.ProfileImage)-hint">
                 @Html.LanguageString("Members.Profile.ImageGuidanceText")
-            </div>
+                </div>
 
             @Html.ValidationMessageFor(
                 model => model.ProfileImage,
                 imageErrors,
                 htmlAttributes: new { @class = "c-error-message" })
 
-            <div class="c-form-group l-col-4 l-col-4-t l-col-3-d u-margin-bottom-spacing-0 @*@Html.FieldHasError(model => model.ProfileImage, formError)*@">
+                <div class="c-form-group l-col-4 l-col-4-t l-col-3-d u-margin-bottom-spacing-0 @*@Html.FieldHasError(model => model.ProfileImage, formError)*@">
                 @if (!string.IsNullOrEmpty(Model.Avatar))
                 {
-                    <div class="c-avatar c-avatar--large">
-                        <img class="c-avatar_image" src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.Initials">
-                    </div>
+                            <div class="c-avatar c-avatar--large">
+                                <img class="c-avatar_image" src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.Initials">
+                            </div>
                 }
                 else
                 {
                     @* TODO [FED]: The initials of the user (valiue in img tag alt) should be displayed if no image *@
-                    <div class="c-avatar c-avatar--small">
-                        <div class="c-avatar_fallback">
-                            <p class="c-avatar_initials" aria-hidden="true">
+                            <div class="c-avatar c-avatar--small">
+                                <div class="c-avatar_fallback">
+                                    <p class="c-avatar_initials" aria-hidden="true">
                                 @Html.DisplayFor(x => Model.Initials)
-                            </p>
-                        </div>
-                    </div>
+                                    </p>
+                                </div>
+                            </div>
                 }
-            </div>
+                </div>
 
-            <div class="profile-upload-wrapper l-col-12 l-col-8-d">
-                <div class="c-form-group l-col-12">
+                <div class="profile-upload-wrapper l-col-12 l-col-8-d">
+                    <div class="c-form-group l-col-12">
                     @if (!Model.DisableFileUploads)
                     {
                         if (string.IsNullOrWhiteSpace(Model.Avatar))
                         {
-                            <label class="c-button c-button--outline edit-profile-button u-text-theme-0">
-                                Upload an image
-                                <span class="u-visually-hidden">
+                                        <label class="c-button c-button--outline edit-profile-button u-text-theme-0">
+                                            Upload an image
+                                            <span class="u-visually-hidden">
                                     @Html.TextBoxFor(model => model.ProfileImage, new { id="FileToUpload_PostedFile", type = "file", name = "File", @class = "" })
-                                </span>
-                            </label>
+                                            </span>
+                                        </label>
                         }
                     }
 
                     @if (!string.IsNullOrWhiteSpace(Model.Avatar))
                     {
-                        <div class="c-form-group">
+                                <div class="c-form-group">
                             @Html.ActionLink(Html.LanguageString("Members.Profile.RemoveImage"), "RemoveProfileImage", "Members", new { userId = Model.Id }, new { @class = "c-button c-button--outline c-button--min-width js-dialog", data_dialog_id = "dialog-delete-confirm" })
                             @*<a class="c-button c-button--outline" href="@Url.Action("RemoveProfileImage", "Members", new { userId = Model.Id })">@Html.LanguageString("Members.Profile.RemoveImage")</a>*@
-                        </div>
+                                </div>
 
-                        <dialog id="dialog-delete-confirm" class="c-dialog">
-                            <div class="c-dialog_content c-dialog_content--thin">
-                                <h3>Remove Image</h3>
-                                <p class="u-text-bold">
-                                    Are you sure you want to remove your profile image?
-                                </p>
-                                <div>
-                                    <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">Cancel</button>
-                                </div>
-                                <div>
-                                    <button class="js-dialog-confirm c-button c-button--full-width">Yes, remove</button>
-                                </div>
-                            </div>
-                        </dialog>
+                                <dialog id="dialog-delete-confirm" class="c-dialog">
+                                    <div class="c-dialog_content c-dialog_content--thin">
+                                        <h3>Remove Image</h3>
+                                        <p class="u-text-bold">
+                                            Are you sure you want to remove your profile image?
+                                        </p>
+                                        <div>
+                                            <button class="js-dialog-cancel c-button c-button--outline c-button--full-width">Cancel</button>
+                                        </div>
+                                        <div>
+                                            <button class="js-dialog-confirm c-button c-button--full-width">Yes, remove</button>
+                                        </div>
+                                    </div>
+                                </dialog>
                     }
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="l-row  u-margin-left-spacing-0">
-            <div class="c-form-group">
+            <div class="l-row  u-margin-left-spacing-0">
+                <div class="c-form-group">
                 @Html.Raw(string.Format("<a href=\"{0}\">{1}</a>", Url.Action("ChangePassword"), Html.LanguageString("Members.ChangePassword.Link")))
-            </div>
+                </div>
 
-            <div class="c-form-group @Html.FieldHasError(model => model.FirstName, formError)">
+                <div class="c-form-group @Html.FieldHasError(model => model.FirstName, formError)">
                 @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "c-label" })
 
                 @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "c-error-message" })
                 @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.FirstName, inputError) } })
-            </div>
+                </div>
 
-            <div class="c-form-group @Html.FieldHasError(model => model.Surname, formError)">
+                <div class="c-form-group @Html.FieldHasError(model => model.Surname, formError)">
                 @Html.LabelFor(model => model.Surname, @Html.LanguageString("Members.Label.SurnameEdit"), htmlAttributes: new { @class = "c-label" })
 
                 @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "c-error-message" })
                 @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Surname, inputError) } })
-            </div>
-
-            <div class="c-form-group @Html.FieldHasError(model => model.Pronouns, formError)">
-                @Html.LabelFor(model => model.Pronouns, @Html.LanguageString("Members.Label.PronounsEdit"), htmlAttributes: new { @class = "c-label" })
-                <div class="c-hint u-text-small" id="@Html.DisplayNameFor(model => model.Pronouns)-hint">
-                    Example: she/her, he/him, they/them
                 </div>
+
+                <div class="c-form-group @Html.FieldHasError(model => model.Pronouns, formError)">
+                @Html.LabelFor(model => model.Pronouns, @Html.LanguageString("Members.Label.PronounsEdit"), htmlAttributes: new { @class = "c-label" })
+                    <div class="c-hint u-text-small" id="@Html.DisplayNameFor(model => model.Pronouns)-hint">
+                        Example: she/her, he/him, they/them
+                    </div>
 
                 @Html.ValidationMessageFor(model => model.Pronouns, "", new { @class = "c-error-message" })
                 @Html.EditorFor(model => model.Pronouns, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Pronouns, inputError) } })
-            </div>
-
-            <div class="c-form-group @Html.FieldHasError(model => model.Email, formError)">
-                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "c-label" })
-                <span class="c-hint u-text-small">
-                    @Html.DisplayFor(model => model.Email) @*, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Surname, inputError) } })*@
-                </span>
-            </div>
-
-
-            <div class="c-form-group">
-                <div class="c-checkboxes__item">
-                    @Html.CheckBoxFor(model => model.HasAgreedToTermsAndConditions, new { @class = "c-checkboxes__input", @name = "@Model.HasAgreedToTermsAndConditions", })
-
-                    <label class="c-label c-checkboxes__label" for="HasAgreedToTermsAndConditions">
-                        Please confirm that all changes are in line with the platform <a href="/terms-and-conditions">terms and conditions</a>
-                    </label>
-
-                    @* @Html.LabelFor(model => model.HasAgreedToTermsAndConditions, "Please confirm that all changes are in line with the platform <a href=\"/terms-and-conditions\">terms and conditions</a>", new { @class = "c-label c-checkboxes__label" }) *@
                 </div>
 
-                @Html.ValidationMessageFor(model => model.HasAgreedToTermsAndConditions, "", new { @class = "c-error-message c-form-group--error u-margin-top-spacing-4" })
-            </div>
+                <div class="c-form-group @Html.FieldHasError(model => model.Email, formError)">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "c-label" })
+                    <span class="c-hint u-text-small">
+                    @Html.DisplayFor(model => model.Email) @*, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Surname, inputError) } })*@
+                    </span>
+                </div>
 
-            <div class="c-form-group">
-                <input type="submit" value="Save changes" class="c-button l-col-6 u-margin-top-spacing-5 u-margin-left-spacing-0 u-margin-bottom-spacing-4" data-mce-requirements="none">
+
+                <div class="c-form-group">
+                    <div class="c-checkboxes__item">
+                    @Html.CheckBoxFor(model => model.HasAgreedToTermsAndConditions, new { @class = "c-checkboxes__input", @name = "@Model.HasAgreedToTermsAndConditions", })
+
+                        <label class="c-label c-checkboxes__label" for="HasAgreedToTermsAndConditions">
+                            Please confirm that all changes are in line with the platform <a href="/terms-and-conditions">terms and conditions</a>
+                        </label>
+
+                    @* @Html.LabelFor(model => model.HasAgreedToTermsAndConditions, "Please confirm that all changes are in line with the platform <a href=\"/terms-and-conditions\">terms and conditions</a>", new { @class = "c-label c-checkboxes__label" }) *@
+                    </div>
+
+                @Html.ValidationMessageFor(model => model.HasAgreedToTermsAndConditions, "", new { @class = "c-error-message c-form-group--error u-margin-top-spacing-4" })
+                </div>
+
+                <div class="c-form-group">
+                    <input type="submit" value="Save changes" class="c-button l-col-6 u-margin-top-spacing-5 u-margin-left-spacing-0 u-margin-bottom-spacing-4" data-mce-requirements="none">
+                </div>
             </div>
-        </div>
     }
 
 </div>
+
