@@ -59,12 +59,7 @@
                         var file = files[0];
                         if (file != null)
                         {
-                            var uploadResult = file.UploadFile(uploadFolderPath, _localizationService, _imageCommand, _imageRepository, _imageService, false, input.EntityToProcess.Id);                            
-
-                            // Save avatar to user
-                            input.EntityToProcess.Image = uploadResult.UploadedFileName;
-
-                            await context.SaveChangesAsync();
+                            _ = file.UploadFile(uploadFolderPath, _localizationService, _imageCommand, _imageRepository, _imageService, false, input.EntityToProcess.Id);
                         }
                     }
                 }

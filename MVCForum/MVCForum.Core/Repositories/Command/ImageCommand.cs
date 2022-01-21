@@ -108,23 +108,25 @@ namespace MvcForum.Core.Repositories.Command
             return false;
         }
 
-        public bool UpdateGroupImageId(Guid groupId, Guid imageId)
+        public bool UpdateGroupImageId(Guid groupId, Guid imageId, string imageName)
         {
             if (Guid.Empty == groupId) throw new ArgumentOutOfRangeException(nameof(groupId));
             if (Guid.Empty == imageId) throw new ArgumentOutOfRangeException(nameof(imageId));
-
+            if (string.IsNullOrWhiteSpace(imageName)) throw new ArgumentNullException(nameof(imageName));
 
             const string query =
                 @"
                     UPDATE [dbo].[Group]
-                    SET ImageId = @imageId
+                    SET ImageId = @imageId,
+                        Image = @imageName
                     WHERE Id = @groupId;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new
             {
                 groupId,
-                imageId
+                imageId,
+                imageName
             });
 
             using (var dbConnection = _connectionFactory.CreateWriteOnlyConnection())
@@ -139,22 +141,25 @@ namespace MvcForum.Core.Repositories.Command
             return false;
         }
 
-        public bool UpdateMembershipUserImageId(Guid membershipUserId, Guid imageId)
+        public bool UpdateMembershipUserImageId(Guid membershipUserId, Guid imageId, string imageName)
         {
             if (Guid.Empty == membershipUserId) throw new ArgumentOutOfRangeException(nameof(membershipUserId));
             if (Guid.Empty == imageId) throw new ArgumentOutOfRangeException(nameof(imageId));
+            if (string.IsNullOrWhiteSpace(imageName)) throw new ArgumentNullException(nameof(imageName));
 
             const string query =
                 @"
                     UPDATE [dbo].[MembershipUser]
-                    SET ImageId = @imageId
+                    SET ImageId = @imageId,
+                        Avatar = @imageName
                     WHERE Id = @membershipUserId;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new
             {
                 membershipUserId,
-                imageId
+                imageId,
+                imageName
             });
 
             using (var dbConnection = _connectionFactory.CreateWriteOnlyConnection())

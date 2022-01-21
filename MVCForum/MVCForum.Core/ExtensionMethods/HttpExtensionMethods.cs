@@ -150,7 +150,7 @@
                             else
                             {
                                 var imageId = imageCommand.Create(imageVM);
-                                _ = imageCommand.UpdateMembershipUserImageId(imageSaveId, imageId);
+                                _ = imageCommand.UpdateMembershipUserImageId(imageSaveId, imageId, newFileName);
                             }
                         }
                         else
@@ -164,7 +164,7 @@
                             else
                             {
                                 var imageId = imageCommand.Create(imageVM);
-                                _ = imageCommand.UpdateGroupImageId(imageSaveId, imageId);
+                                _ = imageCommand.UpdateGroupImageId(imageSaveId, imageId, newFileName);
                             }
                         }
                     }
@@ -181,7 +181,6 @@
                     newFileName = fileName.CreateFilename();
                     upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, file.InputStream);
                 }
-
                 upResult.UploadedFileName = newFileName;
             } else {
                 upResult.UploadSuccessful = false;
