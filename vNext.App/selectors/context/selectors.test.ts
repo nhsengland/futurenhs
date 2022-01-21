@@ -1,9 +1,14 @@
-import { selectUser, selectPagination } from './index';
 import { GetServerSidePropsContext } from '@appTypes/next';
+
+import { routeParams } from '@constants/routes';
+import { selectUser, selectParam, selectPagination } from './index';
 
 describe('Selectors', () => {
 
     const mockContext: Partial<GetServerSidePropsContext> = {
+        params: {
+            groupId: '1234'
+        },
         req: {
             user: {
                 id: 1234
@@ -14,6 +19,16 @@ describe('Selectors', () => {
             }
         }
     };
+
+    it('returns selectParam correctly', () => {
+
+        expect(selectParam(mockContext as any, routeParams.GROUPID)).toBe('1234');
+
+        expect(selectParam({
+            req: {}
+        } as any, routeParams.GROUPID)).toBeNull();
+
+    });
 
     it('returns selectUser correctly', () => {
 

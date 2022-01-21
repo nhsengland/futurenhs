@@ -2,7 +2,6 @@ import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-import { RichText } from '@components/RichText';
 import { createDiscussionForm } from '@formConfigs/create-discussion';
 
 import { Props } from './interfaces';
@@ -44,7 +43,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                                         submitButton: 'Create discussion'
                                     }
                                 }} 
-                                submitAction={() => {}}
+                                submitAction={console.log}
                                 bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1"
                                 submitButtonClassName="u-float-right">
                                     <h2>Create discussion</h2>

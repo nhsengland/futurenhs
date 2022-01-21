@@ -17,6 +17,11 @@
     }
 }
 
-.c-textarea--error {
+.c-form-group .tox-tinymce {
+    display: flex;
+}
+
+.c-textarea--error,
+.c-form-group--error .tox-tinymce {
     border: $nhsuk-border-width-form-element-error solid $nhsuk-error-color;
 }

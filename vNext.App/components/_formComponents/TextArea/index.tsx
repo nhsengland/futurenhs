@@ -26,11 +26,15 @@ export const TextArea: (props: Props) => JSX.Element = ({
 
     const editorRef = useRef(null);
     const [shouldLoadRte, setShouldLoadRte] = useState(false);
+    const [isRteFocussed, setIsRteFocussed] = useState(false);
 
     const { label, hint } = text ?? {};
     const id: string = name;
     const shouldRenderError: boolean = (Boolean(error) || Boolean(submitError)) && touched;
 
+    const handleRteInit = (_, editor) => editorRef.current = editor;
+    const handleRteFocus = () => setIsRteFocussed(true);
+    const handleRteBlur = () => setIsRteFocussed(false);
     const handleRteChange = () => {
 
         if (editorRef.current) {
@@ -95,9 +99,11 @@ export const TextArea: (props: Props) => JSX.Element = ({
             
                 ?   <Editor
                         tinymceScriptSrc="/js/tinymce/tinymce.min.js"
-                        onInit={(event, editor) => editorRef.current = editor}
                         textareaName={name}
+                        onInit={handleRteInit}
                         onChange={handleRteChange}
+                        onFocus={handleRteFocus}
+                        onBlur={handleRteBlur}
                         init={{
                             height: 500,
                             menubar: false,

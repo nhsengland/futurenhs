@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import { withAuth } from '@hofs/withAuth';
 import { getPageTextContent } from '@services/getPageTextContent';
 import { getSearchResults } from '@services/getSearchResults';
-import { selectUser, selectLocale, selectSearchTerm, selectProps } from '@selectors/context';
+import { selectUser, selectLocale, selectQuery, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -22,7 +22,7 @@ const routeId: string = '246485b1-2a13-4844-95d0-1fb401c8fdea';
          */
         const user: User = selectUser(context);
         const locale: string = selectLocale(context);
-        const term: string | string [] = selectSearchTerm(context);
+        const term: string = selectQuery(context, 'term');
 
         let props: any = selectProps(context);
 

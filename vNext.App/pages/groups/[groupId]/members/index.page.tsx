@@ -1,11 +1,12 @@
 import { GetServerSideProps } from 'next';
 
+import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { getGroupMembers } from '@services/getGroupMembers';
 import { getPendingGroupMembers } from '@services/getPendingGroupMembers';
 import { getPageTextContent } from '@services/getPageTextContent';
-import { selectUser, selectPagination, selectGroupId, selectLocale } from '@selectors/context';
+import { selectUser, selectPagination, selectParam, selectLocale } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -23,9 +24,9 @@ const routeId: string = '3d4a3b47-ba2c-43fa-97cf-90de93eeb4f8';
 
                 let { props } = context;
 
-                const groupId: string = selectGroupId(context);
                 const user: User = selectUser(context);
                 const locale: string = selectLocale(context);
+                const groupId: string = selectParam(context, routeParams.GROUPID);
                 const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
                 const initialPageSize: number = selectPagination(context).pageSize ?? 10;
 

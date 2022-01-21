@@ -1,10 +1,11 @@
 import { GetServerSideProps } from 'next';
 
+import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { getGroupFolders } from '@services/getGroupFolders';
-import { selectUser, selectPagination, selectFolderId, selectGroupId } from '@selectors/context';
+import { selectUser, selectPagination, selectParam } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -20,13 +21,13 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
         routeId: routeId,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-            let { props } = context;
-
-            const groupId: string = selectGroupId(context);
             const user: User = selectUser(context);
-            const folderId: string = selectFolderId(context);
+            const groupId: string = selectParam(context, routeParams.GROUPID);
+            const folderId: string = selectParam(context, routeParams.FOLDERID);
             const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
             const initialPageSize: number = selectPagination(context).pageSize ?? 10;
+
+            let { props } = context;
 
             /**
              * Get data from services

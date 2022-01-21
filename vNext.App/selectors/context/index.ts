@@ -9,16 +9,13 @@ export const selectProps = (context: GetServerSidePropsContext): any => context.
 export const selectLocale = (context: GetServerSidePropsContext): string => context.req?.locale?.() ?? '';
 export const selectCsrfToken = (context: GetServerSidePropsContext): string => context.req?.csrfToken?.() ?? '';
 export const selectUser = (context: GetServerSidePropsContext): User => context.req?.user ?? null;
-export const selectGroupId = (context: GetServerSidePropsContext): string => (context.params as any)?.[routeParams.GROUPID] ?? null;
-export const selectMemberId = (context: GetServerSidePropsContext): string => (context.params as any)?.[routeParams.MEMBERID] ?? null;
-export const selectFolderId = (context: GetServerSidePropsContext): string => (context.params as any)?.[routeParams.FOLDERID] ?? null;
-export const selectFileId = (context: GetServerSidePropsContext): string => (context.params as any)?.[routeParams.FILEID] ?? null;
-export const selectSearchTerm = (context: GetServerSidePropsContext): string => context.req?.query?.term ? decodeURIComponent(context.req?.query?.term) : null;
+export const selectParam = (context: GetServerSidePropsContext, paramName: routeParams): string => (context.params as any)?.[paramName] ?? null;
+export const selectQuery = (context: GetServerSidePropsContext, queryName: string): string => context.req?.query?.[queryName] ? decodeURIComponent(context.req?.query?.[queryName]) : null;
 export const selectPagination = (context: GetServerSidePropsContext): Pagination => {
 
     const pagination = {
-        pageNumber: context.req.query?.pageNumber ? parseInt(decodeURIComponent(context.req?.query.pageNumber), 10) : null,
-        pageSize: context.req.query?.pageSize ? parseInt(decodeURIComponent(context.req?.query.pageSize), 10) : null
+        pageNumber: selectQuery(context, 'pageNumber') ? parseInt(decodeURIComponent(selectQuery(context, 'pageNumber')), 10) : null,
+        pageSize: selectQuery(context, 'pageSize') ? parseInt(decodeURIComponent(selectQuery(context, 'pageSize')), 10) : null
     }
 
     return pagination;

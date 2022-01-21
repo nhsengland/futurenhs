@@ -1,11 +1,12 @@
 import { GetServerSideProps } from 'next';
 
+import { routeParams } from '@constants/routes';
 import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceResponsesWithStatusCode';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { getGroupMember } from '@services/getGroupMember';
 import { getPageTextContent } from '@services/getPageTextContent';
-import { selectUser, selectGroupId, selectMemberId, selectLocale } from '@selectors/context';
+import { selectUser, selectParam, selectLocale } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -22,12 +23,12 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-                let { props } = context;
-
-                const groupId: string = selectGroupId(context);
-                const memberId: string = selectMemberId(context);
                 const user: User = selectUser(context);
                 const locale: string = selectLocale(context);
+                const groupId: string = selectParam(context, routeParams.GROUPID);
+                const memberId: string = selectParam(context, routeParams.MEMBERID);
+
+                let { props } = context;
 
                 /**
                  * Get data from services

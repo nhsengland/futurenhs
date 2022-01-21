@@ -23,7 +23,13 @@ export const createDiscussionForm: Form = {
                     text: {
                         label: 'Comment'
                     },
-                    component: 'textArea'
+                    component: 'textArea',
+                    validators: [
+                        {
+                            type: 'required',
+                            message: 'Enter the discussion title'
+                        }
+                    ]
                 }
             ]
         }

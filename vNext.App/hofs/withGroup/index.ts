@@ -1,8 +1,9 @@
 import { GetServerSideProps } from 'next';
 
+import { routeParams } from '@constants/routes';
 import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceResponsesWithStatusCode';
 import { defaultGroupLogos } from '@constants/icons';
-import { selectUser, selectGroupId } from '@selectors/context';
+import { selectUser, selectParam } from '@selectors/context';
 import { getGroup } from '@services/getGroup';
 import { GetGroupService } from '@services/getGroup';
 import { getGroupActions } from '@services/getGroupActions';
@@ -26,7 +27,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
         /**
          * Get data from request context
          */
-        const groupId: string = selectGroupId(context);
+        const groupId: string = selectParam(context, routeParams.GROUPID);
         const user: User = selectUser(context);
 
         /**
