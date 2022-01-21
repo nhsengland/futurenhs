@@ -4,56 +4,18 @@
 	<div class="c-grid-block_item l-col-12">
 		<h2>File preview</h2>
 		<div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
-			<form name="collaboraFrame">
-				<input id="collabora_url" name="access_token" value="@Model.WopiClientUrlForFile" type="hidden">
-				<input id="collabora_token" name="access_token" value="@Model.AccessToken" type="hidden">
-			</form>
+			<form action="@Model.WopiClientUrlForFile" name="collaboraFrame" enctype="multipart/form-data" method="post" target="collabora_host_frame">
+                <input name="access_token" value="@Model.AccessToken" type="hidden">
+            </form>
 
-			<iframe id="output-frame-id" name="collabora_host_frame" src="@Model.WopiClientUrlForFile"
-				allowfullscreen="" width="100%" height="1250px">
-			</iframe>
+            <iframe name="collabora_host_frame" allowfullscreen="" width="100%" height="1250px">
+            </iframe>
 
 		</div>
 	</div>
 </div>
-
 <script type="text/javascript">
-	var data = new FormData();
-	var token = document.getElementById('collabora_token').value;
-	var collabora_source = document.getElementById('collabora_url').value;
-
-	data.append('access_token', token);
-
-	function handler() {
-		var iframe = document.getElementById("output-frame-id");
-
-		$.ajax({
-			url: collabora_source,
-			data: data,
-			type: "POST",
-			enctype: 'multipart/form-data',
-			contentType: false,
-			processData: false,
-			cache: false,
-			async: false,
-			beforeSend: function (xhr) {
-				xhr.withCredentials = true;
-			},
-			success: function (res) {
-				var doc = iframe.contentWindow.document;
-				iframe.src = collabora_source;
-				doc.open();
-				doc.write(res);
-				doc.close();
-
-			},
-			error: function (e) {
-				console.log("ERROR : ", e);
-				iframe.setAttribute('srcdoc', '<html><head></head><body>Error loading page.</body></html>');
-			},
-		});
-	}
 	$(document).ready(function () {
-		handler();
+		document.collaboraFrame.submit();
 	});
 </script>
