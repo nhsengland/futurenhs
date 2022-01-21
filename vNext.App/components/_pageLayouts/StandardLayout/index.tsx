@@ -114,7 +114,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                             truncationMinPathLength={8}
                                             truncationStartIndex={2}
                                             truncationEndIndex={6}
-                                            className="u--mt-0.5" />
+                                            className="u--mt-0.5 u-fill-theme-5" />
                                     </LayoutColumn>
                                     <LayoutColumn tablet={4} className="u-text-right">
                                         <RichText 

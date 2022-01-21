@@ -159,7 +159,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
                                 ariaLabel: 'Folders'
                             }}
                             breadCrumbList={breadCrumbList}
-                            className="u-text-lead u-mb-10" />
+                            className="u-text-lead u-mb-10 u-fill-theme-0" />
                     }
                     {folderId &&
                         <>

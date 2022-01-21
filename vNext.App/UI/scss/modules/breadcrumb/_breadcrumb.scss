@@ -4,11 +4,15 @@
         margin: 0 0 -#{$nhsuk-spacing-point-2};
         padding: 0;
         list-style: none;
+        line-height: inherit;
+        font-size: inherit;
     }
 
     &_item {
         display: inline-block;
         margin: 0 0 $nhsuk-spacing-point-2;
+        line-height: inherit;
+        font-size: inherit;
     }
 
     &_link {
@@ -18,16 +22,15 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        line-height: $large-text-line-height;
-        font-size: $large-text;
+        line-height: inherit;
+        font-size: inherit;
     }
 
     &_icon {
-        height: $nhsuk-spacing-point-2;
-        width: $nhsuk-spacing-point-2;
+        height: 0.75em;
+        width: 0.75em;
         margin: 0 $nhsuk-spacing-point-3;
         vertical-align: middle;
-        fill: $mid-grey;
     }
 
 }
