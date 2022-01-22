@@ -1,6 +1,8 @@
+import { formTypes } from '@constants/forms';
 import { Form } from '@appTypes/form';
 
 export const createDiscussionForm: Form = {
+    id: formTypes.CREATE_DISCUSSION,
     steps: [
         {
             fields: [

@@ -1,9 +1,9 @@
+import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
-import { createFolderForm } from '@formConfigs/create-folder';
 
 import { Props } from './interfaces';
 
@@ -12,13 +12,14 @@ import { Props } from './interfaces';
  */
 export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     csrfToken,
+    forms,
     user,
     actions,
     text,
     image
 }) => {
 
-    const fields = createFolderForm.steps[0].fields;
+    const fields = forms?.[formTypes.CREATE_FOLDER]?.steps[0]?.fields;
 
     return (
 

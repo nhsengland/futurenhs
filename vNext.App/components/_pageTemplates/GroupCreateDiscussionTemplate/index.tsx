@@ -1,8 +1,8 @@
+import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-import { createDiscussionForm } from '@formConfigs/create-discussion';
 
 import { Props } from './interfaces';
 
@@ -11,13 +11,14 @@ import { Props } from './interfaces';
  */
 export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     csrfToken,
+    forms,
     user,
     actions,
     text,
     image
 }) => {
 
-    const fields = createDiscussionForm.steps[0].fields;
+    const fields = forms?.[formTypes.CREATE_DISCUSSION]?.steps[0].fields ?? [];
 
     return (
 

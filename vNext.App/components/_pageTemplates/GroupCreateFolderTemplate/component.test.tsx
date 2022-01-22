@@ -2,6 +2,7 @@ import React from 'react';
 import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
+import { createFolderForm } from '@formConfigs/create-folder';
 import { GroupCreateFolderTemplate } from './index';
 import { Props } from './interfaces';
 
@@ -20,6 +21,9 @@ describe('Group folders template', () => {
         folderId: 'mockId',
         user: undefined,
         actions: [],
+        forms: {
+            'create-folder': createFolderForm
+        },
         text: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',

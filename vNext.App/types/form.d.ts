@@ -22,5 +22,6 @@ export interface FormStep {
 }
 
 export interface Form {
+    id: string;
     steps: Array<FormStep>;
 }

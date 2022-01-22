@@ -1,6 +1,8 @@
+import { formTypes } from "@constants/forms";
 import { Form } from '@appTypes/form';
 
 export const createFolderForm: Form = {
+    id: formTypes.CREATE_FOLDER,
     steps: [
         {
             fields: [

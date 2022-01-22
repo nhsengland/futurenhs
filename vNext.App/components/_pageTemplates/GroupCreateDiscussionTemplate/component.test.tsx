@@ -2,6 +2,7 @@ import React from 'react';
 import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
+import { createDiscussionForm } from '@formConfigs/create-discussion'
 import { GroupCreateDiscussionTemplate } from './index';
 import { Props } from './interfaces';
 
@@ -9,7 +10,7 @@ describe('Group create discussion template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
-        asPath: '/groups/group/files',
+        asPath: '/groups/group/forum/create',
         query: {
             groupId: 'group'
         } 
@@ -20,6 +21,9 @@ describe('Group create discussion template', () => {
         folderId: 'mockId',
         user: undefined,
         actions: [],
+        forms: {
+            'create-discussion': createDiscussionForm
+        },
         text: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',

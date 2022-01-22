@@ -5,6 +5,7 @@ import { withGroup } from '@hofs/withGroup';
 import { selectCsrfToken } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
+import { createFolderForm } from '@formConfigs/create-folder';
 import { GroupCreateFolderTemplate } from '@components/_pageTemplates/GroupCreateFolderTemplate';
 
 const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
@@ -22,6 +23,9 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                 const csrfToken: string = selectCsrfToken(context);
 
                 props.csrfToken = csrfToken;
+                props.forms = {
+                    [createFolderForm.id]: createFolderForm
+                };
 
                 /**
                  * Return data to page template
