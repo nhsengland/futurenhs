@@ -33,11 +33,11 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS NameText, g.Description AS StrapLineText, 
 				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
 				(SELECT COUNT(*) FROM Topic topic WHERE topic.Group_Id = g.Id) AS DiscussionCount,
-                image.Id, image.Height AS Height, image.Width AS Width, image.MediaType AS MediaType
+                image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
 				FROM [Group] g
                 JOIN GroupUser groupUser ON groupUser.Group_Id = g.Id
                 LEFT JOIN Image image ON image.Id = g.ImageId 
-                WHERE groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1 
+                WHERE groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1
                 ORDER BY g.Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @Limit ROWS ONLY;
@@ -87,7 +87,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS NameText, g.Description AS StrapLineText, 
 				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
 				(SELECT COUNT(*) FROM Topic topic WHERE topic.Group_Id = g.Id) AS DiscussionCount,
-                image.Id, image.Height AS Height, image.Width AS Width, image.MediaType AS MediaType
+                image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
 				FROM [Group] g    
                 LEFT JOIN Image image ON image.Id = g.ImageId  
                 WHERE NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)
@@ -130,7 +130,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         {
             const string query =
                 @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS Name, g.Description AS StrapLine, g.PublicGroup AS IsPublic,		
-                image.Id, image.Height AS Height, image.Width AS Width, image.MediaType AS MediaType
+                image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName,  image.MediaType AS MediaType
 				FROM [Group] g
                 LEFT JOIN Image image ON image.Id = g.ImageId  
                 WHERE g.Slug = @Slug AND g.IsDeleted = 0";
