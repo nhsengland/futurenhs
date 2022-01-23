@@ -87,7 +87,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(Folder.Id)}]                               = folders.Id,
                                 [{nameof(Folder.Name)}]                             = folders.Name,
                                 [{nameof(Folder.Description)}]                      = folders.Description,
-                                [{nameof(Models.FileAndFolder.Properties.AtUtc)}]   = FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(Models.Shared.Properties.AtUtc)}]   = FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(UserNavProperty.Id)}]                      = mu.Id,
                                 [{nameof(UserNavProperty.Name)}]                    = mu.FirstName + ' ' + mu.Surname,
                                 [{nameof(UserNavProperty.Slug)}]                    = mu.Slug  
@@ -129,7 +129,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 FolderId = folderId
             });
 
-            var folders = reader.Read<Folder, Models.FileAndFolder.Properties, UserNavProperty, Folder>(
+            var folders = reader.Read<Folder, Models.Shared.Properties, UserNavProperty, Folder>(
                 (folderDetails, folderProperties, userNavProperty) =>
                 {
                     if (folderProperties is not null)
@@ -145,7 +145,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     return folderDetails;
 
-                }, splitOn: $"{nameof(Models.FileAndFolder.Properties.AtUtc)}, {nameof(Folder.Id)}");
+                }, splitOn: $"{nameof(Models.Shared.Properties.AtUtc)}, {nameof(Folder.Id)}");
 
             var folder = folders.FirstOrDefault();
 
@@ -330,7 +330,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 Id = fileData.Id,
                 Name = fileData.Title,
                 Description = fileData.Description,
-                FirstRegistered = new Models.FileAndFolder.Properties
+                FirstRegistered = new Models.Shared.Properties
                 {
                     AtUtc = fileData.CreatedAtUtc,
                     By = new UserNavProperty
@@ -344,7 +344,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 {
                     Id = fileData.Id,
                     Name = fileData.FileName,
-                    FirstRegistered = new Models.FileAndFolder.Properties
+                    FirstRegistered = new Models.Shared.Properties
                     {
                         AtUtc = fileData.CreatedAtUtc,
                         By = new UserNavProperty
@@ -367,7 +367,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             {
                 file = file with
                 {
-                    LastUpdated = new Models.FileAndFolder.Properties
+                    LastUpdated = new Models.Shared.Properties
                     {
                         AtUtc = fileData.ModifiedAtUtc,
                         By = new UserNavProperty
@@ -394,7 +394,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     Type = item.Type,
                     Name = item.Name,
                     Description = item.Description,
-                    FirstRegistered = new Models.FileAndFolder.Properties
+                    FirstRegistered = new Models.Shared.Properties
                     {
                         AtUtc = item.CreatedAtUtc,
                         By = new UserNavProperty
@@ -410,7 +410,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 {
                     file = file with
                     {
-                        LastUpdated = new Models.FileAndFolder.Properties
+                        LastUpdated = new Models.Shared.Properties
                         {
                             AtUtc = item.ModifiedAtUtc,
                             By = new UserNavProperty

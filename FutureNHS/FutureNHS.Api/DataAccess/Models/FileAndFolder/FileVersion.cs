@@ -6,7 +6,7 @@ namespace FutureNHS.Api.DataAccess.Models.FileAndFolder
     {
         public Guid Id { get; init; }
         public string Name { get; init; }
-        public Properties FirstRegistered { get; init; }
+        public Shared.Properties FirstRegistered { get; init; }
         public FileProperties AdditionalMetadata { get; init; }
     }
 }

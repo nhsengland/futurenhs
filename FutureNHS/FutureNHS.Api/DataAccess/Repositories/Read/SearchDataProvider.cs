@@ -1,12 +1,8 @@
 ﻿using Dapper;
 using FutureNHS.Api.Application.Application.HardCodedSettings;
-using FutureNHS.Api.DataAccess.Models.FileAndFolder;
 using FutureNHS.Api.DataAccess.Models.Search;
-using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
-using Microsoft.AspNetCore.StaticFiles;
-using File = FutureNHS.Api.DataAccess.Models.FileAndFolder.File;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Read
 {
