@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { selectCsrfToken, selectBody } from '@selectors/context';
+import { validate } from '@helpers/validators';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { createDiscussionForm } from '@formConfigs/create-discussion';
@@ -23,21 +24,31 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
                 let { props } = context;
 
-                if(formPost){
-
-                    return {
-                        redirect: {
-                            permanent: false,
-                            destination: '/'
-                        }
-                    }
-
-                }
-
                 props.csrfToken = csrfToken;
                 props.forms = {
                     [createDiscussionForm.id]: createDiscussionForm
                 };
+
+                if(formPost){
+
+                    const validationErrors = validate(formPost, createDiscussionForm.steps[0].fields);
+
+                    if(Object.keys(validationErrors).length > 0){
+
+                        props.errors = validationErrors;
+
+                    } else {
+
+                        return {
+                            redirect: {
+                                permanent: false,
+                                destination: '/'
+                            }
+                        }
+
+                    }
+
+                }
 
                 /**
                  * Return data to page template

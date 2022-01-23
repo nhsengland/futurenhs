@@ -15,7 +15,8 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     user,
     actions,
     text,
-    image
+    image,
+    errors
 }) => {
 
     const fields = forms?.[formTypes.CREATE_DISCUSSION]?.steps[0].fields ?? [];
@@ -35,7 +36,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                             <FormWithErrorSummary
                                 csrfToken={csrfToken}
                                 fields={fields}
-                                errors={{}}
+                                errors={errors}
                                 text={{
                                     errorSummary: {
                                         body: 'There is a problem'

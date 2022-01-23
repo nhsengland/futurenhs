@@ -8,7 +8,7 @@ import { LayoutColumn } from '@components/LayoutColumn';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { Card } from '@components/Card';
 import { SVGIcon } from '@components/SVGIcon';
-import { getDiscussions } from '@services/getDiscussions';
+import { getGroupDiscussions } from '@services/getGroupDiscussions';
 
 import { Props } from './interfaces';
 
@@ -31,8 +31,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize 
     }) => {
 
-        const { data: additionalDiscussions, pagination } = await getDiscussions({
+        const { data: additionalDiscussions, pagination } = await getGroupDiscussions({
             user: user,
+            groupId: '',
             pagination: {
                 pageNumber: requestedPageNumber,
                 pageSize: requestedPageSize

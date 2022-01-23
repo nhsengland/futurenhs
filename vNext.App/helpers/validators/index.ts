@@ -8,7 +8,7 @@ const validationFunctions: any = {
     email: email
 };
 
-export const validate = (submission: any, fields: Array<FormField>): any => {
+export const validate = (submission: any, fields: Array<FormField>): Record<string, string> => {
 
     const errors: any = {};
 
