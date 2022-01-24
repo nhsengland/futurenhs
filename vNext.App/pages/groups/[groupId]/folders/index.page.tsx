@@ -3,13 +3,13 @@ import { GetServerSideProps } from 'next';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
-import { getGroupFolder } from '@services/getGroupFolder';
 import { getGroupFolders } from '@services/getGroupFolders';
-import { selectUser, selectPagination, selectParam } from '@selectors/context';
+import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
 import { GroupFoldersTemplate } from '@components/_pageTemplates/GroupFoldersTemplate';
+import { Props } from '@components/_pageTemplates/GroupFoldersTemplate/interfaces';
 
 const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
 
@@ -23,11 +23,10 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
 
             const user: User = selectUser(context);
             const groupId: string = selectParam(context, routeParams.GROUPID);
-            const folderId: string = selectParam(context, routeParams.FOLDERID);
             const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
             const initialPageSize: number = selectPagination(context).pageSize ?? 10;
 
-            let { props } = context;
+            let props: Props = selectProps(context);
 
             /**
              * Get data from services
@@ -35,18 +34,11 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
             try {
 
                 const [
-                    groupFolder,
                     groupFolderContents
                 ] = await Promise.all([
-                    getGroupFolder({
-                        user: user,
-                        groupId: groupId,
-                        folderId: folderId
-                    }),
                     getGroupFolders({
                         user: user,
                         groupId: groupId,
-                        folderId: folderId,
                         pagination: {
                             pageNumber: initialPageNumber,
                             pageSize: initialPageSize
@@ -54,8 +46,10 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
                     })
                 ]);
 
-                props.files = groupFolderContents.data ?? [];
+                props.folderContents = groupFolderContents.data ?? [];
                 props.pagination = groupFolderContents.pagination ?? null;
+
+                console.log(groupFolderContents);
             
             } catch (error) {
                 

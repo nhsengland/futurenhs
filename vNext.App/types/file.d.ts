@@ -10,12 +10,15 @@ export interface Folder {
     path?: BreadCrumbList;
 }
 
-export interface File {
+export interface FolderContent {
     id: string;
     type: 'folder' | 'file';
+    extension?: string;
     name: string;
-    bodyHtml: string;
-    modified: string;
-    modifiedBy: string;
-    createdBy: string;
+    modified?: string;
+    modifiedBy?: string;
+    createdBy?: string;
+    text?: {
+        body?: string;
+    };
 }

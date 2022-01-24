@@ -20,7 +20,7 @@ describe('Group folders template', () => {
         id: 'mockId',
         folderId: 'mockId',
         folder: null,
-        files: [],
+        folderContents: [],
         user: undefined,
         actions: [],
         text: {

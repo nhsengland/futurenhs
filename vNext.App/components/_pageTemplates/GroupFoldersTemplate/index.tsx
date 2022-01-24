@@ -30,13 +30,13 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
     image,
     folderId,
     folder,
-    files,
+    folderContents,
     actions,
     pagination
 }) => {
 
     const router = useRouter();
-    const [fileList, setFileList] = useState(files);
+    const [folderContentsList, setFolderContentsList] = useState(folderContents);
     const [dynamicPagination, setPagination] = useState(pagination);
 
     const { id, 
@@ -44,7 +44,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
             path, 
             bodyHtml } = folder ?? {};
     
-    const hasFolders: boolean = files?.length > 0;
+    const hasFolderContents: boolean = folderContentsList?.length > 0;
     const hasAddFileAction: boolean = actions?.includes(userActions.GROUPS_FILES_ADD);
     const hasAddFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_ADD);
     const hasEditFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_EDIT);
@@ -60,6 +60,8 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
         router: router,
         paramName: routeParams.FOLDERID
     }) : `${groupBasePath}/folders`;
+
+    const fileBasePath: string = `${groupBasePath}/files`;
 
     const breadCrumbList: BreadCrumbList = [];
 
@@ -77,7 +79,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
         if(element !== id){
 
             breadCrumbList.push({
-                element: `/${element}`,
+                element: `${groupBasePath}/folders/${element}`,
                 text: text
             });
 
@@ -87,32 +89,36 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
 
     const hasBreadCrumb: boolean = breadCrumbList.length > 0;
 
-    const gridRowList = useMemo(() => fileList?.map(({ 
+    const gridRowList = useMemo(() => folderContentsList?.map(({ 
         id,
         type, 
+        extension,
         name, 
-        bodyHtml, 
+        text, 
         modified, 
         modifiedBy, 
         createdBy }) => {
 
+            const { body } = text ?? {};
+
             const isFolder: boolean = type === 'folder';
-            const href: string = `${folderBasePath}/${encodeURIComponent(id)}`;
+            const iconName: string = extension?.split('.')?.[1] ?? (isFolder ? 'folder' : '');
+            const href: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
 
             return [
                 {
-                    children: <SVGIcon name={`icon-${type}`} className="u-w-4 u-h-6" />,
+                    children: <SVGIcon name={`icon-${iconName}`} className="u-w-4 u-h-6" />,
                     className: 'u-text-center u-text-base'
                 },
                 {
-                    children: <Link href={href}>{name}</Link>,
+                    children: <Link href={href}><a className="o-truncated-text-lines-3">{name}</a></Link>,
                     className: 'u-w-1/6'
                 },
                 {
-                    children: <RichText bodyHtml={bodyHtml} wrapperElementType='span' className='o-truncated-text-lines-3' />
+                    children: <RichText bodyHtml={body} wrapperElementType='span' className='o-truncated-text-lines-3' />
                 },
                 {
-                    children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({})(modified)}</p><p class='u-mb-1'><span class='u-text-bold'>By</span> ${modifiedBy}</p><p><span class='u-text-bold'>Author</span> ${createdBy}</p>`} />,
+                    children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({})(modified)}</p>${modifiedBy && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy + '</p>'}${createdBy && '<p><span class="u-text-bold">Author</span> ' + createdBy + '</p>'}`} />,
                     className: 'u-w-1/4'
                 },
                 {
@@ -121,7 +127,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
                 }
             ]
         
-    }), [fileList, folderId]);
+    }), [folderContentsList, folderId]);
 
     const handleGetPage = async ({ 
         pageNumber: requestedPageNumber, 
@@ -138,7 +144,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
             }
         });
 
-        setFileList([...fileList, ...additionalFiles]);
+        setFolderContentsList([...folderContentsList, ...additionalFiles]);
         setPagination(pagination);
 
     };
@@ -159,13 +165,14 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
                                 ariaLabel: 'Folders'
                             }}
                             breadCrumbList={breadCrumbList}
+                            shouldLinkCrumbs={false}
                             className="u-text-lead u-mb-10 u-fill-theme-0" />
                     }
                     {folderId &&
                         <>
                             <LayoutColumnContainer>
                                 <LayoutColumn tablet={6} desktop={8} className="u-self-center">
-                                    <h2 className="u-m-0">{name}</h2>
+                                    <h2 className="u-m-0 o-truncated-text-lines-3">{name}</h2>
                                 </LayoutColumn>
                                 {(folderId && (hasEditFolderAction || hasDeleteFolderAction)) &&
                                     <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
@@ -199,7 +206,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
                             }
                         </p>
                     }
-                    {hasFolders &&
+                    {hasFolderContents &&
                         <>
                             <AriaLiveRegion>
                                 <DataGrid 

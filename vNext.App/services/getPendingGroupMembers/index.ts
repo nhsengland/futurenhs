@@ -36,7 +36,7 @@ export const getPendingGroupMembers = async ({
         const id: string = user.id;
         const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}/members/pending?${paginationQueryParams}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/pending?${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiPaginatedResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
@@ -53,16 +53,13 @@ export const getPendingGroupMembers = async ({
 
         }
 
-
         apiData.data?.forEach((datum) => {
 
             serviceResponse.data.push({
                 id: datum.id ?? '',
                 fullName: datum.name ?? '',
-                email: '',
-                role: datum.role ?? '',
-                joinDate: datum.dateJoinedUtc ?? '', 
-                lastLogInDate: datum.lastLoginUtc ?? ''
+                email: datum.email ?? '',
+                requestDate: datum.applicationDateUtc ?? '', 
             });
 
         });

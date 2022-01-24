@@ -5,11 +5,12 @@ import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { getGroupFolders } from '@services/getGroupFolders';
-import { selectUser, selectPagination, selectParam } from '@selectors/context';
+import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
 import { GroupFoldersTemplate } from '@components/_pageTemplates/GroupFoldersTemplate';
+import { Props } from '@components/_pageTemplates/GroupFoldersTemplate/interfaces';
 
 const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
 
@@ -27,7 +28,7 @@ const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
             const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
             const initialPageSize: number = selectPagination(context).pageSize ?? 10;
 
-            let { props } = context;
+            let props: Props = selectProps(context);
 
             /**
              * Get data from services
@@ -56,7 +57,7 @@ const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
 
                 props.folderId = folderId ?? null;
                 props.folder = groupFolder.data ?? null;
-                props.files = groupFolderContents.data ?? [];
+                props.folderContents = groupFolderContents.data ?? [];
                 props.pagination = groupFolderContents.pagination ?? null;
             
             } catch (error) {

@@ -8,6 +8,7 @@ export interface Member {
     initials?: string;
     pronouns?: string;
     email?: string;
+    requestDate?: string;
     joinDate?: string;
     lastLogInDate?: string;
 }

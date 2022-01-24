@@ -10,5 +10,6 @@ export interface Props {
     truncationMinPathLength?: number;
     truncationStartIndex?: number;
     truncationEndIndex?: number;
+    shouldLinkCrumbs?: boolean;
     className?: string;
 }

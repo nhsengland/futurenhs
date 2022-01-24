@@ -3,7 +3,7 @@ import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQu
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiPaginatedResponse, ServicePaginatedResponse } from '@appTypes/service';
-import { Folder } from '@appTypes/file';
+import { FolderContent } from '@appTypes/file';
 import { User } from '@appTypes/user';
 
 declare type Options = ({
@@ -26,11 +26,11 @@ export const getGroupFolders = async ({
     groupId,
     folderId,
     pagination
-}: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<Folder>>> => {
+}: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<FolderContent>>> => {
 
     try {
 
-        const serviceResponse: ServicePaginatedResponse<Array<Folder>> = {
+        const serviceResponse: ServicePaginatedResponse<Array<FolderContent>> = {
             data: []
         };
 
@@ -40,7 +40,7 @@ export const getGroupFolders = async ({
         const id: string = user.id;
         const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}/folders${folderId ? '/' + folderId + '/contents': ''}?${paginationQueryParams}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders${folderId ? '/' + folderId + '/contents': ''}?${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiPaginatedResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
@@ -58,13 +58,18 @@ export const getGroupFolders = async ({
         }
 
         apiData.data?.forEach((datum) => {
-
+            
             serviceResponse.data.push({
                 id: datum.id ?? '',
                 type: datum.type?.toLowerCase() ?? '',
                 name: datum.name ?? '',
-                bodyHtml: datum.description ?? '',
-                modified: datum.lastUpdated ?? ''
+                createdBy: datum.firstRegistered?.by?.name ?? '',
+                modifiedBy: datum.lastUpdated?.by?.name ?? '',
+                modified: datum.lastUpdated?.atUtc ?? '',
+                extension: datum.additionalMetadata?.fileExtension ?? '',
+                text: {
+                    body: datum.description ?? ''
+                }
             });
 
         });

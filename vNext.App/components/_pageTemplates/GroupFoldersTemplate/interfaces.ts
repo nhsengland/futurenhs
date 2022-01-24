@@ -1,8 +1,8 @@
 import { GroupPage } from '@appTypes/page';
-import { Folder } from '@appTypes/file';
+import { Folder, FolderContent } from '@appTypes/file';
 
 export interface Props extends GroupPage {
     folderId: string;
     folder: Folder;
-    files: Array<any>;
+    folderContents: Array<FolderContent>;
 }

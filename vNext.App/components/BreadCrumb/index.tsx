@@ -9,6 +9,7 @@ import { Props } from './interfaces';
 
 export const BreadCrumb: (props: Props) => JSX.Element = ({
     breadCrumbList,
+    shouldLinkCrumbs = true,
     text,
     seperatorIconName = 'icon-chevron-right',
     truncationMinPathLength,
@@ -57,7 +58,15 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
                         const isTruncationPoint: boolean = isTruncateable && index === truncationStartIndex;
                         const textToUse: string = text ? capitalise()(text) : capitalise()(element);
                         
-                        href += href === '/' ? `${element}` : `/${element}`;
+                        if(shouldLinkCrumbs){
+
+                            href += href === '/' ? `${element}` : `/${element}`;
+
+                        } else {
+
+                            href = element;
+
+                        }
 
                         return (
 

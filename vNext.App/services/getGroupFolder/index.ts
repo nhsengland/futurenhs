@@ -49,12 +49,14 @@ export const getGroupFolder = async ({
 
         }
 
+        const reversedPath: Array<any> = apiData.path?.reverse() ?? [];
+
         serviceResponse.data ={
             id: apiData.id ?? '',
             type: 'folder',
             name: apiData.name ?? '',
             bodyHtml: apiData.description ?? '',
-            path: apiData.path?.map(({ id, name }) => ({
+            path: reversedPath.map(({ id, name }) => ({
                 element: id,
                 text: name
             })) ?? []
