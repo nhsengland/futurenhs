@@ -13,6 +13,7 @@ import { getGroupDiscussions } from '@services/getGroupDiscussions';
 import { Props } from './interfaces';
 
 export const GroupForumTemplate: (props: Props) => JSX.Element = ({
+    groupId,
     user,
     text,
     image,
@@ -31,17 +32,29 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize 
     }) => {
 
-        const { data: additionalDiscussions, pagination } = await getGroupDiscussions({
-            user: user,
-            groupId: '',
-            pagination: {
-                pageNumber: requestedPageNumber,
-                pageSize: requestedPageSize
-            }
-        });
+        try {
 
-        setDiscussionsList([...dynamicDiscussionsList, ...additionalDiscussions]);
-        setPagination(pagination);
+            const { data: additionalDiscussions, pagination, errors } = await getGroupDiscussions({
+                user: user,
+                groupId: groupId,
+                pagination: {
+                    pageNumber: requestedPageNumber,
+                    pageSize: requestedPageSize
+                }
+            });
+
+            if(!errors || !Object.keys(errors).length){
+
+                setDiscussionsList([...dynamicDiscussionsList, ...additionalDiscussions]);
+                setPagination(pagination);
+
+            }
+
+        } catch(error){
+
+            console.log(error);
+
+        }
 
     };
 
@@ -58,34 +71,33 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                     <h2>Latest Discussions</h2>
                     <AriaLiveRegion>
                         {dynamicDiscussionsList?.map?.(({ 
-                            image, 
-                            content, 
-                            groupId, 
-                            totalDiscussionCount, 
-                            totalMemberCount 
+                            text, 
+                            discussionId, 
+                            totalViewCount, 
+                            totalCommentCount 
                         }, index) => {
 
-                            const { mainHeading, strapLine } = content ?? {};
+                            const { title } = text ?? {};
 
                             return (
 
-                                <Card key={index} image={image} className="u-border-bottom-theme-8">
+                                <Card key={index} className="u-border-bottom-theme-10 u-mb-4">
                                     <h3 className="c-card_heading">
-                                        <Link href={`/groups/${groupId}`}>
-                                            <a>{mainHeading}</a>
+                                        <Link href={`${asPath}/${discussionId}`}>
+                                            <a>{title}</a>
                                         </Link>        
                                     </h3>
                                     <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                        {strapLine}
+
                                     </p>
                                     <div className="c-card_footer u-text-theme-7">
                                         <p className="c-card_footer-item">
-                                            <SVGIcon name="icon-account" className="c-card_footer-icon u-fill-theme-8" />
-                                            <span>{`${totalMemberCount} Members`}</span>
+                                            <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-10" />
+                                            <span>{`${totalCommentCount} Comments`}</span>
                                         </p>
                                         <p className="c-card_footer-item">
-                                            <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-8" />
-                                            <span>{`${totalDiscussionCount} Discussions`}</span>
+                                            <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-10" />
+                                            <span>{`${totalViewCount} Views`}</span>
                                         </p>
                                     </div>
                                 </Card>

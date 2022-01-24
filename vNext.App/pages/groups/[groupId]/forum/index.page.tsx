@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             const user: User = selectUser(context);
             const groupId: string = selectParam(context, routeParams.GROUPID);
             const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
-            const initialPageSize: number = selectPagination(context).pageSize ?? 10;
+            const initialPageSize: number = selectPagination(context).pageSize ?? 5;
 
             /**
              * Get data from services

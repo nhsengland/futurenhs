@@ -70,6 +70,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
 
             }
 
+            props.groupId = groupId;
             props.text = groupData.data.text ?? null;
             props.image = groupData.data.image ?? defaultGroupLogos.small;
             props.actions = actionsData.data ?? null;

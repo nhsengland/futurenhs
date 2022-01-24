@@ -29,6 +29,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const { pathname } = useRouter();
+
     const [dynamicGroupsList, setGroupsList] = useState(groupsList);
     const [dynamicPagination, setPagination] = useState(pagination);
 
