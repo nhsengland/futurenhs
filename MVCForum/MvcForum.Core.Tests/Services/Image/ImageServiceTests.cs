@@ -55,8 +55,8 @@ namespace MvcForum.Core.Tests.Services.Image
                 var imageToTest = imageFactory.Load(transformedImageStream);
                 var imageToTestBitmap = new Bitmap(imageToTest.Image);
 
-                Assert.IsTrue(imageToTestBitmap.Width == 159);
-                Assert.IsTrue(imageToTestBitmap.Height == 159);
+                Assert.IsTrue(imageToTestBitmap.Width == 180);
+                Assert.IsTrue(imageToTestBitmap.Height == 180);
             }
         }
 
