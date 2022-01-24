@@ -1,5 +1,4 @@
 ﻿using FutureNHS.Api.DataAccess.Models.FileAndFolder;
-using FutureNHS.Api.DataAccess.Models.Permissions;
 using File = FutureNHS.Api.DataAccess.Models.FileAndFolder.File;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Read.Interfaces

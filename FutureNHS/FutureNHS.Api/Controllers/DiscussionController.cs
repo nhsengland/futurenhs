@@ -23,12 +23,13 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
+        [Route("groups/{slug}/discussions")]
         [Route("users/{userId}/groups/{slug}/discussions")]
 
-        public async Task<IActionResult> GetDiscussionsForGroupAsync(string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDiscussionsForGroupAsync(Guid? userId, string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
-            var (total, discussions) = await _discussionDataProvider.GetDiscussionsForGroupAsync(slug, filter.Offset, filter.Limit, cancellationToken);
+            var (total, discussions) = await _discussionDataProvider.GetDiscussionsForGroupAsync(userId, slug, filter.Offset, filter.Limit, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(discussions, filter, total, route);
 
@@ -36,11 +37,12 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
+        [Route("groups/{slug}/discussions/{id:guid}")]
         [Route("users/{userId}/groups/{slug}/discussions/{id:guid}")]
 
-        public async Task<IActionResult> GetDiscussionAsync(Guid id, string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDiscussionAsync(Guid? userId, string slug, Guid id, CancellationToken cancellationToken)
         {
-           var discussion = await _discussionDataProvider.GetDiscussionAsync(id, slug, cancellationToken);
+           var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
 
             if (discussion is null)
             {

@@ -1,4 +1,6 @@
-﻿namespace FutureNHS.Api.DataAccess.Models.Discussions
+﻿using Microsoft.Identity.Client;
+
+namespace FutureNHS.Api.DataAccess.Models.Discussions
 {
     public record DiscussionData
     {
@@ -6,6 +8,7 @@
         public string Title { get; init; }
         public string Slug { get; init; }
         public string Description { get; init; }
+        public bool CreatedByThisUser { get; init; }
         public string? CreatedAtUtc { get; init; }
         public Guid CreatedById { get; init; }
         public string CreatedByName { get; init; }

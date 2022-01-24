@@ -1,5 +1,4 @@
 ﻿using FutureNHS.Api.Application.Application.HardCodedSettings;
-using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Read.Interfaces

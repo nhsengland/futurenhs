@@ -13,5 +13,6 @@ namespace FutureNHS.Api.DataAccess.Models.Discussions
         public int? TotalComments { get; init; }
         public Shared.Properties FirstRegistered { get; init; }
         public CommentNavProperty LastComment  { get; init; }
+        public UserDiscussionDetails CurrentUser { get; init; }
     }
 }

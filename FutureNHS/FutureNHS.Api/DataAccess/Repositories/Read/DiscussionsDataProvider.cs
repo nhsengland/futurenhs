@@ -18,7 +18,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             _logger = logger;
             _connectionFactory = connectionFactory;
         }
-        public async Task<(uint total, IEnumerable<Discussion>?)> GetDiscussionsForGroupAsync(string groupSlug, uint offset, uint limit, CancellationToken cancellationToken)
+        public async Task<(uint total, IEnumerable<Discussion>?)> GetDiscussionsForGroupAsync(Guid? userId, string groupSlug, uint offset, uint limit, CancellationToken cancellationToken)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
@@ -30,6 +30,12 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(DiscussionData.Id)}]                   = discussion.Id,
                                 [{nameof(DiscussionData.Title)}]                = discussion.Name, 
 								[{nameof(DiscussionData.Slug)}]                 = discussion.Slug, 
+	                            [{nameof(DiscussionData.CreatedByThisUser)}]	= ( SELECT      CASE 
+                                                                                    WHEN        discussion.MembershipUser_Id = @UserId 
+                                                                                    THEN        CAST(1 as bit) 
+                                                                                    ELSE        CAST(0 as bit) 
+                                                                                    END
+                                                                                  ),       
                                 [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreateDate,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(DiscussionData.CreatedById)}]          = discussion.MembershipUser_Id,
                                 [{nameof(DiscussionData.CreatedByName)}]        = createUser.FirstName + ' ' + createUser.Surname,
@@ -73,7 +79,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             {
                 Offset = Convert.ToInt32(offset),
                 Limit = Convert.ToInt32(limit),
-                Slug = groupSlug
+                Slug = groupSlug,
+                UserId = userId
             });
 
             var contents = await reader.ReadAsync<DiscussionData>();
@@ -84,14 +91,20 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         }
         
 
-        public async Task<Discussion?> GetDiscussionAsync(Guid id, string groupSlug, CancellationToken cancellationToken)
+        public async Task<Discussion?> GetDiscussionAsync(Guid? userId, string groupSlug, Guid id, CancellationToken cancellationToken)
         {
             const string query =
                 @$"SELECT
                                 [{nameof(DiscussionData.Id)}]                   = discussion.Id,
                                 [{nameof(DiscussionData.Title)}]                = discussion.Name, 
 								[{nameof(DiscussionData.Slug)}]                 = discussion.Slug, 
-								[{nameof(DiscussionData.Description)}]          = comment.PostContent, 
+								[{nameof(DiscussionData.Description)}]          = comment.PostContent,
+	                            [{nameof(DiscussionData.CreatedByThisUser)}]	= ( SELECT      CASE 
+                                                                                    WHEN        discussion.MembershipUser_Id = @UserId 
+                                                                                    THEN        CAST(1 as bit) 
+                                                                                    ELSE        CAST(0 as bit) 
+                                                                                    END
+                                                                                  ),   
                                 [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreateDate,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(DiscussionData.CreatedById)}]          = discussion.MembershipUser_Id,
                                 [{nameof(DiscussionData.CreatedByName)}]        = createUser.FirstName + ' ' + createUser.Surname,
@@ -123,7 +136,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             var reader = await dbConnection.QueryAsync<DiscussionData>(query, new
             {
                 GroupSlug = groupSlug,
-                Id = id
+                Id = id,
+                UserId = userId
             });
             
             return GenerateDiscussionModelFromData(reader).FirstOrDefault();
@@ -144,6 +158,10 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     IsSticky = item.IsSticky,
                     Views = item.Views,
                     TotalComments = item.TotalComments,
+                    CurrentUser = new UserDiscussionDetails
+                    {
+                        Created = item.CreatedByThisUser
+                    },
                     FirstRegistered = new Models.Shared.Properties
                     {
                         AtUtc = item.CreatedAtUtc,
