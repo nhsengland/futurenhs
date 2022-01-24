@@ -24,7 +24,7 @@ module.exports = withPWA({
         quietDeps: true
     },
     images: {
-        domains: ['localhost'],
+        domains: ['localhost', 'sacdsfnhsdevuksouthpub.blob.core.windows.net'],
         path: `${assetPrefix}/_next/image`
     },
     assetPrefix: assetPrefix

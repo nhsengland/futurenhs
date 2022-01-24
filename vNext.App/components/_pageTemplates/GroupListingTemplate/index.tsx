@@ -23,9 +23,9 @@ import { Props } from './interfaces';
 export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     user,
     text,
+    isGroupMember,
     groupsList,
     pagination,
-    errors
 }) => {
 
     const { pathname } = useRouter();
@@ -44,16 +44,29 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize 
     }) => {
 
-        const { data: additionalGroups, pagination } = await getGroups({
-            user: user,
-            pagination: {
-                pageNumber: requestedPageNumber,
-                pageSize: requestedPageSize
-            }
-        });
+        try {
 
-        setGroupsList([...dynamicGroupsList, ...additionalGroups]);
-        setPagination(pagination);
+            const { data: additionalGroups, pagination, errors } = await getGroups({
+                user: user,
+                isMember: isGroupMember,
+                pagination: {
+                    pageNumber: requestedPageNumber,
+                    pageSize: requestedPageSize
+                }
+            });
+
+            if(!errors || !Object.keys(errors).length){
+
+                setGroupsList([...dynamicGroupsList, ...additionalGroups]);
+                setPagination(pagination);
+
+            }
+
+        } catch(error){
+
+            console.log(error);
+
+        }
 
     };
 
@@ -109,7 +122,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
 
                                         <li key={index}>
                                             <Card image={imageToUse} className="u-border-bottom-theme-8 u-mb-4">
-                                                <h3 className="c-card_heading">
+                                                <h3 className="c-card_heading o-truncated-text-lines-3">
                                                     <Link href={`/groups/${groupId}`}>
                                                         <a>{mainHeading}</a>
                                                     </Link>        

@@ -14,7 +14,7 @@ export const getClientPaginationFromApi = ({
         const { offset, limit, totalRecords } = apiPaginatedResponse;
     
         return {
-            pageNumber: offset && limit ? (offset / limit) + 1 : null,
+            pageNumber: offset && limit ? (offset / limit) + 1 : 1,
             pageSize: limit ?? null,
             totalRecords: totalRecords ?? null
         };

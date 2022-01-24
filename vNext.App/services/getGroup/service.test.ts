@@ -123,7 +123,7 @@ describe('getGroup service', () => {
                 title: 'mockNameText'
             },
             image: {
-                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}/mockSource`,
+                src: `/mockSource`,
                 altText: 'TBC',
                 height: 100,
                 width: 100,

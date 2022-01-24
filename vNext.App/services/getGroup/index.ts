@@ -48,7 +48,7 @@ export const getGroup = async ({
                 strapLine: apiData?.strapLine ?? null
             },
             image: apiData.image ? {
-                src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${apiData.image?.source}`,
+                src: `${apiData.image?.source}`,
                 height: apiData?.image?.height ?? null,
                 width: apiData?.image?.width ?? null,
                 altText: 'TBC'

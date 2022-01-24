@@ -60,8 +60,7 @@ export const getFetchHeadersForJSON = (customHeaders: object = {}): Headers => {
 
     const headers: Headers = new Headers(Object.assign({}, {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${process.env.SHAREDSECRETS_APIAPPLICATION}`
+        'Content-Type': 'application/json'
     }, customHeaders));
 
     return headers;

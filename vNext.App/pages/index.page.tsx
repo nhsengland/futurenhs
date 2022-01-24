@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         
         } catch (error) {
             
-            props.errors = error;
+            props.errors = error.message;
 
         }
 

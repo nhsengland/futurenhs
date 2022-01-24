@@ -70,9 +70,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
                 {isActive 
                 
                     ?   <span aria-current="true" aria-label={`Current page, page ${i}`}>{i}</span> 
-                    :   <Link href={`${queryString}${encodeURIComponent(i)}`} shallow={true}>
-                            <a className={generatedClasses.link}>{i}</a>
-                        </Link>
+                    :   <a href={`${queryString}${encodeURIComponent(i)}`} className={generatedClasses.link}>{i}</a>
                     
                 }
             </li>

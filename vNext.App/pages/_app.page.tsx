@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import Error from 'next/error';
 import { withApplicationInsights } from 'next-applicationinsights';
 
 import { getEnvVar } from '@helpers/util/env';
@@ -7,6 +8,13 @@ import '../UI/scss/screen.scss';
 const App = ({ Component, pageProps }) => {
 
     const router = useRouter();
+    const { errors } = pageProps;
+
+    if(errors?.[500]){
+
+        return <Error statusCode={500} />
+
+    }
 
     return <Component {...pageProps} key={router.asPath} />
     

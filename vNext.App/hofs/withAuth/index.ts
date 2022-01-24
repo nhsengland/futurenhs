@@ -3,6 +3,7 @@ import { getAuth } from '@services/getAuth';
 import { GetAuthService } from '@services/getAuth';
 import { getEnvVar } from '@helpers/util/env';
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
+import { selectProps } from '@selectors/context';
 
 export const withAuth = (config: HofConfig, dependencies?: {
     getAuthService?: GetAuthService
@@ -29,6 +30,8 @@ export const withAuth = (config: HofConfig, dependencies?: {
     
         } else {
 
+            context.props = context.props || {};
+            context.props.user = data;
             context.req.user = data;
 
             return await getServerSideProps(context);

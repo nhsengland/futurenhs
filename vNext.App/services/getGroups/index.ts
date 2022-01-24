@@ -1,5 +1,4 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
-import { getEnvVar } from '@helpers/util/env';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
 import { FetchResponse } from '@appTypes/fetch';
@@ -38,7 +37,7 @@ export const getGroups = async ({
         const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
         const memberShipQueryParam: string = isMember ? '&ismember=true' : '&ismember=false';
 
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/users/${id}/groups?${paginationQueryParams}${memberShipQueryParam}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups?${paginationQueryParams}${memberShipQueryParam}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiPaginatedResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
@@ -47,11 +46,11 @@ export const getGroups = async ({
 
         if(!ok){
 
-            return {
-                errors: {
-                    [status]: statusText
-                }
+            serviceResponse.errors = {
+                [status]: statusText
             }
+
+            return serviceResponse;
 
         }
 
@@ -66,7 +65,7 @@ export const getGroups = async ({
                 totalMemberCount: datum.memberCount ?? 0,
                 totalDiscussionCount: datum.discussionCount ?? 0,
                 image: datum.image ? {
-                    src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${datum.image?.source}`,
+                    src: `${datum.image?.source}`,
                     height: datum.image?.height ?? null,
                     width: datum.image?.width ?? null,
                     altText: 'TBC'

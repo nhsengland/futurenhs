@@ -11,6 +11,7 @@ import { User } from '@appTypes/user';
 import { GroupListingTemplate } from '@components/_pageTemplates/GroupListingTemplate';
 
 const routeId: string = '8190d347-e29a-4577-baa8-446bcae428d9';
+const isGroupMember: boolean = false;
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -43,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 }),
                 getGroups({
                     user: user,
-                    isMember: false,
+                    isMember: isGroupMember,
                     pagination: {
                         pageNumber: initialPageNumber,
                         pageSize: initialPageSize
@@ -52,6 +53,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             ]);
 
             props.text = pageTextContent.data ?? null;
+            props.isGroupMember = isGroupMember;
             props.groupsList = groupsList.data ?? [];
             props.pagination = groupsList.pagination ?? null;
         

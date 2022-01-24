@@ -23,6 +23,7 @@ describe('GroupListingTemplate', () => {
             navMenuTitle: 'Mock nav menu title text',
             secondaryHeading: 'Mock secondary heading html'
         },
+        isGroupMember: true,
         groupsList: [
             {
                 text: {
