@@ -90,7 +90,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 	                UNION ALL
 	                SELECT	    
                                     p.[Id],
-                                    NULL,
+                                    t.[Name],
                                     p.[PostContent],
                                     ISNULL(p.[DateEdited], p.[DateCreated]),
                                     GroupId = t.[Group_Id],
@@ -104,6 +104,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                     p.[PostContent] 
                     LIKE            @Term
                                     )
+                    AND             p.[IsTopicStarter] = 0
 	                UNION ALL
 	                SELECT	    
                                     f.[Id],
@@ -125,17 +126,22 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 	                UNION ALL
 	                SELECT	        t.[Id],
                                     t.[Name],
-                                    NULL,
+                                    p.[PostContent],
                                     t.[CreateDate],
                                     t.[Group_Id],
                                     'discussion'
 
 	                FROM	        dbo.[Topic] t
+                    JOIN            dbo.[Post] p
+                    ON              p.[Topic_Id] = t.[Id]
 	                WHERE	
                                     (
                                     t.[Name] 
                     LIKE            @Term
+                                    OR p.[PostContent] 
+                                    LIKE @Term
                                     )
+                    AND             p.[IsTopicStarter] = 1
 					) results
                                     
 
