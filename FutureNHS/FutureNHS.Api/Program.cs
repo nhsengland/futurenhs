@@ -1,4 +1,6 @@
+using AspNetCore.Authentication.ApiKey;
 using Azure.Identity;
+using FutureNHS.Api.Authorization;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders;
@@ -6,6 +8,7 @@ using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interface
 using FutureNHS.Api.Services;
 using FutureNHS.Infrastructure.Repositories.Database.RetryPolicy;
 using Microsoft.ApplicationInsights.DependencyCollector;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.Internal;
@@ -131,6 +134,7 @@ if (useAppConfig)
 
 builder.Services.Configure<Features>(settings.GetSection("FeatureManagement"), binderOptions => binderOptions.BindNonPublicProperties = true);
 builder.Services.Configure<AzurePlatformConfiguration>(settings.GetSection("AzurePlatform"));
+builder.Services.Configure<SharedSecrets>(settings.GetSection("SharedSecrets"));
 
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
@@ -161,6 +165,41 @@ builder.Services.AddApiVersioning(config =>
 builder.Services.DataAccess();
 builder.Services.Services();
 
+// It requires Realm to be set in the options if SuppressWWWAuthenticateHeader is not set.
+// If an implementation of IApiKeyProvider interface is used as well as options.Events.OnValidateKey delegate is also set then this delegate will be used first.
+
+builder.Services.AddScoped<IApiKeyRepository>(
+    sp => {
+        var config = sp.GetRequiredService<IOptionsSnapshot<SharedSecrets>>().Value;
+
+        if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
+        if (string.IsNullOrWhiteSpace(config.WebApplication)) throw new ApplicationException("The Web Application Key is missing from the Shared secrets configuration section");
+        if (string.IsNullOrWhiteSpace(config.Owner)) throw new ApplicationException("The Owner is missing from the Shared secrets configuration section");
+
+        var logger = sp.GetRequiredService<ILogger<IApiKeyRepository>>();
+
+        return new ApiKeyRepository(config.WebApplication, config.Owner, logger);
+    });
+
+builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
+
+    // The below AddApiKeyInHeaderOrQueryParams without type parameter will require options.Events.OnValidateKey delegete to be set.
+    //.AddApiKeyInHeaderOrQueryParams(options =>
+
+    // The below AddApiKeyInHeaderOrQueryParams with type parameter will add the ApiKeyProvider to the dependency container. 
+    .AddApiKeyInAuthorizationHeader<ApiKeyProvider>(options =>
+    {
+        options.Realm = "FutureNHS";
+        options.KeyName = "Bearer";
+    });
+
+//// By default, authentication is not challenged for every request which is ASP.NET Core's default intended behaviour.
+//// So to challenge authentication for every requests please use below FallbackPolicy option.
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -169,7 +208,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseAuthentication();    // NOTE: DEFAULT TEMPLATE DOES NOT HAVE THIS, THIS LINE IS REQUIRED AND HAS TO BE ADDED!!!
 app.UseAuthorization();
 
 app.MapControllers();
