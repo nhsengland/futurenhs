@@ -6,8 +6,8 @@ export const matchText = (): Function => {
         try {
 
             if (value && value.length && term && term.length) {
-                var re = new RegExp(term, "gi");
-                return value.replace(re,(match)=>`<mark>${match}</mark>`);
+                const regexPattern : RegExp = new RegExp(`(${term})(?!([^<]+)?>)`, "gi");
+                return value.replace(regexPattern,(match)=>`<mark>${match}</mark>`);
 
             }
 

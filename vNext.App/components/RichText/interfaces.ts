@@ -7,6 +7,7 @@
     shouldPadRight?: boolean;
     ariaLabelledBy?: string;
     ariaDescribedBy?: string;
+    stripHtmlPattern?: RegExp;
 }
 
 export interface State {

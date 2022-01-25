@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
              */
             const term: string = selectQuery(context, 'term');
             const pagination: Pagination = selectPagination(context);
-    
+            
             let props: Props = selectProps(context);
     
             /**
@@ -39,7 +39,8 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 ] = await Promise.all([
                     getSearchResults({
                         term: term,
-                        pagination: pagination
+                        pagination: pagination,
+                        minLength: 3
                     })
                 ]);
     

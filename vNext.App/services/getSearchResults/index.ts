@@ -9,6 +9,7 @@ import { SearchResult } from '@appTypes/search';
 declare type Options = ({
     term: string;
     pagination?: Pagination;
+    minLength?: Number
 });
 
 declare type Dependencies = ({
@@ -18,13 +19,16 @@ declare type Dependencies = ({
 
 export const getSearchResults = async ({
     term,
-    pagination
+    pagination,
+    minLength
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<SearchResult>>> => {
 
     try {
         const serviceResponse: ServicePaginatedResponse<Array<any>> = {
             data: []
         };
+
+        if(term && term.length < minLength) return serviceResponse;
 
         const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
@@ -56,7 +60,7 @@ export const getSearchResults = async ({
 
         serviceResponse.data = apiData.data.results.map((item, index) => {
 
-            if(item.type.match(/discussion-comment/gi)){
+            if (item.type.match(/discussion-comment/gi)) {
 
                 return {
                     type: "comment",
@@ -75,17 +79,17 @@ export const getSearchResults = async ({
                             },
                             content: {
                                 title: item.group.name,
-                                body: item.group.description || "Auto generated group description"
+                                body: item.group.description
                             }
                         },
                         content: {
                             title: item.name,
-                            body: item.description || "Auto generated description"
+                            body: item.description
                         }
                     },
                     content: {
                         title: item.name,
-                        body: item.description || "Auto generated description"
+                        body: item.description
                     }
 
                 }
@@ -95,27 +99,26 @@ export const getSearchResults = async ({
             return {
                 type: item.type,
                 entityIds: {
-                    [item.type+'Id']: item.id
+                    [item.type + 'Id']: item.id
                 },
-                meta:{
+                meta: {
                     type: "group",
-                    entityIds:{
+                    entityIds: {
                         groupId: item.group.slug
                     },
                     content: {
                         title: item.group.name,
-                        body: item.group.description || "Auto populated description"
+                        body: item.group.description
                     }
                 },
                 content: {
                     title: item.name,
-                    body: item.description || "Auto populated description text"
+                    body: item.description
                 }
             }
         });
 
         serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
-
         return serviceResponse;
 
     } catch (error) {

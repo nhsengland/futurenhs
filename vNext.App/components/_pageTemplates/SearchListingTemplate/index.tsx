@@ -31,8 +31,8 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     const hasResults: boolean = resultsCount > 0;
 
     const { metaDescription,
-            title,
-            mainHeading } = contentText ?? {};
+        title,
+        mainHeading } = contentText ?? {};
 
     const [dynamicSearchResultsList, setSearchResultsList] = useState(resultsList);
     const [dynamicPagination, setPagination] = useState(pagination);
@@ -47,22 +47,22 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
             pagination: {
                 pageNumber: requestedPageNumber,
                 pageSize: requestedPageSize
-            }
+            },
+            minLength: 3
         });
 
-        if(additionalSearchResults?.length){
+        if (additionalSearchResults?.length) {
 
             setSearchResultsList([...dynamicSearchResultsList, ...additionalSearchResults]);
             setPagination(pagination);
-
         }
 
     };
 
     const generatedClasses = {
-        block: classNames('c-search-result', 'u-border-bottom-theme-8', 'u-mb-6', 'u-flex', 'u-flex-col'),
-        header: classNames('c-search-result_header', 'u-text-theme-7', 'u-text-bold', 'u-order-1'),
-        title: classNames('c-search-result_title', 'u-order-2','u-text-2xl'),
+        block: classNames('c-search-result', 'u-border-bottom-theme-8', 'u-mb-6', 'u-flex', 'u-flex-col', 'u-break-words'),
+        header: classNames('c-search-result_header', 'u-text-theme-7', 'u-text-bold', 'u-order-1', 'o-truncated-text-lines-2'),
+        title: classNames('c-search-result_title', 'u-order-2', 'u-text-2xl', 'o-truncated-text-lines-2'),
         body: classNames('c-search-result_body', 'u-p-0', 'o-truncated-text-lines-2', 'u-order-2')
     }
 
@@ -73,119 +73,117 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
         }
         return _item.meta
     }
-    const getMetaHeader = (item: SearchResult): JSX.Element => {
+    const getMetaHeader = ({ item, parentType, groupItem }): JSX.Element => {
 
-        const type: ContentType = item.type
-        const parentType: ContentType = item.meta?.type;
+        const resourceHref: string = `/groups/${groupItem.entityIds[groupItem.type + 'Id']}`;
 
-        let _item: SearchResult = getGroupDetails(item) ?? item;
-
-        if (type === ContentType.DISCUSSION) {
-            return <> Discussion on <Link href={`/groups/${_item.entityIds[_item.type+'Id']}`}>{_item.content.title}</Link> group forum </>;
+        if (item.type === ContentType.DISCUSSION || parentType === ContentType.DISCUSSION) {
+            return <> Discussion on <Link href={resourceHref}>{groupItem.content.title}</Link> group forum </>;
         }
-        else if (parentType === ContentType.DISCUSSION) {
-            return <>Discussion on <Link href={`/groups/${_item.entityIds[_item.type+'Id']}`}>{_item.content.title}</Link> group forum</>;
-        }
-        else if (type === ContentType.GROUP) {
+
+        if (item.type === ContentType.GROUP) {
             return <>{capitalise()(item.type)}</>;
         }
-        else {
-            return <>{capitalise()(item.type)} on <Link href={`/groups/${_item.entityIds[_item.type+'Id']}`}>{_item.content.title}</Link> group</>;
-        }
 
+        return <>{capitalise()(item.type)} on <Link href={resourceHref}>{groupItem.content.title}</Link> group</>;
     }
 
-    const getTitle = (item: SearchResult): JSX.Element => {
+    const getTitle = ({ item, parentType, groupItem, stripHtmlPattern }): JSX.Element => {
 
-        const parentType: ContentType = item.meta?.type;
-        const url: string = `/groups/${item.meta.entityIds[item.meta.type+'Id']}` + (item.type === ContentType.GROUP? '':`/${item.type}s/${item.entityIds[item.type+'Id']}`);
+        let resourceHref: string = `/groups/${groupItem.entityIds[groupItem.type + 'Id']}`
 
-        if (parentType === ContentType.DISCUSSION) {
-
-            return (
-                
-                <Link href={`/groups/${item.meta.entityIds[item.meta.type+'Id']}/forum/${item.entityIds[item.type+'Id']}`}>
-                    <a>
-                        <span>{capitalise()(item.type)} on discussion: </span>
-                        <RichText wrapperElementType='span' bodyHtml={matchText()(item.meta.content.title, term)} />
-                    </a>
-                </Link>
-
-            )
-
-        }
-
-        return (
-        
-            <Link href={url}>
+        if (parentType === ContentType.DISCUSSION || item.type === ContentType.DISCUSSION) {
+            const parentIsDiscussion: boolean = parentType === ContentType.DISCUSSION
+            resourceHref += `/forum/${item.entityIds[item.type + 'Id']}`;
+            return <Link href={resourceHref}>
                 <a>
-                    <RichText wrapperElementType='span' bodyHtml={matchText()(capitalise()(item.content.title), term)} />
+                    {parentIsDiscussion && <span>{capitalise()(item.type)} on discussion: </span>}
+                    <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText()(item.content.title, term)} />
                 </a>
             </Link>
+        }
 
-        )
+        resourceHref += (item.type === ContentType.GROUP ? '' : `/${item.type}s/${item.entityIds[item.type + 'Id']}`)
+
+        return <Link href={resourceHref}>
+            <a>
+                <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText()(capitalise()(item.content.title), term)} />
+            </a>
+        </Link>
 
     }
 
     const formattedData = dynamicSearchResultsList.map((item: SearchResult): any => {
 
-        /* Construct meta header */
-        let metaHeader = getMetaHeader(item);
-        /* Construct title */
-        let title = getTitle(item);
-        /* Construct body */
-        let body = <RichText wrapperElementType='span' bodyHtml={matchText()(capitalise()(item.content.body), term)} />;
+        const parentType: ContentType = item.meta?.type;
+        const groupItem: SearchResult = getGroupDetails(item) ?? item;
+        const stripHtmlPattern: RegExp = new RegExp('(?!<\/?mark>)(<.*?>)|\&?nbsp;', 'gi');
 
-        return { 
-            metaHeader: metaHeader, 
-            title: title, 
-            body: body 
+        const options: any = {
+            item: item,
+            parentType: parentType,
+            groupItem: groupItem,
+            stripHtmlPattern: stripHtmlPattern
+        }
+
+        /* Construct meta header */
+        const metaHeader: JSX.Element = getMetaHeader(options);
+        /* Construct title */
+        const title: JSX.Element = getTitle(options);
+
+        /* Construct body */
+        const body: JSX.Element = <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText()(capitalise()(item.content.body), term)} />
+
+        return {
+            metaHeader: metaHeader,
+            title: title,
+            body: body
         }
 
     })
 
     return (
 
-        <StandardLayout 
+        <StandardLayout
             searchTerm={term}
             user={user}
             className="u-bg-theme-3">
-                <Head>
-                    <title>{title}</title>
-                    <meta name="description" content={metaDescription} />
-                </Head>
-                <div className="u-px-4 u-py-10">
-                    <h1>{`${mainHeading}: ${term} - ${dynamicPagination?.totalRecords ?? 0} results found`}</h1>
-                    {!hasResults &&
-                        <p>Sorry no results found</p>
-                    }
-                    {hasResults &&
-                        <LayoutColumnContainer>
-                            <LayoutColumn desktop={10}>
-                                <ul className='u-p-0 u-list-none'>
-                                    {formattedData.map(({ metaHeader, title, body }, index) => {
+            <Head>
+                <title>{title}</title>
+                <meta name="description" content={metaDescription} />
+            </Head>
+            <div className="u-px-4 u-py-10">
+                <h1>{`${mainHeading}: ${term} - ${dynamicPagination?.totalRecords ?? 0} results found`}</h1>
+                {!hasResults &&
+                    <p>Sorry no results found</p>
+                }
+                {hasResults &&
+                    <LayoutColumnContainer>
+                        <LayoutColumn desktop={10}>
+                            <ul className='u-p-0 u-list-none'>
+                                {formattedData.map(({ metaHeader, title, body }, index) => {
 
-                                        return (
+                                    return (
 
-                                            <li key={index} className={generatedClasses.block}>
-                                                <h2 className={generatedClasses.title}>{title}</h2>
-                                                <p className={generatedClasses.header}>{metaHeader}</p>
-                                                <p className={generatedClasses.body}>{body}</p>
-                                            </li>
-                                        )
+                                        <li key={index} className={generatedClasses.block}>
+                                            <h2 className={generatedClasses.title}>{title}</h2>
+                                            <p className={generatedClasses.header}>{metaHeader}</p>
+                                            <p className={generatedClasses.body}>{body}</p>
+                                        </li>
+                                    )
 
-                                    })}
-                                </ul>
-                                <PaginationWithStatus
-                                    id="search-result-list-pagination"
-                                    shouldEnableLoadMore={true}
-                                    getPageAction={handleGetPage}
-                                    totalRecords={dynamicPagination.totalRecords}
-                                    {...dynamicPagination} />
-                            </LayoutColumn>
-                        </LayoutColumnContainer>
-                    }
-                </div>
+                                })}
+                            </ul>
+                            <PaginationWithStatus
+                                id="search-result-list-pagination"
+                                shouldEnableLoadMore={true}
+                                getPageAction={handleGetPage}
+                                totalRecords={dynamicPagination.totalRecords}
+                                {...dynamicPagination} />
+                        </LayoutColumn>
+                    </LayoutColumnContainer>
+                }
+            </div>
         </StandardLayout>
 
     )

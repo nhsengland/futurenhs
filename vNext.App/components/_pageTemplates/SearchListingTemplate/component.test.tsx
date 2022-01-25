@@ -3,27 +3,29 @@ import { render, screen } from '@testing-library/react';
 
 import { SearchListingTemplate } from './index';
 import { Props } from './interfaces';
-
+// TODO
 describe('Search listing template', () => {
 
     const props: Props = {
         id: 'mockPageId',
         user: undefined,
-        term: 'mockTerm',
+        term: 'mockTermTestingItRandomlyToGet0Results',
         resultsList: [],
         contentText: {
             title: 'Search',
             metaDescription: 'Search Future NHS',
             mainHeading: 'Searching'
-        }
+        },
     };
 
     it('renders correctly', () => {
 
         render(<SearchListingTemplate {...props} />);
-
-        expect(screen.getAllByText('Searching: mockTerm - 0 results found').length).toEqual(1);
+        const { metaDescription,
+            title,
+            mainHeading } = props.contentText ?? {};
+        expect(screen.getAllByText(`${mainHeading}: ${props.term} - ${props.resultsList.length} results found`).length).toEqual(1);
 
     });
-    
+
 });

@@ -12,7 +12,8 @@ export const RichText: (props: Props) => JSX.Element = ({
     ariaDescribedBy,
     wrapperElementType,
     shouldPadRight = false,
-    shouldPadleft = false 
+    shouldPadleft = false,
+    stripHtmlPattern = null
 }) => {
 
     /**
@@ -35,6 +36,8 @@ export const RichText: (props: Props) => JSX.Element = ({
     const tagsWhiteList: Array<string> = ['div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
     const padLeft = shouldPadleft ? " " : "";
     const padRight = shouldPadRight ? " " : "";
+
+    bodyHtml =  stripHtmlPattern && bodyHtml ? bodyHtml.replace(stripHtmlPattern,'') : bodyHtml;
 
     /**
      * Get the wrapper element type to use
