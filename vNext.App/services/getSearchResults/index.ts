@@ -6,10 +6,8 @@ import { FetchResponse } from '@appTypes/fetch';
 import { ApiPaginatedResponse, ServicePaginatedResponse } from '@appTypes/service';
 import { Pagination } from '@appTypes/pagination';
 import { SearchResult } from '@appTypes/search';
-import { User } from '@appTypes/user';
 
 declare type Options = ({
-    user: User;
     term: string;
     pagination?: Pagination;
 });
@@ -20,7 +18,6 @@ declare type Dependencies = ({
 });
 
 export const getSearchResults = async ({
-    user,
     term,
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<SearchResult>>> => {
@@ -35,7 +32,7 @@ export const getSearchResults = async ({
 
         const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
 
-        const apiUrl: string = `${getEnvVar({ name: 'NEXT_PUBLIC_API_BASE_URL' })}/v1/search?term=${term}&${paginationQueryParams}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/search?term=${term}&${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiPaginatedResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
@@ -52,15 +49,10 @@ export const getSearchResults = async ({
 
         }
 
-
-        // TODO - this is a basic mapping example //map the actual data
-
-        // data[(apiData.offset + index) % data.length]
         serviceResponse.data = apiData.data.results.map((item, index) => {
-            // console.log(item)
 
             if(item.type.match(/discussion-comment/gi)){
-                console.log("discussion-comment: ", item)
+
                 return {
                     type: "comment",
                     entityIds: {
@@ -90,7 +82,9 @@ export const getSearchResults = async ({
                         title: item.name,
                         body: item.description || "Auto generated description"
                     }
+
                 }
+
             }
 
             return {
@@ -115,9 +109,8 @@ export const getSearchResults = async ({
             }
         });
 
-        console.log(serviceResponse.data)
-
         serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
+
         return serviceResponse;
 
     } catch (error) {

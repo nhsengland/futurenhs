@@ -41,18 +41,22 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
         pageNumber: requestedPageNumber,
         pageSize: requestedPageSize
     }) => {
+
         const { data: additionalSearchResults, pagination } = await getSearchResults({
-            user: null,
             term: term as string,
             pagination: {
                 pageNumber: requestedPageNumber,
                 pageSize: requestedPageSize
             }
         });
+
         if(additionalSearchResults?.length){
+
             setSearchResultsList([...dynamicSearchResultsList, ...additionalSearchResults]);
             setPagination(pagination);
+
         }
+
     };
 
     const generatedClasses = {
@@ -116,7 +120,6 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     }
 
     const formattedData = dynamicSearchResultsList.map((item: SearchResult): any => {
-        console.log(item)
 
         /* Construct meta header */
         let metaHeader = getMetaHeader(item);
@@ -128,7 +131,6 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
         return { metaHeader: metaHeader, title: title, body: body }
     })
 
-    console.log(resultsList)
     return (
 
         <StandardLayout className="u-bg-theme-3" searchTerm={term}>

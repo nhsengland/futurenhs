@@ -40,7 +40,6 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                     locale: locale
                 }),
                 getSearchResults({
-                    user: user,
                     term: term as string,
                 })
             ]);
@@ -52,7 +51,6 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         
         } catch (error) {
 
-            console.log(error)
             props.errors = error;
 
         }
