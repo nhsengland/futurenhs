@@ -110,7 +110,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
 
             return [
                 {
-                    children: <SVGIcon name={`icon-${iconName}`} className="u-w-4 u-h-6" />,
+                    children: <><SVGIcon name={`icon-${iconName}`} className="u-w-4 u-h-6" /><span className="u-block u-text-bold">{extension}</span></>,
                     className: 'u-text-center u-text-base'
                 },
                 {

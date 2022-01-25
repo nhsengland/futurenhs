@@ -20,7 +20,6 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         /**
          * Get data from request context
          */
-        const user: User = selectUser(context);
         const locale: string = selectLocale(context);
         const term: string = selectQuery(context, 'term');
 

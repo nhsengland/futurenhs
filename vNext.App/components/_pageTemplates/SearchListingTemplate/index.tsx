@@ -24,7 +24,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     text,
     resultsList = [],
     pagination,
-    // user
+    user
 }) => {
 
     const resultsCount: number = resultsList.length;
@@ -133,43 +133,46 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <StandardLayout className="u-bg-theme-3" searchTerm={term}>
-            <Head>
-                <title>{title}</title>
-                <meta name="description" content={metaDescription} />
-            </Head>
-            <div className="u-px-4 u-py-10">
-                <h1>{`${mainHeading}: ${term} - ${dynamicPagination.totalRecords} results found`}</h1>
-                {!hasResults &&
-                    <p>Sorry no results found</p>
-                }
-                {hasResults &&
-                    <LayoutColumnContainer>
-                        <LayoutColumn desktop={10}>
-                            <ul className='u-p-0 u-list-none'>
-                                {formattedData.map(({ metaHeader, title, body }, index) => {
+        <StandardLayout 
+            searchTerm={term}
+            user={user}
+            className="u-bg-theme-3">
+                <Head>
+                    <title>{title}</title>
+                    <meta name="description" content={metaDescription} />
+                </Head>
+                <div className="u-px-4 u-py-10">
+                    <h1>{`${mainHeading}: ${term} - ${dynamicPagination?.totalRecords ?? 0} results found`}</h1>
+                    {!hasResults &&
+                        <p>Sorry no results found</p>
+                    }
+                    {hasResults &&
+                        <LayoutColumnContainer>
+                            <LayoutColumn desktop={10}>
+                                <ul className='u-p-0 u-list-none'>
+                                    {formattedData.map(({ metaHeader, title, body }, index) => {
 
-                                    return (
+                                        return (
 
-                                        <li key={index} className={generatedClasses.block}>
-                                            <h2 className={generatedClasses.title}>{title}</h2>
-                                            <p className={generatedClasses.header}>{metaHeader}</p>
-                                            <p className={generatedClasses.body}>{body}</p>
-                                        </li>
-                                    )
+                                            <li key={index} className={generatedClasses.block}>
+                                                <h2 className={generatedClasses.title}>{title}</h2>
+                                                <p className={generatedClasses.header}>{metaHeader}</p>
+                                                <p className={generatedClasses.body}>{body}</p>
+                                            </li>
+                                        )
 
-                                })}
-                            </ul>
-                            <PaginationWithStatus
-                                id="search-result-list-pagination"
-                                shouldEnableLoadMore={true}
-                                getPageAction={handleGetPage}
-                                totalRecords={dynamicPagination.totalRecords}
-                                {...dynamicPagination} />
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-                }
-            </div>
+                                    })}
+                                </ul>
+                                <PaginationWithStatus
+                                    id="search-result-list-pagination"
+                                    shouldEnableLoadMore={true}
+                                    getPageAction={handleGetPage}
+                                    totalRecords={dynamicPagination.totalRecords}
+                                    {...dynamicPagination} />
+                            </LayoutColumn>
+                        </LayoutColumnContainer>
+                    }
+                </div>
         </StandardLayout>
 
     )

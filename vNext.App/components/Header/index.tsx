@@ -55,6 +55,7 @@ export const Header: (props: Props) => JSX.Element = ({
     const headerAccordionId: string = 'header-accordion';
     const userAccordionId: string = 'user-accordion';
     const logOutRoute: string = routes.LOG_OUT;
+    const hasNavigationContent: boolean = shouldRenderNavigation && Boolean(user);
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
     const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
     const handleAccordionToggle = (id: string, isOpen: boolean) => {
