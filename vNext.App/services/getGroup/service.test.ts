@@ -3,8 +3,10 @@ import { User } from '@appTypes/user';
 
 const mockUser: User = { 
     id: 'mockUserId',
-    fullNameText: '',
-    initialsText: '',
+    text: {
+        userName: '',
+        initials: ''
+    },
     image: {
         source: '',
         altText: ''

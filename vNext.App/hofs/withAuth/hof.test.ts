@@ -3,8 +3,10 @@ import { GetAuthService } from '@services/getAuth';
 
 const mockUser = {
     id: 'mockId',
-    fullNameText: 'A User',
-    initialsText: 'AU',
+    text: {
+        userName: 'A User',
+        initials: 'AU',
+    },
     image: {
         source: '/mockSrc',
         altText: 'mockAltText'

@@ -16,6 +16,7 @@ import * as domHelpers from '@helpers/dom';
 import { cssUtilityClasses, mediaQueries } from '@constants/css';
 import { iconNames } from '@constants/icons';
 import { routes } from '@constants/routes';
+import { capitalise } from '@helpers/formatters/capitalise';
 
 import { Props } from './interfaces'
 
@@ -41,7 +42,9 @@ export const Header: (props: Props) => JSX.Element = ({
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [isUserAccordionOpen, setIsUserAccordionOpen] = useState(false);
 
-    const { initialsText, fullNameText } = user ?? {};
+    const { text: userText } = user ?? {};
+    const { userName, initials } = userText ?? {};
+
     const { editProfile,
             logOut,
             logOutHeading, 
@@ -120,9 +123,9 @@ export const Header: (props: Props) => JSX.Element = ({
                                                             toggleChildren={
                                                                 <>
                                                                     <span className="c-site-header-nav_root-nav-image">
-                                                                        <Avatar image={null} initials={initialsText} />
+                                                                        <Avatar image={null} initials={initials} />
                                                                     </span>
-                                                                    <span>{fullNameText}</span>
+                                                                    <span>{capitalise()(userName)}</span>
                                                                     <SVGIcon name={getAccordionIcon(isUserAccordionOpen)} className="c-site-header-nav_root-nav-icon" />
                                                                 </>
                                                             }

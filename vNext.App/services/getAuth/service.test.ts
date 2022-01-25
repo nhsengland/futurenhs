@@ -110,7 +110,7 @@ describe('getAuth service', () => {
                 meta: response,
                 json: {
                     Id: 'mockId',
-                    FullName: 'mockFullNameText',
+                    Username: 'mockUserNameText',
                     Initials: 'mockInitialsText',
                     UserAvatar: {
                         Source: '/mockSrc',
@@ -135,8 +135,10 @@ describe('getAuth service', () => {
         await expect(response).toStrictEqual({
             data: {
                 id: 'mockId',
-                fullNameText: 'mockFullNameText',
-                initialsText: 'mockInitialsText',
+                text: {
+                    userName: 'mockUserNameText',
+                    initials: 'mockInitialsText',
+                },
                 image: {
                     source: '/mockSrc',
                     altText: 'mockAltText'

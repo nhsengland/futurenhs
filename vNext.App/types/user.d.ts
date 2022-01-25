@@ -1,7 +1,9 @@
 export interface User {
     id: string;
-    fullNameText: string;
-    initialsText: string;
+    text: {
+        userName: string;
+        initials: string;
+    };
     image: {
         source: string;
         altText: string;
