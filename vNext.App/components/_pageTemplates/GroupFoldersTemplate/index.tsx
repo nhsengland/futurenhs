@@ -102,8 +102,11 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
             const { body } = text ?? {};
 
             const isFolder: boolean = type === 'folder';
-            const iconName: string = extension?.split('.')?.[1] ?? (isFolder ? 'folder' : '');
             const href: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
+
+            let iconName: string = extension?.split('.')?.[1] ?? (isFolder ? 'folder' : '');
+
+            iconName = iconName === 'doc' ? 'docx' : iconName;
 
             return [
                 {

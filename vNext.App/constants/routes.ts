@@ -14,5 +14,6 @@ export const enum routeParams {
     GROUPID = 'groupId',
     FOLDERID = 'folderId',
     FILEID = 'fileId',
-    MEMBERID = 'memberId'
+    MEMBERID = 'memberId',
+    DISCUSSIONID = 'discussionId',
 }

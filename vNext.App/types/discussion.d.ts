@@ -1,6 +1,7 @@
 export interface Discussion {
     text: {
-        title
+        title: string;
+        body?: string;
     };
     discussionId?: string;
     totalViewCount?: number; 

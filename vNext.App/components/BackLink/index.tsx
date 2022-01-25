@@ -20,7 +20,7 @@ export const BackLink: (props: Props) => JSX.Element = ({
 
     return (
 
-        <p>
+        <p className="u-mb-8">
             <Link href={href}>
                 <a className={generatedClasses.wrapper}>
                     <SVGIcon name="icon-chevron-left" className={generatedClasses.icon} />

@@ -60,7 +60,7 @@ export const getGroupDiscussions = async ({
                 text: {
                     title: datum.title ?? null
                 },
-                discussionId: datum.slug,
+                discussionId: datum.id,
                 totalCommentCount: datum.totalComments ?? 0,
                 totalViewCount: datum.views ?? 0
             });

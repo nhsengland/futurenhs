@@ -138,7 +138,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             if(shouldRenderMemberEditColumn){
 
                 rows.push({
-                    children: <Link href={`${asPath}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1" />Edit</a></Link>,
+                    children: <Link href={`${asPath}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
                     className: 'u-w-1/8'
                 });
 
