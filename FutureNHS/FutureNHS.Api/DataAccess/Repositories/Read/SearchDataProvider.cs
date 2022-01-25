@@ -90,8 +90,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 	                UNION ALL
 	                SELECT	    
                                     p.[Id],
-                                    p.[PostContent],
                                     NULL,
+                                    p.[PostContent],
                                     ISNULL(p.[DateEdited], p.[DateCreated]),
                                     GroupId = t.[Group_Id],
                                     'discussion-comment'
