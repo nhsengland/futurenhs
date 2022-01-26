@@ -20,7 +20,7 @@ module.exports = withPWA({
     },
     pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
     sassOptions: {
-        includePaths: [path.join(__dirname, 'UI/assets/src/scss')],
+        includePaths: [path.join(__dirname, '')],
         quietDeps: true
     },
     images: {

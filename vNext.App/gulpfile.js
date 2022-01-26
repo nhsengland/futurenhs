@@ -1,58 +1,11 @@
 const
-    fs = require("fs"),
-    gulp = require("gulp"),
-    svgSprite = require("gulp-svg-sprites"),
-    favicons = require("gulp-favicons"),
-    plumber = require("gulp-plumber"),
-    rename = require("gulp-rename"),
-    sass = require("gulp-sass")(require("sass")),
-    sassLint = require("gulp-sass-lint"),
-    sassThemes = require("gulp-sass-themes"),
-    postcss = require("gulp-postcss"),
-    tailWind = require("tailwindcss"),
-    autoprefixer = require("autoprefixer"),
-    pxtorem = require("postcss-pxtorem"),
-    tailWindConfig = require('./tailwind.config');
+    fs = require('fs'),
+    gulp = require('gulp'),
+    svgSprite = require('gulp-svg-sprites'),
+    favicons = require('gulp-favicons');
 
 const uiPath = 'UI';
 const uiAssetsDistPath = `public`;
-
-// Scss/css minification & bundling
-const scss = () => {
-
-    return gulp.src(`${uiPath}/scss/**/*.s+(a|c)ss`)
-        .pipe(plumber())
-        .pipe(sassLint({
-            configFile: 'sass-lint.yml',
-            options: {
-                formatter: 'stylish'
-            }
-        }))
-        .pipe(sassLint.format())
-        .pipe(sassLint.failOnError())
-        .pipe(sassThemes(`${uiPath}/scss/theme-variables/**/*.scss`))
-        .pipe(sass({
-            outputStyle: 'compressed',
-            quietDeps: true
-        }).on('error', sass.logError))
-        .pipe(postcss([
-            tailWind(tailWindConfig),
-            autoprefixer({}),
-            pxtorem({
-                rootValue: 16,
-                propList: ['font-size', 'line-height'],
-                replace: false,
-                mediaQuery: false
-            })
-        ]))
-        .pipe(rename({
-            suffix: '.min'
-        }))
-        .pipe(gulp.dest(`${uiAssetsDistPath}/css/`));
-
-};
-
-gulp.task(scss);
 
 // Compress image assets and copy to /dist
 const images = () => {
@@ -158,7 +111,7 @@ gulp.task(icons);
 // Build task - runs all the web tasks
 const build = (done) => { 
 
-    gulp.series(scss, images, icons, fonts, tinyMce, favicon)();
+    gulp.series(images, icons, fonts, tinyMce, favicon)();
 
     done();
 
@@ -171,7 +124,6 @@ const watch = (done) => {
 
     const watchers = () => {
 
-        gulp.watch(`${uiPath}/scss/**/*.scss`, gulp.series(scss));
         gulp.watch([`${uiPath}/images/**/*`], gulp.series(images));
         gulp.watch([`${uiPath}/icons/**/*`], gulp.series(icons));
         gulp.watch([`${uiPath}/favicon/**/*`], gulp.series(favicon));
