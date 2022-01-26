@@ -1,13 +1,14 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { getPageTextContent } from '@services/getPageTextContent';
 import { getSearchResults } from '@services/getSearchResults';
-import { selectUser, selectLocale, selectQuery, selectProps } from '@selectors/context';
+import { selectLocale, selectQuery, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
-import { User } from '@appTypes/user';
 
 import { SearchListingTemplate } from '@components/_pageTemplates/SearchListingTemplate';
+import { Props } from '@components/_pageTemplates/SearchListingTemplate/interfaces';
 
 const routeId: string = '246485b1-2a13-4844-95d0-1fb401c8fdea';
 
@@ -23,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         const locale: string = selectLocale(context);
         const term: string = selectQuery(context, 'term');
 
-        let props: any = selectProps(context);
+        let props: Props = selectProps(context);
 
         /**
          * Get data from services
@@ -39,18 +40,21 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                     locale: locale
                 }),
                 getSearchResults({
-                    term: term as string,
+                    term: term,
                 })
             ]);
 
-            props.text = pageTextContent.data ?? null;
+            props.text = pageTextContent.data;
             props.term = term;
             props.resultsList = searchResults.data ?? [];
-            props.pagination = searchResults.pagination ?? null;
+            props.pagination = searchResults.pagination;
+            props.errors = Object.assign({}, pageTextContent.errors, searchResults.errors);
         
         } catch (error) {
 
-            props.errors = error;
+            props.errors = {
+                error: error.message
+            };
 
         }
 
@@ -58,7 +62,9 @@ export const getServerSideProps: GetServerSideProps = withAuth({
          * Return data to page template
          */
         return {
-            props: props
+            props: getJsonSafeObject({
+                object: props
+            })
         }
 
     }

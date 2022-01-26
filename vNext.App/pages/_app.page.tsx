@@ -10,7 +10,7 @@ const App = ({ Component, pageProps }) => {
     const router = useRouter();
     const { errors } = pageProps;
 
-    if(errors?.[500]){
+    if(errors?.hasOwnProperty(500)){
 
         return <Error statusCode={500} />
 

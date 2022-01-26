@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 //import { getGroupFiles } from '@services/getGroupFolders';
@@ -23,7 +24,9 @@ const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
                  * Return data to page template
                  */
                 return {
-                    props: props
+                    props: getJsonSafeObject({
+                        object: props
+                    })
                 }
 
             }

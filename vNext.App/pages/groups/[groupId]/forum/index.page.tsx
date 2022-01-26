@@ -1,15 +1,16 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { getGroupDiscussions } from '@services/getGroupDiscussions';
-import { selectProps } from '@selectors/context';
-import { selectUser, selectPagination, selectParam } from '@selectors/context';
+import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
 import { GroupForumTemplate } from '@components/_pageTemplates/GroupForumTemplate';
+import { Props } from '@components/_pageTemplates/GroupForumTemplate/interfaces';
 
 const routeId: string = 'd7752e9e-4f47-41ec-bc07-70508d8dcd9b';
 
@@ -22,12 +23,12 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         routeId: routeId,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-            let props: any = selectProps(context);
-
             const user: User = selectUser(context);
             const groupId: string = selectParam(context, routeParams.GROUPID);
             const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
             const initialPageSize: number = selectPagination(context).pageSize ?? 5;
+
+            let props: Props = selectProps(context);
 
             /**
              * Get data from services
@@ -50,10 +51,13 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                 props.discussionsList = groupDiscussions.data;
                 props.pagination = groupDiscussions.pagination;
+                props.errors = Object.assign({}, groupDiscussions.errors);
 
             } catch (error) {
 
-                props.errors = error?.message ?? 'Error';
+                props.errors = {
+                    error: error.message
+                };
 
             }
 
@@ -61,7 +65,9 @@ export const getServerSideProps: GetServerSideProps = withAuth({
              * Return data to page template
              */
             return {
-                props: props
+                props: getJsonSafeObject({
+                    object: props
+                })
             }
 
         }

@@ -45,7 +45,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames('c-page-header', className),
         header: classNames('c-page-header_header'),
-        heading: classNames('u-mb-1', 'u-text-theme-1'),
+        heading: classNames('u-mb-2', 'u-text-theme-1', 'o-truncated-text-lines-3'),
         hero: classNames('c-page-header_hero'),
         heroBody: classNames('c-page-header_hero-body'),
         description: classNames('c-page-header_description', 'o-truncated-text-lines-2', 'u-m-0'),

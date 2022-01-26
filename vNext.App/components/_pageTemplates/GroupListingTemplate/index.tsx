@@ -122,7 +122,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                     return (
 
                                         <li key={index}>
-                                            <Card image={imageToUse} className="u-border-bottom-theme-8 u-mb-4">
+                                            <Card image={imageToUse} className="u-border-bottom-theme-11 u-mb-4">
                                                 <h3 className="c-card_heading o-truncated-text-lines-3">
                                                     <Link href={`/groups/${groupId}`}>
                                                         <a>{mainHeading}</a>
@@ -131,13 +131,13 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                                 <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
                                                     {strapLine}
                                                 </p>
-                                                <div className="c-card_footer u-text-theme-7">
+                                                <div className="c-card_footer u-text-theme-0">
                                                     <p className="c-card_footer-item">
-                                                        <SVGIcon name="icon-account" className="c-card_footer-icon u-fill-theme-8" />
+                                                        <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
                                                         <span>{`${totalMemberCount} Members`}</span>
                                                     </p>
                                                     <p className="c-card_footer-item">
-                                                        <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-8" />
+                                                        <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
                                                         <span>{`${totalDiscussionCount} Discussions`}</span>
                                                     </p>
                                                 </div>

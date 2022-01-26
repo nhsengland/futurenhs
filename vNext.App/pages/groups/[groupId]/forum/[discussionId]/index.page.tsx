@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
@@ -54,12 +55,15 @@ const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f';
 
                 }
 
-                props.discussionId = discussionId ?? null;
-                props.discussion = groupDiscussion.data ?? null;
+                props.discussionId = discussionId;
+                props.discussion = groupDiscussion.data;
+                props.errors = Object.assign(props.errors, groupDiscussion.errors);
             
             } catch (error) {
                 
-                props.errors = error?.message ?? 'Error';
+                props.errors = {
+                    error: error.message
+                };
 
             }
 
@@ -67,7 +71,9 @@ const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f';
              * Return data to page template
              */
             return {
-                props: props
+                props: getJsonSafeObject({
+                    object: props
+                })
             }
 
         }

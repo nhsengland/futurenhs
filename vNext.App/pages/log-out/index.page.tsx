@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withLogOut } from '@hofs/withLogOut';
 import { getPageTextContent } from '@services/getPageTextContent';
 import { selectLocale, selectUser } from '@selectors/context';
@@ -48,10 +49,13 @@ export const getServerSideProps: GetServerSideProps = withLogOut({
             ]);
 
             props.text = pageTextContent.data;
+            props.errors = Object.assign(props.errors, pageTextContent.errors);
         
         } catch (error) {
             
-            props.errors = error;
+            props.errors = {
+                error: error.message
+            };
 
         }
 
@@ -59,7 +63,9 @@ export const getServerSideProps: GetServerSideProps = withLogOut({
          * Return data to page template
          */
         return {
-            props: props
+            props: getJsonSafeObject({
+                object: props
+            })
         }
 
     }

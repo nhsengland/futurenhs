@@ -1,8 +1,9 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
-import { selectCsrfToken, selectBody } from '@selectors/context';
+import { selectCsrfToken, selectBody, selectProps } from '@selectors/context';
 import { validate } from '@helpers/validators';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
@@ -22,7 +23,7 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                 const csrfToken: string = selectCsrfToken(context);
                 const formPost: any = selectBody(context);
 
-                let { props } = context;
+                let props = selectProps(context);
 
                 props.csrfToken = csrfToken;
                 props.forms = {
@@ -54,7 +55,9 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                  * Return data to page template
                  */
                 return {
-                    props: props
+                    props: getJsonSafeObject({
+                        object: props
+                    })
                 }
 
             }

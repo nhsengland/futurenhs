@@ -30,7 +30,7 @@ $card-hero-padding: 10px;
         display: block;
         position: relative;
         aspect-ratio: 1 / 1; //sass-lint:disable-line no-misspelled-properties
-        background-color: $color_nhsuk-grey-5;
+        border: 1px solid $color_nhsuk-grey-4;
         border-radius: 4px;
     }
 
@@ -55,7 +55,6 @@ $card-hero-padding: 10px;
 
     &_footer-item {
         @include small-text;
-        font-weight: $nhsuk-font-bold;
         display: inline-block;
         margin-bottom: 0;
         margin-right: 48px;

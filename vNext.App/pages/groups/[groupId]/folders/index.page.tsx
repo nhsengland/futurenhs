@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
@@ -47,13 +48,14 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
                 ]);
 
                 props.folderContents = groupFolderContents.data ?? [];
-                props.pagination = groupFolderContents.pagination ?? null;
-
-                console.log(groupFolderContents);
+                props.pagination = groupFolderContents.pagination;
+                props.errors = Object.assign(props.errors, groupFolderContents.errors);
             
             } catch (error) {
                 
-                props.errors = error?.message ?? 'Error';
+                props.errors = {
+                    error: error.message
+                };
 
             }
 
@@ -61,7 +63,9 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
              * Return data to page template
              */
             return {
-                props: props
+                props: getJsonSafeObject({
+                    object: props
+                })
             }
 
         }

@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { getGroups } from '@services/getGroups';
 import { getPageTextContent } from '@services/getPageTextContent';
@@ -52,16 +53,17 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 })
             ]);
 
-            props.text = pageTextContent.data ?? null;
+            props.text = pageTextContent.data;
             props.isGroupMember = isGroupMember;
             props.groupsList = groupsList.data ?? [];
-            props.pagination = groupsList.pagination ?? null;
+            props.pagination = groupsList.pagination;
+            props.errors = Object.assign({}, props.errors, pageTextContent.errors, groupsList.errors);
         
         } catch (error) {
-
-            console.log(error);
             
-            props.errors = error;
+            props.errors = {
+                error: error.message
+            };
 
         }
 
@@ -69,7 +71,9 @@ export const getServerSideProps: GetServerSideProps = withAuth({
          * Return data to page template
          */
         return {
-            props: props
+            props: getJsonSafeObject({
+                object: props
+            })
         }
 
     }

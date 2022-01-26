@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceResponsesWithStatusCode';
 import { withAuth } from '@hofs/withAuth';
@@ -63,10 +64,13 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
 
                     props.member = memberData.data;
                     props.text = Object.assign({}, props.text, pageTextContent.data ?? {});
+                    props.errors = Object.assign({}, pageTextContent.errors, memberData.errors);
                 
                 } catch (error) {
                     
-                    //props.errors = error;
+                    props.errors = {
+                        error: error.message
+                    }
 
                 }
 
@@ -74,7 +78,9 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
                  * Return data to page template
                  */
                 return {
-                    props: props
+                    props: getJsonSafeObject({
+                        object: props
+                    })
                 }
 
             }

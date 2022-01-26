@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { getPageTextContent } from '@services/getPageTextContent';
 import { selectUser, selectLocale } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -45,10 +46,13 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
         ]);
 
         props.text = pageTextContent.data;
+        props.errors = Object.assign(props.errors, pageTextContent.errors);
     
     } catch (error) {
         
-        props.errors = error;
+        props.errors = {
+            error: error.message
+        };
 
     }
 
@@ -56,7 +60,9 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
      * Return data to page template
      */
     return {
-        props: props
+        props: getJsonSafeObject({
+            object: props
+        })
     }
 
 }

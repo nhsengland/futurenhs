@@ -90,13 +90,13 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
 
                                     </p>
-                                    <div className="c-card_footer u-text-theme-7">
+                                    <div className="c-card_footer u-text-theme-0">
                                         <p className="c-card_footer-item">
-                                            <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-10" />
+                                            <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
                                             <span>{`${totalCommentCount} Comments`}</span>
                                         </p>
                                         <p className="c-card_footer-item">
-                                            <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-10" />
+                                            <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
                                             <span>{`${totalViewCount} Views`}</span>
                                         </p>
                                     </div>

@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { HomeTemplate } from '@components/_pageTemplates/HomeTemplate';
 import { withAuth } from '@hofs/withAuth';
 import { selectLocale, selectProps } from '@selectors/context';
@@ -36,10 +37,13 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             ]);
 
             props.text = pageTextContent.data;
+            props.errors = Object.assign(props.errors, pageTextContent.errors);
         
         } catch (error) {
             
-            props.errors = error.message;
+            props.errors = {
+                error: error.message
+            };
 
         }
 
@@ -47,7 +51,9 @@ export const getServerSideProps: GetServerSideProps = withAuth({
          * Return data to page template
          */
         return {
-            props: props
+            props: getJsonSafeObject({
+                object: props
+            })
         }
 
     }
