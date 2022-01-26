@@ -46,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             props.text = pageTextContent.data ?? null;
             props.term = term;
             props.resultsList = searchResults.data ?? [];
-            props.pagination = searchResults.pagination;
+            props.pagination = searchResults.pagination ?? null;
         
         } catch (error) {
 

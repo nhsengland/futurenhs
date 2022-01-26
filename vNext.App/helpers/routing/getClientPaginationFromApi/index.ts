@@ -21,7 +21,7 @@ export const getClientPaginationFromApi = ({
 
     } catch(error){
 
-        return {};
+        return null;
 
     }
 
