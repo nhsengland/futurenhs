@@ -1,7 +1,7 @@
 .c-table {
     border-spacing: 0;
     vertical-align: top;
-    width: 100%; /* [1] */
+    width: 100%;
     background-color: $white;
 
     @include mq($media-type: print) {
@@ -16,7 +16,6 @@
 
 }
 
-// to BEM or not to BEM hundreds of table cells?
 th,
 td {
     @include nhsuk-typography-responsive(19);
