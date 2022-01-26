@@ -1,9 +1,11 @@
 ﻿using Dapper;
 using FutureNHS.Api.Application.Application.HardCodedSettings;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Read
 {
@@ -11,11 +13,14 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
     {
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<GroupDataProvider> _logger;
+        private readonly IOptions<AzureImageBlobStorageConfiguration> _options;
 
-        public GroupDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<GroupDataProvider> logger)
+        public GroupDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<GroupDataProvider> logger,
+            IOptions<AzureImageBlobStorageConfiguration> options)
         {
-            _logger = logger;
-            _connectionFactory = connectionFactory;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
@@ -111,7 +116,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     {
                         if (image is not null)
                         {
-                            var groupWithImage = group with { Image = image };
+                            var groupWithImage = group with { Image = new ImageData(image, _options) };
 
                             return groupWithImage;
                         }
@@ -142,7 +147,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 {
                     if (image is not null)
                     {
-                        var groupWithImage = @group with { Image = image };
+                        var groupWithImage = @group with { Image = new ImageData(image, _options) };
 
                         return groupWithImage;
                     }

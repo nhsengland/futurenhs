@@ -135,6 +135,7 @@ if (useAppConfig)
 builder.Services.Configure<Features>(settings.GetSection("FeatureManagement"), binderOptions => binderOptions.BindNonPublicProperties = true);
 builder.Services.Configure<AzurePlatformConfiguration>(settings.GetSection("AzurePlatform"));
 builder.Services.Configure<SharedSecrets>(settings.GetSection("SharedSecrets"));
+builder.Services.Configure<AzureImageBlobStorageConfiguration>(settings.GetSection("AzurePlatform:AzureImageBlobStorage"));
 
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
