@@ -1,5 +1,4 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
-import { getEnvVar } from '@helpers/util/env';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
 import { FetchResponse } from '@appTypes/fetch';
@@ -30,7 +29,13 @@ export const getSearchResults = async ({
         const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
-        const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
+        const paginationQueryParams: string = getApiPaginationQueryParams({ 
+            pagination,
+            defaults: {
+                pageNumber: 1,
+                pageSize: 30
+            } 
+        });
 
         const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/search?term=${term}&${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);

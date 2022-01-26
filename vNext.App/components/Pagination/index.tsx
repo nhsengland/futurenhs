@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import classNames from 'classnames';
 
@@ -13,7 +14,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
         previous: 'Previous',
         next: 'Next'
     },
-    visiblePages = 3,
+    visiblePages = 5,
     pageNumber,
     pageSize,
     totalRecords,
@@ -23,16 +24,25 @@ export const Pagination: (props: Props) => JSX.Element = ({
     className
 }) => {
 
+    const { query } = useRouter();
     const [isLoadMoreEnabled, setIsLoadMoreEnabled] = useState(false);
 
-    const { loadMore, previous, next } = text;
+    const { loadMore, 
+            previous, 
+            next } = text;
 
-    const queryString: string = `?pageNumber=`;
     const currentPaginationGroup: number = Math.ceil(pageNumber / visiblePages);
     const totalPages: number = Math.ceil(totalRecords / pageSize);
     const lowerRange: number = currentPaginationGroup * visiblePages - visiblePages + 1;
     const upperRange: number = (currentPaginationGroup * visiblePages > totalPages ? totalPages : currentPaginationGroup * visiblePages) + 1;
     const navItems: Array<any> = [];
+
+    const previousQuery: any = Object.assign({}, query, {
+        pageNumber: pageNumber - 1
+    });
+    const nextQuery: any = Object.assign({}, query, {
+        pageNumber: pageNumber + 1
+    });
 
     const generatedClasses = {
         wrapper: classNames('c-pagination', className),
@@ -58,6 +68,11 @@ export const Pagination: (props: Props) => JSX.Element = ({
     for(let i = lowerRange; i < upperRange; i++){
 
         const isActive: boolean = pageNumber === i;
+
+        const pageQuery: any = Object.assign({}, query, {
+            pageNumber: i
+        });
+
         const generatedClasses = {
             item: classNames('c-pagination_item', {
                 ['c-pagination_item--active']: isActive
@@ -70,7 +85,9 @@ export const Pagination: (props: Props) => JSX.Element = ({
                 {isActive 
                 
                     ?   <span aria-current="true" aria-label={`Current page, page ${i}`}>{i}</span> 
-                    :   <a href={`${queryString}${encodeURIComponent(i)}`} className={generatedClasses.link}>{i}</a>
+                    :   <Link href={{ query: pageQuery }}>
+                            <a className={generatedClasses.link}>{i}</a>
+                        </Link>
                     
                 }
             </li>
@@ -109,21 +126,25 @@ export const Pagination: (props: Props) => JSX.Element = ({
         <nav id={id} className={generatedClasses.wrapper} aria-label="Pagination"> 
             <p className="u-sr-only" aria-labelledby={id}>Pagination navigation</p>
             <ul className={generatedClasses.list}>
-                {currentPaginationGroup > 1 &&
+                {pageNumber > 1 &&
                     <li className={generatedClasses.prevItem}>
-                        <a className={generatedClasses.link} href={`${queryString}${(currentPaginationGroup -1) * visiblePages}`}>
-                            <SVGIcon name="icon-arrow-left" className={generatedClasses.prevIcon} />
-                            {previous}<span className="u-sr-only"> set of pages</span>
-                        </a>
+                        <Link href={{ query: previousQuery }}>
+                            <a className={generatedClasses.link}>
+                                <SVGIcon name="icon-arrow-left" className={generatedClasses.prevIcon} />
+                                {previous}<span className="u-sr-only"> set of pages</span>
+                            </a>
+                        </Link>
                     </li>
                 }
                 {navItems}
-                {((currentPaginationGroup * visiblePages) - visiblePages < totalPages - visiblePages) &&
+                {(pageNumber < totalPages) &&
                     <li className={generatedClasses.nextItem}>
-                        <a className={generatedClasses.link} href={`${queryString}${(currentPaginationGroup * visiblePages) + 1}`}>
-                            {next}<span className="u-sr-only"> set of pages</span>
-                            <SVGIcon name="icon-arrow-right" className={generatedClasses.nextIcon} />
-                        </a>
+                        <Link href={{ query: nextQuery }}>
+                            <a className={generatedClasses.link}>
+                                {next}<span className="u-sr-only"> set of pages</span>
+                                <SVGIcon name="icon-arrow-right" className={generatedClasses.nextIcon} />
+                            </a>
+                        </Link>
                     </li>
                 }
             </ul>

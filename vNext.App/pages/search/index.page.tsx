@@ -4,8 +4,9 @@ import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { getPageTextContent } from '@services/getPageTextContent';
 import { getSearchResults } from '@services/getSearchResults';
-import { selectLocale, selectQuery, selectProps } from '@selectors/context';
+import { selectLocale, selectQuery, selectProps, selectPagination } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
+import { Pagination } from '@appTypes/pagination';
 
 import { SearchListingTemplate } from '@components/_pageTemplates/SearchListingTemplate';
 import { Props } from '@components/_pageTemplates/SearchListingTemplate/interfaces';
@@ -23,6 +24,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
          */
         const locale: string = selectLocale(context);
         const term: string = selectQuery(context, 'term');
+        const pagination: Pagination = selectPagination(context);
 
         let props: Props = selectProps(context);
 
@@ -41,6 +43,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 }),
                 getSearchResults({
                     term: term,
+                    pagination: pagination
                 })
             ]);
 
@@ -48,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             props.term = term;
             props.resultsList = searchResults.data ?? [];
             props.pagination = searchResults.pagination;
-            props.errors = Object.assign({}, pageTextContent.errors, searchResults.errors);
+            props.errors = Object.assign(props.errors, pageTextContent.errors, searchResults.errors);
         
         } catch (error) {
 

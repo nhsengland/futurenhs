@@ -77,11 +77,8 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
         const type: ContentType = item.type
         const parentType: ContentType = item.meta?.type;
+
         let _item: SearchResult = getGroupDetails(item) ?? item;
-        //Discussion /groups/groupId/forum/discussionId
-        // Files /groups/groupId/files/fileId
-        // Folder /groups/groupId/folder/folderId
-        //
 
         if (type === ContentType.DISCUSSION) {
             return <> Discussion on <Link href={`/groups/${_item.entityIds[_item.type+'Id']}`}>{_item.content.title}</Link> group forum </>;
@@ -99,23 +96,34 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     }
 
     const getTitle = (item: SearchResult): JSX.Element => {
+
         const parentType: ContentType = item.meta?.type;
+        const url: string = `/groups/${item.meta.entityIds[item.meta.type+'Id']}` + (item.type === ContentType.GROUP? '':`/${item.type}s/${item.entityIds[item.type+'Id']}`);
 
         if (parentType === ContentType.DISCUSSION) {
-            return <Link href={`/groups/${item.meta.entityIds[item.meta.type+'Id']}/forum/${item.entityIds[item.type+'Id']}`}>
-                <a>
-                    <span>{capitalise()(item.type)} on discussion: </span>
-                    <RichText wrapperElementType='span' bodyHtml={matchText()(item.meta.content.title, term)} />
-                </a>
-            </Link>
+
+            return (
+                
+                <Link href={`/groups/${item.meta.entityIds[item.meta.type+'Id']}/forum/${item.entityIds[item.type+'Id']}`}>
+                    <a>
+                        <span>{capitalise()(item.type)} on discussion: </span>
+                        <RichText wrapperElementType='span' bodyHtml={matchText()(item.meta.content.title, term)} />
+                    </a>
+                </Link>
+
+            )
+
         }
 
-        const url: string = `/groups/${item.meta.entityIds[item.meta.type+'Id']}` + (item.type === ContentType.GROUP? '':`/${item.type}s/${item.entityIds[item.type+'Id']}`)
-        return <Link href={url}>
-            <a>
-                <RichText wrapperElementType='span' bodyHtml={matchText()(capitalise()(item.content.title), term)} />
-            </a>
-        </Link>
+        return (
+        
+            <Link href={url}>
+                <a>
+                    <RichText wrapperElementType='span' bodyHtml={matchText()(capitalise()(item.content.title), term)} />
+                </a>
+            </Link>
+
+        )
 
     }
 
@@ -128,7 +136,12 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
         /* Construct body */
         let body = <RichText wrapperElementType='span' bodyHtml={matchText()(capitalise()(item.content.body), term)} />;
 
-        return { metaHeader: metaHeader, title: title, body: body }
+        return { 
+            metaHeader: metaHeader, 
+            title: title, 
+            body: body 
+        }
+
     })
 
     return (
