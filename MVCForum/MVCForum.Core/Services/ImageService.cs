@@ -30,7 +30,7 @@ namespace MvcForum.Core.Services
         {
             if (image is null) throw new ArgumentNullException(nameof(image));
 
-            var imageSize = new Size(180, 180);
+            var imageSize = new Size(159, 159);
 
             return new TransformedImage
             {

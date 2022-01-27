@@ -1,4 +1,16 @@
 import { UIComponentBase } from '@modules/ui/componentBase';
+export interface HTMLDialogElement extends HTMLElement {
+    open?: boolean,
+    returnValue?: string,
+    close?: ()=>any,
+    show?: ()=>any,
+    showModal?: ()=>any
+}
+
+declare var HTMLDialogElement: {
+    prototype: HTMLDialogElement;
+    new(): HTMLDialogElement;
+};
 
 /**
  * Dialog
@@ -28,7 +40,7 @@ export class Dialog extends UIComponentBase {
         let isDialogConfirmed: boolean = false;         
 
         const dialogId: string = this.wrapperSelector.getAttribute('data-dialog-id');
-        const dialogElement = <HTMLDialogElement>document.getElementById(dialogId);
+        const dialogElement: HTMLDialogElement = document.getElementById(dialogId);
         const cancelButton: HTMLButtonElement = dialogElement.querySelector('.js-dialog-cancel');
         const confirmButton: HTMLButtonElement = dialogElement.querySelector('.js-dialog-confirm');
 
@@ -68,10 +80,10 @@ export class Dialog extends UIComponentBase {
 
     }
 
+ public openInit = () => {
 
-    public openInit = () => {
-
-        const dialogElement = document.getElementsByTagName('dialog');
+        const dialogElement = document.querySelector('dialog');
+        
 
         const openCheck = (dialog) => {
             if(dialog.open) {
@@ -85,6 +97,20 @@ export class Dialog extends UIComponentBase {
         }
 
         openCheck(dialogElement)
+
+
+                
+        const supportNode = document.getElementById('support');
+        const testDialog = document.createElement('dialog');
+       if ( typeof(supportNode) != 'undefined' && supportNode != null) { 
+           if (testDialog.showModal ) {
+                supportNode.style.color = 'blue';
+                supportNode.textContent = 'YES';
+                } else {
+                supportNode.style.color = 'red';
+                supportNode.textContent = 'NO';
+            }   
+        }
         
 
     }

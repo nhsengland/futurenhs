@@ -1,9 +1,10 @@
-import dialogPolyfill from '@modules/polyfills/dialog';
+import dialogPolyfill from "dialog-polyfill";
 
-const dialogElements: Array<Element> = Array.from(document.getElementsByTagName('dialog'));
 
-dialogElements.forEach( dialogElement => {
+const dialogElement = document.querySelector('dialog');
+
 
     dialogPolyfill.registerDialog(dialogElement);
 
-});
+    
+
