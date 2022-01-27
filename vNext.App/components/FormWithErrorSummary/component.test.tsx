@@ -6,9 +6,9 @@ import { Props } from './interfaces';
 
 const testProps: Props = {
     csrfToken: 'mockToken',
-    errors: {
+    errors: [{
         error1: 'Mock error'
-    },
+    }],
     fields: [
         {
             name: 'mockFieldName',

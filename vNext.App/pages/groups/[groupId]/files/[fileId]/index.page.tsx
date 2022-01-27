@@ -46,7 +46,7 @@ const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
 
                     if(getServiceResponseErrors({
                         serviceResponseList: [groupFile],
-                        matcher: (code) => code === 404
+                        matcher: (code) => Number(code) === 404
                     }).length > 0){
     
                         return {
@@ -57,13 +57,13 @@ const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
 
                     props.fileId = fileId;
                     props.file = groupFile.data;
-                    props.errors = Object.assign(props.errors, groupFile.errors);
+                    props.errors = [...props.errors, ...groupFile.errors];
 
                 } catch (error) {
                 
-                    props.errors = {
+                    props.errors = [{
                         error: error.message
-                    };
+                    }];
     
                 }
 

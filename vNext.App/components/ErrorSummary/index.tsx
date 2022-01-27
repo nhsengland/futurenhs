@@ -6,7 +6,7 @@ import { RichText } from '@components/RichText';
 import { Props } from './interfaces';
 
 export const ErrorSummary = React.forwardRef(({ 
-    errors = {},
+    errors = [],
     relatedNames = [],
     text,
     className
@@ -21,7 +21,7 @@ export const ErrorSummary = React.forwardRef(({
         link: classNames('c-error-summary_link')
     };
 
-    const hasErrors: boolean = errors && Boolean(Object.keys(errors).length > 0);
+    const hasErrors: boolean = errors?.length > 0;
 
     return (
 
@@ -40,16 +40,18 @@ export const ErrorSummary = React.forwardRef(({
                                 className="u-text-bold u-text-lead" />
                         }
                         <ul className={generatedClasses.list}>
-                            {Object.keys(errors).map((key: string, index: number) => {
+                            {errors.map((error, index: number) => {
+
+                                const key = Object.keys(error)[0];
 
                                 return (
 
                                     <li key={index} className={generatedClasses.listItem}>
                                         {relatedNames.includes(key)
                                         
-                                            ?   <a href={`#${key}`} className={generatedClasses.link}>{errors[key]}</a>
+                                            ?   <a href={`#${key}`} className={generatedClasses.link}>{error[key]}</a>
                                             
-                                            :   <span className={generatedClasses.link}>{errors[key]}</span> 
+                                            :   <span className={generatedClasses.link}>{error[key]}</span> 
                                         
                                         }
                                     </li>

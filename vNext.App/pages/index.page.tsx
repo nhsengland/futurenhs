@@ -1,11 +1,13 @@
 import { GetServerSideProps } from 'next';
 
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
-import { HomeTemplate } from '@components/_pageTemplates/HomeTemplate';
 import { withAuth } from '@hofs/withAuth';
 import { selectLocale, selectProps } from '@selectors/context';
 import { getPageTextContent } from '@services/getPageTextContent';
 import { GetServerSidePropsContext } from '@appTypes/next';
+
+import { HomeTemplate } from '@components/_pageTemplates/HomeTemplate';
+import { Props } from '@components/_pageTemplates/HomeTemplate/interfaces';
 
 const routeId: string = '749bd865-27b8-4af6-960b-3f0458f8e92f';
 
@@ -20,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
          */
         const locale: string = selectLocale(context);
 
-        let props: any = selectProps(context);
+        let props: Props = selectProps(context);
 
         /**
          * Get data from services
@@ -37,13 +39,13 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             ]);
 
             props.text = pageTextContent.data;
-            props.errors = Object.assign(props.errors, pageTextContent.errors);
+            props.errors = [...props.errors, ...pageTextContent.errors];
         
         } catch (error) {
             
-            props.errors = {
+            props.errors = [{
                 error: error.message
-            };
+            }];
 
         }
 

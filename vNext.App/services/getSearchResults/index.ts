@@ -47,9 +47,9 @@ export const getSearchResults = async ({
         if (!ok) {
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             }
 
         }
@@ -123,7 +123,7 @@ export const getSearchResults = async ({
         const { message } = error;
 
         return {
-            errors: { error: message },
+            errors: [{ error: message }],
         };
 
     }

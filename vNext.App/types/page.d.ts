@@ -12,7 +12,7 @@ export interface Page {
     csrfToken?: string;
     forms?: Record<string, Form>;
     pagination?: Pagination;
-    errors?: Record<string>;
+    errors?: Array<Record<string>>;
     text?: GenericPageTextContent;
     user?: User;
 }

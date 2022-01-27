@@ -53,7 +53,7 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
 
                     if(getServiceResponseErrors({
                         serviceResponseList: [memberData],
-                        matcher: (code) => code === 404
+                        matcher: (code) => Number(code) === 404
                     }).length > 0){
 
                         return {
@@ -64,13 +64,13 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
 
                     props.member = memberData.data;
                     props.text = Object.assign({}, props.text, pageTextContent.data ?? {});
-                    props.errors = Object.assign({}, pageTextContent.errors, memberData.errors);
+                    props.errors = [...pageTextContent.errors, ...memberData.errors];
                 
                 } catch (error) {
                     
-                    props.errors = {
+                    props.errors = [{
                         error: error.message
-                    }
+                    }];
 
                 }
 

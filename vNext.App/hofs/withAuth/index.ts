@@ -19,7 +19,7 @@ export const withAuth = (config: HofConfig, dependencies?: {
             cookies: context.req.cookies
         });
 
-        if(!data || errors){
+        if(!data || errors?.length){
 
             return {
                 redirect: {

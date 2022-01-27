@@ -3,7 +3,7 @@ export interface Props {
     text?: {
         body: string;
     };
-    errors?: Record<string, string>;
+    errors?: Array<Record<string, string>>;
     relatedNames?: Array<string>;
     className?: string;
 }

@@ -42,16 +42,14 @@ export const getGroupFile = async ({
         if(!ok){
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             }
 
         }
         
         const reversedPath: Array<any> = apiData.path?.reverse() ?? [];
-
-        console.log(apiData);
 
         serviceResponse.data = {
             id: apiData.id,
@@ -80,9 +78,9 @@ export const getGroupFile = async ({
     } catch(error){
 
         return {
-            errors: { 
+            errors: [{ 
                 error: error.message 
-            }
+            }]
         };
 
     }

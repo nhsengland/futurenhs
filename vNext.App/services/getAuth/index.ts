@@ -43,9 +43,9 @@ export const getAuth: GetAuthService = async ({
         if(!ok){
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             };
 
         }
@@ -69,7 +69,7 @@ export const getAuth: GetAuthService = async ({
         const { message } = error;
 
         return {
-            errors: { error: message }
+            errors: [{ error: message }]
         };
 
     }

@@ -42,9 +42,9 @@ export const getGroupFolder = async ({
         if(!ok){
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             }
 
         }
@@ -71,7 +71,7 @@ export const getGroupFolder = async ({
         const { message } = error;
 
         return {
-            errors: { error: message },
+            errors: [{ error: message }],
         };
 
     }

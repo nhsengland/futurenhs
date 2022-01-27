@@ -4,7 +4,7 @@ export interface Props {
     csrfToken: string;
     initialValues?: any;
     fields: Array<FormField>;
-    errors: Record<string, string>;
+    errors: Array<Record<string, string>>;
     text: {
         errorSummary: {
             body: string;

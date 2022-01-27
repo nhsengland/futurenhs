@@ -33,9 +33,9 @@ export const getGroup = async ({
         if(!ok){
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             }
 
         }
@@ -56,8 +56,7 @@ export const getGroup = async ({
         };
 
         return {
-            data: data,
-            errors: {}
+            data: data
         };
 
     } catch(error){
@@ -65,7 +64,7 @@ export const getGroup = async ({
         const { message } = error;
 
         return {
-            errors: { error: message },
+            errors: [{ error: message }],
         };
 
     }

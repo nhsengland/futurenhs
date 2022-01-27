@@ -46,9 +46,9 @@ export const getGroupMembers = async ({
         if(!ok){
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             }
 
         }
@@ -75,7 +75,7 @@ export const getGroupMembers = async ({
         const { message } = error;
 
         return {
-            errors: { error: message },
+            errors: [{ error: message }],
         };
 
     }

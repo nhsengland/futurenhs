@@ -46,7 +46,7 @@ const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f';
 
                 if(getServiceResponseErrors({
                     serviceResponseList: [groupDiscussion],
-                    matcher: (code) => code === 404
+                    matcher: (code) => Number(code) === 404
                 }).length > 0){
 
                     return {
@@ -57,13 +57,13 @@ const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f';
 
                 props.discussionId = discussionId;
                 props.discussion = groupDiscussion.data;
-                props.errors = Object.assign(props.errors, groupDiscussion.errors);
+                props.errors = [...props.errors, ...groupDiscussion.errors];
             
             } catch (error) {
                 
-                props.errors = {
+                props.errors = [{
                     error: error.message
-                };
+                }];
 
             }
 

@@ -1,12 +1,10 @@
 .c-avatar {
     display: block;
     position: relative;
-    padding-bottom: 100%;
     font-size: $base-font-size;
 
     &_fallback {
         display: block;
-        position: absolute;
         width: 100%;
         height: 100%;
         background-color: $blue;
@@ -21,7 +19,6 @@
     }
 
     &_image {
-        position: absolute;
         display: block;
         width: 100%;
         height: 100%;

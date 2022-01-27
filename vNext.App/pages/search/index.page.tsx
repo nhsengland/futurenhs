@@ -51,13 +51,13 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             props.term = term;
             props.resultsList = searchResults.data ?? [];
             props.pagination = searchResults.pagination;
-            props.errors = Object.assign(props.errors, pageTextContent.errors, searchResults.errors);
+            props.errors = [...props.errors, ...pageTextContent.errors, ...searchResults.errors];
         
         } catch (error) {
 
-            props.errors = {
+            props.errors = [{
                 error: error.message
-            };
+            }];
 
         }
 

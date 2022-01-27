@@ -52,9 +52,9 @@ describe('withAuth hof', () => {
         const mockGetAuthService: GetAuthService = () => new Promise((resolve) => {
 
             resolve({
-                errors: {
+                errors: [{
                     [401]: 'Unauthorised'
-                }
+                }]
             });
     
         });

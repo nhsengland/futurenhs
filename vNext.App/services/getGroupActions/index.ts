@@ -38,9 +38,9 @@ export const getGroupActions = async ({
         if(!ok){
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             }
 
         }
@@ -48,8 +48,7 @@ export const getGroupActions = async ({
         const data = apiData;
 
         return {
-            data: data,
-            errors: {}
+            data: data
         };
 
     } catch(error){
@@ -57,7 +56,7 @@ export const getGroupActions = async ({
         const { message } = error;
 
         return {
-            errors: { error: message },
+            errors: [{ error: message }],
         };
 
     }

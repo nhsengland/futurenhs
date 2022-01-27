@@ -23,8 +23,6 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         routeId: routeId,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-            console.log(context);
-
             const user: User = selectUser(context);
             const groupId: string = selectParam(context, routeParams.GROUPID);
             const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
@@ -53,13 +51,13 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                 props.discussionsList = groupDiscussions.data;
                 props.pagination = groupDiscussions.pagination;
-                props.errors = Object.assign({}, groupDiscussions.errors);
+                props.errors = [...groupDiscussions.errors];
 
             } catch (error) {
 
-                props.errors = {
+                props.errors = [{
                     error: error.message
-                };
+                }];
 
             }
 

@@ -46,9 +46,9 @@ export const getPendingGroupMembers = async ({
         if(!ok){
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             }
 
         }
@@ -73,7 +73,7 @@ export const getPendingGroupMembers = async ({
         const { message } = error;
 
         return {
-            errors: { error: message },
+            errors: [{ error: message }],
         };
 
     }

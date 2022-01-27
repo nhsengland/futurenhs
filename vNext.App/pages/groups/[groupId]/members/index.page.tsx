@@ -64,13 +64,13 @@ const routeId: string = '3d4a3b47-ba2c-43fa-97cf-90de93eeb4f8';
                     props.pagination = groupMembers.pagination;
                     props.pendingMembers = groupPendingMembers.data;
                     props.text = Object.assign(props.text, pageTextContent.data);
-                    props.errors = Object.assign(props.errors, pageTextContent.errors, groupMembers.errors, groupPendingMembers.errors);
+                    props.errors = [...props.errors, ...pageTextContent.errors, ...groupMembers.errors, ...groupPendingMembers.errors];
                 
                 } catch (error) {
                     
-                    props.errors = {
+                    props.errors = [{
                         error: error.message
-                    };
+                    }];
 
                 }
 

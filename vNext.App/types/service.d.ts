@@ -5,7 +5,7 @@ import { Pagination, ApiPagination } from '@appTypes/pagination';
 
 export interface ServiceResponse<T> {
     data?: T;
-    errors?: Record<string, any>;
+    errors?: Array<Record<string, any>>;
     succeeded?: boolean;
     message?: string;
 }
@@ -13,7 +13,7 @@ export interface ServiceResponse<T> {
 export interface ServicePaginatedResponse<T> {
     pagination?: Pagination;
     data?: T;
-    errors?: Record<string, any>;
+    errors?: Array<Record<string, any>>;
     succeeded?: boolean;
     message?: string;
 }
@@ -22,7 +22,7 @@ export type ApiResponse<T> = any; // confirm with Tim
 
 export interface ApiPaginatedResponse<T> extends ApiPagination {
     data?: T;
-    errors?: Record<string, any>;
+    errors?: Array<Record<string, any>>;
     succeeded?: boolean;
     message?: string;
 }

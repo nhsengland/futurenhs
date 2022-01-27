@@ -9,6 +9,7 @@ import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { createDiscussionForm } from '@formConfigs/create-discussion';
 import { GroupCreateDiscussionTemplate } from '@components/_pageTemplates/GroupCreateDiscussionTemplate';
+import { Props } from '@components/_pageTemplates/GroupCreateDiscussionTemplate/interfaces';
 
 const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
@@ -23,7 +24,7 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                 const csrfToken: string = selectCsrfToken(context);
                 const formPost: any = selectBody(context);
 
-                let props = selectProps(context);
+                let props: Props = selectProps(context);
 
                 props.csrfToken = csrfToken;
                 props.forms = {
@@ -36,7 +37,7 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
                     if(Object.keys(validationErrors).length > 0){
 
-                        props.errors = validationErrors;
+                        props.errors = [validationErrors];
 
                     } else {
 

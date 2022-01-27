@@ -7,6 +7,7 @@ import { selectCsrfToken, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { GroupUpdateTemplate } from '@components/_pageTemplates/GroupUpdateTemplate';
+import { Props } from '@components/_pageTemplates/GroupUpdateTemplate/interfaces';
 
 const routeId: string = '578dfcc6-857f-4eda-8779-1d9b110888c7';
 
@@ -20,7 +21,7 @@ const routeId: string = '578dfcc6-857f-4eda-8779-1d9b110888c7';
 
                 const csrfToken: string = selectCsrfToken(context);
 
-                let props = selectProps(context);
+                let props: Props = selectProps(context);
 
                 props.csrfToken = csrfToken;
 

@@ -12,17 +12,15 @@ export const getServiceResponseErrors = ({
 
     let matchingServiceResponses: Array<ServiceResponse<any>> = [];
 
-    serviceResponseList.forEach((serviceResponse) => {
+    serviceResponseList?.forEach((serviceResponse) => {
 
-        if(serviceResponse?.errors){
+        serviceResponse?.errors?.forEach((error) => {
 
-            Object.keys(serviceResponse.errors).forEach((key: string) => {
+            const errorCode: any = Object.keys(error)[0];
 
-                matcher(Number(key)) && matchingServiceResponses.push(serviceResponse);
+            matcher(errorCode) && matchingServiceResponses.push(serviceResponse);
 
-            });
-
-        }
+        });
 
     });
 

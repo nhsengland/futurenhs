@@ -51,9 +51,9 @@ describe('getGroup service', () => {
         });
 
         await expect(response).toStrictEqual({
-            errors: {
+            errors: [{
                 [500]: 'Something went wrong'
-            }
+            }]
         });
 
     });
@@ -77,9 +77,9 @@ describe('getGroup service', () => {
         });
 
         await expect(response).toStrictEqual({
-            errors: {
+            errors: [{
                 error: "Cannot read property 'ok' of undefined"
-            }
+            }]
         });
 
     });

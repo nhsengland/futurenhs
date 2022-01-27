@@ -47,12 +47,14 @@ export const getGroupDiscussions = async ({
         if(!ok){
 
             return {
-                errors: {
+                errors: [{
                     [status]: statusText
-                }
+                }]
             }
 
         }
+
+        console.log(apiData.data);
 
         apiData.data?.forEach((datum) => {
 
@@ -76,7 +78,7 @@ export const getGroupDiscussions = async ({
         const { message } = error;
 
         return {
-            errors: { error: message },
+            errors: [{ error: message }],
         };
 
     }

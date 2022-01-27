@@ -59,7 +59,7 @@ const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
 
                 if(getServiceResponseErrors({
                     serviceResponseList: [groupFolder],
-                    matcher: (code) => code === 404
+                    matcher: (code) => Number(code) === 404
                 }).length > 0){
 
                     return {
@@ -72,13 +72,13 @@ const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
                 props.folder = groupFolder.data;
                 props.folderContents = groupFolderContents.data ?? [];
                 props.pagination = groupFolderContents.pagination;
-                props.errors = Object.assign(props.errors, groupFolder.errors, groupFolderContents.errors);
+                props.errors = [...props.errors, groupFolder.errors, groupFolderContents.errors];
             
             } catch (error) {
                 
-                props.errors = {
+                props.errors = [{
                     error: error.message
-                };
+                }];
 
             }
 

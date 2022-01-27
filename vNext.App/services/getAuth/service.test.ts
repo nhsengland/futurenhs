@@ -60,9 +60,9 @@ describe('getAuth service', () => {
         });
 
         await expect(response).toStrictEqual({
-            errors: {
+            errors: [{
                 [500]: 'Something went wrong'
-            }
+            }]
         });
 
     });
@@ -89,9 +89,9 @@ describe('getAuth service', () => {
         });
 
         await expect(response).toStrictEqual({
-            errors: {
+            errors: [{
                 error: "Cannot read property 'ok' of undefined"
-            }
+            }]
         });
 
     });

@@ -57,13 +57,13 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             props.isGroupMember = isGroupMember;
             props.groupsList = groupsList.data;
             props.pagination = groupsList.pagination;
-            props.errors = Object.assign({}, pageTextContent.errors, groupsList.errors);
+            props.errors = [...props.errors, ...pageTextContent.errors, ...groupsList.errors];
         
         } catch (error) {
 
-            props.errors = {
+            props.errors = [{
                 error: error.message
-            };
+            }];
 
         }
 

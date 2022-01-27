@@ -46,13 +46,13 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
         ]);
 
         props.text = pageTextContent.data;
-        props.errors = Object.assign(props.errors, pageTextContent.errors);
+        props.errors = [...props.errors, ...pageTextContent.errors];
     
     } catch (error) {
         
-        props.errors = {
+        props.errors = [{
             error: error.message
-        };
+        }];
 
     }
 

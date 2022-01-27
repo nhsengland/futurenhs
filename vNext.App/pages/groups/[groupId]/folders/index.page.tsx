@@ -49,13 +49,13 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
 
                 props.folderContents = groupFolderContents.data ?? [];
                 props.pagination = groupFolderContents.pagination;
-                props.errors = Object.assign(props.errors, groupFolderContents.errors);
+                props.errors = [...props.errors, ...groupFolderContents.errors];
             
             } catch (error) {
                 
-                props.errors = {
+                props.errors = [{
                     error: error.message
-                };
+                }];
 
             }
 

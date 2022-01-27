@@ -49,13 +49,13 @@ export const getServerSideProps: GetServerSideProps = withLogOut({
             ]);
 
             props.text = pageTextContent.data;
-            props.errors = Object.assign(props.errors, pageTextContent.errors);
+            props.errors = [...props.errors, ...pageTextContent.errors];
         
         } catch (error) {
             
-            props.errors = {
+            props.errors = [{
                 error: error.message
-            };
+            }];
 
         }
 

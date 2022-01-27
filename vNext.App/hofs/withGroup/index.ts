@@ -61,7 +61,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
 
             if (getServiceResponseErrors({
                 serviceResponseList: [groupData],
-                matcher: (code) => code === 404
+                matcher: (code) => Number(code) === 404
             }).length > 0) {
 
                 return {
@@ -72,14 +72,14 @@ export const withGroup = (config: HofConfig, dependencies?: {
 
             if (getServiceResponseErrors({
                 serviceResponseList: [groupData, actionsData],
-                matcher: (code) => code >= 500
+                matcher: (code) => Number(code) >= 500
             }).length > 0) {
 
                 return {
                     props: {
-                        errors: {
+                        errors: [{
                             [500]: 'Server error'
-                        }
+                        }]
                     }
                 }
 

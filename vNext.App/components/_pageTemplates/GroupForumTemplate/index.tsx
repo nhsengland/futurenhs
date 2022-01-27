@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { Link } from '@components/Link';
+import { Avatar } from '@components/Avatar';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -82,13 +83,13 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                             return (
 
                                 <Card key={index} className="u-border-bottom-theme-10 u-mb-4">
-                                    <h3 className="c-card_heading">
+                                    <h3 className="c-card_heading desktop:u-mb-4">
                                         <Link href={`${asPath}/${discussionId}`}>
                                             <a>{title}</a>
                                         </Link>        
                                     </h3>
                                     <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-
+                                        <Avatar image={null} initials="RI" className="u-block u-h-12 u-w-12" />
                                     </p>
                                     <div className="c-card_footer u-text-theme-0">
                                         <p className="c-card_footer-item">

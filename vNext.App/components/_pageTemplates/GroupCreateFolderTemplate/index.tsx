@@ -36,7 +36,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                             <FormWithErrorSummary
                                 csrfToken={csrfToken}
                                 fields={fields}
-                                errors={{}}
+                                errors={[]}
                                 text={{
                                     errorSummary: {
                                         body: 'There is a problem'

@@ -46,9 +46,9 @@ export const getGroups = async ({
 
         if(!ok){
 
-            serviceResponse.errors = {
+            serviceResponse.errors = [{
                 [status]: statusText
-            }
+            }];
 
             return serviceResponse;
 
@@ -83,7 +83,7 @@ export const getGroups = async ({
         const { message } = error;
 
         return {
-            errors: { error: message },
+            errors: [{ error: message }],
         };
 
     }
