@@ -1,5 +1,6 @@
 ﻿using FutureNHS.Api.Configuration;
 using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 
 namespace FutureNHS.Api.DataAccess.Models
 {
@@ -33,6 +34,7 @@ namespace FutureNHS.Api.DataAccess.Models
 
         public string MediaType { get; init; }
 
-        public string SourceUri { get; set; }
+        [JsonIgnore]
+        public string SourceUri { get; init; }
     }
 }

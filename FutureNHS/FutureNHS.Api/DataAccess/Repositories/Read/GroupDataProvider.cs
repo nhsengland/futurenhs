@@ -62,7 +62,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     {
                         if (image is not null)
                         {
-                            var groupWithImage = group with { Image = image };
+                            var groupWithImage = group with { Image = new ImageData(image, _options) };
 
                             return groupWithImage;
                         }
