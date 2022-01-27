@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { routeParams } from '@constants/routes';
-import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceResponsesWithStatusCode';
+import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { defaultGroupLogos } from '@constants/icons';
 import { selectUser, selectParam } from '@selectors/context';
 import { getGroup } from '@services/getGroup';
@@ -59,13 +59,28 @@ export const withGroup = (config: HofConfig, dependencies?: {
                 })
             ]);
 
-            if (getServiceResponsesWithStatusCode({
+            if (getServiceResponseErrors({
                 serviceResponseList: [groupData],
-                statusCode: 404
+                matcher: (code) => code === 404
             }).length > 0) {
 
                 return {
                     notFound: true
+                }
+
+            }
+
+            if (getServiceResponseErrors({
+                serviceResponseList: [groupData, actionsData],
+                matcher: (code) => code >= 500
+            }).length > 0) {
+
+                return {
+                    props: {
+                        errors: {
+                            [500]: 'Server error'
+                        }
+                    }
                 }
 
             }

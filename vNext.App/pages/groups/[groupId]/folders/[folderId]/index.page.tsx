@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 
-import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceResponsesWithStatusCode';
+import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
@@ -57,9 +57,9 @@ const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
                     })
                 ]);
 
-                if(getServiceResponsesWithStatusCode({
+                if(getServiceResponseErrors({
                     serviceResponseList: [groupFolder],
-                    statusCode: 404
+                    matcher: (code) => code === 404
                 }).length > 0){
 
                     return {

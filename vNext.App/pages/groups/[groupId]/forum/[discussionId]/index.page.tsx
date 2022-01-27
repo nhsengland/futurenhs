@@ -4,7 +4,7 @@ import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
-import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceResponsesWithStatusCode';
+import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { selectUser, selectParam, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -44,9 +44,9 @@ const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f';
                     })
                 ]);
 
-                if(getServiceResponsesWithStatusCode({
+                if(getServiceResponseErrors({
                     serviceResponseList: [groupDiscussion],
-                    statusCode: 404
+                    matcher: (code) => code === 404
                 }).length > 0){
 
                     return {
