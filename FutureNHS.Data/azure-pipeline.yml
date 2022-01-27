@@ -62,8 +62,8 @@ jobs:
       SqlPassword: '$(DATABASEPASSWORD)'
       deployType: 'DacpacTask'
       DeploymentAction: 'DeployReport'
-      DacpacFile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.MvcForum/bin/Debug/FutureNHS.Data.MvcForum.Dacpac'
-      PublishProfile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.MvcForum/FutureNHS.Data.MvcForum.publish.xml'
+      DacpacFile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.Dacpac'
+      PublishProfile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml'
       IpDetectionMethod: 'AutoDetect'
 
   - task: CopyFiles@2
@@ -82,8 +82,8 @@ jobs:
       SqlPassword: '$(DATABASEPASSWORD)'
       deployType: 'DacpacTask'
       DeploymentAction: 'Script'
-      DacpacFile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.MvcForum/bin/Debug/FutureNHS.Data.MvcForum.Dacpac'
-      PublishProfile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.MvcForum/FutureNHS.Data.MvcForum.publish.xml'
+      DacpacFile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.Dacpac'
+      PublishProfile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml'
       IpDetectionMethod: 'AutoDetect'
 
   - task: CopyFiles@2
@@ -95,7 +95,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Stage build artifacts'
     inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.MvcForum/bin/Debug'
+      SourceFolder: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 

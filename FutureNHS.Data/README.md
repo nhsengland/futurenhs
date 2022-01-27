@@ -5,11 +5,8 @@ Repository (Local Automation): https://cdsdigital.visualstudio.com/FutureNHS/_gi
 
 # The Solution Layout
 
-## FutureNHS.Data.MvcForum
-The FutureNHS.Data.MvcForum is the MvcForum database solution. All tables for groups, forums, posts etc etc
-
-## FutureNHS.Data.Identity
-The FutureNHS.Data.Identity is the identity database work - speak to Tim about seeding data here when we come to implement Asp.Net core identity (migration work)
+## FutureNHS.Data.Db
+The FutureNHS.Data.Db is the database solution. All tables for groups, forums, posts etc etc
 
 ## gulp
 The gulp tasks available will either build in debug (an admin user, constants like file status), or automation.

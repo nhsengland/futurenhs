@@ -80,22 +80,22 @@ const msbuildAutomation = (done) => {
 gulp.task(msbuildAutomation);
 
 ///////////////////////////////////////
-//  MvcForum DB TASKS
+//  FutureNHS DB TASKS
 //////////////////////////////////////
 
-const deployMvcForumDatabase = (done) => {
+const deployFutureNHSDatabase = (done) => {
     process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data.MvcForum/bin/Debug/FutureNHS.Data.MvcForum.dacpac',
-        '/TargetDatabaseName:MvcForum',
+        '/SourceFile:./FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac',
+        '/TargetDatabaseName:FutureNHS',
         '/TargetServerName:localhost',
         '/TargetUser:sa',
         '/TargetPassword:password',
-        '/DeployReportPath:./FutureNHS.Data.MvcForum/Report.xml',
-        '/DeployScriptPath:./FutureNHS.Data.MvcForum/Publish.sql',
-        '/Profile:./FutureNHS.Data.MvcForum/FutureNHS.Data.MvcForum.publish.xml',
+        '/DeployReportPath:./FutureNHS.Data.FutureNHS/Report.xml',
+        '/DeployScriptPath:./FutureNHS.Data.FutureNHS/Publish.sql',
+        '/Profile:./FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml',
     ], {
         cwd: process.cwd()
     });
@@ -113,21 +113,21 @@ const deployMvcForumDatabase = (done) => {
     })
 };
 
-gulp.task(deployMvcForumDatabase); 
+gulp.task(deployFutureNHSDatabase); 
 
-const deployAutomationMvcForumDatabase = (done) => {
+const deployAutomationFutureNHSDatabase = (done) => {
     process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data.MvcForum/bin/Automation/FutureNHS.Data.MvcForum.dacpac',
-        '/TargetDatabaseName:MvcForum',
+        '/SourceFile:./FutureNHS.Data.FutureNHS/bin/Automation/FutureNHS.Data.FutureNHS.dacpac',
+        '/TargetDatabaseName:FutureNHS',
         '/TargetServerName:localhost',
         '/TargetUser:sa',
         '/TargetPassword:password',
-        '/DeployReportPath:./FutureNHS.Data.MvcForum/Report.xml',
-        '/DeployScriptPath:./FutureNHS.Data.MvcForum/Publish.sql',
-        '/Profile:./FutureNHS.Data.MvcForum/FutureNHS.Data.MvcForum.publish.xml',
+        '/DeployReportPath:./FutureNHS.Data.FutureNHS/Report.xml',
+        '/DeployScriptPath:./FutureNHS.Data.FutureNHS/Publish.sql',
+        '/Profile:./FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml',
     ], {
         cwd: process.cwd()
     });
@@ -145,17 +145,17 @@ const deployAutomationMvcForumDatabase = (done) => {
     });
 };
 
-gulp.task(deployAutomationMvcForumDatabase); 
+gulp.task(deployAutomationFutureNHSDatabase); 
 
 
-const dropMvcForumDatabase = (done) => {
+const dropFutureNHSDatabase = (done) => {
     var sqlCmd = childProcess.spawn('sqlcmd', [
         '-U',
         'sa',
         '-P',
         'password',
         '-Q',
-        'DROP DATABASE MvcForum',
+        'DROP DATABASE FutureNHS',
     ], {
         cwd: process.cwd()
     });
@@ -173,110 +173,4 @@ const dropMvcForumDatabase = (done) => {
     });
 };
 
-gulp.task(dropMvcForumDatabase);
-
-/////////////////////////////
-//  IDENTITY DB TASKS
-/////////////////////////////
-
-const deployIdentityDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
-
-    var sqlPackage = childProcess.spawn('sqlpackage', [
-        '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data.Identity/bin/Debug/FutureNHS.Data.Identity.dacpac',
-        '/TargetDatabaseName:FutureNHS_Identity',
-        '/TargetServerName:localhost',
-        '/TargetUser:sa',
-        '/TargetPassword:password',
-        '/DeployReportPath:./FutureNHS.Data.Identity/Report.xml',
-        '/DeployScriptPath:./FutureNHS.Data.Identity/Publish.sql',
-    ], {
-        cwd: process.cwd()
-    });
-
-    sqlPackage.stdout.on('data', (data) => {
-        console.log(data.toString());
-    });
-
-    sqlPackage.stderr.on('error', (data) => {
-        console.log(data.toString());
-    });
-
-    sqlPackage.stdout.on('close', () => {
-        return done();
-    })
-};
-
-gulp.task(deployIdentityDatabase); 
-
-const deployAutomationIdentityDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
-
-    var sqlPackage = childProcess.spawn('sqlpackage', [
-        '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data.Identity/bin/Automation/FutureNHS.Data.Identity.dacpac',
-        '/TargetDatabaseName:FutureNHS_Identity',
-        '/TargetServerName:localhost',
-        '/TargetUser:sa',
-        '/TargetPassword:password',
-        '/DeployReportPath:./FutureNHS.Data.Identity/Report.xml',
-        '/DeployScriptPath:./FutureNHS.Data.Identity/Publish.sql',
-    ], {
-        cwd: process.cwd()
-    });
-
-    sqlPackage.stdout.on('data', (data) => {
-        console.log(data.toString());
-    });
-
-    sqlPackage.stderr.on('data', (data) => {
-        console.log(data.toString());
-    });
-
-    sqlPackage.stdout.on('close', () => {
-        return done();
-    })
-};
-
-gulp.task(deployAutomationIdentityDatabase);
-
-
-const dropIdentityDatabase = (done) => {
-    var sqlCmd = childProcess.spawn('sqlcmd', [
-        '-U',
-        'sa',
-        '-P',
-        'password',
-        '-Q',
-        'DROP DATABASE FutureNHS_Identity',
-    ], {
-        cwd: process.cwd()
-    });
-
-    sqlCmd.on('close', (code) => {
-        if (code !== 0) {
-            return done(new Error('Error dropping database'));
-        }
-
-        return done();
-    });
-};
-
-gulp.task(dropIdentityDatabase);
-
-const automationDb = (done) => {
-    gulp.series(msbuildAutomation, deployAutomationMvcForumDatabase, deployAutomationIdentityDatabase)();
-
-    return done();
-}
-
-gulp.task(automationDb)
-
-const buildDb = (done) => {
-    gulp.series(msbuild, deployMvcForumDatabase, deployIdentityDatabase)();
-    
-    return done();
-}
-
-gulp.task(buildDb);
+gulp.task(dropFutureNHSDatabase);

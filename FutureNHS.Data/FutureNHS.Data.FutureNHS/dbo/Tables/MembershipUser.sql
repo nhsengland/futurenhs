@@ -50,7 +50,9 @@
     [Surname]                       NVARCHAR (255)   NULL,
     [Initials]                      NVARCHAR (2)     NULL,
     [Pronouns]                      NVARCHAR (255)   NULL,
-    CONSTRAINT [PK_dbo.MembershipUser] PRIMARY KEY CLUSTERED ([Id] ASC)
+    [ImageId]                       UNIQUEIDENTIFIER NULL, 
+    CONSTRAINT [PK_dbo.MembershipUser] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_dbo.MembershipUser_dbo.Image_MembershipUserImage] FOREIGN KEY ([ImageId]) REFERENCES [dbo].[Image] ([Id]),
 );
 
 

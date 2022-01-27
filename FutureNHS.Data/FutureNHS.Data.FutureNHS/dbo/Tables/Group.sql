@@ -24,10 +24,10 @@
     [Subtitle]           NVARCHAR (254)   NULL,
     [Introduction]       NVARCHAR (4000)  DEFAULT ('') NOT NULL,
     [AboutUs]            NVARCHAR (4000)  NULL,
-    [HeaderImage]        UNIQUEIDENTIFIER NULL,
+    [ImageId]            UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_dbo.Group] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Group_dbo.Group_Group_Id] FOREIGN KEY ([Group_Id]) REFERENCES [dbo].[Group] ([Id]),
-    CONSTRAINT [FK_dbo.Group_dbo.Image_HeaderImage] FOREIGN KEY ([HeaderImage]) REFERENCES [dbo].[Image] ([Id]),
+    CONSTRAINT [FK_dbo.Group_dbo.Image_HeaderImage] FOREIGN KEY ([ImageId]) REFERENCES [dbo].[Image] ([Id]),
     CONSTRAINT [FK_dbo.Group_dbo.MembershipUser_MembershipUser_Id] FOREIGN KEY ([MembershipUser_Id]) REFERENCES [dbo].[MembershipUser] ([Id]),
     CONSTRAINT [FK_dbo.Group_dbo.Section_Section_Id] FOREIGN KEY ([Section_Id]) REFERENCES [dbo].[Section] ([Id])
 );

@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31515.178
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FutureNHS.Data.MvcForum", "FutureNHS.Data.MvcForum\FutureNHS.Data.MvcForum.sqlproj", "{F55A77BD-CAC7-4833-83B8-0D65577EDFFE}"
-EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FutureNHS.Data.Identity", "FutureNHS.Data.Identity\FutureNHS.Data.Identity.sqlproj", "{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FutureNHS.Data.FutureNHS", "FutureNHS.Data.FutureNHS\FutureNHS.Data.FutureNHS.sqlproj", "{F55A77BD-CAC7-4833-83B8-0D65577EDFFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,15 +21,6 @@ Global
 		{F55A77BD-CAC7-4833-83B8-0D65577EDFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F55A77BD-CAC7-4833-83B8-0D65577EDFFE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F55A77BD-CAC7-4833-83B8-0D65577EDFFE}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Automation|Any CPU.ActiveCfg = Automation|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Automation|Any CPU.Build.0 = Automation|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Automation|Any CPU.Deploy.0 = Automation|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C30DB645-BBBD-4038-BE37-C5FF3AB502ED}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
