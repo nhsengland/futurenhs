@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceResponsesWithStatusCode';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
@@ -10,8 +11,8 @@ import { selectUser, selectPagination, selectParam, selectProps } from '@selecto
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-import { GroupFoldersTemplate } from '@components/_pageTemplates/GroupFoldersTemplate';
-import { Props } from '@components/_pageTemplates/GroupFoldersTemplate/interfaces';
+import { GroupFolderContentsTemplate } from '@components/_pageTemplates/GroupFolderContentsTemplate';
+import { Props } from '@components/_pageTemplates/GroupFolderContentsTemplate/interfaces';
 
 const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
 
@@ -56,6 +57,17 @@ const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
                     })
                 ]);
 
+                if(getServiceResponsesWithStatusCode({
+                    serviceResponseList: [groupFolder],
+                    statusCode: 404
+                }).length > 0){
+
+                    return {
+                        notFound: true
+                    }
+
+                }
+
                 props.folderId = folderId;
                 props.folder = groupFolder.data;
                 props.folderContents = groupFolderContents.data ?? [];
@@ -86,4 +98,4 @@ const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
 /**
  * Export page template
  */
-export default GroupFoldersTemplate;
+export default GroupFolderContentsTemplate;

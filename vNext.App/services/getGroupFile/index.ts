@@ -1,7 +1,7 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
-import { Folder } from '@appTypes/file';
+import { FolderContent } from '@appTypes/file';
 import { User } from '@appTypes/user';
 
 declare type Options = ({
@@ -19,11 +19,11 @@ export const getGroupFile = async ({
     user,
     groupId,
     fileId
-}: Options, dependencies?: Dependencies): Promise<ServiceResponse<Folder>> => {
+}: Options, dependencies?: Dependencies): Promise<ServiceResponse<FolderContent>> => {
 
     try {
 
-        const serviceResponse: ServiceResponse<Folder> = {
+        const serviceResponse: ServiceResponse<FolderContent> = {
             data: null
         };
 
@@ -51,13 +51,24 @@ export const getGroupFile = async ({
         
         const reversedPath: Array<any> = apiData.path?.reverse() ?? [];
 
+        console.log(apiData);
+
         serviceResponse.data = {
             id: apiData.id,
-            type: 'folder',
+            type: 'file',
+            name: apiData.name,
             text: {     
-                name: apiData.name,
                 body: apiData.description
             },
+            createdBy: {
+                id: apiData.firstRegistered?.by?.id,
+                name: apiData.firstRegistered?.by?.name
+            },
+            modifiedBy: {
+                id: apiData.lastUpdated?.by?.id,
+                name: apiData.lastUpdated?.by?.name
+            },
+            modified: apiData.lastUpdated?.atUtc,
             path: reversedPath.map(({ id, name }) => ({
                 element: id,
                 text: name

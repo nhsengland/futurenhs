@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { getServiceResponsesWithStatusCode } from '@helpers/services/getServiceResponsesWithStatusCode';
 import { routeParams } from '@constants/routes';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { selectUser, selectParam, selectProps } from '@selectors/context';
@@ -42,6 +43,17 @@ const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
                             fileId: fileId
                         })
                     ]);
+
+                    if(getServiceResponsesWithStatusCode({
+                        serviceResponseList: [groupFile],
+                        statusCode: 404
+                    }).length > 0){
+    
+                        return {
+                            notFound: true
+                        }
+    
+                    }
 
                     props.fileId = fileId;
                     props.file = groupFile.data;

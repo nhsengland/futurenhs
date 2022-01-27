@@ -21,9 +21,9 @@ import { BreadCrumbList } from '@appTypes/routing';
 import { Props } from './interfaces';
 
 /**
- * Group folders template
+ * Group folder contents template
  */
-export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
+export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     user,
     groupId,
     text,

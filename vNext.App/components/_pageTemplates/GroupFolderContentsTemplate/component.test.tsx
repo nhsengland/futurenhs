@@ -2,7 +2,7 @@ import React from 'react';
 import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
-import { GroupFoldersTemplate } from './index';
+import { GroupFolderContentsTemplate } from './index';
 import { Props } from './interfaces';
 
 describe('Group folders template', () => {
@@ -36,7 +36,7 @@ describe('Group folders template', () => {
 
     it('renders correctly', () => {
 
-        render(<GroupFoldersTemplate {...props} />);
+        render(<GroupFolderContentsTemplate {...props} />);
 
         expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
 

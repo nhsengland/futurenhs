@@ -18,9 +18,16 @@ export interface FolderContent {
     extension?: string;
     name: string;
     modified?: string;
-    modifiedBy?: string;
-    createdBy?: string;
+    modifiedBy?: {
+        id: string;
+        name: string;
+    };
+    createdBy?: {
+        id: string;
+        name: string;
+    };
     text?: {
         body?: string;
     };
+    path?: BreadCrumbList;
 }

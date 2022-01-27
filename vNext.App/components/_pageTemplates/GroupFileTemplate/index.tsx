@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 import { Link } from '@components/Link';
 import { dateTime } from '@helpers/formatters/dateTime';
@@ -7,6 +8,10 @@ import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { DataGrid } from '@components/DataGrid';
 import { RichText } from '@components/RichText';
+import { BreadCrumb } from '@components/BreadCrumb';
+import { getRouteToParam } from '@helpers/routing/getRouteToParam';
+import { routeParams } from '@constants/routes';
+import { BreadCrumbList } from '@appTypes/routing';
 
 import { Props } from './interfaces';
 
@@ -16,15 +21,49 @@ import { Props } from './interfaces';
 export const GroupFileTemplate: (props: Props) => JSX.Element = ({
     user,
     actions,
+    fileId,
     file,
     text,
     image
 }) => {
 
+    const router = useRouter();
     const [shouldRenderFilePreview, setShouldRenderFilePreview] = useState(false);
 
-    const { text: fileText } = file ?? {};
-    const { name, body } = fileText ?? {};
+    const { path, name, createdBy, text: fileText } = file ?? {};
+    const { body } = fileText ?? {};
+
+    const breadCrumbList: BreadCrumbList = [];
+
+    const groupBasePath: string = getRouteToParam({
+        router: router,
+        paramName: routeParams.GROUPID,
+        shouldIncludeParam: true
+    });
+
+    if(path?.length > 0){
+
+        breadCrumbList.push({
+            element: `${groupBasePath}/folders`,
+            text: 'Files'
+        });
+
+        path?.forEach(({ element, text }) => {
+
+            if(element !== fileId){
+    
+                breadCrumbList.push({
+                    element: `${groupBasePath}/folders/${element}`,
+                    text: text
+                });
+    
+            }
+    
+        });
+
+    }
+
+    const hasBreadCrumb: boolean = breadCrumbList.length > 0;
 
     useEffect(() => {
 
@@ -42,13 +81,24 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
+                    {hasBreadCrumb &&
+                        <BreadCrumb 
+                            text={{
+                                ariaLabel: 'Folders'
+                            }}
+                            breadCrumbList={breadCrumbList}
+                            shouldLinkCrumbs={false}
+                            className="u-text-lead u-mb-10 u-fill-theme-0" />
+                    }
                     <h2>{name}</h2>
                     <hr />
                     <RichText wrapperElementType="p" bodyHtml={body} />
-                    <p className="u-mb-14">
-                        <span className="u-text-bold u-mr-6">Owner</span>
-                        <Link href="/members/todo">Jane Richardson</Link>
-                    </p>
+                    {createdBy &&
+                        <p className="u-mb-14">
+                            <span className="u-text-bold u-mr-6">Owner</span>
+                            <Link href={`${groupBasePath}/members/${createdBy.id}`}>{createdBy.name}</Link>
+                        </p>
+                    }
                     <DataGrid
                         text={{
                             caption: 'File data'

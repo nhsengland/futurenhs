@@ -9,8 +9,8 @@ import { selectUser, selectPagination, selectParam, selectProps } from '@selecto
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-import { GroupFoldersTemplate } from '@components/_pageTemplates/GroupFoldersTemplate';
-import { Props } from '@components/_pageTemplates/GroupFoldersTemplate/interfaces';
+import { GroupFolderContentsTemplate } from '@components/_pageTemplates/GroupFolderContentsTemplate';
+import { Props } from '@components/_pageTemplates/GroupFolderContentsTemplate/interfaces';
 
 const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
 
@@ -75,4 +75,4 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
 /**
  * Export page template
  */
-export default GroupFoldersTemplate;
+export default GroupFolderContentsTemplate;
