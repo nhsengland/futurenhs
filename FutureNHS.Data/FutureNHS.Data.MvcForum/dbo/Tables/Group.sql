@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Group] (
     [Id]                 UNIQUEIDENTIFIER NOT NULL,
     [Name]               NVARCHAR (450)   NOT NULL,
-    [Description]        NVARCHAR (MAX)   NULL,
+    [Description]        NVARCHAR (4000)   NULL,
     [IsLocked]           BIT              NOT NULL,
     [ModerateTopics]     BIT              NOT NULL,
     [ModeratePosts]      BIT              NOT NULL,

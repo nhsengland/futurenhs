@@ -38,9 +38,9 @@ namespace MvcForum.Core.Models.Entities
         public bool IsLockedOut { get; set; }
         public bool IsBanned { get; set; }
         public DateTime CreateDate { get; set; }
-        public DateTime LastLoginDate { get; set; }
-        public DateTime LastPasswordChangedDate { get; set; }
-        public DateTime LastLockoutDate { get; set; }
+        public DateTime? LastLoginDate { get; set; }
+        public DateTime? LastPasswordChangedDate { get; set; }
+        public DateTime? LastLockoutDate { get; set; }
         public DateTime? LastActivityDate { get; set; }
         public int FailedPasswordAttemptCount { get; set; }
         public int FailedPasswordAnswerAttempt { get; set; }

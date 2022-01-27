@@ -84,7 +84,7 @@ gulp.task(msbuildAutomation);
 //////////////////////////////////////
 
 const deployMvcForumDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\150\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
@@ -116,7 +116,7 @@ const deployMvcForumDatabase = (done) => {
 gulp.task(deployMvcForumDatabase); 
 
 const deployAutomationMvcForumDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\150\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
@@ -180,7 +180,7 @@ gulp.task(dropMvcForumDatabase);
 /////////////////////////////
 
 const deployIdentityDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\150\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
@@ -211,7 +211,7 @@ const deployIdentityDatabase = (done) => {
 gulp.task(deployIdentityDatabase); 
 
 const deployAutomationIdentityDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\150\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',

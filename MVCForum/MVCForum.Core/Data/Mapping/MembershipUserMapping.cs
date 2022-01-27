@@ -23,9 +23,9 @@
             Property(x => x.IsLockedOut).IsRequired();
             Property(x => x.IsBanned).IsRequired();
             Property(x => x.CreateDate).IsRequired();
-            Property(x => x.LastLoginDate).IsRequired();
-            Property(x => x.LastPasswordChangedDate).IsRequired();
-            Property(x => x.LastLockoutDate).IsRequired();
+            Property(x => x.LastLoginDate).IsOptional();
+            Property(x => x.LastPasswordChangedDate).IsOptional();
+            Property(x => x.LastLockoutDate).IsOptional();
             Property(x => x.FailedPasswordAttemptCount).IsRequired();
             Property(x => x.FailedPasswordAnswerAttempt).IsRequired();
             Property(x => x.PasswordResetToken).HasMaxLength(150).IsOptional();

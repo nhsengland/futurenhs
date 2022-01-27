@@ -297,9 +297,7 @@
             newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
             // Set dates
-            newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
-            newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
-            newUser.LastLoginDate = DateTime.UtcNow;
+            newUser.CreateDate = DateTime.UtcNow;
             newUser.IsLockedOut = false;
             newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName,
                 GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)).Select(x => x.Slug).ToList(), null);
