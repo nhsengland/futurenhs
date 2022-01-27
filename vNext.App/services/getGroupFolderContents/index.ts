@@ -21,7 +21,7 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const getGroupFolders = async ({
+export const getGroupFolderContents = async ({
     user,
     groupId,
     folderId,

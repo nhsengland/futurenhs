@@ -5,7 +5,7 @@ import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { getGroupFolder } from '@services/getGroupFolder';
-import { getGroupFolders } from '@services/getGroupFolders';
+import { getGroupFolderContents } from '@services/getGroupFolderContents';
 import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
@@ -45,7 +45,7 @@ const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
                         groupId: groupId,
                         folderId: folderId
                     }),
-                    getGroupFolders({
+                    getGroupFolderContents({
                         user: user,
                         groupId: groupId,
                         folderId: folderId,

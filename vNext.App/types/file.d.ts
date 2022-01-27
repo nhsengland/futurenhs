@@ -4,8 +4,10 @@ import { BreadCrumbList } from './routing';
 export interface Folder {
     id: string;
     type: 'folder' | 'file';
-    name: string;
-    bodyHtml?: string;
+    text: {
+        name: string;
+        body?: string;
+    };
     modified?: string;
     path?: BreadCrumbList;
 }

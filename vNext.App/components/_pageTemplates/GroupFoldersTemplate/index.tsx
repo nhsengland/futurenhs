@@ -14,7 +14,7 @@ import { LayoutColumn } from '@components/LayoutColumn';
 import { DataGrid } from '@components/DataGrid';
 import { RichText } from '@components/RichText';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
-import { getGroupFolders } from '@services/getGroupFolders';
+import { getGroupFolderContents } from '@services/getGroupFolderContents';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { BreadCrumbList } from '@appTypes/routing';
 
@@ -40,9 +40,9 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
     const [dynamicPagination, setPagination] = useState(pagination);
 
     const { id, 
-            name, 
-            path, 
-            bodyHtml } = folder ?? {};
+            text: folderText, 
+            path } = folder ?? {};
+    const { name, body } = folderText ?? {};
     
     const hasFolderContents: boolean = folderContentsList?.length > 0;
     const hasAddFileAction: boolean = actions?.includes(userActions.GROUPS_FILES_ADD);
@@ -137,7 +137,7 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize 
     }) => {
 
-        const { data: additionalFiles, pagination } = await getGroupFolders({
+        const { data: additionalFiles, pagination } = await getGroupFolderContents({
             user: user,
             groupId: groupId,
             folderId: folderId,
@@ -194,8 +194,8 @@ export const GroupFoldersTemplate: (props: Props) => JSX.Element = ({
                     {!folderId &&
                         <h2>Files</h2>
                     }
-                    {bodyHtml &&
-                        <RichText wrapperElementType="p" bodyHtml={bodyHtml} />
+                    {body &&
+                        <RichText wrapperElementType="p" bodyHtml={body} />
                     }
                     {(hasAddFolderAction || hasAddFileAction) &&
                         <p className="u-mb-10">

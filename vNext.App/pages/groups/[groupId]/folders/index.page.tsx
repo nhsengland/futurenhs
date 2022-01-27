@@ -4,7 +4,7 @@ import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
-import { getGroupFolders } from '@services/getGroupFolders';
+import { getGroupFolderContents } from '@services/getGroupFolderContents';
 import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
@@ -37,7 +37,7 @@ const routeId: string = '8b74608e-e22d-4dd9-9501-1946ac27e133';
                 const [
                     groupFolderContents
                 ] = await Promise.all([
-                    getGroupFolders({
+                    getGroupFolderContents({
                         user: user,
                         groupId: groupId,
                         pagination: {

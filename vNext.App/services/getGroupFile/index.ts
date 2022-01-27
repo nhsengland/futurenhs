@@ -7,7 +7,7 @@ import { User } from '@appTypes/user';
 declare type Options = ({
     user: User;
     groupId: string;
-    folderId: string;
+    fileId: string;
 });
 
 declare type Dependencies = ({
@@ -15,10 +15,10 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const getGroupFolder = async ({
+export const getGroupFile = async ({
     user,
     groupId,
-    folderId
+    fileId
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Folder>> => {
 
     try {
@@ -32,7 +32,7 @@ export const getGroupFolder = async ({
 
         const id: string = user.id;
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/files/${fileId}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
@@ -48,13 +48,13 @@ export const getGroupFolder = async ({
             }
 
         }
-
+        
         const reversedPath: Array<any> = apiData.path?.reverse() ?? [];
 
         serviceResponse.data = {
             id: apiData.id,
             type: 'folder',
-            text: {
+            text: {     
                 name: apiData.name,
                 body: apiData.description
             },
@@ -68,10 +68,10 @@ export const getGroupFolder = async ({
 
     } catch(error){
 
-        const { message } = error;
-
         return {
-            errors: { error: message },
+            errors: { 
+                error: error.message 
+            }
         };
 
     }

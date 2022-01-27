@@ -16,11 +16,15 @@ import { Props } from './interfaces';
 export const GroupFileTemplate: (props: Props) => JSX.Element = ({
     user,
     actions,
+    file,
     text,
     image
 }) => {
 
     const [shouldRenderFilePreview, setShouldRenderFilePreview] = useState(false);
+
+    const { text: fileText } = file ?? {};
+    const { name, body } = fileText ?? {};
 
     useEffect(() => {
 
@@ -38,9 +42,9 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
-                    <h2>File title</h2>
+                    <h2>{name}</h2>
                     <hr />
-                    <RichText wrapperElementType="p" bodyHtml="The description of the file added by the user when uploading the document. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
+                    <RichText wrapperElementType="p" bodyHtml={body} />
                     <p className="u-mb-14">
                         <span className="u-text-bold u-mr-6">Owner</span>
                         <Link href="/members/todo">Jane Richardson</Link>
@@ -61,7 +65,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                                 children: 'Last update'
                             },
                             {
-                                children: 'Download'
+                                children: 'Actions'
                             }
                         ]}
                         rowList={[
