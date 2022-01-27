@@ -82,21 +82,6 @@ export class Dialog extends UIComponentBase {
 
  public openInit = () => {
 
-        const dialogElement = document.querySelector('dialog');
-        
-
-        const openCheck = (dialog) => {
-            if(dialog.open) {
-               console.log('Dialog open');
-                dialog.setAttribute('open', 'false');   
-                dialog.removeAttribute('open')
-                dialog.close();
-            } else {
-               console.log('Dialog closed');
-            }
-        }
-
-        openCheck(dialogElement)
 
 
                 
