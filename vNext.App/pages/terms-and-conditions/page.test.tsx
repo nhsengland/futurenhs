@@ -8,7 +8,7 @@ import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfa
 const props: Props = {
     id: 'mockId',
     user: undefined,
-    text: {
+    contentText: {
         title: 'mockTitle',
         metaDescription: 'mockMetaDescriptionText',
         mainHeading: 'mockMainHeading',
@@ -29,7 +29,7 @@ describe('Terms and conditions page', () => {
 
         const serverSideProps = await getServerSideProps({} as any);
                 
-        expect(serverSideProps).toHaveProperty('props.text');
+        expect(serverSideProps).toHaveProperty('props.contentText');
 
     });
     

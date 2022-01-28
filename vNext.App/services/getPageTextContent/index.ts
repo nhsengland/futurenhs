@@ -11,6 +11,8 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
+export type GetPageTextContentService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<Record<any, any>>>;
+
 export const getPageTextContent = async ({
     id,
     locale

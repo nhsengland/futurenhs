@@ -11,7 +11,7 @@ describe('Search listing template', () => {
         user: undefined,
         term: 'mockTerm',
         resultsList: [],
-        text: {
+        contentText: {
             title: 'Search',
             metaDescription: 'Search Future NHS',
             mainHeading: 'Searching'

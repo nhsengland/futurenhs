@@ -19,7 +19,8 @@ describe('Group member listing template', () => {
         id: 'mockPageId',
         user: undefined,
         actions: [],
-        text: {
+        contentText: null,
+        entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
             mainHeading: 'Mock main heading html',

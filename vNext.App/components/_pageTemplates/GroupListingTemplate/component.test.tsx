@@ -15,7 +15,7 @@ describe('GroupListingTemplate', () => {
     const props: Props = {
         id: 'mockPageId',
         user: undefined,
-        text: {
+        contentText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
             mainHeading: 'Mock main heading html',

@@ -11,7 +11,8 @@ describe('Group forum template', () => {
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
         asPath: '/groups/group/forum',
         query: {
-            groupId: 'group'
+            groupId: 'group',
+            discussionId: 'discussion'
         } 
     }));
 
@@ -25,7 +26,8 @@ describe('Group forum template', () => {
                 title: 'Mock Title'
             }
         },
-        text: {
+        contentText: null,
+        entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
             mainHeading: 'Mock main heading html',

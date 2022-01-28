@@ -24,7 +24,8 @@ describe('Group folders template', () => {
         forms: {
             'create-folder': createFolderForm
         },
-        text: {
+        contentText: null,
+        entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
             mainHeading: 'Mock main heading html',

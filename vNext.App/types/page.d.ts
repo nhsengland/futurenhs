@@ -13,12 +13,13 @@ export interface Page {
     forms?: Record<string, Form>;
     pagination?: Pagination;
     errors?: Array<Record<string>>;
-    text?: GenericPageTextContent;
+    contentText?: GenericPageTextContent;
     user?: User;
 }
 
 export interface GroupPage extends Page {
     image: Image;
-    text: GroupsPageTextContent;
+    contentText: GroupsPageTextContent;
+    entityText: any;
     actions: Array<actions>;
 }

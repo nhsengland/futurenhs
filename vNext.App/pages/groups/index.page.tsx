@@ -2,10 +2,9 @@ import { GetServerSideProps } from 'next';
 
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
+import { withTextContent } from '@hofs/withTextContent';
 import { getGroups } from '@services/getGroups';
-import { getPageTextContent } from '@services/getPageTextContent';
-import { selectLocale, selectProps } from '@selectors/context';
-import { selectUser, selectPagination } from '@selectors/context';
+import { selectUser, selectPagination, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -18,65 +17,61 @@ const isGroupMember: boolean = true;
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
-    getServerSideProps: async (context: GetServerSidePropsContext) => {
+    getServerSideProps: withTextContent({
+        routeId: routeId,
+        getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-        /**
-         * Get data from request context
-         */
-        const user: User = selectUser(context);
-        const locale: string = selectLocale(context);
-        const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
-        const initialPageSize: number = selectPagination(context).pageSize ?? 10;
-
-        let props: any = selectProps(context);
-
-        /**
-         * Get data from services
-         */
-        try {
-
-            const [
-                pageTextContent,
-                groupsList,
-            ] = await Promise.all([
-                getPageTextContent({
-                    id: routeId,
-                    locale: locale
-                }),
-                getGroups({
-                    user: user,
-                    isMember: isGroupMember,
-                    pagination: {
-                        pageNumber: initialPageNumber,
-                        pageSize: initialPageSize
-                    }
-                })
-            ]);
-
-            props.text = pageTextContent.data;
-            props.isGroupMember = isGroupMember;
-            props.groupsList = groupsList.data ?? [];
-            props.pagination = groupsList.pagination;
-            props.errors = [...props.errors, ...pageTextContent.errors, ...groupsList.errors];
-        
-        } catch (error) {
+            /**
+             * Get data from request context
+             */
+            const user: User = selectUser(context);
+            const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
+            const initialPageSize: number = selectPagination(context).pageSize ?? 10;
+    
+            let props: any = selectProps(context);
+    
+            /**
+             * Get data from services
+             */
+            try {
+    
+                const [
+                    groupsList,
+                ] = await Promise.all([
+                    getGroups({
+                        user: user,
+                        isMember: isGroupMember,
+                        pagination: {
+                            pageNumber: initialPageNumber,
+                            pageSize: initialPageSize
+                        }
+                    })
+                ]);
+    
+                props.isGroupMember = isGroupMember;
+                props.groupsList = groupsList.data ?? [];
+                props.pagination = groupsList.pagination;
+                props.errors = [...props.errors, ...groupsList.errors];
             
-            props.errors = [{
-                error: error.message
-            }];
-
+            } catch (error) {
+                
+                props.errors = [{
+                    error: error.message
+                }];
+    
+            }
+    
+            /**
+             * Return data to page template
+             */
+            return {
+                props: getJsonSafeObject({
+                    object: props
+                })
+            }
+    
         }
-
-        /**
-         * Return data to page template
-         */
-        return {
-            props: getJsonSafeObject({
-                object: props
-            })
-        }
-
-    }
+    })
 });
 
 /**

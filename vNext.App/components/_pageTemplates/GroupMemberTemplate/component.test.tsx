@@ -21,7 +21,8 @@ describe('Group member template', () => {
         user: undefined,
         member: null,
         actions: [],
-        text: {
+        contentText: null,
+        entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
             mainHeading: 'Mock main heading html',

@@ -15,7 +15,8 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     forms,
     user,
     actions,
-    text,
+    contentText,
+    entityText,
     image
 }) => {
 
@@ -27,7 +28,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
             id="files"
             user={user}
             actions={actions}
-            text={text}
+            text={entityText}
             image={image} 
             className="u-bg-theme-3">            
                 <LayoutColumn className="c-page-body">

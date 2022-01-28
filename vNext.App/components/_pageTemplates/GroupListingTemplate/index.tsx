@@ -22,7 +22,7 @@ import { Props } from './interfaces';
  */
 export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     user,
-    text,
+    contentText,
     isGroupMember,
     groupsList,
     pagination,
@@ -38,7 +38,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
             mainHeading,
             intro,
             secondaryHeading,
-            navMenuTitle } = text ?? {};
+            navMenuTitle } = contentText ?? {};
 
     const handleGetPage = async ({ 
         pageNumber: requestedPageNumber, 

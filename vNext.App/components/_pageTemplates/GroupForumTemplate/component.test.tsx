@@ -20,7 +20,8 @@ describe('Group forum template', () => {
         user: undefined,
         actions: [],
         discussionsList: [],
-        text: {
+        contentText: null,
+        entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
             mainHeading: 'Mock main heading html',

@@ -14,7 +14,8 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
     csrfToken,
     user,
     actions,
-    text,
+    contentText,
+    entityText,
     image
 }) => {
 
@@ -24,7 +25,7 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
             id="index"
             user={user}
             actions={actions}
-            text={text}
+            text={entityText}
             image={image} 
             className="u-bg-theme-3">            
                 <LayoutColumn className="c-page-body">

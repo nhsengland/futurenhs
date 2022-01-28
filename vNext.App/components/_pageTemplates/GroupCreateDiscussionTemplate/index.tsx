@@ -14,7 +14,8 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     forms,
     user,
     actions,
-    text,
+    contentText,
+    entityText,
     image,
     errors
 }) => {
@@ -27,7 +28,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
             id="forum"
             user={user}
             actions={actions}
-            text={text}
+            text={entityText}
             image={image} 
             className="u-bg-theme-3">            
                 <LayoutColumn className="c-page-body">

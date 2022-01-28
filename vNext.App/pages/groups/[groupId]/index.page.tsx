@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
+import { withTextContent } from '@hofs/withTextContent';
 import { selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 

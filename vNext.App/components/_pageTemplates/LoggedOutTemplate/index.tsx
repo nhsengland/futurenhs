@@ -11,13 +11,13 @@ import { Props } from './interfaces';
  * Logged out template
  */
 export const LoggedOutTemplate: (props: Props) => JSX.Element = ({
-    text,
+    contentText,
     logOutUrl
 }) => {
 
     const { title, 
             metaDescription, 
-            mainHeading } = text ?? {};
+            mainHeading } = contentText ?? {};
 
     return (
 

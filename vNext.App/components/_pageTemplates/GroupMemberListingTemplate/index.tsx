@@ -24,7 +24,8 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     actions,
     pendingMembers,
     members,
-    text,
+    entityText,
+    contentText,
     image,
     pagination
 }) => {
@@ -170,7 +171,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
     };
 
-    const { pendingMemberRequestsHeading, membersHeading } = text;
+    const { pendingMemberRequestsHeading, membersHeading } = contentText ?? {};
 
     return (
 
@@ -178,7 +179,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             id="members"
             user={user}
             actions={actions}
-            text={text}
+            text={entityText}
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">

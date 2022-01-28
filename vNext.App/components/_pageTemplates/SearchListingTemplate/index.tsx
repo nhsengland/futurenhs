@@ -21,7 +21,7 @@ import { capitalise } from '@helpers/formatters/capitalise';
  */
 export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     term,
-    text,
+    contentText,
     resultsList = [],
     pagination,
     user
@@ -31,8 +31,8 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     const hasResults: boolean = resultsCount > 0;
 
     const { metaDescription,
-        title,
-        mainHeading } = text ?? {};
+            title,
+            mainHeading } = contentText ?? {};
 
     const [dynamicSearchResultsList, setSearchResultsList] = useState(resultsList);
     const [dynamicPagination, setPagination] = useState(pagination);

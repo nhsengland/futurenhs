@@ -14,7 +14,8 @@ import { Props } from './interfaces';
  */
 export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
     user,
-    text,
+    entityText,
+    contentText,
     member,
     actions,
     image
@@ -24,7 +25,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             firstNameLabel, 
             lastNameLabel, 
             pronounsLabel, 
-            emailLabel } = text;
+            emailLabel } = contentText ?? {};
 
     const router = useRouter();
     const backLinkHref: string = getRouteToParam({
@@ -38,7 +39,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             id="members"
             user={user}
             actions={actions}
-            text={text}
+            text={entityText}
             image={image} 
             className="u-bg-theme-3">
                 <div className="c-page-body">

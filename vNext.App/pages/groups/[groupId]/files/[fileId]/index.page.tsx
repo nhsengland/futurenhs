@@ -6,6 +6,7 @@ import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { selectUser, selectParam, selectProps } from '@selectors/context';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
+import { withTextContent } from '@hofs/withTextContent';
 import { getGroupFile } from '@services/getGroupFile';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
@@ -18,8 +19,10 @@ const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
 /**
  * Get props to inject into page on the initial server-side request
  */
- export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withAuth({
     getServerSideProps: withGroup({
+        routeId: routeId,
+        getServerSideProps: withTextContent({
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
@@ -44,15 +47,15 @@ const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
                         })
                     ]);
 
-                    if(getServiceResponseErrors({
+                    if (getServiceResponseErrors({
                         serviceResponseList: [groupFile],
                         matcher: (code) => Number(code) === 404
-                    }).length > 0){
-    
+                    }).length > 0) {
+
                         return {
                             notFound: true
                         }
-    
+
                     }
 
                     props.fileId = fileId;
@@ -60,11 +63,11 @@ const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
                     props.errors = [...props.errors, ...groupFile.errors];
 
                 } catch (error) {
-                
+
                     props.errors = [{
                         error: error.message
                     }];
-    
+
                 }
 
                 /**
@@ -78,6 +81,7 @@ const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
 
             }
         })
+    })
 });
 
 /**

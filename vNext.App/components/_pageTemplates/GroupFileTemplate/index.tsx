@@ -23,7 +23,8 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
     actions,
     fileId,
     file,
-    text,
+    contentText,
+    entityText,
     image
 }) => {
 
@@ -77,7 +78,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
             id="files"
             user={user}
             actions={actions}
-            text={text}
+            text={entityText}
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">

@@ -5,9 +5,9 @@ import { routeParams } from '@constants/routes';
 import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
+import { withTextContent } from '@hofs/withTextContent';
 import { getGroupMember } from '@services/getGroupMember';
-import { getPageTextContent } from '@services/getPageTextContent';
-import { selectUser, selectParam, selectLocale } from '@selectors/context';
+import { selectUser, selectParam } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -18,14 +18,15 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
 /**
  * Get props to inject into page on the initial server-side request
  */
- export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withAuth({
     routeId: routeId,
     getServerSideProps: withGroup({
+        routeId: routeId,
+        getServerSideProps: withTextContent({
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const user: User = selectUser(context);
-                const locale: string = selectLocale(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const memberId: string = selectParam(context, routeParams.MEMBERID);
 
@@ -37,24 +38,19 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
                 try {
 
                     const [
-                        memberData,
-                        pageTextContent
+                        memberData
                     ] = await Promise.all([
                         getGroupMember({
                             groupId: groupId,
                             user: user,
                             memberId: memberId
-                        }),
-                        getPageTextContent({
-                            id: routeId,
-                            locale: locale
                         })
                     ]);
 
-                    if(getServiceResponseErrors({
+                    if (getServiceResponseErrors({
                         serviceResponseList: [memberData],
                         matcher: (code) => Number(code) === 404
-                    }).length > 0){
+                    }).length > 0) {
 
                         return {
                             notFound: true
@@ -63,11 +59,10 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
                     }
 
                     props.member = memberData.data;
-                    props.text = Object.assign({}, props.text, pageTextContent.data ?? {});
-                    props.errors = [...pageTextContent.errors, ...memberData.errors];
-                
+                    props.errors = [...memberData.errors];
+
                 } catch (error) {
-                    
+
                     props.errors = [{
                         error: error.message
                     }];
@@ -85,9 +80,10 @@ const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
 
             }
         })
+    })
 });
 
 /**
  * Export page template
  */
- export default GroupMemberTemplate;
+export default GroupMemberTemplate;

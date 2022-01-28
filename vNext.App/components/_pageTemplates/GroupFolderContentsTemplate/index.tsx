@@ -26,7 +26,8 @@ import { Props } from './interfaces';
 export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     user,
     groupId,
-    text,
+    contentText,
+    entityText,
     image,
     folderId,
     folder,
@@ -158,7 +159,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
             id="files"
             user={user}
             actions={actions}
-            text={text}
+            text={entityText}
             image={image} 
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">

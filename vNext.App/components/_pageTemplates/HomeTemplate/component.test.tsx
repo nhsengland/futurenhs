@@ -7,7 +7,7 @@ import { Props } from './interfaces';
 const props: Props = {
     id: 'mockPageId',
     user: undefined,
-    text: {
+    contentText: {
         title: 'Future NHS Home', 
         metaDescription: 'Your Future NHS home page',
         mainHeading: 'Latest discussions'

@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import { routeParams } from '@constants/routes';
 import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { defaultGroupLogos } from '@constants/icons';
-import { selectUser, selectParam } from '@selectors/context';
+import { selectUser, selectParam, selectProps } from '@selectors/context';
 import { getGroup } from '@services/getGroup';
 import { GetGroupService } from '@services/getGroup';
 import { getGroupActions } from '@services/getGroupActions';
@@ -30,16 +30,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
         const groupId: string = selectParam(context, routeParams.GROUPID);
         const user: User = selectUser(context);
 
-        /**
-         * Create page data
-         */
-        const props: Partial<GroupPage> = {
-            id: routeId,
-            user: user,
-            text: null,
-            image: null,
-            actions: []
-        };
+        let props: GroupPage = selectProps(context);
 
         /**
          * Get data from services
@@ -86,7 +77,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
             }
 
             props.groupId = groupId;
-            props.text = groupData.data.text ?? null;
+            props.entityText = groupData.data.text ?? {};
             props.image = groupData.data.image ?? defaultGroupLogos.small;
             props.actions = actionsData.data ?? null;
 

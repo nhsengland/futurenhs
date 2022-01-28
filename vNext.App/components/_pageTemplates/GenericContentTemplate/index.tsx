@@ -7,14 +7,14 @@ import { Props } from './interfaces';
 
 export const GenericContentTemplate: (props: Props) => JSX.Element = ({
     user,
-    text
+    contentText
 }) => {
 
     const isAuthenticated: boolean = Boolean(user);
 
     const { metaDescription, 
             title, 
-            mainHeading } = text ?? {};
+            mainHeading } = contentText ?? {};
 
     return (
 

@@ -7,7 +7,7 @@ import { Props } from '@components/_pageTemplates/LoggedOutTemplate/interfaces';
 
 const props: Props = {
     id: 'mockId',
-    text: {
+    contentText: {
         title: 'mockTitle',
         metaDescription: 'mockMetaDescriptionText',
         mainHeading: 'mockMainHeading',
@@ -33,7 +33,7 @@ describe('Log out page', () => {
             }
         } as any);
                 
-        expect(serverSideProps).toHaveProperty('props.text');
+        expect(serverSideProps).toHaveProperty('props.contentText');
 
     });
     

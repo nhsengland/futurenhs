@@ -2,13 +2,13 @@ import { GroupPage } from '@appTypes/page';
 import { GroupMember } from '@appTypes/group';
 import { GroupsPageTextContent } from '@appTypes/content';
 
-declare interface Text extends GroupsPageTextContent {
+declare interface ContentText extends GroupsPageTextContent {
     pendingMemberRequestsHeading: string; 
     membersHeading: string;
 }
 
 export interface Props extends GroupPage {
-    text: Text;
+    contentText: ContentText;
     pendingMembers: Array<any>;
     members: Array<GroupMember>;
 }

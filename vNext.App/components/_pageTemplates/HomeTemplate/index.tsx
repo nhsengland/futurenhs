@@ -10,13 +10,13 @@ import { Props } from './interfaces';
  * Home page template
  */
 export const HomeTemplate: (props: Props) => JSX.Element = ({
-    text,
+    contentText,
     user
 }) => {
 
     const { title, 
             metaDescription, 
-            mainHeading } = text ?? {};
+            mainHeading } = contentText ?? {};
 
     return (
 

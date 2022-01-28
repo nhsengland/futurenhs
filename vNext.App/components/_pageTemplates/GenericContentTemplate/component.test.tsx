@@ -8,7 +8,7 @@ import { Props } from './interfaces';
 const props: Props = {
     id: 'mockId',
     user: undefined,
-    text: {
+    contentText: {
         title: 'mockTitle',
         metaDescription: 'mockMetaDescriptionText',
         mainHeading: 'mockMainHeading',
