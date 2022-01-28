@@ -1,29 +1,35 @@
 import dialogPolyfill from "dialog-polyfill";
 
 
-const dialogElement = document.querySelector('dialog');
+const dialogElement: any = document.querySelector('dialog');
 
 
     dialogPolyfill.registerDialog(dialogElement);
 
-    
-if (typeof dialogElement.showModal !== "function") {
-    // Load polyfill script
+
+if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+  const destination = document.getElementsByTagName('body')[0];
+  // Declare a fragment:
+  const fragment = document.createDocumentFragment();
+  
+  fragment.appendChild(dialogElement);
+
+  destination.insertBefore(fragment, destination.firstChild);
+}
+
+if (typeof(dialogElement) != 'undefined' && dialogElement != null && typeof dialogElement.showModal !== "function") {
+   
     const polyfill = document.createElement("script");
     polyfill.type = "text/javascript";
-    polyfill.src = "./node_modules/dialog-polyfill/dist/dialog-polyfill.esm.js";
+    polyfill.src = "@modules/dialog-polyfill/dist/dialog-polyfill.js";
     document.body.append(polyfill);
   
-    // Register polyfill on dialog element once the script has loaded
-    polyfill.onload = () => {
-      dialogPolyfill.registerDialog(dialogElement);
-    };
-  
-    // Load polyfill CSS styles
     const polyfillStyles = document.createElement("link");
-  
     polyfillStyles.rel = "stylesheet";
-    polyfillStyles.href = "./node_modules/dialog-polyfill/dist/dialog-polyfill.css";
-    document.head.append(polyfillStyles);
-  }
+    polyfillStyles.href = "@modules/dialog-polyfill/dialog-polyfill.css";
+    document.head.append(polyfillStyles); 
+
+  // Register polyfill on dialog element once the script has loaded
+  dialogPolyfill.registerDialog(dialogElement);
+}
 
