@@ -57,7 +57,7 @@ jobs:
       azureSubscription: 'CDS FNHS Dev\Test - DevOps Pipeline Service Principal'
       AuthenticationType: 'server'
       ServerName: 'sql-cdsfnhs-dev-uksouth-primary.database.windows.net'
-      DatabaseName: 'MatthewM_DACPAC_Testing'
+      DatabaseName: '$(DATABASE)'
       SqlUsername: '$(DATABASEUSERNAME)'
       SqlPassword: '$(DATABASEPASSWORD)'
       deployType: 'DacpacTask'
