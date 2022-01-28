@@ -2,16 +2,17 @@ import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelp
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
 import { ServicePaginatedResponse } from '@appTypes/service';
-import { Pagination } from '@appTypes/pagination';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse } from '@appTypes/service';
 import { Discussion } from '@appTypes/discussion';
 import { User } from '@appTypes/user';
+import { Pagination } from '@appTypes/pagination';
 
 declare type Options = ({
     groupId: string;
+    discussionId: string;
     user: User;
-    pagination?: Pagination;
+    pagination: Pagination;
 });
 
 declare type Dependencies = ({
@@ -19,8 +20,9 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const getGroupDiscussions = async ({
+export const getGroupDiscussionComments = async ({
     groupId,
+    discussionId,
     user,
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<Discussion>>> => {
@@ -37,7 +39,7 @@ export const getGroupDiscussions = async ({
         const { id } = user;
         const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions?${paginationQueryParams}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments?${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
@@ -56,14 +58,7 @@ export const getGroupDiscussions = async ({
 
         apiData.data?.forEach((datum) => {
 
-            serviceResponse.data.push({
-                text: {
-                    title: datum.title ?? null
-                },
-                discussionId: datum.id,
-                totalCommentCount: datum.totalComments ?? 0,
-                totalViewCount: datum.views ?? 0
-            });
+            serviceResponse.data.push(datum);
 
         });
 

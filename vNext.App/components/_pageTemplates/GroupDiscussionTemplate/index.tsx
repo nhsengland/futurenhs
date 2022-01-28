@@ -22,7 +22,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     entityText,
     image,
     actions,
-    discussion
+    discussion,
+    discussionComments,
+    pagination
 }) => {
 
     const router = useRouter();
@@ -34,6 +36,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     const { text: discussionText } = discussion ?? {};
     const { title, body } = discussionText ?? {};
+    const { totalRecords } = pagination ?? {};
 
     return (
 
@@ -44,16 +47,25 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             text={entityText}
             image={image} 
             className="u-bg-theme-3">
-                <LayoutColumn tablet={8} className="c-page-body">
+                <LayoutColumn className="c-page-body">
                     <BackLink 
                         href={backLinkHref}
                         text={{
                             link: "Back to discussions"
                         }} />
-                    <h2>{title}</h2>
+                    <h2 className="u-text-5xl">{title}</h2>
                     {body &&
                         <RichText bodyHtml={body} />
                     }
+                    <hr />
+                    <p className="u-text-lead u-text-bold">
+                       {`${totalRecords} comments`}
+                    </p>
+                    {discussionComments?.map(({ id }, index) => {
+
+                        return <p key={index}>{id}</p>
+
+                    })}
                 </LayoutColumn>
         </GroupLayout>
 

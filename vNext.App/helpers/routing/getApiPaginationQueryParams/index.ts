@@ -12,8 +12,8 @@ export const getApiPaginationQueryParams = ({
 
     try {
 
-        const pageNumber = pagination.pageNumber ?? defaults.pageNumber;
-        const pageSize = pagination.pageSize ?? defaults.pageSize;
+        const pageNumber = pagination?.pageNumber ?? defaults?.pageNumber;
+        const pageSize = pagination?.pageSize ?? defaults?.pageSize;
 
         const offset: number = (pageNumber - 1) * pageSize;
         const limit: number = pageSize ?? 10;
@@ -23,6 +23,8 @@ export const getApiPaginationQueryParams = ({
         return route;
 
     } catch(error){
+
+        console.log(error);
 
         return '';
 

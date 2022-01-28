@@ -7,9 +7,11 @@ import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
-import { selectUser, selectParam, selectProps } from '@selectors/context';
+import { getGroupDiscussionComments } from '@services/getGroupDiscussionComments';
+import { selectUser, selectParam, selectProps, selectPagination } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
+import { Pagination } from '@appTypes/pagination';
 
 import { GroupDiscussionTemplate } from '@components/_pageTemplates/GroupDiscussionTemplate';
 import { Props } from '@components/_pageTemplates/GroupDiscussionTemplate/interfaces';
@@ -29,6 +31,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const discussionId: string = selectParam(context, routeParams.DISCUSSIONID);
+                const pagination: Pagination = selectPagination(context);
 
                 let props: Props = selectProps(context);
 
@@ -38,12 +41,19 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 try {
 
                     const [
-                        groupDiscussion
+                        groupDiscussion,
+                        groupDiscussionComments
                     ] = await Promise.all([
                         getGroupDiscussion({
                             user: user,
                             groupId: groupId,
                             discussionId: discussionId
+                        }),
+                        getGroupDiscussionComments({
+                            user: user,
+                            groupId: groupId,
+                            discussionId: discussionId,
+                            pagination: pagination
                         })
                     ]);
 
@@ -60,7 +70,9 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                     props.discussionId = discussionId;
                     props.discussion = groupDiscussion.data;
-                    props.errors = [...props.errors, ...groupDiscussion.errors];
+                    props.discussionComments = groupDiscussionComments.data;
+                    props.pagination = groupDiscussionComments.pagination;
+                    props.errors = [...props.errors, ...groupDiscussion.errors, ...groupDiscussionComments.errors];
 
                 } catch (error) {
 
