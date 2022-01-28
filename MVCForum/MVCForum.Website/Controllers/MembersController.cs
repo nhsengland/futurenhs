@@ -625,28 +625,23 @@
         [AllowAnonymous]
         public virtual ActionResult LogOn()
         {
+            var returnUrl = Request["ReturnUrl"];
             if (User.Identity.IsAuthenticated)
             {
+                if (!string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    return Redirect(Request["ReturnUrl"]);
+                }
+
                 return RedirectToAction("Index", "Group");
             }
 
             var viewModel = new LogOnViewModel();
 
-            var returnUrl = Request["ReturnUrl"];
+            returnUrl = Request["ReturnUrl"];
             if (!string.IsNullOrWhiteSpace(returnUrl))
             {
                 viewModel.ReturnUrl = returnUrl;
-            }
-
-            var returnUrlLocalPath = Request.UrlReferrer?.LocalPath;
-            if (!string.IsNullOrWhiteSpace(returnUrlLocalPath))
-            {
-                viewModel.ReturnUrl = returnUrlLocalPath;
-            }
-
-            if (string.IsNullOrWhiteSpace(viewModel.ReturnUrl))
-            {
-                viewModel.ReturnUrl = "/group";
             }
 
             return View(viewModel);
@@ -712,12 +707,12 @@
                     message.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
                     message.MessageType = GenericMessages.success;
 
+
+
                     // See if we have a return url
-                    if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 &&
-                        model.ReturnUrl.StartsWith("/")
-                        && !model.ReturnUrl.StartsWith("//") && !model.ReturnUrl.StartsWith("/\\"))
+                    if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
                     {
-                        return Redirect(model.ReturnUrl);
+                        return Redirect(Request["ReturnUrl"]);
                     }
 
                     // If not just go to home page
