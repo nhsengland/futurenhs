@@ -20,6 +20,8 @@ export const getServerSideProps: GetServerSideProps = withLogOut({
         getServerSideProps: async (context: GetServerSidePropsContext) => {
 
             const props: Props = selectProps(context);
+
+            props.logOutUrl = process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL;
     
             /**
              * Return data to page template

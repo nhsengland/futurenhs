@@ -1,9 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { getAuth } from '@services/getAuth';
 import { GetAuthService } from '@services/getAuth';
-import { getEnvVar } from '@helpers/util/env';
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
-import { selectProps } from '@selectors/context';
 
 export const withAuth = (config: HofConfig, dependencies?: {
     getAuthService?: GetAuthService
@@ -21,10 +19,12 @@ export const withAuth = (config: HofConfig, dependencies?: {
 
         if(!data || errors?.length){
 
+            const returnUrl: string = encodeURI(`${process.env.APP_URL}${context.resolvedUrl}`);
+
             return {
                 redirect: {
                     permanent: false,
-                    destination: getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL' })
+                    destination: `${process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL}?ReturnUrl=${returnUrl}`
                 }
             }    
     
