@@ -10,6 +10,6 @@ namespace FutureNHS.Api.DataAccess.Models.FileAndFolder
         public IEnumerable<FolderPathItem>? Path { get; init; }
         public Shared.Properties FirstRegistered { get; init; }
         public Shared.Properties LastUpdated  { get; init; }
-        public FileVersion Versions { get; init; }
+        public IEnumerable<FileVersion> Versions { get; init; }
     }
 }

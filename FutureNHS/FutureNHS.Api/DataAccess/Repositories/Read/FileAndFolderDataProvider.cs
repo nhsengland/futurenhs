@@ -26,7 +26,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 throw new ArgumentOutOfRangeException(nameof(limit));
             }
 
-            const string query = 
+            const string query =
                 @$" SELECT
                                 [{nameof(FolderContentsData.Id)}]                   = folder.Id,
                                 [{nameof(FolderContentsData.Type)}]                 = 'Folder', 
@@ -136,7 +136,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     {
                         if (userNavProperty is not null)
                         {
-                            var folderWithUserInfo = folderDetails with { FirstRegistered = folderProperties with {By = userNavProperty } };
+                            var folderWithUserInfo = folderDetails with { FirstRegistered = folderProperties with { By = userNavProperty } };
                             return folderWithUserInfo;
                         }
                         folderDetails = folderDetails with { FirstRegistered = folderProperties };
@@ -233,7 +233,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     WHERE       ParentFolder = @FolderId 
                     AND         FileStatus = 4
                     ) 
-                    AS          TOTAL"; 
+                    AS          TOTAL";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -322,7 +322,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         }
 
         private File GenerateFileModelFromData(FileData fileData, IEnumerable<FolderPathItem> pathToFile)
-        { 
+        {
             new FileExtensionContentTypeProvider().Mappings.TryGetValue(fileData.FileExtension, out var mimeType);
 
             var file = new File
@@ -340,24 +340,27 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                         Slug = fileData.CreatorSlug
                     }
                 },
-                Versions = new FileVersion
+                Versions = new List<FileVersion>
                 {
-                    Id = fileData.Id,
-                    Name = fileData.FileName,
-                    FirstRegistered = new Models.Shared.Properties
+                    new FileVersion
                     {
-                        AtUtc = fileData.CreatedAtUtc,
-                        By = new UserNavProperty
+                        Id = fileData.Id,
+                        Name = fileData.FileName,
+                        FirstRegistered = new Models.Shared.Properties
                         {
-                            Id = fileData.CreatorId,
-                            Name = fileData.CreatorName,
-                            Slug = fileData.CreatorSlug
+                            AtUtc = fileData.CreatedAtUtc,
+                            By = new UserNavProperty
+                            {
+                                Id = fileData.CreatorId,
+                                Name = fileData.CreatorName,
+                                Slug = fileData.CreatorSlug
+                            }
+                        },
+                        AdditionalMetadata = new FileProperties
+                        {
+                            FileExtension = fileData.FileExtension,
+                            MediaType = mimeType
                         }
-                    },
-                    AdditionalMetadata = new FileProperties
-                    {
-                        FileExtension = fileData.FileExtension,
-                        MediaType = mimeType
                     }
                 },
                 Path = pathToFile
