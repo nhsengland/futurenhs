@@ -28,15 +28,15 @@ jobs:
       $changesFolder  = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
       $matchFound=$False
       foreach($path in $changesFolder ){
-        if($path -match '/FutureNHS'){
+        if($path -match '/FutureNHS.Data'){
           $matchFound=$true
-          echo "##vso[task.setvariable variable=FutureNHS;isOutput=true]$True"         
+          echo "##vso[task.setvariable variable=FutureNHSData;isOutput=true]$True"         
           break
         }       
        }
        if($matchFound)
         {
-          echo "Changed detected in FutureNHS Api in commit: $commitId - Stopping..."
+          echo "Changed detected in FutureNHSData in commit: $commitId - Stopping..."
           break
         }
      }
@@ -46,7 +46,7 @@ jobs:
   pool :
     vmImage: 'windows-latest'
   dependsOn: CheckChangesInPaths
-  condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHS'], 'true') 
+  condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHSData'], 'true') 
   steps:
   - task: VSBuild@1
     inputs:
