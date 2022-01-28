@@ -3,17 +3,18 @@ import { useRouter } from 'next/router';
 
 import { routeParams } from '@constants/routes';
 import { Link } from '@components/Link';
+import { Card } from '@components/Card';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { RichText } from '@components/RichText';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BackLink } from '@components/BackLink';
-import { Card } from '@components/Card';
 import { SVGIcon } from '@components/SVGIcon';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';
+import { Avatar } from '@components/Avatar';
 
 export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     groupId,
@@ -33,6 +34,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         router: router,
         paramName: routeParams.DISCUSSIONID
     });
+
+    const hasDiscussionComments: boolean = discussionComments?.length > 0;
 
     const { text: discussionText } = discussion ?? {};
     const { title, body } = discussionText ?? {};
@@ -61,11 +64,29 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     <p className="u-text-lead u-text-bold">
                        {`${totalRecords} comments`}
                     </p>
-                    {discussionComments?.map(({ id }, index) => {
+                    <AriaLiveRegion>
+                        {hasDiscussionComments &&
+                            <ul className="u-list-none u-p-0">
+                                {discussionComments?.map(({ id }, index) => {
 
-                        return <p key={index}>{id}</p>
+                                    return (
+                                    
+                                        <li key={index}>
+                                            <Card>
+                                                <Avatar 
+                                                    image={null} 
+                                                    initials="RI" 
+                                                    className="u-h-12 u-w-12" />
+                                                {id}
+                                            </Card>
+                                        </li>
 
-                    })}
+                                    )
+
+                                })}
+                            </ul>
+                        }
+                    </AriaLiveRegion>
                 </LayoutColumn>
         </GroupLayout>
 
