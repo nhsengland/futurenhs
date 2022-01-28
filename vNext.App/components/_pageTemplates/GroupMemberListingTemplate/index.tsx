@@ -55,7 +55,6 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
         }
     ];
     const pendingMemberRowList = useMemo(() => pendingMembers?.map(({ 
-        id, 
         fullName,
         email, 
         requestDate }) => {
@@ -171,7 +170,10 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
     };
 
-    const { pendingMemberRequestsHeading, membersHeading } = contentText ?? {};
+    const { pendingMemberRequestsHeading, 
+            membersHeading,
+            noPendingMembers,
+            noMembers } = contentText ?? {};
 
     return (
 
@@ -197,7 +199,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                                         shouldRenderCaption={false}
                                         className="u-mb-11" />
 
-                                :   <p>This group currently has no outstanding membership requests</p>
+                                :   <p>{noPendingMembers}</p>
 
                             }
                         </div>
@@ -221,7 +223,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                                         {...dynamicPagination} />
                                 </>
 
-                            :   <p>This group currently contains no members</p>
+                            :   <p>{noMembers}</p>
 
                         }
                     </AriaLiveRegion>

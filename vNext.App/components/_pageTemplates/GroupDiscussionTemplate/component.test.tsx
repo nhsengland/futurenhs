@@ -26,6 +26,7 @@ describe('Group forum template', () => {
                 title: 'Mock Title'
             }
         },
+        discussionComments: [],
         contentText: null,
         entityText: {
             title: 'Mock title text',

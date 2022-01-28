@@ -5,6 +5,8 @@ import { GroupsPageTextContent } from '@appTypes/content';
 declare interface ContentText extends GroupsPageTextContent {
     pendingMemberRequestsHeading: string; 
     membersHeading: string;
+    noPendingMembers: string;
+    noMembers: string;
 }
 
 export interface Props extends GroupPage {
