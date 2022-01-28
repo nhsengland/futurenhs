@@ -1,8 +1,10 @@
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     public sealed class HealthCheckController : ControllerBase
     { 
