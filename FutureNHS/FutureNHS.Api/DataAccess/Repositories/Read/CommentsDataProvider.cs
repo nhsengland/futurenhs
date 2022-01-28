@@ -65,6 +65,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     LEFT JOIN       MembershipUser createUser 
                     ON              CreateUser.Id = post.MembershipUser_Id		
 					WHERE           post.Topic_Id = @TopicId 
+                    AND             post.IsTopicStarter = 0
                     AND             post.ThreadId IS NULL
                     AND             groups.Slug = @Slug
                     ORDER BY        post.DateCreated
