@@ -2,138 +2,142 @@
    COMPONENTS/ #CHECKBOXES
    ========================================================================== */
 
+
 /**
  * 1. remove 300ms pause on mobile.
  * 2. Fix bug in IE11 caused by transform rotate (-45deg).
  */
 
- $nhsuk-checkboxes-size: $nhsuk-spacing-point-6;
- $nhsuk-checkboxes-label-padding-left-right: 12px;
- 
- .c-checkboxes__item {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: $nhsuk-font-bold;
-  font-size: $nhsuk-spacing-point-3;
-  font-size: $base-font-line-height;
- 
-   clear: left;
-   display: block;
-   margin-bottom: $nhsuk-spacing-point-2;
-   min-height: $nhsuk-checkboxes-size;
-   padding: 0 0 0 $nhsuk-checkboxes-size;
-   position: relative;
- }
- 
- .c-checkboxes__item:last-child,
- .c-checkboxes__item:last-of-type {
-   margin-bottom: 0;
- }
- 
- .c-checkboxes__input { 
-   cursor: pointer;
-   height: $nhsuk-checkboxes-size;
-   left: 0;
-   margin: 0;
-   opacity: 0;
-   position: absolute;
-   top: 0;
-   width: $nhsuk-checkboxes-size;
-   z-index: 1;
- }
- 
- .c-checkboxes__label {
-   -ms-touch-action: manipulation; /* 1 */
-   cursor: pointer;
-   display: inline-block;
-   margin-bottom: 0;
-   padding: 8px $nhsuk-checkboxes-label-padding-left-right $nhsuk-spacing-point-1;
-   touch-action: manipulation;
- }
- 
- .c-checkboxes__hint {
-   display: block;
-   padding-left: $nhsuk-checkboxes-label-padding-left-right;
-   padding-right: $nhsuk-checkboxes-label-padding-left-right;
- }
- 
- .c-checkboxes__input ~ .c-checkboxes__label::before {
-   background: $nhsuk-form-element-background-color;
-   border: $nhsuk-border-width-form-element solid $nhsuk-form-border-color;
-   box-sizing: border-box;
-   content: '';
-   height: $nhsuk-checkboxes-size;
-   left: 0;
-   position: absolute;
-   top: 0;
-   width: $nhsuk-checkboxes-size;
- }
- 
- .c-checkboxes__input ~ .c-checkboxes__label::after {
-   -ms-transform: rotate(-45deg);
-   -webkit-transform: rotate(-45deg);
-   background: transparent;
-   border: solid;
-   border-top-color: transparent;
-   border-width: 0 0 $nhsuk-border-width $nhsuk-border-width;
-   content: '';
-   height: 10px;
-   left: 10px;
-   opacity: 0; /* 2 */
-   position: absolute;
-   top: 13px;
-   transform: rotate(-45deg);
-   width: 22px;
- }
- 
- /*
+$nhsuk-checkboxes-size: $nhsuk-spacing-point-6;
+$nhsuk-checkboxes-label-padding-left-right: 12px;
+
+.c-checkboxes__item {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: $nhsuk-font-bold;
+    font-size: $nhsuk-spacing-point-3;
+    font-size: $base-font-line-height;
+    clear: left;
+    display: block;
+    margin-bottom: $nhsuk-spacing-point-2;
+    min-height: $nhsuk-checkboxes-size;
+    padding: 0 0 0 $nhsuk-checkboxes-size;
+    position: relative;
+}
+
+.c-checkboxes__item:last-child,
+.c-checkboxes__item:last-of-type {
+    margin-bottom: 0;
+}
+
+.c-checkboxes__input {
+    cursor: pointer;
+    height: $nhsuk-checkboxes-size;
+    left: 0;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: $nhsuk-checkboxes-size;
+    z-index: 1;
+}
+
+.c-checkboxes__label {
+    -ms-touch-action: manipulation;
+    /* 1 */
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 0;
+    padding: 8px $nhsuk-checkboxes-label-padding-left-right $nhsuk-spacing-point-1;
+    touch-action: manipulation;
+}
+
+.c-checkboxes__hint {
+    display: block;
+    padding-left: $nhsuk-checkboxes-label-padding-left-right;
+    padding-right: $nhsuk-checkboxes-label-padding-left-right;
+}
+
+.c-checkboxes__input~.c-checkboxes__label::before {
+    background: $nhsuk-form-element-background-color;
+    border: $nhsuk-border-width-form-element solid $nhsuk-form-border-color;
+    box-sizing: border-box;
+    content: '';
+    height: $nhsuk-checkboxes-size;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: $nhsuk-checkboxes-size;
+}
+
+.c-checkboxes__input~.c-checkboxes__label::after {
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    background: transparent;
+    border: solid;
+    border-top-color: transparent;
+    border-width: 0 0 $nhsuk-border-width $nhsuk-border-width;
+    content: '';
+    height: 10px;
+    left: 10px;
+    opacity: 0;
+    /* 2 */
+    position: absolute;
+    top: 13px;
+    transform: rotate(-45deg);
+    width: 22px;
+}
+
+
+/*
   * Focus state
   *
   * 1. Since box-shadows are removed when users customise their colours
   *    We set a transparent outline that is shown instead.
   *    https://accessibility.blog.gov.uk/2017/03/27/how-users-change-colours-on-websites/
   */
- 
- .c-checkboxes__input:focus ~ .c-checkboxes__label::before {
-   @include nhsuk-focused-checkbox;
- }
- 
- /* Selected state */
- 
- .c-checkboxes__input:checked ~ .c-checkboxes__label::after {
-   opacity: 1;
- }
- 
- /* Disabled state */
- 
- .c-checkboxes__input:disabled,
- .c-checkboxes__input:disabled ~ .c-checkboxes__label {
-   cursor: default;
- }
- 
- .c-checkboxes__input:disabled ~ .c-checkboxes__label {
-   opacity: .5;
- }
- 
- /* Divider variant */
- 
- .c-checkboxes__divider {
-   $nhsuk-divider-size: $nhsuk-checkboxes-size !default;
-   
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: $nhsuk-font-bold;
-  font-size: $nhsuk-spacing-point-3;
-  font-size: $base-font-line-height;
- 
-   color: $nhsuk-text-color;
-   margin-bottom: $nhsuk-spacing-point-2;
-   text-align: center;
-   width: $nhsuk-divider-size;
- }
- 
- 
- /*
+
+.c-checkboxes__input:focus~.c-checkboxes__label::before {
+    @include nhsuk-focused-checkbox;
+}
+
+
+/* Selected state */
+
+.c-checkboxes__input:checked~.c-checkboxes__label::after {
+    opacity: 1;
+}
+
+
+/* Disabled state */
+
+.c-checkboxes__input:disabled,
+.c-checkboxes__input:disabled~.c-checkboxes__label {
+    cursor: default;
+}
+
+.c-checkboxes__input:disabled~.c-checkboxes__label {
+    opacity: .5;
+}
+
+
+/* Divider variant */
+
+.c-checkboxes__divider {
+    $nhsuk-divider-size: $nhsuk-checkboxes-size !default;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: $nhsuk-font-bold;
+    font-size: $nhsuk-spacing-point-3;
+    font-size: $base-font-line-height;
+    color: $nhsuk-text-color;
+    margin-bottom: $nhsuk-spacing-point-2;
+    text-align: center;
+    width: $nhsuk-divider-size;
+}
+
+
+/*
   * Conditional
   *
   * 1. Calculate the amount of padding needed to keep the border
@@ -141,24 +145,30 @@
   * 2. Move the border centered with the checkbox.
   * 3. Move the contents of the conditional inline with the label.
   */
- 
- $conditional-border-width: $nhsuk-border-width-mobile;
- $conditional-border-padding: ($nhsuk-checkboxes-size / 2) - ($conditional-border-width / 2); /* 1 */
- $conditional-margin-left: $conditional-border-padding; /* 2 */
- $conditional-padding-left: $conditional-border-padding + $nhsuk-checkboxes-label-padding-left-right; /* 3 */
- 
- .c-checkboxes__conditional {
-   margin-bottom: $nhsuk-spacing-point-4;//@include nhsuk-responsive-margin(4, 'bottom');
-   border-left: $conditional-border-width solid $nhsuk-form-border-color;
-   margin-left: $conditional-margin-left;
-   padding-left: $conditional-padding-left;
- 
-   & > :last-child {
-     margin-bottom: 0;
-   }
- }
- 
- .js-enabled .c-checkboxes__conditional--hidden {
-   display: none;
- }
- 
+
+$conditional-border-width: $nhsuk-border-width-mobile;
+$conditional-border-padding: ($nhsuk-checkboxes-size / 2) - ($conditional-border-width / 2);
+
+/* 1 */
+
+$conditional-margin-left: $conditional-border-padding;
+
+/* 2 */
+
+$conditional-padding-left: $conditional-border-padding+$nhsuk-checkboxes-label-padding-left-right;
+
+/* 3 */
+
+.c-checkboxes__conditional {
+    margin-bottom: $nhsuk-spacing-point-4; //@include nhsuk-responsive-margin(4, 'bottom');
+    border-left: $conditional-border-width solid $nhsuk-form-border-color;
+    margin-left: $conditional-margin-left;
+    padding-left: $conditional-padding-left;
+    &> :last-child {
+        margin-bottom: 0;
+    }
+}
+
+.js-enabled .c-checkboxes__conditional--hidden {
+    display: none;
+}

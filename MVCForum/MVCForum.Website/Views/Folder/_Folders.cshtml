@@ -23,10 +23,9 @@
 					</a>
 					<span>&nbsp;</span>
 
-					@Html.ActionLink("Delete folder", "DeleteFolder", "Folder", new { @class = "c-button c-button-outline c-button--min-width js-dialog", data_dialog_id = "dialog-delete-confirm" })
+					@Html.ActionLink("Delete folder", "DeleteFolder", "Folder", new { @class = "c-button c-button-outline c-button--min-width js-dialog",  id="modal-close", data_dialog_id = "dialog-delete-confirm", data_target = "dialog-delete-confirm_safari", data_toggle = "c-modal" })
 
-
-<p><strong>Native support: <span id="support"></span></strong></p>
+ 
 					<dialog id="dialog-delete-confirm" class="c-dialog">
 
 						<div class="c-dialog_content c-dialog_content--thin">
@@ -52,6 +51,31 @@
 						</div>
 
 					</dialog>
+
+					<div id="dialog-delete-confirm_safari" class="c-modal c-dialog">
+						<div class="c-modal-window c-dialog_content c-dialog_content--thin">
+
+								<h3>Delete Folder</h3>
+
+								<p class="u-text-bold">
+									Deleting this folder will also delete all its contents including the contents of any sub-folders. Do you wish to continue?
+								</p>
+
+								<div>
+									<button id="close_dialog" class="js-dialog-cancel c-button c-button--outline c-button--full-width" data-dismiss="c-modal">
+										Cancel
+									</button>
+								</div>
+
+								<div>
+									<button id="open_dialog" class="js-dialog-confirm c-button c-button--full-width" data-dismiss="c-modal-accept">
+										Yes, Delete
+									</button>
+								</div> 
+
+							
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

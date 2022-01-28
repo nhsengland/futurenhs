@@ -120,7 +120,7 @@
 		}
 	</button>
 
-	<a href="@Url.RouteUrl("GroupUrls", new { slug = Model.GroupSlug, tab = Constants.GroupForumTab })" class="c-button c-button--outline js-dialog" data-dialog-id="dialog-cancel-create">
+	<a  id="modal-close" href="@Url.RouteUrl("GroupUrls", new { slug = Model.GroupSlug, tab = Constants.GroupForumTab })" class="c-button c-button--outline js-dialog" data-dialog-id="dialog-cancel-create" data_target="dialog-cancel-create_safari" data_toggle="c-modal" >
 		Cancel
 	</a>
     
@@ -150,6 +150,30 @@
             </div>
         
     </dialog>
+	<div id="dialog-delete-confirm_safari" class="c-modal c-dialog">
+		<div class="c-modal-window"> 
+
+			<h3>Entered Data will be lost</h3>
+
+			<p class="u-text-bold">
+				The discussion details will be discarded. <br> 
+				Are you sure you wish to proceed?
+			</p>
+			
+			<div>
+				<button id="close_dialog" class="js-dialog-cancel c-button c-button--outline c-button--full-width" data-dismiss="c-modal">
+					Cancel
+				</button>
+			</div>
+
+			<div>
+				<button id="open_dialog" class="js-dialog-confirm c-button c-button--full-width" data-dismiss="c-modal-accept">
+					Yes, discard
+				</button>
+			</div> 
+
+		</div>
+	</div>
     
 	@*
 		@if (Model.IsTopicStarter)

@@ -56,7 +56,7 @@ else
     }
 
     <li class="c-site-header-nav_sub-nav-item l-col-12" role="none">
-        @Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members", new { @class = "c-button c-button--outline c-site-header-nav_sub-nav-child js-dialog", data_dialog_id="dialog-logout" })
+        @Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members", new { @class = "c-button c-button--outline c-site-header-nav_sub-nav-child js-dialog", id = "modal-close", data_dialog_id = "dialog-logout", data_target="dialog-logout_safari", data_toggle = "c-modal" })
         
         <dialog id="dialog-logout" class="c-dialog">
 
@@ -83,6 +83,30 @@ else
             </div>
         
         </dialog>
+
+        <div id="dialog-logout_safari" class="c-modal c-dialog">
+            <div class="c-modal-window"> 
+
+                    <h3>Log out</h3>
+
+                    <p class="u-text-bold">
+                        Are you sure you would like to log out?
+                    </p>
+                    
+                    <div>
+                        <button id="close_dialog" class="js-dialog-cancel c-button c-button--outline c-button--full-width" data-dismiss="c-modal">
+                            Cancel
+                        </button>
+                    </div>
+
+                    <div>
+                        <button id="open_dialog" class="js-dialog-confirm c-button c-button--full-width" data-dismiss="c-modal-accept">
+                            Yes, Log Out
+                        </button>
+                    </div> 
+
+            </div>
+        </div>
         
 
         
