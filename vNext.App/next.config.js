@@ -23,7 +23,7 @@ module.exports = withPWA({
         quietDeps: true
     },
     images: {
-        domains: ['localhost', '127.0.0.1', 'futurenhs.cds.co.uk'],
+        domains: ['localhost', '127.0.0.1', 'sacdsfnhsdevuksouthpub.blob.core.windows.net', 'futurenhs.cds.co.uk'],
         path: `${assetPrefix}/_next/image`
     },
     assetPrefix: assetPrefix
