@@ -2,7 +2,7 @@ import { Pagination } from '@appTypes/pagination';
 
 declare interface Config {
     pagination: Pagination;
-    defaults?: Pagination;
+    defaults: Pagination;
 }
 
 export const getApiPaginationQueryParams = ({

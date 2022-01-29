@@ -35,7 +35,13 @@ export const getGroupDiscussions = async ({
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
         const { id } = user;
-        const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
+        const paginationQueryParams: string = getApiPaginationQueryParams({ 
+            pagination,
+            defaults: {
+                pageNumber: 1,
+                pageSize: 30
+            } 
+        });
 
         const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions?${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);

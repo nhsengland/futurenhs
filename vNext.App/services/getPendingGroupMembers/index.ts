@@ -34,7 +34,13 @@ export const getPendingGroupMembers = async ({
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
         const id: string = user.id;
-        const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
+        const paginationQueryParams: string = getApiPaginationQueryParams({ 
+            pagination,
+            defaults: {
+                pageNumber: 1,
+                pageSize: 10
+            } 
+        });
 
         const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/pending?${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);

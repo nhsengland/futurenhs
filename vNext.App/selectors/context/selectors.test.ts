@@ -52,8 +52,8 @@ describe('Selectors', () => {
         expect(selectPagination({
             req: {}
         } as any)).toStrictEqual({
-            pageNumber: 1,
-            pageSize: 30  
+            pageNumber: null,
+            pageSize: null  
         });
 
     });

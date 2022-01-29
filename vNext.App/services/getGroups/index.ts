@@ -34,10 +34,16 @@ export const getGroups = async ({
         const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
         const id: string = user.id;
-        const paginationQueryParams: string = getApiPaginationQueryParams({ pagination });
+        const paginationQueryParams: string = getApiPaginationQueryParams({ 
+            pagination,
+            defaults: {
+                pageNumber: 1,
+                pageSize: 10
+            }
+        });
         const memberShipQueryParam: string = isMember ? '&ismember=true' : '&ismember=false';
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups?${paginationQueryParams}${memberShipQueryParam}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups?${paginationQueryParams}${memberShipQueryParam}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiPaginatedResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;

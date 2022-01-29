@@ -15,8 +15,8 @@ export const selectQuery = (context: GetServerSidePropsContext, queryName: strin
 export const selectPagination = (context: GetServerSidePropsContext): Pagination => {
 
     const pagination = {
-        pageNumber: selectQuery(context, 'pageNumber') ? parseInt(decodeURIComponent(selectQuery(context, 'pageNumber')), 10) : 1,
-        pageSize: selectQuery(context, 'pageSize') ? parseInt(decodeURIComponent(selectQuery(context, 'pageSize')), 10) : 30
+        pageNumber: selectQuery(context, 'pageNumber') ? parseInt(decodeURIComponent(selectQuery(context, 'pageNumber')), 10) : null,
+        pageSize: selectQuery(context, 'pageSize') ? parseInt(decodeURIComponent(selectQuery(context, 'pageSize')), 10) : null
     }
 
     return pagination;
