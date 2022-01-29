@@ -32,7 +32,7 @@ export const getGroupFolder = async ({
 
         const id: string = user.id;
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;

@@ -46,7 +46,7 @@ export const getGroupFolderContents = async ({
             } 
         });
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders${folderId ? '/' + folderId + '/contents': ''}?${paginationQueryParams}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}/folders${folderId ? '/' + folderId + '/contents': ''}?${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiPaginatedResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
