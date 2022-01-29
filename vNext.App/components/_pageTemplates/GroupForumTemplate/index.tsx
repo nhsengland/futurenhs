@@ -75,8 +75,8 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                         {dynamicDiscussionsList?.map?.(({ 
                             text, 
                             discussionId, 
-                            totalViewCount, 
-                            totalCommentCount 
+                            viewCount, 
+                            responseCount 
                         }, index) => {
 
                             const { title } = text ?? {};
@@ -95,11 +95,11 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     <div className="c-card_footer u-text-theme-0">
                                         <p className="c-card_footer-item">
                                             <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
-                                            <span>{`${totalCommentCount} Comments`}</span>
+                                            <span>{`${responseCount} Comments`}</span>
                                         </p>
                                         <p className="c-card_footer-item">
                                             <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
-                                            <span>{`${totalViewCount} Views`}</span>
+                                            <span>{`${viewCount} Views`}</span>
                                         </p>
                                     </div>
                                 </Card>

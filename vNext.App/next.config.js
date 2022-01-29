@@ -1,8 +1,7 @@
 const path = require('path');
 const withPWA = require('next-pwa');
 
-const productionAssetprefix = '/gateway/web';
-const assetPrefix = process.env.IS_LOCAL_DEV ? '' : productionAssetprefix;
+const assetPrefix = '';
 
 module.exports = withPWA({
     pwa: {

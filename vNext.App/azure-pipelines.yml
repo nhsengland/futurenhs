@@ -1,13 +1,3 @@
-variables:
-- name: NEXT_PUBLIC_ASSET_PREFIX
-  value: '/gateway/web'
-- name: NEXT_PUBLIC_API_BASE_URL
-  value: 'mockForTests'
-- name: NEXT_PUBLIC_MVC_FORUM_LOGIN_URL
-  value: 'mockForTests'
-- name: NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL
-  value: 'mockForTests'
-
 trigger:
   branches:
     include:
@@ -72,12 +62,6 @@ jobs:
       command: 'custom'
       workingDir: '$(Build.SourcesDirectory)/vNext.App'
       customCommand: 'run test-js'
-
-# - task: Npm@1
-#   displayName: 'Browser tests'
-#   inputs:
-#     command: 'run test-automation'
-#     workingDir: '$(Build.SourcesDirectory)'
 
   - task: CopyFiles@2
     displayName: 'Copy files for artifact'

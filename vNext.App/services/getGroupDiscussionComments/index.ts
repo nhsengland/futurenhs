@@ -58,6 +58,30 @@ export const getGroupDiscussionComments = async ({
 
         apiData.data?.forEach((datum) => {
 
+            console.log(datum)
+              
+
+            // {
+            //     id: '60ac1c59-0344-4f8a-8568-ada50107c0e4',
+            //     content: '<p>fggfdgfdgsg</p>',
+            //     repliesCount: 0,
+            //     likesCount: 0,
+            //     firstRegistered: {
+            //       atUtc: '2021-09-16T16:00:17Z',
+            //       by: {
+            //         id: 'f7a521aa-2746-4507-b50f-ad4000fd15ff',
+            //         name: 'John Waters',
+            //         slug: 'johnnyw'
+            //       }
+            //     },
+            //     currentUser: { created: false, liked: false }
+            //   }
+
+            // createdBy: datum.firstRegistered?.by?.name ?? '',
+            // modifiedBy: datum.lastUpdated?.by?.name ?? '',
+            // modified: datum.lastUpdated?.atUtc ?? '',
+              
+
             serviceResponse.data.push(datum);
 
         });

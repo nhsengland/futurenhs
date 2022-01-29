@@ -4,6 +4,6 @@ export interface Discussion {
         body?: string;
     };
     discussionId?: string;
-    totalViewCount?: number; 
-    totalCommentCount?: number;    
+    responseCount?: number; 
+    viewCount?: number;    
 }

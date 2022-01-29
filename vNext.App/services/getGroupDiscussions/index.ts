@@ -61,8 +61,8 @@ export const getGroupDiscussions = async ({
                     title: datum.title ?? null
                 },
                 discussionId: datum.id,
-                totalCommentCount: datum.totalComments ?? 0,
-                totalViewCount: datum.views ?? 0
+                responseCount: datum.totalComments ?? 0,
+                viewCount: datum.views ?? 0
             });
 
         });
