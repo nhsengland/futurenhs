@@ -196,10 +196,10 @@ builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
 
 //// By default, authentication is not challenged for every request which is ASP.NET Core's default intended behaviour.
 //// So to challenge authentication for every requests please use below FallbackPolicy option.
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+//});
 
 var app = builder.Build();
 
