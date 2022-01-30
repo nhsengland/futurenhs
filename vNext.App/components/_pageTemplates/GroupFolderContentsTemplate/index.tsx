@@ -44,6 +44,12 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
             text: folderText, 
             path } = folder ?? {};
     const { name, body } = folderText ?? {};
+    const { foldersHeading, 
+            noFolders, 
+            createFolder,
+            updateFolder,
+            deleteFolder,
+            createFile } = contentText ?? {};
     
     const hasFolderContents: boolean = folderContentsList?.length > 0;
     const hasAddFileAction: boolean = actions?.includes(userActions.GROUPS_FILES_ADD);
@@ -182,9 +188,9 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                     <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
                                         <p className="u-mb-0">
                                             <Link href={`${groupBasePath}/folders/create`}>
-                                                <a className="c-button c-button--outline u-mr-2 u-drop-shadow">Delete folder</a>
+                                                <a className="c-button c-button--outline u-mr-2 u-drop-shadow">{deleteFolder}</a>
                                             </Link>
-                                            <a href="/" className="c-button c-button--outline u-drop-shadow">Edit folder</a>
+                                            <a href="/" className="c-button c-button--outline u-drop-shadow">{updateFolder}</a>
                                         </p> 
                                     </LayoutColumn>
                                 }
@@ -193,24 +199,27 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                         </>
                     }
                     {!folderId &&
-                        <h2>Files</h2>
+                        <h2>{foldersHeading}</h2>
                     }
                     {body &&
                         <RichText wrapperElementType="p" bodyHtml={body} />
+                    }
+                    {(!hasFolderContents && !folderId) &&
+                        <p className="u-mb-12">{noFolders}</p>
                     }
                     {(hasAddFolderAction || hasAddFileAction) &&
                         <p className="u-mb-10">
                             {hasAddFolderAction &&
                                 <Link href={`${groupBasePath}/folders/create`}>
-                                    <a className="c-button c-button--outline u-mr-2 u-w-72 u-drop-shadow">Add folder</a>
+                                    <a className="c-button c-button--outline u-mr-2 u-w-72 u-drop-shadow">{createFolder}</a>
                                 </Link>
                             }
                             {(folderId && hasAddFileAction) &&
-                                <a href="/" className="c-button c-button--outline u-min-w-70 u-w-72 u-drop-shadow">Upload file</a>
+                                <a href="/" className="c-button c-button--outline u-min-w-70 u-w-72 u-drop-shadow">{createFile}</a>
                             }
                         </p>
                     }
-                    {hasFolderContents &&
+                    {hasFolderContents && 
                         <>
                             <AriaLiveRegion>
                                 <DataGrid 

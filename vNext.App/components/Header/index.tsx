@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import classNames from 'classnames';
-import Image from 'next/image';
 
+import { Image } from '@components/Image';
 import { Link } from '@components/Link';
 import { LayoutWidthContainer } from '@components/LayoutWidthContainer';
 import { ErrorBoundary } from '@components/ErrorBoundary';

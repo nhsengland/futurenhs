@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import Image from 'next/image';
+
+import { Image } from '@components/Image';
 
 import { Props } from './interfaces';
 

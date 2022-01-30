@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
@@ -6,6 +5,7 @@ import classNames from 'classnames';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
+import { Image } from '@components/Image';
 import { SVGIcon } from '@components/SVGIcon';
 import { Accordion } from '@components/Accordion';
 import { TabbedNav } from '@components/TabbedNav';
