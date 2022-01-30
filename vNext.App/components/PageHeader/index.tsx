@@ -36,6 +36,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
     const hasActionsMenuItems: boolean = actionsMenuList?.length > 0;
     const hasMenuItems: boolean = navMenuList?.length > 0;
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
+    const activeMenuItemText: string = navMenuList?.find(({ isActive }) => isActive)?.text;
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,
@@ -49,6 +50,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
         hero: classNames('c-page-header_hero'),
         heroBody: classNames('c-page-header_hero-body'),
         description: classNames('c-page-header_description', 'o-truncated-text-lines-2', 'u-m-0'),
+        actionsWrapper: classNames('u-self-end', 'u-mt-8'),
         actions: classNames('c-page-header_actions', 'u-relative'),
         actionsTrigger: classNames('c-page-header_actions-trigger'),
         actionsTriggerIcon: classNames('c-page-header_actions-trigger-icon'),
@@ -100,7 +102,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
                         }
                     </LayoutColumn>
                     {(shouldRenderActionsMenu && hasActionsMenuItems) &&
-                        <LayoutColumn tablet={4} desktop={3} className="u-self-end">
+                        <LayoutColumn tablet={4} desktop={3} className={generatedClasses.actionsWrapper}>
                             <Accordion  
                                 id={generatedIds.actionsAccordion}
                                 isOpen={isActionsAccordionOpen}
@@ -143,7 +145,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
                         toggleClassName={generatedClasses.navTrigger}
                         toggleChildren={
                             <>
-                                {navMenuTitle}
+                                {activeMenuItemText}
                                 <SVGIcon name={getAccordionIcon(isMenuAccordionOpen)} className={generatedClasses.navTriggerIcon} />
                             </>
                         }

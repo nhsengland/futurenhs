@@ -11,7 +11,7 @@ export const DataGrid: (props: Props) => JSX.Element = ({
     className
 }) => {
 
-    const hasColumnList: boolean = columnList.length > 0;
+    const shouldRenderAdvancedVariant: boolean = columnList.length > 2;
 
     const { caption } = text ?? {}; 
 
@@ -19,27 +19,56 @@ export const DataGrid: (props: Props) => JSX.Element = ({
         wrapper: classNames('c-table', className),
         caption: classNames('c-table_caption', {
             ['u-sr-only']: !shouldRenderCaption
+        }),
+        head: classNames({
+            ['u-sr-only']: shouldRenderAdvancedVariant, 
+            ['tablet:u-not-sr-only']: shouldRenderAdvancedVariant
+        }),
+        bodyRow: classNames({
+            ['u-block']: shouldRenderAdvancedVariant,
+            ['tablet:u-table-row']: shouldRenderAdvancedVariant,
+            ['u-table-row']: !shouldRenderAdvancedVariant,
         })
-    }
+    };
 
     return (
 
         <table id={id} className={generatedClasses.wrapper}>
             <caption className={generatedClasses.caption}>{caption}</caption>
-            {hasColumnList &&
-                <thead>
-                    <tr>
-                        {columnList.map(({ children, className }, index) => <th key={index} className={className}>{children}</th>)}
-                    </tr>
-                </thead>
-            }
+            <thead role="rowgroup" className={generatedClasses.head}>
+                <tr role="row">
+                    {columnList.map(({ children, className }, index) => <th key={index} role="columnheader" scope="col" className={className}>{children}</th>)}
+                </tr>
+            </thead>
             <tbody>
                 {rowList.map((row, index) => {
 
                     return (
                     
-                        <tr key={index}>
-                            {row.map(({ children, className }, index) => <td key={index} className={className}>{children}</td>)}
+                        <tr key={index} role="row" className={generatedClasses.bodyRow}>
+                            {row.map(({ children, className }, index) => {
+
+                                const generatedCellClasses = {
+                                    bodyCell: classNames(className, {
+                                        ['u-flex']: shouldRenderAdvancedVariant,
+                                        ['tablet:u-table-cell']: shouldRenderAdvancedVariant,
+                                        ['u-table-cell']: !shouldRenderAdvancedVariant,
+                                        ['u-justify-between']: shouldRenderAdvancedVariant
+                                    })
+                                };
+                            
+                                return (
+
+                                    <td 
+                                        key={index} 
+                                        role="cell" 
+                                        className={generatedCellClasses.bodyCell}>
+                                            <span className="tablet:u-hidden">{columnList[index].children} </span>{children}
+                                    </td>
+
+                                )
+                                                                
+                            })}
                         </tr>
                     
                     )
