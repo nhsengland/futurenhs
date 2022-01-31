@@ -18,12 +18,12 @@ export const LayoutColumn: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames(className, {
-            [`l-col-${mobile}`]: hasGutters,
-            [`l-col-${tablet}-t`]: hasGutters && Boolean(tablet),
-            [`l-col-${desktop}-d`]: hasGutters && Boolean(desktop),
-            [`l-col-fb-${mobile}`]: !hasGutters,
-            [`l-col-fb-${tablet}-t`]: !hasGutters && Boolean(tablet),
-            [`l-col-fb-${desktop}-d`]: !hasGutters && Boolean(desktop),
+            [`l-col-${mobile}`]: hasGutters && Number(mobile),
+            [`l-col-${tablet}-t`]: hasGutters && Number(tablet),
+            [`l-col-${desktop}-d`]: hasGutters && Number(desktop),
+            [`l-col-fb-${mobile}`]: !hasGutters && Number(mobile),
+            [`l-col-fb-${tablet}-t`]: !hasGutters && Number(tablet),
+            [`l-col-fb-${desktop}-d`]: !hasGutters && Number(desktop),
         })
     };
 

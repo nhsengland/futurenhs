@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
+import { mediaQueries } from '@constants/css';
 import Head from '@components/DocumentHead';
 import { ErrorBoundary } from '@components/ErrorBoundary';
 import { Header } from '@components/Header';
@@ -15,6 +16,7 @@ import { RichText } from '@components/RichText';
 import { mainNavMenuList, footerNavMenuList } from '@constants/navigation';
 import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb';
 import { BreadCrumbList } from '@appTypes/routing';
+import { useMediaQuery } from '@hooks/useMediaQuery';
 
 import { Props } from './interfaces';
 
@@ -32,6 +34,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
+    const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
 
     const currentPathName: string = router?.pathname;
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || '';
@@ -63,6 +66,8 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
         breadCrumb: classNames('u-bg-theme-1', 'u-tablet-up'),
         main: classNames('u-flex u-flex-grow'),
         content: classNames({
+            ['u-m-0']: shouldRenderMainNav && isMobile,
+            ['u-max-w-full']: shouldRenderMainNav && isMobile,
             ['u-w-0']: shouldRenderMainNav,
             ['u-w-full']: !shouldRenderMainNav
         })

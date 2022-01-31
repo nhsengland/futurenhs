@@ -24,11 +24,7 @@
 
     &_nav {
         background-color: $light-mid-grey;
-        padding: 32px 40px;
-
-        @include respond-to(desktop) {
-            padding: 38px 0;
-        }
+        padding: $nhsuk-spacing-point-6 0;
     }
 
     &_copyright {
