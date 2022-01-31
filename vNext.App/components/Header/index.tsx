@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import classNames from 'classnames';
 
+import { initials } from '@helpers/formatters/initials';
 import { Image } from '@components/Image';
 import { Link } from '@components/Link';
 import { LayoutWidthContainer } from '@components/LayoutWidthContainer';
@@ -43,7 +44,8 @@ export const Header: (props: Props) => JSX.Element = ({
     const [isUserAccordionOpen, setIsUserAccordionOpen] = useState(false);
 
     const { text: userText } = user ?? {};
-    const { userName, initials } = userText ?? {};
+    const { userName } = userText ?? {};
+    const userInitials: string = initials()(userName);
 
     const { editProfile,
             logOut,
@@ -55,7 +57,6 @@ export const Header: (props: Props) => JSX.Element = ({
     const headerAccordionId: string = 'header-accordion';
     const userAccordionId: string = 'user-accordion';
     const logOutRoute: string = routes.LOG_OUT;
-    const hasNavigationContent: boolean = shouldRenderNavigation && Boolean(user);
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
     const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
     const handleAccordionToggle = (id: string, isOpen: boolean) => {
@@ -124,7 +125,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                             toggleChildren={
                                                                 <>
                                                                     <span className="c-site-header-nav_root-nav-image">
-                                                                        <Avatar image={null} initials={initials} />
+                                                                        <Avatar image={null} initials={userInitials} />
                                                                     </span>
                                                                     <span>{capitalise()(userName)}</span>
                                                                     <SVGIcon name={getAccordionIcon(isUserAccordionOpen)} className="c-site-header-nav_root-nav-icon" />

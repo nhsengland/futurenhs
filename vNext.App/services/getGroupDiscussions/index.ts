@@ -68,7 +68,21 @@ export const getGroupDiscussions = async ({
                 },
                 discussionId: datum.id,
                 responseCount: datum.totalComments ?? 0,
-                viewCount: datum.views ?? 0
+                viewCount: datum.views ?? 0,
+                createdBy: {
+                    id: datum.firstRegistered?.by?.id ?? '',
+                    text: {
+                        userName: datum.firstRegistered?.by?.name ?? ''
+                    }
+                },
+                created: datum.lastUpdated?.atUtc ?? '',
+                modifiedBy: {
+                    id: datum.lastComment?.by?.id ?? '',
+                    text: {
+                        userName: datum.lastComment?.by?.name ?? ''
+                    }
+                },
+                modified: datum.lastUpdated?.atUtc ?? '',
             });
 
         });

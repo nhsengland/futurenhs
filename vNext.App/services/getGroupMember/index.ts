@@ -53,7 +53,6 @@ export const getGroupMember = async ({
             id: apiData.id ?? '',
             firstName: apiData.firstName ?? '',
             lastName: apiData.lastName ?? '',
-            initials: apiData.initials ?? '',
             email: apiData.email ?? '',
             pronouns: apiData.pronouns ?? '',
             role: apiData.role ?? '',

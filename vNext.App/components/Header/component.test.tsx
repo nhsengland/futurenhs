@@ -16,8 +16,7 @@ const testProps: Props = {
     user: {
         id: '12345',
         text: {
-            userName: 'Mock Name',
-            initials: 'MN'
+            userName: 'Mock Name'
         },
         image: {
             source: '/img.jpg',

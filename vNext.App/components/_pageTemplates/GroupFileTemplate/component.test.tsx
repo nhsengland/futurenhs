@@ -18,7 +18,11 @@ describe('Group file template', () => {
     const props: Props = {
         id: 'mockId',
         fileId: 'mockId',
-        file: {},
+        file: {
+            id: 'mockId',
+            type: 'file',
+            name: 'Mock file name'
+        },
         user: undefined,
         actions: [],
         contentText: null,

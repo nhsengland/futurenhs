@@ -97,7 +97,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                     {createdBy &&
                         <p className="u-mb-14">
                             <span className="u-text-bold u-mr-6">Owner</span>
-                            <Link href={`${groupBasePath}/members/${createdBy.id}`}>{createdBy.name}</Link>
+                            <Link href={`${groupBasePath}/members/${createdBy.id}`}>{createdBy.text.userName}</Link>
                         </p>
                     }
                     <DataGrid

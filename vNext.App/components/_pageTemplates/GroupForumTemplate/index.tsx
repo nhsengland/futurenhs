@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { initials } from '@helpers/formatters/initials';
 import { Link } from '@components/Link';
 import { Avatar } from '@components/Avatar';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
@@ -84,10 +85,15 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     text, 
                                     discussionId, 
                                     viewCount, 
-                                    responseCount 
+                                    responseCount,
+                                    created,
+                                    createdBy,
+                                    modified,
+                                    modifiedBy 
                                 }, index) => {
         
                                     const { title } = text ?? {};
+                                    const userInitials: string = initials()(createdBy.text.userName);
         
                                     return (
         
@@ -98,7 +104,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                 </Link>        
                                             </h3>
                                             <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                <Avatar image={null} initials="RI" className="u-block u-h-12 u-w-12" />
+                                                <Avatar image={null} initials={userInitials} className="u-block u-h-12 u-w-12" />
                                             </p>
                                             <div className="c-card_footer u-text-theme-0">
                                                 <p className="c-card_footer-item">

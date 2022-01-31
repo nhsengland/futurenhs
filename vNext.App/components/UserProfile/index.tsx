@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { initials } from '@helpers/formatters/initials';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { Avatar } from '@components/Avatar';
@@ -14,8 +15,7 @@ export const UserProfile: (props: Props) => JSX.Element = ({
     className
 }) => {
 
-    const { initials,
-            firstName,
+    const { firstName,
             lastName,
             pronouns,
             email } = member ?? {};
@@ -25,6 +25,8 @@ export const UserProfile: (props: Props) => JSX.Element = ({
             lastNameLabel, 
             pronounsLabel, 
             emailLabel } = text;
+
+    const userInitials: string = initials()(`${firstName} ${lastName}`);
 
     const generatedClasses: any = {
         wrapper: classNames('c-profile', className),
@@ -39,7 +41,7 @@ export const UserProfile: (props: Props) => JSX.Element = ({
 
         <LayoutColumnContainer className={generatedClasses.wrapper}>
             <LayoutColumn mobile={0} tablet={0} desktop={0}>
-                <Avatar image={image} initials={initials} className={generatedClasses.image} />
+                <Avatar image={image} initials={userInitials} className={generatedClasses.image} />
             </LayoutColumn>
             <LayoutColumn tablet={7} desktop={8}>
                 <h2 className={generatedClasses.heading}>{heading}</h2>

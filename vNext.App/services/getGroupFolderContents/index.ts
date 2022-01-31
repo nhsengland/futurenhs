@@ -69,8 +69,18 @@ export const getGroupFolderContents = async ({
                 id: datum.id ?? '',
                 type: datum.type?.toLowerCase() ?? '',
                 name: datum.name ?? '',
-                createdBy: datum.firstRegistered?.by?.name ?? '',
-                modifiedBy: datum.lastUpdated?.by?.name ?? '',
+                createdBy: {
+                    id: datum.firstRegistered?.by?.id ?? '',
+                    text: {
+                        userName: datum.firstRegistered?.by?.name ?? ''
+                    }
+                },
+                modifiedBy: {
+                    id: datum.lastUpdated?.by?.id ?? '',
+                    text: {
+                        userName: datum.lastUpdated?.by?.name ?? ''
+                    }
+                },
                 modified: datum.lastUpdated?.atUtc ?? '',
                 extension: datum.additionalMetadata?.fileExtension ?? '',
                 text: {

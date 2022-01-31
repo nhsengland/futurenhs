@@ -111,7 +111,6 @@ describe('getAuth service', () => {
                 json: {
                     Id: 'mockId',
                     Username: 'mockUserNameText',
-                    Initials: 'mockInitialsText',
                     UserAvatar: {
                         Source: '/mockSrc',
                         AltText: 'mockAltText'
@@ -136,8 +135,7 @@ describe('getAuth service', () => {
             data: {
                 id: 'mockId',
                 text: {
-                    userName: 'mockUserNameText',
-                    initials: 'mockInitialsText',
+                    userName: 'mockUserNameText'
                 },
                 image: {
                     source: '/mockSrc',

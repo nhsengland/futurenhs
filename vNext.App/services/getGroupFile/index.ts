@@ -60,11 +60,15 @@ export const getGroupFile = async ({
             },
             createdBy: {
                 id: apiData.firstRegistered?.by?.id,
-                name: apiData.firstRegistered?.by?.name
+                text: {
+                    userName: apiData.firstRegistered?.by?.name
+                }
             },
             modifiedBy: {
                 id: apiData.lastUpdated?.by?.id,
-                name: apiData.lastUpdated?.by?.name
+                text: {
+                    userName: apiData.lastUpdated?.by?.name
+                }
             },
             modified: apiData.lastUpdated?.atUtc,
             path: reversedPath.map(({ id, name }) => ({

@@ -2,9 +2,8 @@ export interface User {
     id: string;
     text: {
         userName: string;
-        initials: string;
     };
-    image: {
+    image?: {
         source: string;
         altText: string;
     };    

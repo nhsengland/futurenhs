@@ -4,8 +4,7 @@ import { User } from '@appTypes/user';
 const mockUser: User = { 
     id: 'mockUserId',
     text: {
-        userName: '',
-        initials: ''
+        userName: ''
     },
     image: {
         source: '',

@@ -128,7 +128,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     children: <RichText bodyHtml={body} wrapperElementType='span' className='o-truncated-text-lines-3' />
                 },
                 {
-                    children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({})(modified)}</p>${modifiedBy && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy + '</p>'}${createdBy && '<p><span class="u-text-bold">Author</span> ' + createdBy + '</p>'}`} />,
+                    children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({})(modified)}</p>${modifiedBy?.text?.userName && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy.text.userName + '</p>'}${createdBy?.text?.userName && '<p><span class="u-text-bold">Author</span> ' + createdBy.text.userName + '</p>'}`} />,
                     className: 'u-w-1/4'
                 },
                 {

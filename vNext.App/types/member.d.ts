@@ -5,7 +5,6 @@ export interface Member {
     firstName?: string;
     lastName?: string;
     fullName?: string;
-    initials?: string;
     pronouns?: string;
     email?: string;
     requestDate?: string;
