@@ -25,7 +25,7 @@
                     SELECT 
                         Id AS Id,
                         Username As Username,
-                        TRIM(ISNULL(FirstName, '') + ' ' + ISNULL(Surname, '')) AS FullNameText,
+                        TRIM(ISNULL(FirstName, '') + ' ' + ISNULL(Surname, '')) AS FullName,
                         Initials AS Initials
                     FROM MembershipUser where Username = @Username
                 ";
