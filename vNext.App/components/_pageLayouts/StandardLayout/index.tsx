@@ -80,7 +80,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
             <Header
                 skipLinkList={skipLinkList}
                 text={{
-                    editProfile: 'Edit profile',
+                    editProfile: 'My profile',
                     logOut: 'Log out',
                     logOutHeading: 'Log out', 
                     logOutBody: 'Are you sure you would like to log out?',

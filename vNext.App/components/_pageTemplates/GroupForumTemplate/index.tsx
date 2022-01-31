@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { routeParams } from '@constants/routes';
+import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { initials } from '@helpers/formatters/initials';
+import { dateTime } from '@helpers/formatters/dateTime';
 import { Link } from '@components/Link';
 import { Avatar } from '@components/Avatar';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
@@ -25,12 +28,18 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     discussionsList
 }) => {
 
-    const { asPath } = useRouter();
+    const router = useRouter();
 
     const [dynamicDiscussionsList, setDiscussionsList] = useState(discussionsList);
     const [dynamicPagination, setPagination] = useState(pagination);
 
     const hasDiscussions: boolean = dynamicDiscussionsList.length > 0;
+
+    const groupBasePath: string = getRouteToParam({
+        router: router,
+        paramName: routeParams.GROUPID,
+        shouldIncludeParam: true
+    });
 
     const { discussionsHeading, 
             noDiscussions, 
@@ -93,18 +102,29 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                 }, index) => {
         
                                     const { title } = text ?? {};
-                                    const userInitials: string = initials()(createdBy.text.userName);
+                                    const creatorUserInitials: string = initials()(createdBy.text.userName);
+                                    const creatorUserName: string = createdBy.text.userName;
+                                    const creatorUserId: string = createdBy.id;
+                                    const createdDate: string = dateTime({})(created);
+                                    const lastCommentUserName: string = modifiedBy.text.userName;
+                                    const lastCommentDate: string = dateTime({})(modified);
         
                                     return (
         
                                         <Card key={index} className="u-border-bottom-theme-10 u-mb-4">
                                             <h3 className="c-card_heading desktop:u-mb-4">
-                                                <Link href={`${asPath}/${discussionId}`}>
+                                                <Link href={`${router.asPath}/${discussionId}`}>
                                                     <a>{title}</a>
                                                 </Link>        
                                             </h3>
-                                            <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                <Avatar image={null} initials={userInitials} className="u-block u-h-12 u-w-12" />
+                                            <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2 u-flex">
+                                                <Avatar image={null} initials={creatorUserInitials} className="u-block u-h-12 u-w-12 u-mr-4" />
+                                                <span className="u-m-0">
+                                                    <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
+                                                    {responseCount > 0 &&
+                                                        <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
+                                                    }
+                                                </span>
                                             </p>
                                             <div className="c-card_footer u-text-theme-0">
                                                 <p className="c-card_footer-item">
@@ -133,7 +153,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                         {...dynamicPagination} />                
                 </LayoutColumn>
                 <LayoutColumn tablet={4} className="u-px-4 u-py-10">
-                    <Link href={`${asPath}/create`}>
+                    <Link href={`${router.asPath}/create`}>
                         <a className="c-button u-w-full">{createDiscussion}</a>
                     </Link>
                 </LayoutColumn>

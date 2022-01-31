@@ -75,14 +75,14 @@ export const getGroupDiscussions = async ({
                         userName: datum.firstRegistered?.by?.name ?? ''
                     }
                 },
-                created: datum.lastUpdated?.atUtc ?? '',
+                created: datum.firstRegistered?.atUtc ?? '',
                 modifiedBy: {
                     id: datum.lastComment?.by?.id ?? '',
                     text: {
                         userName: datum.lastComment?.by?.name ?? ''
                     }
                 },
-                modified: datum.lastUpdated?.atUtc ?? '',
+                modified: datum.lastComment?.atUtc ?? '',
             });
 
         });
