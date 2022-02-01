@@ -9,6 +9,7 @@ import { Link } from '@components/Link';
 import { Avatar } from '@components/Avatar';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
+import { UserMeta } from '@components/UserMeta';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { Card } from '@components/Card';
@@ -117,15 +118,17 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                     <a>{title}</a>
                                                 </Link>        
                                             </h3>
-                                            <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2 u-flex">
-                                                <Avatar image={null} initials={creatorUserInitials} className="u-block u-h-12 u-w-12 u-mr-4" />
-                                                <span className="u-m-0">
+                                            <UserMeta
+                                                image={null}
+                                                text={{
+                                                    initials: creatorUserInitials
+                                                }}
+                                                className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
                                                     <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
                                                     {responseCount > 0 &&
                                                         <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
                                                     }
-                                                </span>
-                                            </p>
+                                            </UserMeta>
                                             <div className="c-card_footer u-text-theme-0">
                                                 <p className="c-card_footer-item">
                                                     <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
