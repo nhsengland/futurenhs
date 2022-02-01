@@ -30,7 +30,9 @@ export class ErrorBoundary extends React.PureComponent<Props, State> {
      */
     public componentDidCatch(error: any): void {
 
-        console.error(error);
+        const { boundaryId } = this.props;
+
+        console.error(`An error ooccured within boundary with id ${boundaryId}: `, error);
         console.error(this.props);
 
         this.setState({

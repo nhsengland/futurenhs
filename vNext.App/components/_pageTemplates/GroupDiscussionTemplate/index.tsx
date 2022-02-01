@@ -108,10 +108,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                     isLiked 
                                 }, index) => {
 
-                                    const commenterUserInitials: string = createdBy && initials()(createdBy?.text?.userName);
+                                    const commenterUserInitials: string = initials()(createdBy?.text?.userName);
                                     const commenterUserName: string = createdBy?.text?.userName;
                                     const commenterUserId: string = createdBy?.id;
-                                    const commentCreatedDate: string = created && dateTime({})(created);
+                                    const commentCreatedDate: string = dateTime({})(created);
 
                                     const { body } = text ?? {};
 

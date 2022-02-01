@@ -80,7 +80,7 @@ export const Header: (props: Props) => JSX.Element = ({
         <header id="nav" className="c-site-header">
             <SkipLinks linkList={skipLinkList} />
             <LayoutWidthContainer className="c-site-header_content">
-                <ErrorBoundary>
+                <ErrorBoundary boundaryId="site-header">
                     <Link href="/">
                         <a className="c-site-header_logo u-focus-item">
                             <Image 

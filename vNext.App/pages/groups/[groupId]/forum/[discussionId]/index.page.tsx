@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                     props.discussion = groupDiscussion.data;
                     props.discussionComments = groupDiscussionComments.data;
                     props.pagination = groupDiscussionComments.pagination;
-                    props.errors = [...props.errors, ...groupDiscussion.errors, ...groupDiscussionComments.errors];
+                    // props.errors = [...props.errors, ...groupDiscussion.errors, ...groupDiscussionComments.errors];
 
                 } catch (error) {
 

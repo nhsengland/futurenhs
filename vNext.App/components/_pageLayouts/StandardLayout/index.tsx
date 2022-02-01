@@ -96,7 +96,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 {shouldRenderPhaseBanner &&
                     <div className="u-bg-theme-3">
                         <LayoutWidthContainer>
-                            <ErrorBoundary>
+                            <ErrorBoundary boundaryId="phase-banner">
                                 <PhaseBanner text={{
                                     tag: 'alpha',
                                     body: 'This is a new service – your <a href="http://www.google.co.uk">feedback</a> will help us to improve it.'
@@ -108,7 +108,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 {shouldRenderBreadCrumb &&
                     <div className={generatedClasses.breadCrumb}>
                         <LayoutWidthContainer>
-                            <ErrorBoundary>
+                            <ErrorBoundary boundaryId="bread-crumb">
                                 <LayoutColumnContainer className="u-py-4">
                                     <LayoutColumn tablet={8}>
                                         <BreadCrumb 
@@ -134,7 +134,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 }
                 <div className="u-overflow-hidden u-flex u-h-full">
                     <LayoutWidthContainer className={generatedClasses.main}>
-                        <ErrorBoundary>
+                        <ErrorBoundary boundaryId="main-content">
                             {shouldRenderMainNav &&
                                 <>
                                     <LayoutColumn hasGutters={false} mobile={0}>

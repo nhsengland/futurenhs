@@ -1,7 +1,5 @@
 import classNames from 'classnames';
 
-import { ErrorBoundary } from '@components/ErrorBoundary';
-
 import { Props } from './interfaces';
 
 export const PageBody: (props: Props) => JSX.Element = ({
@@ -16,9 +14,7 @@ export const PageBody: (props: Props) => JSX.Element = ({
     return (
 
         <div className={generatedClasses.wrapper}>
-            <ErrorBoundary>
-                {children}
-            </ErrorBoundary>
+            {children}
         </div>
 
     )

@@ -6,6 +6,7 @@ import { routeParams } from '@constants/routes';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { PageHeader } from '@components/PageHeader';
+import { ErrorBoundary } from '@components/ErrorBoundary';
 import { getActionNavMenuList } from '@helpers/actions/getActionNavMenuList';
 import { getGroupNavMenuList } from '@helpers/routing/getGroupNavMenuList';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
@@ -57,19 +58,23 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                 <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>
-                <PageHeader 
-                    id="group"
-                    text={{
-                        mainHeading: mainHeading, 
-                        description: strapLine,
-                        navMenuTitle: 'Group menu'
-                    }}
-                    image={image}
-                    shouldRenderActionsMenu={true}
-                    actionsMenuList={actionsMenuList}
-                    navMenuList={navMenuList}
-                    className="u-bg-theme-14" />
-                {children}
+                <ErrorBoundary boundaryId="group-page-header">
+                    <PageHeader 
+                        id="group"
+                        text={{
+                            mainHeading: mainHeading, 
+                            description: strapLine,
+                            navMenuTitle: 'Group menu'
+                        }}
+                        image={image}
+                        shouldRenderActionsMenu={true}
+                        actionsMenuList={actionsMenuList}
+                        navMenuList={navMenuList}
+                        className="u-bg-theme-14" />
+                </ErrorBoundary>
+                <ErrorBoundary boundaryId="group-page-body">
+                    {children}
+                </ErrorBoundary>
             </LayoutColumnContainer>
         </StandardLayout>
 
