@@ -10,6 +10,7 @@ import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { RichText } from '@components/RichText';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { ErrorBoundary } from '@components/ErrorBoundary';
 import { BackLink } from '@components/BackLink';
 import { UserMeta } from '@components/UserMeta';
 import { Like } from '@components/Like';
@@ -63,49 +64,50 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <GroupLayout 
+        <GroupLayout
             id="forum"
             user={user}
             actions={actions}
             text={entityText}
-            image={image} 
+            image={image}
             className="u-bg-theme-3">
-                <LayoutColumn className="c-page-body">
-                    <BackLink 
-                        href={backLinkHref}
-                        text={{
-                            link: "Back to discussions"
-                        }} />
-                    <h2 className="u-text-5xl">{title}</h2>
-                    {body &&
-                        <RichText bodyHtml={body} className="u-mb-8" />
+            <LayoutColumn className="c-page-body">
+                <BackLink
+                    href={backLinkHref}
+                    text={{
+                        link: "Back to discussions"
+                    }} />
+                <h2 className="u-text-5xl">{title}</h2>
+                {body &&
+                    <RichText bodyHtml={body} className="u-mb-8" />
+                }
+                <UserMeta
+                    image={null}
+                    text={{
+                        initials: creatorUserInitials
+                    }}
+                    className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                    <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
+                    {(responseCount > 0 && lastCommentUserName) &&
+                        <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
                     }
-                    <UserMeta
-                        image={null}
-                        text={{
-                            initials: creatorUserInitials
-                        }}
-                        className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                            <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
-                            {(responseCount > 0 && lastCommentUserName) &&
-                                <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
-                            }
-                    </UserMeta>
-                    <hr />
-                    {totalRecords > 0 &&
-                        <p className="u-text-lead u-text-bold">
-                            {`${totalRecords} comments`}
-                        </p>
-                    }
+                </UserMeta>
+                <hr />
+                {totalRecords > 0 &&
+                    <p className="u-text-lead u-text-bold">
+                        {`${totalRecords} comments`}
+                    </p>
+                }
+                <ErrorBoundary boundaryId="group-discussion-comments">
                     <AriaLiveRegion>
                         {hasDiscussionComments &&
                             <ul className="u-list-none u-p-0">
-                                {discussionComments?.map(({ 
-                                    created, 
-                                    createdBy, 
-                                    text, 
-                                    likeCount, 
-                                    isLiked 
+                                {discussionComments?.map(({
+                                    created,
+                                    createdBy,
+                                    text,
+                                    likeCount,
+                                    isLiked
                                 }, index) => {
 
                                     const commenterUserInitials: string = initials()(createdBy?.text?.userName);
@@ -116,7 +118,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                     const { body } = text ?? {};
 
                                     return (
-                                    
+
                                         <li key={index}>
                                             <Card className="">
                                                 <header>
@@ -126,13 +128,17 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                             initials: commenterUserInitials
                                                         }}
                                                         className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                            <span className="u-text-bold u-block"><Link href={`${groupBasePath}/members/${commenterUserId}`}>{commenterUserName}</Link></span>
-                                                            <span className="u-block">{commentCreatedDate}</span>
+                                                        <span className="u-text-bold u-block">
+                                                            <Link href={`${groupBasePath}/members/${commenterUserId}`}>
+                                                                <a>{commenterUserName}</a>
+                                                            </Link>
+                                                        </span>
+                                                        <span className="u-block">{commentCreatedDate}</span>
                                                     </UserMeta>
                                                 </header>
                                                 <RichText bodyHtml={body} className="u-mb-6" />
                                                 <footer>
-                                                    <Like 
+                                                    <Like
                                                         id="todo"
                                                         likeCount={likeCount}
                                                         isLiked={isLiked}
@@ -140,7 +146,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                         text={{
                                                             countSingular: 'like',
                                                             countPlural: 'likes'
-                                                        }}  />
+                                                        }} />
                                                 </footer>
                                             </Card>
                                         </li>
@@ -151,26 +157,27 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                             </ul>
                         }
                     </AriaLiveRegion>
-                    {user &&
-                        <>
-                            <h3 className="u-text-3xl">Join in the conversation</h3>
-                            <p className="u-text-bold">You're signed in <Link href={`${groupBasePath}/members/${id}`}>{userName}</Link></p>
-                            <FormWithErrorSummary 
-                                csrfToken="" 
-                                fields={createCommentfields}
-                                errors={[]}
-                                text={{
-                                    errorSummary: {
-                                        body: ''
-                                    },
-                                    form: {
-                                        submitButton: 'Add comment'
-                                    }
-                                }}
-                                submitAction={() => {}}/>
-                        </>
-                    }
-                </LayoutColumn>
+                </ErrorBoundary>
+                {user &&
+                    <>
+                        <h3 className="u-text-3xl">Join in the conversation</h3>
+                        <p className="u-text-bold">You're signed in <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
+                        <FormWithErrorSummary
+                            csrfToken=""
+                            fields={createCommentfields}
+                            errors={[]}
+                            text={{
+                                errorSummary: {
+                                    body: ''
+                                },
+                                form: {
+                                    submitButton: 'Add comment'
+                                }
+                            }}
+                            submitAction={() => { }} />
+                    </>
+                }
+            </LayoutColumn>
         </GroupLayout>
 
     )
