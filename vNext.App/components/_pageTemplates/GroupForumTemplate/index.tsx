@@ -6,7 +6,6 @@ import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { initials } from '@helpers/formatters/initials';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { Link } from '@components/Link';
-import { Avatar } from '@components/Avatar';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { UserMeta } from '@components/UserMeta';

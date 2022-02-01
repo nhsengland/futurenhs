@@ -50,7 +50,7 @@ export const Form: (props: Props) => JSX.Element = ({
                             component={formComponents.hidden} 
                             defaultValue={csrfToken} />
                         <div className={generatedClasses.body}>
-                            {fields.map(({ 
+                            {fields?.map(({ 
                                 name, 
                                 inputType, 
                                 text, 

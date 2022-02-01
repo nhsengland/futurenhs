@@ -12,7 +12,7 @@ export const validate = (submission: any, fields: Array<FormField>): Record<stri
 
     const errors: any = {};
 
-    fields.forEach(({ name, validators }) => {
+    fields?.forEach(({ name, validators }) => {
 
         if(validators?.length > 0){
 

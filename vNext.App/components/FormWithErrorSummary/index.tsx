@@ -23,7 +23,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
 
     const errorSummaryRef: any = useRef();
     const [validationErrors, setValidationErrors] = useState(errors ? errors : []);
-    const relatedNames: Array<string> = fields.map(({ name }) => name);
+    const relatedNames: Array<string> = fields?.map(({ name }) => name);
 
     const handleChange = useCallback(({ errors, submitErrors, submitFailed, modifiedSinceLastSubmit }): any => {
 

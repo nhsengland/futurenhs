@@ -15,3 +15,11 @@ export interface Discussion {
     modified?: string;
     isSticky?: boolean;
 }
+
+export interface DiscussionComment {
+    createdBy?: Partial<User>;
+    createdBy?: Partial<User>;
+    created?: string;
+    modifiedBy?: Partial<User>;
+    modified?: string;
+}

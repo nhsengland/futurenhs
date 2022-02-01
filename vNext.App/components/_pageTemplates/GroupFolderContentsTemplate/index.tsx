@@ -96,6 +96,17 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
 
     const hasBreadCrumb: boolean = breadCrumbList.length > 0;
 
+    const iconMap = {
+        ['.doc']: 'icon-docx',
+        ['.docx']: 'icon-docx',
+        ['.xls']: 'icon-xls',
+        ['.xlsx']: 'icon-xls',
+        ['.ppt']: 'icon-ppt',
+        ['.pptx']: 'icon-ppt',
+        ['.pdf']: 'icon-pdf',
+        ['.txt']: 'icon-document'
+    };
+
     const gridRowList = useMemo(() => folderContentsList?.map(({ 
         id,
         type, 
@@ -111,13 +122,11 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
             const isFolder: boolean = type === 'folder';
             const href: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
 
-            let iconName: string = extension?.split('.')?.[1] ?? (isFolder ? 'folder' : '');
-
-            iconName = iconName === 'doc' ? 'docx' : iconName;
+            let iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
 
             return [
                 {
-                    children: <><SVGIcon name={`icon-${iconName}`} className="u-w-4 u-h-6" /><span className="u-block u-text-bold">{extension}</span></>,
+                    children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-block u-text-bold">{extension}</span></>,
                     className: 'u-text-center u-text-base'
                 },
                 {

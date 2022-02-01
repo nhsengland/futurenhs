@@ -4,7 +4,7 @@ import { getClientPaginationFromApi } from '@helpers/routing/getClientPagination
 import { ServicePaginatedResponse } from '@appTypes/service';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse } from '@appTypes/service';
-import { Discussion } from '@appTypes/discussion';
+import { DiscussionComment } from '@appTypes/discussion';
 import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
 
@@ -25,11 +25,11 @@ export const getGroupDiscussionComments = async ({
     discussionId,
     user,
     pagination
-}: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<Discussion>>> => {
+}: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<DiscussionComment>>> => {
 
     try {
 
-        const serviceResponse: ServicePaginatedResponse<Array<Discussion>> = {
+        const serviceResponse: ServicePaginatedResponse<Array<DiscussionComment>> = {
             data: []
         };
 
@@ -61,34 +61,18 @@ export const getGroupDiscussionComments = async ({
             }
 
         }
-
+            
         apiData.data?.forEach((datum) => {
 
-            console.log(datum)
-              
-
-            // {
-            //     id: '60ac1c59-0344-4f8a-8568-ada50107c0e4',
-            //     content: '<p>fggfdgfdgsg</p>',
-            //     repliesCount: 0,
-            //     likesCount: 0,
-            //     firstRegistered: {
-            //       atUtc: '2021-09-16T16:00:17Z',
-            //       by: {
-            //         id: 'f7a521aa-2746-4507-b50f-ad4000fd15ff',
-            //         name: 'John Waters',
-            //         slug: 'johnnyw'
-            //       }
-            //     },
-            //     currentUser: { created: false, liked: false }
-            //   }
-
-            // createdBy: datum.firstRegistered?.by?.name ?? '',
-            // modifiedBy: datum.lastUpdated?.by?.name ?? '',
-            // modified: datum.lastUpdated?.atUtc ?? '',
-              
-
-            serviceResponse.data.push(datum);
+            serviceResponse.data.push({
+                createdBy: {
+                    id: datum.firstRegistered?.by?.id ?? '',
+                    text: {
+                        userName: datum.firstRegistered?.by?.name ?? ''
+                    }
+                },
+                created: datum.firstRegistered?.atUtc ?? ''
+            });
 
         });
 

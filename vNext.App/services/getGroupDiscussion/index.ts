@@ -54,7 +54,23 @@ export const getGroupDiscussion = async ({
             text: {
                 title: apiData?.title,
                 body: apiData?.description
-            }
+            },
+            responseCount: apiData.totalComments ?? 0,
+            viewCount: apiData.views ?? 0,
+            createdBy: {
+                id: apiData.firstRegistered?.by?.id ?? '',
+                text: {
+                    userName: apiData.firstRegistered?.by?.name ?? ''
+                }
+            },
+            created: apiData.firstRegistered?.atUtc ?? '',
+            modifiedBy: {
+                id: apiData.lastComment?.by?.id ?? '',
+                text: {
+                    userName: apiData.lastComment?.by?.name ?? ''
+                }
+            },
+            modified: apiData.lastComment?.atUtc ?? '',
         };
 
         return serviceResponse;
