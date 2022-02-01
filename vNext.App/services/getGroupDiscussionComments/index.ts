@@ -65,13 +65,18 @@ export const getGroupDiscussionComments = async ({
         apiData.data?.forEach((datum) => {
 
             serviceResponse.data.push({
+                text: {
+                    body: datum.content
+                },
                 createdBy: {
                     id: datum.firstRegistered?.by?.id ?? '',
                     text: {
                         userName: datum.firstRegistered?.by?.name ?? ''
                     }
                 },
-                created: datum.firstRegistered?.atUtc ?? ''
+                created: datum.firstRegistered?.atUtc ?? '',
+                likeCount: datum.likesCount ?? 0,
+                isLiked: datum.currentUser?.liked
             });
 
         });

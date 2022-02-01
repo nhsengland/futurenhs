@@ -12,12 +12,12 @@ import { RichText } from '@components/RichText';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BackLink } from '@components/BackLink';
 import { UserMeta } from '@components/UserMeta';
+import { Like } from '@components/Like';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';
-import { Avatar } from '@components/Avatar';
 
 export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     groupId,
@@ -100,26 +100,48 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     <AriaLiveRegion>
                         {hasDiscussionComments &&
                             <ul className="u-list-none u-p-0">
-                                {discussionComments?.map(({ created, createdBy }, index) => {
+                                {discussionComments?.map(({ 
+                                    created, 
+                                    createdBy, 
+                                    text, 
+                                    likeCount, 
+                                    isLiked 
+                                }, index) => {
 
                                     const commenterUserInitials: string = createdBy && initials()(createdBy?.text?.userName);
                                     const commenterUserName: string = createdBy?.text?.userName;
                                     const commenterUserId: string = createdBy?.id;
                                     const commentCreatedDate: string = created && dateTime({})(created);
 
+                                    const { body } = text ?? {};
+
                                     return (
                                     
                                         <li key={index}>
-                                            <Card>
-                                            <UserMeta
-                                                image={null}
-                                                text={{
-                                                    initials: commenterUserInitials
-                                                }}
-                                                className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                    <span className="u-text-bold u-block"><Link href={`${groupBasePath}/members/${commenterUserId}`}>{commenterUserName}</Link></span>
-                                                    <span className="u-block">{commentCreatedDate}</span>
-                                            </UserMeta>
+                                            <Card className="">
+                                                <header>
+                                                    <UserMeta
+                                                        image={null}
+                                                        text={{
+                                                            initials: commenterUserInitials
+                                                        }}
+                                                        className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                            <span className="u-text-bold u-block"><Link href={`${groupBasePath}/members/${commenterUserId}`}>{commenterUserName}</Link></span>
+                                                            <span className="u-block">{commentCreatedDate}</span>
+                                                    </UserMeta>
+                                                </header>
+                                                <RichText bodyHtml={body} className="u-mb-6" />
+                                                <footer>
+                                                    <Like 
+                                                        id="todo"
+                                                        likeCount={likeCount}
+                                                        isLiked={isLiked}
+                                                        likeAction={console.log}
+                                                        text={{
+                                                            countSingular: 'like',
+                                                            countPlural: 'likes'
+                                                        }}  />
+                                                </footer>
                                             </Card>
                                         </li>
 

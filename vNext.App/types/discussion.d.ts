@@ -22,4 +22,9 @@ export interface DiscussionComment {
     created?: string;
     modifiedBy?: Partial<User>;
     modified?: string;
+    likeCount?: number;
+    isLiked?: boolean;
+    text: {
+        body?: string;
+    };
 }

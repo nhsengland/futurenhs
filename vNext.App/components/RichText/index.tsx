@@ -52,7 +52,7 @@ export const RichText: (props: Props) => JSX.Element = ({
                 :   undefined;
 
     const generatedClasses: any = {
-        wrapper: classNames('c-rich-text-block', 'c-rich-text-block--content', className)
+        wrapper: classNames('c-rich-text', className)
     };
 
     if(shouldRenderHTML){
