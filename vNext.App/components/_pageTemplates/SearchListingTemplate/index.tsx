@@ -93,11 +93,11 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
         let resourceHref: string = `/groups/${groupItem.entityIds[groupItem.type + 'Id']}`
 
         if (parentType === ContentType.DISCUSSION || item.type === ContentType.DISCUSSION) {
-            const parentIsDiscussion: boolean = parentType === ContentType.DISCUSSION
+            const isParentDiscussion: boolean = parentType === ContentType.DISCUSSION
             resourceHref += `/forum/${item.entityIds[item.type + 'Id']}`;
             return <Link href={resourceHref}>
                 <a>
-                    {parentIsDiscussion && <span>{capitalise()(item.type)} on discussion: </span>}
+                    {isParentDiscussion && <span>{capitalise()(item.type)} on discussion: </span>}
                     <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText()(item.content.title, term)} />
                 </a>
             </Link>
