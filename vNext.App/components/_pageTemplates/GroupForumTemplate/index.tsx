@@ -99,7 +99,8 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     created,
                                     createdBy,
                                     modified,
-                                    modifiedBy 
+                                    modifiedBy,
+                                    isSticky 
                                 }, index) => {
         
                                     const { title } = text ?? {};
@@ -115,7 +116,10 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                         <Card key={index} className="u-border-bottom-theme-10 u-mb-4">
                                             <h3 className="c-card_heading desktop:u-mb-4">
                                                 <Link href={`${router.asPath}/${discussionId}`}>
-                                                    <a>{title}</a>
+                                                    <a>
+                                                        {isSticky && <span className="u-sr-only">Sticky: </span>}
+                                                        {title}
+                                                    </a>
                                                 </Link>        
                                             </h3>
                                             <UserMeta
@@ -138,6 +142,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                     <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
                                                     <span>{`${viewCount} Views`}</span>
                                                 </p>
+                                                {isSticky &&
+                                                    <SVGIcon name="icon-pin" className="c-card_footer-icon u-fill-theme-0 u-float-right u-w-4 u-h-4 u-m-0" />
+                                                }
                                             </div>
                                         </Card>
         

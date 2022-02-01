@@ -12,5 +12,6 @@ export interface Discussion {
     createdBy?: Partial<User>;
     created?: string;
     modifiedBy?: Partial<User>;
-    modified?: string; 
+    modified?: string;
+    isSticky?: boolean;
 }

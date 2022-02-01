@@ -83,6 +83,7 @@ export const getGroupDiscussions = async ({
                     }
                 },
                 modified: datum.lastComment?.atUtc ?? '',
+                isSticky: datum.isSticky
             });
 
         });
