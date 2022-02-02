@@ -1,10 +1,6 @@
 import { User } from "./user";
 
 export interface Discussion {
-    text: {
-        title: string;
-        body?: string;
-    };
     discussionId?: string;
     responseCount?: number; 
     viewCount?: number;
@@ -14,9 +10,14 @@ export interface Discussion {
     modifiedBy?: Partial<User>;
     modified?: string;
     isSticky?: boolean;
+    text: {
+        title: string;
+        body?: string;
+    };
 }
 
 export interface DiscussionComment {
+    commentId: string;
     createdBy?: Partial<User>;
     createdBy?: Partial<User>;
     created?: string;

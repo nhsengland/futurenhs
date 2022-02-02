@@ -103,6 +103,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         {hasDiscussionComments &&
                             <ul className="u-list-none u-p-0">
                                 {discussionComments?.map(({
+                                    commentId,
                                     created,
                                     createdBy,
                                     text,
@@ -139,14 +140,16 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                 <RichText bodyHtml={body} className="u-mb-6" />
                                                 <footer>
                                                     <Like
-                                                        id="todo"
+                                                        id={commentId}
                                                         likeCount={likeCount}
                                                         isLiked={isLiked}
                                                         shouldEnable={true}
                                                         likeAction={console.log}
                                                         text={{
                                                             countSingular: 'like',
-                                                            countPlural: 'likes'
+                                                            countPlural: 'likes',
+                                                            like: 'like',
+                                                            removeLike: 'Remove like'
                                                         }} />
                                                 </footer>
                                             </Card>

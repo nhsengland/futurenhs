@@ -12,12 +12,7 @@ export const Like: (props: Props) => JSX.Element = ({
     isLiked,
     shouldEnable,
     likeAction,
-    text = {
-        countSingular: 'like',
-        countPlural: 'likes',
-        like: 'like',
-        removeLike: 'Remove like'
-    },
+    text,
     className
 }) => {
 
@@ -53,7 +48,7 @@ export const Like: (props: Props) => JSX.Element = ({
 
             likeAction?.(id, !hasLiked);
 
-        }, 1500);
+        }, 1000);
 
     }
 

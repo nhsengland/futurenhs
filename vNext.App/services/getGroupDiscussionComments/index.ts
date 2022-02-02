@@ -65,6 +65,7 @@ export const getGroupDiscussionComments = async ({
         apiData.data?.forEach((datum) => {
 
             serviceResponse.data.push({
+                commentId: datum.id,
                 text: {
                     body: datum.content
                 },
