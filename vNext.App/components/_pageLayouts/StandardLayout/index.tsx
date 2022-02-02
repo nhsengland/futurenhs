@@ -81,11 +81,11 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 skipLinkList={skipLinkList}
                 text={{
                     editProfile: 'My profile',
-                    logOut: 'Log out',
-                    logOutHeading: 'Log out', 
-                    logOutBody: 'Are you sure you would like to log out?',
+                    logOut: 'Log Off',
+                    logOutHeading: 'Log Off', 
+                    logOutBody: 'Are you sure you would like to log off?',
                     logOutCancel: 'Cancel',
-                    logOutConfirm: 'Yes, log out'
+                    logOutConfirm: 'Yes, log off'
                 }}
                 user={user}
                 shouldRenderSearch={shouldRenderSearch} 

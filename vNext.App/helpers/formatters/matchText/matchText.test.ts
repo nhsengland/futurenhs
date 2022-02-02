@@ -11,4 +11,13 @@ describe('Text matcher', () => {
 
     });
 
+    it('Should pass through an ineligible value unformatted', () => {
+
+        expect(matchText({
+            value: 1,
+            term: 'test' 
+        })).toBe(1);
+
+    });
+
 });

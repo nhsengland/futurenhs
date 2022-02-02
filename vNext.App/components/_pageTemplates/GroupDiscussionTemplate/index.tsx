@@ -142,6 +142,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                         id="todo"
                                                         likeCount={likeCount}
                                                         isLiked={isLiked}
+                                                        shouldEnable={true}
                                                         likeAction={console.log}
                                                         text={{
                                                             countSingular: 'like',

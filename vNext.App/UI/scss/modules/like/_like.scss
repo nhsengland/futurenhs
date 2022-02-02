@@ -1,0 +1,13 @@
+.c-like {
+
+    @extend %clear-button-styles;
+    @include small-text;
+    display: flex;
+    align-items: center;
+    cursor: inherit;
+
+    &:focus {
+        padding: $nhsuk-spacing-point-1;
+    }
+
+}

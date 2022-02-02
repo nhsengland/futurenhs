@@ -10,8 +10,14 @@ export const Like: (props: Props) => JSX.Element = ({
     iconName = 'icon-like-fill',
     likeCount,
     isLiked,
+    shouldEnable,
     likeAction,
-    text,
+    text = {
+        countSingular: 'like',
+        countPlural: 'likes',
+        like: 'like',
+        removeLike: 'Remove like'
+    },
     className
 }) => {
 
@@ -20,10 +26,18 @@ export const Like: (props: Props) => JSX.Element = ({
     const [hasLiked, setHasLiked] = useState(isLiked);
     const likeTimeOut = useRef(null);
 
-    const { countSingular, countPlural } = text;
+    const { countSingular, countPlural, like, removeLike } = text;
+
+    const ariaLabelToUse: string = hasLiked ? removeLike : like;
 
     const generatedClasses: any = {
-        wrapper: classNames('c-like', className)
+        wrapper: classNames('c-like', 'u-text-bold', className, {
+            ['c-like--enabled']: shouldEnable
+        }),
+        icon: classNames('u-w-5', 'u-h-5', 'u-mr-2', {
+            ['u-fill-theme-8']: hasLiked,
+            ['u-fill-theme-5']: !hasLiked
+        })
     };
 
     const handleLikeToggle = () => {
@@ -45,7 +59,7 @@ export const Like: (props: Props) => JSX.Element = ({
 
     useEffect(() => {
 
-        setIsActive(true);
+        shouldEnable && setIsActive(true);
 
     }, []);
 
@@ -60,8 +74,8 @@ export const Like: (props: Props) => JSX.Element = ({
 
         return (
 
-            <button className={generatedClasses.wrapper} onClick={handleLikeToggle}>
-                <SVGIcon name={iconName} className="u-w-5 u-h-5 u-fill-theme-5" />
+            <button aria-label={ariaLabelToUse} className={generatedClasses.wrapper} onClick={handleLikeToggle}>
+                <SVGIcon name={iconName} className={generatedClasses.icon} />
                 <span>{dynamicLikeCount} {dynamicLikeCount === 1 ? countSingular : countPlural}</span>
             </button>
 
@@ -72,7 +86,6 @@ export const Like: (props: Props) => JSX.Element = ({
     return (
 
         <span className={generatedClasses.wrapper}>
-            <SVGIcon name={iconName} className="u-w-5 u-h-5 u-fill-theme-5" />
             <span>{dynamicLikeCount} {dynamicLikeCount === 1 ? countSingular : countPlural}</span>
         </span>
 
