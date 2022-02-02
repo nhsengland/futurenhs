@@ -56,7 +56,7 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
 
                         const shouldRenderSeperator: boolean = index < breadCrumbList.length - 1;
                         const isTruncationPoint: boolean = isTruncateable && index === truncationStartIndex;
-                        const textToUse: string = text ? capitalise()(text) : capitalise()(element);
+                        const textToUse: string = text ? capitalise({ value: text }) : capitalise({ value: element });
                         
                         if(shouldLinkCrumbs){
 

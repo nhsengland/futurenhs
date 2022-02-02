@@ -1,24 +1,17 @@
 
-export const matchText = (): Function => {
+export const matchText = ({
+    value,
+    term
+}): string => {
 
-    return (value: any, term:any): String => {
+    if (value && value.length && typeof value === 'string' && term && term.length && typeof term === 'string') {
 
-        try {
+        const regexPattern: RegExp = new RegExp(`(${term})(?!([^<]+)?>)`, "gi");
+        
+        return value.replace(regexPattern, (match) => `<mark>${match}</mark>`);
 
-            if (value && value.length && term && term.length) {
-                const regexPattern : RegExp = new RegExp(`(${term})(?!([^<]+)?>)`, "gi");
-                return value.replace(regexPattern,(match)=>`<mark>${match}</mark>`);
+    }
 
-            }
-
-            return value;
-
-        } catch(error) {
-
-            return 'An unexpected error occured';
-
-        }
-
-    };
+    return value;
 
 };

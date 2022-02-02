@@ -45,7 +45,7 @@ export const Header: (props: Props) => JSX.Element = ({
 
     const { text: userText } = user ?? {};
     const { userName } = userText ?? {};
-    const userInitials: string = initials()(userName);
+    const userInitials: string = initials({ value: userName });
 
     const { editProfile,
             logOut,
@@ -127,7 +127,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                     <span className="c-site-header-nav_root-nav-image">
                                                                         <Avatar image={null} initials={userInitials} />
                                                                     </span>
-                                                                    <span>{capitalise()(userName)}</span>
+                                                                    <span>{capitalise({ value: userName })}</span>
                                                                     <SVGIcon name={getAccordionIcon(isUserAccordionOpen)} className="c-site-header-nav_root-nav-icon" />
                                                                 </>
                                                             }

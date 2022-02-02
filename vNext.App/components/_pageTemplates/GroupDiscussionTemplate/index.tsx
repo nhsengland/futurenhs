@@ -53,12 +53,12 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const { totalRecords } = pagination ?? {};
 
     const hasDiscussionComments: boolean = discussionComments?.length > 0;
-    const creatorUserInitials: string = initials()(createdBy?.text?.userName);
+    const creatorUserInitials: string = initials({ value: createdBy?.text?.userName });
     const creatorUserName: string = createdBy?.text?.userName;
     const creatorUserId: string = createdBy?.id;
-    const createdDate: string = dateTime({})(created);
+    const createdDate: string = dateTime({ value: created });
     const lastCommentUserName: string = modifiedBy?.text?.userName;
-    const lastCommentDate: string = dateTime({})(modified);
+    const lastCommentDate: string = dateTime({ value: modified });
 
     const createCommentfields = forms?.[formTypes.CREATE_DISCUSSION_COMMENT]?.steps[0]?.fields;
 
@@ -110,10 +110,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                     isLiked
                                 }, index) => {
 
-                                    const commenterUserInitials: string = initials()(createdBy?.text?.userName);
+                                    const commenterUserInitials: string = initials({ value: createdBy?.text?.userName });
                                     const commenterUserName: string = createdBy?.text?.userName;
                                     const commenterUserId: string = createdBy?.id;
-                                    const commentCreatedDate: string = dateTime({})(created);
+                                    const commentCreatedDate: string = dateTime({ value: created });
 
                                     const { body } = text ?? {};
 

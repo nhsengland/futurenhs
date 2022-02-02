@@ -26,7 +26,7 @@ export const UserProfile: (props: Props) => JSX.Element = ({
             pronounsLabel, 
             emailLabel } = text;
 
-    const userInitials: string = initials()(`${firstName} ${lastName}`);
+    const userInitials: string = initials({ value: `${firstName} ${lastName}` });
 
     const generatedClasses: any = {
         wrapper: classNames('c-profile', className),

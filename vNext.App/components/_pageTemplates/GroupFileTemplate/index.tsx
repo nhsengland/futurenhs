@@ -125,10 +125,10 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                                     children: 'File name'
                                 },
                                 {
-                                    children: dateTime({})('2021-06-04T11:47:30Z')
+                                    children: dateTime({ value: '2021-06-04T11:47:30Z' })
                                 },
                                 {
-                                    children: dateTime({})('2021-12-10T02:16:03Z')
+                                    children: dateTime({ value: '2021-12-10T02:16:03Z' })
                                 },
                                 {
                                     children: <a href="/">Download</a>

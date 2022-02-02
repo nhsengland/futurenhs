@@ -103,12 +103,12 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                 }, index) => {
         
                                     const { title } = text ?? {};
-                                    const creatorUserInitials: string = initials()(createdBy.text.userName);
+                                    const creatorUserInitials: string = initials({ value: createdBy.text.userName });
                                     const creatorUserName: string = createdBy.text.userName;
                                     const creatorUserId: string = createdBy.id;
-                                    const createdDate: string = dateTime({})(created);
+                                    const createdDate: string = dateTime({ value: created });
                                     const lastCommentUserName: string = modifiedBy.text.userName;
-                                    const lastCommentDate: string = dateTime({})(modified);
+                                    const lastCommentDate: string = dateTime({ value: modified });
         
                                     return (
         

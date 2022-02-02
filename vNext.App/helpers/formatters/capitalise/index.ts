@@ -1,23 +1,13 @@
-export const capitalise = (): Function => {
+export const capitalise = ({
+    value
+}): string => {
 
-    return (value: any): string => {
+    if (value && value.length && typeof value === 'string') {
 
-        try {
+        return value[0].toUpperCase() + value.slice(1);
 
-            if (value && value.length) {
+    }
 
-                return value[0].toUpperCase() + value.slice(1);
-
-            }
-
-            return value;
-
-        } catch(error) {
-
-            return 'An unexpected error occured';
-
-        }
-
-    };
+    return value;
 
 };

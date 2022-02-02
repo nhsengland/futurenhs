@@ -69,7 +69,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                     className: 'u-w-1/4'
                 },
                 {
-                    children: `${dateTime({})(requestDate)}`,
+                    children: `${dateTime({ value: requestDate })}`,
                     className: 'u-w-1/4'
                 },
                 {
@@ -122,15 +122,15 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                     className: 'u-w-1/4'
                 },
                 {
-                    children: `${capitalise()(role)}`,
+                    children: `${capitalise({ value: role })}`,
                     className: 'u-w-1/8'
                 },
                 {
-                    children: `${dateTime({})(joinDate)}`,
+                    children: `${dateTime({ value: joinDate })}`,
                     className: 'u-w-1/8'
                 },
                 {
-                    children: `${dateTime({})(lastLogInDate)}`,
+                    children: `${dateTime({ value: lastLogInDate })}`,
                     className: 'u-w-1/4'
                 }
             ];

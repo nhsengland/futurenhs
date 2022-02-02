@@ -1,41 +1,36 @@
+export const initials = ({
+    value
+}): string => {
 
-export const initials = (): Function => {
+    if (value && value.length && typeof value === 'string') {
 
-    return (value: any): String => {
+        const getInitials = (fullName: string): string => {
 
-        try {
+            if (fullName) {
 
-            const getInitials = (fullName: string): string => {
+                const allNames: Array<string> = fullName.trim().split(' ');
+                const initials: string = allNames.reduce((acc, curr, index) => {
 
-                if(fullName){
+                    if (index === 0 || index === allNames.length - 1) {
+                        acc = `${acc}${curr.charAt(0).toUpperCase()}`;
+                    }
 
-                    const allNames: Array<string> = fullName.trim().split(' ');
-                    const initials: string = allNames.reduce((acc, curr, index) => {
-    
-                        if (index === 0 || index === allNames.length - 1) {
-                            acc = `${acc}${curr.charAt(0).toUpperCase()}`;
-                        }
-    
-                        return acc;
-    
-                    }, '');
-    
-                    return initials;
+                    return acc;
 
-                }
+                }, '');
 
-                return '';
+                return initials;
 
             }
 
-            return getInitials(value);
-
-        } catch (error) {
-
-            return 'An unexpected error occured';
+            return '';
 
         }
 
-    };
+        return getInitials(value);
+
+    }
+
+    return value;
 
 };

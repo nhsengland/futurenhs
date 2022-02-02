@@ -82,10 +82,10 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
         }
 
         if (item.type === ContentType.GROUP) {
-            return <>{capitalise()(item.type)}</>;
+            return <>{capitalise({ value: item.type })}</>;
         }
 
-        return <>{capitalise()(item.type)} on <Link href={resourceHref}>{groupItem.content.title}</Link> group</>;
+        return <>{capitalise({ value: item.type })} on <Link href={resourceHref}>{groupItem.content.title}</Link> group</>;
     }
 
     const getTitle = ({ item, parentType, groupItem, stripHtmlPattern }): JSX.Element => {
@@ -97,8 +97,11 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
             resourceHref += `/forum/${item.entityIds[item.type + 'Id']}`;
             return <Link href={resourceHref}>
                 <a>
-                    {isParentDiscussion && <span>{capitalise()(item.type)} on discussion: </span>}
-                    <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText()(item.content.title, term)} />
+                    {isParentDiscussion && <span>{capitalise({ value: item.type })} on discussion: </span>}
+                    <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText({ 
+                        value: item.content.title, 
+                        term: term 
+                    })} />
                 </a>
             </Link>
         }
@@ -107,7 +110,10 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
         return <Link href={resourceHref}>
             <a>
-                <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText()(capitalise()(item.content.title), term)} />
+                <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText({ 
+                    value: capitalise({ value: item.content.title }), 
+                    term: term
+                })} />
             </a>
         </Link>
 
@@ -132,7 +138,12 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
         const title: JSX.Element = getTitle(options);
 
         /* Construct body */
-        const body: JSX.Element = <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText()(capitalise()(item.content.body), term)} />
+        const body: JSX.Element = <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText({
+            value: capitalise({ 
+                value: item.content.body 
+            }),
+            term: term
+        })} />
 
         return {
             metaHeader: metaHeader,
