@@ -33,7 +33,7 @@ const
 ////////////////////////////////////////////////////////////////////////
 // APP BUILD TASKS
 ////////////////////////////////////////////////////////////////////////
-const uiPath = 'MVCForum.Website/UI';
+const uiPath = 'MVCForum/MVCForum.Website/UI';
 const uiAssetsSrcPath = `${uiPath}/assets/src`;
 const uiAssetsDistPath = `${uiPath}/assets/dist`;
 const uiProtoTypesSrcPath = `${uiPath}/prototypes/src`;
@@ -48,15 +48,13 @@ const clean = () => {
 
 };
 
-gulp.task(clean);
-
 // Build .net solution
 const msbuild = (done) => {
 
     process.env.PATH = `${process.env.PATH};C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin`;
 
     const proc = childProcess.spawn('msbuild.exe', [
-        'MVCForum.sln',
+        'MVCForum\\MVCForum.sln',
         '-t:rebuild'
     ], {
         cwd: process.cwd()
@@ -68,7 +66,7 @@ const msbuild = (done) => {
 
         const match = re.exec(data.toString());
         if (match) {
-            return done(new Error('Security warning found when building project'));
+            done(new Error('Security warning found when building project'));
         }
     });
 
@@ -85,17 +83,12 @@ const msbuild = (done) => {
     });
 };
 
-gulp.task(msbuild);
-
 // Generic back end build
 const build = (done) => {
     
-    gulp.series(msbuild)();
-    done();
+    return gulp.series(msbuild)();
 
 }
-
-gulp.task(build);
 
 // Start the site
 const startSite = (done) => {
@@ -109,7 +102,7 @@ const startSite = (done) => {
         '--name=nhs.futures.website',
         '--',
         '-port:8888',
-        `-path:${path.join(process.cwd(), 'MVCForum.website')}`
+        `-path:${path.join(process.cwd(), 'MVCForum\\MVCForum.website')}`
     ], {
         cwd: process.cwd()
     });
@@ -131,8 +124,6 @@ const startSite = (done) => {
     });
 
 };
-
-gulp.task(startSite);
 
 // Stop the site
 const stopSite = (done) => {
@@ -159,51 +150,14 @@ const stopSite = (done) => {
 
 };
 
-gulp.task(stopSite);
 
-// Activate
-const activate = (done) => {
-
-    gulp.series(stopSite, build, buildWeb, startSite)();
-
-    done();
-
-};
-
-gulp.task(activate);
-
-// Activate
-const activateLight = (done) => {
-
-    gulp.series(stopSite, build, buildWebLight, startSite)();
-
-    done();
-
-};
-
-gulp.task(activateLight);
-
-// Deactivate
-const deactivate = (done) => {
-
-    gulp.series(stopSite)();
-
-    done();
-
-};
-
-gulp.task(deactivate);
-
-// End process
 const terminate = (done) => {
 
     console.log("terminating...");
-    done();
+    return done();
     process.exit(0);
 
 };
-
-gulp.task(terminate);
 
 ////////////////////////////////////////////////////////////////////////
 // UI BUILD TASKS
@@ -253,8 +207,6 @@ const scss = (done) => {
 
 };
 
-gulp.task(scss);
-
 // Copy fonts from src to dist folder
 const fonts = () => {
 
@@ -263,8 +215,6 @@ const fonts = () => {
         .pipe(gulp.dest(`${uiAssetsDistPath}/fonts`));
 
 };
-
-gulp.task(fonts);
 
 // JavaScript
 const js = () => {
@@ -278,7 +228,6 @@ const js = () => {
 
 };
 
-gulp.task(js);
 
 // JavaScript unit tests
 const testJs = () => {
@@ -288,7 +237,6 @@ const testJs = () => {
 
 };
 
-gulp.task(testJs);
 
 // Service worker
 const sw = () => {
@@ -307,7 +255,6 @@ const sw = () => {
 
 };
 
-gulp.task(sw);
 
 // Html prototype template building using nunjucks: https://mozilla.github.io/nunjucks/
 const templates = () => {
@@ -327,7 +274,6 @@ const templates = () => {
 
 };
 
-gulp.task(templates);
 
 // Compress image assets and copy to /dist
 const images = () => {
@@ -350,7 +296,6 @@ const images = () => {
 
 };
 
-gulp.task(images);
 
 // Generate favicon set
 const favicon = () => {
@@ -385,7 +330,6 @@ const favicon = () => {
 
 };
 
-gulp.task(favicon);
 
 // Generate svg 'sprite'
 const initSvgSprite = () => {
@@ -410,7 +354,7 @@ const initSvgSprite = () => {
                 symbols: 'ui/symbols.svg',
             },
             templates: {
-                symbols: fs.readFileSync('./svgSymbolsTemplate.svg', 'utf-8')
+                symbols: fs.readFileSync('./MvcForum/svgSymbolsTemplate.svg', 'utf-8')
             }
         }))
         .pipe(gulp.dest(dest));
@@ -431,7 +375,7 @@ const initSvgSprite = () => {
                 symbols: 'content/symbols.svg',
             },
             templates: {
-                symbols: fs.readFileSync('./svgSymbolsTemplate.svg', 'utf-8')
+                symbols: fs.readFileSync('./MvcForum/svgSymbolsTemplate.svg', 'utf-8')
             }
         }))
         .pipe(gulp.dest(dest));
@@ -448,7 +392,7 @@ const initSvgSprite = () => {
                 symbols: 'content/symbols--left.svg',
             },
             templates: {
-                symbols: fs.readFileSync('./svgSymbolsTemplateLeft.svg', 'utf-8')
+                symbols: fs.readFileSync('./MvcForum/svgSymbolsTemplateLeft.svg', 'utf-8')
             }
         }))
         .pipe(gulp.dest(dest));
@@ -465,7 +409,7 @@ const initSvgSprite = () => {
                 symbols: 'content/symbols--right.svg',
             },
             templates: {
-                symbols: fs.readFileSync('./svgSymbolsTemplateRight.svg', 'utf-8')
+                symbols: fs.readFileSync('./MvcForum/svgSymbolsTemplateRight.svg', 'utf-8')
             }
         }))
         .pipe(gulp.dest(dest));
@@ -474,7 +418,6 @@ const initSvgSprite = () => {
 
 };
 
-gulp.task(initSvgSprite);
 
 // Start browserSync server
 const initBrowserSync = () => {
@@ -490,7 +433,6 @@ const initBrowserSync = () => {
 
 };
 
-gulp.task(initBrowserSync);
 
 // Front end accessibility testing
 const testAxe = (done) => {
@@ -571,7 +513,7 @@ const testAxe = (done) => {
             throw new Error('Accessbility issues found');
         }
 
-        done();
+        return done();
         return reportResults;
 
     }).catch((error)=>{
@@ -584,13 +526,12 @@ const testAxe = (done) => {
     }).finally(()=>{
        
         console.log(`The accessibility testing has finished with 0 violations`);
-        done();
+        return done();
 
     });
 
 };
 
-gulp.task(testAxe);
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -598,15 +539,8 @@ gulp.task(testAxe);
 ////////////////////////////////////////////////////////////////////////
 
 // Build task - runs all the web tasks
-const buildWeb = (done) => { 
+const buildWeb = gulp.series(clean, initSvgSprite, templates, scss, js, fonts, images, favicon, sw /* testJs */);
 
-    gulp.series(clean, initSvgSprite, templates, scss, js, fonts, images, favicon, sw, testJs)();
-
-    done();
-
-};
-
-gulp.task(buildWeb);
 
 // Build task - runs all the web tasks
 const buildWebLight = (done) => { 
@@ -614,10 +548,8 @@ const buildWebLight = (done) => {
     gulp.series(scss, js)();
 
     done();
-
 };
 
-gulp.task(buildWebLight);
 
 // Watch task - runs all the web tasks then watches and re-runs tasks on subsequent changes - also hosts local prototyping server for prototyping
 const watchWeb = (done) => { 
@@ -625,10 +557,8 @@ const watchWeb = (done) => {
     gulp.series(buildWeb, watchBasic)();
 
     done();
-
 };
 
-gulp.task(watchWeb);
 
 // Basic watch task - watches and re-runs tasks on subsequent changes
 const watchBasic = () => {
@@ -643,7 +573,6 @@ const watchBasic = () => {
 
 };
 
-gulp.task(watchBasic);
 
 // Run tests
 const test = (done) => {
@@ -654,4 +583,17 @@ const test = (done) => {
 
 };
 
-gulp.task(test);
+module.exports = {
+    build,
+    msbuild,
+    watchBasic,
+    watchWeb,
+    buildWeb,
+    buildWebLight,
+    clean,
+    scss,
+    js,
+    testJs,
+    stopSite,
+    startSite
+}

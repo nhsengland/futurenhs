@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
-const sourcePath = path.join(path.resolve() + '/MVCForum.Website/UI/assets/src/ts/root');
-const outPath = path.join(path.resolve() + '/MVCForum.Website/UI/assets/dist/js');
+const sourcePath = path.join(path.resolve() + '/MVCForum/MVCForum.Website/UI/assets/src/ts/root');
+const outPath = path.join(path.resolve() + '/MVCForum/MVCForum.Website/UI/assets/dist/js');
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -26,7 +26,9 @@ module.exports = {
         extensions: ['.js', '.ts', '.tsx', '.css', '.scss'],
         mainFields: ['main'],
         plugins: [
-            new TsConfigPathsPlugin()
+            new TsConfigPathsPlugin({
+                configFileName: 'MVCForum/tsconfig.json'
+            })
         ]
     },
     optimization: {
@@ -41,7 +43,10 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'awesome-typescript-loader'
+                loader: 'awesome-typescript-loader',
+                options: {
+                    configFileName: 'MVCForum/tsconfig.json'
+                }
             },
             {
                 test: /\.scss$/,

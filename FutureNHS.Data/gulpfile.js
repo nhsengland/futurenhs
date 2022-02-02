@@ -1,4 +1,3 @@
-const { groupCollapsed } = require('console');
 const gulp = require('gulp')
       childProcess = require('child_process');
 
@@ -11,7 +10,7 @@ const msbuild = (done) => {
     process.env.PATH = `${process.env.PATH};C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin`;
 
     const proc = childProcess.spawn('msbuild.exe', [
-        'FutureNHS.Data.sln',
+        'FutureNHS.Data\\FutureNHS.Data.sln',
         '-t:rebuild'
     ], {
         cwd: process.cwd()
@@ -40,14 +39,12 @@ const msbuild = (done) => {
     });
 };
 
-gulp.task(msbuild);
-
 const msbuildAutomation = (done) => {
 
     process.env.PATH = `${process.env.PATH};C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin`;
 
     const proc = childProcess.spawn('msbuild.exe', [
-        'FutureNHS.Data.sln',
+        'FutureNHS.Data\\FutureNHS.Data.sln',
         '-t:rebuild',
         '/p:Configuration=Automation'
     ], {
@@ -77,25 +74,23 @@ const msbuildAutomation = (done) => {
     });
 };
 
-gulp.task(msbuildAutomation);
-
 ///////////////////////////////////////
 //  FutureNHS DB TASKS
 //////////////////////////////////////
 
 const deployFutureNHSDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\150\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac',
+        '/SourceFile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac',
         '/TargetDatabaseName:FutureNHS',
         '/TargetServerName:localhost',
         '/TargetUser:sa',
         '/TargetPassword:password',
-        '/DeployReportPath:./FutureNHS.Data.FutureNHS/Report.xml',
-        '/DeployScriptPath:./FutureNHS.Data.FutureNHS/Publish.sql',
-        '/Profile:./FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml',
+        '/DeployReportPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Report.xml',
+        '/DeployScriptPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Publish.sql',
+        '/Profile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml',
     ], {
         cwd: process.cwd()
     });
@@ -113,21 +108,19 @@ const deployFutureNHSDatabase = (done) => {
     })
 };
 
-gulp.task(deployFutureNHSDatabase); 
-
 const deployAutomationFutureNHSDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\150\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data.FutureNHS/bin/Automation/FutureNHS.Data.FutureNHS.dacpac',
+        '/SourceFile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Automation/FutureNHS.Data.FutureNHS.dacpac',
         '/TargetDatabaseName:FutureNHS',
         '/TargetServerName:localhost',
         '/TargetUser:sa',
         '/TargetPassword:password',
-        '/DeployReportPath:./FutureNHS.Data.FutureNHS/Report.xml',
-        '/DeployScriptPath:./FutureNHS.Data.FutureNHS/Publish.sql',
-        '/Profile:./FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml',
+        '/DeployReportPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Report.xml',
+        '/DeployScriptPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Publish.sql',
+        '/Profile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml',
     ], {
         cwd: process.cwd()
     });
@@ -144,8 +137,6 @@ const deployAutomationFutureNHSDatabase = (done) => {
         return done();
     });
 };
-
-gulp.task(deployAutomationFutureNHSDatabase); 
 
 
 const dropFutureNHSDatabase = (done) => {
@@ -173,4 +164,10 @@ const dropFutureNHSDatabase = (done) => {
     });
 };
 
-gulp.task(dropFutureNHSDatabase);
+
+module.exports = {
+    msbuild,
+    msbuildAutomation,
+    deployFutureNHSDatabase,
+    deployAutomationFutureNHSDatabase
+}

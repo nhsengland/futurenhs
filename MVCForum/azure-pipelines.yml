@@ -71,8 +71,8 @@ jobs:
   - task: Cache@2
     displayName: npm Cache
     inputs:
-     key: 'npmcache | "$(Agent.OS)" | $(Build.SourcesDirectory)/MVCForum/package.json'
-     path: '$(Build.SourcesDirectory)/MVCForum/node_modules'
+     key: 'npmcache | "$(Agent.OS)" | $(Build.SourcesDirectory)/package.json'
+     path: '$(Build.SourcesDirectory)/node_modules'
      cacheHitVar: 'npm_cache_hit'
 
   - task: Npm@1
@@ -80,12 +80,12 @@ jobs:
     condition: ne(variables.npm_cache_hit, 'true')
     inputs:
      command: 'install'
-     workingDir: '$(Build.SourcesDirectory)/MVCForum'
+     workingDir: '$(Build.SourcesDirectory)'
     
   - task: gulp@0
     displayName: 'Build front end'
     inputs:
-     workingDirectory: '$(Build.SourcesDirectory)/MVCForum'
+     workingDirectory: '$(Build.SourcesDirectory)'
      gulpFile: '$(Build.SourcesDirectory)/MVCForum/gulpfile.js'
      targets: 'buildWeb'
      gulpjs: '$(Build.SourcesDirectory)/MVCForum/node_modules/gulp/bin/gulp.js'

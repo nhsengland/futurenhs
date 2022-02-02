@@ -1,11 +1,13 @@
 const
     fs = require('fs'),
     gulp = require('gulp'),
+    path = require("path"),
     svgSprite = require('gulp-svg-sprites'),
-    favicons = require('gulp-favicons');
+    favicons = require('gulp-favicons'),
+    childProcess = require('child_process');
 
-const uiPath = 'UI';
-const uiAssetsDistPath = `public`;
+const uiPath = 'vNext.App/UI';
+const uiAssetsDistPath = `vNext.App/public`;
 
 // Compress image assets and copy to /dist
 const images = () => {
@@ -16,8 +18,6 @@ const images = () => {
 
 };
 
-gulp.task(images);
-
 // Copy fonts from src to dist folder
 const fonts = () => {
 
@@ -27,8 +27,6 @@ const fonts = () => {
 
 };
 
-gulp.task(fonts);
-
 // Copy tinymce files from node_modules to dist folder
 const tinyMce = () => {
 
@@ -37,8 +35,6 @@ const tinyMce = () => {
         .pipe(gulp.dest(`${uiAssetsDistPath}/js/tinymce`));
 
 };
-
-gulp.task(tinyMce);
 
 // Generate favicon set
 const favicon = () => {
@@ -73,8 +69,6 @@ const favicon = () => {
 
 };
 
-gulp.task(favicon);
-
 // Generate svg 'sprite'
 const icons = () => {
 
@@ -97,7 +91,7 @@ const icons = () => {
                 symbols: 'icons.svg',
             },
             templates: {
-                symbols: fs.readFileSync('./svgSymbolsTemplate.svg', 'utf-8')
+                symbols: fs.readFileSync('./vNext.App/svgSymbolsTemplate.svg', 'utf-8')
             }
         }))
         .pipe(gulp.dest(dist));
@@ -106,35 +100,78 @@ const icons = () => {
 
 };
 
-gulp.task(icons);
-
 // Build task - runs all the web tasks
-const build = (done) => { 
+const build = gulp.series(images, icons, fonts, tinyMce, favicon);
 
-    gulp.series(images, icons, fonts, tinyMce, favicon)();
 
-    done();
+const startSite = (done) => {
 
+    const proc = childProcess.spawn('node', [
+        '../node_modules/pm2/bin/pm2',
+        'start',
+        'node',
+        '--name=nhs.futures.app',
+        '--',
+        'node_modules/cross-env/src/bin/cross-env.js',
+        'NODE_ENV=development',
+        'node',
+        'server.js'
+    ], {
+        cwd: path.join(process.cwd(), 'vNext.App')
+    });
+
+    const re = /SCS\d{4}/;
+    proc.stdout.on("data", (data) => {
+        console.log(data.toString());
+
+        const match = re.exec(data.toString());
+        if (match) {
+            done(new Error('Security warning found when building project'));
+        }
+    });
+
+    proc.stderr.on('data', (data) => {
+        console.log(data.toString());
+    });
+
+    proc.on('close', (code) => {
+        if (code !== 0) {
+            return done(new Error('Error compiling project'));
+        }
+
+        return done();
+    });
 };
 
-gulp.task(build);
+const stopSite = (done) => {
 
-// Watch task - runs all the web tasks then watches and re-runs tasks on subsequent changes - also hosts local prototyping server for prototyping
-const watch = (done) => { 
+    const proc = childProcess.spawn('node', [
+        './node_modules/pm2/bin/pm2',
+        'delete',
+        'nhs.futures.app'
+    ], {
+        cwd: process.cwd()
+    });
 
-    const watchers = () => {
+    proc.stdout.on('data', (data) => {
+        console.log(data.toString());
+    });
 
-        gulp.watch([`${uiPath}/images/**/*`], gulp.series(images));
-        gulp.watch([`${uiPath}/icons/**/*`], gulp.series(icons));
-        gulp.watch([`${uiPath}/favicon/**/*`], gulp.series(favicon));
-        gulp.watch([`${uiPath}/fonts/**/*`], gulp.series(fonts));
+    proc.stderr.on('data', (data) => {
+        console.log(data.toString());
+    });
 
-    };
-
-    gulp.series(build, watchers)();
-
-    done();
-
+    proc.on('close', (code) => {
+        return done();
+    });
 };
 
-gulp.task(watch);
+module.exports = {
+    images,
+    icons,
+    fonts,
+    favicon,
+    build,
+    startSite,
+    stopSite
+}

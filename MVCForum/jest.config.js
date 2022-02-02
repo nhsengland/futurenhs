@@ -9,29 +9,30 @@ module.exports = {
     testEnvironment: 'jsdom',
     testPathIgnorePatterns: [],
     setupFilesAfterEnv: [
-        './setupTests.js'
+        './MVCForum/setupTests.js'
     ],
     reporters: [
         'default', 
         ['jest-junit', { 
             suiteName: 'Jest tests',
-            outputDirectory: './js-report',
+            outputDirectory: './MVCForum/js-report',
             outputName: 'jest-junit.xml'
         }]
     ],
     collectCoverage: true,
     collectCoverageFrom: [
-        'MVCForum.Website/UI/assets/src/ts/**/*.{ts,tsx,js,jsx}'
+        'MVCForum/MVCForum.Website/UI/assets/src/ts/**/*.{ts,tsx,js,jsx}'
     ],
-    coverageDirectory: 'js-report',
+    coverageDirectory: 'MVCForum/js-report',
     coveragePathIgnorePatterns: [
         './node_modules/',
-        'MVCForum.Website/UI/assets/src/ts/modules/utilities/index',
-        'MVCForum.Website/UI/assets/src/ts/modules/ui/index',
-        'MVCForum.Website/UI/assets/src/ts/modules/polyfills/*',
-        'MVCForum.Website/UI/assets/src/ts/root/global',
-        'MVCForum.Website/UI/assets/src/ts/root/polyfills',
-        'MVCForum.Website/UI/assets/src/ts/types/*',
+        'MVCForum/MVCForum.Website/UI/assets/src/ts/modules/utilities/index',
+        'MVCForum/MVCForum.Website/UI/assets/src/ts/modules/ui/index',
+        'MVCForum/MVCForum.Website/UI/assets/src/ts/modules/polyfills/*',
+        'MVCForum/MVCForum.Website/UI/assets/src/ts/root/global',
+        'MVCForum/MVCForum.Website/UI/assets/src/ts/root/polyfills',
+        'MVCForum/MVCForum.Website/UI/assets/src/ts/types/*',
+        'vNext.App/*'
     ],
     coverageReporters: ['json', 'lcov', 'text', 'clover', 'cobertura'],
     globals: {
@@ -48,6 +49,6 @@ module.exports = {
         'json'
     ],
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-        prefix: '<rootDir>/MVCForum.Website/UI/assets/src'
+        prefix: 'MVCForum/MVCForum.Website/UI/assets/src'
     })
 };
