@@ -19,6 +19,7 @@ import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';
+import { DiscussionComment } from '@appTypes/discussion';
 
 export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     groupId,
@@ -29,6 +30,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     actions,
     discussion,
     discussionComments,
+    discussionCommentReplies,
     pagination,
     forms
 }) => {
@@ -115,6 +117,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                     const commenterUserName: string = createdBy?.text?.userName;
                                     const commenterUserId: string = createdBy?.id;
                                     const commentCreatedDate: string = dateTime({ value: created });
+                                    const replies: Array<DiscussionComment> = discussionCommentReplies[commentId]?.data ?? [];
+                                    const hasReplies: boolean = replies.length > 0;
 
                                     const { body } = text ?? {};
 
@@ -153,6 +157,19 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                         }} />
                                                 </footer>
                                             </Card>
+                                            {hasReplies &&
+                                                <ul className="u-list-none u-p-0">
+                                                    {replies.map(({ commentId }) => {
+
+                                                        return (
+
+                                                            <li key={commentId}>{`Reply Id: ${commentId}`}</li>
+
+                                                        )
+
+                                                    })}
+                                                </ul>
+                                            }
                                         </li>
 
                                     )

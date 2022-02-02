@@ -11,8 +11,9 @@ import { Pagination } from '@appTypes/pagination';
 declare type Options = ({
     groupId: string;
     discussionId: string;
+    commentId: string;
     user: User;
-    pagination: Pagination;
+    pagination?: Pagination;
 });
 
 declare type Dependencies = ({
@@ -20,9 +21,10 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const getGroupDiscussionComments = async ({
+export const getGroupDiscussionCommentReplies = async ({
     groupId,
     discussionId,
+    commentId,
     user,
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<DiscussionComment>>> => {
@@ -45,7 +47,7 @@ export const getGroupDiscussionComments = async ({
             }
         });
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments?${paginationQueryParams}`;
+        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/replies?${paginationQueryParams}`;
         const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
         const apiData: ApiResponse<any> = apiResponse.json;
         const apiMeta: any = apiResponse.meta;
@@ -76,7 +78,6 @@ export const getGroupDiscussionComments = async ({
                     }
                 },
                 created: datum.firstRegistered?.atUtc ?? '',
-                replyCount: datum.repliesCount ?? 0,
                 likeCount: datum.likesCount ?? 0,
                 isLiked: datum.currentUser?.liked
             });
