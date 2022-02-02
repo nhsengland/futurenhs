@@ -125,7 +125,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                     return (
 
                                         <li key={index}>
-                                            <Card className="">
+                                            <div className="c-comment u-border-left-theme-8">
                                                 <header>
                                                     <UserMeta
                                                         image={null}
@@ -138,7 +138,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                                 <a>{commenterUserName}</a>
                                                             </Link>
                                                         </span>
-                                                        <span className="u-block">{commentCreatedDate}</span>
+                                                        <span className="u-block u-text-bold">{commentCreatedDate}</span>
                                                     </UserMeta>
                                                 </header>
                                                 <RichText bodyHtml={body} className="u-mb-6" />
@@ -156,20 +156,66 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                             removeLike: 'Remove like'
                                                         }} />
                                                 </footer>
-                                            </Card>
-                                            {hasReplies &&
-                                                <ul className="u-list-none u-p-0">
-                                                    {replies.map(({ commentId }) => {
+                                                {hasReplies &&
+                                                    <ul className="u-list-none u-p-0">
+                                                        {replies.map(({ 
+                                                            commentId,
+                                                            created,
+                                                            createdBy,
+                                                            text,
+                                                            likeCount,
+                                                            isLiked }) => {
 
-                                                        return (
+                                                                const replyingUserInitials: string = initials({ value: createdBy?.text?.userName });
+                                                                const replyingUserName: string = createdBy?.text?.userName;
+                                                                const replyingUserId: string = createdBy?.id;
+                                                                const replyCreatedDate: string = dateTime({ value: created });
 
-                                                            <li key={commentId}>{`Reply Id: ${commentId}`}</li>
+                                                                const { body } = text ?? {};
 
-                                                        )
+                                                                return (
 
-                                                    })}
-                                                </ul>
-                                            }
+                                                                    <li key={commentId} className="u-pt-6 u-pb-6">
+                                                                        <div className="c-comment c-comment--reply u-border-left-theme-8">
+                                                                            <header>
+                                                                                <UserMeta
+                                                                                    image={null}
+                                                                                    text={{
+                                                                                        initials: replyingUserInitials
+                                                                                    }}
+                                                                                    className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                                                    <span className="u-text-bold u-block">
+                                                                                        <Link href={`${groupBasePath}/members/${replyingUserId}`}>
+                                                                                            <a>{replyingUserName}</a>
+                                                                                        </Link>
+                                                                                    </span>
+                                                                                    <span className="u-block u-text-bold">{replyCreatedDate}</span>
+                                                                                </UserMeta>
+                                                                            </header>
+                                                                            <RichText bodyHtml={body} className="u-mb-6" />
+                                                                            <footer>
+                                                                                <Like
+                                                                                    id={commentId}
+                                                                                    likeCount={likeCount}
+                                                                                    isLiked={isLiked}
+                                                                                    shouldEnable={true}
+                                                                                    likeAction={console.log}
+                                                                                    text={{
+                                                                                        countSingular: 'like',
+                                                                                        countPlural: 'likes',
+                                                                                        like: 'like',
+                                                                                        removeLike: 'Remove like'
+                                                                                    }} />
+                                                                            </footer>
+                                                                        </div>
+                                                                    </li>
+
+                                                                )
+
+                                                        })}
+                                                    </ul>
+                                                }
+                                            </div>
                                         </li>
 
                                     )
