@@ -101,6 +101,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                         </p>
                     }
                     <DataGrid
+                        id="group-table-file"
                         text={{
                             caption: 'File data'
                         }} 

@@ -191,6 +191,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                             {hasPendingMembersList 
                             
                                 ?   <DataGrid 
+                                        id="group-table-pending-members"
                                         columnList={pendingMemberColumnList}
                                         rowList={pendingMemberRowList}
                                         text={{
@@ -210,6 +211,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                         
                             ?   <>
                                     <DataGrid 
+                                        id="group-table-members"
                                         columnList={memberColumnList}
                                         rowList={memberRowList}
                                         text={{

@@ -231,7 +231,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     {hasFolderContents && 
                         <>
                             <AriaLiveRegion>
-                                <DataGrid 
+                                <DataGrid
+                                    id="group-table-files" 
                                     text={{
                                         caption: 'Group folders'
                                     }}
