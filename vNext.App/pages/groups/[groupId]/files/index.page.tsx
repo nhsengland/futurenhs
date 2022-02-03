@@ -3,6 +3,8 @@ import { GetServerSideProps } from 'next';
 import { withAuth } from '@hofs/withAuth';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
+const NoopTemplate = (props: any) => null;
+
 /**
  * Get props to inject into page on the initial server-side request
  */
@@ -22,4 +24,4 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 /**
  * Export page template
  */
-export default (props: any) => null;
+export default NoopTemplate;

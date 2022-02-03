@@ -1,43 +1,28 @@
 import { GetServerSideProps } from 'next';
 
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withLogOut } from '@hofs/withLogOut';
-import { withTextContent } from '@hofs/withTextContent';
-import { selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
-import { LoggedOutTemplate } from '@components/_pageTemplates/LoggedOutTemplate';
-import { Props } from '@components/_pageTemplates/LoggedOutTemplate/interfaces';
-
-const routeId: string = '9ecf0edb-3e8d-4c3b-b4e6-371e38ac0af4';
+const NoopTemplate = (props: any) => null;
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withLogOut({
-    getServerSideProps: withTextContent({
-        routeId: routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            const props: Props = selectProps(context);
-
-            props.logOutUrl = process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL;
+    getServerSideProps: async (context: GetServerSidePropsContext) => {
     
-            /**
-             * Return data to page template
-             */
             return {
-                props: getJsonSafeObject({
-                    object: props
-                })
-            }
+                redirect: {
+                    permanent: false,
+                    destination: process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL
+                }
+            }  
     
         }
     
-    })
-});
+    });
 
 /**
  * Export page template
  */
-export default LoggedOutTemplate;
+ export default NoopTemplate;
