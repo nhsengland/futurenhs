@@ -15,7 +15,7 @@ import { useMediaQuery } from '@hooks/useMediaQuery';
 
 import { Props } from './interfaces';
 
-export const PageHeader: (props: Props) => JSX.Element = ({
+export const GroupPageHeader: (props: Props) => JSX.Element = ({
     id,
     image,
     text,
@@ -37,6 +37,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
     const hasMenuItems: boolean = navMenuList?.length > 0;
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
     const activeMenuItemText: string = navMenuList?.find(({ isActive }) => isActive)?.text;
+    const filteredNavMenuList: any = isMobile ? navMenuList?.filter(({ isActive }) => !isActive) : navMenuList;
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,
@@ -46,10 +47,10 @@ export const PageHeader: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames('c-page-header', className),
         header: classNames('c-page-header_header'),
-        heading: classNames('u-mb-2', 'u-text-theme-1', 'o-truncated-text-lines-3'),
+        heading: classNames('c-page-header_heading', 'u-text-theme-1', 'o-truncated-text-lines-3'),
         hero: classNames('c-page-header_hero'),
         heroBody: classNames('c-page-header_hero-body'),
-        description: classNames('c-page-header_description', 'o-truncated-text-lines-2', 'u-m-0'),
+        description: classNames('c-page-header_description', 'tablet:o-truncated-text-lines-2'),
         actionsWrapper: classNames('u-self-end', 'u-mt-8'),
         actions: classNames('c-page-header_actions', 'u-relative'),
         actionsTrigger: classNames('c-page-header_actions-trigger'),
@@ -79,7 +80,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
         <div className={generatedClasses.wrapper}>
             <LayoutColumn>
                 <LayoutColumnContainer className={generatedClasses.header}>
-                    <LayoutColumn tablet={8} desktop={9}>
+                    <LayoutColumn tablet={8} desktop={9} className="u-flex u-flex-wrap tablet:u-block">
                         {image &&
                             <div className={generatedClasses.hero}>
                                 <div className={generatedClasses.heroBody}>
@@ -141,6 +142,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
                     <Accordion  
                         id={generatedIds.menuAccordion}
                         isOpen={isMenuAccordionOpen}
+                        shouldCloseOnLeave={isMobile}
                         toggleAction={handleAccordionToggle}
                         toggleClassName={generatedClasses.navTrigger}
                         toggleChildren={
@@ -154,7 +156,7 @@ export const PageHeader: (props: Props) => JSX.Element = ({
                                 text={{
                                     ariaLabel: navMenuTitle
                                 }}
-                                navMenuList={navMenuList} />
+                                navMenuList={filteredNavMenuList} />
                     </Accordion>
                 }
             </LayoutColumn>

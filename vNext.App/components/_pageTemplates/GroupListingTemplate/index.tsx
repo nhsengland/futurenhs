@@ -8,7 +8,7 @@ import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-import { PageHeader } from '@components/PageHeader';
+import { GroupPageHeader } from '@components/GroupPageHeader';
 import { PageBody } from '@components/PageBody';
 import { Card } from '@components/Card';
 import { SVGIcon } from '@components/SVGIcon';
@@ -79,7 +79,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                 <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>
-                <PageHeader 
+                <GroupPageHeader 
                     id="my-groups"
                     text={{
                         mainHeading: mainHeading, 

@@ -36,39 +36,70 @@
 
     &_hero {
         display: block;
-        float: left;
         margin: 0 $nhsuk-spacing-point-5 0 0;
     }
 
     &_hero-body {
         display: block;
         position: relative;
-        height: 104px;
-        width: 104px;
+        height: 68px;
+        width: 68px;
         overflow: hidden;
         aspect-ratio: 1 / 1; //sass-lint:disable-line no-misspelled-properties
         background-color: $color_nhsuk-grey-5;
         border-radius: $nhsuk-spacing-point-1;
+
+        @include respond-to(tablet) {
+            float: left;
+            height: 104px;
+            width: 104px;
+            margin: 0 $nhsuk-spacing-point-5 0 0;
+        }
+
     }
 
     &_header {
         margin-bottom: $nhsuk-spacing-point-6;
+
         @include respond-to(desktop) {
             margin-top: $nhsuk-spacing-point-4;
         }
+
+    }
+
+    &_heading {
+        margin: 0;
+        max-width: 70%;
+        align-self: center;
+
+        @include respond-to(tablet) {
+            max-width: 100%;
+            align-self: flex-start;
+        }
+
     }
 
     &_description {
         @include lead-text;
+        margin: $nhsuk-spacing-point-4 0 0;
+        width: 100%;
+
+        @include respond-to(tablet) {
+            width: auto;
+            margin: $nhsuk-spacing-point-2 0 0;
+        }
+
     }
 
     &_nav-trigger {
         position: relative;
         border: $nhsuk-spacing-point-1 solid transparent;
         padding: 14px $nhsuk-spacing-point-3;
+
         @include respond-to(desktop) {
             display: none;
         }
+
     }
 
     &_nav-trigger-icon {

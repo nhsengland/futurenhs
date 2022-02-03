@@ -22,7 +22,6 @@ $card-hero-padding: 10px;
     &_hero {
         flex: 1 1 auto;
         position: relative;
-        min-width: 200px;
         padding: $card-hero-padding;
     }
 
@@ -32,6 +31,14 @@ $card-hero-padding: 10px;
         aspect-ratio: 1 / 1; //sass-lint:disable-line no-misspelled-properties
         border: 1px solid $color_nhsuk-grey-4;
         border-radius: 4px;
+        width: 68px;
+        height: 68px;
+
+        @include respond-to(tablet) {
+            width: 180px;
+            height: 180px;
+        }
+
     }
 
     &_body {

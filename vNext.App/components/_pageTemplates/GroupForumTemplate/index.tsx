@@ -161,7 +161,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                         getPageAction={handleGetPage}
                         {...dynamicPagination} />                
                 </LayoutColumn>
-                <LayoutColumn tablet={4} className="u-px-4 u-py-10">
+                <LayoutColumn tablet={4} className="c-page-body">
                     <Link href={`${router.asPath}/create`}>
                         <a className="c-button u-w-full">{createDiscussion}</a>
                     </Link>

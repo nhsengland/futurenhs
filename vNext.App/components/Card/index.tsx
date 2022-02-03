@@ -25,11 +25,11 @@ export const Card: (props: Props) => JSX.Element = ({
             {image &&
                 <div className={generatedClasses.hero}>
                     <div className={generatedClasses.heroBody}>
-                            <Image 
-                                src={src} 
-                                alt={altText} 
-                                height={height} 
-                                width={width} />
+                        <Image 
+                            src={src} 
+                            alt={altText} 
+                            height={height} 
+                            width={width} />
                     </div>
                 </div>
             }

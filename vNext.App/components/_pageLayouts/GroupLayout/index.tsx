@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { routeParams } from '@constants/routes';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { PageHeader } from '@components/PageHeader';
+import { GroupPageHeader } from '@components/GroupPageHeader';
 import { ErrorBoundary } from '@components/ErrorBoundary';
 import { getActionNavMenuList } from '@helpers/actions/getActionNavMenuList';
 import { getGroupNavMenuList } from '@helpers/routing/getGroupNavMenuList';
@@ -59,7 +59,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
             </Head>
             <LayoutColumnContainer>
                 <ErrorBoundary boundaryId="group-page-header">
-                    <PageHeader 
+                    <GroupPageHeader 
                         id="group"
                         text={{
                             mainHeading: mainHeading, 

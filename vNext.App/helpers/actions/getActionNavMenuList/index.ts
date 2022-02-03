@@ -36,7 +36,7 @@ export const getActionNavMenuList = ({
 
         actionsMenuList.push({
             url: '/',
-            text: 'Invite new member'
+            text: 'Add new member'
         });
 
     }
