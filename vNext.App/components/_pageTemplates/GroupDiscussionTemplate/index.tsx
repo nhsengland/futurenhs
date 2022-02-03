@@ -5,7 +5,7 @@ import { dateTime } from '@helpers/formatters/dateTime';
 import { initials } from '@helpers/formatters/initials';
 import { routeParams } from '@constants/routes';
 import { Link } from '@components/Link';
-import { Card } from '@components/Card';
+import { Accordion } from '@components/Accordion';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { RichText } from '@components/RichText';
@@ -89,10 +89,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         initials: creatorUserInitials
                     }}
                     className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                    <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
-                    {(responseCount > 0 && lastCommentUserName) &&
-                        <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
-                    }
+                        <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
+                        {(responseCount > 0 && lastCommentUserName) &&
+                            <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
+                        }
                 </UserMeta>
                 <hr />
                 {totalRecords > 0 &&
@@ -119,6 +119,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                     const commentCreatedDate: string = dateTime({ value: created });
                                     const replies: Array<DiscussionComment> = discussionCommentReplies[commentId]?.data ?? [];
                                     const hasReplies: boolean = replies.length > 0;
+                                    const repliesId: string = `${commentId}-replies`;
 
                                     const { body } = text ?? {};
 
@@ -157,63 +158,69 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                         }} />
                                                 </footer>
                                                 {hasReplies &&
-                                                    <ul className="u-list-none u-p-0">
-                                                        {replies.map(({ 
-                                                            commentId,
-                                                            created,
-                                                            createdBy,
-                                                            text,
-                                                            likeCount,
-                                                            isLiked }) => {
+                                                    <Accordion 
+                                                        id={repliesId}
+                                                        toggleChildren={<span>Show more replies</span>}
+                                                        toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                            <ul className="u-list-none u-p-0">
+                                                                {replies.map(({
+                                                                    commentId,
+                                                                    created,
+                                                                    createdBy,
+                                                                    text,
+                                                                    likeCount,
+                                                                    isLiked }) => {
 
-                                                                const replyingUserInitials: string = initials({ value: createdBy?.text?.userName });
-                                                                const replyingUserName: string = createdBy?.text?.userName;
-                                                                const replyingUserId: string = createdBy?.id;
-                                                                const replyCreatedDate: string = dateTime({ value: created });
+                                                                    const replyingUserInitials: string = initials({ value: createdBy?.text?.userName });
+                                                                    const replyingUserName: string = createdBy?.text?.userName;
+                                                                    const replyingUserId: string = createdBy?.id;
+                                                                    const replyCreatedDate: string = dateTime({ value: created });
 
-                                                                const { body } = text ?? {};
+                                                                    const { body } = text ?? {};
 
-                                                                return (
+                                                                    return (
 
-                                                                    <li key={commentId} className="u-pt-6 u-pb-6">
-                                                                        <div className="c-comment c-comment--reply u-border-left-theme-8">
-                                                                            <header>
-                                                                                <UserMeta
-                                                                                    image={null}
-                                                                                    text={{
-                                                                                        initials: replyingUserInitials
-                                                                                    }}
-                                                                                    className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                                                    <span className="u-text-bold u-block">
-                                                                                        <Link href={`${groupBasePath}/members/${replyingUserId}`}>
-                                                                                            <a>{replyingUserName}</a>
-                                                                                        </Link>
-                                                                                    </span>
-                                                                                    <span className="u-block u-text-bold">{replyCreatedDate}</span>
-                                                                                </UserMeta>
-                                                                            </header>
-                                                                            <RichText bodyHtml={body} className="u-mb-6" />
-                                                                            <footer>
-                                                                                <Like
-                                                                                    id={commentId}
-                                                                                    likeCount={likeCount}
-                                                                                    isLiked={isLiked}
-                                                                                    shouldEnable={true}
-                                                                                    likeAction={console.log}
-                                                                                    text={{
-                                                                                        countSingular: 'like',
-                                                                                        countPlural: 'likes',
-                                                                                        like: 'like',
-                                                                                        removeLike: 'Remove like'
-                                                                                    }} />
-                                                                            </footer>
-                                                                        </div>
-                                                                    </li>
+                                                                        <li key={commentId} className="u-pt-6 u-pb-6">
+                                                                            <div className="c-comment c-comment--reply u-border-left-theme-8">
+                                                                                <header>
+                                                                                    <UserMeta
+                                                                                        image={null}
+                                                                                        text={{
+                                                                                            initials: replyingUserInitials
+                                                                                        }}
+                                                                                        className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                                                        <span className="u-text-bold u-block">
+                                                                                            <Link href={`${groupBasePath}/members/${replyingUserId}`}>
+                                                                                                <a>{replyingUserName}</a>
+                                                                                            </Link>
+                                                                                        </span>
+                                                                                        <span className="u-block u-text-bold">{replyCreatedDate}</span>
+                                                                                    </UserMeta>
+                                                                                </header>
+                                                                                <RichText bodyHtml={body} className="u-mb-6" />
+                                                                                <footer>
+                                                                                    <Like
+                                                                                        id={commentId}
+                                                                                        likeCount={likeCount}
+                                                                                        isLiked={isLiked}
+                                                                                        shouldEnable={true}
+                                                                                        likeAction={console.log}
+                                                                                        text={{
+                                                                                            countSingular: 'like',
+                                                                                            countPlural: 'likes',
+                                                                                            like: 'like',
+                                                                                            removeLike: 'Remove like'
+                                                                                        }} />
+                                                                                </footer>
+                                                                            </div>
+                                                                        </li>
 
-                                                                )
+                                                                    )
 
-                                                        })}
-                                                    </ul>
+                                                                })}
+                                                            </ul>
+                                                    </Accordion>
+
                                                 }
                                             </div>
                                         </li>

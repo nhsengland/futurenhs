@@ -18,4 +18,9 @@ $card-hero-padding: 10px;
         border-left: $card-border-highlight-width solid $card-border-color;
     }
 
+    &_replies-toggle {
+        @extend %link-base;
+        display: inline-block;
+    }
+
 }

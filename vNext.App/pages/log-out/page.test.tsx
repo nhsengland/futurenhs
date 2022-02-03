@@ -1,29 +1,10 @@
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-
 import Page, { getServerSideProps } from './index.page';
 
-import { Props } from '@components/_pageTemplates/LoggedOutTemplate/interfaces';
-
-const props: Props = {
+const props: any = {
     id: 'mockId',
-    contentText: {
-        title: 'mockTitle',
-        metaDescription: 'mockMetaDescriptionText',
-        mainHeading: 'mockMainHeading',
-    },
-    logOutUrl: '/mock'
 };
 
 describe('Log out page', () => {
-
-    it('renders correctly', () => {
-
-        render(<Page {...props} />);
-
-        expect(screen.getAllByText('mockMainHeading').length).toEqual(1);
-
-    });
 
     it('gets required server side props', async () => {
 
@@ -33,7 +14,7 @@ describe('Log out page', () => {
             }
         } as any);
                 
-        expect(serverSideProps).toHaveProperty('props.contentText');
+        expect(serverSideProps).toHaveProperty('redirect');
 
     });
     
