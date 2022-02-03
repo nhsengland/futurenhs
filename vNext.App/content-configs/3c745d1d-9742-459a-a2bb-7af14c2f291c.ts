@@ -5,6 +5,6 @@ export default {
     metaDescription: 'A list of groups you belong to',
     mainHeading: 'My Groups',
     intro: 'Share ideas, get advice and support from your peers',
-    navMenuTitle: 'Group menu',
+    navMenuTitle: 'Group Menu',
     secondaryHeading: 'All my groups'
 } as GenericPageTextContent;

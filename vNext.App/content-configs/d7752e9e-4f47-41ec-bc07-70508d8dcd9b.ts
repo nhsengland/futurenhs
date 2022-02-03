@@ -1,7 +1,7 @@
 import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    discussionsHeading: 'Latest discussions',
+    discussionsHeading: 'All Discussions',
     noDiscussions: 'This group currently contains no discussions',
-    createDiscussion: 'New discussion'
+    createDiscussion: 'New Discussion'
 } as GenericPageTextContent;
