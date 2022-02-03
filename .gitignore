@@ -282,7 +282,6 @@ MVCForum.Website/workbox*.js.map
 .awcache
 .awcache/*
 yarn.lock
-package-lock.json
 *.orig
 
 axeReports/reportResults.json
