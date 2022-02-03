@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { actions as actionConstants } from '@constants/actions';
 import { routeParams } from '@constants/routes';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { initials } from '@helpers/formatters/initials';
@@ -162,9 +163,11 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                         {...dynamicPagination} />                
                 </LayoutColumn>
                 <LayoutColumn tablet={4} className="c-page-body">
-                    <Link href={`${router.asPath}/create`}>
-                        <a className="c-button u-w-full">{createDiscussion}</a>
-                    </Link>
+                    {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
+                        <Link href={`${router.asPath}/create`}>
+                            <a className="c-button u-w-full">{createDiscussion}</a>
+                        </Link>
+                    }
                 </LayoutColumn>
         </GroupLayout>
 

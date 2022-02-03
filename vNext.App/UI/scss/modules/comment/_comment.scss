@@ -20,6 +20,7 @@ $card-hero-padding: 10px;
 
     &_replies-toggle {
         @extend %link-base;
+        @include small-text;
         display: inline-block;
     }
 

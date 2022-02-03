@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { actions as actionConstants } from '@constants/actions';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
@@ -30,6 +31,17 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                 props.forms = {
                     [createDiscussionForm.id]: createDiscussionForm
                 };
+
+                if(!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)){
+
+                    return {
+                        redirect: {
+                            permanent: false,
+                            destination: '/'
+                        }
+                    }
+
+                }
 
                 if(formPost){
 
