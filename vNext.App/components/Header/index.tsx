@@ -57,11 +57,11 @@ export const Header: (props: Props) => JSX.Element = ({
     const headerAccordionId: string = 'header-accordion';
     const userAccordionId: string = 'user-accordion';
     const logOutRoute: string = routes.LOG_OUT;
-    const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
+    const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP);
     const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
     const handleAccordionToggle = (id: string, isOpen: boolean) => {
         
-        id === headerAccordionId && domHelpers.lockBodyScroll(isMobile && isOpen);
+        id === headerAccordionId && domHelpers.lockBodyScroll(!isDesktop && isOpen);
         id === userAccordionId && setIsUserAccordionOpen(isOpen);
 
     };
@@ -93,7 +93,7 @@ export const Header: (props: Props) => JSX.Element = ({
                     {(shouldRenderSearch || shouldRenderNavigation) && 
                         <div className="c-site-header_nav c-site-header-nav">
                             <Accordion
-                                isOpen={!isMobile}
+                                isOpen={isDesktop}
                                 id={headerAccordionId}
                                 toggleChildren={"Menu"}
                                 className="c-site-header-nav_content"

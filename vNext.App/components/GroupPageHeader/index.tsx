@@ -36,8 +36,9 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const hasActionsMenuItems: boolean = actionsMenuList?.length > 0;
     const hasMenuItems: boolean = navMenuList?.length > 0;
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
+    const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP);
     const activeMenuItemText: string = navMenuList?.find(({ isActive }) => isActive)?.text;
-    const filteredNavMenuList: any = isMobile ? navMenuList?.filter(({ isActive }) => !isActive) : navMenuList;
+    const filteredNavMenuList: any = !isDesktop ? navMenuList?.filter(({ isActive }) => !isActive) : navMenuList;
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,
@@ -71,9 +72,9 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 
     useEffect(() => {
 
-        setIsMenuAccordionOpen(!isMobile);
+        setIsMenuAccordionOpen(isDesktop);
 
-    }, [isMobile]);
+    }, [isDesktop]);
 
     return (
 
