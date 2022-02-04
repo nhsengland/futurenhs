@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { formTypes } from '@constants/forms';
@@ -13,31 +13,33 @@ import { RichText } from '@components/RichText';
 import { Comment } from '@components/Comment';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { ErrorBoundary } from '@components/ErrorBoundary';
+import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { BackLink } from '@components/BackLink';
 import { UserMeta } from '@components/UserMeta';
-import { Like } from '@components/Like';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
-import { getGroupDiscussion } from '@services/getGroupDiscussion';
+import { getGroupDiscussionComments } from '@services/getGroupDiscussionComments';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';
-import { DiscussionComment } from '@appTypes/discussion';
 
 export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     groupId,
+    discussionId,
     user,
     contentText,
     entityText,
     image,
     actions,
     discussion,
-    discussionComments,
-    discussionCommentReplies,
+    discussionCommentsList,
     pagination,
     forms
 }) => {
 
     const router = useRouter();
+
+    const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(discussionCommentsList);
+    const [dynamicPagination, setPagination] = useState(pagination);
 
     const backLinkHref: string = getRouteToParam({
         router: router,
@@ -56,7 +58,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const { title, body } = discussionText ?? {};
     const { totalRecords } = pagination ?? {};
 
-    const hasDiscussionComments: boolean = discussionComments?.length > 0;
+    const hasDiscussionComments: boolean = dynamicDiscussionCommentsList?.length > 0;
     const creatorUserInitials: string = initials({ value: createdBy?.text?.userName });
     const creatorUserName: string = createdBy?.text?.userName;
     const creatorUserId: string = createdBy?.id;
@@ -65,11 +67,41 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const lastCommentDate: string = dateTime({ value: modified });
     const createCommentfields = forms?.[formTypes.CREATE_DISCUSSION_COMMENT]?.steps[0]?.fields;
 
-    const renderReplies = ({ commentId }) => {
+    const handleGetPage = async ({ 
+        pageNumber: requestedPageNumber, 
+        pageSize: requestedPageSize 
+    }) => {
 
-        const replyData: Array<DiscussionComment> = discussionCommentReplies[commentId]?.data ?? [];
+        try {
 
-        return replyData.map(({
+            const { data: additionalComments, pagination, errors } = await getGroupDiscussionComments({
+                user: user,
+                groupId: groupId,
+                discussionId: discussionId,
+                pagination: {
+                    pageNumber: requestedPageNumber,
+                    pageSize: requestedPageSize
+                }
+            });
+
+            if(!errors || !Object.keys(errors).length){
+
+                setDiscussionsList([...dynamicDiscussionCommentsList, ...additionalComments]);
+                setPagination(pagination);
+
+            }
+
+        } catch(error){
+
+            console.log(error);
+
+        }
+
+    };
+
+    const renderReplies = ({ replies }) => {
+
+        return replies?.map(({
             commentId,
             created,
             createdBy,
@@ -86,7 +118,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
             return (
 
-                <li key={commentId} className="u-pt-6 u-pb-6">
+                <li key={commentId} className="u-py-6">
                     <Comment
                         commentId={commentId}
                         text={{
@@ -146,22 +178,23 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     <AriaLiveRegion>
                         {hasDiscussionComments &&
                             <ul className="u-list-none u-p-0">
-                                {discussionComments?.map(({
+                                {dynamicDiscussionCommentsList?.map(({
                                     commentId,
                                     created,
                                     createdBy,
                                     text,
                                     likeCount,
-                                    isLiked
+                                    isLiked,
+                                    replies
                                 }, index) => {
 
                                     const commenterUserInitials: string = initials({ value: createdBy?.text?.userName });
                                     const commenterUserName: string = createdBy?.text?.userName;
                                     const commenterUserId: string = createdBy?.id;
                                     const commentCreatedDate: string = dateTime({ value: created });
-                                    const replies: Array<JSX.Element> = renderReplies({ commentId });
-                                    const hasReply: boolean = replies.length > 0;
-                                    const hasReplies: boolean = replies.length > 1;
+                                    const hasReply: boolean = replies?.length > 0;
+                                    const hasReplies: boolean = replies?.length > 1;
+                                    const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
                                     const additionalRepliesAccordionId: string = `${commentId}-replies`;
 
                                     const { body } = text ?? {};
@@ -182,9 +215,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                 isLiked={isLiked}>
                                                 {hasReply &&
                                                     <ul className="u-list-none u-p-0">
-                                                        <li>
-                                                            {replies[0]}
-                                                        </li>
+                                                        {repliesComponents[0]}
                                                     </ul>
                                                 }
                                                 {hasReplies &&
@@ -193,7 +224,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                         toggleChildren={<span>Show more replies</span>}
                                                         toggleClassName="c-comment_replies-toggle u-text-bold">
                                                         <ul className="u-list-none u-p-0">
-                                                            {replies.splice(1)}
+                                                            {repliesComponents.splice(1)}
                                                         </ul>
                                                     </Accordion>
                                                 }
@@ -206,6 +237,11 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                             </ul>
                         }
                     </AriaLiveRegion>
+                    <PaginationWithStatus 
+                        id="discussion-list-pagination"
+                        shouldEnableLoadMore={true}
+                        getPageAction={handleGetPage}
+                        {...dynamicPagination} />
                 </ErrorBoundary>
                 {user &&
                     <>

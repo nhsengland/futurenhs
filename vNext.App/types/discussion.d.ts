@@ -29,4 +29,5 @@ export interface DiscussionComment {
     text: {
         body?: string;
     };
+    replies?: Array<DiscussionComment>
 }

@@ -2,30 +2,65 @@ import useSWR from 'swr';
 
 export const useService = ({
     key,
-    swrOptions,
-    fetcher,
-    fetcherOptions
+    options,
+    service
 }): {
-    data: any;
-    error: string;
-    mutate?: any;
+    data?: any;
+    errors?: Array<string>;
+    isProcessing?: boolean;
 } => {
 
-    const { data, error, mutate } = useSWR(key, async () => {
-        
-        const { data, errors } = await fetcher(fetcherOptions);
+    try {
+
+        const { data } = useSWR(key, service().then(({ data, errors }) => {
+
+            if(errors?.length){ 
+                
+                throw new Error(errors[0]);
+            
+            }
+    
+            return data;
+    
+        }), options);
 
         return {
             data: data,
-            error: errors && Object.keys(errors).length ? Object.keys(errors)[1] : null
+            errors: null,
+            isProcessing: !data
         }
 
-    }, swrOptions);
-    
-    return {
-        data: data,
-        error: error,
-        mutate: mutate
+    } catch(error){
+
+        return {
+            data: null,
+            errors: [error],
+            isProcessing: false
+        }
+
     }
 
 };
+
+// WIP
+// const { data, error } = useSWR(pagination.pageNumber.toString(), () => getGroupDiscussionComments({
+//     groupId,
+//     discussionId,
+//     user,
+//     pagination
+// }).then(({ data, errors }) => {
+
+//     if(errors?.length){
+
+//         throw new Error(errors[0]);
+
+//     }
+
+//     return data;
+
+// }), 
+// {
+//     refreshInterval: 10000,
+//     fallbackData: discussionComments,
+//     revalidateOnMount: false
+// });
