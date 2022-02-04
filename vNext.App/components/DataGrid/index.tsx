@@ -1,5 +1,7 @@
 ﻿import classNames from 'classnames';
 
+import { DynamicListContainer } from '@components/DynamicListContainer';
+
 import { Props } from './interfaces';
 
 export const DataGrid: (props: Props) => JSX.Element = ({ 
@@ -41,39 +43,41 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                 </tr>
             </thead>
             <tbody>
-                {rowList.map((row, index) => {
+                <DynamicListContainer>
+                    {rowList.map((row, index) => {
 
-                    return (
-                    
-                        <tr key={index} role="row" className={generatedClasses.bodyRow}>
-                            {row.map(({ children, className }, index) => {
+                        return (
+                        
+                            <tr key={index} role="row" className={generatedClasses.bodyRow}>
+                                {row.map(({ children, className }, index) => {
 
-                                const generatedCellClasses = {
-                                    bodyCell: classNames(className, {
-                                        ['u-flex']: shouldRenderAdvancedVariant,
-                                        ['tablet:u-table-cell']: shouldRenderAdvancedVariant,
-                                        ['u-table-cell']: !shouldRenderAdvancedVariant,
-                                        ['u-justify-between']: shouldRenderAdvancedVariant
-                                    })
-                                };
-                            
-                                return (
+                                    const generatedCellClasses = {
+                                        bodyCell: classNames(className, {
+                                            ['u-flex']: shouldRenderAdvancedVariant,
+                                            ['tablet:u-table-cell']: shouldRenderAdvancedVariant,
+                                            ['u-table-cell']: !shouldRenderAdvancedVariant,
+                                            ['u-justify-between']: shouldRenderAdvancedVariant
+                                        })
+                                    };
+                                
+                                    return (
 
-                                    <td 
-                                        key={index} 
-                                        role="cell" 
-                                        className={generatedCellClasses.bodyCell}>
-                                            <span className="tablet:u-hidden">{columnList[index].children} </span>{children}
-                                    </td>
+                                        <td 
+                                            key={index} 
+                                            role="cell" 
+                                            className={generatedCellClasses.bodyCell}>
+                                                <span className="tablet:u-hidden">{columnList[index].children} </span>{children}
+                                        </td>
 
-                                )
-                                                                
-                            })}
-                        </tr>
-                    
-                    )
-                              
-                })}
+                                    )
+                                                                    
+                                })}
+                            </tr>
+                        
+                        )
+                                
+                    })}
+                </DynamicListContainer>
             </tbody>
         </table>
 

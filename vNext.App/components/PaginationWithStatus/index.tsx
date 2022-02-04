@@ -24,7 +24,7 @@ export const PaginationWithStatus: (props: Props) => JSX.Element = ({
 
     const generatedClasses = {
         wrapper: classNames('u-mt-12', 'u-flex-col', 'tablet:u-flex-row-reverse', className),
-        status: classNames('u-text-right', 'u-self-center'),
+        status: classNames('u-text-right', 'u-self-center', 'u-mb-4', 'tablet:u-mb-0'),
         controls: classNames('')
     }
 

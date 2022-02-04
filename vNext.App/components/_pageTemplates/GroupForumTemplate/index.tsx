@@ -7,6 +7,7 @@ import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { initials } from '@helpers/formatters/initials';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { Link } from '@components/Link';
+import { DynamicListContainer } from '@components/DynamicListContainer';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { UserMeta } from '@components/UserMeta';
@@ -91,67 +92,69 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                     <AriaLiveRegion>
                         {hasDiscussions 
                         
-                            ?   dynamicDiscussionsList?.map?.(({ 
-                                    text, 
-                                    discussionId, 
-                                    viewCount, 
-                                    responseCount,
-                                    created,
-                                    createdBy,
-                                    modified,
-                                    modifiedBy,
-                                    isSticky 
-                                }, index) => {
-        
-                                    const { title } = text ?? {};
-                                    const creatorUserInitials: string = initials({ value: createdBy.text.userName });
-                                    const creatorUserName: string = createdBy.text.userName;
-                                    const creatorUserId: string = createdBy.id;
-                                    const createdDate: string = dateTime({ value: created });
-                                    const lastCommentUserName: string = modifiedBy.text.userName;
-                                    const lastCommentDate: string = dateTime({ value: modified });
-        
-                                    return (
-        
-                                        <Card key={index} className="u-border-bottom-theme-10 u-mb-4">
-                                            <h3 className="c-card_heading desktop:u-mb-4">
-                                                <Link href={`${router.asPath}/${discussionId}`}>
-                                                    <a>
-                                                        {isSticky && <span className="u-sr-only">Sticky: </span>}
-                                                        {title}
-                                                    </a>
-                                                </Link>        
-                                            </h3>
-                                            <UserMeta
-                                                image={null}
-                                                text={{
-                                                    initials: creatorUserInitials
-                                                }}
-                                                className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                    <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
-                                                    {responseCount > 0 &&
-                                                        <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
+                            ?   <DynamicListContainer>
+                                    {dynamicDiscussionsList?.map?.(({ 
+                                        text, 
+                                        discussionId, 
+                                        viewCount, 
+                                        responseCount,
+                                        created,
+                                        createdBy,
+                                        modified,
+                                        modifiedBy,
+                                        isSticky 
+                                    }, index) => {
+            
+                                        const { title } = text ?? {};
+                                        const creatorUserInitials: string = initials({ value: createdBy.text.userName });
+                                        const creatorUserName: string = createdBy.text.userName;
+                                        const creatorUserId: string = createdBy.id;
+                                        const createdDate: string = dateTime({ value: created });
+                                        const lastCommentUserName: string = modifiedBy.text.userName;
+                                        const lastCommentDate: string = dateTime({ value: modified });
+            
+                                        return (
+            
+                                            <Card key={index} className="u-border-bottom-theme-10 u-mb-4">
+                                                <h3 className="c-card_heading desktop:u-mb-4">
+                                                    <Link href={`${router.asPath}/${discussionId}`}>
+                                                        <a>
+                                                            {isSticky && <span className="u-sr-only">Sticky: </span>}
+                                                            {title}
+                                                        </a>
+                                                    </Link>        
+                                                </h3>
+                                                <UserMeta
+                                                    image={null}
+                                                    text={{
+                                                        initials: creatorUserInitials
+                                                    }}
+                                                    className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                        <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
+                                                        {responseCount > 0 &&
+                                                            <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
+                                                        }
+                                                </UserMeta>
+                                                <div className="c-card_footer u-text-theme-0">
+                                                    <p className="c-card_footer-item">
+                                                        <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
+                                                        <span>{`${responseCount} Comments`}</span>
+                                                    </p>
+                                                    <p className="c-card_footer-item">
+                                                        <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
+                                                        <span>{`${viewCount} Views`}</span>
+                                                    </p>
+                                                    {isSticky &&
+                                                        <SVGIcon name="icon-pin" className="c-card_footer-icon u-fill-theme-0 u-float-right u-w-4 u-h-4 u-m-0" />
                                                     }
-                                            </UserMeta>
-                                            <div className="c-card_footer u-text-theme-0">
-                                                <p className="c-card_footer-item">
-                                                    <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
-                                                    <span>{`${responseCount} Comments`}</span>
-                                                </p>
-                                                <p className="c-card_footer-item">
-                                                    <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
-                                                    <span>{`${viewCount} Views`}</span>
-                                                </p>
-                                                {isSticky &&
-                                                    <SVGIcon name="icon-pin" className="c-card_footer-icon u-fill-theme-0 u-float-right u-w-4 u-h-4 u-m-0" />
-                                                }
-                                            </div>
-                                        </Card>
-        
-                                    )
-        
-                                })
-
+                                                </div>
+                                            </Card>
+            
+                                        )
+            
+                                    })}
+                                </DynamicListContainer>
+                                
                             :   <p>{noDiscussions}</p>
                     
                         }

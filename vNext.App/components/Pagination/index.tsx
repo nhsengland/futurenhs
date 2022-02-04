@@ -113,7 +113,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
 
         return (
 
-            <button disabled={shouldDisable} onClick={handleLoadMore} className="c-button c-button--secondary u-w-full u-mt-4 tablet:u-w-72">
+            <button disabled={shouldDisable} onClick={handleLoadMore} className="c-button c-button--secondary u-w-full tablet:u-w-72">
                 {loadMore}
             </button>
 

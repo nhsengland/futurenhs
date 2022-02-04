@@ -2,8 +2,10 @@ import Head from 'next/head';
 import classNames from 'classnames';
 
 import { Link } from '@components/Link';
+import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
+import { DynamicListContainer } from '@components/DynamicListContainer';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 
@@ -168,32 +170,36 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
                 {!hasResults &&
                     <p>Sorry no results found</p>
                 }
-                {hasResults &&
-                    <LayoutColumnContainer>
-                        <LayoutColumn desktop={10}>
-                            <ul className='u-p-0 u-list-none'>
-                                {formattedData.map(({ metaHeader, title, body }, index) => {
+                <AriaLiveRegion>
+                    {hasResults &&
+                        <LayoutColumnContainer>
+                            <LayoutColumn desktop={10}>
+                                <ul className='u-p-0 u-list-none'>
+                                    <DynamicListContainer>
+                                        {formattedData.map(({ metaHeader, title, body }, index) => {
 
-                                    return (
+                                            return (
 
-                                        <li key={index} className={generatedClasses.block}>
-                                            <h2 className={generatedClasses.title}>{title}</h2>
-                                            <p className={generatedClasses.header}>{metaHeader}</p>
-                                            <p className={generatedClasses.body}>{body}</p>
-                                        </li>
-                                    )
+                                                <li key={index} className={generatedClasses.block}>
+                                                    <h2 className={generatedClasses.title}>{title}</h2>
+                                                    <p className={generatedClasses.header}>{metaHeader}</p>
+                                                    <p className={generatedClasses.body}>{body}</p>
+                                                </li>
+                                            )
 
-                                })}
-                            </ul>
-                            <PaginationWithStatus
-                                id="search-result-list-pagination"
-                                shouldEnableLoadMore={true}
-                                getPageAction={handleGetPage}
-                                totalRecords={dynamicPagination.totalRecords}
-                                {...dynamicPagination} />
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-                }
+                                        })}
+                                    </DynamicListContainer>
+                                </ul>
+                                <PaginationWithStatus
+                                    id="search-result-list-pagination"
+                                    shouldEnableLoadMore={true}
+                                    getPageAction={handleGetPage}
+                                    totalRecords={dynamicPagination.totalRecords}
+                                    {...dynamicPagination} />
+                            </LayoutColumn>
+                        </LayoutColumnContainer>
+                    }
+                </AriaLiveRegion>
             </div>
         </StandardLayout>
 

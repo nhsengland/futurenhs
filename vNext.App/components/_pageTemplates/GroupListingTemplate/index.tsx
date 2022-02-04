@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { defaultGroupLogos } from '@constants/icons';
 import { Link } from '@components/Link';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
+import { DynamicListContainer } from '@components/DynamicListContainer';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -107,46 +108,48 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                         }
                         <AriaLiveRegion>
                             <ul className="u-list-none u-p-0">
-                                {dynamicGroupsList?.map?.(({ 
-                                    image, 
-                                    text, 
-                                    groupId, 
-                                    totalDiscussionCount, 
-                                    totalMemberCount 
-                                }, index) => {
+                                <DynamicListContainer>
+                                    {dynamicGroupsList?.map?.(({ 
+                                        image, 
+                                        text, 
+                                        groupId, 
+                                        totalDiscussionCount, 
+                                        totalMemberCount 
+                                    }, index) => {
 
-                                    const { mainHeading, strapLine } = text ?? {};
-                                    
-                                    const imageToUse = image ? image : defaultGroupLogos.large;
+                                        const { mainHeading, strapLine } = text ?? {};
+                                        
+                                        const imageToUse = image ? image : defaultGroupLogos.large;
 
-                                    return (
+                                        return (
 
-                                        <li key={index}>
-                                            <Card image={imageToUse} className="u-border-bottom-theme-11 u-mb-4">
-                                                <h3 className="c-card_heading o-truncated-text-lines-3">
-                                                    <Link href={`/groups/${groupId}`}>
-                                                        <a>{mainHeading}</a>
-                                                    </Link>        
-                                                </h3>
-                                                <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                    {strapLine}
-                                                </p>
-                                                <div className="c-card_footer u-text-theme-0">
-                                                    <p className="c-card_footer-item">
-                                                        <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
-                                                        <span>{`${totalMemberCount} Members`}</span>
+                                            <li key={index}>
+                                                <Card image={imageToUse} className="u-border-bottom-theme-11 u-mb-4">
+                                                    <h3 className="c-card_heading o-truncated-text-lines-3">
+                                                        <Link href={`/groups/${groupId}`}>
+                                                            <a>{mainHeading}</a>
+                                                        </Link>        
+                                                    </h3>
+                                                    <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                        {strapLine}
                                                     </p>
-                                                    <p className="c-card_footer-item">
-                                                        <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
-                                                        <span>{`${totalDiscussionCount} Discussions`}</span>
-                                                    </p>
-                                                </div>
-                                            </Card>
-                                        </li>
+                                                    <div className="c-card_footer u-text-theme-0">
+                                                        <p className="c-card_footer-item">
+                                                            <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
+                                                            <span>{`${totalMemberCount} Members`}</span>
+                                                        </p>
+                                                        <p className="c-card_footer-item">
+                                                            <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
+                                                            <span>{`${totalDiscussionCount} Discussions`}</span>
+                                                        </p>
+                                                    </div>
+                                                </Card>
+                                            </li>
 
-                                    )
+                                        )
 
-                                })}
+                                    })}
+                                </DynamicListContainer>
                             </ul>
                         </AriaLiveRegion>
                         <PaginationWithStatus 
