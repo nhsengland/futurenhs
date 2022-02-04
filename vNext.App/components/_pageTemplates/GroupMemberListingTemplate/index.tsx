@@ -49,10 +49,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             children: 'Request date'
         },
         {
-            children: 'Accept'
-        },
-        {
-            children: 'Reject'
+            children: 'Actions'
         }
     ];
     const pendingMemberRowList = useMemo(() => pendingMembers?.map(({ 
@@ -60,26 +57,56 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
         email, 
         requestDate }) => {
 
+            const generatedCellClasses = {
+                name: classNames({
+                    ['u-w-full tablet:u-w-1/4']: true
+                }),
+                email: classNames({
+                    ['u-flex-col u-w-full tablet:u-w-1/4']: true
+                }),
+                requestDate: classNames({
+                    ['u-flex-col u-w-full tablet:u-w-1/6']: true,
+                }),
+                actions: classNames({
+                    ['u-w-full tablet:u-w-1/6']: true,
+                })
+            };
+
+            const generatedHeaderCellClasses = {
+                name: classNames({
+                    ['u-hidden']: true
+                }),
+                email: classNames({
+                    ['u-text-bold']: true
+                }),
+                requestDate: classNames({
+                    ['u-text-bold']: true
+                }),
+                actions: classNames({
+                    ['u-hidden']: true
+                })
+            };
+
             const rows = [
                 {
                     children: fullName,
-                    className: 'u-w-1/4'
+                    className: generatedCellClasses.name,
+                    headerClassName: generatedHeaderCellClasses.name
                 },
                 {
                     children: email,
-                    className: 'u-w-1/4'
+                    className: generatedCellClasses.email,
+                    headerClassName: generatedHeaderCellClasses.email
                 },
                 {
                     children: `${dateTime({ value: requestDate })}`,
-                    className: 'u-w-1/4'
+                    className: generatedCellClasses.requestDate,
+                    headerClassName: generatedHeaderCellClasses.requestDate
                 },
                 {
-                    children: <a href="#">Accept</a>,
-                    className: 'u-w-1/8'
-                },
-                {
-                    children: <a href="#">Reject</a>,
-                    className: 'u-w-1/8'
+                    children: <span className="u-flex u-justify-between u-w-full"><a href="#">Accept</a><a href="#">Reject</a></span>,
+                    className: generatedCellClasses.actions,
+                    headerClassName: generatedHeaderCellClasses.actions
                 }
             ];
 
@@ -89,23 +116,28 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
     const memberColumnList = [
         {
-            children: 'Name'
+            children: 'Name',
+            className: ''
         },
         {
-            children: 'Role'
+            children: 'Role',
+            className: ''
         },
         {
-            children: 'Date joined'
+            children: 'Date joined',
+            className: ''
         },
         {
-            children: 'Last logged in'
+            children: 'Last logged in',
+            className: ''
         }
     ];
 
     if(shouldRenderMemberEditColumn){
 
         memberColumnList.push({
-            children: `Edit`
+            children: `Edit`,
+            className: 'tablet:u-text-right'
         });
 
     }
@@ -174,7 +206,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
                 rows.push({
                     children: <Link href={`${asPath}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
-                    className: 'u-w-full tablet:u-w-1/8',
+                    className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                     headerClassName: 'u-hidden'
                 });
 
