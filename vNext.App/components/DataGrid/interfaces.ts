@@ -1,6 +1,7 @@
 ﻿export type DataCell = {
     children: any;
     className?: string;
+    headerClassName?: string;
 };
 
 export type DataRow = Array<DataCell>;

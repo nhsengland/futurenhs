@@ -23,13 +23,11 @@ export const DataGrid: (props: Props) => JSX.Element = ({
             ['u-sr-only']: !shouldRenderCaption
         }),
         head: classNames({
-            ['u-sr-only']: shouldRenderAdvancedVariant, 
-            ['tablet:u-not-sr-only']: shouldRenderAdvancedVariant
+            ['u-sr-only tablet:u-not-sr-only']: shouldRenderAdvancedVariant
         }),
         bodyRow: classNames({
-            ['u-block']: shouldRenderAdvancedVariant,
-            ['tablet:u-table-row']: shouldRenderAdvancedVariant,
-            ['u-table-row']: !shouldRenderAdvancedVariant,
+            ['u-flex u-flex-wrap tablet:u-table-row u-mb-3 tablet:u-mb-0']: shouldRenderAdvancedVariant,
+            ['u-table-row']: !shouldRenderAdvancedVariant
         })
     };
 
@@ -49,14 +47,20 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                         return (
                         
                             <tr key={index} role="row" className={generatedClasses.bodyRow}>
-                                {row.map(({ children, className }, index) => {
+                                {row.map(({ 
+                                    children, 
+                                    className, 
+                                    headerClassName 
+                                }, index) => {
 
                                     const generatedCellClasses = {
                                         bodyCell: classNames(className, {
                                             ['u-flex']: shouldRenderAdvancedVariant,
                                             ['tablet:u-table-cell']: shouldRenderAdvancedVariant,
-                                            ['u-table-cell']: !shouldRenderAdvancedVariant,
-                                            ['u-justify-between']: shouldRenderAdvancedVariant
+                                            ['u-table-cell']: !shouldRenderAdvancedVariant
+                                        }),
+                                        bodyCellLabel: classNames(headerClassName, {
+                                            ['tablet:u-hidden']: true
                                         })
                                     };
                                 
@@ -66,7 +70,7 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                                             key={index} 
                                             role="cell" 
                                             className={generatedCellClasses.bodyCell}>
-                                                <span className="tablet:u-hidden">{columnList[index].children} </span>{children}
+                                                <span className={generatedCellClasses.bodyCellLabel}>{columnList[index].children} </span>{children}
                                         </td>
 
                                     )

@@ -58,6 +58,10 @@
     font-weight: $nhsuk-font-normal;
 }
 
+.u-text-size-standard {
+    @include standard-text;
+}
+
 .u-drop-shadow {
     box-shadow: 0 4px 0 0 $color_nhsuk-grey-3;
 }

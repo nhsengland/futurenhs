@@ -2,7 +2,6 @@
     border-spacing: 0;
     vertical-align: top;
     width: 100%;
-    background-color: $white;
 
     @include mq($media-type: print) {
         page-break-inside: avoid;
@@ -16,8 +15,7 @@
 
 }
 
-th,
-td {
+th {
     @include nhsuk-typography-responsive(19);
     @include nhsuk-responsive-padding(3, "bottom");
     @include nhsuk-responsive-padding(4, "left");
@@ -27,8 +25,19 @@ td {
     border-bottom: $nhsuk-border-table-header-width solid $nhsuk-border-color;
     text-align: left;
     vertical-align: top;
+    background-color: $white;
+    font-weight: $nhsuk-font-bold;
 }
 
-th {
-    font-weight: $nhsuk-font-bold;
+td {
+    @include nhsuk-typography-responsive(19);
+    @include nhsuk-responsive-padding(4, "bottom");
+    @include nhsuk-responsive-padding(4, "left");
+    @include nhsuk-responsive-padding(4, "right");
+    @include nhsuk-responsive-padding(4, "top");
+
+    border-bottom: $nhsuk-border-table-header-width solid $nhsuk-border-color;
+    text-align: left;
+    vertical-align: top;
+    background-color: $white;
 }
