@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import classNames from 'classnames';
 
 import { actions as userActions } from '@constants/actions';
 import { Link } from '@components/Link';
@@ -116,22 +117,56 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
         joinDate, 
         lastLogInDate }) => {
 
+            const generatedCellClasses = {
+                name: classNames({
+                    ['u-w-full tablet:u-w-1/4']: true
+                }),
+                role: classNames({
+                    ['u-flex-col u-w-full tablet:u-w-1/4']: true
+                }),
+                joinDate: classNames({
+                    ['u-flex-col u-w-full tablet:u-w-1/6']: true,
+                }),
+                lastLoginDate: classNames({
+                    ['u-flex-col u-w-full tablet:u-w-1/6']: true,
+                })
+            };
+
+            const generatedHeaderCellClasses = {
+                name: classNames({
+                    ['u-hidden']: true
+                }),
+                role: classNames({
+                    ['u-text-bold']: true
+                }),
+                joinDate: classNames({
+                    ['u-text-bold']: true
+                }),
+                lastLoginDate: classNames({
+                    ['u-text-bold']: true
+                })
+            };
+
             const rows = [
                 {
                     children: <Link href={`${asPath}/${id}`}>{fullName || role}</Link>,
-                    className: 'u-w-1/4'
+                    className: generatedCellClasses.name,
+                    headerClassName: generatedHeaderCellClasses.name
                 },
                 {
                     children: `${capitalise({ value: role })}`,
-                    className: 'u-w-1/8'
+                    className: generatedCellClasses.role,
+                    headerClassName: generatedHeaderCellClasses.role
                 },
                 {
                     children: `${dateTime({ value: joinDate })}`,
-                    className: 'u-w-1/8'
+                    className: generatedCellClasses.joinDate,
+                    headerClassName: generatedHeaderCellClasses.joinDate
                 },
                 {
                     children: `${dateTime({ value: lastLogInDate })}`,
-                    className: 'u-w-1/4'
+                    className: generatedCellClasses.lastLoginDate,
+                    headerClassName: generatedHeaderCellClasses.lastLoginDate
                 }
             ];
 
@@ -139,7 +174,8 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
                 rows.push({
                     children: <Link href={`${asPath}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
-                    className: 'u-w-1/8'
+                    className: 'u-w-full tablet:u-w-1/8',
+                    headerClassName: 'u-hidden'
                 });
 
             }
