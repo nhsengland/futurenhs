@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 import { initials } from '@helpers/formatters/initials';
@@ -59,21 +59,35 @@ export const Header: (props: Props) => JSX.Element = ({
     const logOutRoute: string = routes.LOG_OUT;
     const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP);
     const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
+
     const handleAccordionToggle = (id: string, isOpen: boolean) => {
         
         id === headerAccordionId && domHelpers.lockBodyScroll(!isDesktop && isOpen);
         id === userAccordionId && setIsUserAccordionOpen(isOpen);
 
     };
+
     const handleLogoutCancel = () => setIsLogoutModalOpen(false);
+
     const handleLogoutConfirm = () => {
+
         setIsLogoutModalOpen(false);
         window.location.href = logOutRoute;
+
     };
-    const handleLogoutRequest = (event: any): void => { 
+
+    const handleLogoutRequest = (event: any): void => {
+
         event.preventDefault();
         setIsLogoutModalOpen(true);
+
     };
+
+    useEffect(() => {
+
+        domHelpers.lockBodyScroll(false);
+
+    }, []);
 
     return (
 

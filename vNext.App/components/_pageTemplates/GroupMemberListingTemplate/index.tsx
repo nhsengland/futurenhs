@@ -59,13 +59,13 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
             const generatedCellClasses = {
                 name: classNames({
-                    ['u-w-full tablet:u-w-1/4']: true
+                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
                 }),
                 email: classNames({
-                    ['u-flex-col u-w-full tablet:u-w-1/4']: true
+                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
                 }),
                 requestDate: classNames({
-                    ['u-flex-col u-w-full tablet:u-w-1/6']: true,
+                    ['u-justify-between u-w-full tablet:u-w-1/6']: true,
                 }),
                 actions: classNames({
                     ['u-w-full tablet:u-w-1/6']: true,
@@ -74,7 +74,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
             const generatedHeaderCellClasses = {
                 name: classNames({
-                    ['u-hidden']: true
+                    ['u-text-bold']: true
                 }),
                 email: classNames({
                     ['u-text-bold']: true
@@ -151,22 +151,22 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
             const generatedCellClasses = {
                 name: classNames({
-                    ['u-w-full tablet:u-w-1/4']: true
+                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
                 }),
                 role: classNames({
-                    ['u-flex-col u-w-full tablet:u-w-1/4']: true
+                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
                 }),
                 joinDate: classNames({
-                    ['u-flex-col u-w-full tablet:u-w-1/6']: true,
+                    ['u-justify-between u-w-full tablet:u-w-1/6']: true,
                 }),
                 lastLoginDate: classNames({
-                    ['u-flex-col u-w-full tablet:u-w-1/6']: true,
+                    ['u-justify-between u-w-full tablet:u-w-1/6']: true,
                 })
             };
 
             const generatedHeaderCellClasses = {
                 name: classNames({
-                    ['u-hidden']: true
+                    ['u-text-bold']: true
                 }),
                 role: classNames({
                     ['u-text-bold']: true

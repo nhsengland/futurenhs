@@ -70,6 +70,10 @@
     height: 100%;
 }
 
+.u-min-w-fit {
+    min-width: fit-content;
+}
+
 @each $number, $theme in $t-utility-themes {
     .u-bg-theme-#{$number} {
         background-color: $theme;
