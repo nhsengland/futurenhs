@@ -1,11 +1,13 @@
 const path = require('path');
 const withPWA = require('next-pwa');
+const swRunTimeCachingConfig = require('./sw.cache.config');
 
 const assetPrefix = '';
 
 module.exports = withPWA({
     pwa: {
-        disable: process.env.NODE_ENV === 'development'
+        disable: process.env.NODE_ENV === 'development',
+        runtimeCaching: swRunTimeCachingConfig
     },
     webpack(config) {
 
