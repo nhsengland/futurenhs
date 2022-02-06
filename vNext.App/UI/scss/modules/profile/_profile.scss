@@ -1,8 +1,23 @@
 .c-profile {
 
+    position: relative;
+
+    @include respond-to(tablet){
+        padding: 0 0 0 250px;
+    }
+
     &_image {
-        width: 210px;
-        height: 210px;
+        width: 96px;
+        height: 96px;
+        margin: 0 0 $nhsuk-spacing-point-3;
+
+        @include respond-to(tablet){
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 210px;
+            height: 210px;
+        }
     }
 
     &_heading {
@@ -20,6 +35,7 @@
     }
 
     &_data-value {
+        @include small-text;
         margin: 0 0 $nhsuk-spacing-point-3;
     }
 

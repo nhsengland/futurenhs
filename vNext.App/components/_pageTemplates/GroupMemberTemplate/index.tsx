@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 
 import { routeParams } from '@constants/routes';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BackLink } from '@components/BackLink';
 import { UserProfile } from '@components/UserProfile';
@@ -42,27 +43,27 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             text={entityText}
             image={image} 
             className="u-bg-theme-3">
-                <div className="c-page-body">
-                    <LayoutColumn>
-                        <BackLink 
-                            href={backLinkHref}
-                            text={{
-                                link: "Back"
-                            }} />
-                    </LayoutColumn>
-                    <LayoutColumn>
-                        <UserProfile
-                            member={member}
-                            text={{
-                                heading: secondaryHeading,
-                                firstNameLabel: firstNameLabel,
-                                lastNameLabel: lastNameLabel,
-                                pronounsLabel: pronounsLabel,
-                                emailLabel: emailLabel
-                            }}
-                            className="u-justify-center u-mt-16" />
-                    </LayoutColumn>
-                </div>
+                <LayoutColumn className="c-page-body">
+                    <BackLink 
+                        href={backLinkHref}
+                        text={{
+                            link: "Back"
+                        }} />
+                    <LayoutColumnContainer justify="centre">
+                        <LayoutColumn tablet={11}>
+                            <UserProfile
+                                member={member}
+                                text={{
+                                    heading: secondaryHeading,
+                                    firstNameLabel: firstNameLabel,
+                                    lastNameLabel: lastNameLabel,
+                                    pronounsLabel: pronounsLabel,
+                                    emailLabel: emailLabel
+                                }}
+                                className="tablet:u-justify-center tablet:u-mt-16" />
+                        </LayoutColumn>
+                    </LayoutColumnContainer>
+                </LayoutColumn>
         </GroupLayout>
 
     )
