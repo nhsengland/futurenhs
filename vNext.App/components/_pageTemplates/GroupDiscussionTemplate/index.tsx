@@ -11,7 +11,9 @@ import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { DynamicListContainer } from '@components/DynamicListContainer';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { RichText } from '@components/RichText';
+import { SVGIcon } from '@components/SVGIcon';
 import { Comment } from '@components/Comment';
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { ErrorBoundary } from '@components/ErrorBoundary';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
@@ -55,7 +57,13 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     const { id, text } = user ?? {};
     const { userName } = text ?? {};
-    const { text: discussionText, created, createdBy, responseCount, modified, modifiedBy } = discussion ?? {};
+    const { text: discussionText, 
+            created, 
+            createdBy, 
+            responseCount, 
+            modified, 
+            modifiedBy,
+            viewCount } = discussion ?? {};
     const { title, body } = discussionText ?? {};
     const { totalRecords } = pagination ?? {};
 
@@ -131,7 +139,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         date={replyCreatedDate}
                         likeCount={likeCount}
                         isLiked={isLiked}
-                        className="c-comment--reply" />
+                        className="c-comment--reply u-border-left-theme-8" />
                 </li>
 
             )
@@ -158,20 +166,32 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 {body &&
                     <RichText bodyHtml={body} className="u-mb-8" />
                 }
-                <UserMeta
-                    image={null}
-                    text={{
-                        initials: creatorUserInitials
-                    }}
-                    className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                    <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
-                    {(responseCount > 0 && lastCommentUserName) &&
-                        <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
-                    }
-                </UserMeta>
+                <LayoutColumnContainer>
+                    <LayoutColumn tablet={8}>
+                        <UserMeta
+                            image={null}
+                            text={{
+                                initials: creatorUserInitials
+                            }}
+                            className="u-m-0 u-text-theme-7">
+                            <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
+                                {(responseCount > 0 && lastCommentUserName) &&
+                                    <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
+                                }
+                        </UserMeta>
+                    </LayoutColumn>
+                    <LayoutColumn tablet={4} className="u-self-end tablet:u-text-right u-text-theme-7 u-text-bold u-mt-4">
+                        {totalRecords > 0 &&
+                            <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" /> {totalRecords} comments</span>
+                        }
+                        {viewCount > 0 &&
+                            <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCount} views</>
+                        }
+                    </LayoutColumn>
+                </LayoutColumnContainer>
                 <hr />
                 {totalRecords > 0 &&
-                    <p className="u-text-lead u-text-bold">
+                    <p className="u-hidden tablet:u-block u-text-lead u-text-bold">
                         {`${totalRecords} comments`}
                     </p>
                 }
@@ -214,22 +234,23 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                     userProfileLink={`${groupBasePath}/members/${commenterUserId}`}
                                                     date={commentCreatedDate}
                                                     likeCount={likeCount}
-                                                    isLiked={isLiked}>
-                                                    {hasReply &&
-                                                        <ul className="u-list-none u-p-0">
-                                                            {repliesComponents[0]}
-                                                        </ul>
-                                                    }
-                                                    {hasReplies &&
-                                                        <Accordion
-                                                            id={additionalRepliesAccordionId}
-                                                            toggleChildren={<span>Show more replies</span>}
-                                                            toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                            <ul className="u-list-none u-p-0">
-                                                                {repliesComponents.splice(1)}
+                                                    isLiked={isLiked}
+                                                    className="u-border-left-theme-8">
+                                                        {hasReply &&
+                                                            <ul className="u-list-none u-m-0 u-p-0">
+                                                                {repliesComponents[0]}
                                                             </ul>
-                                                        </Accordion>
-                                                    }
+                                                        }
+                                                        {hasReplies &&
+                                                            <Accordion
+                                                                id={additionalRepliesAccordionId}
+                                                                toggleChildren={<span>Show more replies</span>}
+                                                                toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                                <ul className="u-list-none u-p-0">
+                                                                    {repliesComponents.splice(1)}
+                                                                </ul>
+                                                            </Accordion>
+                                                        }
                                                 </Comment>
                                             </li>
 

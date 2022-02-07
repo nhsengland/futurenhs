@@ -129,7 +129,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                     text={{
                                                         initials: creatorUserInitials
                                                     }}
-                                                    className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                    className="u-text-theme-7">
                                                         <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
                                                         {responseCount > 0 &&
                                                             <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>

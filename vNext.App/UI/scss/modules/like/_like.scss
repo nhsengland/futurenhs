@@ -1,13 +1,16 @@
 .c-like {
 
     @extend %clear-button-styles;
+    @extend %link-base;
     @include small-text;
     display: flex;
     align-items: center;
     cursor: inherit;
+    text-decoration: underline;
 
     &:focus {
-        padding: $nhsuk-spacing-point-1;
+        border: none;
+        //padding: $nhsuk-spacing-point-1;
     }
 
 }

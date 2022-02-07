@@ -24,7 +24,7 @@ export const Comment: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames('c-comment', className),
-        userMeta: classNames('u-text-theme-7', 'o-truncated-text-lines-2')
+        userMeta: classNames('u-text-theme-7')
     };
 
     return (

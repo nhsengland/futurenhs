@@ -51,6 +51,8 @@ export const getGroupFile = async ({
         
         const reversedPath: Array<any> = apiData.path?.reverse() ?? [];
 
+        console.log(apiData.versions[0]);
+
         serviceResponse.data = {
             id: apiData.id,
             type: 'file',

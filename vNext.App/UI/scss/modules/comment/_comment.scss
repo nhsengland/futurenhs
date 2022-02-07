@@ -19,9 +19,16 @@ $card-hero-padding: 10px;
     }
 
     &_replies-toggle {
+        @extend %clear-button-styles;
         @extend %link-base;
         @include small-text;
         display: inline-block;
+        text-decoration: underline;
+
+        &:focus {
+            border: none;
+        }
+
     }
 
 }
