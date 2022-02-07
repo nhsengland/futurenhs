@@ -25,3 +25,7 @@
 .c-form-group--error .tox-tinymce {
     border: $nhsuk-border-width-form-element-error solid $nhsuk-error-color;
 }
+
+.c-form-group--focus .tox-tinymce {
+    @include nhsuk-focused-input;
+}

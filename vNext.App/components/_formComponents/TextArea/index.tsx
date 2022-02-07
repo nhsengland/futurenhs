@@ -55,7 +55,8 @@ export const TextArea: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames('c-form-group', className, {
-            ['c-form-group--error']: shouldRenderError
+            ['c-form-group--error']: shouldRenderError,
+            ['c-form-group--focus']: isRteFocussed
         }),
         label: classNames('c-label'),
         hint: classNames('c-hint'),
