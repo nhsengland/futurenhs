@@ -141,7 +141,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     ['u-hidden']: isFolder
                 }),
                 actions: classNames({
-                    ['u-w-full tablet:u-w-1/6']: true,
+                    ['u-w-full tablet:u-w-1/6 tablet:u-text-right']: true,
                     ['u-hidden']: isFolder
                 })
             };
@@ -186,7 +186,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     headerClassName: generatedHeaderCellClasses.modified
                 },
                 {
-                    children: isFolder ? '' : <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-fill-theme-8" /><a href="/" className="u-align-top">Download</a></>,
+                    children: isFolder ? '' : <><a href="/" className="u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download</a></>,
                     className: generatedCellClasses.actions,
                     headerClassName: generatedHeaderCellClasses.actions
                 }
@@ -297,7 +297,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                             children: 'Modified'
                                         },
                                         {
-                                            children: 'Actions'
+                                            children: 'Actions',
+                                            className: 'tablet:u-text-right'
                                         }
                                     ]}
                                     rowList={gridRowList} />

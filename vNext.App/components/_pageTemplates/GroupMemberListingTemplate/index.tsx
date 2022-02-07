@@ -136,7 +136,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     if(shouldRenderMemberEditColumn){
 
         memberColumnList.push({
-            children: `Edit`,
+            children: `Actions`,
             className: 'tablet:u-text-right'
         });
 

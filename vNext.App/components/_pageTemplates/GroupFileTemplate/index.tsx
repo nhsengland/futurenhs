@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
 import { Link } from '@components/Link';
@@ -9,6 +10,7 @@ import { LayoutColumn } from '@components/LayoutColumn';
 import { DataGrid } from '@components/DataGrid';
 import { RichText } from '@components/RichText';
 import { BreadCrumb } from '@components/BreadCrumb';
+import { SVGIcon } from '@components/SVGIcon';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { routeParams } from '@constants/routes';
 import { BreadCrumbList } from '@appTypes/routing';
@@ -66,6 +68,36 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
 
     const hasBreadCrumb: boolean = breadCrumbList.length > 0;
 
+    const generatedCellClasses = {
+        name: classNames({
+            ['u-justify-between u-w-full tablet:u-w-1/6']: true
+        }),
+        modifiedBy: classNames({
+            ['u-justify-between u-w-full tablet:u-w-1/4']: true
+        }),
+        lastUpdate: classNames({
+            ['u-justify-between u-w-full u-w-1/6 tablet:u-w-8 u-items-center']: true
+        }),
+        actions: classNames({
+            ['u-justify-between u-w-full tablet:u-w-1/6 tablet:u-justify-end tablet:u-text-right']: true
+        })
+    };
+
+    const generatedHeaderCellClasses = {
+        name: classNames({
+            ['u-text-bold']: true
+        }),
+        modifiedBy: classNames({
+            ['u-text-bold']: true
+        }),
+        lastUpdate: classNames({
+            ['u-text-bold']: true
+        }),
+        actions: classNames({
+            ['u-hidden']: true
+        })
+    };
+
     useEffect(() => {
 
         setShouldRenderFilePreview(true);
@@ -117,22 +149,31 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                                 children: 'Last update'
                             },
                             {
-                                children: 'Actions'
+                                children: 'Actions',
+                                className: 'tablet:u-text-right'
                             }
                         ]}
                         rowList={[
                             [
                                 {
-                                    children: 'File name'
+                                    children: 'File name',
+                                    className: generatedCellClasses.name,
+                                    headerClassName: generatedHeaderCellClasses.name
                                 },
                                 {
-                                    children: dateTime({ value: '2021-06-04T11:47:30Z' })
+                                    children: 'User',
+                                    className: generatedCellClasses.modifiedBy,
+                                    headerClassName: generatedHeaderCellClasses.modifiedBy
                                 },
                                 {
-                                    children: dateTime({ value: '2021-12-10T02:16:03Z' })
+                                    children: dateTime({ value: '2021-12-10T02:16:03Z' }),
+                                    className: generatedCellClasses.lastUpdate,
+                                    headerClassName: generatedHeaderCellClasses.lastUpdate
                                 },
                                 {
-                                    children: <a href="/">Download</a>
+                                    children: <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" /><a href="/">Download</a></>,
+                                    className: generatedCellClasses.actions,
+                                    headerClassName: generatedHeaderCellClasses.actions
                                 }
                             ]
                         ]} 
