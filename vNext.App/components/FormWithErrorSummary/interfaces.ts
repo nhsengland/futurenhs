@@ -11,10 +11,12 @@ export interface Props {
         },
         form: {
             submitButton: string;
+            cancelButton?: string;
         }
     }
     action?: string;
     method?: string;
+    cancelHref?: string;
     submitAction: any;
     changeAction?: any;
     className?: string;

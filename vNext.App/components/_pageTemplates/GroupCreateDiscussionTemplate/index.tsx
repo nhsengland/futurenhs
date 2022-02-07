@@ -1,3 +1,7 @@
+import { useRouter } from 'next/router';
+
+import { routeParams } from '@constants/routes';
+import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
@@ -20,7 +24,17 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     errors
 }) => {
 
+    const router = useRouter();
+
     const fields = forms?.[formTypes.CREATE_DISCUSSION]?.steps[0].fields ?? [];
+
+    const groupBasePath: string = getRouteToParam({
+        router: router,
+        paramName: routeParams.GROUPID,
+        shouldIncludeParam: true
+    });
+
+    const cancelHref: string = `${groupBasePath}/forum`;
 
     return (
 
@@ -43,12 +57,13 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                                         body: 'There is a problem'
                                     },
                                     form: {
-                                        submitButton: 'Create discussion'
+                                        submitButton: 'Create discussion',
+                                        cancelButton: 'Cancel'
                                     }
                                 }} 
                                 submitAction={console.log}
-                                bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1"
-                                submitButtonClassName="u-float-right">
+                                cancelHref={cancelHref}
+                                bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1">
                                     <h2>Create discussion</h2>
                             </FormWithErrorSummary>
                         </LayoutColumn>

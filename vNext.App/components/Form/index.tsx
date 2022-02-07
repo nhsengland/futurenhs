@@ -1,3 +1,4 @@
+import { Link } from '@components/Link';
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
 
@@ -14,21 +15,45 @@ export const Form: (props: Props) => JSX.Element = ({
     fields,
     changeAction,
     submitAction,
+    cancelHref,
     text,
     className,
     bodyClassName,
-    submitButtonClassName
+    submitButtonClassName,
+    cancelButtonClassName
 }) => {
 
-    const handleChange = (props: any): any => changeAction?.(props);
+    const handleChange = (props: any): any => {
+
+        // const { errors, submitFailed } = props;
+
+        // const hasSubmitErrors: boolean = submitFailed && Object.keys(errors).length > 0;
+
+        // if(hasSubmitErrors){
+
+        //     const errorId: string = Object.keys(errors)[0];
+        //     const errorField: HTMLElement = document.getElementById(errorId);
+
+        //     errorField?.focus();
+
+        // }
+
+        changeAction?.(props);
+
+    };
+
     const handleValidate = (submission: any): any => validate(submission, fields);
 
-    const { submitButton } = text ?? {};
+    const { submitButton, cancelButton } = text ?? {};
+
+    const shouldRenderCancelButton: boolean = Boolean(cancelButton) && Boolean(cancelHref);
 
     const generatedClasses: any = {
         wrapper: classNames('c-form', className),
         body: classNames('c-form_body', bodyClassName),
-        submitButton: classNames('c-form_submit-button', 'c-button', 'c-button--min-width', submitButtonClassName)
+        buttonContainer: classNames('u-flex', 'u-justify-between'),
+        submitButton: classNames('c-form_submit-button', 'c-button', 'c-button--min-width', submitButtonClassName),
+        cancelButton: classNames('c-form_cancel-button', 'c-button', 'c-button-outline', 'c-button--min-width', cancelButtonClassName)
     };
 
     return (
@@ -72,12 +97,21 @@ export const Form: (props: Props) => JSX.Element = ({
 
                             })}
                         </div>
-                        <button 
-                            disabled={submitting}
-                            type="submit" 
-                            className={generatedClasses.submitButton}>
-                                {submitButton}
-                        </button>
+                        <div className={generatedClasses.buttonContainer}>
+                            {shouldRenderCancelButton &&
+                                <Link href={cancelHref}> 
+                                    <a className={generatedClasses.cancelButton}>
+                                        {cancelButton}
+                                    </a>
+                                </Link>
+                            }
+                            <button 
+                                disabled={submitting}
+                                type="submit" 
+                                className={generatedClasses.submitButton}>
+                                    {submitButton}
+                            </button>
+                        </div>
                         <FormSpy
                             subscription={{ 
                                 errors: true,

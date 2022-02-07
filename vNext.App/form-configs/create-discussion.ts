@@ -29,7 +29,7 @@ export const createDiscussionForm: Form = {
                     validators: [
                         {
                             type: 'required',
-                            message: 'Enter the discussion title'
+                            message: 'Enter the discussion comment'
                         }
                     ]
                 }

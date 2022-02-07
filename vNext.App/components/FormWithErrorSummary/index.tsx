@@ -14,6 +14,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     fields,
     errors,
     submitAction,
+    cancelHref,
     text,
     children,
     className,
@@ -70,6 +71,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 className={generatedClasses.form}
                 bodyClassName={bodyClassName}
                 submitButtonClassName={submitButtonClassName}
+                cancelHref={cancelHref}
                 changeAction={handleChange}
                 submitAction={submitAction} />
         </>
