@@ -18,6 +18,20 @@ $card-hero-padding: 10px;
         border-left: $card-border-highlight-width solid $card-border-color;
     }
 
+    &_replies-list {
+        margin: $nhsuk-spacing-point-4 0 0;
+        border-top: 1px solid $black;
+    }
+
+    &_reply-container {
+        border-bottom: 1px solid $black;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+    }
+
     &_replies-toggle {
         @extend %clear-button-styles;
         @extend %link-base;

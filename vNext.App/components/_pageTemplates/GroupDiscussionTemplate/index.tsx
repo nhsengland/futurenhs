@@ -127,7 +127,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
             return (
 
-                <li key={commentId} className="u-py-6">
+                <li key={commentId} className="c-comment_reply-container u-m-0 u-py-6">
                     <Comment
                         commentId={commentId}
                         text={{
@@ -237,7 +237,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                     isLiked={isLiked}
                                                     className="u-border-left-theme-8">
                                                         {hasReply &&
-                                                            <ul className="u-list-none u-m-0 u-p-0">
+                                                            <ul className="u-list-none c-comment_replies-list u-p-0">
                                                                 {repliesComponents[0]}
                                                             </ul>
                                                         }
@@ -246,9 +246,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                                 id={additionalRepliesAccordionId}
                                                                 toggleChildren={<span>Show more replies</span>}
                                                                 toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                                <ul className="u-list-none u-p-0">
-                                                                    {repliesComponents.splice(1)}
-                                                                </ul>
+                                                                    <ul className="u-list-none u-p-0">
+                                                                        {repliesComponents.splice(1)}
+                                                                    </ul>
                                                             </Accordion>
                                                         }
                                                 </Comment>
