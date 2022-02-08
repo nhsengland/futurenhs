@@ -40,7 +40,7 @@ const activateAutomationDb = series(db.msbuildAutomation, db.deployAutomationFut
 
 const activateApp = series(app.stopSite, app.build, app.startSite);
 
-// Watch task - runs all the web tasks then watches and re-runs tasks on subsequent changes - also hosts local prototyping server for prototyping
+// Watch task - runs all the web tasks then watches and re-runs tasks on subsequent changes
 const watchApp = (done) => { 
 
     const watchers = () => {
