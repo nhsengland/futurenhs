@@ -8,6 +8,7 @@ export interface Props {
         error: string;
         submitError: string;
         touched: boolean;
+        submitFailed: boolean;
     };
     text: {
         label: string;

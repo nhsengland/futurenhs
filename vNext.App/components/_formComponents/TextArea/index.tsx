@@ -15,6 +15,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     },
     meta: {
         touched,
+        submitFailed,
         error,
         submitError
     },
@@ -34,8 +35,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
 
     const handleRteInit = (_, editor) => editorRef.current = editor;
     const handleRteFocus = () => setIsRteFocussed(true);
-    const handleRteBlur = () => setIsRteFocussed(false);
-    const handleRteChange = () => {
+    const handleOnChange = () => {
 
         if (editorRef.current) {
 
@@ -44,6 +44,19 @@ export const TextArea: (props: Props) => JSX.Element = ({
             onChange(rteContent);
 
         }
+
+    }
+
+    const handleRteBlur = () => {
+
+        handleOnChange();
+        setIsRteFocussed(false);
+
+    }
+
+    const handleRteChange = () => {
+
+        handleOnChange();
 
     }
 
@@ -101,6 +114,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                 ?   <Editor
                         tinymceScriptSrc="/js/tinymce/tinymce.min.js"
                         textareaName={name}
+                        id={name}
                         onInit={handleRteInit}
                         onChange={handleRteChange}
                         onFocus={handleRteFocus}

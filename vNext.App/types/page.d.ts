@@ -10,7 +10,7 @@ export interface Page {
     id: string;
     groupId?: string;
     csrfToken?: string;
-    forms?: Record<string, Form>;
+    forms?: any;
     pagination?: Pagination;
     errors?: Array<Record<string>>;
     contentText?: GenericPageTextContent;

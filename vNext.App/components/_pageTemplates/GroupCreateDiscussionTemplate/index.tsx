@@ -20,13 +20,13 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     actions,
     contentText,
     entityText,
-    image,
-    errors
+    image
 }) => {
 
     const router = useRouter();
 
-    const fields = forms?.[formTypes.CREATE_DISCUSSION]?.steps[0].fields ?? [];
+    const fields = forms?.[formTypes.CREATE_DISCUSSION]?.config?.steps[0].fields ?? [];
+    const validationErrors = forms?.[formTypes.CREATE_DISCUSSION]?.validationErrors ?? [];
 
     const groupBasePath: string = getRouteToParam({
         router: router,
@@ -51,7 +51,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                             <FormWithErrorSummary
                                 csrfToken={csrfToken}
                                 fields={fields}
-                                errors={errors}
+                                errors={validationErrors}
                                 text={{
                                     errorSummary: {
                                         body: 'There is a problem'

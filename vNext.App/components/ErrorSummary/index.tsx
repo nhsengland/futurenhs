@@ -1,10 +1,14 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { scrollToComponentAndSetFocus } from '@helpers/dom';
 import { RichText } from '@components/RichText';
 
 import { Props } from './interfaces';
 
+/**
+ * Renders a form submission validation error summary
+ */
 export const ErrorSummary = React.forwardRef(({ 
     errors = [],
     relatedNames = [],
@@ -44,12 +48,35 @@ export const ErrorSummary = React.forwardRef(({
 
                                 const key = Object.keys(error)[0];
 
+                                const handleClick = (event: any) => {
+
+                                    event.preventDefault();
+
+                                    const rteInstance: any = (window as any).tinymce?.get(key);
+
+                                    if(rteInstance){
+
+                                        const rteElement: HTMLElement = rteInstance.getContentAreaContainer();
+
+                                        scrollToComponentAndSetFocus(rteElement, false, 60);
+                                        rteInstance.focus();
+
+                                    } else {
+
+                                        const element: HTMLElement = document.getElementById(key);
+
+                                        scrollToComponentAndSetFocus(element, false, 60);
+
+                                    }
+
+                                }
+
                                 return (
 
                                     <li key={index} className={generatedClasses.listItem}>
                                         {relatedNames.includes(key)
                                         
-                                            ?   <a href={`#${key}`} className={generatedClasses.link}>{error[key]}</a>
+                                            ?   <a href={`#${key}`} className={generatedClasses.link} onClick={handleClick}>{error[key]}</a>
                                             
                                             :   <span className={generatedClasses.link}>{error[key]}</span> 
                                         

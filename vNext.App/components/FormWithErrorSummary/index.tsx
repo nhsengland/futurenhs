@@ -33,9 +33,14 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
 
         setTimeout(() => {
 
-            setValidationErrors(submitFailed ? hasErrors ? errors : submitErrors : {});
+            const errorsAsArray: Array<any> = errors ? Object.keys(errors).map((key: string) => ({ [key]: errors[key] })) : [];
+            const submitErrorsAsArray: Array<any> = submitErrors ? Object.keys(submitErrors).map((key: string) => ({ [key]: submitErrors[key] })) : [];
+            const errorsToUse: Array<any> = submitFailed ? hasErrors ? errorsAsArray : submitErrorsAsArray : [];
+            const shouldFocusSummary: boolean = submitFailed && modifiedSinceLastSubmit && (hasErrors || hasSubmitErrors);
 
-            if(submitFailed && !modifiedSinceLastSubmit && hasSubmitErrors){
+            setValidationErrors(errorsToUse);
+
+            if(shouldFocusSummary){
 
                 errorSummaryRef.current?.focus();
 
@@ -60,7 +65,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 relatedNames={relatedNames}
                 text={errorSummaryText} 
                 className="u-mb-6"/>
-            {children}
+                    {children}
             <Form 
                 action={action}
                 method={method}
