@@ -18,12 +18,14 @@ namespace FutureNHS.Api.Controllers
         private readonly ILogger<GroupsController> _logger;
         private readonly IGroupDataProvider _groupDataProvider;
         private readonly IPermissionsService _permissionsService;
+        private readonly IGroupMembershipService _groupMembershipService;
 
-        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService)
+        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService, IGroupMembershipService groupMembershipService)
         {
             _logger = logger;
             _groupDataProvider = groupDataProvider;
             _permissionsService = permissionsService;
+            _groupMembershipService = groupMembershipService;
         }
 
         [HttpGet]
@@ -129,6 +131,24 @@ namespace FutureNHS.Api.Controllers
                 return NotFound();
 
             return Ok(member);
+        }
+
+        [HttpPost]
+        [Route("users/{userId:guid}/groups/{slug}/members/join")]
+        public async Task<IActionResult> UserJoinGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        {
+            await _groupMembershipService.UserJoinGroupAsync(userId,slug, cancellationToken);
+            
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("users/{userId:guid}/groups/{slug}/members/leave")]
+        public async Task<IActionResult> UserLeaveGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        {
+            await _groupMembershipService.UserLeaveGroupAsync(userId, slug, cancellationToken);
+
+            return Ok();
         }
     }
 }

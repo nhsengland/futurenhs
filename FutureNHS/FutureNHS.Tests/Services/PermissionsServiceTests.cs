@@ -36,7 +36,7 @@ namespace FutureNHS.Tests.Services
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
 
-            var rolesDataProvider = new Moq.Mock<IRolesDataProvider>().Object;
+            var rolesDataProvider = new Moq.Mock<IRolesCommand>().Object;
 
             _ = new PermissionsService(rolesDataProvider, null, permissionsServiceLogger);
         }
@@ -49,7 +49,7 @@ namespace FutureNHS.Tests.Services
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
 
             var cancellationToken = CancellationToken.None;
-            var rolesDataProvider = new Moq.Mock<IRolesDataProvider>().Object;
+            var rolesDataProvider = new Moq.Mock<IRolesCommand>().Object;
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger);
@@ -68,7 +68,7 @@ namespace FutureNHS.Tests.Services
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
 
             var cancellationToken = CancellationToken.None;
-            var rolesDataProvider = new Mock<IRolesDataProvider>().Object;
+            var rolesDataProvider = new Mock<IRolesCommand>().Object;
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger);
@@ -90,7 +90,7 @@ namespace FutureNHS.Tests.Services
 
             var cancellationToken = cts.Token;
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>().Object;
+            var rolesDataProvider = new Mock<IRolesCommand>().Object;
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             cts.Cancel();
@@ -114,7 +114,7 @@ namespace FutureNHS.Tests.Services
 
             var cancellationToken = cts.Token;
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             var userId = Guid.NewGuid();
@@ -147,7 +147,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = new List<string> { "Admin" };
@@ -178,7 +178,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = new List<string> { "Standard Members" };
@@ -209,7 +209,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = new List<string> { "Standard Members" };
@@ -240,7 +240,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = new List<string> { "Standard Members" };
@@ -271,7 +271,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = new List<string> { "Standard Members" };
@@ -302,7 +302,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = new List<string> { "Standard Members" };
@@ -333,7 +333,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             var userRolesResponse = new List<string> { "Standard Members", "Admin" };
@@ -366,7 +366,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             var userRolesResponse = new List<string> { "Standard Members" };
@@ -392,7 +392,7 @@ namespace FutureNHS.Tests.Services
 
             var cancellationToken = CancellationToken.None;
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>().Object;
+            var rolesDataProvider = new Mock<IRolesCommand>().Object;
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger);
@@ -414,7 +414,7 @@ namespace FutureNHS.Tests.Services
 
             var cancellationToken = cts.Token;
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>().Object;
+            var rolesDataProvider = new Mock<IRolesCommand>().Object;
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             cts.Cancel();
@@ -437,7 +437,7 @@ namespace FutureNHS.Tests.Services
 
             var userId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = null;
@@ -466,7 +466,7 @@ namespace FutureNHS.Tests.Services
 
             var userId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
+            var rolesDataProvider = new Mock<IRolesCommand>();
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             var userRolesResponse = new List<string> { "Standard Members", "Admin" };

@@ -13,6 +13,7 @@
     [MembershipRole_Id]          UNIQUEIDENTIFIER NULL,
     [MembershipUser_Id]          UNIQUEIDENTIFIER NOT NULL,
     [Group_Id]                   UNIQUEIDENTIFIER NOT NULL,
+    [RowVersion]                 ROWVERSION NOT NULL, 
     CONSTRAINT [PK_dbo.GroupUser_MembershipUser_Id_Group_Id] PRIMARY KEY CLUSTERED ([MembershipUser_Id] ASC, [Group_Id] ASC),
     CONSTRAINT [FK_dbo.GroupUser_dbo.Group_Group_Id] FOREIGN KEY ([Group_Id]) REFERENCES [dbo].[Group] ([Id]),
     CONSTRAINT [FK_dbo.GroupUser_dbo.MembershipRole_MembershipRole_Id] FOREIGN KEY ([MembershipRole_Id]) REFERENCES [dbo].[MembershipRole] ([Id]),

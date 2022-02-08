@@ -152,7 +152,7 @@ namespace FutureNHS.Api.Services
 
             if (groupUserRole.Approved && !groupUserRole.Banned && !groupUserRole.Locked && !groupUserRole.Rejected)
                 return Approved;
-            if(groupUserRole.Banned)
+            if (groupUserRole.Banned)
                 return Banned;
             if (groupUserRole.Locked)
                 return Locked;

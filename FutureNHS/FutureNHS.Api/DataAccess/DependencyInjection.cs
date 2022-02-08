@@ -1,5 +1,7 @@
 ﻿using FutureNHS.Api.DataAccess.Repositories.Read;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Repositories.Write;
+using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
 
 namespace FutureNHS.Api.DataAccess
 {
@@ -7,6 +9,7 @@ namespace FutureNHS.Api.DataAccess
     {
         public static IServiceCollection DataAccess(this IServiceCollection services)
         {
+            // Read
             services.AddScoped<IGroupDataProvider, GroupDataProvider>();
             services.AddScoped<IImageDataProvider, ImageDataProvider>();
             services.AddScoped<IHealthCheckDataProvider, HealthCheckDataProvider>();
@@ -16,6 +19,10 @@ namespace FutureNHS.Api.DataAccess
             services.AddScoped<ISearchDataProvider, SearchDataProvider>();
             services.AddScoped<IDiscussionDataProvider, DiscussionDataProvider>();
             services.AddScoped<ICommentsDataProvider, CommentsDataProvider>();
+
+            // Write
+            services.AddScoped<IGroupCommand, GroupCommand>();
+            services.AddScoped<IRolesCommand, RolesCommand>();
 
             return services;
         }
