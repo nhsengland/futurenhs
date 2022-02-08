@@ -15,7 +15,6 @@ export const TextArea: (props: Props) => JSX.Element = ({
     },
     meta: {
         touched,
-        submitFailed,
         error,
         submitError
     },
