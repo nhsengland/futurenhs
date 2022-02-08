@@ -66,6 +66,8 @@ const activate = series(activateDb, activateMvcForum, activateApi, activateApp);
 
 const activateAutomation = series(activateAutomationDb, activateMvcForum, activateApi, activateApp);
 
+const deactivate = series(mvcforum.stopSite, api.stopSite, app.stopSite);
+
 module.exports = {
     activate,
     activateAutomation,
@@ -74,5 +76,7 @@ module.exports = {
     activateDb,
     activateAutomationDb,
     activateApp,
+    deactivate,
     watchApp
 }
+
