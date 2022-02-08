@@ -1,8 +1,11 @@
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { Link } from '@components/Link';
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
 
 import { formComponents } from '@components/_formComponents';
+import { Dialog } from '@components/Dialog';
 import { validate } from '@helpers/validators';
 
 import { Props } from './interfaces';
@@ -23,25 +26,19 @@ export const Form: (props: Props) => JSX.Element = ({
     cancelButtonClassName
 }) => {
 
-    const handleChange = (props: any): any => {
+    const router = useRouter();
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
-        // const { errors, submitFailed } = props;
+    const handleCancel = (event: any): any => {
 
-        // const hasSubmitErrors: boolean = submitFailed && Object.keys(errors).length > 0;
+        event.preventDefault();
 
-        // if(hasSubmitErrors){
-
-        //     const errorId: string = Object.keys(errors)[0];
-        //     const errorField: HTMLElement = document.getElementById(errorId);
-
-        //     errorField?.focus();
-
-        // }
-
-        changeAction?.(props);
+        setIsCancelModalOpen(true);
 
     };
-
+    const handleDiscardDiscussionCancel = () => setIsCancelModalOpen(false);
+    const handleDiscardDiscussionConfirm = () => router.push(cancelHref);
+    const handleChange = (props: any): any => changeAction?.(props);
     const handleValidate = (submission: any): any => validate(submission, fields);
 
     const { submitButton, cancelButton } = text ?? {};
@@ -99,11 +96,25 @@ export const Form: (props: Props) => JSX.Element = ({
                         </div>
                         <div className={generatedClasses.buttonContainer}>
                             {shouldRenderCancelButton &&
-                                <Link href={cancelHref}> 
-                                    <a className={generatedClasses.cancelButton}>
-                                        {cancelButton}
-                                    </a>
-                                </Link>
+                                <>
+                                    <Link href={cancelHref}> 
+                                        <a className={generatedClasses.cancelButton} onClick={handleCancel}>
+                                            {cancelButton}
+                                        </a>
+                                    </Link>
+                                    <Dialog 
+                                        id="dialog-discard-discussion"
+                                        isOpen={isCancelModalOpen}
+                                        text={{
+                                            cancelButton: 'Cancel',
+                                            confirmButton: 'Yes, discard'
+                                        }}
+                                        cancelAction={handleDiscardDiscussionCancel}
+                                        confirmAction={handleDiscardDiscussionConfirm}>
+                                            <h3>Entered Data will be lost</h3>
+                                            <p className="u-text-bold">The discussion details will be discarded. Are you sure you wish to proceed?</p>
+                                    </Dialog>
+                                </>
                             }
                             <button 
                                 disabled={submitting}

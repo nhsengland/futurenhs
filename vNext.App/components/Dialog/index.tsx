@@ -28,12 +28,12 @@ export const Dialog: (props: Props) => JSX.Element = ({
                 <div className="c-dialog_content">
                     {children}
                     {(cancelAction && cancelButton) &&
-                        <button className="c-button c-button--outline c-button--full-width" onClick={handleCancel}>
+                        <button className="c-button c-button--outline u-w-full u-mb-4" onClick={handleCancel}>
                             {cancelButton}
                         </button>
                     }
                     {(confirmAction && confirmButton) &&
-                        <button className="c-button c-button--full-width" onClick={handleConfirm}>
+                        <button className="c-button u-w-full" onClick={handleConfirm}>
                             {confirmButton}
                         </button>
                     }
