@@ -47,7 +47,7 @@ jobs:
     inputs:
       gulpFile: '$(Build.SourcesDirectory)/vNext.App/gulpfile.js'
       targets: 'build'
-      gulpjs: '$(Build.SourcesDirectory)/vNext.App/node_modules/gulp/bin/gulp.js'
+      gulpjs: '$(Build.SourcesDirectory)/node_modules/gulp/bin/gulp.js'
 
   - task: Npm@1
     displayName: 'Build Next.js assets'
