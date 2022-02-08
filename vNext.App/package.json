@@ -62,6 +62,7 @@
     "del": "^6.0.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
+    "gulp": "4.0.2",
     "idempotent-babel-polyfill": "^7.4.4",
     "ignore-loader": "^0.1.2",
     "jest": "^27.2.5",
