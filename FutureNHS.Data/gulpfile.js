@@ -79,7 +79,7 @@ const msbuildAutomation = (done) => {
 //////////////////////////////////////
 
 const deployFutureNHSDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\150\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
@@ -109,7 +109,7 @@ const deployFutureNHSDatabase = (done) => {
 };
 
 const deployAutomationFutureNHSDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\150\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
