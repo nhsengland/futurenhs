@@ -6,15 +6,16 @@ const
     favicons = require('gulp-favicons'),
     childProcess = require('child_process');
 
-const uiPath = 'vNext.App/UI';
-const uiAssetsDistPath = `vNext.App/public`;
+const getRootPath = () => process.cwd().includes('vNext.App') ? '' : 'vNext.App';
+const getUiPath = () => getRootPath() ? `${getRootPath()}/UI` : './UI';
+const getUiAssetsDistPath = () => getRootPath() ? `${getRootPath()}/public` : './public';
 
 // Compress image assets and copy to /dist
 const images = () => {
 
     return gulp
-        .src(`${uiPath}/images/**/*`)
-        .pipe(gulp.dest(`${uiAssetsDistPath}/images`));
+        .src(`${getUiPath()}/images/**/*`)
+        .pipe(gulp.dest(`${getUiAssetsDistPath()}/images`));
 
 };
 
@@ -22,8 +23,8 @@ const images = () => {
 const fonts = () => {
 
     return gulp
-        .src(`${uiPath}/fonts/**/*`)
-        .pipe(gulp.dest(`${uiAssetsDistPath}/fonts`));
+        .src(`${getUiPath()}/fonts/**/*`)
+        .pipe(gulp.dest(`${getUiAssetsDistPath()}/fonts`));
 
 };
 
@@ -32,14 +33,16 @@ const tinyMce = () => {
 
     return gulp
         .src('./node_modules/tinymce/**/*')
-        .pipe(gulp.dest(`${uiAssetsDistPath}/js/tinymce`));
+        .pipe(gulp.dest(`${getUiAssetsDistPath()}/js/tinymce`));
 
 };
 
 // Generate favicon set
 const favicon = () => {
 
-    return gulp.src(`${uiPath}/favicon/logo.png`)
+    const faviconPath = getUiPath() ? `${getUiPath()}/favicon/logo.png` : `./favicon/logo.png`
+
+    return gulp.src(faviconPath)
         .pipe(favicons({
             appName: 'Future NHS',
             appDescription: '',
@@ -65,15 +68,18 @@ const favicon = () => {
                 coast: false
             }
         }))
-        .pipe(gulp.dest(`${uiAssetsDistPath}/favicon`));
+        .pipe(gulp.dest(`${getUiAssetsDistPath()}/favicon`));
 
 };
 
 // Generate svg 'sprite'
 const icons = () => {
 
-    const src = `${uiPath}/icons/**/*.svg`;
-    const dist = `${uiAssetsDistPath}/icons`;
+    const src = `${getUiPath()}/icons/**/*.svg`;
+    const dist = `${getUiAssetsDistPath()}/icons`;
+    const templatePath = getRootPath() ? `./${getRootPath()}/svgSymbolsTemplate.svg` : './svgSymbolsTemplate.svg';
+
+    console.log(src, dist, templatePath);
 
     const sprite = gulp.src(src)
         .pipe(svgSprite({
@@ -91,7 +97,7 @@ const icons = () => {
                 symbols: 'icons.svg',
             },
             templates: {
-                symbols: fs.readFileSync('./vNext.App/svgSymbolsTemplate.svg', 'utf-8')
+                symbols: fs.readFileSync(templatePath, 'utf-8')
             }
         }))
         .pipe(gulp.dest(dist));
