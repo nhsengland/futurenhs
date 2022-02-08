@@ -10,6 +10,7 @@ export interface Props {
     };
     shouldRenderActionsMenu?: boolean;
     actionsMenuList?: Array<{
+        id: string;
         url: string;
         text: string;
     }>;

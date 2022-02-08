@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 
+import { actions } from '@constants/actions';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
+import { Dialog } from '@components/Dialog';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
 import { Image } from '@components/Image';
@@ -25,8 +28,15 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     className
 }) => {
 
+    const router = useRouter();
+
     const [isActionsAccordionOpen, setIsActionsAccordionOpen] = useState(false);
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true);
+    const [isLeaveGroupModalOpen, setIsLeaveGroupModalOpen] = useState(false);
+
+    const handleLeaveGroup = (): any => setIsLeaveGroupModalOpen(true);
+    const handleDiscardLeaveGroupCancel = () => setIsLeaveGroupModalOpen(false);
+    const handleDiscardLeaveGroupConfirm = () => router.push('/');
 
     const actionsMenuTitleText: string = 'Actions';
     const { mainHeading, 
@@ -119,16 +129,42 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                 }
                                 className={generatedClasses.actions}>
                                     <ul className={generatedClasses.actionsContent}>
-                                        {actionsMenuList.map(({ url, text }, index) => {
+                                        {actionsMenuList.map(({ id, url, text }, index) => {
+
+                                            const handleActionMenuItemClick = (event: any) => {
+
+                                                if(id === actions.GROUPS_LEAVE){
+
+                                                    event.preventDefault();
+
+                                                    handleLeaveGroup();
+
+                                                }
+                                                
+                                            };
 
                                             return (
 
                                                 <li key={index} className="u-m-0">
                                                     <Link href={url}>
-                                                        <a className="c-page-header_actions-content-item u-m-0 u-block u-break-words">
+                                                        <a className="c-page-header_actions-content-item u-m-0 u-block u-break-words" onClick={handleActionMenuItemClick}>
                                                             {text}
                                                         </a>
                                                     </Link>
+                                                    {id === actions.GROUPS_LEAVE &&
+                                                        <Dialog 
+                                                            id="dialog-leave-group"
+                                                            isOpen={isLeaveGroupModalOpen}
+                                                            text={{
+                                                                cancelButton: 'Cancel',
+                                                                confirmButton: 'Yes, leave group'
+                                                            }}
+                                                            cancelAction={handleDiscardLeaveGroupCancel}
+                                                            confirmAction={handleDiscardLeaveGroupConfirm}>
+                                                                <h3>Leave this group</h3>
+                                                                <p className="u-text-bold">Are you sure you would like to leave the group?</p>
+                                                        </Dialog>
+                                                    }
                                                 </li>
 
                                             )

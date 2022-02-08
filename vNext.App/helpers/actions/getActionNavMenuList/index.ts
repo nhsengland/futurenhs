@@ -9,11 +9,13 @@ export const getActionNavMenuList = ({
     groupRoute,
     actions
 }: Config): Array<{
+    id: userActions;
     url: string;
     text: string;
 }> => {
 
     const actionsMenuList: Array<{
+        id: userActions;
         url: string;
         text: string;
     }> = [];
@@ -21,6 +23,7 @@ export const getActionNavMenuList = ({
     if(actions?.includes(userActions.GROUPS_EDIT)){
 
         actionsMenuList.push({
+            id: userActions.GROUPS_EDIT,
             url: `${groupRoute}/update`,
             text: 'Edit group information'
         });
@@ -28,6 +31,7 @@ export const getActionNavMenuList = ({
     }
 
     actionsMenuList.push({
+        id: userActions.GROUPS_LEAVE,
         url: '/',
         text: 'Leave group'
     });
@@ -35,6 +39,7 @@ export const getActionNavMenuList = ({
     if(actions?.includes(userActions.GROUPS_MEMBERS_ADD)){
 
         actionsMenuList.push({
+            id: userActions.GROUPS_MEMBERS_ADD,
             url: '/',
             text: 'Add new member'
         });
@@ -44,6 +49,7 @@ export const getActionNavMenuList = ({
     if(actions?.includes(userActions.SITE_MEMBERS_ADD)){
 
         actionsMenuList.push({
+            id: userActions.SITE_MEMBERS_ADD,
             url: '/',
             text: 'Invite new user'
         });
