@@ -104,7 +104,7 @@ nextApp
                 'X-Frame-Options': 'SAMEORIGIN',
                 'X-Content-Type-Options': 'nosniff',
                 'Referrer-Policy': 'origin-when-cross-origin',
-                //'Content-Security-Policy': generateCSP(nonce)
+                'Content-Security-Policy': generateCSP(nonce)
             });
 
             res.locals.nonce = nonce;
@@ -205,6 +205,15 @@ nextApp
             }
                 
             return handle(req, res, parsedUrl);
+
+        });
+
+        /**
+         * TODO - CSRF for non GET requests on the gateway
+         */
+        app.post('/api/gateway/*', (req, res) => {
+
+            return handle(req, res);
 
         });
 

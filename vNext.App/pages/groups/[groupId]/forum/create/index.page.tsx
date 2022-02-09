@@ -1,12 +1,14 @@
 import { GetServerSideProps } from 'next';
 
+import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
-import { selectCsrfToken, selectBody, selectProps } from '@selectors/context';
-import { validate } from '@helpers/validators';
+import { selectCsrfToken, selectBody, selectProps, selectParam, selectUser } from '@selectors/context';
+import { postGroupDiscussion } from '@services/postGroupDiscussion';
 import { GetServerSidePropsContext } from '@appTypes/next';
+import { User } from '@appTypes/user';
 
 import { createDiscussionForm } from '@formConfigs/create-discussion';
 import { GroupCreateDiscussionTemplate } from '@components/_pageTemplates/GroupCreateDiscussionTemplate';
@@ -22,6 +24,8 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
+                const user: User = selectUser(context);
+                const groupId: string = selectParam(context, routeParams.GROUPID);
                 const csrfToken: string = selectCsrfToken(context);
                 const formPost: any = selectBody(context);
 
@@ -47,19 +51,24 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
                 if(formPost){
 
-                    const validationErrors = validate(formPost, createDiscussionForm.steps[0].fields);
+                    try {
 
-                    if(Object.keys(validationErrors).length > 0){
-
-                        props.forms[createDiscussionForm.id].validationErrors = [validationErrors];
-
-                    } else {
-
-                        return {
-                            redirect: {
-                                permanent: false,
-                                destination: '/'
+                        const submission = await postGroupDiscussion({
+                            groupId: groupId,
+                            user: user,
+                            csrfToken: csrfToken,
+                            body: {
+                                formId: createDiscussionForm.id,
+                                ...formPost
                             }
+                        });
+
+                    } catch(error){
+
+                        if(error.name === 'ServiceError' && error.data?.status === 400){
+
+                            props.forms[createDiscussionForm.id].validationErrors = [error.data.body];
+
                         }
 
                     }

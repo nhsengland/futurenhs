@@ -42,7 +42,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
 
             if(shouldFocusSummary){
 
-                errorSummaryRef.current?.focus();
+                //errorSummaryRef.current?.focus();
 
             }
 

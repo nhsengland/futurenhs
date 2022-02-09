@@ -7,6 +7,7 @@ import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { postGroupDiscussion } from '@services/postGroupDiscussion';
 
 import { Props } from './interfaces';
 
@@ -14,6 +15,7 @@ import { Props } from './interfaces';
  * Group create discussion template
  */
 export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
+    groupId,
     csrfToken,
     forms,
     user,
@@ -35,6 +37,27 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     });
 
     const cancelHref: string = `${groupBasePath}/forum`;
+    const handleSubmit = async (submission) => {
+
+        try {
+
+            const response = await postGroupDiscussion({
+                groupId: groupId,
+                user: user,
+                csrfToken: csrfToken,
+                body: {
+                    formId: formTypes.CREATE_DISCUSSION,
+                    ...submission
+                }
+            });
+
+        } catch(error){
+
+            console.log(error, error.data);
+
+        }
+
+    }
 
     return (
 
@@ -61,7 +84,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                                         cancelButton: 'Cancel'
                                     }
                                 }} 
-                                submitAction={console.log}
+                                submitAction={handleSubmit}
                                 cancelHref={cancelHref}
                                 bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1">
                                     <h2>Create discussion</h2>
