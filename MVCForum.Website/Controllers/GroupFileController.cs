@@ -72,7 +72,7 @@ namespace MvcForum.Web.Controllers
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            if (!UserHasFileAccess(id))
+            if (!UserHasFileReadAccess(id))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -423,6 +423,7 @@ namespace MvcForum.Web.Controllers
             if (user is null) throw new ApplicationException("No user found for logged in Id");
             return _fileService.UserHasFileAccessAsync(fileId, user.Id, CancellationToken.None).Result;
         }
+
 
         private bool UserHasFileWriteAccess(Guid folderId)
         {
