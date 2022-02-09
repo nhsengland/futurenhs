@@ -59,6 +59,8 @@
             Property(x => x.MiscAccessToken).IsOptional().HasMaxLength(250);
             Property(x => x.LastActivityDate).IsOptional();
             Property(x => x.HasAgreedToTermsAndConditions).IsOptional();
+            Property(x => x.Pronouns).IsOptional().HasMaxLength(255);
+            Property(x => x.ImageId).IsOptional();
 
             Ignore(x => x.TotalPoints);
             Ignore(x => x.NiceUrl);

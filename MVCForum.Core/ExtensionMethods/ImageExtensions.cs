@@ -1,13 +1,14 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
+    using ImageProcessor;
+    using Models.General;
+    using Providers.Storage;
     using System;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
     using System.Web;
-    using Models.General;
-    using Providers.Storage;
 
     public static class ImageExtensions
     {
@@ -159,9 +160,15 @@
         /// <returns>Steam</returns>
         public static Stream ToMemoryStream(this Image img)
         {
-            MemoryStream myMemoryStream = new MemoryStream();
-            img.Save(myMemoryStream, img.RawFormat);
-            return myMemoryStream;
+            using (var imageFactory = new ImageFactory())
+            {
+                var stream = new MemoryStream();
+                var imageToTransform = imageFactory.Load(img);
+
+                imageToTransform.Save(stream);
+
+                return stream;
+            }
         }
     }
 }

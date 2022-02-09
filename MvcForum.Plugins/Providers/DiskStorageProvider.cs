@@ -1,5 +1,6 @@
 ﻿namespace MvcForum.Plugins.Providers
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Web;
@@ -34,6 +35,7 @@
 
         public string SaveAs(string uploadFolderPath, string fileName, Stream file)
         {
+            if (string.IsNullOrWhiteSpace(uploadFolderPath)) throw new ArgumentNullException(nameof(uploadFolderPath));
             if (!Directory.Exists(uploadFolderPath)) {
                 Directory.CreateDirectory(uploadFolderPath);
             }

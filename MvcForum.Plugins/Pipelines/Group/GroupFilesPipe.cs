@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
@@ -12,16 +13,26 @@
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Models;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
 
     public class GroupFilesPipe : IPipe<IPipelineProcess<Group>>
     {
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
+        private readonly IImageService _imageService;
+        private readonly IImageCommand _imageCommand;
+        private readonly IImageRepository _imageRepository;
 
-        public GroupFilesPipe(ILocalizationService localizationService, ILoggingService loggingService)
+        public GroupFilesPipe(ILocalizationService localizationService, ILoggingService loggingService, IImageService imageService,
+            IImageCommand imageCommand, IImageRepository imageRepository)
         {
-            _localizationService = localizationService;
-            _loggingService = loggingService;
+            _localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
+            _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+            _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
+            _imageCommand = imageCommand ?? throw new ArgumentNullException(nameof(imageCommand));
+            _imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
         }
 
         /// <inheritdoc />
@@ -48,19 +59,7 @@
                         var file = files[0];
                         if (file != null)
                         {
-                            // If successful then upload the file
-                            var uploadResult = file.UploadFile(uploadFolderPath, _localizationService, true);
-
-                            if (!uploadResult.UploadSuccessful)
-                            {
-                                input.AddError(uploadResult.ErrorMessage);
-                                return input;
-                            }
-
-                            // Save avatar to user
-                            input.EntityToProcess.Image = uploadResult.UploadedFileName;
-
-                            await context.SaveChangesAsync();
+                            _ = file.UploadFile(uploadFolderPath, _localizationService, _imageCommand, _imageRepository, _imageService, false, input.EntityToProcess.Id);
                         }
                     }
                 }

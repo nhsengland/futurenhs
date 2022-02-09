@@ -10,6 +10,7 @@
     using Models;
     using Models.Entities;
     using Models.General;
+    using MvcForum.Core.Models.Groups;
     using Pipeline;
 
     public partial interface IGroupService : IContextService
@@ -46,8 +47,10 @@
         IEnumerable<Group> GetAllSubGroups(Guid parentId, Guid? membershipId);
         Group Get(Guid id);
         IList<Group> Get(IList<Guid> ids, bool fullGraph = false);
+        Task<GroupViewModel> GetAsync(Guid id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<GroupViewModel> GetAsync(string slug, CancellationToken cancellationToken = default(CancellationToken));
+        GroupViewModel Get(string slug);
         GroupWithSubGroups GetBySlugWithSubGroups(string slug, Guid? membershipId);
-        Group Get(string slug);
         List<Group> GetGroupParents(Group Group, List<Group> allowedGroups);
         Task<IPipelineProcess<Group>> Delete(Group Group);
         Task<IPipelineProcess<Group>> Create(Group Group, HttpPostedFileBase[] postedFiles, Guid? parentGroup, Guid? section);
@@ -56,7 +59,7 @@
         Group SanitizeGroup(Group Group);
         List<Group> GetSubGroups(Group Group, List<Group> allGroups, Guid? membershipId, int level = 2);
         List<SelectListItem> GetBaseSelectListGroups(List<Group> allowedGroups, Guid? membershipId);
-        Group GetBySlug(string slug);
+        Task<GroupViewModel> GetBySlugAsync(string slug, CancellationToken cancellationToken = default(CancellationToken));
         IList<Group> GetBySlugLike(string slug);
         IList<Group> GetAllDeepSubGroups(Group Group);
         void SortPath(Group Group, Group parentGroup);
@@ -68,7 +71,7 @@
         Task<bool> JoinGroupApproveAsync(Guid groupId, Guid membershipId, CancellationToken cancellationToken);
 
         bool AddGroupAdministrators(string slug, List<Guid> membershipIds, Guid approvingUserId);
-        bool LeaveGroup(string slug, Guid membershipId);
+        Task<bool> LeaveGroupAsync(string slug, Guid membershipId, CancellationToken cancellationToken = default(CancellationToken));
 
         bool ApproveJoinGroup(Guid groupUserId, Guid approvingUserId);
         bool RejectJoinGroup(Guid groupUserId, Guid approvingUserId);
@@ -77,5 +80,13 @@
 
         GroupUser GetGroupUser(Guid groupUserId);
         Task<GroupUser> UpdateGroupUserAsync(GroupUser groupUser, CancellationToken cancellationToken);
+
+        bool UserIsAdmin(string groupSlug, Guid userId);
+
+        bool UserHasGroupAccess(string groupSlug, Guid userId);
+
+        Task<bool> UpdateAsync(GroupWriteViewModel model, string slug, CancellationToken cancellationToken = default(CancellationToken));
+
+        UploadFileResult UploadGroupImage(HttpPostedFileBase file, Guid groupId);
     }
 }

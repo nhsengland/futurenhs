@@ -49,5 +49,9 @@
         &:hover {
             text-decoration: underline;
         }
+
+        &:visited {
+            color: $nhsuk-text-color;
+        }
     }
 }

@@ -109,13 +109,13 @@ else
                                         </div>
                                         @if (!string.IsNullOrEmpty(Model.StarterPost.Post.User.Avatar))
                                         {
-                                            <img role="presentation" class="c-avatar_image" src="@Model.StarterPost.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.StarterPost.Post.User.UserName">
+                                            <img role="presentation" class="c-avatar_image" src="@Model.StarterPost.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.StarterPost.Post.User.GetFullName()">
                                         }
                                     </div>
                                 </div>
                                 <div class="c-card_header-content u-text-theme-7">
-                                    <p class="u-text-small u-text-bold u-has-subheading">Created by <a href="#">@Model.Topic.User.FirstName @Model.Topic.User.Surname</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</p>
-                                    <p class="u-text-small">Last comment by <a href="#">@Model.Topic.LastPost.User.FirstName @Model.Topic.LastPost.User.Surname </a> @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</p>
+                                    <p class="u-text-small u-text-bold u-has-subheading">Created by <a href="@Model.Topic.User.NiceUrl">@Model.Topic.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.CreateDate.ToString())</p>
+                                    <p class="u-text-small">Last comment by <a href="@Model.Topic.LastPost.User.NiceUrl">@Model.Topic.LastPost.User.GetFullName()</a> @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</p>
                                 </div>
                                 <div class="c-card_header-social">
                                     <p class="u-text-theme-7 c-card_header-social-item">

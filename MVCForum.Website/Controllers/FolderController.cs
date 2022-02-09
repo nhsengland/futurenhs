@@ -8,6 +8,7 @@
     using MvcForum.Core.Models.FilesAndFolders;
     using MvcForum.Core.Repositories.Models;
     using MvcForum.Web.ViewModels.Breadcrumb;
+    using MvcForum.Web.ViewModels.Folder;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -80,7 +81,7 @@
 
             if (ModelState.IsValid) 
             {
-                if (await _folderService.IsFolderNameValidAsync(folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
+                if (await _folderService.IsFolderNameValidAsync(folder.FolderId, folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
                 {
                     folder.AddedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
                     var newId = _folderService.CreateFolder(folder);
@@ -107,25 +108,27 @@
                 return RedirectToAction("Index", "Home");
             }
 
-            if (!await _folderService.IsUserAdminAsync(slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
+            var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
+
+            if (!await _folderService.UserHasFolderWriteAccessAsync(result.Folder.FolderId, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
             {
                 return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = folderId });
             }
 
-            var result = await _folderService.GetFolderAsync(slug, folderId, cancellationToken);
-
             var WriteFolder = new FolderWriteViewModel
             {
-                FolderId = folderId,
-                Slug = slug,
+                FolderId = result.Folder.FolderId,
+                Slug = result.Slug,
                 FolderName = result.Folder.FolderName,
+                OriginalFolderName = result.Folder.FolderName,
                 Description = result.Folder.Description,
-                Breadcrumbs = await GetBreadcrumbsAsync(folderId, slug, cancellationToken: cancellationToken),
+                Breadcrumbs = await GetBreadcrumbsAsync(result.Folder.FolderId, result.Slug, cancellationToken: cancellationToken),
                 ParentGroup = groupId,
-                ParentFolder = parentId
+                ParentFolder = result.Folder.ParentId
             };
 
             ViewBag.HideSideBar = true;
+            ViewData.Add("FolderName", WriteFolder.FolderName);
             return View("_UpdateFolder", WriteFolder);            
            
         }
@@ -140,22 +143,22 @@
             if (!_featureManager.IsEnabled(Features.FilesAndFolders))
             {
                 return RedirectToAction("Index", "Home");
-            }
-
-            if (!await _folderService.IsUserAdminAsync(folder.Slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
-            {
-                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
-            }
+            }            
 
             if (ModelState.IsValid)
             {
                 var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
 
+                if (!await _folderService.UserHasFolderWriteAccessAsync(result.Folder.FolderId, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
+                {
+                    return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.ParentFolder });
+                }
+
                 // Check folder exists for folder Id passed in
                 if (folder.FolderId == result.Folder.FolderId)
                 {
                     // Ensure folder name is valid
-                    if (await _folderService.IsFolderNameValidAsync(folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
+                    if (await _folderService.IsFolderNameValidAsync(folder.FolderId, folder.FolderName, folder.ParentFolder, folder.ParentGroup, cancellationToken))
                     {
                         folder.IsDeleted = folder.IsDeleted;
                         _folderService.UpdateFolder(folder);
@@ -182,16 +185,15 @@
                 return RedirectToAction("Index", "Home");
             }
 
-            if (!await _folderService.IsUserAdminAsync(folder.Slug, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
-            {
-                return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId, hasError = true });
-            }
-
             var result = await _folderService.GetFolderAsync(folder.Slug, folder.FolderId, cancellationToken);
-
             if (folder.FolderId == result.Folder.FolderId)
             {
-                if (await _folderService.DeleteFolderAsync(folder.FolderId.Value, cancellationToken))
+                if (!await _folderService.UserHasFolderWriteAccessAsync(result.Folder.FolderId, _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id, cancellationToken))
+                {
+                    return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = folder.FolderId, hasError = true });
+                }
+            
+                if (await _folderService.DeleteFolderAsync(result.Folder.FolderId, cancellationToken))
                 {
                     return RedirectToRoute("GroupUrls", new { slug = folder.Slug, tab = Constants.GroupFilesTab, folder = result.Folder.ParentId });
                 }
@@ -211,9 +213,15 @@
             var syncContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(null);
 
-            var currentUser = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+            var currentUser = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);            
 
             var model = _folderService.GetFolderAsync(slug, folderId, CancellationToken.None).Result;
+
+            if (!_folderService.UserHasFolderReadAccessAsync(slug, currentUser.Id, CancellationToken.None).Result)
+            {
+                return null;
+            }
+
             var groupUserStatus = _groupService.GetAllForUser(currentUser.Id).FirstOrDefault(x => x.Group.Id == groupId).GetUserStatusForGroup();
 
             model.GroupId = groupId;
@@ -221,11 +229,10 @@
             model.Breadcrumbs = GetBreadcrumbsAsync(folderId, slug, cancellationToken: CancellationToken.None).Result;
             model.GroupUserStatus = groupUserStatus;
             model.IsMember = groupUserStatus == GroupUserStatus.Joined;
-		    model.HasError = hasError;
+            model.HasError = hasError;        
 
             SynchronizationContext.SetSynchronizationContext(syncContext);
-            return PartialView("_Folders", model);
-            
+            return PartialView("_Folders", model);            
         }
 
         private async Task<BreadcrumbsViewModel> GetBreadcrumbsAsync(Guid? folderId, string slug, string lastEntry = null, CancellationToken cancellationToken = default(CancellationToken))
@@ -243,6 +250,10 @@
 
             if (!(bc is null))
             {
+                if (bc.Count() == 4)
+                {
+                    bc.First().Name = "...";
+                }
                 if (!string.IsNullOrWhiteSpace(lastEntry))
                 {
                     // Last entry not passed in use all the folder heirarchy as links with last entry - add only

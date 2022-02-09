@@ -81,7 +81,7 @@ namespace MvcForum.Web.Controllers.ApiControllers
                             }
 
                             // If successful then upload the file
-                            var uploadResult = photo.UploadFile(uploadFolderPath, localizationService, true);
+                            var uploadResult = photo.UploadFile(uploadFolderPath, localizationService);
                             if (!uploadResult.UploadSuccessful)
                             {
                                 return string.Empty;

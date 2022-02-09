@@ -1,5 +1,4 @@
 .c-main-nav {
-
     display: none;
     position: relative;
     height: 100%;
@@ -33,7 +32,7 @@
         position: relative;
         height: 64px;
         width: 72px;
-        padding: 16px 20px;
+        padding: 16px 0;
         border-left: 4px solid transparent;
         margin-bottom: 10px;
 
@@ -42,34 +41,37 @@
             border-color: currentColor;
         }
 
+        &:focus {
+            box-shadow: 0 -2px $nhsuk-focus-color, 0 -2px $nhsuk-focus-color;
+            border-color: $black;
+            text-decoration: none;
+        }
+
+        &_level-1-link-meta {
+            display: block;
+            position: absolute;
+            bottom: 40%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            color: $white;
+        }
+
+        &_level-1-icon {
+            width: 100%;
+        }
+        // &_level-2-toggle-trigger {
+        //     margin: 16px 16px 32px;
+        // }
+        // &_level-2-toggle-icon {
+        //     height: 32px;
+        //     width: 24px;
+        // }
+        // &_level-2-content {
+        //     width: 320px;
+        //     padding: 0 32px 32px 16px;
+        // }
     }
-
-    &_level-1-link-meta {
-        display: block;
-        position: absolute;
-        bottom: 40%;
-        left: 50%;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        text-align: center;
-        color: $white;
-    }
-
-    &_level-1-icon {
-        width: 100%;
-    }
-    // &_level-2-toggle-trigger {
-    //     margin: 16px 16px 32px;
-    // }
-
-    // &_level-2-toggle-icon {
-    //     height: 32px;
-    //     width: 24px;
-    // }
-
-    // &_level-2-content {
-    //     width: 320px;
-    //     padding: 0 32px 32px 16px;
-    // }
 }

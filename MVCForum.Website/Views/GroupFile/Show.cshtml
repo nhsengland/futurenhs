@@ -25,55 +25,62 @@
     </a>
 </p>
 
+@if (Model.IsUpdatable)
+{
+    <a href="@Url.RouteUrl("GroupFileEditFileUrls", new {slug = Model.Slug, tab = Constants.GroupFilesTab })" class="c-button c-button-outline c-button--min-width">
+        Edit file
+    </a>
+}
+
 <div class="c-grid-block">
-	<div class="c-grid-block_item l-col-12">
-		<div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
-			<table role="table" class="c-table c-table--files" id="file-details-table">
-				<caption class="c-table_caption u-visually-hidden">File details</caption>
-				<thead role="rowgroup" class="c-table_head">
-				<tr role="row">
-					<th role="columnheader" class="c-table_th" scope="col">@Html.LanguageString("File.Label.Name")</th>
-					<th role="columnheader" class="c-table_th" scope="col">@Html.LanguageString("File.Label.UploadedBy")</th>
-					<th role="columnheader" class="c-table_th" scope="col">@Html.LanguageString("File.Label.UploadedDate")</th>
-					<th role="columnheader" class="c-table_th" scope="col">@Html.LanguageString("File.Label.Download")</th>
-				</tr>
-				</thead>
-				<tbody class="c-table_body">
-				<tr role="row" class="c-table_row">
-					<td role="cell" class="c-table_cell">
-						<span class="c-table_heading">@Html.DisplayNameFor(model => model.File.FileName)</span>
-						<a href="#" class="">@Html.DisplayFor(model => model.File.FileName)</a>
-					</td>
-					<td role="cell" class="c-table_cell">
-						<span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedBy)</span>
-						<a href="@Url.Action("GetByName", "Members", new { slug = Model.File.ModifiedUserSlug })" class="">
-							@Model.File.ModifiedUserName
-						</a>
-					</td>
-					<td role="cell" class="c-table_cell">
-						<span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedAtUtc)</span>
-						<span>@DatesUi.GetPrettyDate(Model.File.LastModifiedAtUtc.ToString())</span>
-					</td>
-					<td role="cell" class="c-table_cell">
-						<span class="c-table_heading">@Html.LanguageString("File.Label.Download")</span>
-						@if (@Model.File.BlobName != null)
-						{   
-							Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));
-							@Html.ActionLink(Html.LanguageString("File.Label.Download"), "Download", new { fileId = Model.File.Id, groupSlug = Model.Slug })
-						}
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+    <div class="c-grid-block_item l-col-12">
+        <div class="u-padding-top-spacing-2 u-padding-bottom-spacing-2 u-margin-bottom-spacing-5 u-bg-theme-1">
+            <table role="table" class="c-table c-table--files" id="file-details-table">
+                <caption class="c-table_caption u-visually-hidden">File details</caption>
+                <thead role="rowgroup" class="c-table_head">
+                    <tr role="row">
+                        <th role="columnheader" class="c-table_th" scope="col">@Html.LanguageString("File.Label.Name")</th>
+                        <th role="columnheader" class="c-table_th" scope="col">@Html.LanguageString("File.Label.UploadedBy")</th>
+                        <th role="columnheader" class="c-table_th" scope="col">@Html.LanguageString("File.Label.UploadedDate")</th>
+                        <th role="columnheader" class="c-table_th" scope="col">@Html.LanguageString("File.Label.Download")</th>
+                    </tr>
+                </thead>
+                <tbody class="c-table_body">
+                    <tr role="row" class="c-table_row">
+                        <td role="cell" class="c-table_cell">
+                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.FileName)</span>
+                            <a href="#" class="">@Html.DisplayFor(model => model.File.FileName)</a>
+                        </td>
+                        <td role="cell" class="c-table_cell">
+                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.ModifiedBy)</span>
+                            <a href="@Url.Action("GetByName", "Members", new { slug = Model.File.ModifiedUserSlug })" class="">
+                                @Model.File.ModifiedUserName
+                            </a>
+                        </td>
+                        <td role="cell" class="c-table_cell">
+                            <span class="c-table_heading">@Html.DisplayNameFor(model => model.File.CreatedAtUtc)</span>
+                            <span>@DatesUi.GetPrettyDate(Model.File.CreatedAtUtc.ToString())</span>
+                        </td>
+                        <td role="cell" class="c-table_cell">
+                            <span class="c-table_heading">@Html.LanguageString("File.Label.Download")</span>
+                            @if (@Model.File.BlobName != null)
+                            {
+                                Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-download", "c-card_header-social-icon u-fill-theme-8"));
+                                @Html.ActionLink(Html.LanguageString("File.Label.Download"), "Download", new { fileId = Model.File.Id, groupSlug = Model.Slug })
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <div id="FilePreview">
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-	<script type="text/javascript">
+<script type="text/javascript">
 		$(document).ready(function () {
 			$('#FilePreview').load('@Url.Action("LoadFilePreview", "GroupFile", new { id = Model.File.Id})');
 		});
 
-	</script>
+</script>

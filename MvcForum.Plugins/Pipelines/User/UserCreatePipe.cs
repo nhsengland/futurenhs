@@ -19,6 +19,9 @@
     using Core.Models;
     using Core.Models.Entities;
     using Core.Models.Enums;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Models;
+    using MvcForum.Core.Repositories.Repository.Interfaces;
 
     public class UserCreatePipe : IPipe<IPipelineProcess<MembershipUser>>
     {
@@ -30,10 +33,14 @@
         private readonly ISettingsService _settingsService;
         private readonly IGroupInviteService _groupInviteService;
         private readonly IGroupService _groupService;
+        private readonly IImageService _imageService;
+        private readonly IImageCommand _imageCommand;
+        private readonly IImageRepository _imageRepository;
 
         public UserCreatePipe(IMembershipService membershipService, ILoggingService loggingService,
             ISettingsService settingsService, ILocalizationService localizationService, IEmailService emailService,
-            IActivityService activityService, IGroupInviteService groupInviteService, IGroupService groupService)
+            IActivityService activityService, IGroupInviteService groupInviteService, IGroupService groupService,
+            IImageService imageService, IImageCommand imageCommand, IImageRepository imageRepository)
         {
             _membershipService = membershipService;
             _loggingService = loggingService;
@@ -43,6 +50,9 @@
             _activityService = activityService;
             _groupInviteService = groupInviteService;
             _groupService = groupService;
+            _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
+            _imageCommand = imageCommand ?? throw new ArgumentNullException(nameof(imageCommand));
+            _imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
         }
 
         /// <inheritdoc />
@@ -161,7 +171,7 @@
                         HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
 
                         // Upload the file
-                        var uploadResult = formattedImage.UploadFile(uploadFolderPath, _localizationService, true);
+                        var uploadResult = formattedImage.UploadFile(uploadFolderPath, _localizationService, _imageCommand, _imageRepository, _imageService, true, input.EntityToProcess.Id);
 
                         // Don't throw error if problem saving avatar, just don't save it.
                         if (uploadResult.UploadSuccessful)

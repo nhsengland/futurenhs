@@ -24,14 +24,14 @@
                             </div>
                             @if (!string.IsNullOrEmpty(Model.Post.User.Avatar)) {
 
-                                <img role="presentation" class="c-avatar_image" src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="Avatar image of member: @Model.Post.User.FirstName @Model.Post.User.Surname">
+                                <img role="presentation" class="c-avatar_image" src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="Avatar image of member: @Model.Post.User.GetFullName()">
 
                             }
                         </div>
                     </div>
                     <div class="c-card_header-content u-text-theme-7">
                         <p class="u-text-small u-text-bold u-has-subheading u-text-theme-8">
-                            <a href="@Html.Raw(Model.Post.User.NiceUrl)">@Model.Post.User.FirstName @Model.Post.User.Surname</a>
+                            <a href="@Html.Raw(Model.Post.User.NiceUrl)">@Model.Post.User.GetFullName()</a>
                         </p>
                         <p class="u-text-small u-text-bold">
                             @DatesUi.GetPrettyDate(Model.Post.DateCreated.ToString())

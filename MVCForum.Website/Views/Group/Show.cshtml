@@ -45,7 +45,7 @@
         }
 
     }
-    else if (Model.Tab == Constants.GroupMembersTab || Model.Tab == Constants.GroupFilesTab)
+    else if (Model.Tab == Constants.GroupMembersTab || Model.Tab == Constants.GroupFilesTab || Model.Tab == Constants.AboutUsTab)
     {
 
         @*@Html.Partial("_CommonSideNav")*@
@@ -87,7 +87,7 @@
 @if (Model.Tab == null)
 {
     <h3>@Model.Group.Subtitle</h3>
-    <p>@Html.Raw(Model.Group.Introduction)</p>
+    <p>@Model.Group.Introduction</p>
 }
 
 @if (Model.Tab == Constants.GroupForumTab)
@@ -103,6 +103,11 @@
 @if (Model.Tab == Constants.GroupMembersTab)
 {
     @Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
+}
+
+@if (Model.Tab == Constants.AboutUsTab)
+{
+	@Html.Action("AboutUs", new { groupId = Model.Group.Id })
 }
 
 

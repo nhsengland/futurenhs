@@ -1,48 +1,70 @@
-﻿@model MvcForum.Core.Models.FilesAndFolders.FileWriteViewModel
+﻿@model MvcForum.Core.Models.FilesAndFolders.FileUpdateViewModel
 
 @{
-    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+	Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+
+	string inputError = "c-input--error";
+	string formError = "c-form-group--error";
+	string textAreaError = "c-textarea--error";
 }
 
 @section GroupHeader {
-    @{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.Slug }); }
+	@{ Html.RenderAction("GroupHeader", "Group", new { slug = Model.GroupSlug }); }
 }
 
-<h2>Update</h2>
+@{Html.RenderPartial("_Breadcrumbs", @Model.Breadcrumbs); }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>FileWriteViewModel</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-        </div>
-    </div>
+<h2>Edit file</h2>
+<div class="l-row">
+	<div class="l-col-12 l-col-8-d">
+		<div class="c-card">
+			<div class="c-card_content">
+				@using (Html.BeginForm())
+				{
+					@Html.AntiForgeryToken()
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-        </div>
-    </div>
+					if (!ViewData.ModelState.IsValid)
+					{
+						<div aria-labelledby="error-summary-title" class="c-error-summary u-margin-bottom-spacing-5" role="alert" tabindex="-1">
+							<h2 id="error-summary-title" class="c-error-summary_title">
+								There is a problem
+							</h2>
+							<div class="c-error-summary_body">
+								<ul class="c-error-summary_list">
 
-    @Html.HiddenFor(model => model.FolderId)
-    @Html.HiddenFor(model => model.FileId)
+									@Html.Raw(Html.CustomValidationSummary("c-error-summary_error-text"))
 
-    @Html.HiddenFor(model => model.Slug)
+								</ul>
+							</div>
+						</div>
+					}
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
-        </div>
-    </div>
+					<div class="c-form-group @Html.FieldHasError(model => model.Name, formError)">
+						@Html.LabelFor(model => model.Name, @Html.LanguageString("File.Upload.FileTitle.Label"), htmlAttributes: new { @class = "c-label" })
+						<div class="c-hint" id="@Html.DisplayNameFor(model => model.Name)-hint">
+							@Html.LanguageString("File.Upload.FileTitle.Guidance")
+						</div>
+
+						@Html.ValidationMessageFor(model => model.Name, "", new { @class = "c-error-message" })
+						@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "c-input" + " " + Html.FieldHasError(model => model.Name, inputError) } })
+					</div>
+
+					<div class="c-form-group @Html.FieldHasError(model => model.Description, formError)">
+						@Html.LabelFor(model => model.Description, @Html.LanguageString("File.Upload.FileDescription.Label"), htmlAttributes: new { @class = "c-label" })
+						<div class="c-hint" id="@Html.DisplayNameFor(model => model.Description)-hint">
+							@Html.LanguageString("File.Upload.FileDescription.Guidance")
+						</div>
+
+						@Html.ValidationMessageFor(model => model.Description, "", new { @class = "c-error-message" })
+						@Html.TextAreaFor(model => model.Description, new { rows = 5, @class = "c-textarea" + " " + Html.FieldHasError(model => model.Description, textAreaError) })
+					</div>
+
+					<div class="c-form-group">
+						<input type="submit" value="Save file details" class="c-button" data-mce-requirements="none">
+					</div>
+				}
+			</div>
+		</div>
+	</div>
 </div>
-}
+

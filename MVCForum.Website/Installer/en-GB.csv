@@ -76,6 +76,14 @@ Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not ad
 Favourites.NoMemberFavourites,You have not starred any posts
 Favourites.PageTitle,My Favourites
 File.SuccessfullyDeleted,File deleted
+Folder.Create.Title,Add folder
+Folder.Edit.Title,Edit folder
+Folder.CreateEdit.Guidance,Create/Edit folder guidance text
+Folder.CreateEdit.FileTitle.Label,Enter folder title
+Folder.CreateEdit.FileTitle.Guidance, This is a hint offering some short guidance to users
+Folder.CreateEdit.FolderDescription.Label,Enter folder description (optional)
+Folder.CreateEdit.FolderDescription.Guidance, This is a hint offering some short guidance to users
+Folder.CreateEdit.Submit,Save and continue
 File.Error.NullTitle,Please provide a title.
 File.Error.InvalidType,The file above was not uploaded because the type is not allowed.
 File.Error.InvalidSize,The file above was not uploaded because the file size is too big.
@@ -93,19 +101,21 @@ File.Upload.Terms.Link,/terms-and-conditions
 File.Upload.Terms.LinkText,Open terms and conditions in a new window
 File.Upload.Terms.Text,All uploaded content must conform to the platform's terms and conditions.
 Folder.Error.NullTitle,Please provide a folder title.
-Folder.Error.DuplicateTitle,This folder already exists.
+Folder.Error.DuplicateTitle,A folder with this name already exists in this folder.
 Folder.Error.FailedDelete,The folder and its contents cannot be deleted at the moment.  Please try again later.
 Following.Groups,Groups you are following
 Following.PageTitle,Topics & Groups
 Following.Topics,Topics you are following
 Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
 Groups.Leave,Leave Group
+Group.AboutUs,About us
 Group.AllGroups,All Groups
 Group.Forum,All discussions
 Group.GroupsSideHeading,Groups
 Group.MostRecent,Most recent:
 Group.Members,Group Members
 Group.NoDiscussions,Currently no discussions in this Group
+Group.GroupRules,Group Rules
 Group.SubGroupsHeading,Sub Groups In
 Group.PublicGroup.JoinMessage,Please join the group to contribute
 Group.MyGroups.Title,My Groups
@@ -114,10 +124,16 @@ Group.DiscoverGroups.Title,Discover Groups
 Group.DiscoverGroups.HeaderIntro,Discover new groups to join
 Group.MyGroups.Introduction,Browse currently subscribed groups
 Group.DiscoverGroups.Introduction,Discover new groups to join
+Group.EditGroup.Title,Edit group
+Group.EditGroup.Introduction,Edit your group title, description, introduction and logo.
+Group.EditGroup.LogoIntroduction,Please upload your logo. If not we will use our default icon.
+Group.EditGroup.IntroHelpText,Please note this will be used to search for this group so use keywords.
+Group.EditGroup.AboutUsHelpText, This is the content that will be displayed on the group's about us page.
 GroupTabs.Home,Home
 GroupTabs.Forum,Forum
 GroupTabs.Files,Files
 GroupTabs.Members,Members
+GroupTabs.AboutUs,About us
 Header.Phasebanner.FeedbackLink,http://www.google.co.uk
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
@@ -153,7 +169,7 @@ Members.AlreadyRegistered,You are already registered? Why would you want to do i
 Members.BanUser,Ban User
 Members.CantUnlock,User does not exist - cannot unlock.
 Members.ChangePassword.Error,The current password is incorrect or the new password is invalid.
-Members.ChangePassword.Link,Click here if you want to {0}
+Members.ChangePassword.Link,You can change your password here
 Members.ChangePassword.Success,Password Changed
 Members.ChangePassword.Text,New passwords are required to be a minimum of {0} characters in length.
 Members.ChangePassword.Title,Change Password
@@ -191,16 +207,21 @@ Members.Label.CurrentPassword,Current Password
 Members.Label.DateJoined,Date Joined
 Members.Label.DisableEmailNotifications,Disable Email Notifications
 Members.Label.EmailAddress,Email address
-Members.Label.FirstName,Firstname
-Members.Label.Surname,Surname
 Members.Label.EmailAddressBlank,Enter your email address
 Members.Label.Facebook,Facebook Page
-Members.Label.Location,Location
+Members.Label.FirstName,First name
+Members.Label.Joined,Joined
+Members.Label.LastOnline,Last onlineMembers.Label.Location,Location
 Members.Label.NewPassword,New Password
 Members.Label.Password,Password
+Members.Label.ProfileImage,Image
+Members.Label.Pronouns,Preferred pronouns
+Members.Label.PronounsEdit,Preferred pronouns (optional)
 Members.Label.RememberMe,Remember Me?
 Members.Label.Roles,Roles
 Members.Label.Signature,Signature
+Members.Label.Surname,Last name
+Members.Label.SurnameEdit,Last name (optional)
 Members.Label.Twitter,Twitter Url
 Members.Label.UploadNewAvatar,Upload a new profile image
 Members.Label.UserIsApproved,User is Approved
@@ -231,14 +252,18 @@ Members.Points,Points
 Members.Profile.Age,Age:
 Members.Profile.Badges,Badges
 Members.Profile.DiscussionActivity,Discussion Activity
+Members.Profile.EditMyProfile,Edit my profile
 Members.Profile.Facebook,Facebook:
+Members.Profile.ImageGuidanceText,Please select an image file that is not greater than 64kb
 Members.Profile.IsSocialAccount,Social Account
 Members.Profile.Joined,Joined:
 Members.Profile.LastOnline,Last Online
 Members.Profile.Location,Location:
 Members.Profile.Points,Points:
 Members.Profile.Posts,Posts:
+Members.Profile.RemoveImage,Remove image
 Members.Profile.Twitter,Twitter
+Members.Profile.ViewMyProfile,My profile
 Members.Profile.Website,Website
 Members.ProfileTitle,Profile
 Members.Register,Register now

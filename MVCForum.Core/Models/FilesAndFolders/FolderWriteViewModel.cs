@@ -14,6 +14,8 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public string Slug { get; set; }
         public Guid? FolderId { get; set; }
 
+        public string OriginalFolderName { get; set; }
+
         [Required(ErrorMessage = "Please provide a folder title")]
         [DisplayName("Folder title")]
         [MaxLength(1000, ErrorMessage = "The folder title cannot be more than 1000 characters.")]

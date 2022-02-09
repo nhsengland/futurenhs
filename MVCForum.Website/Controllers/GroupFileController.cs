@@ -16,9 +16,11 @@ namespace MvcForum.Web.Controllers
     using Status = Core.Models.Enums.UploadStatus;
     using System.Threading.Tasks;
     using System.Threading;
+    using System.Web.SessionState;
     using MvcForum.Web.ViewModels.Folder;
 
     [Authorize]
+    [SessionState(SessionStateBehavior.ReadOnly)]
     public sealed class GroupFileController : AsyncController
     {
 
@@ -70,8 +72,7 @@ namespace MvcForum.Web.Controllers
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-
-            if (!UserHasFileAccess(id))
+            if (!UserHasFileReadAccess(id))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -84,7 +85,8 @@ namespace MvcForum.Web.Controllers
             {
                 File = dbFile,
                 Slug = slug,
-                Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, slug, dbFile.Title)
+                Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, slug, dbFile.Title),
+                IsUpdatable = await UserHasFileUpdateAccessAsync(id, cancellationToken)
             };
 
             ViewBag.HideSideBar = true;
@@ -95,11 +97,11 @@ namespace MvcForum.Web.Controllers
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [ActionName("LoadFilePreview")]
         [HttpGet]
-        public async Task<PartialViewResult> LoadFilePreview(Guid id,string slug, CancellationToken cancellationToken)
+        public async Task<PartialViewResult> LoadFilePreview(Guid id, string slug, CancellationToken cancellationToken)
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            if (UserHasFileAccess(id))
+            if (UserHasFileReadAccess(id))
             {
                 var cookies = Request.GetCookieContainer(_configurationProvider.ApplicationGatewayFqdn);
 
@@ -113,22 +115,19 @@ namespace MvcForum.Web.Controllers
             return null;
         }
 
-        /// <summary>
-        /// Method to display the create file view.
-        /// </summary>
-        /// <param name="folderId"></param>
-        /// <returns></returns>
         [ActionName("Create")]
-        public ActionResult Create(Guid folderId, string groupSlug)
+        [AsyncTimeout(120000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public async Task<ActionResult> CreateAsync(Guid folderId, string groupSlug, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (!UserHasGroupAccess(groupSlug))
+            if (!UserHasFileWriteAccess(folderId))
             {
                 return RedirectToAction("Index", "Home");
             }
 
             if (folderId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(folderId));
 
-            var folderModel = _folderService.GetFolderAsync(groupSlug, folderId, CancellationToken.None).Result;
+            var folderModel = await _folderService.GetFolderAsync(groupSlug, folderId, CancellationToken.None);
 
             if (folderModel is null) throw new ApplicationException("No folder found for Id passed in");
 
@@ -152,11 +151,11 @@ namespace MvcForum.Web.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns>The detail view for the new file.</returns>
+        [ActionName("Create")]
         [AsyncTimeout(120000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ActionName("Create")]
         public async Task<ActionResult> CreateAsync(FileUploadViewModel model, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (ModelState.IsValid)
@@ -168,7 +167,7 @@ namespace MvcForum.Web.Controllers
 
                 if (file is null) throw new ApplicationException("File upload data is missing");
 
-                if (!UserHasGroupAccess(file.Slug))
+                if (!UserHasFileWriteAccess(file.FolderId))
                 {
                     return RedirectToAction("Index", "Home");
                 }
@@ -247,47 +246,62 @@ namespace MvcForum.Web.Controllers
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            if (!UserHasGroupAccess(slug))
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
             var file = await _fileService.GetFileAsync(id, cancellationToken);
 
             if (file is null) throw new ApplicationException("No file found for update for supplied Id");
 
-            var viewModel = new FileWriteViewModel
+            if (!(await UserHasFileUpdateAccessAsync(file.Id, cancellationToken)))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var viewModel = new FileUpdateViewModel
             {
                 FileId = file.Id,
                 Name = file.Title,
                 Description = file.Description,
                 FolderId = file.ParentFolder,
-                Slug = slug
+                GroupSlug = slug,
+                Breadcrumbs = GetBreadcrumbs(file.ParentFolder, slug, "Edit file"),
             };
 
             return View(viewModel);
         }
 
         [HttpPost]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("Update")]
         [ValidateAntiForgeryToken]
-        public ActionResult Update(FileWriteViewModel file)
+        public async Task<ActionResult> UpdateAsync(Guid id, string slug, FileUpdateViewModel file, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (Guid.Empty == id) throw new ArgumentOutOfRangeException(nameof(id));
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+            if (file is null) throw new ArgumentNullException(nameof(file));
+
+            var fileFromDb = await _fileService.GetFileAsync(id, cancellationToken);
+
+            if (fileFromDb is null) throw new ApplicationException("No file found for update for supplied Id");
+
             if (ModelState.IsValid)
             {
-                if (file is null) throw new ArgumentNullException(nameof(file));
-
-                if (!UserHasGroupAccess(file.Slug))
+                if (!(await UserHasFileUpdateAccessAsync(id, cancellationToken)))
                 {
                     return RedirectToAction("Index", "Home");
                 }
 
+                file.FileId = id;
                 file.ModifiedBy = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true).Id;
-                _fileService.Update(file);
 
-                return RedirectToRoute("GroupUrls", new { slug = file.Slug, tab = Constants.GroupFilesTab, folder = file.FolderId });
+                if (await _fileService.UpdateAsync(file, cancellationToken))
+                {
+                    return RedirectToRoute("GroupFileUrls", new { slug = slug, tab = Constants.GroupFilesTab, id = id });
+                }
             }
 
-            return View();
+            file.GroupSlug = slug;
+            file.Breadcrumbs = GetBreadcrumbs(fileFromDb.ParentFolder, slug, "Edit file");
+            return View(file);
         }
 
         [AsyncTimeout(30000)]
@@ -295,16 +309,16 @@ namespace MvcForum.Web.Controllers
         [ActionName("Delete")]
         public async Task<ActionResult> DeleteAsync(Guid id, string slug, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
-
-            if (!UserHasGroupAccess(slug))
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));            
 
             var file = await _fileService.GetFileAsync(id, cancellationToken);
 
             if (file is null) throw new ApplicationException("No file found for delete for supplied Id");
+
+            if (!UserHasFileWriteAccess(file.ParentFolder))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             var viewModel = new FileWriteViewModel
             {
@@ -324,7 +338,7 @@ namespace MvcForum.Web.Controllers
         {
             if (file is null) throw new ArgumentNullException(nameof(file));
 
-            if (!UserHasGroupAccess(file.Slug))
+            if (!UserHasFileWriteAccess(file.FolderId))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -347,7 +361,7 @@ namespace MvcForum.Web.Controllers
             if (fileId == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(fileId));
 
             // Check user has permissions to download file
-            if (!UserHasGroupAccess(groupSlug))
+            if (!UserHasFileReadAccess(fileId))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -389,26 +403,58 @@ namespace MvcForum.Web.Controllers
             return _folderService.IsFolderIdValidAsync(folderId, CancellationToken.None).Result;
         }
 
-        private bool UserHasGroupAccess(string groupSlug)
+        //private bool UserHasGroupAccess(string groupSlug)
+        //{
+        //    if (System.Web.HttpContext.Current.User is null) throw new NullReferenceException("User not logged in");
+
+        //    var user = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
+        //    if (user is null) throw new ApplicationException("No user found for logged in Id");
+
+        //    return _folderService.UserHasFolderReadAccessAsync(groupSlug, user.Id, CancellationToken.None).Result;
+        //}
+
+        private bool UserHasFileReadAccess(Guid fileId)
         {
             if (System.Web.HttpContext.Current.User is null) throw new NullReferenceException("User not logged in");
 
             var user = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
 
             if (user is null) throw new ApplicationException("No user found for logged in Id");
-
-            return _folderService.UserHasGroupAccessAsync(groupSlug, user.Id, CancellationToken.None).Result;
+            return _fileService.UserHasFileAccessAsync(fileId, user.Id, CancellationToken.None).Result;
         }
 
-        private bool UserHasFileAccess(Guid fileId)
+
+        private bool UserHasFileWriteAccess(Guid folderId)
         {
             if (System.Web.HttpContext.Current.User is null) throw new NullReferenceException("User not logged in");
 
             var user = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
 
             if (user is null) throw new ApplicationException("No user found for logged in Id");
+            return _folderService.UserHasFileWriteAccessAsync(folderId, user.Id, CancellationToken.None).Result;
+        }
 
-            return _folderService.UserHasFileAccessAsync(fileId, user.Id, CancellationToken.None).Result;
+        private async Task<bool> UserHasFileUpdateAccessAsync(Guid fileId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Guid.Empty == fileId) throw new ArgumentOutOfRangeException(nameof(fileId));
+
+            if (System.Web.HttpContext.Current.User is null) throw new NullReferenceException("User not logged in");
+
+            var user = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
+            if (user is null) throw new ApplicationException("No user found for logged in Id");
+
+            var file = await _fileService.GetFileAsync(fileId, cancellationToken);
+
+            if (file is null) throw new ApplicationException("No file found for update for supplied Id");
+
+            var loggedInUser = user.Id;
+
+            // If has folder write access then either admin or group admin
+            var hasFolderWriteAccess = await _folderService.UserHasFolderWriteAccessAsync(file.ParentFolder, user.Id, cancellationToken);
+
+            return hasFolderWriteAccess || file.CreatedBy == loggedInUser;
         }
 
         /// <summary>
@@ -421,6 +467,7 @@ namespace MvcForum.Web.Controllers
         private BreadcrumbsViewModel GetBreadcrumbs(Guid? folderId, string slug, string filename = null)
         {
             var breadCrumbs = new BreadcrumbsViewModel() { BreadcrumbLinks = new List<BreadCrumbItem>() };
+            var x = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab });
             breadCrumbs.BreadcrumbLinks.Add(new BreadCrumbItem() { Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "Files" });
             if (folderId.HasValue)
             {
@@ -428,6 +475,10 @@ namespace MvcForum.Web.Controllers
 
                 if (bc != null)
                 {
+                    if (bc.Count() == 4)
+                    {
+                        bc.First().Name = "...";
+                    }
                     breadCrumbs.BreadcrumbLinks.AddRange(bc.Select(b => new BreadCrumbItem { Name = b.Name, Url = @Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab, folder = b.Id }) }));
                 }
             }
