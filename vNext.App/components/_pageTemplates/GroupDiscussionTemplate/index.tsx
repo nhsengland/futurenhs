@@ -67,6 +67,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const { title, body } = discussionText ?? {};
     const { totalRecords } = pagination ?? {};
 
+    const shouldEnableLoadMore: boolean = true;
     const hasDiscussionComments: boolean = dynamicDiscussionCommentsList?.length > 0;
     const creatorUserInitials: string = initials({ value: createdBy?.text?.userName });
     const creatorUserName: string = createdBy?.text?.userName;
@@ -198,8 +199,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 <ErrorBoundary boundaryId="group-discussion-comments">
                     <AriaLiveRegion>
                         {hasDiscussionComments &&
-                            <ul className="u-list-none u-p-0">
-                                <DynamicListContainer>
+                            <DynamicListContainer 
+                                containerElementType="ul"
+                                shouldFocusLatest={shouldEnableLoadMore}
+                                className="u-list-none u-p-0">
                                     {dynamicDiscussionCommentsList?.map(({
                                         commentId,
                                         created,
@@ -257,13 +260,12 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                         )
 
                                     })}
-                                </DynamicListContainer>
-                            </ul>
+                            </DynamicListContainer>
                         }
                     </AriaLiveRegion>
                     <PaginationWithStatus 
                         id="discussion-list-pagination"
-                        shouldEnableLoadMore={true}
+                        shouldEnableLoadMore={shouldEnableLoadMore}
                         getPageAction={handleGetPage}
                         {...dynamicPagination} />
                 </ErrorBoundary>

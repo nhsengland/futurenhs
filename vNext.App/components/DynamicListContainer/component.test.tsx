@@ -5,6 +5,7 @@ import { DynamicListContainer } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
+    containerElementType: 'div',
     children: <p>mock content</p>
 };
 

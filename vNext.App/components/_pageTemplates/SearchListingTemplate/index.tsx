@@ -31,6 +31,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
     const resultsCount: number = resultsList.length;
     const hasResults: boolean = resultsCount > 0;
+    const shouldEnableLoadMore: boolean = true;
 
     const { metaDescription,
         title,
@@ -174,8 +175,10 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
                     {hasResults &&
                         <LayoutColumnContainer>
                             <LayoutColumn desktop={10}>
-                                <ul className='u-p-0 u-list-none'>
-                                    <DynamicListContainer>
+                                <DynamicListContainer 
+                                    containerElementType="ul"
+                                    shouldFocusLatest={shouldEnableLoadMore}
+                                    className="u-p-0 u-list-none">
                                         {formattedData.map(({ metaHeader, title, body }, index) => {
 
                                             return (
@@ -188,14 +191,13 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
                                             )
 
                                         })}
-                                    </DynamicListContainer>
-                                </ul>
-                                <PaginationWithStatus
-                                    id="search-result-list-pagination"
-                                    shouldEnableLoadMore={true}
-                                    getPageAction={handleGetPage}
-                                    totalRecords={dynamicPagination.totalRecords}
-                                    {...dynamicPagination} />
+                                </DynamicListContainer>
+                            <PaginationWithStatus
+                                id="search-result-list-pagination"
+                                shouldEnableLoadMore={true}
+                                getPageAction={handleGetPage}
+                                totalRecords={dynamicPagination.totalRecords}
+                                {...dynamicPagination} />
                             </LayoutColumn>
                         </LayoutColumnContainer>
                     }

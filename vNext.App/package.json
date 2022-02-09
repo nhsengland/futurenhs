@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tinymce/tinymce-react": "^3.13.0",
+    "ally.js": "^1.4.1",
     "applicationinsights": "^2.1.8",
     "classnames": "2.2.6",
     "cookie-parser": "^1.4.5",

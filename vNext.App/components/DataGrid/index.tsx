@@ -40,49 +40,47 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                     {columnList.map(({ children, className }, index) => <th key={index} role="columnheader" scope="col" className={className}>{children}</th>)}
                 </tr>
             </thead>
-            <tbody>
-                <DynamicListContainer>
-                    {rowList.map((row, index) => {
+            <DynamicListContainer containerElementType="tbody" shouldFocusLatest={true}>
+                {rowList.map((row, index) => {
 
-                        return (
-                        
-                            <tr key={index} role="row" className={generatedClasses.bodyRow}>
-                                {row.map(({ 
-                                    children, 
-                                    className, 
-                                    headerClassName 
-                                }, index) => {
+                    return (
+                    
+                        <tr key={index} role="row" className={generatedClasses.bodyRow}>
+                            {row.map(({ 
+                                children, 
+                                className, 
+                                headerClassName 
+                            }, index) => {
 
-                                    const generatedCellClasses = {
-                                        bodyCell: classNames(className, {
-                                            ['u-flex']: shouldRenderAdvancedVariant,
-                                            ['tablet:u-table-cell']: shouldRenderAdvancedVariant,
-                                            ['u-table-cell']: !shouldRenderAdvancedVariant
-                                        }),
-                                        bodyCellLabel: classNames(headerClassName, {
-                                            ['tablet:u-hidden']: true
-                                        })
-                                    };
-                                
-                                    return (
+                                const generatedCellClasses = {
+                                    bodyCell: classNames(className, {
+                                        ['u-flex']: shouldRenderAdvancedVariant,
+                                        ['tablet:u-table-cell']: shouldRenderAdvancedVariant,
+                                        ['u-table-cell']: !shouldRenderAdvancedVariant
+                                    }),
+                                    bodyCellLabel: classNames(headerClassName, {
+                                        ['tablet:u-hidden']: true
+                                    })
+                                };
+                            
+                                return (
 
-                                        <td 
-                                            key={index} 
-                                            role="cell" 
-                                            className={generatedCellClasses.bodyCell}>
-                                                <span className={generatedCellClasses.bodyCellLabel}>{columnList[index].children} </span>{children}
-                                        </td>
+                                    <td 
+                                        key={index} 
+                                        role="cell" 
+                                        className={generatedCellClasses.bodyCell}>
+                                            <span className={generatedCellClasses.bodyCellLabel}>{columnList[index].children} </span>{children}
+                                    </td>
 
-                                    )
-                                                                    
-                                })}
-                            </tr>
-                        
-                        )
-                                
-                    })}
-                </DynamicListContainer>
-            </tbody>
+                                )
+                                                                
+                            })}
+                        </tr>
+                    
+                    )
+                            
+                })}
+            </DynamicListContainer>
         </table>
 
     );

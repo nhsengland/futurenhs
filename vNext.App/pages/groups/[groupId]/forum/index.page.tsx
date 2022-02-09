@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
+import { withConfig } from '@hofs/withConfig';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupDiscussions } from '@services/getGroupDiscussions';
@@ -15,7 +16,7 @@ import { Props } from '@components/_pageTemplates/GroupForumTemplate/interfaces'
 
 const routeId: string = 'd7752e9e-4f47-41ec-bc07-70508d8dcd9b';
 
-export const whatever = async (context: GetServerSidePropsContext) => {
+export const routeHandler = async (context: GetServerSidePropsContext) => {
 
     const user: User = selectUser(context);
     const groupId: string = selectParam(context, routeParams.GROUPID);
@@ -71,13 +72,16 @@ export const whatever = async (context: GetServerSidePropsContext) => {
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
     routeId: routeId,
-    getServerSideProps: withGroup({
+    getServerSideProps: withConfig({
         routeId: routeId,
-        getServerSideProps: withTextContent({
+        getServerSideProps: withGroup({
             routeId: routeId,
-            getServerSideProps: whatever
+            getServerSideProps: withTextContent({
+                routeId: routeId,
+                getServerSideProps: routeHandler
+            })
         })
-    })
+    })  
 });
 
 /**

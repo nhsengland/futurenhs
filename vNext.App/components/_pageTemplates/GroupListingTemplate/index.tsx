@@ -34,6 +34,8 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     const [dynamicGroupsList, setGroupsList] = useState(groupsList);
     const [dynamicPagination, setPagination] = useState(pagination);
 
+    const shouldEnableLoadMore: boolean = true;
+
     const { title, 
             metaDescription, 
             mainHeading,
@@ -107,8 +109,10 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                             <p className="u-text-lead u-text-theme-7 u-mb-4">{intro}</p>
                         }
                         <AriaLiveRegion>
-                            <ul className="u-list-none u-p-0">
-                                <DynamicListContainer>
+                            <DynamicListContainer 
+                                containerElementType="ul" 
+                                shouldFocusLatest={shouldEnableLoadMore}
+                                className="u-list-none u-p-0">
                                     {dynamicGroupsList?.map?.(({ 
                                         image, 
                                         text, 
@@ -149,12 +153,11 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                         )
 
                                     })}
-                                </DynamicListContainer>
-                            </ul>
+                            </DynamicListContainer>
                         </AriaLiveRegion>
                         <PaginationWithStatus 
                             id="group-list-pagination"
-                            shouldEnableLoadMore={true}
+                            shouldEnableLoadMore={shouldEnableLoadMore}
                             getPageAction={handleGetPage}
                             {...dynamicPagination} />
                     </LayoutColumn>

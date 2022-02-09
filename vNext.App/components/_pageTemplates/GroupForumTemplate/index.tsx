@@ -36,6 +36,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     const [dynamicPagination, setPagination] = useState(pagination);
 
     const hasDiscussions: boolean = dynamicDiscussionsList.length > 0;
+    const shouldEnableLoadMore: boolean = true;
 
     const groupBasePath: string = getRouteToParam({
         router: router,
@@ -87,13 +88,13 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
             text={entityText}
             image={image}
             className="u-bg-theme-3">
-                <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
-                    <LayoutColumn tablet={8} className="c-page-body">
-                        <h2>{discussionsHeading}</h2>
-                        <AriaLiveRegion>
-                            {hasDiscussions
+            <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
+                <LayoutColumn tablet={8} className="c-page-body">
+                    <h2>{discussionsHeading}</h2>
+                    <AriaLiveRegion>
+                        {hasDiscussions
 
-                                ? <DynamicListContainer>
+                            ?   <DynamicListContainer containerElementType="div" shouldFocusLatest={shouldEnableLoadMore}>
                                     {dynamicDiscussionsList?.map?.(({
                                         text,
                                         discussionId,
@@ -156,24 +157,24 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     })}
                                 </DynamicListContainer>
 
-                                : <p>{noDiscussions}</p>
+                            :   <p>{noDiscussions}</p>
 
-                            }
-                        </AriaLiveRegion>
-                        <PaginationWithStatus
-                            id="group-list-pagination"
-                            shouldEnableLoadMore={true}
-                            getPageAction={handleGetPage}
-                            {...dynamicPagination} />
-                    </LayoutColumn>
-                    <LayoutColumn tablet={4} className="c-page-body">
-                        {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
-                            <Link href={`${router.asPath}/create`}>
-                                <a className="c-button u-w-full">{createDiscussion}</a>
-                            </Link>
                         }
-                    </LayoutColumn>
-                </div>
+                    </AriaLiveRegion>
+                    <PaginationWithStatus
+                        id="group-list-pagination"
+                        shouldEnableLoadMore={shouldEnableLoadMore}
+                        getPageAction={handleGetPage}
+                        {...dynamicPagination} />
+                </LayoutColumn>
+                <LayoutColumn tablet={4} className="c-page-body">
+                    {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
+                        <Link href={`${router.asPath}/create`}>
+                            <a className="c-button u-w-full">{createDiscussion}</a>
+                        </Link>
+                    }
+                </LayoutColumn>
+            </div>
         </GroupLayout>
 
     )
