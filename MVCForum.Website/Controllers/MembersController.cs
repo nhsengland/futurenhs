@@ -810,6 +810,40 @@
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
+        [ActionName("RemoveProfileImage")]
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        public virtual async Task<ActionResult> RemoveProfileImageAsync(Guid userId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            MemberFrontEndEditViewModel viewModel = null;
+            if (ModelState.IsValid)
+            {
+                if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+                // Only allow if editing own profile, tweak for admins in the future?
+                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
+                if (loggedOnUserId != userId) return new HttpUnauthorizedResult();
+
+                // Get the user to edit from the database            
+                var dbUser = MembershipService.GetUser(userId);
+
+                if (dbUser is null) return HttpNotFound();
+
+                viewModel = dbUser.PopulateMemberViewModel();
+
+                var pipeline = await MembershipService.EditUserAsync(dbUser, User, null, true, cancellationToken);
+                if (pipeline.Successful)
+                {
+                    return RedirectToAction("Edit", new { id = userId });
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
+                }
+            }
+            return View("Edit", viewModel);
+        }
+
         /// <summary>
         ///     Edit user
         /// </summary>
@@ -820,85 +854,40 @@
         [ActionName("Edit")]
         [AsyncTimeout(30000)]
         [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        public virtual async Task<ActionResult> EditAsync(MemberFrontEndEditViewModel userModel, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<ActionResult> EditAsync(Guid id, MemberFrontEndEditViewModel userModel, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (userModel is null) throw new ArgumentNullException(nameof(userModel));
+
+            // Only allow if editing own profile, tweak for admins in the future?
+            var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
+            if (loggedOnUserId != userModel.Id) return new HttpUnauthorizedResult();
+
             // Get the user to edit from the database            
             var dbUser = MembershipService.GetUser(userModel.Id);
 
-            // Map across the viewmodel to the user
-            var user = userModel.ToMembershipUser(dbUser);
+            if (dbUser is null) return HttpNotFound();
 
-            // Repopulate any viewmodel data
-            userModel.AmountOfPoints = user.TotalPoints;
-
-            // Avatar holding image
-            HttpPostedFileBase avatar = null;
-
-            // Check image for upload
-            if (userModel.Files.Any(x => x != null))
+            if (ModelState.IsValid)
             {
-                // See if file is ok and then convert to image
-                avatar = userModel.Files[0];
-            }
+                // Map across the viewmodel to the user
+                var user = userModel.ToMembershipUser(dbUser);
 
-            // Edit the user via the pipelines
-            var pipeline = await MembershipService.EditUserAsync(user, User, avatar, cancellationToken);
-            if (!pipeline.Successful)
-            {
-                ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
-                return View(userModel);
-            }
-
-            if (pipeline.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.UsernameChanged))
-            {
-                var test = pipeline.ExtendedData[Constants.ExtendedDataKeys.UsernameChanged] as bool?;
-                var usernameChanged = test == true;
-                if (usernameChanged)
+                // Edit the user via the pipelines
+                var pipeline = await MembershipService.EditUserAsync(user, User, userModel.ProfileImage, false, cancellationToken);
+                if (pipeline.Successful)
                 {
-                    // User has changed their username so need to log them in
-                    // as there new username of 
-                    var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
-                    if (authCookie != null)
-                    {
-                        var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-                        if (authTicket != null)
-                        {
-                            var newFormsIdentity = new FormsIdentity(new FormsAuthenticationTicket(
-                                authTicket.Version,
-                                user.UserName,
-                                authTicket.IssueDate,
-                                authTicket.Expiration,
-                                authTicket.IsPersistent,
-                                authTicket.UserData));
-                            var roles = authTicket.UserData.Split("|".ToCharArray());
-                            var newGenericPrincipal = new GenericPrincipal(newFormsIdentity, roles);
-                            System.Web.HttpContext.Current.User = newGenericPrincipal;
-                        }
-                    }
-
-                    // sign out current user
-                    FormsAuthentication.SignOut();
-
-                    // Abandon the session
-                    Session.Abandon();
-
-                    // Sign in new user
-                    FormsAuthentication.SetAuthCookie(user.UserName, false);
+                    return Redirect(user.NiceUrl);
                 }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
+                }
+
             }
 
-            // Repopulate any viewmodel data
-            userModel.AmountOfPoints = user.TotalPoints;
-
-            // Set the users Avatar for the confirmation page
-            userModel.Avatar = user.Avatar;
-
-            ShowMessage(new GenericMessageViewModel
-            {
-                Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
-                MessageType = GenericMessages.success
-            });
-
+            userModel.Avatar = dbUser.Avatar;
+            userModel.Initials = dbUser.Initials;
+            userModel.Email = dbUser.Email;
             return View(userModel);
         }
 
@@ -1091,15 +1080,18 @@
         [ValidateAntiForgeryToken]
         public virtual ActionResult ChangePassword(ChangePasswordViewModel model)
         {
-            var changePasswordSucceeded = true;
+            if (model is null) throw new ArgumentNullException(nameof(model));
 
             User.GetMembershipUser(MembershipService);
+
             if (ModelState.IsValid)
             {
+                User.GetMembershipUser(MembershipService);
+
                 // ChangePassword will throw an exception rather than return false in certain failure scenarios.
                 var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser?.Id);
-                changePasswordSucceeded =
-                    MembershipService.ChangePassword(loggedOnUser, model.OldPassword, model.NewPassword);
+
+                var changePasswordSucceeded = MembershipService.ChangePassword(loggedOnUser, model.OldPassword, model.NewPassword);
 
                 try
                 {
@@ -1111,20 +1103,20 @@
                     LoggingService.Error(ex);
                     changePasswordSucceeded = false;
                 }
-            }
 
-            if (changePasswordSucceeded)
-            {
-                // We use temp data because we are doing a redirect
-                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                if (changePasswordSucceeded)
                 {
-                    Message = LocalizationService.GetResourceString("Members.ChangePassword.Success"),
-                    MessageType = GenericMessages.success
-                };
-                return View();
+                    // We use temp data because we are doing a redirect
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.ChangePassword.Success"),
+                        MessageType = GenericMessages.success
+                    };
+                    return View();
+                }
+                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ChangePassword.Error"));
             }
 
-            ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ChangePassword.Error"));
             return View(model);
         }
 
@@ -1193,7 +1185,7 @@
             var emailToAddress = new MailAddress(user.Email);
             var emailFromAddress = new MailAddress(_configurationProvider.SmtpFrom);
             var emailSubject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject");
-            var emailBodyHtml = _emailService.EmailTemplate(user.FirstName + " " + user.Surname, sb.ToString());
+            var emailBodyHtml = _emailService.EmailTemplate(user.GetFullName(), sb.ToString());
 
             await _sendEmailService.SendAsync(emailFromAddress, emailToAddress, emailSubject, emailBodyHtml, cancellationToken);
 
@@ -1303,7 +1295,6 @@
 
             Response.Headers.Set("ReturnUrl","");
             return RedirectToAction("LogOn", "Members");
-
         }
 
         /// <summary>

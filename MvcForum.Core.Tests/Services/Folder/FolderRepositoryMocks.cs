@@ -49,8 +49,8 @@ namespace MvcForum.Core.Tests.Services.Folder
                     return new PaginatedList<FolderReadViewModel>(folderList, 20, page, pageSize);
                 });
 
-            mockFolderRepository.Setup(repo => repo.IsFolderNameValidAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(
-                (string folderName, Guid? parentFolderId, Guid parentGroupId, CancellationToken ancellationToken) =>
+            mockFolderRepository.Setup(repo => repo.IsFolderNameValidAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(
+                (Guid? folderId, string folderName, Guid? parentFolderId, Guid parentGroupId, CancellationToken cancellationToken) =>
                 {
                     if (string.IsNullOrEmpty(folderName))
                     {
@@ -69,9 +69,17 @@ namespace MvcForum.Core.Tests.Services.Folder
                     return true;
                 });
 
-            mockFolderRepository.Setup(repo => repo.UserHasGroupAccessAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(
+            mockFolderRepository.Setup(repo => repo.UserHasFolderWriteAccessAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(
+                (Guid folderId, Guid userId, CancellationToken cancellationToken) =>
+                {
+                    if (Guid.Empty == folderId) return false;
+                    return true;
+                });
+
+            mockFolderRepository.Setup(repo => repo.UserHasFolderReadAccessAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(
                 (string groupSlug, Guid userId, CancellationToken cancellationToken) =>
                 {
+                    if (string.IsNullOrWhiteSpace(groupSlug)) return false;
                     return true;
                 });
 

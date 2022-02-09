@@ -88,6 +88,7 @@
         public const string GroupForumTab = "forum";
         public const string GroupMembersTab = "members";
         public const string GroupFilesTab = "files";
+        public const string AboutUsTab = "aboutus";
 
         public const string MyGroupsTab = "mygroups";
         public const string DiscoverGroupsTab = "discovergroups";
@@ -144,6 +145,11 @@
             /// </summary>
             public const string PostedFiles = "PostedFiles";
 
+            /// <summary>
+            /// Key to remove an existing image
+            /// </summary>
+            public const string ImageToRemove = "ImageToRemove";
+            
             /// <summary>
             /// Key for tags
             /// </summary>

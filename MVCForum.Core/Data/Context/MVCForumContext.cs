@@ -58,13 +58,15 @@ namespace MvcForum.Core.Data.Context
         public virtual DbSet<PostEdit> PostEdit { get; set; }
 
         public virtual DbSet<GroupUser> GroupUser { get; set; }
-        public virtual DbSet<GroupInvite> GroupInvite { get; set; }
 
+        public virtual DbSet<GroupInvite> GroupInvite { get; set; }
 
         public virtual DbSet<UploadStatus> FileUploadStatus { get; set; }
 
         public virtual DbSet<SystemPage> SystemPage { get; set; }
-        
+
+        public virtual DbSet<Image> Image { get; set; }
+
         public override int SaveChanges()
         {
             try

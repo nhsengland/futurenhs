@@ -54,12 +54,6 @@
             return View(model);
         }
 
-        [HttpGet]
-        public ActionResult LatestDiscussions()
-        {
-            return View();
-        }
-
         [ChildActionOnly]
         private GroupHeaderViewModel GetGroupsLandingHeader(string currentTab)
         {
@@ -137,30 +131,6 @@
 
 
             return View(viewmodel);
-        }
-
-        public virtual async Task<ActionResult> Activity(int? p)
-        {
-            User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
-
-            // Set the page index
-            var pageIndex = p ?? 1;
-
-            // Get the topics
-            var activities = await
-                _activityService.GetPagedGroupedActivities(pageIndex,
-                    SettingsService.GetSettings().ActivitiesPerPage, LoggedOnReadOnlyUser, loggedOnUsersRole);
-
-            // create the view model
-            var viewModel = new AllRecentActivitiesViewModel
-            {
-                Activities = activities,
-                PageIndex = pageIndex,
-                TotalCount = activities.TotalCount
-            };
-
-            return View(viewModel);
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]

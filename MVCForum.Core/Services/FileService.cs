@@ -8,7 +8,6 @@ namespace MvcForum.Core.Services
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.WindowsAzure.Storage;
     using MvcForum.Core.Interfaces.Services;
-    using MvcForum.Core.Models.Entities;
     using MvcForum.Core.Models.FilesAndFolders;
     using MvcForum.Core.Models.General;
     using MvcForum.Core.Repositories.Command.Interfaces;
@@ -38,8 +37,6 @@ namespace MvcForum.Core.Services
         /// </summary>
         private readonly IFileRepository _fileRepository;
 
-        private readonly MembershipUser _loggedOnReadOnlyUser;
-
         /// <summary>
         /// Instance of the <see cref="IFileRepoIFileUploadValidationServicesitory"/> for file validation operations.
         /// </summary>
@@ -53,19 +50,17 @@ namespace MvcForum.Core.Services
         /// <param name="fileCommand">Instance of <see cref="IFileCommand"/>.</param>
         /// <param name="fileRepository">Instance of <see cref="IFileRepository"/>.</param>
         public FileService(IFileCommand fileCommand, IFileRepository fileRepository, 
-                                IMembershipService membershipService, IFileUploadValidationService fileUploadValidationService, 
+                                IFileUploadValidationService fileUploadValidationService, 
                                 IConfigurationProvider configurationProvider, IMemoryCache memoryCache)
         {
             if (fileCommand is null) throw new ArgumentNullException(nameof(fileCommand));
             if (fileRepository is null) throw new ArgumentNullException(nameof(fileRepository));
-            if (membershipService is null) throw new ArgumentNullException(nameof(membershipService));
             if (fileUploadValidationService is null) throw new ArgumentNullException(nameof(fileUploadValidationService));
             if (configurationProvider is null) throw new ArgumentNullException(nameof(configurationProvider));
             if (memoryCache is null) throw new ArgumentNullException(nameof(memoryCache));
 
             _fileCommand = fileCommand;
             _fileRepository = fileRepository;
-            _loggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
             _fileUploadValidationService = fileUploadValidationService;
             _configurationProvider = configurationProvider;
             _memoryCache = memoryCache;
@@ -83,8 +78,8 @@ namespace MvcForum.Core.Services
             return _fileCommand.Create(file);
         }
 
-        // <summary>
-        /// Method to create a new <see cref="FileReadViewModel"/> in the database.
+        /// <summary>
+        /// Method to update a <see cref="FileReadViewModel"/> in the database.
         /// </summary>
         /// <param name="file">The file to create.</param>
         /// <returns>The file id.</returns>
@@ -93,6 +88,18 @@ namespace MvcForum.Core.Services
             if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
             return _fileCommand.Update(file);
+        }
+
+        /// <summary>
+        /// Method to update a <see cref="FileReadViewModel"/> in the database.
+        /// </summary>
+        /// <param name="file">The file to create.</param>
+        /// <returns>Bool - success/fail.</returns>
+        public async Task<bool> UpdateAsync(FileUpdateViewModel file, CancellationToken cancellationToken = default)
+        {
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+
+            return await _fileCommand.UpdateAsync(file, cancellationToken);
         }
 
         /// <summary>
@@ -128,6 +135,9 @@ namespace MvcForum.Core.Services
         /// <returns></returns>
         public async Task<string> GetRelativeDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));
+            if (string.IsNullOrWhiteSpace(_configurationProvider.FileDownloadEndpoint)) throw new ArgumentNullException(nameof(_configurationProvider.FileDownloadEndpoint));
+
             // Set the blob service client
             BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri(_configurationProvider.FileDownloadEndpoint), new DefaultAzureCredential());
 
@@ -193,7 +203,9 @@ namespace MvcForum.Core.Services
         /// <returns></returns>
         public async Task<UploadBlobResult> UploadFileAsync(HttpPostedFileBase file, string contentType, CancellationToken cancellationToken)
         {
-            if (file is null) { throw new ArgumentNullException(nameof(file)); }
+            if (file is null) throw new ArgumentNullException(nameof(file));
+            if (string.IsNullOrWhiteSpace(_configurationProvider.FileUploadConnectionString)) throw new ArgumentNullException(nameof(_configurationProvider.FileUploadConnectionString));
+            if (string.IsNullOrWhiteSpace(_configurationProvider.FileContainerName)) throw new ArgumentNullException(nameof(_configurationProvider.FileContainerName));
 
             // Full validation happens in the controller so that we don't end up with an orphaned DB record
             var result = new UploadBlobResult();
@@ -228,6 +240,14 @@ namespace MvcForum.Core.Services
         public ValidateBlobResult FileValidation(HttpPostedFileBase file)
         {
             return _fileUploadValidationService.ValidateUploadedFile(file);
+        }
+
+        public Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == fileId) return Task.FromResult(false);
+            if (Guid.Empty == userId) return Task.FromResult(false);
+
+            return _fileRepository.UserHasFileAccessAsync(fileId, userId, cancellationToken);
         }
     }
 }

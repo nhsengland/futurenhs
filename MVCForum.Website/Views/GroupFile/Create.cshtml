@@ -23,7 +23,7 @@
 <hr>
 
 <div class="l-row">
-    <div class="l-col-6">
+    <div class="l-col-12 l-col-8-d">
 
         <h3>@Html.LanguageString("File.Upload.Subtitle")</h3>
         <p>@Html.LanguageString("File.Upload.Guidance")</p>
@@ -54,7 +54,7 @@
             <div class="c-form-group @Html.FieldHasError(model => model.FileToUpload.PostedFile, formError)">
                 @Html.LabelFor(model => model.FileToUpload.PostedFile, "File upload", htmlAttributes: new { @class = "c-label u-margin-bottom-spacing-2" })
                 @Html.ValidationMessageFor(model => model.FileToUpload.PostedFile, "Please select a file to upload", new { @class = "c-error-message" })
-                @Html.TextBoxFor(model => model.FileToUpload.PostedFile, new { type = "file", name = "File", @class = "" })
+                @Html.TextBoxFor(model => model.FileToUpload.PostedFile, new { id="FileToUpload_PostedFile", type = "file", name = "File", @class = "" })
             </div>
 
             <div class="c-card">

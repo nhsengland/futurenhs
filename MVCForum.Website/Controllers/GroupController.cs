@@ -1,30 +1,28 @@
-﻿using System;
-using CommonServiceLocator;
-using Microsoft.Ajax.Utilities;
-using MvcForum.Core.Constants;
-using MvcForum.Web.ViewModels.Shared;
-using MvcForum.Web.ViewModels.Topic;
-using Constants = MvcForum.Core.Constants.Constants;
-
+﻿
 namespace MvcForum.Web.Controllers
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Web.Mvc;
-    using Application.CustomActionResults;
     using Core;
-    using Core.Constants.UI;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using Core.Models.Enums;
     using Core.Models.General;
+    using MvcForum.Core.Models.Groups;
+    using MvcForum.Core.Repositories.Command.Interfaces;
+    using MvcForum.Core.Repositories.Models;
+    using MvcForum.Web.ViewModels.Shared;
+    using MvcForum.Web.ViewModels.Topic;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
     using ViewModels.Breadcrumb;
     using ViewModels.Group;
     using ViewModels.Mapping;
+    using Constants = MvcForum.Core.Constants.Constants;
 
     [Authorize]
     public partial class GroupController : BaseController
@@ -39,6 +37,7 @@ namespace MvcForum.Web.Controllers
         private readonly IVoteService _voteService;
         private readonly IFeatureManager _featureManager;
         private readonly ILocalizationService _localizationService;
+        private readonly IImageCommand _imageCommand;
 
         /// <summary>
         ///     Constructor
@@ -63,7 +62,8 @@ namespace MvcForum.Web.Controllers
             ICacheService cacheService,
             IPostService postService,
             IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
-            IMvcForumContext context, INotificationService notificationService, IFeatureManager featureManager)
+            IMvcForumContext context, INotificationService notificationService, IFeatureManager featureManager,
+            IImageCommand imageCommand)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
@@ -78,6 +78,7 @@ namespace MvcForum.Web.Controllers
             _featureManager = featureManager;
             _localizationService = localizationService;
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+            _imageCommand = imageCommand ?? throw new ArgumentNullException(nameof(imageCommand));
         }
 
         [HttpGet]
@@ -209,7 +210,7 @@ namespace MvcForum.Web.Controllers
         [ChildActionOnly]
         public virtual PartialViewResult GetSubscribedGroups()
         {
-            var viewModel = new List<GroupViewModel>();
+            var viewModel = new List<ViewModels.Group.GroupViewModel>();
 
             var groups = LoggedOnReadOnlyUser.GroupNotifications.Select(x => x.Group);
             foreach (var group in groups)
@@ -220,7 +221,7 @@ namespace MvcForum.Web.Controllers
                 var latestTopicInGroup =
                     group.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
                 var postCount = group.Topics.SelectMany(x => x.Posts).Count() - 1;
-                var model = new GroupViewModel
+                var model = new ViewModels.Group.GroupViewModel
                 {
                     Group = group,
                     LatestTopic = latestTopicInGroup,
@@ -257,7 +258,7 @@ namespace MvcForum.Web.Controllers
         public virtual async Task<ActionResult> JoinAsync(string slug, int? p, CancellationToken cancellationToken)
         {
             await _groupService.JoinGroupAsync(slug, LoggedOnReadOnlyUser.Id, cancellationToken);
-            return RedirectToAction("show", new { slug = slug, p = p });
+            return RedirectToAction("show", new { slug, p });
         }
 
         [HttpGet]
@@ -267,8 +268,8 @@ namespace MvcForum.Web.Controllers
         public virtual async Task<ActionResult> LeaveAsync(string slug, int? p)
         {
 
-            _groupService.LeaveGroup(slug, LoggedOnReadOnlyUser.Id);
-            return RedirectToAction("show", new { slug = slug, p = p });
+            await _groupService.LeaveGroupAsync(slug, LoggedOnReadOnlyUser.Id);
+            return RedirectToAction("show", new { slug, p });
         }
 
         public PartialViewResult GroupHeader(string slug, string tab = null)
@@ -353,6 +354,11 @@ namespace MvcForum.Web.Controllers
                         Url = Url.RouteUrl("GroupInviteUrls", new { slug = @group.Slug, groupId = @group.Id }),
                         Order = 3
                     });
+                    model.ActionLinks.Add(new ActionLink
+                    {
+                        Name = "Edit group information",
+                        Url = Url.RouteUrl("GroupEditUrls", new { slug = @group.Slug })
+                    });
                 }
             }
 
@@ -365,13 +371,13 @@ namespace MvcForum.Web.Controllers
             var homeTab = new Tab
             {
                 Name = "GroupTabs.Home", Order = 1,
-                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = UrlParameter.Optional })}"
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = UrlParameter.Optional })}"
             };
 
             var forumTab = new Tab
             {
                 Name = "GroupTabs.Forum", Order = 2,
-                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab })}"
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupForumTab })}"
             };
 
             var filesTab = new Tab
@@ -383,11 +389,19 @@ namespace MvcForum.Web.Controllers
             var membersTab = new Tab
             {
                 Name = "GroupTabs.Members", Order = 4,
-                Url = $"{Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab })}"
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupMembersTab })}"
             };
 
-         
-                switch (tab)
+            var aboutUsTab = new Tab
+            {
+                Name = "GroupTabs.AboutUs",
+                Order = 5,
+                Url = $"{Url.RouteUrl("GroupUrls", new { slug, tab = Constants.AboutUsTab })}"
+            };
+
+
+
+            switch (tab)
                 {
                     case Constants.GroupFilesTab:
                         filesTab.Active = true;
@@ -398,13 +412,16 @@ namespace MvcForum.Web.Controllers
                     case Constants.GroupMembersTab:
                         membersTab.Active = true;
                         break;
-                    default:
+                    case Constants.AboutUsTab:
+                        aboutUsTab.Active = true;
+                        break;
+                default:
                         homeTab.Active = true;
                         break;
                 }
             
 
-            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab } };
+            var tabsViewModel = new TabViewModel { Tabs = new List<Tab> { homeTab, forumTab, membersTab, filesTab, aboutUsTab } };
 
             return tabsViewModel;
         }
@@ -414,9 +431,9 @@ namespace MvcForum.Web.Controllers
         {
             var viewModel = new GroupHomeCardsViewModel 
             { 
-                ForumCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupForumTab }), Name = "Join in the conversation" },
-                MembersCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab }), Name = "Meet the members" },
-                FilesCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug = slug, tab = Constants.GroupFilesTab }), Name = "View Files" },
+                ForumCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupForumTab }), Name = "Join in the conversation" },
+                MembersCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupMembersTab }), Name = "Meet the members" },
+                FilesCard = new Tab { Url = Url.RouteUrl("GroupUrls", new { slug, tab = Constants.GroupFilesTab }), Name = "View Files" },
             };
 
             return PartialView("_GroupHomeCards", viewModel);
@@ -524,12 +541,9 @@ namespace MvcForum.Web.Controllers
         }
 
         [HttpGet]
-        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
-        [AsyncTimeout(30000)]
         [ActionName("Show")]
-        public async virtual Task<ActionResult> ShowAsync(string slug, int? p, string tab = null, Guid? folder = null, bool? hasError = null, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual ActionResult Show(string slug, int? p, string tab = null, Guid? folder = null, bool? hasError = null)
         {
-
             // Get the Group
             var group = _groupService.GetBySlugWithSubGroups(slug, LoggedOnReadOnlyUser?.Id);
             var loggedOnUsersRole = GetGroupMembershipRole(group.Group.Id);
@@ -544,7 +558,7 @@ namespace MvcForum.Web.Controllers
             {
                 var groupUser = group.Group.GroupUsers.FirstOrDefault(x => x.User.Id == LoggedOnReadOnlyUser.Id);
                 // Create the main view model for the Group
-                var viewModel = new GroupViewModel
+                var viewModel = new ViewModels.Group.GroupViewModel
                 {
                     Permissions = permissions,
                     Group = group.Group,
@@ -588,11 +602,23 @@ namespace MvcForum.Web.Controllers
                 {
                     ViewBag.HideSideBar = true;
                 }
-
+                if (tab == Constants.AboutUsTab)
+                {
+                    ViewBag.HideSideBar = true;
+                }
                 return View(viewModel);
             }
 
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+        }
+
+
+        [HttpGet]
+        [ChildActionOnly]
+        public virtual PartialViewResult AboutUs(string slug)
+        {  // Get the Group
+            var group =  _groupService.Get(slug);
+            return PartialView("_AboutUs", group);
         }
 
         [HttpGet]
@@ -670,14 +696,14 @@ namespace MvcForum.Web.Controllers
         public virtual ActionResult ApproveUser(Guid groupUserId, string slug)
         {
             _groupService.ApproveJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
-            return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab });
+            return RedirectToRoute("GroupUrls", new { slug, tab = Constants.GroupMembersTab });
         }
 
         [HttpGet]
         public virtual ActionResult RejectUser(Guid groupUserId, string slug)
         {
             _groupService.RejectJoinGroup(groupUserId, LoggedOnReadOnlyUser.Id);
-            return RedirectToRoute("GroupUrls", new { slug = slug, tab = Constants.GroupMembersTab });
+            return RedirectToRoute("GroupUrls", new { slug, tab = Constants.GroupMembersTab });
         }
 
         [HttpPost]
@@ -714,6 +740,71 @@ namespace MvcForum.Web.Controllers
 
             var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
             return loggedOnUsersRole.RoleName == MvcForum.Core.Constants.Constants.AdminRoleName ? loggedOnUsersRole : role;
+        }
+
+        [HttpGet]
+        [AsyncTimeout(30000)]
+        [ActionName("Edit")]
+        public async Task<ActionResult> EditAsync(string slug, string tab, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+            if (string.IsNullOrWhiteSpace(tab)) throw new ArgumentNullException(nameof(tab));
+
+            if (!_groupService.UserIsAdmin(slug, LoggedOnReadOnlyUser.Id)) return new HttpUnauthorizedResult();
+
+            var group = await _groupService.GetAsync(slug, cancellationToken);
+
+            if (group is null) return HttpNotFound();
+
+            var model = new GroupWriteViewModel
+            {
+                Id = group.Id,
+                Description = group.Description,
+                Image = group.Image,
+                Introduction = group.Introduction,
+                AboutUs = group.AboutUs,
+                Name = group.Name,
+                PublicGroup = group.PublicGroup,
+                Slug = group.Slug,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [AsyncTimeout(30000)]
+        [ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditAsync(GroupWriteViewModel model, string slug, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (model is null) throw new ArgumentNullException(nameof(model));
+
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
+
+            if (this.ModelState.IsValid)
+            {
+                if (!_groupService.UserIsAdmin(slug, LoggedOnReadOnlyUser.Id)) return new HttpUnauthorizedResult();
+
+                if (model.Files != null)
+                {
+                    var uploadResult = _groupService.UploadGroupImage(model.Files, model.Id);
+                    if (uploadResult.UploadSuccessful)
+                    {
+                        model.Image = uploadResult.UploadedFileName;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(nameof(model.Files), "Failed to upload file");
+                    }
+                }
+
+                if (ModelState.IsValid && await _groupService.UpdateAsync(model, slug, cancellationToken))
+                {
+                    return RedirectToAction("Show", "Group", new { slug, tab = String.Empty });
+                }
+            }
+
+            return View(model);
         }
 
     }

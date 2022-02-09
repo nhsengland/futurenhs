@@ -153,10 +153,9 @@
         height: 50px;
         margin: 0;
         outline: none;
-        padding: 0  $nhsuk-spacing-point-3;
+        padding: 0 $nhsuk-spacing-point-3;
         width: 100%;
         z-index: 1;
-
         // &:focus {
         //     padding: 0 13px;
         // }
@@ -193,7 +192,7 @@
         }
 
         &:focus {
-            @extend  %nhsuk-focused-button;
+            @extend %nhsuk-focused-button;
             box-shadow: 0 -2px $nhsuk-focus-color, 0 $nhsuk-focus-width $nhsuk-focus-text-color;
 
             #{$self}_search-button-icon {
@@ -234,7 +233,6 @@
                 color: $t-text-one;
             }
         }
-
     }
 
     &_root-nav-trigger {
@@ -298,7 +296,6 @@
             margin-left: -16px;
             margin-top: 8px;
         }
-
     }
 
     &_sub-nav-content {
@@ -316,7 +313,6 @@
 
         @include respond-to(desktop) {
             padding: 0;
-
         }
     }
 
@@ -337,7 +333,5 @@
             display: block;
             margin: 0 0 $base-dimension-unit;
         }
-
     }
-
 }

@@ -11,10 +11,10 @@ namespace MvcForum.Core.Models.FilesAndFolders
         public Guid FileId { get; set; }
 
         [Required]
-        [MaxLength(1000, ErrorMessage = "The title cannot be more than 1000 characters.")]
+        [MaxLength(45, ErrorMessage = "The title cannot be more than 45 characters.")]
         public string Name { get; set; }
 
-        [MaxLength(4000, ErrorMessage = "The description cannot be more than 4000 characters.")]
+        [MaxLength(150, ErrorMessage = "The description cannot be more than 150 characters.")]
         public string Description { get; set; }
 
         public Guid FolderId { get; set; }

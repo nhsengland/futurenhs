@@ -9,5 +9,15 @@
         public MembershipUser User { get; set; }
         public Guid LoggedOnUserId { get; set; }
         public PermissionSet Permissions { get; set; }
+
+        public bool ShowPronouns()
+        {
+            return !string.IsNullOrWhiteSpace(User.Pronouns);
+        }
+
+        public bool ViewingOwnProfile()
+        {
+            return User.Id == LoggedOnUserId;
+        }
     }
 }

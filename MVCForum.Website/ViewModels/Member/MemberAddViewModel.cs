@@ -18,7 +18,6 @@
         [Display(Name = "First name")]        
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Please provide your last name")]
         [Display(Name = "Last name")]
         public string Surname { get; set; }
 

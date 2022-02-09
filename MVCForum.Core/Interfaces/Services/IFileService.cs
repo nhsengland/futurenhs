@@ -31,6 +31,13 @@
         Guid Update(FileWriteViewModel file);
 
         /// <summary>
+        /// Method to update an existing File in the db.
+        /// </summary>
+        /// <param name="file">The updated file.</param>
+        /// <returns>Bool success/fail.</returns>
+        Task<bool> UpdateAsync(FileUpdateViewModel file, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Method to get a File by id.
         /// </summary>
         /// <param name="id">The id of the File.</param>
@@ -42,7 +49,7 @@
         /// </summary>
         /// <param name="folderId">The id of the folder.</param>
         /// <returns>List of files <see cref="List{File}"/></returns>
-        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, FileStatus status = FileStatus.Verified, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<FileReadViewModel>> GetFilesAsync(Guid folderId, FileStatus status = FileStatus.Verified, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Method to perform soft delete of a <see cref="File"/>.
@@ -72,5 +79,6 @@
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<string> GetRelativeDownloadUrlAsync(string blobName, BlobSasPermissions downloadPermissions, CancellationToken cancellationToken);
+        Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken);
     }
 }

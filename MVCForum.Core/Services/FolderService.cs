@@ -58,22 +58,14 @@ namespace MvcForum.Core.Services
             }
         }
 
-        public Task<bool> IsFolderNameValidAsync(string folderName, 
-                                                 Guid? parentFolderId,
-                                                 Guid parentGroupId,
-                                                 CancellationToken cancellationToken)
+        public Task<bool> IsFolderNameValidAsync(Guid? folderId, string folderName, Guid? parentFolderId,
+                                                 Guid parentGroupId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(folderName))
-            {
-                throw new ArgumentNullException(nameof(folderName));
-            }
+            if (Guid.Empty == folderId) throw new ArgumentOutOfRangeException(nameof(folderId));
+            if (string.IsNullOrWhiteSpace(folderName)) throw new ArgumentNullException(nameof(folderName));
+            if (Guid.Empty == parentGroupId) throw new ArgumentOutOfRangeException(nameof(parentGroupId));
 
-            if (Guid.Empty == parentGroupId)
-            {
-                throw new ArgumentOutOfRangeException(nameof(parentGroupId));
-            }
-
-            return _folderRepository.IsFolderNameValidAsync(folderName, parentFolderId, parentGroupId, cancellationToken);
+            return _folderRepository.IsFolderNameValidAsync(folderId, folderName, parentFolderId, parentGroupId, cancellationToken);
         }
 
         public Task<bool> IsFolderIdValidAsync(Guid folderId,
@@ -109,33 +101,33 @@ namespace MvcForum.Core.Services
      
         public async Task<bool> IsUserAdminAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(groupSlug))
-            {
-                throw new ArgumentNullException(nameof(groupSlug));
-            }
-            
-            if (Guid.Empty == userId)
-            {
-                throw new ArgumentOutOfRangeException(nameof(userId));
-            }
+            if (string.IsNullOrWhiteSpace(groupSlug)) throw new ArgumentNullException(nameof(groupSlug));
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
 
             return await _folderRepository.IsUserAdminAsync(groupSlug, userId, cancellationToken);
         }
-
-		public Task<bool> UserHasGroupAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
+        public Task<bool> UserHasFolderReadAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(groupSlug)) return Task.FromResult(false);
             if (Guid.Empty == userId) return Task.FromResult(false);
 
-            return _folderRepository.UserHasGroupAccessAsync(groupSlug, userId, cancellationToken);
+            return _folderRepository.UserHasFolderReadAccessAsync(groupSlug, userId, cancellationToken);
         }
 
-        public Task<bool> UserHasFileAccessAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
+        public Task<bool> UserHasFolderWriteAccessAsync(Guid folderId, Guid userId, CancellationToken cancellationToken)
         {
-            if (Guid.Empty == fileId) return Task.FromResult(false);
+            if (Guid.Empty == folderId) return Task.FromResult(false);
             if (Guid.Empty == userId) return Task.FromResult(false);
 
-            return _folderRepository.UserHasFileAccessAsync(fileId, userId, cancellationToken);
+            return _folderRepository.UserHasFolderWriteAccessAsync(folderId, userId, cancellationToken);
+        }
+
+        public Task<bool> UserHasFileWriteAccessAsync(Guid folderId, Guid userId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == folderId) return Task.FromResult(false);
+            if (Guid.Empty == userId) return Task.FromResult(false);
+
+            return _folderRepository.UserHasFileWriteAccessAsync(folderId, userId, cancellationToken);
         }
 
         /// <inheritdoc />

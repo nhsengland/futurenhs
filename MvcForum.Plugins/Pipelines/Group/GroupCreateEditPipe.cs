@@ -107,7 +107,7 @@ namespace MvcForum.Plugins.Pipelines.Group
                     {
                         await context.SaveChangesAsync();
                     }
-                    catch (DbUpdateConcurrencyException ex)
+                    catch (DbUpdateConcurrencyException)
                     {
                         return null;
                     }
@@ -134,7 +134,7 @@ namespace MvcForum.Plugins.Pipelines.Group
                 {
                     await context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException  ex )
+                catch (DbUpdateConcurrencyException)
                 {
                     return null;
                 }

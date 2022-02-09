@@ -34,7 +34,7 @@
                 throw new ArgumentNullException(nameof(fileStream));
             }
 
-            if (fileExtension is null)
+            if (string.IsNullOrWhiteSpace(fileExtension))
             {
                 throw new ArgumentNullException(nameof(fileExtension));
             }

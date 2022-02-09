@@ -812,7 +812,14 @@
 
                     // In the new language (only) set the value for the resource
                     var stringResource = language.LocaleStringResources.FirstOrDefault(res => res.LocaleResourceKey.Name == resourceKey.Name);
-                    if (stringResource == null)
+                    if (stringResource != null)
+                    {
+                        if (stringResource.ResourceValue.IsNullEmpty())
+                        {
+                            stringResource.ResourceValue = value;
+                        }
+                    }
+                    else
                     {
                         // No string resources have been created, so most probably
                         // this is the installer creating the keys so we need to create the 

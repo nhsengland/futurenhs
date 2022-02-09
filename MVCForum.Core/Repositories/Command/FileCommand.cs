@@ -7,6 +7,10 @@
     using MvcForum.Core.Models.Entities;
     using Status = MvcForum.Core.Models.Enums.UploadStatus;
     using MvcForum.Core.Models.FilesAndFolders;
+    using System.Threading.Tasks;
+    using System.Threading;
+    using MvcForum.Core.Repositories.Database.DatabaseProviders.Interfaces;
+    using Dapper;
 
     /// <summary>
     /// Implements the <see cref="IFileCommand"/> to process write operations of <see cref="File"/>.
@@ -18,13 +22,16 @@
         /// </summary>
         private IMvcForumContext _context { get; set; }
 
+        private readonly IDbConnectionFactory _connectionFactory;
+
         /// <summary>
         /// Constructs a new instance ofthe <see cref="FileCommand"/> setting the db context.
         /// </summary>
         /// <param name="context">Instance of <see cref=""/></param>
-        public FileCommand(IMvcForumContext context)
+        public FileCommand(IMvcForumContext context, IDbConnectionFactory connectionFactory)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
 
         /// <summary>
@@ -81,6 +88,36 @@
             var dbFile = _context.Files.Find(file.FileId);
             dbFile.FileStatus = (int)Status.Recycled;
             _context.SaveChanges();
+        }
+
+        public async Task<bool> UpdateAsync(FileUpdateViewModel model, CancellationToken cancellationToken = default)
+        {
+            if (model is null) throw new ArgumentNullException(nameof(model));
+
+            var sql = @"UPDATE [dbo].[File] 
+                        SET [Title] = @title, 
+                            [Description] = @description,
+                            [ModifiedBy] = @modifiedBy,
+                            [ModifiedAtUtc] = GETUTCDATE()
+                        WHERE [Id] = @fileId";
+
+            var commandDefinition = new CommandDefinition(sql, new
+            {
+                fileId = model.FileId,
+                title = model.Name,
+                description = model.Description,
+                modifiedBy = model.ModifiedBy
+            }, cancellationToken: cancellationToken);
+
+            using (var conn = _connectionFactory.CreateWriteOnlyConnection())
+            {
+                if (await conn.ExecuteAsync(commandDefinition) == 1)
+                {
+                    return true;
+                }
+
+                return false;
+            }
         }
     }
 }
