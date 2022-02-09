@@ -33,9 +33,7 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
                 props.csrfToken = csrfToken;
                 props.forms = {
-                    [createDiscussionForm.id]: {
-                        config: createDiscussionForm
-                    }
+                    [createDiscussionForm.id]: createDiscussionForm
                 };
 
                 if(!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)){
@@ -65,9 +63,16 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
                     } catch(error){
 
-                        if(error.name === 'ServiceError' && error.data?.status === 400){
+                        if(error.data?.status === 400){
 
-                            props.forms[createDiscussionForm.id].validationErrors = [error.data.body];
+                            props.forms[createDiscussionForm.id].errors = error.data.body;
+                            props.forms[createDiscussionForm.id].initialValues = formPost;
+
+                        } else {
+
+                            props.forms[createDiscussionForm.id].errors = {
+                                [error.data.status]: error.data.statusText
+                            };
 
                         }
 

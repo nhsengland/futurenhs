@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { routeParams } from '@constants/routes';
+import { selectFormDefaultFields, selectFormErrors, selectFormInitialValues } from '@selectors/forms';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
@@ -26,9 +28,10 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
+    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_DISCUSSION));
 
-    const fields = forms?.[formTypes.CREATE_DISCUSSION]?.config?.steps[0].fields ?? [];
-    const validationErrors = forms?.[formTypes.CREATE_DISCUSSION]?.validationErrors ?? [];
+    const fields = selectFormDefaultFields(forms, formTypes.CREATE_DISCUSSION);
+    const initialValues = selectFormInitialValues(forms, formTypes.CREATE_DISCUSSION);
 
     const groupBasePath: string = getRouteToParam({
         router: router,
@@ -53,11 +56,15 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         } catch(error){
 
-            console.log(error, error.data);
+            setErrors({
+                [error.data.status]: error.data.statusText
+            });
 
         }
 
     }
+
+    console.log(errors);
 
     return (
 
@@ -74,7 +81,8 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                             <FormWithErrorSummary
                                 csrfToken={csrfToken}
                                 fields={fields}
-                                errors={validationErrors}
+                                initialValues={initialValues}
+                                errors={errors}
                                 text={{
                                     errorSummary: {
                                         body: 'There is a problem'
@@ -86,7 +94,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 }} 
                                 submitAction={handleSubmit}
                                 cancelHref={cancelHref}
-                                bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1">
+                                bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1">
                                     <h2>Create discussion</h2>
                             </FormWithErrorSummary>
                         </LayoutColumn>

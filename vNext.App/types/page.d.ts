@@ -2,7 +2,7 @@ import { actions } from '@constants/actions';
 import { Image } from './image';
 
 import { Pagination } from '@appTypes/pagination';
-import { Form } from '@appTypes/form';
+import { FormConfig } from '@appTypes/form';
 import { GenericPageTextContent, GroupsPageTextContent } from '@appTypes/content';
 import { User } from '@appTypes/user';
 
@@ -10,7 +10,7 @@ export interface Page {
     id: string;
     groupId?: string;
     csrfToken?: string;
-    forms?: any;
+    forms?: Record<string, FormConfig>;
     pagination?: Pagination;
     errors?: Array<Record<string>>;
     contentText?: GenericPageTextContent;

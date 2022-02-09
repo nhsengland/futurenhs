@@ -1,8 +1,8 @@
 import { setGetFetchOpts, setPostFetchOpts, fetchJSON } from '@helpers/fetch';
 import { validate } from '@helpers/validators';
+import { selectFormDefaultFields } from '@selectors/forms';
 import formConfigs from '@formConfigs/index';
 import { FetchOptions, FetchResponse } from '@appTypes/fetch';
-import { Form } from '@appTypes/form';
 
 export default async function handler(req, res) {
 
@@ -20,8 +20,7 @@ export default async function handler(req, res) {
 
         }
 
-        const formConfig: Form = formConfigs[req.body.formId];
-        const validationErrors = validate(req.body, formConfig.steps[0].fields);
+        const validationErrors = validate(req.body, selectFormDefaultFields(formConfigs, req.body.formId));
 
         if(Object.keys(validationErrors).length > 0){
 

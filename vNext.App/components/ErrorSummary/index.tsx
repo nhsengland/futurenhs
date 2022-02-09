@@ -10,7 +10,7 @@ import { Props } from './interfaces';
  * Renders a form submission validation error summary
  */
 export const ErrorSummary = React.forwardRef(({ 
-    errors = [],
+    errors = {},
     relatedNames = [],
     text,
     className
@@ -22,10 +22,11 @@ export const ErrorSummary = React.forwardRef(({
         wrapper: classNames('c-error-summary', className),
         list: classNames('c-error-summary_list', 'u-m-0', 'u-p-0', 'u-list-none'),
         listItem: classNames('c-error-summary_list-item'),
-        link: classNames('c-error-summary_link')
+        link: classNames('c-error-summary_link'),
+        item: classNames('c-error-summary_item')
     };
 
-    const hasErrors: boolean = errors?.length > 0;
+    const hasErrors: boolean = errors && Object.keys(errors).length > 0;
 
     return (
 
@@ -44,9 +45,7 @@ export const ErrorSummary = React.forwardRef(({
                                 className="u-text-bold u-text-lead" />
                         }
                         <ul className={generatedClasses.list}>
-                            {errors.map((error, index: number) => {
-
-                                const key = Object.keys(error)[0];
+                            {Object.keys(errors).map((key, index: number) => {
 
                                 const handleClick = (event: any) => {
 
@@ -76,9 +75,9 @@ export const ErrorSummary = React.forwardRef(({
                                     <li key={index} className={generatedClasses.listItem}>
                                         {relatedNames.includes(key)
                                         
-                                            ?   <a href={`#${key}`} className={generatedClasses.link} onClick={handleClick}>{error[key]}</a>
+                                            ?   <a href={`#${key}`} className={generatedClasses.link} onClick={handleClick}>{errors[key]}</a>
                                             
-                                            :   <span className={generatedClasses.link}>{error[key]}</span> 
+                                            :   <span className={generatedClasses.item}>{errors[key]}</span> 
                                         
                                         }
                                     </li>

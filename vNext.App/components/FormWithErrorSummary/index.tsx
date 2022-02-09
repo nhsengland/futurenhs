@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 
 import { ErrorSummary } from '@components/ErrorSummary';
@@ -23,7 +23,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
 }) => {
 
     const errorSummaryRef: any = useRef();
-    const [validationErrors, setValidationErrors] = useState(errors ? errors : []);
+    const [validationErrors, setValidationErrors] = useState(errors ? errors : {});
     const relatedNames: Array<string> = fields?.map(({ name }) => name);
 
     const handleChange = useCallback(({ errors, submitErrors, submitFailed, modifiedSinceLastSubmit }): any => {
@@ -33,9 +33,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
 
         setTimeout(() => {
 
-            const errorsAsArray: Array<any> = errors ? Object.keys(errors).map((key: string) => ({ [key]: errors[key] })) : [];
-            const submitErrorsAsArray: Array<any> = submitErrors ? Object.keys(submitErrors).map((key: string) => ({ [key]: submitErrors[key] })) : [];
-            const errorsToUse: Array<any> = submitFailed ? hasErrors ? errorsAsArray : submitErrorsAsArray : [];
+            const errorsToUse: Record<string, string> = submitFailed ? hasErrors ? errors : submitErrors : {};
             const shouldFocusSummary: boolean = submitFailed && modifiedSinceLastSubmit && (hasErrors || hasSubmitErrors);
 
             setValidationErrors(errorsToUse);
@@ -55,6 +53,12 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         form: classNames('c-form', className)
     };
+
+    useEffect(() => {
+
+        setValidationErrors(errors);
+
+    }, [errors]);
 
     return (
 

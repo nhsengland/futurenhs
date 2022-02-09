@@ -21,7 +21,9 @@ export interface FormStep {
     fields: Array<FormField>;
 }
 
-export interface Form {
+export interface FormConfig {
     id: string;
+    initialValues?: Record<string, any>;
+    errors?: Record<string, string>;
     steps: Array<FormStep>;
 }

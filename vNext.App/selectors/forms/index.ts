@@ -1,0 +1,8 @@
+import { FormConfig, FormField } from '@appTypes/form';
+
+export const selectForm = (forms: Record<string, FormConfig>, formId: string): FormConfig => forms[formId];
+export const selectFormDefaultFields = (forms: Record<string, FormConfig>, formId: string): Array<FormField> => selectForm(forms, formId)?.steps?.[0]?.fields ?? [];
+export const selectFormInitialValues = (forms: Record<string, FormConfig>, formId: string): Record<string, any> => selectForm(forms, formId)?.initialValues ?? {};
+export const selectFormErrors = (forms: Record<string, FormConfig>, formId: string): Record<string, string> => selectForm(forms, formId)?.errors ?? {};
+
+
