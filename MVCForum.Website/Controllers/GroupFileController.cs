@@ -70,6 +70,7 @@ namespace MvcForum.Web.Controllers
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
+
             if (!UserHasFileAccess(id))
             {
                 return RedirectToAction("Index", "Home");

@@ -205,7 +205,6 @@
                       AND (f.ParentFolder = @ParentFolderId OR @ParentFolderId IS NULL)
                       AND f.ParentGroup = @ParentGroupId;
                 ";
-
             var commandDefinition = new CommandDefinition(query, new
             {
                 FolderName = folderName.Trim(),
@@ -251,7 +250,7 @@
             return MembershipRole?.ToLower() == "admin" || GroupRole?.ToLower() == "admin";
         }
 
-		public async Task<bool> UserHasGroupAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
+		    public async Task<bool> UserHasGroupAccessAsync(string groupSlug, Guid userId, CancellationToken cancellationToken)
         {
             var (MembershipRole, GroupRole) = await GetUserRolesAsync(groupSlug, userId, cancellationToken);
 
@@ -310,6 +309,7 @@
                 return (membershipRole, groupRole);
             }
         }
+
         private async Task<(string MembershipRole, string GroupRole)> GetUserRolesForFileAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
         {
             if (Guid.Empty == fileId) throw new ArgumentOutOfRangeException(nameof(fileId));
