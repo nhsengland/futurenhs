@@ -32,7 +32,7 @@ const deactivate = (done) => {
 
 const activateDb = series(db.msbuild, db.deployFutureNHSDatabase);
 
-const activateAutomationDb = series(db.msbuildAutomation, db.deployAutomationFutureNHSDatabase);
+const buildAutomationDb = series(db.msbuildAutomation, db.deployAutomationFutureNHSDatabase);
 
 /**
  * APP TASKS
@@ -64,7 +64,7 @@ const watchApp = (done) => {
 
 const activate = series(activateDb, activateMvcForum, activateApi, activateApp);
 
-const activateAutomation = series(activateAutomationDb, activateMvcForum, activateApi, activateApp);
+const activateAutomation = series(buildAutomationDb, activateMvcForum, activateApi, activateApp);
 
 const deactivate = series(mvcforum.stopSite, api.stopSite, app.stopSite);
 
@@ -74,7 +74,7 @@ module.exports = {
     activateApi,
     activateMvcForum,
     activateDb,
-    activateAutomationDb,
+    buildAutomationDb,
     activateApp,
     deactivate,
     watchApp
