@@ -12,11 +12,16 @@
         public string FileDownloadEndpoint { get; }
         public int RetryAttempts { get; }
         public int RetryDelay { get; }
-        public string SmtpFrom { get; }        
+        public string SmtpFrom { get; }
+        public string FileServerTemplateUrl { get; }
+        public string FileServerTemplateUrlFileIdPlaceholder { get; }
+        public string ApplicationGatewayFqdn{ get; }
 
         public ConfigurationProvider(string readOnlyDbConnectionString, string writeOnlyDbConnectionString, 
                                      int retryAttempts, int retryDelay, string fileUploadConnectionString, 
-                                     string fileContainerName, string fileDownloadEndpoint, string smtpFrom)
+                                     string fileContainerName, string fileDownloadEndpoint, string smtpFrom, 
+                                     string fileServerTemplateUrl, string fileServerTemplateUrlFileIdPlaceholder,
+                                     string applicationGatewayFqdn)
         {
             if (string.IsNullOrWhiteSpace(readOnlyDbConnectionString))
             {
@@ -42,10 +47,18 @@
             {
                 throw new ArgumentNullException(nameof(fileContainerName));
             }
-
-            if (string.IsNullOrWhiteSpace(smtpFrom))
+            if (string.IsNullOrWhiteSpace(fileServerTemplateUrl))
             {
-                throw new ArgumentNullException(nameof(smtpFrom));
+                throw new ArgumentNullException(nameof(fileServerTemplateUrl));
+            }
+            if (string.IsNullOrWhiteSpace(fileServerTemplateUrlFileIdPlaceholder))
+            {
+                throw new ArgumentNullException(nameof(fileServerTemplateUrlFileIdPlaceholder));
+            }
+         
+            if (string.IsNullOrWhiteSpace(applicationGatewayFqdn))
+            {
+                throw new ArgumentNullException(nameof(applicationGatewayFqdn));
             }
 
             ReadOnlyDbConnectionString = readOnlyDbConnectionString;
@@ -56,6 +69,9 @@
             RetryAttempts = retryAttempts;
             RetryDelay = retryDelay;
             SmtpFrom = smtpFrom;
+            FileServerTemplateUrl = fileServerTemplateUrl;
+            FileServerTemplateUrlFileIdPlaceholder = fileServerTemplateUrlFileIdPlaceholder;
+            ApplicationGatewayFqdn = applicationGatewayFqdn;
         }
     }
 }

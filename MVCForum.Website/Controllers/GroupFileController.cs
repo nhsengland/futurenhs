@@ -1,4 +1,8 @@
-﻿using MvcForum.Core.Repositories.Models;
+﻿using System.Web.Http.Results;
+using MvcForum.Core.ExtensionMethods;
+using MvcForum.Core.Interfaces.Providers;
+using MvcForum.Core.Repositories.Models;
+using MvcForum.Core.Services;
 
 namespace MvcForum.Web.Controllers
 {
@@ -14,31 +18,21 @@ namespace MvcForum.Web.Controllers
     using System.Threading;
     using MvcForum.Web.ViewModels.Folder;
 
-    /// <summary>
-    /// Defines methods and routes for the GroupFIles.
-    /// </summary>
     [Authorize]
     public sealed class GroupFileController : AsyncController
     {
-        /// <summary>
-        /// Instance of the <see cref="IFileService"/>.
-        /// </summary>
+
         private readonly IFileService _fileService;
 
-        /// <summary>
-        /// Instance of the <see cref="IMembershipService"/>.
-        /// </summary>
         private readonly IMembershipService _membershipService;
 
-        /// <summary>
-        /// Instance of the <see cref="ILocalizationService"/>.
-        /// </summary>
         private readonly ILocalizationService _localizationService;
 
-        /// <summary>
-        /// Instance of the <see cref="IFolderService"/>.
-        /// </summary>
         private readonly IFolderService _folderService;
+
+        private readonly IFileServerService _fileServerService;
+
+        private readonly IConfigurationProvider _configurationProvider;
 
         /// <summary>
         /// Constructs a new instance of the <see cref="GroupFileController"/>.
@@ -47,17 +41,21 @@ namespace MvcForum.Web.Controllers
         /// <param name="membershipService"></param>
         /// <param name="folderService"></param>
         /// <param name="localizationService"></param>
-        public GroupFileController(IFileService fileService, IMembershipService membershipService, IFolderService folderService, ILocalizationService localizationService)
+        public GroupFileController(IFileService fileService, IMembershipService membershipService, IFolderService folderService, ILocalizationService localizationService, IFileServerService fileServerService, IConfigurationProvider configurationProvider)
         {
             if (fileService is null) { throw new ArgumentNullException(nameof(fileService)); }
             if (membershipService is null) { throw new ArgumentNullException(nameof(membershipService)); }
             if (folderService is null) { throw new ArgumentNullException(nameof(folderService)); }
             if (localizationService is null) { throw new ArgumentNullException(nameof(localizationService)); }
+            if (fileServerService is null) { throw new ArgumentNullException(nameof(fileServerService)); }
+            if (configurationProvider is null) { throw new ArgumentNullException(nameof(configurationProvider)); }
 
             _fileService = fileService;
             _membershipService = membershipService;
             _folderService = folderService;
             _localizationService = localizationService;
+            _fileServerService = fileServerService;
+            _configurationProvider = configurationProvider;
         }
 
         /// <summary>
@@ -72,7 +70,8 @@ namespace MvcForum.Web.Controllers
         {
             if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
 
-            if (!UserHasGroupAccess(slug))
+
+            if (!UserHasFileAccess(id))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -87,8 +86,31 @@ namespace MvcForum.Web.Controllers
                 Slug = slug,
                 Breadcrumbs = GetBreadcrumbs(dbFile.ParentFolder, slug, dbFile.Title)
             };
+
             ViewBag.HideSideBar = true;
             return View(file);
+        }
+
+        [AsyncTimeout(30000)]
+        [HandleError(ExceptionType = typeof(TimeoutException), View = "TimeoutError")]
+        [ActionName("LoadFilePreview")]
+        [HttpGet]
+        public async Task<PartialViewResult> LoadFilePreview(Guid id,string slug, CancellationToken cancellationToken)
+        {
+            if (id == Guid.Empty) throw new ArgumentOutOfRangeException(nameof(id));
+
+            if (UserHasFileAccess(id))
+            {
+                var cookies = Request.GetCookieContainer(_configurationProvider.ApplicationGatewayFqdn);
+
+                var response = await _fileServerService.GetCollaboraFileUrl(id, cookies, "view");
+                if (response != null)
+                {
+                    return PartialView("_FilePreview", response);
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -376,6 +398,17 @@ namespace MvcForum.Web.Controllers
             if (user is null) throw new ApplicationException("No user found for logged in Id");
 
             return _folderService.UserHasGroupAccessAsync(groupSlug, user.Id, CancellationToken.None).Result;
+        }
+
+        private bool UserHasFileAccess(Guid fileId)
+        {
+            if (System.Web.HttpContext.Current.User is null) throw new NullReferenceException("User not logged in");
+
+            var user = _membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+
+            if (user is null) throw new ApplicationException("No user found for logged in Id");
+
+            return _folderService.UserHasFileAccessAsync(fileId, user.Id, CancellationToken.None).Result;
         }
 
         /// <summary>

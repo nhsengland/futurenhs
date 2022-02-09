@@ -10,5 +10,8 @@
         int RetryAttempts { get; }
         int RetryDelay { get; }
         string SmtpFrom { get; }
+        string FileServerTemplateUrl { get; }
+        string FileServerTemplateUrlFileIdPlaceholder { get; }
+        string ApplicationGatewayFqdn { get; }
     }
 }

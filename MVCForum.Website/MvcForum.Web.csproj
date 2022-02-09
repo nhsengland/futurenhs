@@ -1214,6 +1214,8 @@
     <Content Include="Views\Group\Index.cshtml" />
     <Content Include="Views\Group\ListMainGroups.cshtml" />
     <Content Include="Views\Home\LatestDiscussions.cshtml" />
+    <Content Include="Views\GroupFile\_FilePreview.cshtml" />
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />
