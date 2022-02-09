@@ -8,10 +8,10 @@ const testProps: Props = {
     text: {
         body: '<p>Mock description</p>'
     },
-    errors: [{
+    errors: {
         field1: 'Mock error 1',
         field2: 'Mock error 2'
-    }],
+    },
     className: 'mock-class'
 };
 

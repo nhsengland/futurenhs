@@ -18,6 +18,7 @@ export const Form: (props: Props) => JSX.Element = ({
     fields,
     changeAction,
     submitAction,
+    submitAttemptAction,
     cancelHref,
     text,
     className,
@@ -59,12 +60,22 @@ export const Form: (props: Props) => JSX.Element = ({
             initialValues={initialValues}
             onSubmit={submitAction}
             validate={handleValidate}
-            render={({ handleSubmit, submitting }) => (
+            render={({ 
+                handleSubmit, 
+                submitting 
+            }) => (
                 
                 <form 
                     action={action} 
                     method={method}
-                    onSubmit={handleSubmit} 
+                    onSubmit={(event: any) => {
+
+                        event.preventDefault();
+
+                        submitAttemptAction?.();
+                        handleSubmit();
+
+                    }} 
                     className={generatedClasses.wrapper}>
                         <Field
                             key="_csrf"
@@ -112,7 +123,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                         cancelAction={handleDiscardDiscussionCancel}
                                         confirmAction={handleDiscardDiscussionConfirm}>
                                             <h3>Entered Data will be lost</h3>
-                                            <p className="u-text-bold">The discussion details will be discarded. Are you sure you wish to proceed?</p>
+                                            <p className="u-text-bold">Any entered details will be discarded. Are you sure you wish to proceed?</p>
                                     </Dialog>
                                 </>
                             }

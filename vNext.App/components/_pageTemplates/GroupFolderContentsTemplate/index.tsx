@@ -265,7 +265,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     {(hasAddFolderAction || hasAddFileAction) &&
                         <p className="u-mb-10">
                             {hasAddFolderAction &&
-                                <Link href={`${groupBasePath}/folders/create`}>
+                                <Link href={`${groupBasePath}/folders/create${folderId ? '?folderId=' + folderId : ''}`}>
                                     <a className="c-button c-button--outline u-mr-2 u-w-72 u-drop-shadow">{createFolder}</a>
                                 </Link>
                             }

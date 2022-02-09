@@ -64,8 +64,6 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     }
 
-    console.log(errors);
-
     return (
 
         <GroupLayout 

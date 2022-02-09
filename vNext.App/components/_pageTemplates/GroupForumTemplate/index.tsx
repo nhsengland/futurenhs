@@ -43,13 +43,13 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
         shouldIncludeParam: true
     });
 
-    const { discussionsHeading, 
-            noDiscussions, 
-            createDiscussion } = contentText ?? {};
+    const { discussionsHeading,
+        noDiscussions,
+        createDiscussion } = contentText ?? {};
 
-    const handleGetPage = async ({ 
-        pageNumber: requestedPageNumber, 
-        pageSize: requestedPageSize 
+    const handleGetPage = async ({
+        pageNumber: requestedPageNumber,
+        pageSize: requestedPageSize
     }) => {
 
         try {
@@ -63,14 +63,14 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                 }
             });
 
-            if(!errors || !Object.keys(errors).length){
+            if (!errors || !Object.keys(errors).length) {
 
                 setDiscussionsList([...dynamicDiscussionsList, ...additionalDiscussions]);
                 setPagination(pagination);
 
             }
 
-        } catch(error){
+        } catch (error) {
 
             console.log(error);
 
@@ -80,31 +80,32 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <GroupLayout 
+        <GroupLayout
             id="forum"
             user={user}
             actions={actions}
             text={entityText}
-            image={image} 
+            image={image}
             className="u-bg-theme-3">
-                <LayoutColumn tablet={8} className="c-page-body">
-                    <h2>{discussionsHeading}</h2>
-                    <AriaLiveRegion>
-                        {hasDiscussions 
-                        
-                            ?   <DynamicListContainer>
-                                    {dynamicDiscussionsList?.map?.(({ 
-                                        text, 
-                                        discussionId, 
-                                        viewCount, 
+                <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
+                    <LayoutColumn tablet={8} className="c-page-body">
+                        <h2>{discussionsHeading}</h2>
+                        <AriaLiveRegion>
+                            {hasDiscussions
+
+                                ? <DynamicListContainer>
+                                    {dynamicDiscussionsList?.map?.(({
+                                        text,
+                                        discussionId,
+                                        viewCount,
                                         responseCount,
                                         created,
                                         createdBy,
                                         modified,
                                         modifiedBy,
-                                        isSticky 
+                                        isSticky
                                     }, index) => {
-            
+
                                         const { title } = text ?? {};
                                         const creatorUserInitials: string = initials({ value: createdBy.text.userName });
                                         const creatorUserName: string = createdBy.text.userName;
@@ -112,9 +113,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                         const createdDate: string = dateTime({ value: created });
                                         const lastCommentUserName: string = modifiedBy.text.userName;
                                         const lastCommentDate: string = dateTime({ value: modified });
-            
+
                                         return (
-            
+
                                             <Card key={index} className="u-border-bottom-theme-10 u-mb-4">
                                                 <h3 className="c-card_heading desktop:u-mb-4">
                                                     <Link href={`${router.asPath}/${discussionId}`}>
@@ -122,7 +123,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                             {isSticky && <span className="u-sr-only">Sticky: </span>}
                                                             {title}
                                                         </a>
-                                                    </Link>        
+                                                    </Link>
                                                 </h3>
                                                 <UserMeta
                                                     image={null}
@@ -130,10 +131,10 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                         initials: creatorUserInitials
                                                     }}
                                                     className="u-text-theme-7">
-                                                        <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
-                                                        {responseCount > 0 &&
-                                                            <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
-                                                        }
+                                                    <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
+                                                    {responseCount > 0 &&
+                                                        <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
+                                                    }
                                                 </UserMeta>
                                                 <div className="c-card_footer u-text-theme-0">
                                                     <p className="c-card_footer-item">
@@ -149,29 +150,30 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                     }
                                                 </div>
                                             </Card>
-            
+
                                         )
-            
+
                                     })}
                                 </DynamicListContainer>
-                                
-                            :   <p>{noDiscussions}</p>
-                    
+
+                                : <p>{noDiscussions}</p>
+
+                            }
+                        </AriaLiveRegion>
+                        <PaginationWithStatus
+                            id="group-list-pagination"
+                            shouldEnableLoadMore={true}
+                            getPageAction={handleGetPage}
+                            {...dynamicPagination} />
+                    </LayoutColumn>
+                    <LayoutColumn tablet={4} className="c-page-body">
+                        {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
+                            <Link href={`${router.asPath}/create`}>
+                                <a className="c-button u-w-full">{createDiscussion}</a>
+                            </Link>
                         }
-                    </AriaLiveRegion>
-                    <PaginationWithStatus 
-                        id="group-list-pagination"
-                        shouldEnableLoadMore={true}
-                        getPageAction={handleGetPage}
-                        {...dynamicPagination} />                
-                </LayoutColumn>
-                <LayoutColumn tablet={4} className="c-page-body">
-                    {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
-                        <Link href={`${router.asPath}/create`}>
-                            <a className="c-button u-w-full">{createDiscussion}</a>
-                        </Link>
-                    }
-                </LayoutColumn>
+                    </LayoutColumn>
+                </div>
         </GroupLayout>
 
     )

@@ -39,10 +39,7 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                 if(!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)){
 
                     return {
-                        redirect: {
-                            permanent: false,
-                            destination: '/'
-                        }
+                        notFound: true
                     }
 
                 }

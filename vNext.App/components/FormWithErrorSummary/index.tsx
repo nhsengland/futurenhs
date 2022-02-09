@@ -26,27 +26,24 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     const [validationErrors, setValidationErrors] = useState(errors ? errors : {});
     const relatedNames: Array<string> = fields?.map(({ name }) => name);
 
-    const handleChange = useCallback(({ errors, submitErrors, submitFailed, modifiedSinceLastSubmit }): any => {
+    const handleChange = useCallback(({ errors, submitErrors, submitFailed }): any => {
 
         const hasErrors: boolean = errors && Object.keys(errors).length > 0;
-        const hasSubmitErrors: boolean = submitErrors && Object.keys(submitErrors).length > 0;
+        const errorsToUse: Record<string, string> = submitFailed ? hasErrors ? errors : submitErrors : {};
 
-        setTimeout(() => {
-
-            const errorsToUse: Record<string, string> = submitFailed ? hasErrors ? errors : submitErrors : {};
-            const shouldFocusSummary: boolean = submitFailed && modifiedSinceLastSubmit && (hasErrors || hasSubmitErrors);
-
-            setValidationErrors(errorsToUse);
-
-            if(shouldFocusSummary){
-
-                //errorSummaryRef.current?.focus();
-
-            }
-
-        }, 0);
+        setTimeout(() => setValidationErrors(errorsToUse), 0);
 
     }, [errors]);
+
+    const handleSubmitAttempt = () => {
+
+        if(validationErrors){
+
+            errorSummaryRef?.current?.focus();
+
+        }
+
+    };
 
     const { errorSummary: errorSummaryText, form: formText } = text ?? {};
 
@@ -57,6 +54,8 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     useEffect(() => {
 
         setValidationErrors(errors);
+
+        errorSummaryRef.current?.focus();
 
     }, [errors]);
 
@@ -82,6 +81,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 submitButtonClassName={submitButtonClassName}
                 cancelHref={cancelHref}
                 changeAction={handleChange}
+                submitAttemptAction={handleSubmitAttempt}
                 submitAction={submitAction} />
         </>
         

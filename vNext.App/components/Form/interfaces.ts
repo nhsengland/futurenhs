@@ -11,6 +11,7 @@ export interface Props {
     action?: string;
     method?: string;
     submitAction: any;
+    submitAttemptAction?: any;
     changeAction?: any;
     cancelHref?: string;
     className?: string;
