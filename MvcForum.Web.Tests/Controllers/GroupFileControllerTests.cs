@@ -1,3 +1,4 @@
+
 ﻿using MvcForum.Core.Interfaces.Providers;
 
 namespace MvcForum.Web.Tests.Controllers
@@ -111,10 +112,11 @@ namespace MvcForum.Web.Tests.Controllers
             _membershipService = new Mock<IMembershipService>();
             _folderService = new Mock<IFolderService>();
             _localizationService = new Mock<ILocalizationService>();
+
             _fileServerService = new Mock<IFileServerService>();
             _configurationProvider = new Mock<IConfigurationProvider>();
 
-        _postedFile = new Mock<HttpPostedFileBase>();
+             _postedFile = new Mock<HttpPostedFileBase>();
 
             _groupFileController = new GroupFileController(_fileService.Object, _membershipService.Object, _folderService.Object, _localizationService.Object, _fileServerService.Object, _configurationProvider.Object);
 
