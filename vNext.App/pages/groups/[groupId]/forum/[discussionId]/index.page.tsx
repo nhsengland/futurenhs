@@ -7,14 +7,14 @@ import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
+import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
-import { selectUser, selectParam, selectProps, selectPagination, selectCsrfToken } from '@selectors/context';
+import { selectUser, selectParam, selectProps, selectPagination, selectCsrfToken, selectBody } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
 
 import { createDiscussionCommentForm } from '@formConfigs/create-discussion-comment';
-
 import { GroupDiscussionTemplate } from '@components/_pageTemplates/GroupDiscussionTemplate';
 import { Props } from '@components/_pageTemplates/GroupDiscussionTemplate/interfaces';
 
@@ -35,8 +35,43 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 const discussionId: string = selectParam(context, routeParams.DISCUSSIONID);
                 const pagination: Pagination = selectPagination(context);
                 const csrfToken: string = selectCsrfToken(context);
+                const formPost: any = selectBody(context);
 
                 let props: Props = selectProps(context);
+
+                if(formPost){
+
+                    try {
+
+                        const submission = await postGroupDiscussionComment({
+                            groupId: groupId,
+                            discussionId: discussionId,
+                            user: user,
+                            csrfToken: csrfToken,
+                            body: {
+                                formId: createDiscussionCommentForm.id,
+                                ...formPost
+                            }
+                        });
+
+                    } catch(error){
+
+                        if(error.data?.status === 400){
+
+                            props.forms[createDiscussionCommentForm.id].errors = error.data.body;
+                            props.forms[createDiscussionCommentForm.id].initialValues = formPost;
+
+                        } else {
+
+                            props.forms[createDiscussionCommentForm.id].errors = {
+                                [error.data.status]: error.data.statusText
+                            };
+
+                        }
+
+                    }
+
+                }
 
                 /**
                  * Get data from services

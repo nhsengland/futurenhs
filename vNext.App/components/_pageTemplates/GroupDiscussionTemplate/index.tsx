@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
+import { selectFormErrors } from '@selectors/forms';
 import { actions as actionsConstants } from '@constants/actions';
 import { formTypes } from '@constants/forms';
 import { dateTime } from '@helpers/formatters/dateTime';
@@ -43,6 +45,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
+    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_DISCUSSION));
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(discussionCommentsList);
     const [dynamicPagination, setPagination] = useState(pagination);
 
@@ -79,6 +82,31 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const lastCommentUserName: string = modifiedBy?.text?.userName;
     const lastCommentDate: string = dateTime({ value: modified });
     const createCommentfields = forms?.[formTypes.CREATE_DISCUSSION_COMMENT]?.steps[0]?.fields;
+
+    const handleSubmit = async (submission) => {
+
+        try {
+
+            const response = await postGroupDiscussionComment({
+                groupId: groupId,
+                discussionId: discussionId,
+                user: user,
+                csrfToken: csrfToken,
+                body: {
+                    formId: formTypes.CREATE_DISCUSSION,
+                    ...submission
+                }
+            });
+
+        } catch(error){
+
+            setErrors({
+                [error.data.status]: error.data.statusText
+            });
+
+        }
+
+    };
 
     const handleGetPage = async ({
         pageNumber: requestedPageNumber,
@@ -295,7 +323,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         ?   <FormWithErrorSummary
                                 csrfToken={csrfToken}
                                 fields={createCommentfields}
-                                errors={{}}
+                                errors={errors}
                                 text={{
                                     errorSummary: {
                                         body: 'There is a problem'
@@ -304,7 +332,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                         submitButton: 'Add comment'
                                     }
                                 }}
-                                submitAction={() => { }}>
+                                submitAction={handleSubmit}>
                                     {renderBody()}
                             </FormWithErrorSummary>
 
