@@ -3,7 +3,7 @@ const
     gulp = require('gulp'),
     path = require("path"),
     svgSprite = require('gulp-svg-sprites'),
-    favicons = require('gulp-favicons'),
+    // favicons = require('gulp-favicons'),
     childProcess = require('child_process');
 
 const getRootPath = () => process.cwd().includes('vNext.App') ? '' : 'vNext.App';
@@ -37,40 +37,15 @@ const tinyMce = () => {
 
 };
 
-// Generate favicon set
+// Copy favicons to dist folder
 const favicon = () => {
 
-    const faviconPath = getUiPath() ? `${getUiPath()}/favicon/logo.png` : `./favicon/logo.png`
+    return gulp
+        .src(`${getUiPath()}/favicon/**/*`)
+        .pipe(gulp.dest(`${getUiAssetsDistPath()}/favicon`))
 
-    return gulp.src(faviconPath)
-        .pipe(favicons({
-            appName: 'Future NHS',
-            appDescription: '',
-            developerName: '',
-            developerURL: '',
-            background: '#fff',
-            theme_color: '#fff',
-            path: '',
-            url: '/',
-            display: 'standalone',
-            orientation: 'any',
-            start_url: '/',
-            version: 1.0,
-            logging: false,
-            html: 'index.html',
-            pipeHTML: true,
-            replace: true,
-            icons : {
-                appleStartup: false,
-                firefox: false,
-                windows: false,
-                yandex: false,
-                coast: false
-            }
-        }))
-        .pipe(gulp.dest(`${getUiAssetsDistPath()}/favicon`));
+}
 
-};
 
 // Generate svg 'sprite'
 const icons = () => {
