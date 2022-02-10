@@ -633,7 +633,7 @@
                     return Redirect(Request["ReturnUrl"]);
                 }
 
-                return RedirectToAction("Index", "Group");
+                return Redirect("~");
             }
 
             var viewModel = new LogOnViewModel();
