@@ -1,3 +1,5 @@
+export * as services from './';
+
 declare interface ServiceErrorData {
     status: number;
     statusText: string;
@@ -15,7 +17,7 @@ export class ServiceError extends Error {
     constructor(message: string, data: ServiceErrorData) {
 
         super(message);
-        this.name = "ServiceError";
+        this.name = 'ServiceError';
         this.data = data;
 
     }

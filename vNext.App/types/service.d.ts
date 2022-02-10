@@ -18,7 +18,7 @@ export interface ServicePaginatedResponse<T> {
     message?: string;
 }
 
-export type ApiResponse<T> = any; // confirm with Tim
+export type ApiResponse<T> = any;
 
 export interface ApiPaginatedResponse<T> extends ApiPagination {
     data?: T;
@@ -26,4 +26,6 @@ export interface ApiPaginatedResponse<T> extends ApiPagination {
     succeeded?: boolean;
     message?: string;
 }
+
+export type Service = (config: any, dependencies?: any) => Promise<Partial<ServicePaginatedResponse<T>>>;
  

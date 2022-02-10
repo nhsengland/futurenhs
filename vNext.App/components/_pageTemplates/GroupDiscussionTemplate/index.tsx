@@ -28,6 +28,9 @@ import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';
 
+/**
+ * Group discussion template
+ */
 export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     groupId,
     discussionId,
@@ -40,7 +43,11 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     discussion,
     discussionCommentsList,
     pagination,
-    forms
+    forms,
+    services = {
+        getGroupDiscussionComments: getGroupDiscussionComments,
+        postGroupDiscussionComment: postGroupDiscussionComment
+    }
 }) => {
 
     const router = useRouter();
@@ -83,11 +90,14 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const lastCommentDate: string = dateTime({ value: modified });
     const createCommentfields = forms?.[formTypes.CREATE_DISCUSSION_COMMENT]?.steps[0]?.fields;
 
+    /**
+     * Handle client-side submission
+     */
     const handleSubmit = async (submission) => {
 
         try {
 
-            const response = await postGroupDiscussionComment({
+            const response = await services.postGroupDiscussionComment({
                 groupId: groupId,
                 discussionId: discussionId,
                 user: user,
@@ -108,6 +118,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     };
 
+    /**
+     * Handle client-side pagination
+     */
     const handleGetPage = async ({
         pageNumber: requestedPageNumber,
         pageSize: requestedPageSize
@@ -115,7 +128,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         try {
 
-            const { data: additionalComments, pagination, errors } = await getGroupDiscussionComments({
+            const { data: additionalComments, pagination } = await services.getGroupDiscussionComments({
                 user: user,
                 groupId: groupId,
                 discussionId: discussionId,
@@ -125,12 +138,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 }
             });
 
-            if (!errors || !Object.keys(errors).length) {
-
-                setDiscussionsList([...dynamicDiscussionCommentsList, ...additionalComments]);
-                setPagination(pagination);
-
-            }
+            setDiscussionsList([...dynamicDiscussionCommentsList, ...additionalComments]);
+            setPagination(pagination);
 
         } catch (error) {
 
@@ -140,6 +149,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     };
 
+    /**
+     * Render main body
+     */
     const renderBody = () => {
 
         return (
@@ -256,18 +268,15 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         getPageAction={handleGetPage}
                         {...dynamicPagination} />
                 </ErrorBoundary>
-                {user &&
-                    <>
-                        <h3 className="u-text-3xl">Join in the conversation</h3>
-                        <p className="u-text-bold">You're signed in <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
-                    </>
-                }
             </>
 
         )
 
     }
 
+    /**
+     * Render replies to individual comments
+     */
     const renderReplies = ({ replies }) => {
 
         return replies?.map(({
@@ -307,6 +316,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         })
     };
 
+    /**
+     * Render
+     */
     return (
 
         <GroupLayout
@@ -334,6 +346,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 }}
                                 submitAction={handleSubmit}>
                                     {renderBody()}
+                                    <h3 className="u-text-3xl">Join in the conversation</h3>
+                                    <p className="u-text-bold">You're signed in <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
                             </FormWithErrorSummary>
 
                         :   renderBody()

@@ -24,7 +24,10 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     actions,
     contentText,
     entityText,
-    image
+    image,
+    services = {
+        postGroupDiscussion: postGroupDiscussion
+    }
 }) => {
 
     const router = useRouter();
@@ -40,11 +43,15 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     });
 
     const cancelHref: string = `${groupBasePath}/forum`;
+
+    /**
+     * Client-side submission handler
+     */
     const handleSubmit = async (submission) => {
 
         try {
 
-            const response = await postGroupDiscussion({
+            const response = await services.postGroupDiscussion({
                 groupId: groupId,
                 user: user,
                 csrfToken: csrfToken,
@@ -62,8 +69,11 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         }
 
-    }
+    };
 
+    /**
+     * Render
+     */
     return (
 
         <GroupLayout 

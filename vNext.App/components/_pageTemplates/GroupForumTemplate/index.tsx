@@ -19,6 +19,9 @@ import { getGroupDiscussions } from '@services/getGroupDiscussions';
 
 import { Props } from './interfaces';
 
+/**
+ * Group forum discussion listing template
+ */
 export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     groupId,
     user,
@@ -45,9 +48,12 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     });
 
     const { discussionsHeading,
-        noDiscussions,
-        createDiscussion } = contentText ?? {};
+            noDiscussions,
+            createDiscussion } = contentText ?? {};
 
+    /**
+     * Client-side list pagination
+     */
     const handleGetPage = async ({
         pageNumber: requestedPageNumber,
         pageSize: requestedPageSize
@@ -55,7 +61,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
         try {
 
-            const { data: additionalDiscussions, pagination, errors } = await getGroupDiscussions({
+            const { data: additionalDiscussions, pagination } = await getGroupDiscussions({
                 user: user,
                 groupId: groupId,
                 pagination: {
@@ -64,12 +70,8 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                 }
             });
 
-            if (!errors || !Object.keys(errors).length) {
-
-                setDiscussionsList([...dynamicDiscussionsList, ...additionalDiscussions]);
-                setPagination(pagination);
-
-            }
+            setDiscussionsList([...dynamicDiscussionsList, ...additionalDiscussions]);
+            setPagination(pagination);
 
         } catch (error) {
 
@@ -79,6 +81,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
     };
 
+    /**
+     * Render
+     */
     return (
 
         <GroupLayout

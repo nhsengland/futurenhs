@@ -1,6 +1,6 @@
 import { setPostFetchOpts as setPostFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { ServiceError } from '..';
-import { ServiceResponse } from '@appTypes/service';
+import { Service, ServiceResponse } from '@appTypes/service';
 import { FetchResponse } from '@appTypes/fetch';
 import { User } from '@appTypes/user';
 
@@ -22,7 +22,10 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const postGroupDiscussionComment = async ({
+/**
+ * Posts a new group discussion comment
+ */
+export const postGroupDiscussionComment: Service = async ({
     groupId,
     discussionId,
     user,
