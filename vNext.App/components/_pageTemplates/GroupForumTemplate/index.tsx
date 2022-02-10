@@ -120,8 +120,8 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
                                             return (
 
-                                                <li>
-                                                    <Card key={index} className="u-border-bottom-theme-10 u-mb-4">
+                                                <li key={index}>
+                                                    <Card className="u-border-bottom-theme-10 u-mb-4">
                                                         <h3 className="c-card_heading desktop:u-mb-4">
                                                             <Link href={`${router.asPath}/${discussionId}`}>
                                                                 <a>

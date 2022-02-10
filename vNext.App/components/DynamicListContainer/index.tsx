@@ -75,9 +75,11 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
 
     return (
 
-        <Container ref={containerRef} className={generatedClasses.wrapper}>
-            {children}
-        </Container>
+        <>
+            <Container ref={containerRef} className={generatedClasses.wrapper}>
+                {children}
+            </Container>
+        </>
 
     );
 
