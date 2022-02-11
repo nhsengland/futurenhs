@@ -1,7 +1,7 @@
 ﻿CREATE proc [dbo].[sp_MSforeachtable]
 	@command1 nvarchar(2000), @replacechar nchar(1) = N'?', @command2 nvarchar(2000) = null,
   @command3 nvarchar(2000) = null, @whereand nvarchar(2000) = null,
-	@precommand nvarchar(2000) = null, @Commentcommand nvarchar(2000) = null
+	@precommand nvarchar(2000) = null, @postcommmand nvarchar(2000) = null
 AS
 	declare @mscat nvarchar(12)
 	select @mscat = ltrim(str(convert(int, 0x0002)))
@@ -14,8 +14,8 @@ AS
 	select @retval = @@error
 	if (@retval = 0)
 		exec @retval = dbo.sp_MSforeach_worker @command1, @replacechar, @command2, @command3, 0
-	if (@retval = 0 and @Commentcommand is not null)
-		exec(@Commentcommand)
+	if (@retval = 0 and @postcommmand is not null)
+		exec(@postcommmand)
 	return @retval
 GO
 
