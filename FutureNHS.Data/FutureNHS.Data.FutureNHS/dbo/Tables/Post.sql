@@ -1,30 +1,31 @@
-﻿CREATE TABLE [dbo].[Post] (
+﻿CREATE TABLE [dbo].[Comment] (
     [Id]                 UNIQUEIDENTIFIER NOT NULL,
-    [PostContent]        NVARCHAR (MAX)   NOT NULL,
-    [DateCreated]        DATETIME         NOT NULL,
-    [VoteCount]          INT              NOT NULL,
-    [DateEdited]         DATETIME         NOT NULL,
-    [IsSolution]         BIT              NOT NULL,
-    [IsTopicStarter]     BIT              NULL,
+    [Content]        NVARCHAR (MAX)   NOT NULL,
+    [CreatedAtUTC]        DATETIME2         NOT NULL,
+    [LikeCount]          INT              NOT NULL,
+    [ModifiedAtUTC]         DATETIME2         NOT NULL,
+    [IsDiscussionStarter]     BIT              NULL,
     [FlaggedAsSpam]      BIT              NULL,
-    [Pending]            BIT              NULL,
     [InReplyTo]          UNIQUEIDENTIFIER NULL,
-    [ExtendedDataString] NVARCHAR (MAX)   NULL,
-    [Topic_Id]           UNIQUEIDENTIFIER NOT NULL,
-    [MembershipUser_Id]  UNIQUEIDENTIFIER NOT NULL,
+    [Discussion_Id]           UNIQUEIDENTIFIER NOT NULL,
+    [CreatedBy]  UNIQUEIDENTIFIER NOT NULL,
     [ThreadId]           UNIQUEIDENTIFIER NULL,
-    CONSTRAINT [PK_dbo.Post] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_dbo.Post_dbo.MembershipUser_MembershipUser_Id] FOREIGN KEY ([MembershipUser_Id]) REFERENCES [dbo].[MembershipUser] ([Id]),
-    CONSTRAINT [FK_dbo.Post_dbo.Topic_Topic_Id] FOREIGN KEY ([Topic_Id]) REFERENCES [dbo].[Topic] ([Id])
+    [ModifiedBy] UNIQUEIDENTIFIER NULL, 
+    [IsDeleted] BIT  DEFAULT ((0)) NOT NULL, 
+    [RowVersion] ROWVERSION NOT NULL, 
+    CONSTRAINT [PK_dbo.Comment] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_dbo.Comment_dbo.MembershipUser_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[MembershipUser] ([Id]),
+    CONSTRAINT [FK_dbo.Comment_dbo.Discussion_Discussion_Id] FOREIGN KEY ([Discussion_Id]) REFERENCES [dbo].[Discussion] ([Id]),
+    CONSTRAINT [FK_dbo.Comment_dbo.MembershipUser_ModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [dbo].[MembershipUser] ([Id]),
 );
 
 
 GO
 CREATE NONCLUSTERED INDEX [IX_MembershipUser_Id]
-    ON [dbo].[Post]([MembershipUser_Id] ASC);
+    ON [dbo].[Comment]([CreatedBy] ASC);
 
 
 GO
-CREATE NONCLUSTERED INDEX [IX_Topic_Id]
-    ON [dbo].[Post]([Topic_Id] ASC);
+CREATE NONCLUSTERED INDEX [IX_Discussion_Id]
+    ON [dbo].[Comment]([Discussion_Id] ASC);
 

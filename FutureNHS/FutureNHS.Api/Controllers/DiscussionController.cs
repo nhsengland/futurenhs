@@ -1,4 +1,5 @@
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using FutureNHS.Api.Models.Discussion;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -13,6 +14,7 @@ namespace FutureNHS.Api.Controllers
     {
         private readonly ILogger<DiscussionController> _logger;
         private readonly IDiscussionDataProvider _discussionDataProvider;
+
         private readonly IPermissionsService _permissionsService;
 
         public DiscussionController(ILogger<DiscussionController> logger, IDiscussionDataProvider discussionDataProvider, IPermissionsService permissionsService)
@@ -43,6 +45,21 @@ namespace FutureNHS.Api.Controllers
         public async Task<IActionResult> GetDiscussionAsync(Guid? userId, string slug, Guid id, CancellationToken cancellationToken)
         {
            var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
+
+            if (discussion is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(discussion);
+        }
+
+        [HttpPost]
+        [Route("users/{userId}/groups/{slug}/discussions")]
+
+        public async Task<IActionResult> CreateDiscussionAsync(Discussion discussion, CancellationToken cancellationToken)
+        {
+            var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
 
             if (discussion is null)
             {

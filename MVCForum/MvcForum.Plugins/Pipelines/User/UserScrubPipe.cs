@@ -62,12 +62,6 @@
 
             try
             {
-                // PROFILE
-                input.EntityToProcess.Website = string.Empty;
-                input.EntityToProcess.Twitter = string.Empty;
-                input.EntityToProcess.Facebook = string.Empty;
-                input.EntityToProcess.Avatar = string.Empty;
-                input.EntityToProcess.Signature = string.Empty;
 
                 // Delete all topics
                 var topics = input.EntityToProcess.Topics;

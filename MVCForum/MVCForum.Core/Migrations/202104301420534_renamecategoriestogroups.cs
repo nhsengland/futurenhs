@@ -344,7 +344,7 @@ namespace MvcForum.Core.Services.Migrations
                         ManuallyAuthoriseNewMembers = c.Boolean(),
                         NewMemberEmailConfirmation = c.Boolean(),
                         EmailAdminOnNewMemberSignUp = c.Boolean(),
-                        TopicsPerPage = c.Int(),
+                        DiscussionsPerPage = c.Int(),
                         PostsPerPage = c.Int(),
                         ActivitiesPerPage = c.Int(),
                         EnablePrivateMessages = c.Boolean(),

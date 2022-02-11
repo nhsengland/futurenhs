@@ -247,7 +247,7 @@
 
                         // create the emails and only send them to people who have not had notifications disabled
                         var emails = users
-                            .Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true).Select(
+                            .Where(x => !x.IsLockedOut && x.IsBanned != true).Select(
                                 user => new Email
                                 {
                                     Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),

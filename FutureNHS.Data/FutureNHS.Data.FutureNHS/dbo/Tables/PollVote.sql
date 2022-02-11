@@ -2,6 +2,8 @@
     [Id]                UNIQUEIDENTIFIER NOT NULL,
     [PollAnswer_Id]     UNIQUEIDENTIFIER NOT NULL,
     [MembershipUser_Id] UNIQUEIDENTIFIER NOT NULL,
+    [RowVersion] ROWVERSION NOT NULL, 
+    [CreatedAtUTC] DATETIME2 NOT NULL, 
     CONSTRAINT [PK_dbo.PollVote] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.PollVote_dbo.MembershipUser_MembershipUser_Id] FOREIGN KEY ([MembershipUser_Id]) REFERENCES [dbo].[MembershipUser] ([Id]),
     CONSTRAINT [FK_dbo.PollVote_dbo.PollAnswer_PollAnswer_Id] FOREIGN KEY ([PollAnswer_Id]) REFERENCES [dbo].[PollAnswer] ([Id])

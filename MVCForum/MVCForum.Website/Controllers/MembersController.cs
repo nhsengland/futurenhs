@@ -238,7 +238,7 @@
             {
                 var rightNow = DateTime.UtcNow;
                 var currentUser = MembershipService.GetUser(User.Identity.Name, true);
-                var usersDate = currentUser.LastActivityDate ?? DateTime.UtcNow.AddDays(-1);
+                var usersDate = currentUser.LastActivityDateUTC ?? DateTime.UtcNow.AddDays(-1);
 
                 var span = rightNow.Subtract(usersDate);
                 var totalMins = span.TotalMinutes;
@@ -249,7 +249,7 @@
                     var loggedOnUser = MembershipService.GetUser(User.Identity.Name);
 
                     // Update users last activity date so we can show the latest users online
-                    loggedOnUser.LastActivityDate = DateTime.UtcNow;
+                    loggedOnUser.LastActivityDateUTC = DateTime.UtcNow;
 
                     // Update
                     try
@@ -310,7 +310,6 @@
                     Surname = user.Surname,
                     Password = user.Password,
                     IsApproved = user.IsApproved,
-                    Comment = user.Comment,
                     AllRoles = RoleService.AllRoles()
                 };
 
@@ -507,11 +506,7 @@
                 // Get the user from the username
                 var user = MembershipService.GetUser(username);
 
-                // As this is a resend, they must have the extendeddata entry
-                var registrationGuid =
-                    user.GetExtendedDataItem(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
-
-                if (user != null && !string.IsNullOrWhiteSpace(registrationGuid))
+                if (user != null && !string.IsNullOrWhiteSpace(user.Id.ToString()))
                 {
                     // get the site settings
                     var siteSettings = SettingsService.GetSettings();
@@ -562,17 +557,13 @@
             if (user != null)
             {
                 // Ok, now to check the Guid key
-                var registrationGuid =
-                    user.GetExtendedDataItem(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+                var registrationGuid =  user.Id.ToString();
 
                 var everythingOk = !string.IsNullOrWhiteSpace(registrationGuid) && Guid.Parse(registrationGuid) == key;
                 if (everythingOk)
                 {
                     // Set the user to active
                     user.IsApproved = true;
-
-                    // Remove the registration key
-                    user.RemoveExtendedDataItem(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
 
                     // Remove the cookie
                     var myCookie =
@@ -880,7 +871,6 @@
 
             }
 
-            userModel.Avatar = dbUser.Avatar;
             userModel.Initials = dbUser.Initials;
             userModel.Email = dbUser.Email;
             return View(userModel);
@@ -904,8 +894,7 @@
                 moderateCount = pendingTopics.Count + pendingPosts.Count;
             }
 
-            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&
-                             LoggedOnReadOnlyUser.DisablePrivateMessages != true;
+            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null;
             var viewModel = new ViewAdminSidePanelViewModel
             {
                 CurrentUser = LoggedOnReadOnlyUser,
@@ -1029,7 +1018,7 @@
             {
                 UserName = user.UserName,
                 NiceUrl = user.NiceUrl,
-                CreateDate = user.CreateDate,
+                CreateDate = user.CreatedAtUTC,
                 TotalPoints = user.TotalPoints
             }).ToList();
 

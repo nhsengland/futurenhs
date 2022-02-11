@@ -21,7 +21,7 @@
             Property(x => x.EnableEmailSubscriptions).IsOptional();
             Property(x => x.ManuallyAuthoriseNewMembers).IsOptional();
             Property(x => x.EmailAdminOnNewMemberSignUp).IsOptional();
-            Property(x => x.TopicsPerPage).IsOptional();
+            Property(x => x.DiscussionsPerPage).IsOptional();
             Property(x => x.PostsPerPage).IsOptional();
             Property(x => x.EnablePrivateMessages).IsOptional();
             Property(x => x.MaxPrivateMessagesPerMember).IsOptional();

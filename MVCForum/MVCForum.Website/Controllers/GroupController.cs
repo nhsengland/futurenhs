@@ -464,7 +464,7 @@ namespace MvcForum.Web.Controllers
                 if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName || group.PublicGroup)
                 {
                     topics = _topicService.GetPagedTopicsByGroup(pageIndex,
-                        SettingsService.GetSettings().TopicsPerPage,
+                        SettingsService.GetSettings().DiscussionsPerPage,
                         int.MaxValue, group.Id);
 
                     if (!allowedGroups.Contains(group))
@@ -523,7 +523,7 @@ namespace MvcForum.Web.Controllers
                 if (loggedOnUsersRole.RoleName != MvcForum.Core.Constants.Constants.GuestRoleName || group.PublicGroup)
                 {
                     var topics = _topicService.GetPagedTopicsByGroup(pageIndex,
-                        SettingsService.GetSettings().TopicsPerPage,
+                        SettingsService.GetSettings().DiscussionsPerPage,
                         int.MaxValue, @group.Id);
 
                     if (!allowedGroups.Contains(group))
@@ -650,7 +650,7 @@ namespace MvcForum.Web.Controllers
 
                 PageIndex = pageIndex,
                 TotalCount = group.GroupUsers.Count,
-                TotalPages = (int)Math.Ceiling(group.GroupUsers.Count / (double)SettingsService.GetSettings().TopicsPerPage),
+                TotalPages = (int)Math.Ceiling(group.GroupUsers.Count / (double)SettingsService.GetSettings().DiscussionsPerPage),
                 GroupUsers = groupUsers.Where(x => x.GroupUserStatus != GroupUserStatus.Pending && 
                                                    x.GroupUserStatus != GroupUserStatus.Rejected &&
                                                    x.GroupUser.Role.RoleName != Constants.AdminRoleName).ToList()

@@ -280,7 +280,7 @@
                 {
                     Name = member.UserName,
                     Url = member.NiceUrl,
-                    LastUpdated = member.CreateDate,
+                    LastUpdated = member.CreatedAtUTC,
                     ChangeFrequency = SiteMapChangeFreqency.Weekly,
                     Priority = "0.4"
                 };

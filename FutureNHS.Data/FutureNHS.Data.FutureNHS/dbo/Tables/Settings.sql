@@ -16,7 +16,7 @@
     [ManuallyAuthoriseNewMembers]     BIT              NULL,
     [NewMemberEmailConfirmation]      BIT              NULL,
     [EmailAdminOnNewMemberSignUp]     BIT              NULL,
-    [TopicsPerPage]                   INT              NULL,
+    [DiscussionsPerPage]                   INT              NULL,
     [PostsPerPage]                    INT              NULL,
     [ActivitiesPerPage]               INT              NULL,
     [EnablePrivateMessages]           BIT              NULL,
@@ -56,6 +56,8 @@
     [ExtendedDataString]              NVARCHAR (MAX)   NULL,
     [DefaultLanguage_Id]              UNIQUEIDENTIFIER NOT NULL,
     [NewMemberStartingRole]           UNIQUEIDENTIFIER NOT NULL,
+    [IsDeleted] BIT  DEFAULT ((0)) NOT NULL, 
+    [RowVersion] ROWVERSION NOT NULL, 
     CONSTRAINT [PK_dbo.Settings] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Settings_dbo.Language_DefaultLanguage_Id] FOREIGN KEY ([DefaultLanguage_Id]) REFERENCES [dbo].[Language] ([Id]),
     CONSTRAINT [FK_dbo.Settings_dbo.MembershipRole_NewMemberStartingRole] FOREIGN KEY ([NewMemberStartingRole]) REFERENCES [dbo].[MembershipRole] ([Id])

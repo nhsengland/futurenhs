@@ -57,8 +57,7 @@
                         // Get the permissions for this Group, and check they are allowed to update and 
                         // not trying to be a sneaky mofo
                         var permissions = RoleService.GetPermissions(Group, loggedOnUsersRole);
-                        if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked == false ||
-                            LoggedOnReadOnlyUser.DisableFileUploads == true)
+                        if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked == false)
                         {
                             TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                             {

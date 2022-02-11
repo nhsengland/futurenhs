@@ -48,7 +48,7 @@
                 </button>
 
                 <noscript>
-                    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, Convert.ToInt32(Model.TotalCount), null)
+                    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().DiscussionsPerPage, Convert.ToInt32(Model.TotalCount), null)
                 </noscript>
             }
 

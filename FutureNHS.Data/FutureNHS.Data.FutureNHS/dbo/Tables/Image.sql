@@ -5,7 +5,8 @@
     [Height]        INT              NOT NULL,
     [Width]         INT              NOT NULL,
     [MediaType]     NVARCHAR (10)    NOT NULL,
-    [IsDeleted]     BIT              NOT NULL,
+    [IsDeleted]     BIT  DEFAULT ((0)) NOT NULL, 
+    [RowVersion]    ROWVERSION NOT NULL, 
     CONSTRAINT [PK_dbo.Image] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

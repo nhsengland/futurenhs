@@ -71,18 +71,12 @@
                             return input;
                         }
 
-                        // Set the existing image for removing the file later, i.e. delete old image if there is one
-                        existingImage = input.EntityToProcess.Avatar;
-
-                        // Save avatar
-                        input.EntityToProcess.Avatar = uploadResult.UploadedFileName;
                     }
                 }
 
-                if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.ImageToRemove) && input.ExtendedData[Constants.ExtendedDataKeys.ImageToRemove] is string imageToRemove && imageToRemove == input.EntityToProcess.Avatar)
+                if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.ImageToRemove) && input.ExtendedData[Constants.ExtendedDataKeys.ImageToRemove] is string imageToRemove )
                 {
                     existingImage = imageToRemove;
-                    input.EntityToProcess.Avatar = null;
                 }
 
                 // Edit the user now - Get the original from the database

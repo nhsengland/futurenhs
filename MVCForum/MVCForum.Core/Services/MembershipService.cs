@@ -160,16 +160,11 @@
 
         public MembershipUser SanitizeUser(MembershipUser membershipUser)
         {
-            membershipUser.Avatar = StringUtils.SafePlainText(membershipUser.Avatar);
-            membershipUser.Comment = StringUtils.SafePlainText(membershipUser.Comment);
             membershipUser.Email = Sanitizer.GetSafeHtmlFragment(membershipUser.Email);
             membershipUser.Password = Sanitizer.GetSafeHtmlFragment(membershipUser.Password);
             membershipUser.PasswordAnswer = StringUtils.SafePlainText(membershipUser.PasswordAnswer);
             membershipUser.PasswordQuestion = StringUtils.SafePlainText(membershipUser.PasswordQuestion);
-            membershipUser.Signature = StringUtils.GetSafeHtml(membershipUser.Signature, true);
-            membershipUser.Twitter = StringUtils.SafePlainText(membershipUser.Twitter);
             membershipUser.UserName = StringUtils.SafePlainText(membershipUser.UserName);
-            membershipUser.Website = StringUtils.SafePlainText(membershipUser.Website);
             return membershipUser;
         }
 
@@ -234,7 +229,7 @@
             if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
             {
                 user.IsLockedOut = true;
-                user.LastLockoutDate = DateTime.UtcNow;
+                user.LastLockoutDateUTC = DateTime.UtcNow;
             }
 
             if (!passwordMatches)
@@ -261,14 +256,14 @@
                 Email = string.Empty,
                 PasswordQuestion = string.Empty,
                 PasswordAnswer = string.Empty,
-                CreateDate = now,
+                CreatedAtUTC = now,
                 FailedPasswordAnswerAttempt = 0,
                 FailedPasswordAttemptCount = 0,
-                LastLockoutDate = (DateTime)SqlDateTime.MinValue,
-                LastPasswordChangedDate = now,
+                LastLockoutDateUTC = (DateTime)SqlDateTime.MinValue,
+                LastPasswordChangedDateUTC = now,
                 IsApproved = false,
                 IsLockedOut = false,
-                LastLoginDate = (DateTime)SqlDateTime.MinValue
+                LastLoginDateUTC = (DateTime)SqlDateTime.MinValue
             };
         }
 
@@ -297,7 +292,7 @@
             newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
             // Set dates
-            newUser.CreateDate = DateTime.UtcNow;
+            newUser.CreatedAtUTC = DateTime.UtcNow;
             newUser.IsLockedOut = false;
             newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName,
                 GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)).Select(x => x.Slug).ToList(), null);
@@ -349,11 +344,6 @@
             if (image != null)
             {
                 pipelineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, image);
-            }
-
-            if (!string.IsNullOrWhiteSpace(userToEdit.Avatar) && removeImage)
-            {
-                pipelineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ImageToRemove, userToEdit.Avatar);
             }
 
             // Get instance of the pipeline to use
@@ -551,8 +541,8 @@
             return _context.MembershipUser
                 .Where(x =>
                     x.Posts.Count <= amoutOfPosts &&
-                    x.CreateDate > registerStart &&
-                    x.CreateDate <= registerEnd)
+                    x.CreatedAtUTC > registerStart &&
+                    x.CreatedAtUTC <= registerEnd)
                 .ToList();
 
         }
@@ -611,7 +601,7 @@
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.UtcNow;
+            existingUser.LastPasswordChangedDateUTC = DateTime.UtcNow;
 
             return true;
         }
@@ -631,7 +621,7 @@
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.UtcNow;
+            existingUser.LastPasswordChangedDateUTC = DateTime.UtcNow;
 
             return true;
         }
@@ -681,7 +671,7 @@
             // Get members that last activity date is valid
             var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
             return _context.MembershipUser
-                .Where(x => x.LastActivityDate > date)
+                .Where(x => x.LastActivityDateUTC > date)
                 .AsNoTracking()
                 .ToList();
 
@@ -701,7 +691,7 @@
         {
 
             return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
-                .OrderByDescending(x => x.CreateDate)
+                .OrderByDescending(x => x.CreatedAtUTC)
                 .Take(amountToTake)
                 .ToList();
 
@@ -792,9 +782,7 @@
 
             foreach (var user in GetAll())
             {
-                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7}", user.UserName, user.Email, user.CreateDate,
-                    user.Age,
-                    user.Location, user.Website, user.Facebook, user.Signature);
+                csv.AppendFormat("{0},{1},{2}", user.UserName, user.Email, user.CreatedAtUTC);
                 csv.AppendLine();
             }
 
@@ -909,29 +897,10 @@
                     {
                         createDateStr = values[2];
                     }
-                    userToImport.CreateDate =
+                    userToImport.CreatedAtUTC =
                         createDateStr.IsNullEmpty() ? DateTime.UtcNow : DateTime.Parse(createDateStr);
 
-                    if (values.Length >= 4)
-                    {
-                        userToImport.Age = int.Parse(values[3]);
-                    }
-                    if (values.Length >= 5)
-                    {
-                        userToImport.Location = values[4];
-                    }
-                    if (values.Length >= 6)
-                    {
-                        userToImport.Website = values[5];
-                    }
-                    if (values.Length >= 7)
-                    {
-                        userToImport.Facebook = values[6];
-                    }
-                    if (values.Length >= 8)
-                    {
-                        userToImport.Signature = values[7];
-                    }
+       
                     userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
                     Add(userToImport);
                 }
@@ -990,7 +959,7 @@
                 return false;
             }
             existingUser.PasswordResetToken = CreatePasswordResetToken();
-            existingUser.PasswordResetTokenCreatedAt = DateTime.UtcNow;
+            existingUser.PasswordResetTokenCreatedAtUTC = DateTime.UtcNow;
             return true;
         }
 
@@ -1005,7 +974,7 @@
                 return false;
             }
             existingUser.PasswordResetToken = null;
-            existingUser.PasswordResetTokenCreatedAt = null;
+            existingUser.PasswordResetTokenCreatedAtUTC = null;
             return true;
         }
 
@@ -1023,12 +992,12 @@
                 return false;
             }
             // A security token must have an expiry date
-            if (existingUser.PasswordResetTokenCreatedAt == null)
+            if (existingUser.PasswordResetTokenCreatedAtUTC == null)
             {
                 return false;
             }
             // The security token is only valid for 48 hours
-            if ((DateTime.UtcNow - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >=
+            if ((DateTime.UtcNow - existingUser.PasswordResetTokenCreatedAtUTC.Value).TotalHours >=
                 MaxHoursToResetPassword)
             {
                 return false;

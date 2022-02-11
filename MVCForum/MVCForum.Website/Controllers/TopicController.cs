@@ -66,7 +66,7 @@ namespace MvcForum.Web.Controllers
 
             // Get the topics
             var topics = Task.Run(() => _topicService.GetMembersActivity(pageIndex,
-                settings.TopicsPerPage,
+                settings.DiscussionsPerPage,
                 ForumConfiguration.Instance.MembersActivityListSize,
                 LoggedOnReadOnlyUser.Id,
                 allowedGroups)).Result;
@@ -279,7 +279,7 @@ namespace MvcForum.Web.Controllers
 
             var group = _groupService.Get(groupId);
 
-            if (allowedAccessGroups.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
+            if (allowedAccessGroups.Any())
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessGroups);
                 viewModel.Group = groupId;
@@ -397,7 +397,7 @@ namespace MvcForum.Web.Controllers
                 var allowedCreateTopicGroupIds = allowedCreateTopicGroups.Select(x => x.Id);
 
                 // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
-                if (allowedAccessGroups.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
+                if (allowedAccessGroups.Any())
                 {
                     // Create the model for just the post
                     var viewModel = new CreateEditTopicViewModel
@@ -968,7 +968,7 @@ namespace MvcForum.Web.Controllers
 
                 // Get the topics
                 var topics = await _topicService.GetPagedTopicsByTag(pageIndex,
-                    settings.TopicsPerPage,
+                    settings.DiscussionsPerPage,
                     int.MaxValue,
                     tag, allowedGroups);
 
@@ -1040,7 +1040,7 @@ namespace MvcForum.Web.Controllers
 
             // Get the topics
             var topics = Task.Run(() => _topicService.GetRecentTopics(pageIndex,
-                settings.TopicsPerPage,
+                settings.DiscussionsPerPage,
                 ForumConfiguration.Instance.ActiveTopicsListSize,
                 allowedGroups)).Result;
 

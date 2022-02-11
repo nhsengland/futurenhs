@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
     ViewBag.Title = string.Concat(Html.LanguageString("Topic.DiscussionTaggedWith"), Model.Tag);
     var totalCount = Convert.ToInt32(Model.TotalCount);
-    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().DiscussionsPerPage, Html));
 
     // Email subscription
     var subScribe = string.Empty;
@@ -56,5 +56,5 @@
 
 @if (Model.TotalPages > 1)
 {
-    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().DiscussionsPerPage, totalCount, null)
 }

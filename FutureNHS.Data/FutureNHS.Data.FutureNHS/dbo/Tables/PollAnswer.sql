@@ -1,8 +1,10 @@
 ﻿CREATE TABLE [dbo].[PollAnswer] (
     [Id]                 UNIQUEIDENTIFIER NOT NULL,
     [Answer]             NVARCHAR (600)   NOT NULL,
-    [ExtendedDataString] NVARCHAR (MAX)   NULL,
     [Poll_Id]            UNIQUEIDENTIFIER NOT NULL,
+    [CreatedAtUTC]       DATETIME2 NOT NULL,
+    [IsDeleted]          BIT  DEFAULT ((0)) NOT NULL, 
+    [RowVersion]         ROWVERSION NOT NULL, 
     CONSTRAINT [PK_dbo.PollAnswer] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.PollAnswer_dbo.Poll_Poll_Id] FOREIGN KEY ([Poll_Id]) REFERENCES [dbo].[Poll] ([Id])
 );

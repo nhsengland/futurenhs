@@ -25,7 +25,7 @@
             return new Activity
             {
                 Data = KeyUserId + Equality + user.Id,
-                Timestamp = user.CreateDate,
+                Timestamp = user.CreatedAtUTC,
                 Type = ActivityType.MemberJoined.ToString()
             };
 

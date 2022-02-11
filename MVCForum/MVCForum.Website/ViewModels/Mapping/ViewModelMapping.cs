@@ -90,21 +90,6 @@
                 IsBanned = user.IsBanned,
                 Roles = user.Roles.Select(x => x.RoleName).ToArray(),
                 UserName = user.UserName,
-                Age = user.Age,
-                Comment = user.Comment,
-                Email = user.Email,
-                Facebook = user.Facebook,
-                Location = user.Location,
-                PasswordAnswer = user.PasswordAnswer,
-                PasswordQuestion = user.PasswordQuestion,
-                Signature = user.Signature,
-                Twitter = user.Twitter,
-                Website = user.Website,
-                DisableEmailNotifications = user.DisableEmailNotifications == true,
-                DisablePosting = user.DisablePosting == true,
-                DisablePrivateMessages = user.DisablePrivateMessages == true,
-                DisableFileUploads = user.DisableFileUploads == true,
-                Avatar = user.Avatar,
                 IsTrustedUser = user.IsTrustedUser
             };
             return viewModel;
@@ -152,7 +137,7 @@
             existingSettings.EnableEmailSubscriptions = settingsViewModel.EnableEmailSubscriptions;
             existingSettings.ManuallyAuthoriseNewMembers = settingsViewModel.ManuallyAuthoriseNewMembers;
             existingSettings.EmailAdminOnNewMemberSignUp = settingsViewModel.EmailAdminOnNewMemberSignUp;
-            existingSettings.TopicsPerPage = settingsViewModel.TopicsPerPage;
+            existingSettings.DiscussionsPerPage = settingsViewModel.DiscussionsPerPage;
             existingSettings.PostsPerPage = settingsViewModel.PostsPerPage;
             existingSettings.ActivitiesPerPage = settingsViewModel.ActivitiesPerPage;
             existingSettings.EnablePrivateMessages = settingsViewModel.EnablePrivateMessages;
@@ -209,7 +194,7 @@
                 EnableEmailSubscriptions = currentSettings.EnableEmailSubscriptions,
                 ManuallyAuthoriseNewMembers = currentSettings.ManuallyAuthoriseNewMembers,
                 EmailAdminOnNewMemberSignUp = currentSettings.EmailAdminOnNewMemberSignUp,
-                TopicsPerPage = currentSettings.TopicsPerPage,
+                DiscussionsPerPage = currentSettings.DiscussionsPerPage,
                 PostsPerPage = currentSettings.PostsPerPage,
                 ActivitiesPerPage = currentSettings.ActivitiesPerPage,
                 EnablePrivateMessages = currentSettings.EnablePrivateMessages,
@@ -350,13 +335,13 @@
                 Permissions = permission,
                 Topic = topic,
                 Views = topic.Views,
-                DisablePosting = loggedOnUser != null && loggedOnUser.DisablePosting == true,
+                DisablePosting = loggedOnUser != null,
                 PageIndex = pageIndex,
                 TotalCount = totalCount,
                 TotalPages = totalPages,
                 LastPostPermaLink = string.Concat(topic.NiceUrl, "?", Constants.PostOrderBy, "=",
                     Constants.AllPosts, "#comment-", topic.LastPost.Id),
-                MemberIsOnline = topic.User.LastActivityDate > date
+                MemberIsOnline = topic.User.LastActivityDateUTC > date
             };
 
             if (starterPost == null)
@@ -479,7 +464,7 @@
                 Favourites = favourites,
                 PermaLink = string.Concat(topic.NiceUrl, "?", Constants.PostOrderBy, "=", Constants.AllPosts,
                     "#comment-", post.Id),
-                MemberIsOnline = post.User.LastActivityDate > date,
+                MemberIsOnline = post.User.LastActivityDateUTC > date,
                 HasVotedDown = hasVotedDown,
                 HasVotedUp = hasVotedUp,
                 VoteCount = votes.Count,

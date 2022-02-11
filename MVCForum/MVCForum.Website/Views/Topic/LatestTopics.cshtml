@@ -3,7 +3,7 @@
 @{
     Layout = null;
     var totalCount = Convert.ToInt32(Model.TotalCount);
-    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().DiscussionsPerPage, Html));
 }
 
 <div class="latesttopics">
@@ -21,7 +21,7 @@
 
     @if (Model.TotalPages > 1)
     {
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "Index", "Home")
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().DiscussionsPerPage, totalCount, null, "Index", "Home")
     }
 
 </div>

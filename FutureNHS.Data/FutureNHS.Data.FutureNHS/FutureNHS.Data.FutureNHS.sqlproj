@@ -71,7 +71,6 @@
     <Build Include="dbo\Tables\Activity.sql" />
     <Build Include="dbo\Tables\BannedEmail.sql" />
     <Build Include="dbo\Tables\BannedWord.sql" />
-    <Build Include="dbo\Tables\Block.sql" />
     <Build Include="dbo\Tables\Category.sql" />
     <Build Include="dbo\Tables\Favourite.sql" />
     <Build Include="dbo\Tables\File.sql" />
@@ -88,24 +87,21 @@
     <Build Include="dbo\Tables\LocaleStringResource.sql" />
     <Build Include="dbo\Tables\MembershipRole.sql" />
     <Build Include="dbo\Tables\MembershipUser.sql" />
-    <Build Include="dbo\Tables\MembershipUserPoints.sql" />
     <Build Include="dbo\Tables\MembershipUsersInRoles.sql" />
     <Build Include="dbo\Tables\Permission.sql" />
     <Build Include="dbo\Tables\Poll.sql" />
     <Build Include="dbo\Tables\PollAnswer.sql" />
     <Build Include="dbo\Tables\PollVote.sql" />
     <Build Include="dbo\Tables\Post.sql" />
-    <Build Include="dbo\Tables\PostEdit.sql" />
     <Build Include="dbo\Tables\Section.sql" />
     <Build Include="dbo\Tables\Settings.sql" />
     <Build Include="dbo\Tables\SystemPage.sql" />
-    <Build Include="dbo\Tables\TagNotification.sql" />
-    <Build Include="dbo\Tables\Topic.sql" />
-    <Build Include="dbo\Tables\Topic_Tag.sql" />
-    <Build Include="dbo\Tables\TopicNotification.sql" />
-    <Build Include="dbo\Tables\TopicTag.sql" />
+    <Build Include="dbo\Tables\Discussion.sql" />
+    <Build Include="dbo\Tables\Discussion_Tag.sql" />
+    <Build Include="dbo\Tables\DiscussionNotification.sql" />
+    <Build Include="dbo\Tables\DiscussionTag.sql" />
     <Build Include="dbo\Tables\UploadedFile.sql" />
-    <Build Include="dbo\Tables\Vote.sql" />
+    <Build Include="dbo\Tables\Like.sql" />
     <Build Include="dbo\Stored Procedures\sp_msforeachtable.sql" />
     <Build Include="dbo\Stored Procedures\usp_delete_folder.sql" />
     <Build Include="dbo\Tables\Image.sql" />
@@ -117,5 +113,8 @@
   <ItemGroup>
     <None Include="Data\AutomationSeedData.sql" />
     <None Include="FutureNHS.Data.FutureNHS.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="FutureNHS.Data.FutureNHS.refactorlog" />
   </ItemGroup>
 </Project>

@@ -1,14 +1,16 @@
-﻿CREATE TABLE [dbo].[TopicTag] (
+﻿CREATE TABLE [dbo].[DiscussionTag] (
     [Id]                 UNIQUEIDENTIFIER NOT NULL,
     [Tag]                NVARCHAR (100)   NOT NULL,
     [Slug]               NVARCHAR (100)   NOT NULL,
     [Description]        NVARCHAR (MAX)   NULL,
     [ExtendedDataString] NVARCHAR (MAX)   NULL,
-    CONSTRAINT [PK_dbo.TopicTag] PRIMARY KEY CLUSTERED ([Id] ASC)
+    [IsDeleted]          BIT  DEFAULT ((0)) NOT NULL, 
+    [RowVersion]         ROWVERSION NOT NULL, 
+    CONSTRAINT [PK_dbo.DiscussionTag] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
 
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Tag_Slug]
-    ON [dbo].[TopicTag]([Slug] ASC);
+    ON [dbo].[DiscussionTag]([Slug] ASC);
 

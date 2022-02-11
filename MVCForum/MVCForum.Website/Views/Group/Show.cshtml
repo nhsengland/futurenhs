@@ -11,7 +11,7 @@
     ViewBag.Title = Html.Raw(Model.Group.PageTitle ?? Model.Group.Name);
     ViewBag.MetaDesc = Model.Group.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Group.Description);
     var totalCount = Convert.ToInt32(Model.TotalCount);
-    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().DiscussionsPerPage, Html));
 
     var subScribe = string.Empty;
     var unSubscribe = string.Empty;

@@ -14,7 +14,7 @@ namespace MvcForum.Core.Models.Entities
     /// <summary>
     ///     A membership user
     /// </summary>
-    public partial class MembershipUser : ExtendedDataEntity, IBaseEntity
+    public partial class MembershipUser : IBaseEntity
     {
         public MembershipUser()
         {
@@ -37,42 +37,18 @@ namespace MvcForum.Core.Models.Entities
         public bool IsApproved { get; set; }
         public bool IsLockedOut { get; set; }
         public bool IsBanned { get; set; }
-        public DateTime CreateDate { get; set; }
-        public DateTime? LastLoginDate { get; set; }
-        public DateTime? LastPasswordChangedDate { get; set; }
-        public DateTime? LastLockoutDate { get; set; }
-        public DateTime? LastActivityDate { get; set; }
+        public DateTime CreatedAtUTC { get; set; }
+        public DateTime? LastLoginDateUTC { get; set; }
+        public DateTime? LastPasswordChangedDateUTC { get; set; }
+        public DateTime? LastLockoutDateUTC { get; set; }
+        public DateTime? LastActivityDateUTC { get; set; }
         public int FailedPasswordAttemptCount { get; set; }
         public int FailedPasswordAnswerAttempt { get; set; }
         public string PasswordResetToken { get; set; }
-        public DateTime? PasswordResetTokenCreatedAt { get; set; }
-        public string Comment { get; set; }
+        public DateTime? PasswordResetTokenCreatedAtUTC { get; set; }
         public string Slug { get; set; }
-        public string Signature { get; set; }
-        public int? Age { get; set; }
-        public string Location { get; set; }
-        public string Website { get; set; }
-        public string Twitter { get; set; }
-        public string Facebook { get; set; }
-
-        public string Avatar { get; set; }
-        public string FacebookAccessToken { get; set; }
-        public long? FacebookId { get; set; }
-        public string TwitterAccessToken { get; set; }
-        public string TwitterId { get; set; }
-        public string GoogleAccessToken { get; set; }
-        public string GoogleId { get; set; }
-        public string MicrosoftAccessToken { get; set; }
-        public string MicrosoftId { get; set; }
         public bool? IsExternalAccount { get; set; }
-        public bool? TwitterShowFeed { get; set; }
-        public DateTime? LoginIdExpires { get; set; }
-        public string MiscAccessToken { get; set; }
-
-        public bool? DisableEmailNotifications { get; set; }
-        public bool? DisablePosting { get; set; }
-        public bool? DisablePrivateMessages { get; set; }
-        public bool? DisableFileUploads { get; set; }
+        public DateTime? LoginIdExpiresUTC { get; set; }
 
         public bool? HasAgreedToTermsAndConditions { get; set; }
 

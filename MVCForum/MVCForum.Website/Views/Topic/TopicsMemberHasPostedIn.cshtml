@@ -11,5 +11,5 @@
 
 @if (Model.TotalPages > 1)
 {
-    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "PostedIn", "Home")
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().DiscussionsPerPage, totalCount, null, "PostedIn", "Home")
 }

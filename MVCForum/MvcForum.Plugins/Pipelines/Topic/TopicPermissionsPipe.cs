@@ -72,8 +72,7 @@ namespace MvcForum.Plugins.Pipelines.Topic
                         input.ExtendedData.Add(Constants.ExtendedDataKeys.PermissionSet, permissions);
 
                         // Quick check to see if user is locked out, when logged in
-                        if (loggedOnUser.IsLockedOut || loggedOnUser.DisablePosting == true ||
-                            !loggedOnUser.IsApproved)
+                        if (loggedOnUser.IsLockedOut || !loggedOnUser.IsApproved)
                         {
                             FormsAuthentication.SignOut();
                             input.AddError(_localizationService.GetResourceString("Errors.NoAccess"));

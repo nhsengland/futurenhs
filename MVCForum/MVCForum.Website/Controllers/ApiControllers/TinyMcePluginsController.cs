@@ -70,8 +70,7 @@ namespace MvcForum.Web.Controllers.ApiControllers
                         var permissions =
                             roleService.GetPermissions(null, LoggedOnReadOnlyUser.Roles.FirstOrDefault());
                         // Get the permissions for this Group, and check they are allowed to update
-                        if (permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked &&
-                            LoggedOnReadOnlyUser.DisableFileUploads != true)
+                        if (permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked)
                         {
                             // woot! User has permission and all seems ok
                             // Before we save anything, check the user already has an upload folder and if not create one

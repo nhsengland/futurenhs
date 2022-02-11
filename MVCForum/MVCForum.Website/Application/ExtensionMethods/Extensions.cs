@@ -30,7 +30,7 @@
 
         public static string MemberImage(this MembershipUser user, int size)
         {
-            return AppHelpers.MemberImage(user.Avatar, user.Email, user.Id, size);
+            return AppHelpers.MemberImage(user.ImageId.ToString(), user.Email, user.Id, size);
         }
 
         /// <summary>

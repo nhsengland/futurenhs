@@ -25,35 +25,9 @@
                 Initials = string.Format("{0}{1}", viewModel.FirstName[0], surnameInitial).ToUpper(),
                 Email = viewModel.Email,
                 Password = viewModel.Password,
-                IsApproved = viewModel.IsApproved,
-                Comment = viewModel.Comment
+                IsApproved = viewModel.IsApproved
             };
 
-            if (viewModel.LoginType == LoginType.Facebook)
-            {
-                userToSave.FacebookAccessToken = viewModel.UserAccessToken;
-            }
-            if (viewModel.LoginType == LoginType.Google)
-            {
-                userToSave.GoogleAccessToken = viewModel.UserAccessToken;
-            }
-            if (viewModel.LoginType == LoginType.Microsoft)
-            {
-                userToSave.MicrosoftAccessToken = viewModel.UserAccessToken;
-            }
-
-            // Save the social url
-            if (!string.IsNullOrWhiteSpace(viewModel.SocialProfileImageUrl))
-            {
-                // Save the SocialProfileImageUrl in ExtendedData as we'll need it
-                userToSave.SetExtendedDataValue(Constants.ExtendedDataKeys.SocialProfileImageUrl, viewModel.SocialProfileImageUrl);
-            }
-
-            // Save the return url on the user to
-            if (!string.IsNullOrWhiteSpace(viewModel.ReturnUrl))
-            {
-                userToSave.SetExtendedDataValue(Constants.ExtendedDataKeys.ReturnUrl, viewModel.ReturnUrl);
-            }
 
             return userToSave;
         }

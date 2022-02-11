@@ -162,10 +162,6 @@
                     // Registration guid
                     var registrationGuid = Guid.NewGuid().ToString();
 
-                    // Set a Guid in the extended data
-                    userToSave.SetExtendedDataValue(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey,
-                        registrationGuid);
-
                     // SEND AUTHORISATION EMAIL
                     var sb = new StringBuilder();
                     var requestContext = HttpContext.Current.Request.RequestContext;

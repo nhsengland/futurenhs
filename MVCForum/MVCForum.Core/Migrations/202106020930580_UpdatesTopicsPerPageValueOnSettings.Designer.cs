@@ -7,13 +7,13 @@ namespace MvcForum.Core.Services.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class UpdatesTopicsPerPageValueOnSettings : IMigrationMetadata
+    public sealed partial class UpdatesDiscussionsPerPageValueOnSettings : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(UpdatesTopicsPerPageValueOnSettings));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UpdatesDiscussionsPerPageValueOnSettings));
         
         string IMigrationMetadata.Id
         {
-            get { return "202106020930580_UpdatesTopicsPerPageValueOnSettings"; }
+            get { return "202106020930580_UpdatesDiscussionsPerPageValueOnSettings"; }
         }
         
         string IMigrationMetadata.Source

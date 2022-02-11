@@ -68,8 +68,7 @@ namespace MvcForum.Plugins.Pipelines.Post
                         // Files? Check and then check permissions
                         if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PostedFiles))
                         {
-                            if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked == false ||
-                                loggedOnUser.DisableFileUploads == true)
+                            if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked == false)
                             {
                                 // Not allowed to upload files
                                 input.AddError(_localizationService.GetResourceString("Errors.NoPermission"));

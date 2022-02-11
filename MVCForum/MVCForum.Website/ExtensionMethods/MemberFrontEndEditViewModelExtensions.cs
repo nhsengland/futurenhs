@@ -21,10 +21,7 @@
             user.Surname = viewModel.Surname ?? null;
             var surnameInitial = string.IsNullOrEmpty(user.Surname) ? string.Empty : user.Surname[0].ToString();
             user.Initials = $"{user.FirstName[0]}{surnameInitial}".ToUpper();
-            if (!string.IsNullOrWhiteSpace(viewModel.Avatar))
-            {
-                user.Avatar = viewModel.Avatar;
-            }
+
 
             user.HasAgreedToTermsAndConditions = viewModel.HasAgreedToTermsAndConditions;
             user.Pronouns = viewModel.Pronouns;
@@ -46,8 +43,6 @@
                 Surname = user.Surname,
                 Initials = user.Initials,
                 Email = user.Email,
-                DisableFileUploads = user.DisableFileUploads == true,
-                Avatar = user.Avatar,
                 Pronouns = user.Pronouns,
             };
             return viewModel;

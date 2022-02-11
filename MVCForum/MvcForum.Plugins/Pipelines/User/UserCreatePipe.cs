@@ -106,19 +106,10 @@
                 var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
                 var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
 
-                // Check social login
-                var isSocialLogin = !string.IsNullOrWhiteSpace(input.EntityToProcess.FacebookAccessToken) ||
-                                    !string.IsNullOrWhiteSpace(input.EntityToProcess.GoogleAccessToken) ||
-                                    !string.IsNullOrWhiteSpace(input.EntityToProcess.MicrosoftAccessToken);
-
                 // If this is a social login, and memberEmailAuthorisationNeeded is true then we need to ignore it
                 // and set memberEmailAuthorisationNeeded to false because the email addresses are validated by the social media providers
-                if (isSocialLogin && manuallyAuthoriseMembers == false)
-                {
-                    memberEmailAuthorisationNeeded = false;
-                    input.EntityToProcess.IsApproved = true;
-                }
-                else if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
+     
+                if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
                 {
                     input.EntityToProcess.IsApproved = false;
                 }
@@ -126,60 +117,7 @@
                 {
                     input.EntityToProcess.IsApproved = true;
                 }
-
-                // See if this is a social login and we have their profile pic
-                var socialProfileImageUrl =
-                    input.EntityToProcess.GetExtendedDataItem(Constants.ExtendedDataKeys.SocialProfileImageUrl);
-                if (!string.IsNullOrWhiteSpace(socialProfileImageUrl))
-                {
-                    // We have an image url - Need to save it to their profile
-                    var image = socialProfileImageUrl.GetImageFromExternalUrl();
-
-                    // Set upload directory - Create if it doesn't exist
-                    var uploadFolderPath =
-                        HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
-                            input.EntityToProcess.Id));
-                    if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
-                    {
-                        Directory.CreateDirectory(uploadFolderPath);
-                    }
-
-                    // Get the file name
-                    var fileName = Path.GetFileName(socialProfileImageUrl);
-
-                    // Create a HttpPostedFileBase image from the C# Image
-                    using (var stream = new MemoryStream())
-                    {
-                        // Microsoft doesn't give you a file extension - See if it has a file extension
-                        // Get the file extension
-                        var fileExtension = Path.GetExtension(fileName);
-
-                        // Fix invalid Illegal charactors
-                        var regexSearch =
-                            $"{new string(Path.GetInvalidFileNameChars())}{new string(Path.GetInvalidPathChars())}";
-                        var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
-                        fileName = reg.Replace(fileName, "");
-
-                        if (string.IsNullOrWhiteSpace(fileExtension))
-                        {
-                            // no file extension so give it one
-                            fileName = string.Concat(fileName, ".jpg");
-                        }
-
-                        image.Save(stream, ImageFormat.Jpeg);
-                        stream.Position = 0;
-                        HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
-
-                        // Upload the file
-                        var uploadResult = formattedImage.UploadFile(uploadFolderPath, _localizationService, _imageCommand, _imageRepository, _imageService, true, input.EntityToProcess.Id);
-
-                        // Don't throw error if problem saving avatar, just don't save it.
-                        if (uploadResult.UploadSuccessful)
-                        {
-                            input.EntityToProcess.Avatar = uploadResult.UploadedFileName;
-                        }
-                    }
-                }
+                
 
                 input.EntityToProcess = context.MembershipUser.Add(input.EntityToProcess);
                 var saved = await context.SaveChangesAsync();

@@ -49,7 +49,7 @@
                     if (input.EntityToProcess.IsApproved && !input.EntityToProcess.IsLockedOut &&
                         !input.EntityToProcess.IsBanned)
                     {
-                        input.EntityToProcess.LastLoginDate = DateTime.UtcNow;
+                        input.EntityToProcess.LastLoginDateUTC = DateTime.UtcNow;
                         input.Successful = true;
                         return input;
                     }

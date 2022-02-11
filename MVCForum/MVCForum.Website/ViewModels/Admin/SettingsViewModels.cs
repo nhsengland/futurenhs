@@ -78,7 +78,7 @@
         public bool EmailAdminOnNewMemberSignUp { get; set; }
 
         [DisplayName("Number Of Topics Per Page")]
-        public int TopicsPerPage { get; set; }
+        public int DiscussionsPerPage { get; set; }
 
         [DisplayName("Number Of Posts Per Page")]
         public int PostsPerPage { get; set; }

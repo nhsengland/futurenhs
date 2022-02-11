@@ -268,23 +268,13 @@
             var user = MembershipService.GetUser(userModel.Id);
 
             // Map everything in model except properties hidden on page
-            user.Age = userModel.Age;
-            user.Comment = userModel.Comment;
             user.Email = userModel.Email;
-            user.Facebook = userModel.Facebook;
             user.IsApproved = userModel.IsApproved;
             user.IsLockedOut = userModel.IsLockedOut;
             user.IsBanned = userModel.IsBanned;
-            user.Location = userModel.Location;
             user.PasswordAnswer = userModel.PasswordAnswer;
             user.PasswordQuestion = userModel.PasswordQuestion;
-            user.Signature = userModel.Signature;
-            user.Twitter = userModel.Twitter;
             user.UserName = userModel.UserName;
-            user.Website = userModel.Website;
-            user.DisableEmailNotifications = userModel.DisableEmailNotifications;
-            user.DisablePosting = userModel.DisablePosting;
-            user.DisablePrivateMessages = userModel.DisablePrivateMessages;
             user.IsTrustedUser = userModel.IsTrustedUser;
 
             try

@@ -27,7 +27,7 @@
         public bool ManuallyAuthoriseNewMembers { get; set; }
         public bool? NewMemberEmailConfirmation { get; set; }
         public bool EmailAdminOnNewMemberSignUp { get; set; }
-        public int TopicsPerPage { get; set; }
+        public int DiscussionsPerPage { get; set; }
         public int PostsPerPage { get; set; }
         public int ActivitiesPerPage { get; set; }
         public bool EnablePrivateMessages { get; set; }
