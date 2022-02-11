@@ -51,13 +51,16 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 props.isGroupMember = isGroupMember;
                 props.groupsList = groupsList.data ?? [];
                 props.pagination = groupsList.pagination;
-                props.errors = [...props.errors, ...groupsList.errors];
             
             } catch (error) {
-                
-                props.errors = [{
-                    error: error.message
-                }];
+
+                if (error.name === 'ServiceError') {
+
+                    props.errors = [{
+                        [error.data.status]: error.data.statusText
+                    }];
+
+                }
     
             }
     

@@ -3,8 +3,7 @@ import { GetServerSideProps } from 'next';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { withTextContent } from '@hofs/withTextContent';
-import { selectLocale, selectProps } from '@selectors/context';
-import { getPageTextContent } from '@services/getPageTextContent';
+import { selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { HomeTemplate } from '@components/_pageTemplates/HomeTemplate';

@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next';
 
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
-import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
@@ -47,25 +46,25 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                         })
                     ]);
 
-                    if (getServiceResponseErrors({
-                        serviceResponseList: [memberData],
-                        matcher: (code) => Number(code) === 404
-                    }).length > 0) {
-
-                        return {
-                            notFound: true
-                        }
-
-                    }
-
                     props.member = memberData.data;
-                    props.errors = [...memberData.errors];
 
                 } catch (error) {
 
-                    props.errors = [{
-                        error: error.message
-                    }];
+                    if (error.name === 'ServiceError') {
+
+                        if(error.data.status == 404){
+
+                            return {
+                                notFound: true
+                            }
+
+                        }
+
+                        props.errors = [{
+                            [error.data.status]: error.data.statusText
+                        }];
+    
+                    }
 
                 }
 

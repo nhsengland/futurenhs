@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next';
 
 import { routeParams } from '@constants/routes';
-import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { defaultGroupLogos } from '@constants/icons';
 import { selectUser, selectParam, selectProps } from '@selectors/context';
 import { getGroup } from '@services/getGroup';
@@ -50,32 +49,6 @@ export const withGroup = (config: HofConfig, dependencies?: {
                 })
             ]);
 
-            if (getServiceResponseErrors({
-                serviceResponseList: [groupData],
-                matcher: (code) => Number(code) === 404
-            }).length > 0) {
-
-                return {
-                    notFound: true
-                }
-
-            }
-
-            if (getServiceResponseErrors({
-                serviceResponseList: [groupData, actionsData],
-                matcher: (code) => Number(code) >= 500
-            }).length > 0) {
-
-                return {
-                    props: {
-                        errors: [{
-                            [500]: 'Server error'
-                        }]
-                    }
-                }
-
-            }
-
             props.groupId = groupId;
             props.entityText = groupData.data.text ?? {};
             props.image = groupData.data.image ?? defaultGroupLogos.small;
@@ -83,7 +56,27 @@ export const withGroup = (config: HofConfig, dependencies?: {
 
         } catch (error) {
 
-            console.log(error);
+            if(error.name === 'ServiceError'){
+
+                if(error.data?.status === 404){
+
+                    return {
+                        notFound: true
+                    }
+
+                } else {
+
+                    return {
+                        props: {
+                            errors: [{
+                                [error.data.status]: error.data.statusText
+                            }]
+                        }
+                    }
+
+                }
+
+            }
 
         }
 

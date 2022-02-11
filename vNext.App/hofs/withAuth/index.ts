@@ -13,11 +13,19 @@ export const withAuth = (config: HofConfig, dependencies?: {
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 
-        const { data, errors } = await getAuthService({
-            cookies: context.req.cookies
-        });
+        try {
 
-        if(!data || errors?.length){
+            const { data } = await getAuthService({
+                cookies: context.req.cookies
+            });
+
+            context.props = context.props || {};
+            context.props.user = data;
+            context.req.user = data;
+
+            return await getServerSideProps(context);
+
+        } catch (error) {
 
             const returnUrl: string = encodeURI(`${process.env.APP_URL}${context.resolvedUrl}`);
 
@@ -26,15 +34,7 @@ export const withAuth = (config: HofConfig, dependencies?: {
                     permanent: false,
                     destination: `${process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL}?ReturnUrl=${returnUrl}`
                 }
-            }    
-    
-        } else {
-
-            context.props = context.props || {};
-            context.props.user = data;
-            context.req.user = data;
-
-            return await getServerSideProps(context);
+            }
 
         }
 

@@ -1,4 +1,5 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { ServiceError } from '..';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
 import { ServicePaginatedResponse } from '@appTypes/service';
@@ -25,81 +26,69 @@ export const getGroupDiscussions = async ({
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<Discussion>>> => {
 
-    try {
+    const serviceResponse: ServicePaginatedResponse<Array<Discussion>> = {
+        data: []
+    };
 
-        const serviceResponse: ServicePaginatedResponse<Array<Discussion>> = {
-            data: []
-        };
+    const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
+    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
-        const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
-        const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
-
-        const { id } = user;
-        const paginationQueryParams: string = getApiPaginationQueryParams({ 
-            pagination,
-            defaults: {
-                pageNumber: 1,
-                pageSize: 30
-            } 
-        });
-
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions?${paginationQueryParams}`;
-        const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
-        const apiData: ApiResponse<any> = apiResponse.json;
-        const apiMeta: any = apiResponse.meta;
-
-        const { ok, status, statusText } = apiMeta;
-
-        if(!ok){
-
-            return {
-                errors: [{
-                    [status]: statusText
-                }]
-            }
-
+    const { id } = user;
+    const paginationQueryParams: string = getApiPaginationQueryParams({
+        pagination,
+        defaults: {
+            pageNumber: 1,
+            pageSize: 30
         }
+    });
 
-        apiData.data?.forEach((datum) => {
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions?${paginationQueryParams}`;
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
+    const apiData: ApiResponse<any> = apiResponse.json;
+    const apiMeta: any = apiResponse.meta;
 
-            serviceResponse.data.push({
-                text: {
-                    title: datum.title ?? null
-                },
-                discussionId: datum.id,
-                responseCount: datum.totalComments ?? 0,
-                viewCount: datum.views ?? 0,
-                createdBy: {
-                    id: datum.firstRegistered?.by?.id ?? '',
-                    text: {
-                        userName: datum.firstRegistered?.by?.name ?? ''
-                    }
-                },
-                created: datum.firstRegistered?.atUtc ?? '',
-                modifiedBy: {
-                    id: datum.lastComment?.by?.id ?? '',
-                    text: {
-                        userName: datum.lastComment?.by?.name ?? ''
-                    }
-                },
-                modified: datum.lastComment?.atUtc ?? '',
-                isSticky: datum.isSticky
-            });
+    const { ok, status, statusText } = apiMeta;
 
+    if(!ok){
+
+        throw new ServiceError('Error getting group discussions', {
+            status: status,
+            statusText: statusText,
+            body: apiData
         });
-
-        serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
-
-        return serviceResponse;
-
-    } catch(error){
-
-        const { message } = error;
-
-        return {
-            errors: [{ error: message }],
-        };
 
     }
+
+    apiData.data?.forEach((datum) => {
+
+        serviceResponse.data.push({
+            text: {
+                title: datum.title ?? null
+            },
+            discussionId: datum.id,
+            responseCount: datum.totalComments ?? 0,
+            viewCount: datum.views ?? 0,
+            createdBy: {
+                id: datum.firstRegistered?.by?.id ?? '',
+                text: {
+                    userName: datum.firstRegistered?.by?.name ?? ''
+                }
+            },
+            created: datum.firstRegistered?.atUtc ?? '',
+            modifiedBy: {
+                id: datum.lastComment?.by?.id ?? '',
+                text: {
+                    userName: datum.lastComment?.by?.name ?? ''
+                }
+            },
+            modified: datum.lastComment?.atUtc ?? '',
+            isSticky: datum.isSticky
+        });
+
+    });
+
+    serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
+
+    return serviceResponse;
 
 }

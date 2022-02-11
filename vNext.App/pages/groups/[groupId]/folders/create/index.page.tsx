@@ -8,7 +8,6 @@ import { withGroup } from '@hofs/withGroup';
 import { selectCsrfToken, selectBody, selectParam, selectUser, selectProps, selectQuery } from '@selectors/context';
 import { postGroupFolder } from '@services/postGroupFolder';
 import { getGroupFolder } from '@services/getGroupFolder';
-import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -52,28 +51,39 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                  */
                 if(folderId){
 
-                    const [
-                        groupFolder
-                    ] = await Promise.all([
-                        getGroupFolder({
-                            user: user,
-                            groupId: groupId,
-                            folderId: folderId
-                        })
-                    ]);
-    
-                    if (getServiceResponseErrors({
-                        serviceResponseList: [groupFolder],
-                        matcher: (code) => Number(code) === 404
-                    }).length > 0) {
-    
-                        return {
-                            notFound: true
-                        }
-    
-                    }
+                    try {
 
-                    props.folder = groupFolder.data;
+                        const [
+                            groupFolder
+                        ] = await Promise.all([
+                            getGroupFolder({
+                                user: user,
+                                groupId: groupId,
+                                folderId: folderId
+                            })
+                        ]);
+
+                        props.folder = groupFolder.data;
+
+                    } catch(error){
+
+                        if (error.name === 'ServiceError') {
+
+                            if(error.data.status === 404){
+
+                                return {
+                                    notFound: true
+                                }
+
+                            }
+
+                            props.errors = [{
+                                [error.data.status]: error.data.statusText
+                            }];
+    
+                        }
+
+                    }
 
                 }
 
@@ -93,17 +103,21 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
 
                     } catch(error){
 
-                        if(error.data?.status === 400){
+                        if (error.name === 'ServiceError') {
 
-                            props.forms[createFolderForm.id].errors = error.data.body;
-                            props.forms[createFolderForm.id].initialValues = formPost;
+                            if(error.data?.status === 400){
 
-                        } else {
-
-                            props.forms[createFolderForm.id].errors = {
-                                [error.data.status]: error.data.statusText
-                            };
-
+                                props.forms[createFolderForm.id].errors = error.data.body;
+                                props.forms[createFolderForm.id].initialValues = formPost;
+    
+                            } else {
+    
+                                props.forms[createFolderForm.id].errors = {
+                                    [error.data.status]: error.data.statusText
+                                };
+    
+                            }
+        
                         }
 
                     }

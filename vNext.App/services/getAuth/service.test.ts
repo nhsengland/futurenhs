@@ -1,3 +1,4 @@
+import { ServiceError } from '@services/index';
 import { getAuth } from './index';
 
 let mockSetGetFetchOptions: any;
@@ -27,71 +28,6 @@ describe('getAuth service', () => {
 
         await expect(mockSetGetFetchOptions).toBeCalledWith({
             Cookie: 'cookie1=value1; cookie2=value2'
-        });
-
-    });
-
-    it('returns an error if the fetch failed', async () => {
-
-        mockFetchJSON = () => new Promise((resolve) => {
-
-            const response: Partial<Response> = {
-                ok: false,
-                status: 500,
-                statusText: 'Something went wrong'
-            };
-
-            resolve({
-                meta: response,
-                json: {}
-            });
-
-        })
-
-        const response = await getAuth({
-            cookies: {
-                cookie1: 'value1',
-                cookie2: 'value2'
-            }
-        },
-        {
-            setGetFetchOptions: mockSetGetFetchOptions,
-            fetchJSON: mockFetchJSON
-        });
-
-        await expect(response).toStrictEqual({
-            errors: [{
-                [500]: 'Something went wrong'
-            }]
-        });
-
-    });
-
-    it('returns an internal error if it occurs', async () => {
-
-        mockFetchJSON = () => new Promise((resolve) => {
-
-            resolve({
-                json: {}
-            });
-
-        })
-
-        const response = await getAuth({
-            cookies: {
-                cookie1: 'value1',
-                cookie2: 'value2'
-            }
-        },
-        {
-            setGetFetchOptions: mockSetGetFetchOptions,
-            fetchJSON: mockFetchJSON
-        });
-
-        await expect(response).toStrictEqual({
-            errors: [{
-                error: "Cannot read property 'ok' of undefined"
-            }]
         });
 
     });

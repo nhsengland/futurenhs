@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
 
-import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
@@ -60,28 +59,28 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                         })
                     ]);
 
-                    if (getServiceResponseErrors({
-                        serviceResponseList: [groupFolder],
-                        matcher: (code) => Number(code) === 404
-                    }).length > 0) {
-
-                        return {
-                            notFound: true
-                        }
-
-                    }
-
                     props.folderId = folderId;
                     props.folder = groupFolder.data;
                     props.folderContents = groupFolderContents.data ?? [];
                     props.pagination = groupFolderContents.pagination;
-                    props.errors = [...props.errors, groupFolder.errors, groupFolderContents.errors];
 
                 } catch (error) {
 
-                    props.errors = [{
-                        error: error.message
-                    }];
+                    if (error.name === 'ServiceError') {
+
+                        if(error.data.status === 404){
+
+                            return {
+                                notFound: true
+                            }
+
+                        }
+
+                        props.errors = [{
+                            [error.data.status]: error.data.statusText
+                        }];
+
+                    }
 
                 }
 

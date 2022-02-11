@@ -5,7 +5,6 @@ import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
-import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
@@ -39,6 +38,12 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                 let props: Props = selectProps(context);
 
+                props.csrfToken = csrfToken;
+                props.discussionId = discussionId;
+                props.forms = {
+                    [createDiscussionCommentForm.id]: createDiscussionCommentForm
+                };
+
                 if(formPost){
 
                     try {
@@ -56,17 +61,21 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                     } catch(error){
 
-                        if(error.data?.status === 400){
+                        if (error.name === 'ServiceError') {
 
-                            props.forms[createDiscussionCommentForm.id].errors = error.data.body;
-                            props.forms[createDiscussionCommentForm.id].initialValues = formPost;
+                            if(error.data?.status === 400){
 
-                        } else {
-
-                            props.forms[createDiscussionCommentForm.id].errors = {
-                                [error.data.status]: error.data.statusText
-                            };
-
+                                props.forms[createDiscussionCommentForm.id].errors = error.data.body;
+                                props.forms[createDiscussionCommentForm.id].initialValues = formPost;
+    
+                            } else {
+    
+                                props.forms[createDiscussionCommentForm.id].errors = {
+                                    [error.data.status]: error.data.statusText
+                                };
+    
+                            }
+        
                         }
 
                     }
@@ -94,36 +103,28 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                             pagination: pagination
                         })
                     ]);
-  
-                    /**
-                     * Drop out with a 404 if the discussion id is not found
-                     */
-                    if (getServiceResponseErrors({
-                        serviceResponseList: [groupDiscussion],
-                        matcher: (code) => Number(code) === 404
-                    }).length > 0) {
 
-                        return {
-                            notFound: true
-                        }
-
-                    }
-
-                    props.forms = {
-                        [createDiscussionCommentForm.id]: createDiscussionCommentForm
-                    };
-                    props.csrfToken = csrfToken;
-                    props.discussionId = discussionId;
                     props.discussion = groupDiscussion.data;
                     props.discussionCommentsList = groupDiscussionComments.data;
                     props.pagination = groupDiscussionComments.pagination;
-                    props.errors = [...props.errors, ...groupDiscussion.errors, ...groupDiscussionComments.errors];
 
                 } catch (error) {
 
-                    props.errors = [{
-                        error: error.message
-                    }];
+                    if (error.name === 'ServiceError') {
+
+                        if(error.data.status === 404){
+
+                            return {
+                                notFound: true
+                            }
+
+                        }
+
+                        props.errors = [{
+                            [error.data.status]: error.data.statusText
+                        }];
+
+                    }
 
                 }
 

@@ -8,24 +8,13 @@ import { withTextContent } from '@hofs/withTextContent';
 import { getGroupMembers } from '@services/getGroupMembers';
 import { getPendingGroupMembers } from '@services/getPendingGroupMembers';
 import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
-import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
+import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
 import { GroupMemberListingTemplate } from '@components/_pageTemplates/GroupMemberListingTemplate';
 import { Props } from '@components/_pageTemplates/GroupMemberListingTemplate/interfaces';
 
 const routeId: string = '3d4a3b47-ba2c-43fa-97cf-90de93eeb4f8';
-
-const contextEnrichment = (...hofs: Array<(config: HofConfig) => any>) => (config: HofConfig) => {
-
-    hofs.reduce(({ getServerSideProps }, hof) => {
-        return hof({
-            routeId: config.routeId,
-            getServerSideProps: getServerSideProps
-        });
-    }, config)
-
-}
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -70,13 +59,16 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                     props.members = groupMembers.data;
                     props.pagination = groupMembers.pagination;
                     props.pendingMembers = groupPendingMembers.data;
-                    props.errors = [...props.errors, ...groupMembers.errors, ...groupPendingMembers.errors];
 
                 } catch (error) {
 
-                    props.errors = [{
-                        error: error.message
-                    }];
+                    if (error.name === 'ServiceError') {
+
+                        props.errors = [{
+                            [error.data.status]: error.data.statusText
+                        }];
+    
+                    }
 
                 }
 

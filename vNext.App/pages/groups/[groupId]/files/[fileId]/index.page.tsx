@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
 
-import { getServiceResponseErrors } from '@helpers/services/getServiceResponseErrors';
 import { routeParams } from '@constants/routes';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { selectUser, selectParam, selectProps } from '@selectors/context';
@@ -47,26 +46,26 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                         })
                     ]);
 
-                    if (getServiceResponseErrors({
-                        serviceResponseList: [groupFile],
-                        matcher: (code) => Number(code) === 404
-                    }).length > 0) {
-
-                        return {
-                            notFound: true
-                        }
-
-                    }
-
                     props.fileId = fileId;
                     props.file = groupFile.data;
-                    props.errors = [...props.errors, ...groupFile.errors];
 
                 } catch (error) {
 
-                    props.errors = [{
-                        error: error.message
-                    }];
+                    if (error.name === 'ServiceError') {
+
+                        if(error.data.status === 404){
+
+                            return {
+                                notFound: true
+                            }
+
+                        }
+
+                        props.errors = [{
+                            [error.data.status]: error.data.statusText
+                        }];
+
+                    }
 
                 }
 

@@ -52,7 +52,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_DISCUSSION));
+    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT));
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(discussionCommentsList);
     const [dynamicPagination, setPagination] = useState(pagination);
 
@@ -248,9 +248,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                         id={additionalRepliesAccordionId}
                                                         toggleChildren={<span>Show more replies</span>}
                                                         toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                        <ul className="u-list-none u-p-0">
-                                                            {repliesComponents.splice(1)}
-                                                        </ul>
+                                                            <ul className="u-list-none u-p-0">
+                                                                {repliesComponents.splice(1)}
+                                                            </ul>
                                                     </Accordion>
                                                 }
                                             </Comment>

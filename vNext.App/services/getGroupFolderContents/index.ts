@@ -1,4 +1,5 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { ServiceError } from '..';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
 import { FetchResponse } from '@appTypes/fetch';
@@ -28,80 +29,68 @@ export const getGroupFolderContents = async ({
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<FolderContent>>> => {
 
-    try {
+    const serviceResponse: ServicePaginatedResponse<Array<FolderContent>> = {
+        data: []
+    };
 
-        const serviceResponse: ServicePaginatedResponse<Array<FolderContent>> = {
-            data: []
-        };
+    const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
+    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
-        const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
-        const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
-
-        const id: string = user.id;
-        const paginationQueryParams: string = getApiPaginationQueryParams({ 
-            pagination,
-            defaults: {
-                pageNumber: 1,
-                pageSize: 30
-            } 
-        });
-
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders${folderId ? '/' + folderId + '/contents': ''}?${paginationQueryParams}`;
-        const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
-        const apiData: ApiPaginatedResponse<any> = apiResponse.json;
-        const apiMeta: any = apiResponse.meta;
-
-        const { ok, status, statusText } = apiMeta;
-
-        if(!ok){
-
-            return {
-                errors: [{
-                    [status]: statusText
-                }]
-            }
-
+    const id: string = user.id;
+    const paginationQueryParams: string = getApiPaginationQueryParams({
+        pagination,
+        defaults: {
+            pageNumber: 1,
+            pageSize: 30
         }
+    });
 
-        apiData.data?.forEach((datum) => {
-            
-            serviceResponse.data.push({
-                id: datum.id ?? '',
-                type: datum.type?.toLowerCase() ?? '',
-                name: datum.name ?? '',
-                createdBy: {
-                    id: datum.firstRegistered?.by?.id ?? '',
-                    text: {
-                        userName: datum.firstRegistered?.by?.name ?? ''
-                    }
-                },
-                modifiedBy: {
-                    id: datum.lastUpdated?.by?.id ?? '',
-                    text: {
-                        userName: datum.lastUpdated?.by?.name ?? ''
-                    }
-                },
-                modified: datum.lastUpdated?.atUtc ?? '',
-                extension: datum.additionalMetadata?.fileExtension ?? '',
-                text: {
-                    body: datum.description ?? ''
-                }
-            });
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders${folderId ? '/' + folderId + '/contents' : ''}?${paginationQueryParams}`;
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
+    const apiData: ApiPaginatedResponse<any> = apiResponse.json;
+    const apiMeta: any = apiResponse.meta;
 
+    const { ok, status, statusText } = apiMeta;
+
+    if(!ok){
+
+        throw new ServiceError('Error getting group folder contents', {
+            status: status,
+            statusText: statusText,
+            body: apiData
         });
-
-        serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
-
-        return serviceResponse;
-
-    } catch(error){
-
-        const { message } = error;
-
-        return {
-            errors: [{ error: message }],
-        };
 
     }
+
+    apiData.data?.forEach((datum) => {
+
+        serviceResponse.data.push({
+            id: datum.id ?? '',
+            type: datum.type?.toLowerCase() ?? '',
+            name: datum.name ?? '',
+            createdBy: {
+                id: datum.firstRegistered?.by?.id ?? '',
+                text: {
+                    userName: datum.firstRegistered?.by?.name ?? ''
+                }
+            },
+            modifiedBy: {
+                id: datum.lastUpdated?.by?.id ?? '',
+                text: {
+                    userName: datum.lastUpdated?.by?.name ?? ''
+                }
+            },
+            modified: datum.lastUpdated?.atUtc ?? '',
+            extension: datum.additionalMetadata?.fileExtension ?? '',
+            text: {
+                body: datum.description ?? ''
+            }
+        });
+
+    });
+
+    serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
+
+    return serviceResponse;
 
 }

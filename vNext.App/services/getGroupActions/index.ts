@@ -1,4 +1,5 @@
 import { actions } from '@constants/actions';
+import { ServiceError } from '..';
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -21,44 +22,32 @@ export const getGroupActions = async ({
     user
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Array<actions>>> => {
 
-    try {
+    const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
+    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
-        const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
-        const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
-        
-        const { id } = user;
+    const { id } = user;
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/actions`;
-        const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
-        const apiData: ApiResponse<any> = apiResponse.json;
-        const apiMeta: any = apiResponse.meta;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/actions`;
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
+    const apiData: ApiResponse<any> = apiResponse.json;
+    const apiMeta: any = apiResponse.meta;
 
-        const { ok, status, statusText } = apiMeta;
+    const { ok, status, statusText } = apiMeta;
 
-        if(!ok){
+    if(!ok){
 
-            return {
-                errors: [{
-                    [status]: statusText
-                }]
-            }
-
-        }
-
-        const data = apiData;
-
-        return {
-            data: data
-        };
-
-    } catch(error){
-
-        const { message } = error;
-
-        return {
-            errors: [{ error: message }],
-        };
+        throw new ServiceError('Error getting group actions', {
+            status: status,
+            statusText: statusText,
+            body: apiData
+        });
 
     }
+
+    const data = apiData;
+
+    return {
+        data: data
+    };
 
 }

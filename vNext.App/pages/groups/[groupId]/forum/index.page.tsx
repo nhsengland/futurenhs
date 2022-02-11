@@ -46,13 +46,16 @@ export const routeHandler = async (context: GetServerSidePropsContext) => {
 
         props.discussionsList = groupDiscussions.data;
         props.pagination = groupDiscussions.pagination;
-        props.errors = [...groupDiscussions.errors];
 
     } catch (error) {
 
-        props.errors = [{
-            error: error.message
-        }];
+        if (error.name === 'ServiceError') {
+
+            props.errors = [{
+                [error.data.status]: error.data.statusText
+            }];
+
+        }
 
     }
 

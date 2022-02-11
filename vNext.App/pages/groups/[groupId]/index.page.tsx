@@ -10,23 +10,6 @@ import { Props } from '@components/_pageTemplates/GroupHomeTemplate/interfaces';
 
 const routeId: string = '7a9bdd18-45ea-4976-9810-2fcb66242e27';
 
-// const contextEnrichment = async ({
-//     routeId,
-//     getServerSideProps,
-//     hofs
-// }) => {
-
-//     hofs.forEach(hof => {
-
-//         const output = await hof({
-//             routeId,
-//             getServerSideProps
-//         });
-
-//     })
-
-// }
-
 /**
  * Get props to inject into page on the initial server-side request
  */

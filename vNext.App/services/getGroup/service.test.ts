@@ -1,17 +1,6 @@
 import { getGroup } from './index';
 import { User } from '@appTypes/user';
 
-const mockUser: User = { 
-    id: 'mockUserId',
-    text: {
-        userName: ''
-    },
-    image: {
-        source: '',
-        altText: ''
-    } 
-};
-
 let mockSetGetFetchOptions: any;
 let mockFetchJSON: any;
 
@@ -21,65 +10,6 @@ describe('getGroup service', () => {
 
         mockSetGetFetchOptions = jest.fn();
         mockFetchJSON = jest.fn();
-
-    });
-
-    it('returns an error if the fetch failed', async () => {
-
-        mockFetchJSON = () => new Promise((resolve) => {
-
-            const response: Partial<Response> = {
-                ok: false,
-                status: 500,
-                statusText: 'Something went wrong'
-            };
-
-            resolve({
-                meta: response,
-                json: {}
-            });
-
-        })
-
-        const response = await getGroup({
-            groupId: 'mock-slug'
-        },
-        {
-            setGetFetchOptions: mockSetGetFetchOptions,
-            fetchJSON: mockFetchJSON
-        });
-
-        await expect(response).toStrictEqual({
-            errors: [{
-                [500]: 'Something went wrong'
-            }]
-        });
-
-    });
-
-    it('returns an internal error if it occurs', async () => {
-
-        mockFetchJSON = () => new Promise((resolve) => {
-
-            resolve({
-                json: {}
-            });
-
-        })
-
-        const response = await getGroup({
-            groupId: 'mock-slug'
-        },
-        {
-            setGetFetchOptions: mockSetGetFetchOptions,
-            fetchJSON: mockFetchJSON
-        });
-
-        await expect(response).toStrictEqual({
-            errors: [{
-                error: "Cannot read property 'ok' of undefined"
-            }]
-        });
 
     });
 

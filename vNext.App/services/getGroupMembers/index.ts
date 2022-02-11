@@ -1,4 +1,5 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { ServiceError } from '..';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
 import { FetchResponse } from '@appTypes/fetch';
@@ -24,66 +25,54 @@ export const getGroupMembers = async ({
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<GroupMember>>> => {
 
-    try {
+    const serviceResponse: ServicePaginatedResponse<Array<GroupMember>> = {
+        data: []
+    };
 
-        const serviceResponse: ServicePaginatedResponse<Array<GroupMember>> = {
-            data: []
-        };
+    const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
+    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
-        const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
-        const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
-
-        const id: string = user.id;
-        const paginationQueryParams: string = getApiPaginationQueryParams({ 
-            pagination,
-            defaults: {
-                pageNumber: 1,
-                pageSize: 10
-            } 
-        });
-
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members?${paginationQueryParams}`;
-        const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
-        const apiData: ApiPaginatedResponse<any> = apiResponse.json;
-        const apiMeta: any = apiResponse.meta;
-
-        const { ok, status, statusText } = apiMeta;
-
-        if(!ok){
-
-            return {
-                errors: [{
-                    [status]: statusText
-                }]
-            }
-
+    const id: string = user.id;
+    const paginationQueryParams: string = getApiPaginationQueryParams({
+        pagination,
+        defaults: {
+            pageNumber: 1,
+            pageSize: 10
         }
+    });
 
-        apiData.data?.forEach((datum) => {
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members?${paginationQueryParams}`;
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
+    const apiData: ApiPaginatedResponse<any> = apiResponse.json;
+    const apiMeta: any = apiResponse.meta;
 
-            serviceResponse.data.push({
-                id: datum.id ?? '',
-                fullName: datum.name ?? '',
-                email: '',
-                role: datum.role ?? '',
-                joinDate: datum.dateJoinedUtc ?? '', 
-                lastLogInDate: datum.lastLoginUtc ?? ''
-            });
+    const { ok, status, statusText } = apiMeta;
 
+    if(!ok){
+
+        throw new ServiceError('Error getting group members', {
+            status: status,
+            statusText: statusText,
+            body: apiData
         });
-
-        serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
-
-        return serviceResponse;
-
-    } catch(error){
-
-        const { message } = error;
-
-        return {
-            errors: [{ error: message }],
-        };
 
     }
+
+    apiData.data?.forEach((datum) => {
+
+        serviceResponse.data.push({
+            id: datum.id ?? '',
+            fullName: datum.name ?? '',
+            email: '',
+            role: datum.role ?? '',
+            joinDate: datum.dateJoinedUtc ?? '',
+            lastLogInDate: datum.lastLoginUtc ?? ''
+        });
+
+    });
+
+    serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
+
+    return serviceResponse;
 
 }

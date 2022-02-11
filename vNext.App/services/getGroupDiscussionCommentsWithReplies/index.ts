@@ -1,4 +1,5 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { ServiceError } from '..';
 import { getGroupDiscussionCommentReplies as getGroupDiscussionCommentRepliesService } from '@services/getGroupDiscussionCommentReplies';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
@@ -29,109 +30,97 @@ export const getGroupDiscussionCommentsWithReplies = async ({
     pagination
 }: Options, dependencies?: Dependencies): Promise<ServicePaginatedResponse<Array<DiscussionComment>>> => {
 
-    try {
+    const serviceResponse: ServicePaginatedResponse<Array<DiscussionComment>> = {
+        data: []
+    };
 
-        const serviceResponse: ServicePaginatedResponse<Array<DiscussionComment>> = {
-            data: []
-        };
+    const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
+    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
+    const getGroupDiscussionCommentReplies = dependencies?.getGroupDiscussionCommentReplies ?? getGroupDiscussionCommentRepliesService;
 
-        const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
-        const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
-        const getGroupDiscussionCommentReplies = dependencies?.getGroupDiscussionCommentReplies ?? getGroupDiscussionCommentRepliesService;
+    const { id } = user;
+    const paginationQueryParams: string = getApiPaginationQueryParams({
+        pagination,
+        defaults: {
+            pageNumber: 1,
+            pageSize: 30
+        }
+    });
 
-        const { id } = user;
-        const paginationQueryParams: string = getApiPaginationQueryParams({ 
-            pagination,
-            defaults: {
-                pageNumber: 1,
-                pageSize: 30
-            }
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments?${paginationQueryParams}`;
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
+    const apiData: ApiResponse<any> = apiResponse.json;
+    const apiMeta: any = apiResponse.meta;
+
+    const { ok, status, statusText } = apiMeta;
+
+    if(!ok){
+
+        throw new ServiceError('Error getting group discussion comments with replies', {
+            status: status,
+            statusText: statusText,
+            body: apiData
         });
 
-        const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments?${paginationQueryParams}`;
-        const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
-        const apiData: ApiResponse<any> = apiResponse.json;
-        const apiMeta: any = apiResponse.meta;
+    }
 
-        const { ok, status, statusText } = apiMeta;
+    const commentIdsWithReplies: Array<string> = [];
+    const commentRepliesRequests: Array<any> = [];
 
-        if(!ok){
+    apiData.data?.forEach(async (datum) => {
 
-            return {
-                errors: [{
-                    [status]: statusText
-                }]
-            }
+        if (datum?.repliesCount > 0) {
+
+            commentIdsWithReplies.push(datum.id);
+            commentRepliesRequests.push(getGroupDiscussionCommentReplies({
+                user: user,
+                groupId: groupId,
+                discussionId: discussionId,
+                commentId: datum.id,
+                pagination: {
+                    pageNumber: 1,
+                    pageSize: 30
+                }
+            }));
 
         }
 
-        const commentIdsWithReplies: Array<string> = [];
-        const commentRepliesRequests: Array<any> = [];
-            
-        apiData.data?.forEach(async (datum) => {
-
-            if(datum?.repliesCount > 0){
-
-                commentIdsWithReplies.push(datum.id);
-                commentRepliesRequests.push(getGroupDiscussionCommentReplies({
-                    user: user,
-                    groupId: groupId,
-                    discussionId: discussionId,
-                    commentId: datum.id,
-                    pagination: {
-                        pageNumber: 1,
-                        pageSize: 30
-                    }
-                }));
-
-            }
-
-            serviceResponse.data.push({
-                commentId: datum.id,
+        serviceResponse.data.push({
+            commentId: datum.id,
+            text: {
+                body: datum.content
+            },
+            createdBy: {
+                id: datum.firstRegistered?.by?.id ?? '',
                 text: {
-                    body: datum.content
-                },
-                createdBy: {
-                    id: datum.firstRegistered?.by?.id ?? '',
-                    text: {
-                        userName: datum.firstRegistered?.by?.name ?? ''
-                    }
-                },
-                created: datum.firstRegistered?.atUtc ?? '',
-                replyCount: datum.repliesCount ?? 0,
-                likeCount: datum.likesCount ?? 0,
-                isLiked: datum.currentUser?.liked,
-                replies: []
-            });
-
+                    userName: datum.firstRegistered?.by?.name ?? ''
+                }
+            },
+            created: datum.firstRegistered?.atUtc ?? '',
+            replyCount: datum.repliesCount ?? 0,
+            likeCount: datum.likesCount ?? 0,
+            isLiked: datum.currentUser?.liked,
+            replies: []
         });
 
-        const [...commentReplies] = await Promise.all(commentRepliesRequests);
+    });
 
-        commentIdsWithReplies.forEach((commentId: string, index: number) => {
+    const [...commentReplies] = await Promise.all(commentRepliesRequests);
 
-            const parentDiscussion: any = serviceResponse.data.find((comment) => comment.commentId === commentId);
+    commentIdsWithReplies.forEach((commentId: string, index: number) => {
 
-            if(parentDiscussion && commentReplies[index]?.data?.length > 0){
+        const parentDiscussion: any = serviceResponse.data.find((comment) => comment.commentId === commentId);
 
-                parentDiscussion.replies = commentReplies[index]?.data;
+        if (parentDiscussion && commentReplies[index]?.data?.length > 0) {
 
-            }
+            parentDiscussion.replies = commentReplies[index]?.data;
 
-        });
+        }
 
-        serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
+    });
 
-        return serviceResponse;
+    serviceResponse.pagination = getClientPaginationFromApi({ apiPaginatedResponse: apiData });
 
-    } catch(error){
-
-        const { message } = error;
-
-        return {
-            errors: [{ error: message }],
-        };
-
-    }
+    return serviceResponse;
 
 }

@@ -26,14 +26,14 @@ export const getServerSideProps: GetServerSideProps = withAuth({
              */
             const term: string = selectQuery(context, 'term');
             const pagination: Pagination = selectPagination(context);
-            
+
             let props: Props = selectProps(context);
-    
+
             /**
              * Get data from services
              */
             try {
-    
+
                 const [
                     searchResults
                 ] = await Promise.all([
@@ -43,20 +43,23 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                         minLength: 3
                     })
                 ]);
-    
+
                 props.term = term;
                 props.resultsList = searchResults.data ?? [];
                 props.pagination = searchResults.pagination;
-                props.errors = [...props.errors, ...searchResults.errors];
-            
+
             } catch (error) {
-    
-                props.errors = [{
-                    error: error.message
-                }];
-    
+
+                if (error.name === 'ServiceError') {
+
+                    props.errors = [{
+                        [error.data.status]: error.data.statusText
+                    }];
+
+                }
+
             }
-    
+
             /**
              * Return data to page template
              */
@@ -65,9 +68,9 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                     object: props
                 })
             }
-    
+
         }
-    
+
     })
 });
 

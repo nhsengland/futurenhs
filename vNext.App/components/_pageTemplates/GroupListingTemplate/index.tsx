@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 import { defaultGroupLogos } from '@constants/icons';
 import { Link } from '@components/Link';
@@ -43,37 +44,31 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
             secondaryHeading,
             navMenuTitle } = contentText ?? {};
 
+    /**
+     * Handle client-side pagination
+     */
     const handleGetPage = async ({ 
         pageNumber: requestedPageNumber, 
         pageSize: requestedPageSize 
     }) => {
 
-        try {
-
-            const { data: additionalGroups, pagination, errors } = await getGroups({
-                user: user,
-                isMember: isGroupMember,
-                pagination: {
-                    pageNumber: requestedPageNumber,
-                    pageSize: requestedPageSize
-                }
-            });
-
-            if(!errors || !Object.keys(errors).length){
-
-                setGroupsList([...dynamicGroupsList, ...additionalGroups]);
-                setPagination(pagination);
-
+        const { data: additionalGroups, pagination } = await getGroups({
+            user: user,
+            isMember: isGroupMember,
+            pagination: {
+                pageNumber: requestedPageNumber,
+                pageSize: requestedPageSize
             }
+        });
 
-        } catch(error){
-
-            console.log(error);
-
-        }
+        setGroupsList([...dynamicGroupsList, ...additionalGroups]);
+        setPagination(pagination);
 
     };
 
+    /**
+     * Render
+     */
     return (
 
         <StandardLayout user={user} className="u-bg-theme-3">

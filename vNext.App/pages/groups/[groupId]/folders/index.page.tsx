@@ -52,13 +52,16 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                     props.folderContents = groupFolderContents.data ?? [];
                     props.pagination = groupFolderContents.pagination;
-                    props.errors = [...props.errors, ...groupFolderContents.errors];
 
                 } catch (error) {
 
-                    props.errors = [{
-                        error: error.message
-                    }];
+                    if (error.name === 'ServiceError') {
+
+                        props.errors = [{
+                            [error.data.status]: error.data.statusText
+                        }];
+
+                    }
 
                 }
 
