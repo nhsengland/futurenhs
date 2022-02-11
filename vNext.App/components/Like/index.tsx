@@ -6,7 +6,7 @@ import { SVGIcon } from '@components/SVGIcon';
 import { Props } from './interfaces';
 
 export const Like: (props: Props) => JSX.Element = ({
-    id,
+    targetId,
     iconName = 'icon-like-fill',
     likeCount,
     isLiked,
@@ -46,7 +46,7 @@ export const Like: (props: Props) => JSX.Element = ({
 
         likeTimeOut.current = window.setTimeout(() => {
 
-            likeAction?.(id, !hasLiked);
+            likeAction?.(targetId, !hasLiked);
 
         }, 1000);
 

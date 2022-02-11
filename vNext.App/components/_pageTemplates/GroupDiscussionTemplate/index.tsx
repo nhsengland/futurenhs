@@ -79,7 +79,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const { title, body } = discussionText ?? {};
     const { totalRecords } = pagination ?? {};
 
-    const shouldRenderCommentForm: boolean = actions.includes(actionsConstants.GROUPS_COMMENTS_ADD);
+    const shouldRenderCommentAndReplyForms: boolean = actions.includes(actionsConstants.GROUPS_COMMENTS_ADD);
     const shouldEnableLoadMore: boolean = true;
     const hasDiscussionComments: boolean = dynamicDiscussionCommentsList?.length > 0;
     const creatorUserInitials: string = initials({ value: createdBy?.text?.userName });
@@ -235,24 +235,26 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                 }}
                                                 userProfileLink={`${groupBasePath}/members/${commenterUserId}`}
                                                 date={commentCreatedDate}
+                                                shouldEnableReplies={shouldRenderCommentAndReplyForms}
+                                                shouldEnableLikes={true}
                                                 likeCount={likeCount}
                                                 isLiked={isLiked}
                                                 className="u-border-left-theme-8">
-                                                {hasReply &&
-                                                    <ul className="u-list-none c-comment_replies-list u-p-0">
-                                                        {repliesComponents[0]}
-                                                    </ul>
-                                                }
-                                                {hasReplies &&
-                                                    <Accordion
-                                                        id={additionalRepliesAccordionId}
-                                                        toggleChildren={<span>Show more replies</span>}
-                                                        toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                            <ul className="u-list-none u-p-0">
-                                                                {repliesComponents.splice(1)}
-                                                            </ul>
-                                                    </Accordion>
-                                                }
+                                                    {hasReply &&
+                                                        <ul className="u-list-none c-comment_replies-list u-p-0">
+                                                            {repliesComponents[0]}
+                                                        </ul>
+                                                    }
+                                                    {hasReplies &&
+                                                        <Accordion
+                                                            id={additionalRepliesAccordionId}
+                                                            toggleChildren={<span>Show more replies</span>}
+                                                            toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                                <ul className="u-list-none u-p-0">
+                                                                    {repliesComponents.splice(1)}
+                                                                </ul>
+                                                        </Accordion>
+                                                    }
                                             </Comment>
                                         </li>
 
@@ -306,6 +308,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         }}
                         userProfileLink={`${groupBasePath}/members/${replyingUserId}`}
                         date={replyCreatedDate}
+                        shouldEnableReplies={shouldRenderCommentAndReplyForms}
+                        shouldEnableLikes={true}
                         likeCount={likeCount}
                         isLiked={isLiked}
                         className="c-comment--reply u-border-left-theme-8" />
@@ -330,7 +334,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
 
-                    {shouldRenderCommentForm
+                    {shouldRenderCommentAndReplyForms
                     
                         ?   <FormWithErrorSummary
                                 csrfToken={csrfToken}

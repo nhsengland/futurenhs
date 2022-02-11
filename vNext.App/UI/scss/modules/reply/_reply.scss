@@ -1,0 +1,17 @@
+.c-reply {
+
+    &_toggle {
+        @extend %clear-button-styles;
+        @extend %link-base;
+        @include small-text;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: underline;
+
+        &:focus {
+            border: none;
+        }
+
+    }
+
+}

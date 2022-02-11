@@ -1,5 +1,5 @@
 export interface Props {
-    id: string;
+    targetId: string;
     iconName?: string;
     likeCount: number;
     isLiked?: boolean;

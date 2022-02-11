@@ -7,6 +7,9 @@ export interface Props {
     text: any;
     userProfileLink: string;
     date: string;
+    shouldEnableLikes?: boolean;
+    shouldEnableReplies?: boolean;
+    likeAction?: any;
     likeCount?: number;
     isLiked?: boolean;
     className?: string;

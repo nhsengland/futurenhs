@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import { UserMeta } from '@components/UserMeta';
 import { RichText } from '@components/RichText';
+import { Reply } from '@components/Reply';
 import { Like } from '@components/Like';
 import { Link } from '@components/Link';
 
@@ -14,6 +15,9 @@ export const Comment: (props: Props) => JSX.Element = ({
     text,
     userProfileLink,
     date,
+    shouldEnableLikes,
+    shouldEnableReplies,
+    likeAction,
     likeCount,
     isLiked,
     children,
@@ -46,20 +50,32 @@ export const Comment: (props: Props) => JSX.Element = ({
                 </UserMeta>
             </header>
             <RichText bodyHtml={body} className="u-mb-6" />
-            <footer>
-                <Like
-                    id={commentId}
-                    likeCount={likeCount}
-                    isLiked={isLiked}
-                    shouldEnable={true}
-                    likeAction={console.log}
-                    text={{
-                        countSingular: 'like',
-                        countPlural: 'likes',
-                        like: 'like',
-                        removeLike: 'Remove like'
-                    }} />
-            </footer>
+            {(shouldEnableLikes || shouldEnableReplies) &&
+                <footer className="u-flex u-items-start">
+                    {shouldEnableLikes &&
+                        <Like
+                            targetId={commentId}
+                            likeCount={likeCount}
+                            isLiked={isLiked}
+                            shouldEnable={true}
+                            likeAction={likeAction}
+                            text={{
+                                countSingular: 'like',
+                                countPlural: 'likes',
+                                like: 'like',
+                                removeLike: 'Remove like'
+                            }}
+                            className="u-mr-6" />
+                    }
+                    {shouldEnableReplies &&
+                        <Reply
+                            text={{
+                                reply: 'Reply'
+                            }} 
+                            targetId={commentId} />
+                    }
+                </footer>
+            }
             {children}
         </div>
 
