@@ -3,7 +3,6 @@ const
     gulp = require('gulp'),
     path = require("path"),
     svgSprite = require('gulp-svg-sprites'),
-    // favicons = require('gulp-favicons'),
     childProcess = require('child_process');
 
 const getRootPath = () => process.cwd().includes('vNext.App') ? '' : 'vNext.App';
