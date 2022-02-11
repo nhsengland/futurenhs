@@ -106,7 +106,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                                             <hr />
                                         </>
                                     }
-                                    {name ? <h3>Add folder</h3> : <h2>Add folder</h2>}
+                                    {name ? <h3>Add Folder</h3> : <h2>Add Folder</h2>}
                                     <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
                             </FormWithErrorSummary>
                         </LayoutColumn>
