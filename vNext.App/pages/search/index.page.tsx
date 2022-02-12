@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { withTextContent } from '@hofs/withTextContent';
@@ -26,23 +27,16 @@ export const getServerSideProps: GetServerSideProps = withAuth({
              */
             const term: string = selectQuery(context, 'term');
             const pagination: Pagination = selectPagination(context);
+            const props: Props = selectProps(context);
 
-            let props: Props = selectProps(context);
+            const minLength: number = 3;
 
             /**
              * Get data from services
              */
             try {
 
-                const [
-                    searchResults
-                ] = await Promise.all([
-                    getSearchResults({
-                        term: term,
-                        pagination: pagination,
-                        minLength: 3
-                    })
-                ]);
+                const [searchResults] = await Promise.all([getSearchResults({ term, pagination, minLength })]);
 
                 props.term = term;
                 props.resultsList = searchResults.data ?? [];
@@ -50,13 +44,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
             } catch (error) {
 
-                if (error.name === 'ServiceError') {
-
-                    props.errors = [{
-                        [error.data.status]: error.data.statusText
-                    }];
-
-                }
+                return handleSSRErrorProps({ props, error });
 
             }
 

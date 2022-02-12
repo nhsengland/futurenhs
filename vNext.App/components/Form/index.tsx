@@ -14,6 +14,8 @@ export const Form: (props: Props) => JSX.Element = ({
     action,
     method = 'POST',
     csrfToken,
+    formId,
+    instanceId,
     initialValues = {},
     fields,
     changeAction,
@@ -82,6 +84,18 @@ export const Form: (props: Props) => JSX.Element = ({
                             name="_csrf"
                             component={formComponents.hidden} 
                             defaultValue={csrfToken} />
+                        <Field
+                            key="_formId"
+                            name="_formId"
+                            component={formComponents.hidden} 
+                            defaultValue={formId} />
+                        {instanceId &&
+                            <Field
+                                key="_instanceId"
+                                name="_instanceId"
+                                component={formComponents.hidden} 
+                                defaultValue={instanceId} />
+                        }
                         <div className={generatedClasses.body}>
                             {fields?.map(({ 
                                 name, 
@@ -99,6 +113,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                         inputType={inputType}
                                         text={text}
                                         component={formComponents[component]}
+                                        instanceId={instanceId}
                                         className={className} />
 
                                 )

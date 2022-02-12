@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { defaultGroupLogos } from '@constants/icons';
 import { selectUser, selectParam, selectProps } from '@selectors/context';
@@ -19,7 +20,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
     const getGroupService = dependencies?.getGroupService ?? getGroup;
     const getGroupActionsService = dependencies?.getGroupActionsService ?? getGroupActions;
 
-    const { routeId, getServerSideProps } = config;
+    const { getServerSideProps } = config;
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 
@@ -28,25 +29,16 @@ export const withGroup = (config: HofConfig, dependencies?: {
          */
         const groupId: string = selectParam(context, routeParams.GROUPID);
         const user: User = selectUser(context);
-
-        let props: GroupPage = selectProps(context);
+        const props: GroupPage = selectProps(context);
 
         /**
          * Get data from services
          */
         try {
 
-            const [
-                groupData,
-                actionsData
-            ] = await Promise.all([
-                getGroupService({
-                    groupId: groupId
-                }),
-                getGroupActionsService({
-                    groupId: groupId,
-                    user: user
-                })
+            const [groupData, actionsData] = await Promise.all([
+                getGroupService({ groupId }),
+                getGroupActionsService({ groupId, user })
             ]);
 
             props.groupId = groupId;
@@ -56,27 +48,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
 
         } catch (error) {
 
-            if(error.name === 'ServiceError'){
-
-                if(error.data?.status === 404){
-
-                    return {
-                        notFound: true
-                    }
-
-                } else {
-
-                    return {
-                        props: {
-                            errors: [{
-                                [error.data.status]: error.data.statusText
-                            }]
-                        }
-                    }
-
-                }
-
-            }
+            return handleSSRErrorProps({ props, error });
 
         }
 

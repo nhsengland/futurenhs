@@ -88,6 +88,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                         <LayoutColumn tablet={8}>
                             <FormWithErrorSummary
                                 csrfToken={csrfToken}
+                                formId={formTypes.CREATE_DISCUSSION}
                                 fields={fields}
                                 initialValues={initialValues}
                                 errors={errors}

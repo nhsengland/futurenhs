@@ -3,6 +3,8 @@ import { FormField } from '@appTypes/form';
 export interface Props {
     csrfToken: string;
     initialValues?: any;
+    formId: string;
+    instanceId?: string;
     fields: Array<FormField>;
     text: {
         submitButton: string;

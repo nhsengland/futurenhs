@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { selectUser, selectParam, selectProps } from '@selectors/context';
@@ -28,44 +29,21 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const fileId: string = selectParam(context, routeParams.FILEID);
-
-                let props: Props = selectProps(context);
+                const props: Props = selectProps(context);
 
                 /**
                  * Get data from services
                  */
                 try {
 
-                    const [
-                        groupFile
-                    ] = await Promise.all([
-                        getGroupFile({
-                            user: user,
-                            groupId: groupId,
-                            fileId: fileId
-                        })
-                    ]);
+                    const [groupFile] = await Promise.all([getGroupFile({ user, groupId, fileId })]);
 
                     props.fileId = fileId;
                     props.file = groupFile.data;
 
                 } catch (error) {
 
-                    if (error.name === 'ServiceError') {
-
-                        if(error.data.status === 404){
-
-                            return {
-                                notFound: true
-                            }
-
-                        }
-
-                        props.errors = [{
-                            [error.data.status]: error.data.statusText
-                        }];
-
-                    }
+                    return handleSSRErrorProps({ props, error });
 
                 }
 

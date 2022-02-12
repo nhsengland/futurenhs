@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
@@ -27,15 +28,17 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const csrfToken: string = selectCsrfToken(context);
-                const formPost: any = selectBody(context);
-
-                let props: Props = selectProps(context);
+                const body: any = selectBody(context);
+                const props: Props = selectProps(context);
 
                 props.csrfToken = csrfToken;
                 props.forms = {
                     [createDiscussionForm.id]: createDiscussionForm
                 };
 
+                /**
+                 * Return page not found if user doesn't have permissions to create a discussion
+                 */
                 if(!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)){
 
                     return {
@@ -44,39 +47,28 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
                 }
 
-                if(formPost){
+                /**
+                 * Handle server-side form post
+                 */
+                if(body){
 
                     try {
 
-                        const submission = await postGroupDiscussion({
-                            groupId: groupId,
-                            user: user,
-                            csrfToken: csrfToken,
-                            body: {
-                                formId: createDiscussionForm.id,
-                                ...formPost
-                            }
-                        });
+                        const submission = await postGroupDiscussion({ groupId, user, csrfToken, body });
 
                     } catch(error){
 
-                        if (error.name === 'ServiceError') {
+                        if(error.data?.status === 400){
 
-                            if(error.data?.status === 400){
+                            props.forms[createDiscussionForm.id].errors = error.data.body;
+                            props.forms[createDiscussionForm.id].initialValues = body;
 
-                                props.forms[createDiscussionForm.id].errors = error.data.body;
-                                props.forms[createDiscussionForm.id].initialValues = formPost;
-    
-                            } else {
-    
-                                props.forms[createDiscussionForm.id].errors = {
-                                    [error.data.status]: error.data.statusText
-                                };
-    
-                            }
-        
+                        } else {
+
+                            return handleSSRErrorProps({ props, error });
+
                         }
-
+        
                     }
 
                 }

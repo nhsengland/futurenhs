@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps = withTextContent({
     routeId: routeId,
     getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-        let props: Props = selectProps(context);
+        const props: Props = selectProps(context);
 
         /**
          * Return data to page template

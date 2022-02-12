@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
@@ -9,6 +10,7 @@ import { getGroupMembers } from '@services/getGroupMembers';
 import { getPendingGroupMembers } from '@services/getPendingGroupMembers';
 import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
+import { Pagination } from '@appTypes/pagination';
 import { User } from '@appTypes/user';
 
 import { GroupMemberListingTemplate } from '@components/_pageTemplates/GroupMemberListingTemplate';
@@ -28,32 +30,21 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
-                const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
-                const initialPageSize: number = selectPagination(context).pageSize ?? 10;
+                const props: Props = selectProps(context);
 
-                let props: Props = selectProps(context);
+                const pagination: Pagination = {
+                    pageNumber: selectPagination(context).pageNumber ?? 1,
+                    pageSize: selectPagination(context).pageSize ?? 10
+                };
 
                 /**
                  * Get data from services
                  */
                 try {
 
-                    const [
-                        groupMembers,
-                        groupPendingMembers
-                    ] = await Promise.all([
-                        getGroupMembers({
-                            user: user,
-                            groupId: groupId,
-                            pagination: {
-                                pageNumber: initialPageNumber,
-                                pageSize: initialPageSize
-                            }
-                        }),
-                        getPendingGroupMembers({
-                            user: user,
-                            groupId: groupId
-                        })
+                    const [groupMembers, groupPendingMembers] = await Promise.all([
+                        getGroupMembers({ user, groupId, pagination }),
+                        getPendingGroupMembers({ user, groupId })
                     ]);
 
                     props.members = groupMembers.data;
@@ -62,13 +53,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                 } catch (error) {
 
-                    if (error.name === 'ServiceError') {
-
-                        props.errors = [{
-                            [error.data.status]: error.data.statusText
-                        }];
-    
-                    }
+                    return handleSSRErrorProps({ props, error });
 
                 }
 

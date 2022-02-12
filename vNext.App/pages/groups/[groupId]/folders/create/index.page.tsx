@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { actions as actionConstants } from '@constants/actions';
@@ -29,7 +30,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const folderId: string = selectQuery(context, routeParams.FOLDERID);
                 const csrfToken: string = selectCsrfToken(context);
-                const formPost: any = selectBody(context);
+                const body: any = selectBody(context);
 
                 let props: Props = selectProps(context);
 
@@ -53,73 +54,37 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
 
                     try {
 
-                        const [
-                            groupFolder
-                        ] = await Promise.all([
-                            getGroupFolder({
-                                user: user,
-                                groupId: groupId,
-                                folderId: folderId
-                            })
-                        ]);
+                        const [groupFolder] = await Promise.all([getGroupFolder({ user, groupId, folderId })]);
 
                         props.folder = groupFolder.data;
 
                     } catch(error){
 
-                        if (error.name === 'ServiceError') {
-
-                            if(error.data.status === 404){
-
-                                return {
-                                    notFound: true
-                                }
-
-                            }
-
-                            props.errors = [{
-                                [error.data.status]: error.data.statusText
-                            }];
-    
-                        }
+                        return handleSSRErrorProps({ props, error });
 
                     }
 
                 }
 
-                if(formPost){
+                if(body){
 
                     try {
 
-                        const submission = await postGroupFolder({
-                            groupId: groupId,
-                            user: user,
-                            csrfToken: csrfToken,
-                            body: {
-                                formId: createFolderForm.id,
-                                ...formPost
-                            }
-                        });
+                        const submission = await postGroupFolder({ groupId, user, csrfToken, body });
 
                     } catch(error){
 
-                        if (error.name === 'ServiceError') {
+                        if(error.data?.status === 400){
 
-                            if(error.data?.status === 400){
+                            props.forms[createFolderForm.id].errors = error.data.body;
+                            props.forms[createFolderForm.id].initialValues = body;
 
-                                props.forms[createFolderForm.id].errors = error.data.body;
-                                props.forms[createFolderForm.id].initialValues = formPost;
-    
-                            } else {
-    
-                                props.forms[createFolderForm.id].errors = {
-                                    [error.data.status]: error.data.statusText
-                                };
-    
-                            }
-        
+                        } else {
+
+                            return handleSSRErrorProps({ props, error });
+
                         }
-
+        
                     }
 
                 }

@@ -84,6 +84,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                         <LayoutColumn tablet={8}>
                             <FormWithErrorSummary
                                 csrfToken={csrfToken}
+                                formId={formTypes.CREATE_FOLDER}
                                 fields={fields}
                                 errors={errors}
                                 initialValues={initialValues}

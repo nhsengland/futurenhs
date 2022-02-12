@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
@@ -34,9 +35,8 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 const discussionId: string = selectParam(context, routeParams.DISCUSSIONID);
                 const pagination: Pagination = selectPagination(context);
                 const csrfToken: string = selectCsrfToken(context);
-                const formPost: any = selectBody(context);
-
-                let props: Props = selectProps(context);
+                const body: any = selectBody(context);
+                const props: Props = selectProps(context);
 
                 props.csrfToken = csrfToken;
                 props.discussionId = discussionId;
@@ -44,20 +44,11 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                     [createDiscussionCommentForm.id]: createDiscussionCommentForm
                 };
 
-                if(formPost){
+                if(body){
 
                     try {
 
-                        const submission = await postGroupDiscussionComment({
-                            groupId: groupId,
-                            discussionId: discussionId,
-                            user: user,
-                            csrfToken: csrfToken,
-                            body: {
-                                formId: createDiscussionCommentForm.id,
-                                ...formPost
-                            }
-                        });
+                        const submission = await postGroupDiscussionComment({ groupId, discussionId, user, csrfToken, body });
 
                     } catch(error){
 
@@ -66,13 +57,14 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                             if(error.data?.status === 400){
 
                                 props.forms[createDiscussionCommentForm.id].errors = error.data.body;
-                                props.forms[createDiscussionCommentForm.id].initialValues = formPost;
+                                props.forms[createDiscussionCommentForm.id].initialValues = body;
     
                             } else {
     
-                                props.forms[createDiscussionCommentForm.id].errors = {
-                                    [error.data.status]: error.data.statusText
-                                };
+                                return handleSSRErrorProps({
+                                    props: props,
+                                    error: error
+                                });
     
                             }
         
@@ -87,21 +79,9 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                  */
                 try {
 
-                    const [
-                        groupDiscussion,
-                        groupDiscussionComments
-                    ] = await Promise.all([
-                        getGroupDiscussion({
-                            user: user,
-                            groupId: groupId,
-                            discussionId: discussionId
-                        }),
-                        getGroupDiscussionCommentsWithReplies({
-                            user: user,
-                            groupId: groupId,
-                            discussionId: discussionId,
-                            pagination: pagination
-                        })
+                    const [groupDiscussion, groupDiscussionComments] = await Promise.all([
+                        getGroupDiscussion({ user, groupId, discussionId }),
+                        getGroupDiscussionCommentsWithReplies({ user, groupId, discussionId, pagination })
                     ]);
 
                     props.discussion = groupDiscussion.data;
@@ -110,21 +90,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                 } catch (error) {
 
-                    if (error.name === 'ServiceError') {
-
-                        if(error.data.status === 404){
-
-                            return {
-                                notFound: true
-                            }
-
-                        }
-
-                        props.errors = [{
-                            [error.data.status]: error.data.statusText
-                        }];
-
-                    }
+                    return handleSSRErrorProps({ props, error });
 
                 }
 

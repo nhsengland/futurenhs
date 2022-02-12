@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
@@ -13,62 +14,9 @@ import { User } from '@appTypes/user';
 
 import { GroupForumTemplate } from '@components/_pageTemplates/GroupForumTemplate';
 import { Props } from '@components/_pageTemplates/GroupForumTemplate/interfaces';
+import { Pagination } from '@appTypes/pagination';
 
 const routeId: string = 'd7752e9e-4f47-41ec-bc07-70508d8dcd9b';
-
-export const routeHandler = async (context: GetServerSidePropsContext) => {
-
-    const user: User = selectUser(context);
-    const groupId: string = selectParam(context, routeParams.GROUPID);
-    const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
-    const initialPageSize: number = selectPagination(context).pageSize ?? 5;
-
-    let props: Props = selectProps(context);
-
-    /**
-     * Get data from services
-     */
-    try {
-
-        const [
-            groupDiscussions
-        ] = await Promise.all([
-            getGroupDiscussions({
-                user: user,
-                groupId: groupId,
-                pagination: {
-                    pageNumber: initialPageNumber,
-                    pageSize: initialPageSize
-                }
-            }),
-
-        ]);
-
-        props.discussionsList = groupDiscussions.data;
-        props.pagination = groupDiscussions.pagination;
-
-    } catch (error) {
-
-        if (error.name === 'ServiceError') {
-
-            props.errors = [{
-                [error.data.status]: error.data.statusText
-            }];
-
-        }
-
-    }
-
-    /**
-     * Return data to page template
-     */
-    return {
-        props: getJsonSafeObject({
-            object: props
-        })
-    }
-
-}
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -81,7 +29,45 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             routeId: routeId,
             getServerSideProps: withTextContent({
                 routeId: routeId,
-                getServerSideProps: routeHandler
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
+
+                    /**
+                     * Get context data
+                     */
+                    const user: User = selectUser(context);
+                    const groupId: string = selectParam(context, routeParams.GROUPID);
+                    const props: Props = selectProps(context);
+                    const pagination: Pagination = {
+                        pageNumber: selectPagination(context).pageNumber ?? 1,
+                        pageSize: selectPagination(context).pageSize ?? 5
+                    };
+                
+                    /**
+                     * Get data from services
+                     */
+                    try {
+                
+                        const [groupDiscussions] = await Promise.all([getGroupDiscussions({ user, groupId, pagination })]);
+                
+                        props.discussionsList = groupDiscussions.data;
+                        props.pagination = groupDiscussions.pagination;
+                
+                    } catch (error) {
+                
+                        return handleSSRErrorProps({ props, error });
+                
+                    }
+                
+                    /**
+                     * Return data to page template
+                     */
+                    return {
+                        props: getJsonSafeObject({
+                            object: props
+                        })
+                    }
+                
+                }
             })
         })
     })  

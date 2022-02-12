@@ -338,6 +338,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     
                         ?   <FormWithErrorSummary
                                 csrfToken={csrfToken}
+                                formId={formTypes.CREATE_DISCUSSION_COMMENT}
                                 fields={createCommentfields}
                                 errors={errors}
                                 text={{

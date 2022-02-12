@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-                let props: Props = selectProps(context);
+                const props: Props = selectProps(context);
 
                 /**
                  * Return data to page template

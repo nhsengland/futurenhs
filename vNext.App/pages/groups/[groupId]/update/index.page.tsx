@@ -20,8 +20,7 @@ const routeId: string = '578dfcc6-857f-4eda-8779-1d9b110888c7';
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const csrfToken: string = selectCsrfToken(context);
-
-                let props: Props = selectProps(context);
+                const props: Props = selectProps(context);
 
                 props.csrfToken = csrfToken;
 

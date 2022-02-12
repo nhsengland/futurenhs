@@ -39,7 +39,8 @@ export const Reply: (props: Props) => JSX.Element = ({
                 toggleChildren={<><SVGIcon name="icon-reply" className={generatedClasses.icon} /><span>{reply}</span></>} 
                 toggleClassName={generatedClasses.toggle}>
                     <Form 
-                        csrfToken="" 
+                        csrfToken=""
+                        formId={formTypes.CREATE_DISCUSSION_COMMENT_REPLY}
                         fields={fields} 
                         text={{
                             submitButton: 'Reply'
