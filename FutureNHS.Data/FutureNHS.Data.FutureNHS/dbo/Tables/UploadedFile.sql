@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[UploadedFile] (
-    [Id]                UNIQUEIDENTIFIER NOT NULL,
+    [Id]                UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Filename]          NVARCHAR (200)   NOT NULL,
     [CreatedAtUTC]       DATETIME2         NOT NULL,
     [Comment]           UNIQUEIDENTIFIER NULL,

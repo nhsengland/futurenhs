@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[PollAnswer] (
-    [Id]                 UNIQUEIDENTIFIER NOT NULL,
+    [Id]                 UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Answer]             NVARCHAR (600)   NOT NULL,
     [Poll_Id]            UNIQUEIDENTIFIER NOT NULL,
     [CreatedAtUTC]       DATETIME2 NOT NULL,

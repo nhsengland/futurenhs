@@ -6,6 +6,10 @@
     "appInsights1": {
       "type": "appInsights",
       "connectionId": "ApplicationInsights:ConnectionString"
+    },
+    "storage1": {
+      "type": "storage",
+      "connectionId": "AzureImageBlobStorage"
     }
   }
 }

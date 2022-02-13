@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Discussion] (
-    [Id]                 UNIQUEIDENTIFIER NOT NULL,
+    [Id]                 UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Name]               NVARCHAR (200)   NOT NULL,
     [CreatedAtUtc]       DATETIME2         NOT NULL,
     [CreatedBy]          UNIQUEIDENTIFIER NOT NULL,

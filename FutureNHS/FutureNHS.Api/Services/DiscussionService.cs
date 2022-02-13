@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace FutureNHS.Api.Services
 {
-    public class GroupMembershipService : IGroupMembershipService
+    public class DiscussionService : IGroupMembershipService
     {
         private const string DefaultRole = "Standard Members";
         private readonly ISystemClock _systemClock;
         private readonly IGroupCommand _groupCommand;
         private readonly IRolesCommand _rolesCommand;
 
-        public GroupMembershipService(ISystemClock systemClock, IGroupCommand groupCommand, IRolesCommand rolesCommand)
+        public DiscussionService(ISystemClock systemClock, IGroupCommand groupCommand, IRolesCommand rolesCommand)
         {
             _systemClock = systemClock;
             _groupCommand = groupCommand;

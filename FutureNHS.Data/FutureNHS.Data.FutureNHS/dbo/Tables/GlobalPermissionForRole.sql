@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[GlobalPermissionForRole] (
-    [Id]                UNIQUEIDENTIFIER NOT NULL,
+    [Id]                UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [IsTicked]          BIT              NOT NULL,
     [MembershipRole_Id] UNIQUEIDENTIFIER NOT NULL,
     [Permission_Id]     UNIQUEIDENTIFIER NOT NULL,

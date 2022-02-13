@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Comment] (
-    [Id]                 UNIQUEIDENTIFIER NOT NULL,
+    [Id]                 UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Content]        NVARCHAR (MAX)   NOT NULL,
     [CreatedAtUTC]        DATETIME2         NOT NULL,
     [LikeCount]          INT              NOT NULL,

@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Folder] (
-    [Id]           UNIQUEIDENTIFIER NOT NULL,
+    [Id]           UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Name]         NVARCHAR (200)  NOT NULL,
     [Description]  NVARCHAR (4000)  NULL,
     [CreatedBy]      UNIQUEIDENTIFIER NOT NULL,

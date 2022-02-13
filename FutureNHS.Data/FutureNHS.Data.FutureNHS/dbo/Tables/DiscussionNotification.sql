@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[DiscussionNotification] (
-    [Id]                UNIQUEIDENTIFIER NOT NULL,
+    [Id]                UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Discussion_Id]          UNIQUEIDENTIFIER NOT NULL,
     [MembershipUser_Id] UNIQUEIDENTIFIER NOT NULL,
     [RowVersion]         ROWVERSION NOT NULL, 

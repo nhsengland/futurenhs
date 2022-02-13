@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Favourite] (
-    [Id]          UNIQUEIDENTIFIER NOT NULL,
+    [Id]          UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [CreatedAtUTC] DATETIME         NOT NULL,
     [MemberId]    UNIQUEIDENTIFIER NOT NULL,
     [CommentId]      UNIQUEIDENTIFIER NOT NULL,

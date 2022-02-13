@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Poll] (
-    [Id]                 UNIQUEIDENTIFIER NOT NULL,
+    [Id]                 UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [IsClosed]           BIT              NOT NULL,
     [CreatedAtUTC]        DATETIME         NOT NULL,
     [ClosePollAfterDays] INT              NULL,

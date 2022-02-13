@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[MembershipRole] (
-    [Id]       UNIQUEIDENTIFIER NOT NULL,
+    [Id]       UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [RoleName] NVARCHAR (256)   NOT NULL,
     [IsDeleted] BIT  DEFAULT ((0)) NOT NULL, 
     [RowVersion] ROWVERSION NOT NULL, 

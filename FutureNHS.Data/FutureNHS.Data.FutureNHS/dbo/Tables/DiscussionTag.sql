@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[DiscussionTag] (
-    [Id]                 UNIQUEIDENTIFIER NOT NULL,
+    [Id]                 UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Tag]                NVARCHAR (100)   NOT NULL,
     [Slug]               NVARCHAR (100)   NOT NULL,
     [Description]        NVARCHAR (MAX)   NULL,

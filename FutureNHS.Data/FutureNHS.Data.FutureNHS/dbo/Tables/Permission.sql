@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Permission] (
-    [Id]       UNIQUEIDENTIFIER NOT NULL,
+    [Id]       UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Name]     NVARCHAR (150)   NOT NULL,
     [IsGlobal] BIT              NOT NULL,
     [IsDeleted]          BIT  DEFAULT ((0)) NOT NULL, 

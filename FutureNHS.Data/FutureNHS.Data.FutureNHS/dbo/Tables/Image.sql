@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Image] (
-    [Id]            UNIQUEIDENTIFIER NOT NULL,
+    [Id]            UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [FileName]      NVARCHAR (45)    NOT NULL,
     [FileSizeBytes] INT              NOT NULL,
     [Height]        INT              NOT NULL,

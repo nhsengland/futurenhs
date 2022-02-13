@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[SystemPage] (
-    [Id]        UNIQUEIDENTIFIER NOT NULL,
+    [Id]        UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Slug]      NVARCHAR (50)    NOT NULL,
     [Title]     NVARCHAR (450)   NOT NULL,
     [Content]   NVARCHAR (MAX)   NOT NULL,

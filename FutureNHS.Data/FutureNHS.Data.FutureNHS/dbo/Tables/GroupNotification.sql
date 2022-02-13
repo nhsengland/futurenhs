@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[GroupNotification] (
-    [Id]                UNIQUEIDENTIFIER NOT NULL,
+    [Id]                UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Group_Id]          UNIQUEIDENTIFIER NOT NULL,
     [MembershipUser_Id] UNIQUEIDENTIFIER NOT NULL,
     [IsDeleted]         BIT  DEFAULT ((0)) NOT NULL, 

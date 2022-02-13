@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Discussion_Tag] (
-    [Discussion_Id]    UNIQUEIDENTIFIER NOT NULL,
+    [Discussion_Id]    UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [DiscussionTag_Id] UNIQUEIDENTIFIER NOT NULL,
     [RowVersion]         ROWVERSION NOT NULL, 
     CONSTRAINT [PK_dbo.Discussion_Tag] PRIMARY KEY CLUSTERED ([Discussion_Id] ASC, [DiscussionTag_Id] ASC),

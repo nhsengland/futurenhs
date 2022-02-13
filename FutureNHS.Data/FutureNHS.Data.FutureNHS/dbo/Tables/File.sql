@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[File] (
-    [Id]            UNIQUEIDENTIFIER NOT NULL,
+    [Id]            UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Title]         NVARCHAR (45)    NOT NULL,
     [Description]   NVARCHAR (150)   NULL,
     [FileName]      NVARCHAR (100)   NOT NULL,
@@ -11,7 +11,7 @@
     [CreatedAtUtc]  DATETIME2 (7)    NOT NULL,
     [ModifiedAtUtc] DATETIME2 (7)    NULL,
     [ParentFolder]  UNIQUEIDENTIFIER NOT NULL,
-    [FileStatus]    INT              NOT NULL,
+    [FileStatus]    UNIQUEIDENTIFIER              NOT NULL,
     [BlobHash]      BINARY (16)      NULL,
     [IsDeleted] BIT  DEFAULT ((0)) NOT NULL, 
     [RowVersion] ROWVERSION NOT NULL, 

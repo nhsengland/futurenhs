@@ -64,12 +64,18 @@ const watchApp = (done) => {
 
 const activate = series(activateDb, activateMvcForum, activateApi, activateApp);
 
+const activateNoApp = series(activateDb, activateMvcForum, activateApi);
+
+const activateNoApi = series(activateDb, activateMvcForum, activateApp);
+
 const activateAutomation = series(buildAutomationDb, activateMvcForum, activateApi, activateApp);
 
 const deactivate = series(mvcforum.stopSite, api.stopSite, app.stopSite);
 
 module.exports = {
     activate,
+    activateNoApp,
+    activateNoApi,
     activateAutomation,
     activateApi,
     activateMvcForum,

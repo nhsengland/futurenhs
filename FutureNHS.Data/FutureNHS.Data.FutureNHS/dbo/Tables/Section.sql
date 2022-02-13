@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Section] (
-    [Id]                 UNIQUEIDENTIFIER NOT NULL,
+    [Id]                 UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Name]               NVARCHAR (450)   NOT NULL,
     [Description]        NVARCHAR (4000)   NULL,
     [SortOrder]          INT              NOT NULL,

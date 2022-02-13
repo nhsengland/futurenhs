@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Language] (
-    [Id]                UNIQUEIDENTIFIER NOT NULL,
+    [Id]                UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Name]              NVARCHAR (100)   NOT NULL,
     [LanguageCulture]   NVARCHAR (20)    NOT NULL,
     [FlagImageFileName] NVARCHAR (50)    NULL,

@@ -14,7 +14,7 @@ namespace FutureNHS.Api.Controllers
     {
         private readonly ILogger<DiscussionController> _logger;
         private readonly IDiscussionDataProvider _discussionDataProvider;
-
+        //private readonly IDiscussionCommand
         private readonly IPermissionsService _permissionsService;
 
         public DiscussionController(ILogger<DiscussionController> logger, IDiscussionDataProvider discussionDataProvider, IPermissionsService permissionsService)
@@ -57,9 +57,9 @@ namespace FutureNHS.Api.Controllers
         [HttpPost]
         [Route("users/{userId}/groups/{slug}/discussions")]
 
-        public async Task<IActionResult> CreateDiscussionAsync(Discussion discussion, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateDiscussionAsync(Guid? userId, string slug, Discussion discussion, CancellationToken cancellationToken)
         {
-            var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
+            //var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
 
             if (discussion is null)
             {

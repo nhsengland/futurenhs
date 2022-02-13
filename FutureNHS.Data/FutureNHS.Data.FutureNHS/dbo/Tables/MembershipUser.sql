@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[MembershipUser] (
-    [Id]                            UNIQUEIDENTIFIER NOT NULL,
+    [Id]                            UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [UserName]                      NVARCHAR (150)   NOT NULL,
     [Password]                      NVARCHAR (128)   NOT NULL,
     [PasswordSalt]                  NVARCHAR (128)   NULL,

@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Like] (
-    [Id]                       UNIQUEIDENTIFIER NOT NULL,
-    [Amount]                   TINYINT              NOT NULL,
+    [Id]                       UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+    [Amount]                   SMALLINT              NOT NULL,
     [CreatedAtUTC]             DATETIME2         NOT NULL,
     [Comment_Id]               UNIQUEIDENTIFIER NOT NULL,
     [MembershipUser_Id]        UNIQUEIDENTIFIER NOT NULL,

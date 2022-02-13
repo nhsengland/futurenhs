@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Category] (
-    [Id]                 UNIQUEIDENTIFIER NOT NULL,
+    [Id]                 UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Name]               NVARCHAR (200)   NOT NULL,
     [Description]        NVARCHAR (4000)   NOT NULL,
     [SortOrder]          INT              NOT NULL,

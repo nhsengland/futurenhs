@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Settings] (
-    [Id]                              UNIQUEIDENTIFIER NOT NULL,
+    [Id]                              UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [ForumName]                       NVARCHAR (500)   NULL,
     [ForumUrl]                        NVARCHAR (500)   NULL,
     [PageTitle]                       NVARCHAR (80)    NULL,

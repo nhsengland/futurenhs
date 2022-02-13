@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[PollVote] (
-    [Id]                UNIQUEIDENTIFIER NOT NULL,
+    [Id]                UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [PollAnswer_Id]     UNIQUEIDENTIFIER NOT NULL,
     [MembershipUser_Id] UNIQUEIDENTIFIER NOT NULL,
     [RowVersion] ROWVERSION NOT NULL, 

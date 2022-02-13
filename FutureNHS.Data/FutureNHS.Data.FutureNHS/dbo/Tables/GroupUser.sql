@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[GroupUser] (
-    [Id]                         UNIQUEIDENTIFIER NOT NULL,
+    [Id]                         UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [Approved]                   BIT              NOT NULL,
     [Rejected]                   BIT              NOT NULL,
     [Locked]                     BIT              NOT NULL,

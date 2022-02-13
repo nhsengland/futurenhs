@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[LocaleStringResource] (
-    [Id]                   UNIQUEIDENTIFIER NOT NULL,
+    [Id]                   UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [ResourceValue]        NVARCHAR (1000)  NOT NULL,
     [LocaleResourceKey_Id] UNIQUEIDENTIFIER NOT NULL,
     [Language_Id]          UNIQUEIDENTIFIER NOT NULL,

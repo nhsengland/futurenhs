@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSwaggerGen();
@@ -193,6 +194,11 @@ builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
         options.Realm = "FutureNHS";
         options.KeyName = "Bearer";
     });
+builder.Services.AddAzureClients(clientBuilder =>
+{
+    clientBuilder.AddBlobServiceClient(builder.Configuration["AzureImageBlobStorage:blob"], preferMsi: true);
+    clientBuilder.AddQueueServiceClient(builder.Configuration["AzureImageBlobStorage:queue"], preferMsi: true);
+});
 
 //// By default, authentication is not challenged for every request which is ASP.NET Core's default intended behaviour.
 //// So to challenge authentication for every requests please use below FallbackPolicy option.
