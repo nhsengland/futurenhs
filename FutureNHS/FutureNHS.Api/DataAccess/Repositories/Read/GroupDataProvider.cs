@@ -176,8 +176,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(GroupMember.Id)}]                   = member.Id,
                                 [{nameof(GroupMember.Slug)}]                 = member.Slug, 
                                 [{nameof(GroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
-                                [{nameof(GroupMember.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDate,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMember.LastLoginUtc)}]         = FORMAT(member.LastLoginDate,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMember.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMember.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMember.Role)}]                 = memberRoles.RoleName
 
                     FROM        GroupUser groupUser
@@ -230,8 +230,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(PendingGroupMember.Id)}]                   = member.Id,
                                 [{nameof(PendingGroupMember.Slug)}]                 = member.Slug, 
                                 [{nameof(PendingGroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
-                                [{nameof(PendingGroupMember.ApplicationDateUtc)}]   = FORMAT(groupUser.RequestToJoinDate,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(PendingGroupMember.LastLoginUtc)}]         = FORMAT(member.LastLoginDate,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(PendingGroupMember.ApplicationDateUtc)}]   = FORMAT(groupUser.RequestToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(PendingGroupMember.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(PendingGroupMember.Email)}]                = member.Email
 
                     FROM        GroupUser groupUser
@@ -244,7 +244,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     AND         groupUser.Rejected = 0
                     AND         groupUser.Locked = 0
                     AND         groupUser.Banned = 0
-                    ORDER BY    groupUser.RequestToJoinDate desc
+                    ORDER BY    groupUser.RequestToJoinDateUTC desc
 
                     OFFSET      @Offset ROWS
                     FETCH NEXT  @Limit ROWS ONLY;
@@ -287,8 +287,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(GroupMemberDetails.Initials)}]             = member.Initials, 
                                 [{nameof(GroupMemberDetails.Email)}]                = member.Email, 
                                 [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
-                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDate,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDate,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName
 
                     FROM        GroupUser groupUser

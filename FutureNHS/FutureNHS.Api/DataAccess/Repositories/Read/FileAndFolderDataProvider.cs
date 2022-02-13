@@ -30,12 +30,12 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 @$" SELECT
                                 [{nameof(FolderContentsData.Id)}]                   = folder.Id,
                                 [{nameof(FolderContentsData.Type)}]                 = 'Folder', 
-                                [{nameof(FolderContentsData.Name)}]                 = folder.Name, 
+                                [{nameof(FolderContentsData.Name)}]                 = folder.Title, 
                                 [{nameof(FolderContentsData.Description)}]          = folder.Description,
                                 [{nameof(FolderContentsData.CreatedAtUtc)}]         = FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(FolderContentsData.CreatedById)}]          = folder.AddedBy,
-                                [{nameof(FolderContentsData.CreatedByName)}]        = createUser.FirstName + ' ' + createUser.Surname,
-                                [{nameof(FolderContentsData.CreatedBySlug)}]        = createUser.Slug,
+                                [{nameof(FolderContentsData.CreatedById)}]          = folder.CreatedBy,
+                                [{nameof(FolderContentsData.CreatedByName)}]        = CreatedByUser.FirstName + ' ' + CreatedByUser.Surname,
+                                [{nameof(FolderContentsData.CreatedBySlug)}]        = CreatedByUser.Slug,
                                 [{nameof(FolderContentsData.ModifiedAtUtc)}]        = NULL,
                                 [{nameof(FolderContentsData.ModifiedById)}]         = NULL,
                                 [{nameof(FolderContentsData.ModifiedByName)}]       = NULL,
@@ -43,10 +43,10 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(FolderContentsData.ModifiedBySlug)}]       = NULL,
                                 [{nameof(FolderContentsData.FileExtension)}]        = NULL
                     FROM        Folder folder
-                    LEFT JOIN   MembershipUser CreateUser 
-                    ON          CreateUser.Id = folder.AddedBy
+                    LEFT JOIN   MembershipUser CreatedByUser 
+                    ON          CreatedByUser.Id = folder.CreatedBy
                     JOIN        [Group] groups 
-                    ON          groups.Id = folder.ParentGroup
+                    ON          groups.Id = folder.Group_Id
                     WHERE       groups.Slug = @Slug 
                     AND         folder.ParentFolder IS NULL 
                     AND         folder.IsDeleted = 0
@@ -59,7 +59,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     FROM        Folder folder
                     JOIN        [Group] groups 
-                    ON          groups.Id = folder.ParentGroup
+                    ON          groups.Id = folder.Group_Id
                     WHERE       groups.Slug = @Slug 
                     AND         folder.ParentFolder IS NULL 
                     AND         folder.IsDeleted = 0";
@@ -85,16 +85,16 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             const string query =
                 @$" SELECT
                                 [{nameof(Folder.Id)}]                               = folders.Id,
-                                [{nameof(Folder.Name)}]                             = folders.Name,
+                                [{nameof(Folder.Name)}]                             = folders.Title,
                                 [{nameof(Folder.Description)}]                      = folders.Description,
-                                [{nameof(Models.Shared.Properties.AtUtc)}]   = FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(UserNavProperty.Id)}]                      = mu.Id,
-                                [{nameof(UserNavProperty.Name)}]                    = mu.FirstName + ' ' + mu.Surname,
-                                [{nameof(UserNavProperty.Slug)}]                    = mu.Slug  
+                                [{nameof(Models.Shared.Properties.AtUtc)}]          = FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(UserNavProperty.Id)}]                      = CreatedByUser.Id,
+                                [{nameof(UserNavProperty.Name)}]                    = CreatedByUser.FirstName + ' ' + mu.Surname,
+                                [{nameof(UserNavProperty.Slug)}]                    = CreatedByUser.Slug  
 
                     FROM        Folder folders
-                    JOIN        MembershipUser mu 
-                    ON          mu.Id = folders.AddedBy
+                    JOIN        MembershipUser CreatedByUser 
+                    ON          CreatedByUser.Id = folders.AddedBy
                     WHERE       folders.Id = @FolderId
                     AND         folders.IsDeleted = 0;
 
@@ -102,7 +102,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     (
                     SELECT      
                                 Id,
-                                Name,
+                                Title,
                                 ParentFolder
 
                     FROM        Folder
@@ -110,7 +110,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     UNION ALL
                     SELECT
                                 folder.Id AS PK,
-                                folder.[Name] AS Name,
+                                folder.[Title] AS Title,
                                 folder.ParentFolder AS ParentFK
 
                     FROM        Folder folder
@@ -119,7 +119,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     )
                     SELECT
                                 [{nameof(FolderPathItem.Id)}]    = Id,
-                                [{nameof(FolderPathItem.Name)}]  = Name
+                                [{nameof(FolderPathItem.Name)}]  = Title
                     FROM        BreadCrumbs;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
@@ -170,7 +170,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 @$"SELECT
                                 [{nameof(FolderContentsData.Id)}]               = folder.Id,
                                 [{nameof(FolderContentsData.Type)}]             = 'Folder', 
-                                [{nameof(FolderContentsData.Name)}]             = folder.Name, 
+                                [{nameof(FolderContentsData.Name)}]             = folder.Title, 
                                 [{nameof(FolderContentsData.Description)}]      = folder.Description,
                                 [{nameof(FolderContentsData.CreatedAtUtc)}]     = FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'), 
                                 [{nameof(FolderContentsData.CreatedById)}]      = folder.AddedBy,

@@ -266,4 +266,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="LikedByMembershipUser_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="e0f2df63-3579-458b-9657-1d13e071101f" ChangeDateTime="02/13/2022 15:42:11">
+    <Property Name="ElementName" Value="[dbo].[Folder].[Name]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Folder]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Title" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="14a1112b-22cb-4e66-ac12-af9a3fde7f51" ChangeDateTime="02/13/2022 15:42:27">
+    <Property Name="ElementName" Value="[dbo].[Discussion].[Name]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Discussion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Title" />
+  </Operation>
 </Operations>

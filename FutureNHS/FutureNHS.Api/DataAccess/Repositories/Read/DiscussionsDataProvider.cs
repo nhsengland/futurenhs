@@ -26,51 +26,51 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             }
 
             const string query = 
-                @$" SELECT
+                @$"SELECT
                                 [{nameof(DiscussionData.Id)}]                   = discussion.Id,
-                                [{nameof(DiscussionData.Title)}]                = discussion.Name, 
+                                [{nameof(DiscussionData.Title)}]                = discussion.Title, 
 								[{nameof(DiscussionData.Slug)}]                 = discussion.Slug, 
 	                            [{nameof(DiscussionData.CreatedByThisUser)}]	= ( SELECT      CASE 
-                                                                                    WHEN        discussion.MembershipUser_Id = @UserId 
+                                                                                    WHEN        discussion.CreatedBy = '' 
                                                                                     THEN        CAST(1 as bit) 
                                                                                     ELSE        CAST(0 as bit) 
                                                                                     END
                                                                                   ),       
-                                [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreateDate,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(DiscussionData.CreatedById)}]          = discussion.MembershipUser_Id,
-                                [{nameof(DiscussionData.CreatedByName)}]        = createUser.FirstName + ' ' + createUser.Surname,
-                                [{nameof(DiscussionData.CreatedBySlug)}]        = createUser.Slug,
+                                [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.CreatedById)}]          = discussion.CreatedBy,
+                                [{nameof(DiscussionData.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
+                                [{nameof(DiscussionData.CreatedBySlug)}]        = createdByUser.Slug,
                                 [{nameof(DiscussionData.LastComment)}]			= comment.Id,
-                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(comment.DateCreated,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(DiscussionData.LastCommenterId)}]      = comment.MembershipUser_Id,
+                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(comment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.LastCommenterId)}]      = comment.CreatedBy,
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
 								[{nameof(DiscussionData.Views)}]				= discussion.Views,
-								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Post WHERE Topic_Id = discussion.Id and IsTopicStarter = 0 )
+								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Discussion_Id = discussion.Id )
                     
-                    FROM        Topic discussion
+                    FROM        Discussion discussion
 					JOIN        [Group] groups 
                     ON          groups.Id = discussion.Group_Id
-                    LEFT JOIN   MembershipUser createUser 
-                    ON          CreateUser.Id = discussion.MembershipUser_Id
-                    JOIN        Post comment 
-                    ON          comment.Id = discussion.Post_Id
+                    LEFT JOIN   MembershipUser createdByUser 
+                    ON          createdByUser.Id = discussion.CreatedBy
+                    LEFT JOIN   Comment comment 
+                    ON          comment.Discussion_Id = discussion.Id
 					LEFT JOIN   MembershipUser lastCommentUser 
-                    ON          lastCommentUser.Id = discussion.MembershipUser_Id
-                    WHERE       groups.Slug = @Slug 
+                    ON          lastCommentUser.Id = discussion.CreatedBy
+                    WHERE       groups.Slug = @Slug
                     AND         groups.IsDeleted = 0       
-                    ORDER BY    comment.DateCreated
+                    ORDER BY    comment.CreatedAtUTC
 
-                    OFFSET      @Offset ROWS
+					OFFSET      @Offset ROWS
                     FETCH NEXT  @Limit ROWS ONLY;
 
                     SELECT      COUNT(*) 
 
-                    FROM        Topic discussion
+                    FROM        Discussion discussion
 					JOIN        [Group] groups 
                     ON          groups.Id = discussion.Group_Id
-					WHERE       groups.Slug = @Slug 
+					WHERE       groups.Slug = @Slug
                     AND         groups.IsDeleted = 0";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
@@ -98,15 +98,15 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(DiscussionData.Id)}]                   = discussion.Id,
                                 [{nameof(DiscussionData.Title)}]                = discussion.Name, 
 								[{nameof(DiscussionData.Slug)}]                 = discussion.Slug, 
-								[{nameof(DiscussionData.Description)}]          = comment.PostContent,
+								[{nameof(DiscussionData.Description)}]          = discussion.PostContent,
 	                            [{nameof(DiscussionData.CreatedByThisUser)}]	= ( SELECT      CASE 
-                                                                                    WHEN        discussion.MembershipUser_Id = @UserId 
+                                                                                    WHEN        discussion.CreatedBy = @UserId 
                                                                                     THEN        CAST(1 as bit) 
                                                                                     ELSE        CAST(0 as bit) 
                                                                                     END
                                                                                   ),   
-                                [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreateDate,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(DiscussionData.CreatedById)}]          = discussion.MembershipUser_Id,
+                                [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.CreatedById)}]          = discussion.CreatedBy,
                                 [{nameof(DiscussionData.CreatedByName)}]        = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(DiscussionData.CreatedBySlug)}]        = createUser.Slug,
                                 [{nameof(DiscussionData.LastComment)}]			= comment.Id,
@@ -118,15 +118,11 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 								[{nameof(DiscussionData.Views)}]				= discussion.Views,
 								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Post WHERE Topic_Id = discussion.Id and IsTopicStarter = 0 )
                     
-                    FROM        Topic discussion
+                    FROM        Discussion discussion
                     JOIN        [Group] groups 
                     ON          groups.Id = discussion.Group_Id
-                    LEFT JOIN   MembershipUser createUser 
-                    ON          CreateUser.Id = discussion.MembershipUser_Id
-                    JOIN        Post comment 
-                    ON          comment.Id = discussion.Post_Id
 					LEFT JOIN   MembershipUser lastCommentUser 
-                    ON          lastCommentUser.Id = discussion.MembershipUser_Id
+                    ON          lastCommentUser.Id = discussion.CreatedBy
 
                     WHERE       discussion.Id = @Id 
                     AND         groups.Slug = @GroupSlug";
