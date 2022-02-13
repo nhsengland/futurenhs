@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
@@ -61,11 +61,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 /**
                  * Return data to page template
                  */
-                return {
-                    props: getJsonSafeObject({
-                        object: props
-                    })
-                }
+                return handleSSRSuccessProps({ props });
 
             }
         })

@@ -1,9 +1,9 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { selectCsrfToken, selectBody, selectProps, selectParam, selectUser } from '@selectors/context';
@@ -76,11 +76,7 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                 /**
                  * Return data to page template
                  */
-                return {
-                    props: getJsonSafeObject({
-                        object: props
-                    })
-                }
+                return handleSSRSuccessProps({ props });
 
             }
         })

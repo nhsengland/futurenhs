@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { actions as actionConstants } from '@constants/actions';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
@@ -31,8 +31,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                 const folderId: string = selectQuery(context, routeParams.FOLDERID);
                 const csrfToken: string = selectCsrfToken(context);
                 const body: any = selectBody(context);
-
-                let props: Props = selectProps(context);
+                const props: Props = selectProps(context);
 
                 props.csrfToken = csrfToken;
                 props.forms = {
@@ -92,11 +91,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                 /**
                  * Return data to page template
                  */
-                return {
-                    props: getJsonSafeObject({
-                        object: props
-                    })
-                }
+                return handleSSRSuccessProps({ props });
 
             }
         })

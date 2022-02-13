@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { withAuth } from '@hofs/withAuth';
 import { withTextContent } from '@hofs/withTextContent';
 import { selectProps } from '@selectors/context';
@@ -19,16 +19,12 @@ export const getServerSideProps: GetServerSideProps = withAuth({
         routeId: routeId,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-            let props: Props = selectProps(context);
+            const props: Props = selectProps(context);
 
             /**
              * Return data to page template
              */
-            return {
-                props: getJsonSafeObject({
-                    object: props
-                })
-            }
+            return handleSSRSuccessProps({ props });
 
         }
     })

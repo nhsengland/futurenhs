@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { withTextContent } from '@hofs/withTextContent'
 import { selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -17,16 +17,12 @@ const routeId: string = 'd9a68fe8-e2bf-4ce0-bc1e-9166b9b54a30';
     routeId: routeId,
     getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-        let props: Props = selectProps(context);
+        const props: Props = selectProps(context);
 
         /**
          * Return data to page template
          */
-        return {
-            props: getJsonSafeObject({
-                object: props
-            })
-        }
+        return handleSSRSuccessProps({ props });
 
     }
 });

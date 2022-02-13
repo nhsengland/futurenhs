@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { withAuth } from '@hofs/withAuth';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroups } from '@services/getGroups';
@@ -28,13 +28,10 @@ export const getServerSideProps: GetServerSideProps = withAuth({
              * Get data from request context
              */
             const user: User = selectUser(context);
-            const initialPageNumber: number = selectPagination(context).pageNumber ?? 1;
-            const initialPageSize: number = selectPagination(context).pageSize ?? 10;
             const props: Props = selectProps(context);
-
             const pagination: Pagination = {
-                pageNumber: initialPageNumber,
-                pageSize: initialPageSize
+                pageNumber: selectPagination(context).pageNumber ?? 1,
+                pageSize: selectPagination(context).pageSize ?? 10
             };
     
             props.isGroupMember = isMember;
@@ -58,11 +55,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             /**
              * Return data to page template
              */
-            return {
-                props: getJsonSafeObject({
-                    object: props
-                })
-            }
+            return handleSSRSuccessProps({ props });
     
         }
     })

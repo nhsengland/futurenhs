@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next';
 
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { selectUser, selectParam, selectProps } from '@selectors/context';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
@@ -31,6 +31,8 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 const fileId: string = selectParam(context, routeParams.FILEID);
                 const props: Props = selectProps(context);
 
+                props.fileId = fileId;
+
                 /**
                  * Get data from services
                  */
@@ -38,7 +40,6 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                     const [groupFile] = await Promise.all([getGroupFile({ user, groupId, fileId })]);
 
-                    props.fileId = fileId;
                     props.file = groupFile.data;
 
                 } catch (error) {
@@ -50,11 +51,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 /**
                  * Return data to page template
                  */
-                return {
-                    props: getJsonSafeObject({
-                        object: props
-                    })
-                }
+                return handleSSRSuccessProps({ props });
 
             }
         })
