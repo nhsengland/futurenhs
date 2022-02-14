@@ -28,15 +28,15 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             const string query =
                 @$"SELECT
                                 [{nameof(CommentData.Id)}]                  = comment.Id,
-                                [{nameof(CommentData.Content)}]             = comment.PostContent, 
+                                [{nameof(CommentData.Content)}]             = comment.Content, 
 	                            [{nameof(CommentData.CreatedByThisUser)}]	= ( SELECT      CASE 
-                                                                                WHEN        comment.MembershipUser_Id = @UserId 
+                                                                                WHEN        comment.CreatedBy = @UserId 
                                                                                 THEN        CAST(1 as bit) 
                                                                                 ELSE        CAST(0 as bit) 
                                                                                 END
                                                                               ),               
-                                [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(comment.DateCreated,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(CommentData.CreatedById)}]         = comment.MembershipUser_Id,
+                                [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(comment.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(CommentData.CreatedById)}]         = comment.CreatedBy,
                                 [{nameof(CommentData.CreatedByName)}]       = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
 								[{nameof(CommentData.RepliesCount)}]        = ( SELECT      COUNT(*) 
@@ -54,7 +54,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                                                                 END 
                                                                                 FROM        Like   
                                                                                 WHERE       Like.Comment_Id = comment.Id 
-                                                                                AND         Like.MembershipUser_Id = @UserId
+                                                                                AND         Like.CreatedBy = @UserId
                                                                               )
 
                     FROM            Comment comment
@@ -63,7 +63,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
-                    ON              CreateUser.Id = comment.MembershipUser_Id		
+                    ON              CreateUser.Id = comment.CreatedBy		
 					WHERE           comment.Discussion_Id = @DiscussionId 
                     AND             comment.ThreadId IS NULL
                     AND             groups.Slug = @Slug
@@ -74,14 +74,13 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     SELECT          COUNT(*) 
 
-                    FROM            Post post		
-					Join		    Topic topic
-					ON			    topic.Id = post.Topic_Id
+                    FROM            Comment comment		
+					Join		    Discussion discussion
+					ON			    discussion.Id = comment.Discussion_Id
 					JOIN		    [Group] groups
-					ON			    groups.Id = Topic.Group_Id
-					WHERE           post.Topic_Id = @TopicId 
-                    AND             post.IsTopicStarter = 0
-                    AND             post.ThreadId IS NULL
+					ON			    groups.Id = discussion.Group_Id
+					WHERE           comment.Discussion_Id = @DiscussionId 
+                    AND             comment.ThreadId IS NULL
                     AND             groups.Slug = @Slug";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
@@ -107,54 +106,54 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         {
             const string query =
                 @$"SELECT
-                                [{nameof(CommentData.Id)}]                  = post.Id,
-                                [{nameof(CommentData.Content)}]             = post.PostContent, 
+                                [{nameof(CommentData.Id)}]                  = comment.Id,
+                                [{nameof(CommentData.Content)}]             = comment.Content, 
 	                            [{nameof(CommentData.CreatedByThisUser)}]	= ( SELECT      CASE 
-                                                                                WHEN        post.MembershipUser_Id = @UserId
+                                                                                WHEN        comment.CreatedBy = @UserId
                                                                                 THEN        CAST(1 as bit) 
                                                                                 ELSE        CAST(0 as bit) 
                                                                                 END
                                                                               ),               
-                                [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(post.DateCreated,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(CommentData.CreatedById)}]         = post.MembershipUser_Id,
+                                [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(comment.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(CommentData.CreatedById)}]         = comment.MembershipUser_Id,
                                 [{nameof(CommentData.CreatedByName)}]       = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
 								[{nameof(CommentData.Likes)}]				= ( SELECT      COUNT(*) 
-                                                                                FROM        Vote 
-                                                                                WHERE       Post_Id = post.Id
+                                                                                FROM        Like 
+                                                                                WHERE       Comment_Id = comment.Id
                                                                               ),
 								[{nameof(CommentData.LikedByThisUser)}]		= ( SELECT      CASE 
                                                                                 WHEN        Id IS NULL 
                                                                                 THEN        CAST(0 as bit) 
                                                                                 ELSE        CAST(1 as bit) 
                                                                                 END 
-                                                                                FROM        Vote   
-                                                                                WHERE       Vote.Post_Id = post.Id 
-                                                                                AND         Vote.MembershipUser_Id = @UserId
+                                                                                FROM        Like   
+                                                                                WHERE       Like.Comment_Id = post.Id 
+                                                                                AND         Like.CreatedBy = @UserId
                                                                               )
 
-                    FROM            Post post
-					Join		    Topic topic
-					ON			    topic.Id = post.Topic_Id
+                    FROM            Comment comment
+					JOIN		    Discussion discussion
+					ON			    discussion.Id = comment.Discussion_Id
 					JOIN		    [Group] groups
-					ON			    groups.Id = Topic.Group_Id
+					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
-                    ON              CreateUser.Id = post.MembershipUser_Id		
-					WHERE           post.ThreadId = @ThreadId 
+                    ON              CreateUser.Id = comment.CreatedBy		
+					WHERE           comment.ThreadId = @ThreadId 
                     AND             groups.Slug = @Slug
-                    ORDER BY        post.DateCreated
+                    ORDER BY        comment.CreatedAtUTC
 
                     OFFSET          @Offset ROWS
                     FETCH NEXT      @Limit ROWS ONLY;
 
                     SELECT          COUNT(*) 
 
-                    FROM            Post post		
-					Join		    Topic topic
-					ON			    topic.Id = post.Topic_Id
+                    FROM            Comment comment
+					JOIN		    Discussion discussion
+					ON			    discussion.Id = comment.Topic_Id
 					JOIN		    [Group] groups
-					ON			    groups.Id = Topic.Group_Id
-					WHERE           post.ThreadId = @ThreadId 
+					ON			    groups.Id = discussion.Group_Id
+					WHERE           comment.ThreadId = @ThreadId 
                     AND             groups.Slug = @Slug";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
