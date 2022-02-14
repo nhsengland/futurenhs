@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
+import { routeParams } from '@constants/routes';
+import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { actions as userActions } from '@constants/actions';
 import { Link } from '@components/Link';
 import { SVGIcon } from '@components/SVGIcon';
@@ -31,9 +33,15 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     pagination
 }) => {
 
-    const { asPath } = useRouter();
+    const router = useRouter();
     const [membersList, setMembersList] = useState(members);
     const [dynamicPagination, setPagination] = useState(pagination);
+
+    const groupBasePath: string = getRouteToParam({
+        router: router,
+        paramName: routeParams.GROUPID,
+        shouldIncludeParam: true
+    });
 
     const shouldRenderMemberEditColumn: Boolean = actions?.includes(userActions.GROUPS_MEMBERS_EDIT);
     const shouldRenderPendingMembersList: Boolean = actions?.includes(userActions.GROUPS_MEMBERS_PENDING_VIEW);
@@ -181,7 +189,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
             const rows = [
                 {
-                    children: <Link href={`${asPath}/${id}`}>{fullName || role}</Link>,
+                    children: <Link href={`${groupBasePath}/members/${id}`}>{fullName || role}</Link>,
                     className: generatedCellClasses.name,
                     headerClassName: generatedHeaderCellClasses.name
                 },
@@ -205,7 +213,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             if(shouldRenderMemberEditColumn){
 
                 rows.push({
-                    children: <Link href={`${asPath}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
+                    children: <Link href={`${groupBasePath}/members}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
                     className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                     headerClassName: 'u-hidden'
                 });

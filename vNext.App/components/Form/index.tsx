@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { formComponents } from '@components/_formComponents';
 import { Dialog } from '@components/Dialog';
 import { validate } from '@helpers/validators';
+import { FormField } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -17,7 +18,7 @@ export const Form: (props: Props) => JSX.Element = ({
     formId,
     instanceId,
     initialValues = {},
-    fields,
+    fields: fieldsTemplate,
     changeAction,
     submitAction,
     submitAttemptAction,
@@ -30,8 +31,21 @@ export const Form: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
-    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [fields] = useState(() => {
 
+        const templatedFields: Array<FormField> = JSON.parse(JSON.stringify(fieldsTemplate));
+        
+        templatedFields.forEach(field => {
+        
+            field.name = instanceId ? field.name + '-' + instanceId : field.name;  
+        
+        });
+        
+        return templatedFields;
+
+    });
+    
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const handleCancel = (event: any): any => {
 
         event.preventDefault();

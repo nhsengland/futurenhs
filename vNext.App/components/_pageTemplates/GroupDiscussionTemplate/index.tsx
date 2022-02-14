@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
@@ -18,11 +18,12 @@ import { SVGIcon } from '@components/SVGIcon';
 import { Comment } from '@components/Comment';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { Form } from '@components/Form';
+import { ErrorSummary } from '@components/ErrorSummary';
 import { ErrorBoundary } from '@components/ErrorBoundary';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { BackLink } from '@components/BackLink';
 import { UserMeta } from '@components/UserMeta';
-import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { getGroupDiscussionComments } from '@services/getGroupDiscussionComments';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
@@ -51,6 +52,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
+    const errorSummaryRef: any = useRef();
 
     const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT));
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(discussionCommentsList);
@@ -70,12 +72,12 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const { id, text } = user ?? {};
     const { userName } = text ?? {};
     const { text: discussionText,
-            created,
-            createdBy,
-            responseCount,
-            modified,
-            modifiedBy,
-            viewCount } = discussion ?? {};
+                    created,
+                    createdBy,
+                    responseCount,
+                    modified,
+                    modifiedBy,
+                    viewCount } = discussion ?? {};
     const { title, body } = discussionText ?? {};
     const { totalRecords } = pagination ?? {};
 
@@ -90,6 +92,26 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const lastCommentDate: string = dateTime({ value: modified });
     const createCommentfields = forms?.[formTypes.CREATE_DISCUSSION_COMMENT]?.steps[0]?.fields;
 
+    const handleChange = useCallback((props): any => {
+
+        const { errors, submitErrors, submitFailed } = props;
+        const hasErrors: boolean = errors && Object.keys(errors).length > 0;
+        const errorsToUse: Record<string, string> = submitFailed ? hasErrors ? errors : submitErrors : {};
+
+        setTimeout(() => setErrors(errorsToUse), 0);
+
+    }, [errors]);
+
+    const handleSubmitAttempt = () => {
+
+        if (errors) {
+
+            errorSummaryRef?.current?.focus();
+
+        }
+
+    };
+
     /**
      * Handle client-side submission
      */
@@ -102,13 +124,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 discussionId: discussionId,
                 user: user,
                 csrfToken: csrfToken,
-                body: {
-                    formId: formTypes.CREATE_DISCUSSION,
-                    ...submission
-                }
+                body: submission
             });
 
-        } catch(error){
+        } catch (error) {
 
             setErrors({
                 [error.data.status]: error.data.statusText
@@ -150,133 +169,6 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     };
 
     /**
-     * Render main body
-     */
-    const renderBody = () => {
-
-        return (
-
-            <>
-                <BackLink
-                    href={backLinkHref}
-                    text={{
-                        link: "Back to discussions"
-                    }} />
-                <h2 className="u-text-5xl">{title}</h2>
-                {body &&
-                    <RichText bodyHtml={body} className="u-mb-8" />
-                }
-                <LayoutColumnContainer>
-                    <LayoutColumn tablet={8}>
-                        <UserMeta
-                            image={null}
-                            text={{
-                                initials: creatorUserInitials
-                            }}
-                            className="u-m-0 u-text-theme-7">
-                            <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
-                            {(responseCount > 0 && lastCommentUserName) &&
-                                <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
-                            }
-                        </UserMeta>
-                    </LayoutColumn>
-                    <LayoutColumn tablet={4} className="u-self-end tablet:u-text-right u-text-theme-7 u-text-bold u-mt-4">
-                        {totalRecords > 0 &&
-                            <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" /> {totalRecords} comments</span>
-                        }
-                        {viewCount > 0 &&
-                            <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCount} views</>
-                        }
-                    </LayoutColumn>
-                </LayoutColumnContainer>
-                <hr />
-                {totalRecords > 0 &&
-                    <p className="u-hidden tablet:u-block u-text-lead u-text-bold">
-                        {`${totalRecords} comments`}
-                    </p>
-                }
-                <ErrorBoundary boundaryId="group-discussion-comments">
-                    <AriaLiveRegion>
-                        {hasDiscussionComments &&
-                            <DynamicListContainer
-                                containerElementType="ul"
-                                shouldFocusLatest={shouldEnableLoadMore}
-                                className="u-list-none u-p-0">
-                                {dynamicDiscussionCommentsList?.map(({
-                                    commentId,
-                                    created,
-                                    createdBy,
-                                    text,
-                                    likeCount,
-                                    isLiked,
-                                    replies
-                                }, index) => {
-
-                                    const commenterUserInitials: string = initials({ value: createdBy?.text?.userName });
-                                    const commenterUserName: string = createdBy?.text?.userName;
-                                    const commenterUserId: string = createdBy?.id;
-                                    const commentCreatedDate: string = dateTime({ value: created });
-                                    const hasReply: boolean = replies?.length > 0;
-                                    const hasReplies: boolean = replies?.length > 1;
-                                    const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
-                                    const additionalRepliesAccordionId: string = `${commentId}-replies`;
-
-                                    const { body } = text ?? {};
-
-                                    return (
-
-                                        <li key={index}>
-                                            <Comment
-                                                commentId={commentId}
-                                                text={{
-                                                    userName: commenterUserName,
-                                                    initials: commenterUserInitials,
-                                                    body: body
-                                                }}
-                                                userProfileLink={`${groupBasePath}/members/${commenterUserId}`}
-                                                date={commentCreatedDate}
-                                                shouldEnableReplies={shouldRenderCommentAndReplyForms}
-                                                shouldEnableLikes={true}
-                                                likeCount={likeCount}
-                                                isLiked={isLiked}
-                                                className="u-border-left-theme-8">
-                                                    {hasReply &&
-                                                        <ul className="u-list-none c-comment_replies-list u-p-0">
-                                                            {repliesComponents[0]}
-                                                        </ul>
-                                                    }
-                                                    {hasReplies &&
-                                                        <Accordion
-                                                            id={additionalRepliesAccordionId}
-                                                            toggleChildren={<span>Show more replies</span>}
-                                                            toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                                <ul className="u-list-none u-p-0">
-                                                                    {repliesComponents.splice(1)}
-                                                                </ul>
-                                                        </Accordion>
-                                                    }
-                                            </Comment>
-                                        </li>
-
-                                    )
-
-                                })}
-                            </DynamicListContainer>
-                        }
-                    </AriaLiveRegion>
-                    <PaginationWithStatus
-                        id="discussion-list-pagination"
-                        shouldEnableLoadMore={shouldEnableLoadMore}
-                        getPageAction={handleGetPage}
-                        {...dynamicPagination} />
-                </ErrorBoundary>
-            </>
-
-        )
-
-    }
-
-    /**
      * Render replies to individual comments
      */
     const renderReplies = ({ replies }) => {
@@ -300,6 +192,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
                 <li key={commentId} className="c-comment_reply-container u-m-0 u-py-6">
                     <Comment
+                        csrfToken={csrfToken}
                         commentId={commentId}
                         text={{
                             userName: replyingUserName,
@@ -309,7 +202,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         userProfileLink={`${groupBasePath}/members/${replyingUserId}`}
                         date={replyCreatedDate}
                         shouldEnableReplies={shouldRenderCommentAndReplyForms}
-                        shouldEnableLikes={true}
+                        replyChangeAction={handleChange}
+                        replySubmitAttemptAction={handleSubmitAttempt}
+                        replySubmitAction={() => {}}
+                        shouldEnableLikes={shouldRenderCommentAndReplyForms}
                         likeCount={likeCount}
                         isLiked={isLiked}
                         className="c-comment--reply u-border-left-theme-8" />
@@ -333,34 +229,149 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             image={image}
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
+                    {shouldRenderCommentAndReplyForms &&
+                        <ErrorSummary 
+                            ref={errorSummaryRef} 
+                            errors={errors} 
+                            text={{
+                                body: 'There is a problem'
+                            }} 
+                            className="u-mb-10"/>
+                    }
+                    <BackLink
+                        href={backLinkHref}
+                        text={{
+                            link: "Back to discussions"
+                        }} />
+                    <h2 className="u-text-5xl">{title}</h2>
+                    {body &&
+                        <RichText bodyHtml={body} className="u-mb-8" />
+                    }
+                    <LayoutColumnContainer>
+                        <LayoutColumn tablet={8}>
+                            <UserMeta
+                                image={null}
+                                text={{
+                                    initials: creatorUserInitials
+                                }}
+                                className="u-m-0 u-text-theme-7">
+                                <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
+                                {(responseCount > 0 && lastCommentUserName) &&
+                                    <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
+                                }
+                            </UserMeta>
+                        </LayoutColumn>
+                        <LayoutColumn tablet={4} className="u-self-end tablet:u-text-right u-text-theme-7 u-text-bold u-mt-4">
+                            {totalRecords > 0 &&
+                                <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" /> {totalRecords} comments</span>
+                            }
+                            {viewCount > 0 &&
+                                <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCount} views</>
+                            }
+                        </LayoutColumn>
+                    </LayoutColumnContainer>
+                    <hr />
+                    {totalRecords > 0 &&
+                        <p className="u-hidden tablet:u-block u-text-lead u-text-bold">
+                            {`${totalRecords} comments`}
+                        </p>
+                    }
+                    <ErrorBoundary boundaryId="group-discussion-comments">
+                        <AriaLiveRegion>
+                            {hasDiscussionComments &&
+                                <DynamicListContainer
+                                    containerElementType="ul"
+                                    shouldFocusLatest={shouldEnableLoadMore}
+                                    className="u-list-none u-p-0">
+                                    {dynamicDiscussionCommentsList?.map(({
+                                        commentId,
+                                        created,
+                                        createdBy,
+                                        text,
+                                        likeCount,
+                                        isLiked,
+                                        replies
+                                    }, index) => {
 
-                    {shouldRenderCommentAndReplyForms
-                    
-                        ?   <FormWithErrorSummary
+                                        const commenterUserInitials: string = initials({ value: createdBy?.text?.userName });
+                                        const commenterUserName: string = createdBy?.text?.userName;
+                                        const commenterUserId: string = createdBy?.id;
+                                        const commentCreatedDate: string = dateTime({ value: created });
+                                        const hasReply: boolean = replies?.length > 0;
+                                        const hasReplies: boolean = replies?.length > 1;
+                                        const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
+                                        const additionalRepliesAccordionId: string = `${commentId}-replies`;
+
+                                        const { body } = text ?? {};
+
+                                        return (
+
+                                            <li key={index}>
+                                                <Comment
+                                                    commentId={commentId}
+                                                    csrfToken={csrfToken}
+                                                    text={{
+                                                        userName: commenterUserName,
+                                                        initials: commenterUserInitials,
+                                                        body: body
+                                                    }}
+                                                    userProfileLink={`${groupBasePath}/members/${commenterUserId}`}
+                                                    date={commentCreatedDate}
+                                                    shouldEnableReplies={shouldRenderCommentAndReplyForms}
+                                                    replyChangeAction={handleChange}
+                                                    replySubmitAttemptAction={handleSubmitAttempt}
+                                                    replySubmitAction={() => {}}
+                                                    shouldEnableLikes={shouldRenderCommentAndReplyForms}
+                                                    likeCount={likeCount}
+                                                    isLiked={isLiked}
+                                                    className="u-border-left-theme-8">
+                                                    {hasReply &&
+                                                        <ul className="u-list-none c-comment_replies-list u-p-0">
+                                                            {repliesComponents[0]}
+                                                        </ul>
+                                                    }
+                                                    {hasReplies &&
+                                                        <Accordion
+                                                            id={additionalRepliesAccordionId}
+                                                            toggleChildren={<span>Show more replies</span>}
+                                                            toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                                <ul className="u-list-none u-p-0">
+                                                                    {repliesComponents.splice(1)}
+                                                                </ul>
+                                                        </Accordion>
+                                                    }
+                                                </Comment>
+                                            </li>
+
+                                        )
+
+                                    })}
+                                </DynamicListContainer>
+                            }
+                        </AriaLiveRegion>
+                        <PaginationWithStatus
+                            id="discussion-list-pagination"
+                            shouldEnableLoadMore={shouldEnableLoadMore}
+                            getPageAction={handleGetPage}
+                            {...dynamicPagination} />
+                    </ErrorBoundary>
+                    {shouldRenderCommentAndReplyForms &&
+                        <>
+                            <h3 className="u-text-3xl">Join in the conversation</h3>
+                            <p className="u-text-bold">You're signed in <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
+                            <Form
                                 csrfToken={csrfToken}
                                 formId={formTypes.CREATE_DISCUSSION_COMMENT}
                                 fields={createCommentfields}
-                                errors={errors}
                                 text={{
-                                    errorSummary: {
-                                        body: 'There is a problem'
-                                    },
-                                    form: {
-                                        submitButton: 'Add comment'
-                                    }
+                                    submitButton: 'Add comment'
                                 }}
-                                submitAction={handleSubmit}>
-                                    {renderBody()}
-                                    <h3 className="u-text-3xl">Join in the conversation</h3>
-                                    <p className="u-text-bold">You're signed in <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
-                            </FormWithErrorSummary>
-
-                        :   renderBody()
-                    
+                                changeAction={handleChange}
+                                submitAttemptAction={handleSubmitAttempt}
+                                submitAction={handleSubmit} />
+                        </>
                     }
-
-                    
-                </LayoutColumn>
+            </LayoutColumn>
         </GroupLayout>
 
     )

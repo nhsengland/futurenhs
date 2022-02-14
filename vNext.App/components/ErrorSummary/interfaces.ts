@@ -4,7 +4,6 @@ export interface Props {
         body: string;
     };
     errors?: Record<string, string>;
-    relatedNames?: Array<string>;
     className?: string;
 }
 

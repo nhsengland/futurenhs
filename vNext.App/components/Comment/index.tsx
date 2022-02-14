@@ -11,12 +11,16 @@ import { Props } from './interfaces';
 
 export const Comment: (props: Props) => JSX.Element = ({
     commentId,
+    csrfToken,
     image,
     text,
     userProfileLink,
     date,
-    shouldEnableLikes,
     shouldEnableReplies,
+    replyChangeAction,
+    replySubmitAttemptAction,
+    replySubmitAction,
+    shouldEnableLikes,
     likeAction,
     likeCount,
     isLiked,
@@ -69,10 +73,15 @@ export const Comment: (props: Props) => JSX.Element = ({
                     }
                     {shouldEnableReplies &&
                         <Reply
+                            targetId={commentId}
+                            csrfToken={csrfToken}
+                            changeAction={replyChangeAction}
+                            submitAttemptAction={replySubmitAttemptAction}
+                            submitAction={replySubmitAction}
                             text={{
                                 reply: 'Reply'
                             }} 
-                            targetId={commentId} />
+                            className="u-grow" />
                     }
                 </footer>
             }

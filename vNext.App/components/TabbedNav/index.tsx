@@ -27,7 +27,7 @@ export const TabbedNav: (props: Props) => JSX.Element = ({
                 }, index) => {
                     
                     generatedClasses.link = classNames('c-tabbed-nav_link', {
-                        ['c-tabbed-nav_link--active']: isActive
+                        ['c-tabbed-nav_link--active u-hidden tablet:u-block']: isActive
                     }); 
 
                     return (

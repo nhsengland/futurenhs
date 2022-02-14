@@ -26,7 +26,6 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
 
     const errorSummaryRef: any = useRef();
     const [validationErrors, setValidationErrors] = useState(errors ? errors : {});
-    const relatedNames: Array<string> = fields?.map(({ name }) => name);
 
     const handleChange = useCallback(({ errors, submitErrors, submitFailed }): any => {
 
@@ -67,7 +66,6 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
             <ErrorSummary
                 ref={errorSummaryRef}
                 errors={validationErrors}
-                relatedNames={relatedNames}
                 text={errorSummaryText} 
                 className="u-mb-6"/>
                     {children}

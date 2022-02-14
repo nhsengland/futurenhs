@@ -73,9 +73,11 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
 
                     } catch(error){
 
-                        if(error.data?.status === 400){
+                        if(error.data?.status){
 
-                            props.forms[createFolderForm.id].errors = error.data.body;
+                            props.forms[createFolderForm.id].errors = error.data.body || {
+                                _error: error.data.statusText
+                            };
                             props.forms[createFolderForm.id].initialValues = body;
 
                         } else {

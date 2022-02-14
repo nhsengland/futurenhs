@@ -58,9 +58,11 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
                     } catch(error){
 
-                        if(error.data?.status === 400){
+                        if(error.data?.status){
 
-                            props.forms[createDiscussionForm.id].errors = error.data.body;
+                            props.forms[createDiscussionForm.id].errors = error.data.body || {
+                                _error: error.data.statusText
+                            };
                             props.forms[createDiscussionForm.id].initialValues = body;
 
                         } else {

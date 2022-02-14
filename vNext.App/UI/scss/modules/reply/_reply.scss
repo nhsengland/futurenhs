@@ -14,4 +14,12 @@
 
     }
 
+    &_toggle-icon {
+
+        &--open {
+            transform: rotate(-90deg);
+        }
+
+    }
+
 }

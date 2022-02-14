@@ -40,6 +40,7 @@ export const Header: (props: Props) => JSX.Element = ({
     searchTerm
 }) => {
 
+    const [isMainAccordionOpen, setIsMainAccordionOpen] = useState(true);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [isUserAccordionOpen, setIsUserAccordionOpen] = useState(false);
 
@@ -87,6 +88,12 @@ export const Header: (props: Props) => JSX.Element = ({
 
         domHelpers.lockBodyScroll(false);
 
+        if(!isDesktop){
+
+            setIsMainAccordionOpen(false);
+
+        }
+
     }, []);
 
     return (
@@ -107,7 +114,7 @@ export const Header: (props: Props) => JSX.Element = ({
                     {(shouldRenderSearch || shouldRenderNavigation) && 
                         <div className="c-site-header_nav c-site-header-nav">
                             <Accordion
-                                isOpen={isDesktop}
+                                isOpen={isMainAccordionOpen}
                                 id={headerAccordionId}
                                 toggleChildren={"Menu"}
                                 className="c-site-header-nav_content"

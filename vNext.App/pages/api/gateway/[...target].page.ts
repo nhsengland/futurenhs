@@ -12,15 +12,31 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.SHAREDSECRETS_APIAPPLICATION}`
     };
 
+    if(method === 'GET'){
+
+        const fetchOpts: FetchOptions = setGetFetchOpts(headers);
+        const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
+    
+        const apiData: any = apiResponse.json;
+        const apiMeta: any = apiResponse.meta;
+    
+        const { status } = apiMeta;
+    
+        return res.status(status).json(apiData);
+
+    }
+
     if(method === 'POST'){
 
-        if(!req.body?.formId || !formConfigs[req.body?.formId]){
+        if(!req.body?._formId || !formConfigs[req.body?._formId]){
 
-            return res.status(400).message('Post body missing valid formId');
+            console.log('Post body missing valid formId');
+
+            return res.status(400);
 
         }
 
-        const validationErrors = validate(req.body, selectFormDefaultFields(formConfigs, req.body.formId));
+        const validationErrors = validate(req.body, selectFormDefaultFields(formConfigs, req.body._formId));
 
         if(Object.keys(validationErrors).length > 0){
 
@@ -28,16 +44,16 @@ export default async function handler(req, res) {
 
         }
 
+        const fetchOpts: FetchOptions = setPostFetchOpts(headers, req.body);
+        const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
+    
+        const apiData: any = apiResponse.json;
+        const apiMeta: any = apiResponse.meta;
+    
+        const { status } = apiMeta;
+    
+        return res.status(status).json(apiData);
+
     }
-
-    const fetchOpts: FetchOptions = method === 'GET' ? setGetFetchOpts(headers) : setPostFetchOpts(headers, req.body);
-    const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
-
-    const apiData: any = apiResponse.json;
-    const apiMeta: any = apiResponse.meta;
-
-    const { status } = apiMeta;
-
-    return res.status(status).json(apiData);
 
 }

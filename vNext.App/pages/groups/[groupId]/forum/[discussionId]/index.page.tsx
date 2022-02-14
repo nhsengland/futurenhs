@@ -52,22 +52,17 @@ export const getServerSideProps: GetServerSideProps = withAuth({
 
                     } catch(error){
 
-                        if (error.name === 'ServiceError') {
+                        if(error.data?.status){
 
-                            if(error.data?.status === 400){
+                            props.forms[createDiscussionCommentForm.id].errors = error.data.body || {
+                                _error: error.data.statusText
+                            };
+                            props.forms[createDiscussionCommentForm.id].initialValues = body;
 
-                                props.forms[createDiscussionCommentForm.id].errors = error.data.body;
-                                props.forms[createDiscussionCommentForm.id].initialValues = body;
-    
-                            } else {
-    
-                                return handleSSRErrorProps({
-                                    props: props,
-                                    error: error
-                                });
-    
-                            }
-        
+                        } else {
+
+                            return handleSSRErrorProps({ props, error });
+
                         }
 
                     }

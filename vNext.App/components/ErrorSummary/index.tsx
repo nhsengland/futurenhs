@@ -11,7 +11,6 @@ import { Props } from './interfaces';
  */
 export const ErrorSummary = React.forwardRef(({ 
     errors = {},
-    relatedNames = [],
     text,
     className
 }: Props, ref) => {
@@ -57,14 +56,14 @@ export const ErrorSummary = React.forwardRef(({
 
                                         const rteElement: HTMLElement = rteInstance.getContentAreaContainer();
 
-                                        scrollToComponentAndSetFocus(rteElement, false, 60);
+                                        scrollToComponentAndSetFocus(rteElement, false, 120);
                                         rteInstance.focus();
 
                                     } else {
 
                                         const element: HTMLElement = document.getElementById(key);
 
-                                        scrollToComponentAndSetFocus(element, false, 60);
+                                        scrollToComponentAndSetFocus(element, false, 120);
 
                                     }
 
@@ -73,12 +72,12 @@ export const ErrorSummary = React.forwardRef(({
                                 return (
 
                                     <li key={index} className={generatedClasses.listItem}>
-                                        {relatedNames.includes(key)
+                                        {key === '_error' || Number(key)
                                         
-                                            ?   <a href={`#${key}`} className={generatedClasses.link} onClick={handleClick}>{errors[key]}</a>
+                                            ?   <span className={generatedClasses.item}>{errors[key]}</span>
+
+                                            :   <a href={`#${key}`} className={generatedClasses.link} onClick={handleClick}>{errors[key]}</a>
                                             
-                                            :   <span className={generatedClasses.item}>{errors[key]}</span> 
-                                        
                                         }
                                     </li>
 

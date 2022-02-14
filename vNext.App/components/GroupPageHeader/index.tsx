@@ -48,7 +48,6 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
     const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP);
     const activeMenuItemText: string = navMenuList?.find(({ isActive }) => isActive)?.text;
-    const filteredNavMenuList: any = !isDesktop ? navMenuList?.filter(({ isActive }) => !isActive) : navMenuList;
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,
@@ -193,7 +192,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                 text={{
                                     ariaLabel: navMenuTitle
                                 }}
-                                navMenuList={filteredNavMenuList} />
+                                navMenuList={navMenuList} />
                     </Accordion>
                 }
             </LayoutColumn>
