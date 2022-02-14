@@ -1,4 +1,7 @@
+using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -15,14 +18,16 @@ namespace FutureNHS.Api.Controllers
         private readonly ILogger<CommentController> _logger;
         private readonly ICommentsDataProvider _commentsDataProvider;
         private readonly IPermissionsService _permissionsService;
+        private readonly ICommentsCommand _commentsCommand;
         private readonly IHtmlSanitizer _htmlSanitizer;
 
-        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService, IHtmlSanitizer htmlSanitizer)
+        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService,
+            ICommentsCommand commentsCommand)
         {
-            
-            _logger = logger;
-            _commentsDataProvider = commentsDataProvider;
-            _permissionsService = permissionsService;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _commentsDataProvider = commentsDataProvider ?? throw new ArgumentNullException(nameof(commentsDataProvider));
+            _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
+            _commentsCommand = commentsCommand ?? throw new ArgumentNullException(nameof(commentsCommand));
             _htmlSanitizer = htmlSanitizer;
         }
 
@@ -53,5 +58,24 @@ namespace FutureNHS.Api.Controllers
 
            return Ok(pagedResponse);
         }
+
+        [HttpPost]
+        [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments")]
+        [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}/replies")]
+        public async Task<IActionResult> CreateCommentAsync(Guid membershipUserId, string slug, Guid discussionId, Guid? commentId, [FromBody] string comment, CancellationToken cancellationToken)
+        {
+            var commentDto = new PostDto
+            {
+                PostContent = comment,
+                InReplyTo = commentId,
+                TopicId = discussionId,
+                MembershipUserId = membershipUserId,
+            };
+
+            await _commentsCommand.CreateCommentAsync(commentDto, cancellationToken);
+
+            return Ok();
+        }
+
     }
 }

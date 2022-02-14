@@ -5,6 +5,7 @@ using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
+using FutureNHS.Api.Middleware;
 using FutureNHS.Api.Services;
 using FutureNHS.Infrastructure.Repositories.Database.RetryPolicy;
 using Ganss.XSS;
@@ -220,6 +221,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseAuthentication();    // NOTE: DEFAULT TEMPLATE DOES NOT HAVE THIS, THIS LINE IS REQUIRED AND HAS TO BE ADDED!!!
 app.UseAuthorization();
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.MapControllers();
 

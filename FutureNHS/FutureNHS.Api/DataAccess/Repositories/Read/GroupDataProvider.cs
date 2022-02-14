@@ -5,6 +5,7 @@ using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using FutureNHS.Api.Exceptions;
 using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Read
@@ -159,7 +160,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     Slug = slug
                 }, splitOn: "id");
 
-            var @group = reader.FirstOrDefault();
+            var @group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
 
             return group;
         }
