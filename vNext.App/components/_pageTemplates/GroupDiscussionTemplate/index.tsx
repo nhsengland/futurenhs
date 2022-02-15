@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
+import { postGroupDiscussionCommentReply } from '@services/postGroupDiscussionCommentReply';
 import { selectFormErrors } from '@selectors/forms';
 import { actions as actionsConstants } from '@constants/actions';
 import { formTypes } from '@constants/forms';
@@ -47,7 +48,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     forms,
     services = {
         getGroupDiscussionComments: getGroupDiscussionComments,
-        postGroupDiscussionComment: postGroupDiscussionComment
+        postGroupDiscussionComment: postGroupDiscussionComment,
+        postGroupDiscussionCommentReply: postGroupDiscussionCommentReply
     }
 }) => {
 
@@ -113,15 +115,41 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     };
 
     /**
-     * Handle client-side submission
+     * Handle client-side comment submission
      */
-    const handleSubmit = async (submission) => {
+    const handleCommentSubmit = async (submission) => {
 
         try {
 
             const response = await services.postGroupDiscussionComment({
                 groupId: groupId,
                 discussionId: discussionId,
+                user: user,
+                csrfToken: csrfToken,
+                body: submission
+            });
+
+        } catch (error) {
+
+            setErrors({
+                [error.data.status]: error.data.statusText
+            });
+
+        }
+
+    };
+
+    /**
+     * Handle client-side comment reply submission
+     */
+    const handleCommentReplySubmit = async (submission) => {
+
+        try {
+
+            const response = await services.postGroupDiscussionCommentReply({
+                groupId: groupId,
+                discussionId: discussionId,
+                commentId: 'todo',
                 user: user,
                 csrfToken: csrfToken,
                 body: submission
@@ -204,7 +232,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         shouldEnableReplies={shouldRenderCommentAndReplyForms}
                         replyChangeAction={handleChange}
                         replySubmitAttemptAction={handleSubmitAttempt}
-                        replySubmitAction={() => {}}
+                        replySubmitAction={handleCommentReplySubmit}
                         shouldEnableLikes={shouldRenderCommentAndReplyForms}
                         likeCount={likeCount}
                         isLiked={isLiked}
@@ -320,26 +348,26 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                     shouldEnableReplies={shouldRenderCommentAndReplyForms}
                                                     replyChangeAction={handleChange}
                                                     replySubmitAttemptAction={handleSubmitAttempt}
-                                                    replySubmitAction={() => {}}
+                                                    replySubmitAction={handleCommentReplySubmit}
                                                     shouldEnableLikes={shouldRenderCommentAndReplyForms}
                                                     likeCount={likeCount}
                                                     isLiked={isLiked}
                                                     className="u-border-left-theme-8">
-                                                    {hasReply &&
-                                                        <ul className="u-list-none c-comment_replies-list u-p-0">
-                                                            {repliesComponents[0]}
-                                                        </ul>
-                                                    }
-                                                    {hasReplies &&
-                                                        <Accordion
-                                                            id={additionalRepliesAccordionId}
-                                                            toggleChildren={<span>Show more replies</span>}
-                                                            toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                                <ul className="u-list-none u-p-0">
-                                                                    {repliesComponents.splice(1)}
-                                                                </ul>
-                                                        </Accordion>
-                                                    }
+                                                        {hasReply &&
+                                                            <ul className="u-list-none c-comment_replies-list u-p-0">
+                                                                {repliesComponents[0]}
+                                                            </ul>
+                                                        }
+                                                        {hasReplies &&
+                                                            <Accordion
+                                                                id={additionalRepliesAccordionId}
+                                                                toggleChildren={<span>Show more replies</span>}
+                                                                toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                                    <ul className="u-list-none u-p-0">
+                                                                        {repliesComponents.splice(1)}
+                                                                    </ul>
+                                                            </Accordion>
+                                                        }
                                                 </Comment>
                                             </li>
 
@@ -368,7 +396,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 }}
                                 changeAction={handleChange}
                                 submitAttemptAction={handleSubmitAttempt}
-                                submitAction={handleSubmit} />
+                                submitAction={handleCommentSubmit} />
                         </>
                     }
             </LayoutColumn>

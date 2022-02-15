@@ -8,11 +8,13 @@ const validationFunctions: any = {
     email: email
 };
 
-export const validate = (submission: any, fields: Array<FormField>): Record<string, string> => {
+export const validate = (submission: any, fields: Array<FormField>, fieldNameModifier?: string): Record<string, string> => {
 
     const errors: any = {};
 
     fields?.forEach(({ name, validators }) => {
+
+        const derivedName: string = fieldNameModifier ? `${name}-${fieldNameModifier}` : name;
 
         if(validators?.length > 0){
 
@@ -21,11 +23,11 @@ export const validate = (submission: any, fields: Array<FormField>): Record<stri
                 const validator = validators[i]; 
                 const { type } = validator;
     
-                const error: string = validationFunctions[type](validator)(submission[name]);
+                const error: string = validationFunctions[type](validator)(submission[derivedName]);
     
                 if(error){
     
-                    errors[name] = error;
+                    errors[derivedName] = error;
                     break;
     
                 }

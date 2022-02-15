@@ -56,21 +56,19 @@ export const Comment: (props: Props) => JSX.Element = ({
             <RichText bodyHtml={body} className="u-mb-6" />
             {(shouldEnableLikes || shouldEnableReplies) &&
                 <footer className="u-flex u-items-start">
-                    {shouldEnableLikes &&
-                        <Like
-                            targetId={commentId}
-                            likeCount={likeCount}
-                            isLiked={isLiked}
-                            shouldEnable={true}
-                            likeAction={likeAction}
-                            text={{
-                                countSingular: 'like',
-                                countPlural: 'likes',
-                                like: 'like',
-                                removeLike: 'Remove like'
-                            }}
-                            className="u-mr-6" />
-                    }
+                    <Like
+                        targetId={commentId}
+                        likeCount={likeCount}
+                        isLiked={isLiked}
+                        shouldEnable={shouldEnableLikes}
+                        likeAction={likeAction}
+                        text={{
+                            countSingular: 'like',
+                            countPlural: 'likes',
+                            like: 'like',
+                            removeLike: 'Remove like'
+                        }}
+                        className="u-mr-6" />
                     {shouldEnableReplies &&
                         <Reply
                             targetId={commentId}
@@ -80,8 +78,7 @@ export const Comment: (props: Props) => JSX.Element = ({
                             submitAction={replySubmitAction}
                             text={{
                                 reply: 'Reply'
-                            }} 
-                            className="u-grow" />
+                            }} />
                     }
                 </footer>
             }

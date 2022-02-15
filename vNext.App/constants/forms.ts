@@ -1,6 +1,6 @@
 export const enum formTypes {
-    CREATE_DISCUSSION = 'create-discussion',
-    CREATE_DISCUSSION_COMMENT = 'create-discussion-comment',
-    CREATE_DISCUSSION_COMMENT_REPLY = 'create-discussion-reply',
-    CREATE_FOLDER = 'create-folder'
+    CREATE_DISCUSSION = 'dd844b57-9c48-4ab8-9fe8-984f0c013702',
+    CREATE_DISCUSSION_COMMENT = '98a61f47-3fe9-404c-9def-3992b127ac34',
+    CREATE_DISCUSSION_COMMENT_REPLY = '9c49ffdc-23ea-4c98-bbd1-c5178c97df8f',
+    CREATE_FOLDER = '2d800110-13a0-48e1-9a0b-00896822bfad'
 }; 

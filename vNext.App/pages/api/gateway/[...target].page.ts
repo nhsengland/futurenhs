@@ -28,15 +28,15 @@ export default async function handler(req, res) {
 
     if(method === 'POST'){
 
-        if(!req.body?._formId || !formConfigs[req.body?._formId]){
+        if(!req.body?.['_form-id'] || !formConfigs[req.body?.['_form-id']]){
 
-            console.log('Post body missing valid formId');
+            console.log('Post body missing valid form-id');
 
             return res.status(400);
 
         }
 
-        const validationErrors = validate(req.body, selectFormDefaultFields(formConfigs, req.body._formId));
+        const validationErrors = validate(req.body, selectFormDefaultFields(formConfigs, req.body['_form-id']), req.body?.['_instance-id']);
 
         if(Object.keys(validationErrors).length > 0){
 

@@ -55,10 +55,10 @@ export const Header: (props: Props) => JSX.Element = ({
             logOutCancel,
             logOutConfirm } = text ?? {};
 
+    const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP);
     const headerAccordionId: string = 'header-accordion';
     const userAccordionId: string = 'user-accordion';
     const logOutRoute: string = routes.LOG_OUT;
-    const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP);
     const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
 
     const handleAccordionToggle = (id: string, isOpen: boolean) => {
@@ -87,14 +87,9 @@ export const Header: (props: Props) => JSX.Element = ({
     useEffect(() => {
 
         domHelpers.lockBodyScroll(false);
+        setIsMainAccordionOpen(isDesktop);
 
-        if(!isDesktop){
-
-            setIsMainAccordionOpen(false);
-
-        }
-
-    }, []);
+    }, [isDesktop]);
 
     return (
 

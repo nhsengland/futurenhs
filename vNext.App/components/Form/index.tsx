@@ -99,14 +99,14 @@ export const Form: (props: Props) => JSX.Element = ({
                             component={formComponents.hidden} 
                             defaultValue={csrfToken} />
                         <Field
-                            key="_formId"
-                            name="_formId"
+                            key="_form-id"
+                            name="_form-id"
                             component={formComponents.hidden} 
                             defaultValue={formId} />
                         {instanceId &&
                             <Field
-                                key="_instanceId"
-                                name="_instanceId"
+                                key="_instance-id"
+                                name="_instance-id"
                                 component={formComponents.hidden} 
                                 defaultValue={instanceId} />
                         }
