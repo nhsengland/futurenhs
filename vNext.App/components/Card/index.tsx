@@ -33,9 +33,7 @@ export const Card: (props: Props) => JSX.Element = ({
                     </div>
                 </div>
             }
-            <div className={generatedClasses.body}>
-                {children}
-            </div>
+            {children}
         </div>
 
     );

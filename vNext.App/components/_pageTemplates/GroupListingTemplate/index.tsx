@@ -98,7 +98,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                     ]}
                     className="u-bg-theme-14" />
                 <PageBody>
-                    <LayoutColumn tablet={8}>
+                    <LayoutColumn desktop={8}>
                         <h2>{secondaryHeading}</h2>
                         {intro &&
                             <p className="u-text-lead u-text-theme-7 u-mb-4">{intro}</p>
@@ -129,18 +129,20 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                                             <a>{mainHeading}</a>
                                                         </Link>        
                                                     </h3>
-                                                    <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                        {strapLine}
-                                                    </p>
-                                                    <div className="c-card_footer u-text-theme-0">
-                                                        <p className="c-card_footer-item">
-                                                            <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
-                                                            <span>{`${totalMemberCount} Members`}</span>
+                                                    <div className="c-card_body">
+                                                        <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                            {strapLine}
                                                         </p>
-                                                        <p className="c-card_footer-item">
-                                                            <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
-                                                            <span>{`${totalDiscussionCount} Discussions`}</span>
-                                                        </p>
+                                                        <div className="c-card_footer u-text-theme-0">
+                                                            <p className="c-card_footer-item">
+                                                                <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
+                                                                <span>{`${totalMemberCount} Members`}</span>
+                                                            </p>
+                                                            <p className="c-card_footer-item">
+                                                                <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
+                                                                <span>{`${totalDiscussionCount} Discussions`}</span>
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </Card>
                                             </li>
