@@ -54,34 +54,32 @@ export const Comment: (props: Props) => JSX.Element = ({
                 </UserMeta>
             </header>
             <RichText bodyHtml={body} className="u-mb-6" />
-            {(shouldEnableLikes || shouldEnableReplies) &&
                 <footer className="u-flex u-items-start">
-                    <Like
+                <Like
+                    targetId={commentId}
+                    likeCount={likeCount}
+                    isLiked={isLiked}
+                    shouldEnable={shouldEnableLikes}
+                    likeAction={likeAction}
+                    text={{
+                        countSingular: 'like',
+                        countPlural: 'likes',
+                        like: 'like',
+                        removeLike: 'Remove like'
+                    }}
+                    className="u-mr-6" />
+                {shouldEnableReplies &&
+                    <Reply
                         targetId={commentId}
-                        likeCount={likeCount}
-                        isLiked={isLiked}
-                        shouldEnable={shouldEnableLikes}
-                        likeAction={likeAction}
+                        csrfToken={csrfToken}
+                        changeAction={replyChangeAction}
+                        submitAttemptAction={replySubmitAttemptAction}
+                        submitAction={replySubmitAction}
                         text={{
-                            countSingular: 'like',
-                            countPlural: 'likes',
-                            like: 'like',
-                            removeLike: 'Remove like'
-                        }}
-                        className="u-mr-6" />
-                    {shouldEnableReplies &&
-                        <Reply
-                            targetId={commentId}
-                            csrfToken={csrfToken}
-                            changeAction={replyChangeAction}
-                            submitAttemptAction={replySubmitAttemptAction}
-                            submitAction={replySubmitAction}
-                            text={{
-                                reply: 'Reply'
-                            }} />
-                    }
-                </footer>
-            }
+                            reply: 'Reply'
+                        }} />
+                }
+            </footer>
             {children}
         </div>
 
