@@ -28,7 +28,11 @@ export const getSearchResults = async ({
         data: []
     };
 
-    if (term && term.length < minLength) return serviceResponse;
+    if (!term || term.length < minLength) {
+        
+        return serviceResponse;
+
+    }
 
     const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;

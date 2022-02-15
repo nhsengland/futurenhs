@@ -33,7 +33,17 @@ export const Form: (props: Props) => JSX.Element = ({
     const router = useRouter();
     const [fields] = useState(() => {
 
-        const templatedFields: Array<FormField> = JSON.parse(JSON.stringify(fieldsTemplate));
+        let templatedFields: Array<FormField>;
+        
+        try {
+
+            templatedFields = JSON.parse(JSON.stringify(fieldsTemplate));
+
+        } catch(error){
+
+            templatedFields = [];
+
+        }
         
         templatedFields.forEach(field => {
         
