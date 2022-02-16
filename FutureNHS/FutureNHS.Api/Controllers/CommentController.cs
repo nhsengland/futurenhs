@@ -7,6 +7,7 @@ using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Ganss.XSS;
 using Microsoft.AspNetCore.Mvc;
+using Comment = FutureNHS.Api.Models.Comment.Comment;
 
 namespace FutureNHS.Api.Controllers
 {
@@ -18,15 +19,15 @@ namespace FutureNHS.Api.Controllers
         private readonly ILogger<CommentController> _logger;
         private readonly ICommentsDataProvider _commentsDataProvider;
         private readonly IPermissionsService _permissionsService;
-        private readonly ICommentsCommand _commentsCommand;
+        private readonly ICommentService _commentService;
         private readonly IHtmlSanitizer _htmlSanitizer;
 
-        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService, ICommentsCommand commentsCommand, IHtmlSanitizer htmlSanitizer)
+        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService, ICommentService commentService, IHtmlSanitizer htmlSanitizer)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _commentsDataProvider = commentsDataProvider ?? throw new ArgumentNullException(nameof(commentsDataProvider));
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
-            _commentsCommand = commentsCommand ?? throw new ArgumentNullException(nameof(commentsCommand));
+            _commentService = commentService ?? throw new ArgumentNullException(nameof(commentService));
             _htmlSanitizer = htmlSanitizer;
         }
 
@@ -60,18 +61,32 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments")]
-        [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}/replies")]
-        public async Task<IActionResult> CreateCommentAsync(Guid membershipUserId, string slug, Guid discussionId, Guid? commentId, [FromBody] string comment, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCommentAsync(Guid membershipUserId, string slug, Guid discussionId, Comment comment, CancellationToken cancellationToken)
         {
-            var commentDto = new PostDto
+            if (!ModelState.IsValid)
             {
-                PostContent = comment,
-                InReplyTo = commentId,
-                TopicId = discussionId,
-                MembershipUserId = membershipUserId,
-            };
+                return BadRequest();
+            }
 
-            await _commentsCommand.CreateCommentAsync(commentDto, cancellationToken);
+            comment.Content = _htmlSanitizer.Sanitize(comment.Content);
+
+            await _commentService.CreateCommentAsync(membershipUserId, slug, discussionId, comment, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}/replies")]
+        public async Task<IActionResult> CreateCommentReplyAsync(Guid membershipUserId, string slug, Guid discussionId, Guid commentId, Comment comment, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            comment.Content = _htmlSanitizer.Sanitize(comment.Content);
+
+            await _commentService.CreateCommentReplyAsync(membershipUserId, slug, discussionId, commentId, comment, cancellationToken);
 
             return Ok();
         }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace FutureNHS.Api.Models.Pagination.Helpers
 {
-    public static class PaginationHelper
+    public static  class PaginationHelper
     {
 
         public static PagedResponse<T> CreatePagedResponse<T>(T pagedData, PaginationFilter validFilter, uint totalRecords, string route)

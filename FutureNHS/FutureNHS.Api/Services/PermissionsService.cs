@@ -47,6 +47,29 @@ namespace FutureNHS.Api.Services
             return permissions.Distinct();
         }
 
+
+        public async Task<IEnumerable<string>?> GetUserPermissionsForGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        {
+            if (userId == Guid.Empty) throw new ArgumentException("Cannot be EMPTY", nameof(userId));
+            if (string.IsNullOrEmpty(slug)) throw new ArgumentException("Cannot be EMPTY", nameof(slug));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var (userRoles, groupUserRoles) = await _roleDataProvider.GetUserAndGroupUserRolesAsync(userId, slug, cancellationToken);
+
+            if (userRoles is null || !userRoles.Any())
+            {
+                return null;
+            }
+
+            var permissions = new List<string>();
+
+            permissions.AddRange(await GetSiteUserPermissionsForGroupRoles(userRoles));
+            permissions.AddRange(await GetUserPermissionsForGroupRoles(groupUserRoles, slug));
+
+            return permissions.Distinct();
+        }
+
         public async Task<IEnumerable<string>?> GetUserPermissionsAsync(Guid userId,CancellationToken cancellationToken)
         {
             if (userId == Guid.Empty) throw new ArgumentException("Cannot be EMPTY", nameof(userId));
@@ -60,7 +83,7 @@ namespace FutureNHS.Api.Services
                 return null;
             }
 
-            var permissions = await GetSitePermissionsForRoles(userRoles);
+            var permissions = await GetSitePermissionsForRoles(userRoles.ToList());
 
             return permissions.Distinct();
         }
@@ -72,7 +95,14 @@ namespace FutureNHS.Api.Services
             return roles != null && roles.Any(x => x == action);
         }
 
-        private async Task<IEnumerable<string>> GetSitePermissionsForRoles(IEnumerable<string>? userRoles)
+        public async Task<bool> UserCanPerformActionAsync(Guid userId, string slug, string action, CancellationToken cancellationToken)
+        {
+            var roles = await GetUserPermissionsForGroupAsync(userId, slug, cancellationToken);
+
+            return roles != null && roles.Any(x => x == action);
+        }
+
+        private async Task<IEnumerable<string>> GetSitePermissionsForRoles(List<string>? userRoles)
         {
             var permissions = new List<string>();
 
@@ -146,6 +176,42 @@ namespace FutureNHS.Api.Services
             else
             {
                 var permissionsForRole = await _permissionsDataProvider.GetPermissionsForGroupRole(GuestRole, groupId);
+
+                permissions.AddRange(permissionsForRole);
+            }
+
+            return permissions;
+        }
+
+        private async Task<IEnumerable<string>> GetUserPermissionsForGroupRoles(IEnumerable<GroupUserRole>? userGroupRoles, string slug)
+        {
+            var permissions = new List<string>();
+
+            if (userGroupRoles is not null && userGroupRoles.Any())
+            {
+                // Check whether the user has been Approved, Banned, Pending approval etc
+                var groupUserStatus = GetUserStatus(userGroupRoles.FirstOrDefault());
+
+                // If user approved continue to work out their permissions
+                if (groupUserStatus == Approved)
+                {
+                    foreach (var role in userGroupRoles)
+                    {
+                        var permissionsForRole = await _permissionsDataProvider.GetPermissionsForGroupRole(role.RoleName, slug);
+                        permissions.AddRange(permissionsForRole);
+                    }
+                }
+                // If user not approved then set their role to guest
+                else
+                {
+                    var permissionsForRole = await _permissionsDataProvider.GetPermissionsForGroupRole(GuestRole, slug);
+
+                    permissions.AddRange(permissionsForRole);
+                }
+            }
+            else
+            {
+                var permissionsForRole = await _permissionsDataProvider.GetPermissionsForGroupRole(GuestRole, slug);
 
                 permissions.AddRange(permissionsForRole);
             }

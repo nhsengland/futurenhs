@@ -2,7 +2,7 @@
 
 namespace FutureNHS.Api.Models.Discussion
 {
-    public class Discussion
+    public sealed class Discussion
     {
         [Required]
         [MaxLength(200)]

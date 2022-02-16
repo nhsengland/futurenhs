@@ -3,7 +3,7 @@ using FutureNHS.Api.Application.Application.HardCodedSettings;
 
 namespace FutureNHS.Api.Models.Pagination.Filter
 {
-    public class PaginationFilter
+    public sealed class PaginationFilter
     {
         [Range(PaginationSettings.MinOffset, int.MaxValue)]
         public uint Offset { get; set; }

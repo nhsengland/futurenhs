@@ -107,5 +107,41 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
             return Task.FromResult(permissions);
         }
+
+        public Task<List<string>> GetPermissionsForGroupRole(string role, string slug)
+        {
+            var permissions = new List<string>();
+
+            switch (role)
+            {
+                case "Admin":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/delete");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/delete");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/delete");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
+                    break;
+                case "Standard Members":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/add");
+                    break;
+                case "Guest":
+                    break;
+                default:
+                    break;
+            }
+
+            return Task.FromResult(permissions);
+        }
     }
 }
