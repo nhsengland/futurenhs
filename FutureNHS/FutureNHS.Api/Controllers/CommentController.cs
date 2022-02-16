@@ -21,8 +21,7 @@ namespace FutureNHS.Api.Controllers
         private readonly ICommentsCommand _commentsCommand;
         private readonly IHtmlSanitizer _htmlSanitizer;
 
-        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService,
-            ICommentsCommand commentsCommand)
+        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService, ICommentsCommand commentsCommand, IHtmlSanitizer htmlSanitizer)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _commentsDataProvider = commentsDataProvider ?? throw new ArgumentNullException(nameof(commentsDataProvider));
