@@ -8,12 +8,15 @@ namespace FutureNHS.Api.Services
     public class GroupMembershipService : IGroupMembershipService
     {
         private const string DefaultRole = "Standard Members";
+
+        private readonly ILogger<GroupMembershipService> _logger;
         private readonly ISystemClock _systemClock;
         private readonly IGroupCommand _groupCommand;
         private readonly IRolesCommand _rolesCommand;
 
-        public GroupMembershipService(ISystemClock systemClock, IGroupCommand groupCommand, IRolesCommand rolesCommand)
+        public GroupMembershipService(ILogger<GroupMembershipService> logger, ISystemClock systemClock, IGroupCommand groupCommand, IRolesCommand rolesCommand)
         {
+            _logger = logger;
             _systemClock = systemClock;
             _groupCommand = groupCommand;
             _rolesCommand = rolesCommand;
@@ -29,9 +32,15 @@ namespace FutureNHS.Api.Services
             var defaultRole = await _rolesCommand.GetRoleAsync(DefaultRole, cancellationToken);
             var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
 
+            if (!groupId.HasValue)
+            {
+                _logger.LogError($"Error: UserJoinGroupAsync - Group not found for slug:{0}", slug);
+                throw new KeyNotFoundException("Error: Group not found for slug");
+            }
+
             var groupUser = new GroupUserDto
             {
-                Group = groupId,
+                Group = groupId.Value,
                 MembershipUser = userId,
                 RequestToJoinDateUTC = now,
                 Approved = true,
@@ -51,7 +60,13 @@ namespace FutureNHS.Api.Services
 
             var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
 
-            await _groupCommand.UserLeaveGroupAsync(userId, groupId, cancellationToken);
+            if (!groupId.HasValue)
+            {
+                _logger.LogError($"Error: UserLeaveGroupAsync - Group not found for slug:{0}", slug);
+                throw new KeyNotFoundException("Error: Group not found for slug");
+            }
+
+            await _groupCommand.UserLeaveGroupAsync(userId, groupId.Value, cancellationToken);
         }
 
 

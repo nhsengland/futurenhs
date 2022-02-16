@@ -1,8 +1,10 @@
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
 using FutureNHS.Api.Models.Discussion;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
@@ -14,14 +16,18 @@ namespace FutureNHS.Api.Controllers
     {
         private readonly ILogger<DiscussionController> _logger;
         private readonly IDiscussionDataProvider _discussionDataProvider;
-        //private readonly IDiscussionCommand
-        private readonly IPermissionsService _permissionsService;
+        private readonly IDiscussionService _discussionService;
 
-        public DiscussionController(ILogger<DiscussionController> logger, IDiscussionDataProvider discussionDataProvider, IPermissionsService permissionsService)
+        private readonly IPermissionsService _permissionsService;
+        private readonly IHtmlSanitizer _htmlSanitizer;
+
+        public DiscussionController(ILogger<DiscussionController> logger, IDiscussionDataProvider discussionDataProvider, IPermissionsService permissionsService, IDiscussionService discussionService, IHtmlSanitizer htmlSanitizer)
         {
             _logger = logger;
             _discussionDataProvider = discussionDataProvider;
             _permissionsService = permissionsService;
+            _discussionService = discussionService;
+            _htmlSanitizer = htmlSanitizer;
         }
 
         [HttpGet]
@@ -55,16 +61,10 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("users/{userId}/groups/{slug}/discussions")]
-
-        public async Task<IActionResult> CreateDiscussionAsync(Guid? userId, string slug, Discussion discussion, CancellationToken cancellationToken)
+        [Route("users/{userId:guid}/groups/{slug}/discussions")]
+        public async Task<IActionResult> CreateDiscussionAsync(Guid userId, string slug, Discussion discussion, CancellationToken cancellationToken)
         {
-            //var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
-
-            if (discussion is null)
-            {
-                return NotFound();
-            }
+            await _discussionService.CreateDiscussionAsync(userId, slug, discussion, cancellationToken);
 
             return Ok(discussion);
         }

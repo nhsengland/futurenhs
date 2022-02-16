@@ -6,5 +6,5 @@ public interface IGroupCommand
 {
     Task UserJoinGroupAsync(GroupUserDto groupUser, CancellationToken cancellationToken = default);
     Task UserLeaveGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default);
-    Task<Guid> GetGroupIdForSlugAsync(string slug, CancellationToken cancellationToken = default);
+    Task<Guid?> GetGroupIdForSlugAsync(string slug, CancellationToken cancellationToken = default);
 }

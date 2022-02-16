@@ -2,6 +2,7 @@ using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
@@ -14,12 +15,15 @@ namespace FutureNHS.Api.Controllers
         private readonly ILogger<CommentController> _logger;
         private readonly ICommentsDataProvider _commentsDataProvider;
         private readonly IPermissionsService _permissionsService;
+        private readonly IHtmlSanitizer _htmlSanitizer;
 
-        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService)
+        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService, IHtmlSanitizer htmlSanitizer)
         {
+            
             _logger = logger;
             _commentsDataProvider = commentsDataProvider;
             _permissionsService = permissionsService;
+            _htmlSanitizer = htmlSanitizer;
         }
 
         [HttpGet]

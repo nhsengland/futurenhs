@@ -1,59 +1,67 @@
-﻿using FutureNHS.Api.DataAccess.DTOs;
+﻿using System.Security;
+using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
+using FutureNHS.Api.Models.Discussion;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 
 namespace FutureNHS.Api.Services
 {
-    public class DiscussionService : IGroupMembershipService
+    public class DiscussionService : IDiscussionService
     {
         private const string DefaultRole = "Standard Members";
+        private const string AddDiscussionRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/add";
+
+        private readonly ILogger<DiscussionService> _logger;
+        private readonly IDiscussionCommand _discussionCommand;
         private readonly ISystemClock _systemClock;
         private readonly IGroupCommand _groupCommand;
-        private readonly IRolesCommand _rolesCommand;
+        private readonly IPermissionsService _permissionsService;
 
-        public DiscussionService(ISystemClock systemClock, IGroupCommand groupCommand, IRolesCommand rolesCommand)
+        public DiscussionService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IDiscussionCommand discussionCommand, IGroupCommand groupCommand)
         {
             _systemClock = systemClock;
+            _discussionCommand = discussionCommand;
             _groupCommand = groupCommand;
-            _rolesCommand = rolesCommand;
+            _permissionsService = permissionsService;
+            _logger = logger;
         }
 
-        public async Task UserJoinGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        public async Task CreateDiscussionAsync(Guid userId, string slug, Discussion discussion, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
 
             var now = _systemClock.UtcNow.UtcDateTime;
 
-            var defaultRole = await _rolesCommand.GetRoleAsync(DefaultRole, cancellationToken);
             var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
-
-            var groupUser = new GroupUserDto
+            
+            if (!groupId.HasValue)
             {
-                Group = groupId,
-                MembershipUser = userId,
-                RequestToJoinDateUTC = now,
-                Approved = true,
-                ApprovingMembershipUser = userId,
-                ApprovedDateUTC = now,
-                MembershipRole = defaultRole.Id,
-                
+                _logger.LogError($"Error: CreateDiscussionAsync - Group not found for slug:{0}", slug);
+                throw new KeyNotFoundException("Error: Group not found for slug");
+            }
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupId.Value, AddDiscussionRole, cancellationToken);
+
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: CreateDiscussionAsync - User:{0} does not have access to group:{1}", userId, slug);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            var discussionDto = new DiscussionDto
+            {
+                Title = discussion.Title,
+                Content = discussion.Content,
+                CreatedAtUTC = now,
+                CreatedBy = userId,
+                IsSticky = discussion.IsSticky,
+                IsLocked = false,
+                GroupId = groupId.Value
             };
 
-            await _groupCommand.UserJoinGroupAsync(groupUser, cancellationToken);
+            await _discussionCommand.CreateDiscussionAsync(discussionDto, cancellationToken);
         }
-
-        public async Task UserLeaveGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
-        {
-            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
-            if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
-
-            var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
-
-            await _groupCommand.UserLeaveGroupAsync(userId, groupId, cancellationToken);
-        }
-
-
     }
 }

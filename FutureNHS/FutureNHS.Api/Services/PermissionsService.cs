@@ -65,6 +65,13 @@ namespace FutureNHS.Api.Services
             return permissions.Distinct();
         }
 
+        public async Task<bool> UserCanPerformActionAsync(Guid userId,Guid groupId, string action, CancellationToken cancellationToken)
+        {
+            var roles = await GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+           
+            return roles != null && roles.Any(x => x == action);
+        }
+
         private async Task<IEnumerable<string>> GetSitePermissionsForRoles(IEnumerable<string>? userRoles)
         {
             var permissions = new List<string>();

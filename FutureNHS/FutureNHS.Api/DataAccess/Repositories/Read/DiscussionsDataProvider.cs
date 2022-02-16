@@ -29,9 +29,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 @$"SELECT
                                 [{nameof(DiscussionData.Id)}]                   = discussion.Id,
                                 [{nameof(DiscussionData.Title)}]                = discussion.Title, 
-								[{nameof(DiscussionData.Slug)}]                 = discussion.Slug, 
 	                            [{nameof(DiscussionData.CreatedByThisUser)}]	= ( SELECT      CASE 
-                                                                                    WHEN        discussion.CreatedBy = '' 
+                                                                                    WHEN        discussion.CreatedBy = @UserId
                                                                                     THEN        CAST(1 as bit) 
                                                                                     ELSE        CAST(0 as bit) 
                                                                                     END
@@ -40,9 +39,9 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(DiscussionData.CreatedById)}]          = discussion.CreatedBy,
                                 [{nameof(DiscussionData.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
                                 [{nameof(DiscussionData.CreatedBySlug)}]        = createdByUser.Slug,
-                                [{nameof(DiscussionData.LastComment)}]			= comment.Id,
-                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(comment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(DiscussionData.LastCommenterId)}]      = comment.CreatedBy,
+                                [{nameof(DiscussionData.LastComment)}]			= latestComment.Id,
+                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(latestComment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.LastCommenterId)}]      = latestComment.CreatedBy,
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
@@ -54,10 +53,15 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     ON          groups.Id = discussion.Group_Id
                     LEFT JOIN   MembershipUser createdByUser 
                     ON          createdByUser.Id = discussion.CreatedBy
+          
                     LEFT JOIN   Comment comment 
-                    ON          comment.Discussion_Id = discussion.Id
-					LEFT JOIN   MembershipUser lastCommentUser 
-                    ON          lastCommentUser.Id = discussion.CreatedBy
+                    ON          comment.Discussion_Id = discussion.id 
+                    LEFT JOIN   Comment latestComment 
+                    ON          comment.id = latestComment.id 
+                    AND         comment.CreatedAtUTC < latestComment.CreatedAtUTC 
+
+                    LEFT JOIN   MembershipUser lastCommentUser 
+                    ON          lastCommentUser.Id = latestComment.CreatedBy
                     WHERE       groups.Slug = @Slug
                     AND         groups.IsDeleted = 0       
                     ORDER BY    comment.CreatedAtUTC
@@ -94,11 +98,10 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         public async Task<Discussion?> GetDiscussionAsync(Guid? userId, string groupSlug, Guid id, CancellationToken cancellationToken)
         {
             const string query =
-                @$"SELECT
+                @$" SELECT
                                 [{nameof(DiscussionData.Id)}]                   = discussion.Id,
-                                [{nameof(DiscussionData.Title)}]                = discussion.Name, 
-								[{nameof(DiscussionData.Slug)}]                 = discussion.Slug, 
-								[{nameof(DiscussionData.Description)}]          = discussion.PostContent,
+                                [{nameof(DiscussionData.Title)}]                = discussion.Title, 
+								[{nameof(DiscussionData.Description)}]          = discussion.Content,
 	                            [{nameof(DiscussionData.CreatedByThisUser)}]	= ( SELECT      CASE 
                                                                                     WHEN        discussion.CreatedBy = @UserId 
                                                                                     THEN        CAST(1 as bit) 
@@ -107,31 +110,44 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                                                                   ),   
                                 [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(DiscussionData.CreatedById)}]          = discussion.CreatedBy,
-                                [{nameof(DiscussionData.CreatedByName)}]        = createUser.FirstName + ' ' + createUser.Surname,
-                                [{nameof(DiscussionData.CreatedBySlug)}]        = createUser.Slug,
-                                [{nameof(DiscussionData.LastComment)}]			= comment.Id,
-                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(comment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(DiscussionData.LastCommenterId)}]      = comment.CreatedBy,
+                                [{nameof(DiscussionData.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
+                                [{nameof(DiscussionData.CreatedBySlug)}]        = createdByUser.Slug,
+                                [{nameof(DiscussionData.LastComment)}]			= latestComment.Id,
+                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(latestComment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.LastCommenterId)}]      = latestComment.CreatedBy,
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
 								[{nameof(DiscussionData.Views)}]				= discussion.Views,
-								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Post WHERE Topic_Id = discussion.Id and IsTopicStarter = 0 )
+								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Discussion_Id = discussion.Id)
                     
                     FROM        Discussion discussion
                     JOIN        [Group] groups 
                     ON          groups.Id = discussion.Group_Id
-					LEFT JOIN   MembershipUser lastCommentUser 
-                    ON          lastCommentUser.Id = discussion.CreatedBy
 
+                    LEFT JOIN   MembershipUser createdByUser 
+                    ON          createdByUser.Id = discussion.CreatedBy
+          
+                    LEFT JOIN   Comment comment 
+                    ON          comment.Discussion_Id = discussion.id 
+                    LEFT JOIN   Comment latestComment 
+                    ON          comment.id = latestComment.id 
+                    AND         comment.CreatedAtUTC < latestComment.CreatedAtUTC 
+
+                    LEFT JOIN   MembershipUser lastCommentUser 
+                    ON          lastCommentUser.Id = latestComment.CreatedBy
+                    
                     WHERE       discussion.Id = @Id 
-                    AND         groups.Slug = @GroupSlug";
+                    AND         groups.Slug = @Slug
+                    AND         groups.IsDeleted = 0       
+
+                    ORDER BY    comment.CreatedAtUTC";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
             var reader = await dbConnection.QueryAsync<DiscussionData>(query, new
             {
-                GroupSlug = groupSlug,
+                Slug = groupSlug,
                 Id = id,
                 UserId = userId
             });
@@ -149,7 +165,6 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                 {
                     Id = item.Id,
                     Title = item.Title,
-                    Slug = item.Slug,
                     Description = item.Description,
                     IsSticky = item.IsSticky,
                     Views = item.Views,

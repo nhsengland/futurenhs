@@ -21,6 +21,7 @@ namespace FutureNHS.Api.DataAccess
             services.AddScoped<ICommentsDataProvider, CommentsDataProvider>();
 
             // Write
+            services.AddScoped<IDiscussionCommand, DiscussionCommand>();
             services.AddScoped<IGroupCommand, GroupCommand>();
             services.AddScoped<IRolesCommand, RolesCommand>();
 

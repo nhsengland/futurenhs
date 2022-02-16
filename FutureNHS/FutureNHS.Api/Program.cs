@@ -7,6 +7,7 @@ using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders;
 using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
 using FutureNHS.Api.Services;
 using FutureNHS.Infrastructure.Repositories.Database.RetryPolicy;
+using Ganss.XSS;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -166,6 +167,8 @@ builder.Services.AddApiVersioning(config =>
 
 builder.Services.DataAccess();
 builder.Services.Services();
+
+builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
 
 // It requires Realm to be set in the options if SuppressWWWAuthenticateHeader is not set.
 // If an implementation of IApiKeyProvider interface is used as well as options.Events.OnValidateKey delegate is also set then this delegate will be used first.

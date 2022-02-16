@@ -6,7 +6,6 @@ namespace FutureNHS.Api.DataAccess.Models.Discussions
     {
         public Guid Id { get; init; }
         public string Title { get; init; }
-        public string Slug { get; init; }
         public string Description { get; init; }
         public bool CreatedByThisUser { get; init; }
         public string? CreatedAtUtc { get; init; }

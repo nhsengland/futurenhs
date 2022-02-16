@@ -76,7 +76,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
 
             if (result != 1)
             {
-                _logger.LogError("Error: User request to join group was not added", queryDefinition);
+                _logger.LogError($"Error: User request to join group was not added User:{0}, Group:{1} ", groupUser.MembershipUser, groupUser.Group);
                 throw new DBConcurrencyException("Error: User request to join group was not added");
             }
         }
@@ -110,7 +110,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
             }
         }
 
-        public async Task<Guid> GetGroupIdForSlugAsync(string slug, CancellationToken cancellationToken = default)
+        public async Task<Guid?> GetGroupIdForSlugAsync(string slug, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
 
@@ -123,7 +123,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var id = await dbConnection.QuerySingleAsync<Guid>(query, new
+            var id = await dbConnection.QueryFirstOrDefaultAsync<Guid?>(query, new
             {
                 Slug = slug,
             });
