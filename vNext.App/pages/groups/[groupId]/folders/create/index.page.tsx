@@ -65,11 +65,22 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
 
                 }
 
+                /**
+                 * handle server-side form POST
+                 */
                 if(body){
 
                     try {
 
                         const submission = await postGroupFolder({ groupId, user, csrfToken, body });
+
+                        return {
+                            props: {},
+                            redirect: {
+                                permanent: false,
+                                destination: `/groups/${context.params.groupId}/folders`
+                            }
+                        }
 
                     } catch(error){
 

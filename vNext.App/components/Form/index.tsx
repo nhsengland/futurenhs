@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { Link } from '@components/Link';
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
@@ -87,6 +87,7 @@ export const Form: (props: Props) => JSX.Element = ({
             onSubmit={submitAction}
             validate={handleValidate}
             render={({ 
+                form,
                 handleSubmit, 
                 submitting 
             }) => (
@@ -99,7 +100,12 @@ export const Form: (props: Props) => JSX.Element = ({
                         event.preventDefault();
 
                         submitAttemptAction?.();
-                        handleSubmit();
+                        handleSubmit()?.then(() => fields.forEach(({ name }) => {
+                            
+                            form.resetFieldState(name);
+                            (window as any).tinymce?.get(name)?.setContent('');
+
+                        }));
 
                     }} 
                     className={generatedClasses.wrapper}>
@@ -178,6 +184,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                 errors: true,
                                 submitErrors: true,
                                 submitFailed: true, 
+                                submitSucceeded: true,
                                 modifiedSinceLastSubmit: true
                             }}
                             onChange={handleChange}

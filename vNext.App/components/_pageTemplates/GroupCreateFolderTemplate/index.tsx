@@ -44,7 +44,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
         shouldIncludeParam: true
     });
 
-    const cancelHref: string = `${groupBasePath}/files`;
+    const folderHref: string = `${groupBasePath}/folders`;
 
     const handleSubmit = async (submission) => {
 
@@ -59,6 +59,8 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                     ...submission
                 }
             });
+
+            router.push(folderHref);
 
         } catch(error){
 
@@ -98,7 +100,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                                     }
                                 }} 
                                 submitAction={handleSubmit}
-                                cancelHref={cancelHref}
+                                cancelHref={folderHref}
                                 bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1"
                                 submitButtonClassName="u-float-right">
                                     {name &&

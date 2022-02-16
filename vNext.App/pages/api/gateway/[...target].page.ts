@@ -44,15 +44,17 @@ export default async function handler(req, res) {
 
         }
 
-        const fetchOpts: FetchOptions = setPostFetchOpts(headers, req.body);
-        const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
+        // const fetchOpts: FetchOptions = setPostFetchOpts(headers, req.body);
+        // const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
     
-        const apiData: any = apiResponse.json;
-        const apiMeta: any = apiResponse.meta;
+        // const apiData: any = apiResponse.json;
+        // const apiMeta: any = apiResponse.meta;
     
-        const { status } = apiMeta;
+        // const { status } = apiMeta;
     
-        return res.status(status).json(apiData);
+        // return res.status(status).json(apiData);
+
+        return res.status(200).json({});
 
     }
 

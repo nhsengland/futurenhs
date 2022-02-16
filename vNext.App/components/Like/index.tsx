@@ -18,8 +18,11 @@ export const Like: (props: Props) => JSX.Element = ({
 
     const [isActive, setIsActive] = useState(false);
     const [dynamicLikeCount, setDynamicLikeCount] = useState(likeCount);
+    const [isProcessing, setisProcessing] = useState(false);
     const [hasLiked, setHasLiked] = useState(isLiked);
+
     const likeTimeOut = useRef(null);
+    const processingTimeOut = useRef(null);
 
     const { countSingular, countPlural, like, removeLike } = text;
 
@@ -27,28 +30,33 @@ export const Like: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames('c-like', 'u-text-bold', className, {
-            ['c-like--enabled']: shouldEnable
+            ['c-like--enabled']: isActive
         }),
         icon: classNames('u-w-5', 'u-h-5', 'u-mr-2', {
-            ['u-fill-theme-8']: hasLiked,
-            ['u-fill-theme-5']: !hasLiked
+            ['u-fill-theme-8']: isActive && hasLiked,
+            ['u-fill-theme-5']: !isActive || !hasLiked
         })
     };
 
     const handleLikeToggle = () => {
 
-        window.clearTimeout(likeTimeOut.current);
+        if(!isProcessing){
 
-        const updatedLikeCount: number = hasLiked ? dynamicLikeCount - 1 : dynamicLikeCount + 1;
+            window.clearTimeout(likeTimeOut.current);
 
-        setHasLiked(!hasLiked);
-        setDynamicLikeCount(updatedLikeCount);
+            const updatedLikeCount: number = hasLiked ? dynamicLikeCount - 1 : dynamicLikeCount + 1;
+    
+            setHasLiked(!hasLiked);
+            setDynamicLikeCount(updatedLikeCount);
+    
+            likeTimeOut.current = window.setTimeout(() => {
 
-        likeTimeOut.current = window.setTimeout(() => {
+                //setisProcessing(true);
+                likeAction?.(targetId, !hasLiked);
+    
+            }, 2000);
 
-            likeAction?.(targetId, !hasLiked);
-
-        }, 1000);
+        }
 
     }
 
@@ -56,12 +64,22 @@ export const Like: (props: Props) => JSX.Element = ({
 
         shouldEnable && setIsActive(true);
 
+        return () => {
+
+            window.clearTimeout(likeTimeOut?.current);
+            window.clearTimeout(processingTimeOut?.current);
+
+        }
+
     }, []);
 
     useEffect(() => {
 
+        setisProcessing(false);
         setHasLiked(isLiked);
         setDynamicLikeCount(likeCount);
+
+        window.clearTimeout(processingTimeOut?.current);
 
     }, [isLiked, likeCount]);
 
@@ -69,20 +87,22 @@ export const Like: (props: Props) => JSX.Element = ({
 
         return (
 
-            <button aria-label={ariaLabelToUse} className={generatedClasses.wrapper} onClick={handleLikeToggle}>
+            <button aria-label={ariaLabelToUse} className={generatedClasses.wrapper} aria-disabled={isProcessing} onClick={handleLikeToggle}>
                 <SVGIcon name={iconName} className={generatedClasses.icon} />
                 <span>{dynamicLikeCount} {dynamicLikeCount === 1 ? countSingular : countPlural}</span>
             </button>
 
-        )
+        );
 
     }
 
     return (
 
         <span className={generatedClasses.wrapper}>
+            <SVGIcon name={iconName} className={generatedClasses.icon} />
             <span>{dynamicLikeCount} {dynamicLikeCount === 1 ? countSingular : countPlural}</span>
         </span>
 
     );
+
 }

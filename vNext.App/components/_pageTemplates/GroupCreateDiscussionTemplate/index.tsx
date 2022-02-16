@@ -42,7 +42,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
         shouldIncludeParam: true
     });
 
-    const cancelHref: string = `${groupBasePath}/forum`;
+    const forumHref: string = `${groupBasePath}/forum`;
 
     /**
      * Client-side submission handler
@@ -60,6 +60,8 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                     ...submission
                 }
             });
+
+            router.push(forumHref);
 
         } catch(error){
 
@@ -102,7 +104,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                                     }
                                 }} 
                                 submitAction={handleSubmit}
-                                cancelHref={cancelHref}
+                                cancelHref={forumHref}
                                 bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1">
                                     <h2>Create discussion</h2>
                             </FormWithErrorSummary>

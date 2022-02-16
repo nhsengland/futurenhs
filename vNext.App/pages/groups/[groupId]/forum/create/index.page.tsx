@@ -56,6 +56,14 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
                         const submission = await postGroupDiscussion({ groupId, user, csrfToken, body });
 
+                        return {
+                            props: {},
+                            redirect: {
+                                permanent: false,
+                                destination: `/groups/${context.params.groupId}/forum`
+                            }
+                        }
+
                     } catch(error){
 
                         if(error.data?.status){

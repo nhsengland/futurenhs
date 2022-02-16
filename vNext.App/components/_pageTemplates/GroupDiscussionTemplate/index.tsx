@@ -94,6 +94,18 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const lastCommentDate: string = dateTime({ value: modified });
     const createCommentfields = forms?.[formTypes.CREATE_DISCUSSION_COMMENT]?.steps[0]?.fields;
 
+    /**
+     * Handle likes on comments
+     */
+    const handleLike = useCallback((commentId: string, isLiked: boolean): any => {
+
+        
+
+    }, []);
+
+    /**
+     * Handle changes to forms
+     */
     const handleChange = useCallback((props): any => {
 
         const { errors, submitErrors, submitFailed } = props;
@@ -104,6 +116,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     }, [errors]);
 
+    /**
+     * Handle form submit attempts
+     */
     const handleSubmitAttempt = () => {
 
         if (errors) {
@@ -128,6 +143,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 csrfToken: csrfToken,
                 body: submission
             });
+
+            document.getElementById('__next').focus();
+            window.scrollTo(0, 0);
 
         } catch (error) {
 
@@ -236,6 +254,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         shouldEnableLikes={shouldRenderCommentAndReplyForms}
                         likeCount={likeCount}
                         isLiked={isLiked}
+                        likeAction={handleLike}
                         className="c-comment--reply u-border-left-theme-8" />
                 </li>
 
@@ -352,6 +371,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                     shouldEnableLikes={shouldRenderCommentAndReplyForms}
                                                     likeCount={likeCount}
                                                     isLiked={isLiked}
+                                                    likeAction={handleLike}
                                                     className="u-border-left-theme-8">
                                                         {hasReply &&
                                                             <ul className="u-list-none c-comment_replies-list u-p-0">
