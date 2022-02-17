@@ -67,7 +67,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     WHERE       groups.Slug = @Slug
                     AND         groups.IsDeleted = 0       
-                    ORDER BY    discussion.CreatedAtUTC
+                    ORDER BY    discussion.CreatedAtUTC DESC
 
                     OFFSET      @Offset ROWS
                     FETCH NEXT  @Limit ROWS ONLY;
