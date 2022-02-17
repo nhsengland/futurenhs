@@ -6,7 +6,7 @@
     [Banned]                     BIT              NOT NULL,
     [RequestToJoinDateUTC]       DATETIME         NOT NULL,
     [ApprovedToJoinDateUTC]      DATETIME         NULL,
-    [RequestToJoinReason]        NVARCHAR (200)   NULL,
+    [RequestToJoinReasonUTC]        NVARCHAR (200)   NULL,
     [LockReason]                 NVARCHAR (200)   NULL,
     [BanReason]                  NVARCHAR (200)   NULL,
     [ApprovingMembershipUser_Id] UNIQUEIDENTIFIER NULL,

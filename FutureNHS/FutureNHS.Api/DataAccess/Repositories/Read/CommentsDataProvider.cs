@@ -41,7 +41,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
 								[{nameof(CommentData.RepliesCount)}]        = ( SELECT      COUNT(*) 
                                                                                 FROM        Comment replies 
-                                                                                WHERE       replies.ThreadId = post.Id
+                                                                                WHERE       replies.ThreadId = comment.Id
                                                                               ),
 								[{nameof(CommentData.Likes)}]				= ( SELECT      COUNT(*) 
                                                                                 FROM        [Like] 
@@ -115,11 +115,11 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                                                                 END
                                                                               ),               
                                 [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(comment.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(CommentData.CreatedById)}]         = comment.MembershipUser_Id,
+                                [{nameof(CommentData.CreatedById)}]         = comment.CreatedBy,
                                 [{nameof(CommentData.CreatedByName)}]       = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
 								[{nameof(CommentData.Likes)}]				= ( SELECT      COUNT(*) 
-                                                                                FROM        Like 
+                                                                                FROM        [Like] 
                                                                                 WHERE       Comment_Id = comment.Id
                                                                               ),
 								[{nameof(CommentData.LikedByThisUser)}]		= ( SELECT      CASE 
@@ -127,9 +127,9 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                                                                 THEN        CAST(0 as bit) 
                                                                                 ELSE        CAST(1 as bit) 
                                                                                 END 
-                                                                                FROM        Like   
-                                                                                WHERE       Like.Comment_Id = post.Id 
-                                                                                AND         Like.CreatedBy = @UserId
+                                                                                FROM        [Like]  
+                                                                                WHERE       [Like].Comment_Id = comment.Id 
+                                                                                AND         [Like].CreatedBy = @UserId
                                                                               )
 
                     FROM            Comment comment
@@ -150,7 +150,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     FROM            Comment comment
 					JOIN		    Discussion discussion
-					ON			    discussion.Id = comment.Topic_Id
+					ON			    discussion.Id = comment.Discussion_Id
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
 					WHERE           comment.ThreadId = @ThreadId 

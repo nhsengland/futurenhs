@@ -89,12 +89,12 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(Folder.Description)}]                      = folders.Description,
                                 [{nameof(Models.Shared.Properties.AtUtc)}]          = FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(UserNavProperty.Id)}]                      = CreatedByUser.Id,
-                                [{nameof(UserNavProperty.Name)}]                    = CreatedByUser.FirstName + ' ' + mu.Surname,
+                                [{nameof(UserNavProperty.Name)}]                    = CreatedByUser.FirstName + ' ' + CreatedByUser.Surname,
                                 [{nameof(UserNavProperty.Slug)}]                    = CreatedByUser.Slug  
 
                     FROM        Folder folders
                     JOIN        MembershipUser CreatedByUser 
-                    ON          CreatedByUser.Id = folders.AddedBy
+                    ON          CreatedByUser.Id = folders.CreatedBy
                     WHERE       folders.Id = @FolderId
                     AND         folders.IsDeleted = 0;
 
@@ -173,7 +173,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                 [{nameof(FolderContentsData.Name)}]             = folder.Title, 
                                 [{nameof(FolderContentsData.Description)}]      = folder.Description,
                                 [{nameof(FolderContentsData.CreatedAtUtc)}]     = FORMAT(folder.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'), 
-                                [{nameof(FolderContentsData.CreatedById)}]      = folder.AddedBy,
+                                [{nameof(FolderContentsData.CreatedById)}]      = folder.CreatedBy,
                                 [{nameof(FolderContentsData.CreatedByName)}]    = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(FolderContentsData.CreatedBySlug)}]    = createUser.Slug,
                                 [{nameof(FolderContentsData.ModifiedAtUtc)}]    = null,
@@ -185,9 +185,9 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     FROM        Folder folder
                     LEFT JOIN   MembershipUser CreateUser 
-                    ON          CreateUser.Id = folder.AddedBy
+                    ON          CreateUser.Id = folder.CreatedBy
                     WHERE       ParentFolder = @FolderId 
-                    AND         IsDeleted = 0
+                    AND         folder.IsDeleted = 0
                     UNION ALL
                     SELECT 
                                 files.Id,
@@ -211,7 +211,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     LEFT JOIN   MembershipUser ModifyUser 
                     ON          ModifyUser.Id = files.ModifiedBy
                     WHERE       ParentFolder = @FolderId 
-                    AND         FileStatus = 4
+                    AND         FileStatus = (SELECT Id FROM [FileStatus] WHERE Name = 'Verified')
                     ORDER BY    type DESC, Name
 
                     OFFSET @Offset ROWS
@@ -231,7 +231,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                     FROM        [File] files
                     WHERE       ParentFolder = @FolderId 
-                    AND         FileStatus = 4
+                    AND         FileStatus  = (SELECT Id FROM [FileStatus] WHERE Name = 'Verified')
                     ) 
                     AS          TOTAL";
 
@@ -275,13 +275,13 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 					LEFT JOIN   MembershipUser modifyUser 
                     ON          modifyUser.Id = files.ModifiedBy
                     WHERE       files.Id = @FileId 
-                    AND         FileStatus = 4;                    
+                    AND         FileStatus = (SELECT Id FROM [FileStatus] WHERE Name = 'Verified');                    
                     WITH BreadCrumbs
                     AS 
                     (
                     SELECT
                                 folder.Id,
-                                folder.Name,
+                                folder.Title,
                                 folder.ParentFolder AS ParentFolder
 
                     FROM        Folder folder
@@ -291,7 +291,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     UNION ALL
                     SELECT
                                 PK = folder.Id,
-                                Name = folder.[Name],
+                                Title = folder.[Title],
                                 ParentFK = folder.ParentFolder
 
                     FROM        Folder folder
@@ -301,7 +301,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     
                     SELECT
                                 [{nameof(FolderPathItem.Id)}]    = Id,
-                                [{nameof(FolderPathItem.Name)}]  = Name
+                                [{nameof(FolderPathItem.Name)}]  = Title
 
                     FROM        BreadCrumbs;";
 

@@ -28,7 +28,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
                                  ,[ModifiedAtUTC]
                                  ,[FlaggedAsSpam]
                                  ,[InReplyTo]
-                                 ,[DiscussionId]
+                                 ,[Discussion_Id]
                                  ,[ThreadId]
                                  ,[IsDeleted])
                     VALUES

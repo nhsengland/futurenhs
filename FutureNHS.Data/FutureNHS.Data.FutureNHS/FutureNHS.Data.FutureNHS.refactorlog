@@ -287,4 +287,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CreatedBy" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="8edbb723-ec73-4028-ba30-481e27ff4b3d" ChangeDateTime="02/17/2022 07:02:05">
+    <Property Name="ElementName" Value="[dbo].[GroupUser].[RequestToJoinReason]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[GroupUser]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RequestToJoinReasonUTC" />
+  </Operation>
 </Operations>

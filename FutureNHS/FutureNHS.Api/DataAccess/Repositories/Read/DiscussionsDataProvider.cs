@@ -53,26 +53,26 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     ON          groups.Id = discussion.Group_Id
                     LEFT JOIN   MembershipUser createdByUser 
                     ON          createdByUser.Id = discussion.CreatedBy
-          
-                    LEFT JOIN   Comment comment 
-                    ON          comment.Discussion_Id = discussion.id 
-                    LEFT JOIN   Comment latestComment 
-                    ON          comment.id = latestComment.id 
-                    AND         comment.CreatedAtUTC < latestComment.CreatedAtUTC 
+
+					LEFT JOIN   
+                                (
+					            SELECT TOP 1 *
+					            FROM Comment 
+					            ORDER BY CreatedAtUTC
+					            ) 
+                                latestComment ON latestComment.Discussion_Id = discussion.Id
 
                     LEFT JOIN   MembershipUser lastCommentUser 
                     ON          lastCommentUser.Id = latestComment.CreatedBy
+
                     WHERE       groups.Slug = @Slug
                     AND         groups.IsDeleted = 0       
-                    ORDER BY    comment.CreatedAtUTC
-
-					OFFSET      @Offset ROWS
-                    FETCH NEXT  @Limit ROWS ONLY;
+                    ORDER BY    discussion.CreatedAtUTC
 
                     SELECT      COUNT(*) 
 
                     FROM        Discussion discussion
-					JOIN        [Group] groups 
+					JOIN        [Group] groups
                     ON          groups.Id = discussion.Group_Id
 					WHERE       groups.Slug = @Slug
                     AND         groups.IsDeleted = 0";
@@ -128,20 +128,20 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     LEFT JOIN   MembershipUser createdByUser 
                     ON          createdByUser.Id = discussion.CreatedBy
           
-                    LEFT JOIN   Comment comment 
-                    ON          comment.Discussion_Id = discussion.id 
-                    LEFT JOIN   Comment latestComment 
-                    ON          comment.id = latestComment.id 
-                    AND         comment.CreatedAtUTC < latestComment.CreatedAtUTC 
+					LEFT JOIN   
+                                (
+					            SELECT TOP 1 *
+					            FROM Comment 
+					            ORDER BY CreatedAtUTC
+					            ) 
+                                latestComment ON latestComment.Discussion_Id = discussion.Id
 
                     LEFT JOIN   MembershipUser lastCommentUser 
                     ON          lastCommentUser.Id = latestComment.CreatedBy
                     
                     WHERE       discussion.Id = @Id 
                     AND         groups.Slug = @Slug
-                    AND         groups.IsDeleted = 0       
-
-                    ORDER BY    comment.CreatedAtUTC";
+                    AND         groups.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 

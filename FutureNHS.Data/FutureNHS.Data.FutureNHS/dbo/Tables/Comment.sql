@@ -5,7 +5,7 @@
     [CreatedAtUTC]          DATETIME2           NOT NULL,
     [ModifiedBy]            UNIQUEIDENTIFIER    NULL,
     [ModifiedAtUTC]         DATETIME2           NULL,
-    [LikeCount]             INT                 NOT NULL,
+    [LikeCount]             INT                 NOT NULL DEFAULT ((0)),
     [FlaggedAsSpam]         BIT                 NULL,
     [InReplyTo]             UNIQUEIDENTIFIER    NULL,
     [Discussion_Id]         UNIQUEIDENTIFIER    NOT NULL,

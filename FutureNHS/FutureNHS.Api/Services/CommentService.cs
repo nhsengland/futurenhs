@@ -1,17 +1,16 @@
-﻿using System.Security;
-using FutureNHS.Api.DataAccess.DTOs;
+﻿using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
 using FutureNHS.Api.Models.Comment;
-using FutureNHS.Api.Models.Discussion;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using System.Security;
 
 namespace FutureNHS.Api.Services
 {
     public class CommentService : ICommentService
     {
         private const string DefaultRole = "Standard Members";
-        private const string AddDiscussionRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/add";
+        private const string AddDiscussionRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/add";
 
         private readonly ILogger<DiscussionService> _logger;
         private readonly ICommentCommand _commentCommand;

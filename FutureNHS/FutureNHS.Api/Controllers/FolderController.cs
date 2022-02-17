@@ -1,4 +1,6 @@
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using FutureNHS.Api.Models.Discussion;
+using FutureNHS.Api.Models.Folder;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -9,16 +11,18 @@ namespace FutureNHS.Api.Controllers
     [Route("api/v{version:apiVersion}")]
     [ApiController]
     [ApiVersion("1.0")]
-    public sealed class FileFolderController : ControllerBase
+    public sealed class FolderController : ControllerBase
     {
-        private readonly ILogger<FileFolderController> _logger;
+        private readonly ILogger<FolderController> _logger;
         private readonly IFileAndFolderDataProvider _fileAndFolderDataProvider;
+        private readonly IFolderService _folderService;
         private readonly IPermissionsService _permissionsService;
 
-        public FileFolderController(ILogger<FileFolderController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IPermissionsService permissionsService)
+        public FolderController(ILogger<FolderController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IFolderService folderService, IPermissionsService permissionsService)
         {
             _logger = logger;
             _fileAndFolderDataProvider = fileAndFolderDataProvider;
+            _folderService = folderService;
             _permissionsService = permissionsService;
         }
 
@@ -33,6 +37,28 @@ namespace FutureNHS.Api.Controllers
             var pagedResponse = PaginationHelper.CreatePagedResponse(folderContents, filter, total, route);
 
             return Ok(pagedResponse);
+        }
+
+        [HttpPost]
+        [Route("users/{userId:guid}/groups/{slug}/folders")]
+
+        public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug,Folder folder, CancellationToken cancellationToken)
+        {
+
+            await _folderService.CreateFolderAsync(userId, slug, folder, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("users/{userId:guid}/groups/{slug}/folders/{id:guid}")]
+
+        public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Guid id, Folder folder, CancellationToken cancellationToken)
+        {
+
+            await _folderService.CreateChildFolderAsync(userId, slug,id, folder, cancellationToken);
+
+            return Ok();
         }
 
         [HttpGet]
@@ -50,20 +76,6 @@ namespace FutureNHS.Api.Controllers
             return Ok(folder);
         }
 
-        [HttpGet]
-        [Route("users/{userId}/groups/{slug}/files/{id:guid}")]
-
-        public async Task<IActionResult> GetFileAsync(Guid id, CancellationToken cancellationToken)
-        {
-            var file = await _fileAndFolderDataProvider.GetFileAsync(id, cancellationToken);
-
-            if (file is null)
-            { 
-                return NotFound();
-            }
-
-            return Ok(file);
-        }
 
         [HttpGet]
         [Route("users/{userId}/groups/{slug}/folders/{id:guid}/contents")]

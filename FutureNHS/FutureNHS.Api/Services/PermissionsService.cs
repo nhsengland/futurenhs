@@ -1,7 +1,6 @@
 ﻿using FutureNHS.Api.DataAccess.Models.Permissions;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
-using System.Security.Claims;
 
 namespace FutureNHS.Api.Services
 {

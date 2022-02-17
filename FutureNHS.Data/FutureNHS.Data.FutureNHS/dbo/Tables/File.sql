@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[File] (
     [Id]            UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
-    [Title]         NVARCHAR (45)    NOT NULL,
-    [Description]   NVARCHAR (150)   NULL,
-    [FileName]      NVARCHAR (100)   NOT NULL,
+    [Title]         NVARCHAR (200)    NOT NULL,
+    [Description]   NVARCHAR (4000)   NULL,
+    [FileName]      NVARCHAR (256)   NOT NULL,
     [FileSizeBytes] BIGINT   NULL,
     [FileExtension] NVARCHAR (10)    NULL,
     [BlobName]      NVARCHAR (42)    NULL,

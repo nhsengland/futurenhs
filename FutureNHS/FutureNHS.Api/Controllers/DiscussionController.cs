@@ -66,7 +66,7 @@ namespace FutureNHS.Api.Controllers
         {
             await _discussionService.CreateDiscussionAsync(userId, slug, discussion, cancellationToken);
 
-            return Ok(discussion);
+            return Ok();
         }
     }
 }

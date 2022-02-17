@@ -23,6 +23,8 @@ namespace FutureNHS.Api.DataAccess
             // Write
             services.AddScoped<IDiscussionCommand, DiscussionCommand>();
             services.AddScoped<IGroupCommand, GroupCommand>();
+            services.AddScoped<IFileCommand, FileCommand>();
+            services.AddScoped<IFolderCommand, FolderCommand>();
             services.AddScoped<IRolesCommand, RolesCommand>();
             services.AddScoped<ICommentCommand, CommentCommand>();
 
