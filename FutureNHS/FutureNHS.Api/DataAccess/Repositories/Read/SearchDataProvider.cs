@@ -45,7 +45,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                                     groups.[Id],
 	                                groups.[Name],
 	                                groups.[Description],
-	                                LastUpdatedAtUtc = groups.[DateCreated],
+	                                LastUpdatedAtUtc = groups.[CreatedAtUtc],
 	                                GroupId = groups.[Id],
 	                                [Type] = 'group'
 
@@ -73,13 +73,13 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 	                                f.[Description],
 	                                ISNULL(f.[ModifiedAtUtc], f.[CreatedAtUtc]),
 
-	                                fldr.[ParentGroup],
+	                                fldr.[Group_Id],
 	                                'file'
 
 	                FROM		    dbo.[File] f
 	                JOIN		    dbo.[Folder] fldr 
                     ON			    fldr.[Id] = f.[ParentFolder]
-	                WHERE		    f.[FileStatus] = 4 -- Verified
+	                WHERE		    f.[FileStatus] = (SELECT [Id] FROM FileStatus WHERE [Name] = 'Verified') -- Verified
 	                AND			
                                     (
                                     f.[Title] 
@@ -90,58 +90,56 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 	                UNION ALL
 	                SELECT	    
                                     p.[Id],
-                                    t.[Name],
-                                    p.[PostContent],
-                                    ISNULL(p.[DateEdited], p.[DateCreated]),
+                                    t.[Title],
+                                    p.[Content],
+                                    ISNULL(p.[ModifiedAtUtc], p.[CreatedAtUtc]),
                                     GroupId = t.[Group_Id],
                                     'discussion-comment'
 
-	                FROM	        dbo.[Post] p
-	                JOIN	        dbo.[Topic] t 
-                    ON              t.[Id] = p.[Topic_Id]
+	                FROM	        dbo.[Comment] p
+	                JOIN	        dbo.[Discussion] t 
+                    ON              t.[Id] = p.[Discussion_Id]
 	                WHERE	
                                     (
-                                    p.[PostContent] 
+                                    p.[Content] 
                     LIKE            @Term
                                     )
-                    AND             p.[IsTopicStarter] = 0
 	                UNION ALL
 	                SELECT	    
                                     f.[Id],
-                                    f.[Name],
+                                    f.[Title],
                                     f.[Description],
                                     f.[CreatedAtUtc],
-                                    f.[ParentGroup],
+                                    f.[Group_Id],
                                     'folder'
 
 	                FROM	        dbo.[Folder] f
 	                WHERE	        f.[IsDeleted] = 0
 	                AND		
                                     (
-                                    f.[Name] 
+                                    f.[Title] 
                                     LIKE @Term 
                                     OR f.[Description] 
                                     LIKE @Term
                                     )
 	                UNION ALL
 	                SELECT	        t.[Id],
-                                    t.[Name],
-                                    p.[PostContent],
-                                    t.[CreateDate],
+                                    t.[Title],
+                                    p.[Content],
+                                    t.[CreatedAtUtc],
                                     t.[Group_Id],
                                     'discussion'
 
-	                FROM	        dbo.[Topic] t
-                    JOIN            dbo.[Post] p
-                    ON              p.[Topic_Id] = t.[Id]
+	                FROM	        dbo.[Discussion] t
+                    JOIN            dbo.[Comment] p
+                    ON              p.[Discussion_Id] = t.[Id]
 	                WHERE	
                                     (
-                                    t.[Name] 
+                                    t.[Title] 
                     LIKE            @Term
-                                    OR p.[PostContent] 
+                                    OR p.[Content] 
                                     LIKE @Term
                                     )
-                    AND             p.[IsTopicStarter] = 1
 					) results
                                     
 
@@ -185,7 +183,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 	                FROM		    dbo.[File] f
 	                JOIN		    dbo.[Folder] fldr 
                     ON			    fldr.[Id] = f.[ParentFolder]
-	                WHERE		    f.[FileStatus] = 4 -- Verified
+	                WHERE		    f.[FileStatus] = (SELECT [Id] FROM FileStatus WHERE [Name] = 'Verified') -- Verified
 	                AND			
                                     (
                                     f.[Title] 
@@ -198,12 +196,12 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     
 					(
 	                SELECT		    COUNT(*) 
-	                FROM	        dbo.[Post] p
-	                JOIN	        dbo.[Topic] t 
-                    ON              t.[Id] = p.[Topic_Id]
+	                FROM	        dbo.[Comment] p
+	                JOIN	        dbo.[Discussion] t 
+                    ON              t.[Id] = p.[Discussion_Id]
 	                WHERE	
                                     (
-                                    p.[PostContent] 
+                                    p.[Content] 
                     LIKE            @Term
                                     )
 	                ) 
@@ -217,7 +215,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 	                WHERE	        f.[IsDeleted] = 0
 	                AND		
                                     (
-                                    f.[Name] 
+                                    f.[Title] 
                                     LIKE @Term 
                                     OR f.[Description] 
                                     LIKE @Term
@@ -229,15 +227,15 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 	                SELECT		    COUNT(*) 
 					
                     AS              discussions 
-	                FROM	        dbo.[Topic] t
+	                FROM	        dbo.[Discussion] t
 	                WHERE	
                                     (
-                                    t.[Name] 
+                                    t.[Title] 
                     LIKE            @Term
                                     ) 
 									
 					) 
-                    AS              Discussions";
+                    AS              Discussions;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
