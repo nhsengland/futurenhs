@@ -1,7 +1,6 @@
 import { setPostFetchOpts as setPostFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { ServiceError } from '..';
 import { Service, ServiceResponse } from '@appTypes/service';
-import { FetchResponse } from '@appTypes/fetch';
 import { User } from '@appTypes/user';
 
 declare type Options = ({
@@ -12,8 +11,7 @@ declare type Options = ({
     body: {
         _csrf: string;
         formId: string;
-        title: string;
-        comment: string;
+        content: string;
     }
 });
 
@@ -29,7 +27,6 @@ export const postGroupDiscussionComment: Service = async ({
     groupId,
     discussionId,
     user,
-    csrfToken,
     body
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
 
@@ -38,9 +35,12 @@ export const postGroupDiscussionComment: Service = async ({
 
     const { id } = user;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}`;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments`;
 
-    const apiResponse: any = await fetchJSON(apiUrl, setPostFetchOptions({}, body), 30000);
+    const apiResponse: any = await fetchJSON(apiUrl, setPostFetchOptions({}, {
+        content: body.content
+    }), 30000);
+
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;
 

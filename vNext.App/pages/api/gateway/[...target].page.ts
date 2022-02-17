@@ -28,33 +28,33 @@ export default async function handler(req, res) {
 
     if(method === 'POST'){
 
-        if(!req.body?.['_form-id'] || !formConfigs[req.body?.['_form-id']]){
+        // console.log(req.body);
 
-            console.log('Post body missing valid form-id');
+        // if(!req.body?.['_form-id'] || !formConfigs[req.body?.['_form-id']]){
 
-            return res.status(400);
+        //     console.log('Post body missing valid form-id');
 
-        }
+        //     return res.status(400).json({});
 
-        const validationErrors = validate(req.body, selectFormDefaultFields(formConfigs, req.body['_form-id']), req.body?.['_instance-id']);
+        // }
 
-        if(Object.keys(validationErrors).length > 0){
+        // const validationErrors = validate(req.body, selectFormDefaultFields(formConfigs, req.body['_form-id']), req.body?.['_instance-id']);
 
-            return res.status(400).json(validationErrors);
+        // if(Object.keys(validationErrors).length > 0){
 
-        }
+        //     return res.status(400).json(validationErrors);
 
-        // const fetchOpts: FetchOptions = setPostFetchOpts(headers, req.body);
-        // const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
+        // }
+
+        const fetchOpts: FetchOptions = setPostFetchOpts(headers, req.body);
+        const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
     
-        // const apiData: any = apiResponse.json;
-        // const apiMeta: any = apiResponse.meta;
+        const apiData: any = apiResponse.json;
+        const apiMeta: any = apiResponse.meta;
     
-        // const { status } = apiMeta;
+        const { status } = apiMeta;
     
-        // return res.status(status).json(apiData);
-
-        return res.status(200).json({});
+        return res.status(status).json(apiData);
 
     }
 

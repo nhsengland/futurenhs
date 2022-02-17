@@ -7,7 +7,7 @@ export const createDiscussionForm: FormConfig = {
         {
             fields: [
                 {
-                    name: 'discussion-title',
+                    name: 'title',
                     inputType: 'text',
                     text: {
                         label: 'Title'
@@ -21,7 +21,7 @@ export const createDiscussionForm: FormConfig = {
                     ]
                 },
                 {
-                    name: 'discussion-comment',
+                    name: 'content',
                     text: {
                         label: 'Comment'
                     },

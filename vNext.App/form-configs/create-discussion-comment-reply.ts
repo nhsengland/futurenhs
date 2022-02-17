@@ -7,7 +7,7 @@ export const createDiscussionCommentReplyForm: FormConfig = {
         {
             fields: [
                 {
-                    name: 'discussion-comment-reply',
+                    name: 'content',
                     text: {
                         label: 'Your reply'
                     },

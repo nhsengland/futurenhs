@@ -7,7 +7,7 @@ export const createDiscussionCommentForm: FormConfig = {
         {
             fields: [
                 {
-                    name: 'discussion-comment',
+                    name: 'content',
                     text: {
                         label: 'Your comment'
                     },

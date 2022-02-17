@@ -144,8 +144,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 body: submission
             });
 
-            document.getElementById('__next').focus();
-            window.scrollTo(0, 0);
+            handleGetPage(dynamicPagination as any);
 
         } catch (error) {
 
@@ -162,16 +161,20 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
      */
     const handleCommentReplySubmit = async (submission) => {
 
+        console.log(submission);
+
         try {
 
             const response = await services.postGroupDiscussionCommentReply({
                 groupId: groupId,
                 discussionId: discussionId,
-                commentId: 'todo',
+                commentId: submission['_instance-id'],
                 user: user,
                 csrfToken: csrfToken,
                 body: submission
             });
+
+            handleGetPage(dynamicPagination as any);
 
         } catch (error) {
 
