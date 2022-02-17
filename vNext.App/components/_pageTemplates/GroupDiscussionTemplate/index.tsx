@@ -25,7 +25,7 @@ import { ErrorBoundary } from '@components/ErrorBoundary';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { BackLink } from '@components/BackLink';
 import { UserMeta } from '@components/UserMeta';
-import { getGroupDiscussionComments } from '@services/getGroupDiscussionComments';
+import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';
@@ -47,7 +47,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     pagination,
     forms,
     services = {
-        getGroupDiscussionComments: getGroupDiscussionComments,
+        getGroupDiscussionCommentsWithReplies: getGroupDiscussionCommentsWithReplies,
         postGroupDiscussionComment: postGroupDiscussionComment,
         postGroupDiscussionCommentReply: postGroupDiscussionCommentReply
     }
@@ -81,7 +81,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     modifiedBy,
                     viewCount } = discussion ?? {};
     const { title, body } = discussionText ?? {};
-    const { totalRecords } = pagination ?? {};
+    const { totalRecords } = dynamicPagination ?? {};
 
     const shouldRenderCommentAndReplyForms: boolean = actions.includes(actionsConstants.GROUPS_COMMENTS_ADD);
     const shouldEnableLoadMore: boolean = true;
@@ -121,7 +121,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
      */
     const handleSubmitAttempt = () => {
 
-        if (errors) {
+        if (errors && Object.keys(errors).length > 0) {
 
             errorSummaryRef?.current?.focus();
 
@@ -144,7 +144,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 body: submission
             });
 
-            handleGetPage(dynamicPagination as any);
+            handleGetPage({
+                shouldLoadAll: true,
+                ...dynamicPagination as any
+            });
 
         } catch (error) {
 
@@ -161,8 +164,6 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
      */
     const handleCommentReplySubmit = async (submission) => {
 
-        console.log(submission);
-
         try {
 
             const response = await services.postGroupDiscussionCommentReply({
@@ -174,7 +175,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 body: submission
             });
 
-            handleGetPage(dynamicPagination as any);
+            handleGetPage({
+                shouldLoadAll: true,
+                ...dynamicPagination as any
+            });
 
         } catch (error) {
 
@@ -191,22 +195,23 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
      */
     const handleGetPage = async ({
         pageNumber: requestedPageNumber,
-        pageSize: requestedPageSize
+        pageSize: requestedPageSize,
+        shouldLoadAll
     }) => {
 
         try {
 
-            const { data: additionalComments, pagination } = await services.getGroupDiscussionComments({
+            const { data: newComments, pagination } = await services.getGroupDiscussionCommentsWithReplies({
                 user: user,
                 groupId: groupId,
                 discussionId: discussionId,
                 pagination: {
-                    pageNumber: requestedPageNumber,
-                    pageSize: requestedPageSize
+                    pageNumber: shouldLoadAll ? 1 : requestedPageNumber,
+                    pageSize: shouldLoadAll ? dynamicPagination.totalRecords + 1 : requestedPageSize
                 }
             });
 
-            setDiscussionsList([...dynamicDiscussionCommentsList, ...additionalComments]);
+            shouldLoadAll ? setDiscussionsList(newComments) : setDiscussionsList([...dynamicDiscussionCommentsList, ...newComments]);
             setPagination(pagination);
 
         } catch (error) {
@@ -404,7 +409,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                             id="discussion-list-pagination"
                             shouldEnableLoadMore={shouldEnableLoadMore}
                             getPageAction={handleGetPage}
-                            {...dynamicPagination} />
+                            {...dynamicPagination} 
+                            className="u-mb-10" />
                     </ErrorBoundary>
                     {shouldRenderCommentAndReplyForms &&
                         <>

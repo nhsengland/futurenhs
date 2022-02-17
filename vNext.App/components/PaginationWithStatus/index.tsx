@@ -20,18 +20,10 @@ export const PaginationWithStatus: (props: Props) => JSX.Element = ({
     className
 }) => {
 
-    const totalPages: number = Math.ceil(totalRecords / pageSize);
-
     const generatedClasses = {
         wrapper: classNames('u-mt-12', 'u-flex-col', 'tablet:u-flex-row-reverse', className),
         status: classNames('u-text-right', 'u-self-center', 'u-mb-4', 'tablet:u-mb-0'),
         controls: classNames('')
-    }
-
-    if(totalPages < 2){
-
-        return null;
-
     }
 
     return (

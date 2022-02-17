@@ -21,6 +21,7 @@ export const Reply: (props: Props) => JSX.Element = ({
 }) => {
 
     const fields = selectFormDefaultFields(forms, formTypes.CREATE_DISCUSSION_COMMENT_REPLY);
+    
     const [isReplyAccordionOpen, setIsReplyAccordionOpen] = useState(false);
 
     const { reply } = text;
@@ -28,6 +29,13 @@ export const Reply: (props: Props) => JSX.Element = ({
     const handleToggle = ((_, isOpen) => {
 
         setIsReplyAccordionOpen(isOpen);
+
+    });
+
+    const handleSubmit = ((...props) => {
+
+        setIsReplyAccordionOpen(false);
+        submitAction(...props);
 
     });
 
@@ -49,6 +57,7 @@ export const Reply: (props: Props) => JSX.Element = ({
         <div className={generatedClasses.wrapper}>
             <Accordion 
                 id={generatedIds.replyAccordion}
+                isOpen={isReplyAccordionOpen}
                 toggleChildren={<><SVGIcon name="icon-reply" className={generatedClasses.icon} /><span>{reply}</span></>}
                 toggleAction={handleToggle}
                 toggleClassName={generatedClasses.toggle}
@@ -63,7 +72,7 @@ export const Reply: (props: Props) => JSX.Element = ({
                         }} 
                         changeAction={changeAction}
                         submitAttemptAction={submitAttemptAction}
-                        submitAction={submitAction}
+                        submitAction={handleSubmit}
                         className="u-mt-6" />
             </Accordion>
         </div>

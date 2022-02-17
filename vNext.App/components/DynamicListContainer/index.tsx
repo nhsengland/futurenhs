@@ -30,6 +30,12 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
         wrapper: classNames(className)
     }
 
+    const renderNewItemsAnnouncement = (() => {
+
+        
+
+    });
+
     useEffect(() => {
 
         /**
@@ -54,6 +60,7 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
             if(!isFocusable(newestChildElement)){
 
                 newestChildElement?.setAttribute('tabIndex', '-1');
+                newestChildElement?.classList.add('focus:u-outline-none');
                 newestChildElement?.addEventListener('blur', (event) => { 
                     newestChildElement.removeAttribute('tabIndex'), { 
                         once: true

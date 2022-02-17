@@ -8,6 +8,8 @@ import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { selectCsrfToken, selectBody, selectProps, selectParam, selectUser } from '@selectors/context';
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
+import { validate } from '@helpers/validators';
+import { selectFormDefaultFields } from '@selectors/forms';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -52,33 +54,45 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                  */
                 if(body){
 
-                    try {
+                    props.forms[createDiscussionForm.id].initialValues = body;
 
-                        const submission = await postGroupDiscussion({ groupId, user, csrfToken, body });
+                    const validationErrors: Record<string, string> = validate(body, selectFormDefaultFields(props.forms, createDiscussionForm.id));
 
-                        return {
-                            props: {},
-                            redirect: {
-                                permanent: false,
-                                destination: `/groups/${context.params.groupId}/forum`
+                    if(Object.keys(validationErrors).length > 0){
+
+                        props.forms[createDiscussionForm.id].errors = validationErrors;
+
+                    } else {
+
+                        try {
+
+                            const submission = await postGroupDiscussion({ groupId, user, csrfToken, body });
+    
+                            return {
+                                props: {},
+                                redirect: {
+                                    permanent: false,
+                                    destination: `/groups/${context.params.groupId}/forum`
+                                }
                             }
+    
+                        } catch(error){
+    
+                            if(error.data?.status){
+    
+                                props.forms[createDiscussionForm.id].errors = error.data.body || {
+                                    _error: error.data.statusText
+                                };
+                                props.forms[createDiscussionForm.id].initialValues = body;
+    
+                            } else {
+    
+                                return handleSSRErrorProps({ props, error });
+    
+                            }
+            
                         }
 
-                    } catch(error){
-
-                        if(error.data?.status){
-
-                            props.forms[createDiscussionForm.id].errors = error.data.body || {
-                                _error: error.data.statusText
-                            };
-                            props.forms[createDiscussionForm.id].initialValues = body;
-
-                        } else {
-
-                            return handleSSRErrorProps({ props, error });
-
-                        }
-        
                     }
 
                 }
