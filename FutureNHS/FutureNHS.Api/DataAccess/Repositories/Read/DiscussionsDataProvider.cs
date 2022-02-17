@@ -69,13 +69,16 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     AND         groups.IsDeleted = 0       
                     ORDER BY    discussion.CreatedAtUTC
 
+                    OFFSET      @Offset ROWS
+                    FETCH NEXT  @Limit ROWS ONLY;
+
                     SELECT      COUNT(*) 
 
                     FROM        Discussion discussion
 					JOIN        [Group] groups
                     ON          groups.Id = discussion.Group_Id
 					WHERE       groups.Slug = @Slug
-                    AND         groups.IsDeleted = 0";
+                    AND         groups.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
