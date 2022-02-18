@@ -9,7 +9,7 @@ trigger:
     - TRY-RI-VNEXT-APP
 
 steps:
-- template: FutureNHS/azure-pipelines-api.yml
+- template: futurenhs.api/azure-pipelines.yml
 - template: FutureNHS.Data/azure-pipeline.yml
 - template: MVCForum/azure-pipelines.yml
 - template: futurenhs.app/azure-pipelines.yml

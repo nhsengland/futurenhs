@@ -7,8 +7,6 @@ module.exports = {
         ...preset.transform,
     },
     testEnvironment: 'jsdom',
-    // globalSetup: '<rootDir>/jest.global.setup.ts',
-    // globalTeardown: '<rootDir>/jest.global.teardown.ts',
     setupFilesAfterEnv: ['./jest.setup.ts'],
     testMatch: [
         '<rootDir>/components/**/*.test.{ts,tsx,js,jsx}', 

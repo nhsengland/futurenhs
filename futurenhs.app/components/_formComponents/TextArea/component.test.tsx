@@ -8,7 +8,8 @@ const testProps: Props = {
     input: {
         name: 'mockName',
         value: 'mockValue',
-        onChange: jest.fn()
+        onChange: jest.fn(),
+        onBlur: jest.fn()
     },
     meta: {
         error: '',

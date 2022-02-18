@@ -46,6 +46,12 @@ export const ErrorSummary = React.forwardRef(({
                         <ul className={generatedClasses.list}>
                             {Object.keys(errors).map((key, index: number) => {
 
+                                if(typeof errors[key] !== 'string'){
+
+                                    throw new Error('Expected error to be string');
+
+                                }
+
                                 const handleClick = (event: any) => {
 
                                     event.preventDefault();

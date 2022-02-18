@@ -1,13 +1,12 @@
 import { Props } from './interfaces';
 
 export const Hidden: (props: Props) => JSX.Element = ({
+    id,
     input: {
         name,
         value
     }
 }) => {
-
-    const id: string = name;
 
     return (
  

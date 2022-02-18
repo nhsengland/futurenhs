@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
@@ -138,9 +138,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         } catch (error) {
 
-            // setErrors({
-            //     [error.data.status]: error.data.statusText
-            // });
+            setErrors({
+                [error.data.status]: error.data.statusText
+            });
 
         }
 
@@ -172,9 +172,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         } catch (error) {
 
-            // setErrors({
-            //     [error.data.status]: error.data.statusText
-            // });
+            setErrors({
+                [error.data.status]: error.data.statusText
+            });
 
         }
 
@@ -288,7 +288,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         }} />
                     <h2 className="u-text-5xl">{title}</h2>
                     {body &&
-                        <RichText bodyHtml={body} className="u-mb-8" />
+                        <RichText bodyHtml={body} wrapperElementType="div" className="u-mb-8" />
                     }
                     <LayoutColumnContainer>
                         <LayoutColumn tablet={8}>

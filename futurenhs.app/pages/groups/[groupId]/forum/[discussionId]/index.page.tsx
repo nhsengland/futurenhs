@@ -3,6 +3,8 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
+import { validate } from '@helpers/validators';
+import { selectFormDefaultFields } from '@selectors/forms';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
@@ -41,33 +43,49 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 props.csrfToken = csrfToken;
                 props.discussionId = discussionId;
                 props.forms = {
-                    [createDiscussionCommentForm.id]: createDiscussionCommentForm
+                    [createDiscussionCommentForm.id]: Object.assign({}, createDiscussionCommentForm, {
+                        initialValues: {},
+                        errors: {}
+                    })
                 };
 
                 if(body){
+     
+                    props.forms[createDiscussionCommentForm.id].initialValues = body;
 
-                    try {
+                    const validationErrors: Record<string, string> = validate(body, selectFormDefaultFields(props.forms, createDiscussionCommentForm.id));
 
-                        const submission = await postGroupDiscussionComment({ groupId, discussionId, user, csrfToken, body });
+                    if(Object.keys(validationErrors).length > 0){
 
-                    } catch(error){
+                        props.forms[createDiscussionCommentForm.id].errors = validationErrors;
 
-                        if(error.data?.status){
+                    } else {
 
-                            props.forms[createDiscussionCommentForm.id].errors = error.data.body || {
-                                _error: error.data.statusText
-                            };
-                            props.forms[createDiscussionCommentForm.id].initialValues = body;
+                        try {
 
-                        } else {
+                            const submission = await postGroupDiscussionComment({ groupId, discussionId, user, csrfToken, body });
 
-                            return handleSSRErrorProps({ props, error });
+                        } catch(error){
+
+                            if(error.data?.status){
+
+                                props.forms[createDiscussionCommentForm.id].errors = error.data.body || {
+                                    _error: error.data.statusText
+                                };
+                                props.forms[createDiscussionCommentForm.id].initialValues = body;
+
+                            } else {
+
+                                return handleSSRErrorProps({ props, error });
+
+                            }
 
                         }
 
                     }
 
                 }
+
 
                 /**
                  * Get data from services

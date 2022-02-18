@@ -52,7 +52,7 @@ export const Comment: (props: Props) => JSX.Element = ({
                         <span className="u-block u-text-bold">{date}</span>
                 </UserMeta>
             </header>
-            <RichText bodyHtml={body} wrapperElementType="p" className="u-mb-6" />
+            <RichText bodyHtml={body} wrapperElementType="div" className="u-mb-6" />
             <footer className="u-flex u-items-start">
                 <Like
                     targetId={commentId}

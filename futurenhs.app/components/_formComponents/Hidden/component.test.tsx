@@ -5,6 +5,7 @@ import { Hidden } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
+    id: 'mockId',
     input: {
         name: 'mockName',
         value: 'mockValue'

@@ -126,17 +126,20 @@ export const Form: (props: Props) => JSX.Element = ({
                     className={generatedClasses.wrapper}>
                         <Field
                             key="_csrf"
+                            id={`_csrf${instanceId}`}
                             name="_csrf"
                             component={formComponents.hidden} 
                             defaultValue={csrfToken} />
                         <Field
                             key="_form-id"
+                            id={`_form-id${instanceId}`}
                             name="_form-id"
                             component={formComponents.hidden} 
                             defaultValue={formId} />
                         {instanceId &&
                             <Field
                                 key="_instance-id"
+                                id={`_instance-id${instanceId}`}
                                 name="_instance-id"
                                 component={formComponents.hidden} 
                                 defaultValue={instanceId} />
