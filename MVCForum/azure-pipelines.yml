@@ -130,6 +130,7 @@ jobs:
      pathToSources: '$(System.DefaultWorkingDirectory)/MVCForum'
      reportDirectory: '$(System.DefaultWorkingDirectory)/MVCForum/js-report/*.htm'
      failIfCoverageEmpty: true
+    continueOnError: true
 
   - task: PowerShell@2
     displayName: 'Add RUN Tag to trigger Release'
