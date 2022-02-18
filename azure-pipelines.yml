@@ -12,4 +12,4 @@ steps:
 - template: FutureNHS/azure-pipelines-api.yml
 - template: FutureNHS.Data/azure-pipeline.yml
 - template: MVCForum/azure-pipelines.yml
-- template: vNext.App/azure-pipelines.yml
+- template: futurenhs.app/azure-pipelines.yml
