@@ -1,6 +1,10 @@
 const { jsWithTs: preset } = require('ts-jest/presets');
 const { pathsToModuleNameMapper } = require('ts-jest/utils');
 const { compilerOptions } = require('./tsconfig');
+const { loadEnvConfig } = require('@next/env');
+const projectDir = process.cwd();
+
+loadEnvConfig(projectDir);
 
 module.exports = {
     transform: {
@@ -49,6 +53,7 @@ module.exports = {
         '<rootDir>/hofs/**/*.{ts,tsx,js,jsx}',
         '<rootDir>/services/**/*.{ts,tsx,js,jsx}',
         '<rootDir>/selectors/**/*.{ts,tsx,js,jsx}',
+        '<rootDir>/pages/**/*.{ts,tsx,js,jsx}',
     ],
     coverageDirectory: 'test-reports/unit',
     coveragePathIgnorePatterns: [
