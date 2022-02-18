@@ -287,13 +287,13 @@ yarn.lock
 axeReports/reportResults.json
 
 # next.js app
-/vNext.App/node_modules
-/vNext.App/test-reports/
-/vNext.App/.next/
-/vNext.App/public/
-/vNext.App/build
-/vNext.App/.env.local
-/vNext.App/.env.development.local
-/vNext.App/.env.test.local
-/vNext.App/.env.production.local
-/vNext.App/.vercel
+/futurenhs.app/node_modules
+/futurenhs.app/test-reports/
+/futurenhs.app/.next/
+/futurenhs.app/public/
+/futurenhs.app/build
+/futurenhs.app/.env.local
+/futurenhs.app/.env.development.local
+/futurenhs.app/.env.test.local
+/futurenhs.app/.env.production.local
+/futurenhs.app/.vercel
