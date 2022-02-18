@@ -1,0 +1,13 @@
+package-lock.json
+node_modules/
+allureResults/*.txt
+allureResults/*.log
+allureResults/*.csv
+allureResults/*.xml
+errorScreenshots/*.png
+junitResults/*log
+passiveTestErrors/*.txt
+visualRegression/actual/*
+visualRegression/diff/*
+axeResults/*.html
+lighthouseReports/*.html

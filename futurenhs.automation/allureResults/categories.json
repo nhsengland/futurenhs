@@ -1,0 +1,26 @@
+[
+    {
+      "name": "Ignored tests",
+      "matchedStatuses": ["skipped"]
+    },
+    {
+      "name": "Infrastructure problems",
+      "traceRegex": ".*RuntimeException.*",
+      "matchedStatuses": ["broken", "failed"]
+    },
+    {
+      "name": "Outdated tests",
+      "messageRegex": ".*FileNotFound.*",
+      "matchedStatuses": ["broken"]
+    },
+    {
+      "name": "Passed",
+      "messageRegex": ".*",
+      "matchedStatuses": ["passed"]
+    },
+    {
+      "name": "Unknown",
+      "traceRegex": "unknown",
+      "matchedStatuses": ["unknown"]
+    }
+  ]

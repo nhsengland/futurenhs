@@ -1,0 +1,6 @@
+allureReport/
+allureResults/
+node_modules/
+features/
+pageObjects/
+stepDefinitions/
