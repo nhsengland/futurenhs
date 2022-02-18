@@ -32,7 +32,7 @@ module.exports = {
         'MVCForum/MVCForum.Website/UI/assets/src/ts/root/global',
         'MVCForum/MVCForum.Website/UI/assets/src/ts/root/polyfills',
         'MVCForum/MVCForum.Website/UI/assets/src/ts/types/*',
-        'vNext.App/*'
+        'futurenhs.app/*'
     ],
     coverageReporters: ['json', 'lcov', 'text', 'clover', 'cobertura'],
     globals: {
