@@ -1,7 +1,7 @@
 const { series, parallel } = require('gulp'),
     mvcforum = require('./MVCForum/gulpfile'),
-    db = require('./FutureNHS.Data/gulpfile'),
-    api = require('./FutureNHS/gulpfile'),
+    db = require('./futurenhs.data/gulpfile'),
+    api = require('./futurenhs.api/gulpfile'),
     app = require('./futurenhs.app/gulpfile');
 
     

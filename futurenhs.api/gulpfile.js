@@ -13,7 +13,7 @@ const msbuild = (done) => {
     const proc = childProcess.spawn('dotnet', [
         'build'
     ], {
-        cwd: path.join(process.cwd(), 'FutureNHS')
+        cwd: path.join(process.cwd(), 'futurenhs.api')
     });
 
     const re = /SCS\d{4}/;
@@ -52,7 +52,7 @@ const startSite = (done) => {
         '--',
         'run'
     ], {
-        cwd: path.join(process.cwd(), 'FutureNHS/FutureNHS.Api')
+        cwd: path.join(process.cwd(), 'futurenhs.Api/FutureNHS.Api')
     });
 
     proc.stdout.on('data', (data) => {
