@@ -98,7 +98,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                         <LayoutWidthContainer>
                             <ErrorBoundary boundaryId="phase-banner">
                                 <PhaseBanner text={{
-                                    tag: 'alpha',
+                                    tag: 'beta',
                                     body: 'This is a new service – your <a href="http://www.google.co.uk">feedback</a> will help us to improve it.'
                                 }} />
                             </ErrorBoundary>
