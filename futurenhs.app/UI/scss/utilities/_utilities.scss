@@ -8,36 +8,6 @@
     }
 }
 
-.u-desktop-hidden {
-    @include respond-to(desktop) {
-        display: none;
-    }
-}
-
-.u-tablet-up {
-    display: none;
-
-    @include respond-to(tablet) {
-        display: block;
-    }
-}
-
-.u-desktop-up {
-    display: none;
-
-    @include respond-to(desktop) {
-        display: block;
-    }
-}
-
-.u-desktop-up-inline-block {
-    display: none;
-
-    @include respond-to(desktop) {
-        display: inline-block;
-    }
-}
-
 .u-focus-item {
     @extend %nhsuk-focused-item;
 
@@ -75,36 +45,9 @@
 }
 
 @each $number, $theme in $t-utility-themes {
-    .u-bg-theme-#{$number} {
-        background-color: $theme;
-    }
 
     .u-fill-theme-#{$number} {
         fill: $theme;
-    }
-
-    .u-text-theme-#{$number} {
-        color: $theme !important; //sass-lint:disable-line no-important
-    }
-
-    .u-border-theme-#{$number} {
-        border-color: $theme;
-    }
-
-    .u-border-top-theme-#{$number} {
-        border-top-color: $theme;
-    }
-
-    .u-border-right-theme-#{$number} {
-        border-right-color: $theme;
-    }
-
-    .u-border-bottom-theme-#{$number} {
-        border-bottom-color: $theme;
-    }
-
-    .u-border-left-theme-#{$number} {
-        border-left-color: $theme;
     }
 
 }

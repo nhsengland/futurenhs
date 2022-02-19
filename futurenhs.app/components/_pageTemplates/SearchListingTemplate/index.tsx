@@ -63,7 +63,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     };
 
     const generatedClasses = {
-        block: classNames('c-search-result', 'u-border-bottom-theme-8', 'u-mb-6', 'u-flex', 'u-flex-col', 'u-break-words'),
+        block: classNames('c-search-result', 'u-border-b-theme-8', 'u-mb-6', 'u-flex', 'u-flex-col', 'u-break-words'),
         header: classNames('c-search-result_header', 'u-text-theme-7', 'u-text-bold', 'u-order-1', 'o-truncated-text-lines-2'),
         title: classNames('c-search-result_title', 'u-order-2', 'u-text-2xl', 'o-truncated-text-lines-2'),
         body: classNames('c-search-result_body', 'u-p-0', 'o-truncated-text-lines-2', 'u-order-2')

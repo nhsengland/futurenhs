@@ -32,14 +32,11 @@ export const postGroupDiscussion = async ({
     const { id } = user;
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions`;
-
-    console.log(body, 123);
-
     const apiResponse: any = await fetchJSON(apiUrl, setPostFetchOptions({}, {
-        ['_form-id']: body['_form-Id'],
         Title: body.title,
         Content: body.content
     }), 30000);
+
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;
 

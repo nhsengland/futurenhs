@@ -252,7 +252,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         likeCount={likeCount}
                         isLiked={isLiked}
                         likeAction={handleLike}
-                        className="c-comment--reply u-border-left-theme-8" />
+                        className="c-comment--reply u-border-l-theme-8" />
                 </li>
 
             )
@@ -369,7 +369,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                     likeCount={likeCount}
                                                     isLiked={isLiked}
                                                     likeAction={handleLike}
-                                                    className="u-border-left-theme-8">
+                                                    className="u-border-l-theme-8">
                                                         {hasReply &&
                                                             <ul className="u-list-none c-comment_replies-list u-p-0">
                                                                 {repliesComponents[0]}

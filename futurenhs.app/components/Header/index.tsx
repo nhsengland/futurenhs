@@ -14,7 +14,7 @@ import { Dialog } from '@components/Dialog';
 import { Avatar } from '@components/Avatar';
 import { useMediaQuery } from '@hooks/useMediaQuery';
 import * as domHelpers from '@helpers/dom';
-import { cssUtilityClasses, mediaQueries } from '@constants/css';
+import { mediaQueries } from '@constants/css';
 import { iconNames } from '@constants/icons';
 import { routes } from '@constants/routes';
 import { capitalise } from '@helpers/formatters/capitalise';
@@ -172,7 +172,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                                 cancelAction={handleLogoutCancel}
                                                                                 confirmAction={handleLogoutConfirm}>
                                                                                     <h3>{logOutHeading}</h3>
-                                                                                    <p className={cssUtilityClasses.TEXT_BOLD}>{logOutBody}</p>
+                                                                                    <p className="u-text-bold">{logOutBody}</p>
                                                                             </Dialog>
                                                                         </li>
                                                                     </ul>
@@ -195,7 +195,7 @@ export const Header: (props: Props) => JSX.Element = ({
 
                                                         return (
 
-                                                            <li key={index} role="none" className={cssUtilityClasses.DESKTOP_HIDDEN}>
+                                                            <li key={index} role="none" className="desktop:u-hidden">
                                                                 <Link href={url}>
                                                                     <a role="menuitem" aria-current={isActive} className={generatedClasses.link}>
                                                                         {iconName &&
@@ -209,8 +209,8 @@ export const Header: (props: Props) => JSX.Element = ({
                                                         )
 
                                                     })}
-                                                    <li role="none" className={`u-margin-top-spacing-4 ${cssUtilityClasses.DESKTOP_HIDDEN}`}>
-                                                        <span className={cssUtilityClasses.TEXT_BOLD}>Need help? </span>
+                                                    <li role="none" className="u-margin-top-spacing-4 desktop:u-hidden">
+                                                        <span className="u-text-bold">Need help? </span>
                                                         <a target="_blank" rel="noopener" href="https://futurenhstest.service-now.com/csm/?id=futurenhs_test">Visit our support site</a>
                                                     </li>
                                                 </ul>

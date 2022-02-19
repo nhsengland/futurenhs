@@ -63,7 +63,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames('u-flex-grow', className),
-        breadCrumb: classNames('u-bg-theme-1', 'u-tablet-up'),
+        breadCrumb: classNames('u-bg-theme-1', 'u-hidden', 'tablet:u-block'),
         main: classNames('u-flex u-flex-grow'),
         content: classNames({
             ['u-m-0']: shouldRenderMainNav && isMobile,

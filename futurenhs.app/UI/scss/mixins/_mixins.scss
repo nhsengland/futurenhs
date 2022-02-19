@@ -138,7 +138,7 @@ $no-js-style: false !default;
 
 @mixin focus-outline($offset: true) {
     &:focus {
-        outline: $focus-outline-width solid $t-interaction-one-focus;
+        outline: $focus-outline-width solid $buttercup;
         @if $offset {
             outline-offset: 3px;
         } @else {
@@ -149,7 +149,7 @@ $no-js-style: false !default;
 
 @mixin focus-outline-large() {
     &:focus {
-        outline: $focus-outline-large-width solid $t-interaction-one-focus;
+        outline: $focus-outline-large-width solid $buttercup;
         outline-offset: 0;
     }
 }
