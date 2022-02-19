@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { actions } from '@constants/actions';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
+import { withForms } from '@hofs/withForms';
 import { selectCsrfToken, selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
@@ -14,15 +15,15 @@ const routeId: string = '578dfcc6-857f-4eda-8779-1d9b110888c7';
 /**
  * Get props to inject into page on the initial server-side request
  */
- export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withAuth({
     getServerSideProps: withGroup({
+        routeId: routeId,
+        getServerSideProps: withForms({
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const csrfToken: string = selectCsrfToken(context);
                 const props: Props = selectProps(context);
-
-                props.csrfToken = csrfToken;
 
                 /**
                  * Return data to page template
@@ -34,6 +35,7 @@ const routeId: string = '578dfcc6-857f-4eda-8779-1d9b110888c7';
 
             }
         })
+    })
 });
 
 /**

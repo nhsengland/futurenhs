@@ -8,6 +8,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     contentText,
     entityText,
     image,
+    theme,
     actions
 }) => {
 
@@ -19,6 +20,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
             text={entityText}
             image={image}
             actions={actions}
+            theme={theme}
             className="u-bg-theme-3">
                 <LayoutColumn tablet={8} className="c-page-body">
                     

@@ -1,7 +1,6 @@
 .c-page-header {
     width: 100%;
     padding: $nhsuk-spacing-point-4 0 $nhsuk-spacing-point-3;
-    color: $white;
     position: relative;
 
     &:before {
@@ -111,14 +110,14 @@
     }
 
     &_nav-content {
-        border-top: 2px solid $white;
+        border-top: 2px solid;
     }
 
     &_actions-trigger {
         @include standard-text;
         margin: 0;
         position: relative;
-        border: solid $nhsuk-spacing-point-1 $white;
+        border: solid $nhsuk-spacing-point-1;
         border-radius: $nhsuk-spacing-point-1;
         padding: 14px $nhsuk-spacing-point-3;
     }
@@ -130,6 +129,7 @@
         top: 50%;
         right: $nhsuk-spacing-point-3;
         margin: -#{$nhsuk-spacing-point-2} 0 0;
+        fill: currentColor;
     }
 
     &_actions-content {

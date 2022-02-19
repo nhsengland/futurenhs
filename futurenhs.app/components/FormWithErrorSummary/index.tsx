@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import { ErrorSummary } from '@components/ErrorSummary';
@@ -33,6 +33,8 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
      const handleValidationFailure = (errors): any => {
 
         setValidationErrors(errors);
+
+        window.scrollTo(0, 0);
         errorSummaryRef?.current?.focus?.();
 
     };
@@ -52,6 +54,15 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         form: classNames('c-form', className)
     };
+
+    /**
+     * Render any errors that happen externally
+     */
+    useEffect(() => {
+
+        setValidationErrors(errors);
+
+    }, [errors]);
 
     return (
 

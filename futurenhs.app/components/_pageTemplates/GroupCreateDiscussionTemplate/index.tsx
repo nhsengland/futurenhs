@@ -19,6 +19,7 @@ import { Props } from './interfaces';
 export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     groupId,
     csrfToken,
+    theme,
     forms,
     user,
     actions,
@@ -84,6 +85,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
             actions={actions}
             text={entityText}
             image={image} 
+            theme={theme}
             className="u-bg-theme-3">            
                 <LayoutColumn className="c-page-body">
                     <LayoutColumnContainer>

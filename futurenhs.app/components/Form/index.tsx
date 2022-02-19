@@ -201,6 +201,7 @@ export const Form: (props: Props) => JSX.Element = ({
                         </div>
                         <FormSpy
                             subscription={{
+                                touched: true,
                                 errors: true,
                                 submitErrors: true,
                                 submitFailed: true, 

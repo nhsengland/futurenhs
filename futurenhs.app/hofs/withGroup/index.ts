@@ -45,6 +45,11 @@ export const withGroup = (config: HofConfig, dependencies?: {
             props.entityText = groupData.data.text ?? {};
             props.image = groupData.data.image ?? defaultGroupLogos.small;
             props.actions = actionsData.data ?? null;
+            props.theme = { // TODO - this will come from getGroupService
+                background: 10,
+                content: 1,
+                accent: 10
+            };
 
         } catch (error) {
 

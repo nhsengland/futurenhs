@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
 
 import { defaultGroupLogos } from '@constants/icons';
 import { Link } from '@components/Link';

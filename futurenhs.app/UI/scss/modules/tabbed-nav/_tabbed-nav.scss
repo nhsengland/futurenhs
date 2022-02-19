@@ -53,17 +53,33 @@
     }
 
     &_link {
-        @include nhsuk-link-style-white;
+        color: inherit;
         text-decoration: none;
         display: block;
+        margin-bottom: $nhsuk-spacing-point-1;
         padding: 14px $nhsuk-spacing-point-3;
         box-shadow: 0 5px transparent;
-        margin-bottom: 4px;
+
+        &:visited {
+            color: inherit;
+        }
+
+        &:focus {
+            color: $nhsuk-focus-text-color;
+            outline: $nhsuk-focus-width solid transparent;
+            outline-offset: $nhsuk-focus-width;
+            text-decoration: none;
+        }
+    
+        &:active {
+            color: $nhsuk-link-active-color;
+        }
 
         &--active {
             @include respond-to(desktop) {
-                box-shadow: 0 5px $white;
+                box-shadow: 0 5px;
             }
         }
+
     }
 }

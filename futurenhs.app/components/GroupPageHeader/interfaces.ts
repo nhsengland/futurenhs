@@ -1,4 +1,5 @@
 import { Image } from '@appTypes/image';
+import { Theme } from '@appTypes/theme';
 
 export interface Props {
     id: string;
@@ -19,5 +20,6 @@ export interface Props {
         text: string;
         isActive?: boolean;
     }>;
+    theme?: Theme;
     className?: string;
 }

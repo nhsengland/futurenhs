@@ -20,6 +20,7 @@ import { Props } from './interfaces';
 export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     groupId,
     csrfToken,
+    theme,
     forms,
     user,
     actions,
@@ -48,21 +49,24 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
 
     const handleSubmit = async (submission) => {
 
+        console.log(1);
+
         try {
 
             const response = await postGroupFolder({
                 groupId: groupId,
                 user: user,
                 csrfToken: csrfToken,
-                body: {
-                    formId: formTypes.CREATE_FOLDER,
-                    ...submission
-                }
+                body: submission
             });
+
+            console.log(2);
 
             router.push(folderHref);
 
         } catch(error){
+
+            console.log(3, error);
 
             setErrors({
                 [error.data.status]: error.data.statusText
@@ -80,6 +84,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
             actions={actions}
             text={entityText}
             image={image} 
+            theme={theme}
             className="u-bg-theme-3">            
                 <LayoutColumn className="c-page-body">
                     <LayoutColumnContainer>

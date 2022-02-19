@@ -6,6 +6,7 @@ import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
+import { withForms } from '@hofs/withForms';
 import { selectCsrfToken, selectBody, selectParam, selectUser, selectProps, selectQuery } from '@selectors/context';
 import { postGroupFolder } from '@services/postGroupFolder';
 import { getGroupFolder } from '@services/getGroupFolder';
@@ -21,8 +22,10 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
 /**
  * Get props to inject into page on the initial server-side request
  */
- export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withAuth({
     getServerSideProps: withGroup({
+        routeId: routeId,
+        getServerSideProps: withForms({
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
@@ -33,12 +36,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                 const body: any = selectBody(context);
                 const props: Props = selectProps(context);
 
-                props.csrfToken = csrfToken;
-                props.forms = {
-                    [createFolderForm.id]: createFolderForm
-                };
-
-                if(!props.actions?.includes(actionConstants.GROUPS_FOLDERS_ADD)){
+                if (!props.actions?.includes(actionConstants.GROUPS_FOLDERS_ADD)) {
 
                     return {
                         notFound: true
@@ -49,7 +47,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                 /**
                  * Get data from services
                  */
-                if(folderId){
+                if (folderId) {
 
                     try {
 
@@ -57,7 +55,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
 
                         props.folder = groupFolder.data;
 
-                    } catch(error){
+                    } catch (error) {
 
                         return handleSSRErrorProps({ props, error });
 
@@ -68,7 +66,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                 /**
                  * handle server-side form POST
                  */
-                if(body){
+                if (body) {
 
                     try {
 
@@ -82,9 +80,9 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                             }
                         }
 
-                    } catch(error){
+                    } catch (error) {
 
-                        if(error.data?.status){
+                        if (error.data?.status) {
 
                             props.forms[createFolderForm.id].errors = error.data.body || {
                                 _error: error.data.statusText
@@ -96,7 +94,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
                             return handleSSRErrorProps({ props, error });
 
                         }
-        
+
                     }
 
                 }
@@ -108,6 +106,7 @@ const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
 
             }
         })
+    })
 });
 
 /**

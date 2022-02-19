@@ -19,6 +19,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     id,
     text,
     image,
+    theme,
     actions,
     children,
     ...rest 
@@ -67,10 +68,10 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                             navMenuTitle: 'Group menu'
                         }}
                         image={image}
+                        theme={theme}
                         shouldRenderActionsMenu={true}
                         actionsMenuList={actionsMenuList}
-                        navMenuList={navMenuList}
-                        className="u-bg-theme-14" />
+                        navMenuList={navMenuList} />
                 </ErrorBoundary>
                 <ErrorBoundary boundaryId="group-page-body">
                     {children}

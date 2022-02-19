@@ -6,6 +6,7 @@ import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
+import { withForms } from '@hofs/withForms';
 import { selectCsrfToken, selectBody, selectProps, selectParam, selectUser } from '@selectors/context';
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
 import { validate } from '@helpers/validators';
@@ -22,8 +23,10 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 /**
  * Get props to inject into page on the initial server-side request
  */
- export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withAuth({
     getServerSideProps: withGroup({
+        routeId: routeId,
+        getServerSideProps: withForms({
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
@@ -33,15 +36,10 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                 const body: any = selectBody(context);
                 const props: Props = selectProps(context);
 
-                props.csrfToken = csrfToken;
-                props.forms = {
-                    [createDiscussionForm.id]: createDiscussionForm
-                };
-
                 /**
                  * Return page not found if user doesn't have permissions to create a discussion
                  */
-                if(!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)){
+                if (!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)) {
 
                     return {
                         notFound: true
@@ -52,22 +50,19 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                 /**
                  * Handle server-side form post
                  */
-                if(body){
-
-                    props.forms[createDiscussionForm.id].initialValues = body;
+                if (body) {
 
                     const validationErrors: Record<string, string> = validate(body, selectFormDefaultFields(props.forms, createDiscussionForm.id));
 
-                    if(Object.keys(validationErrors).length > 0){
+                    props.forms[createDiscussionForm.id].errors = validationErrors;
+                    props.forms[createDiscussionForm.id].initialValues = body;
 
-                        props.forms[createDiscussionForm.id].errors = validationErrors;
-
-                    } else {
+                    if (Object.keys(validationErrors).length === 0) {
 
                         try {
 
                             const submission = await postGroupDiscussion({ groupId, user, csrfToken, body });
-    
+
                             return {
                                 props: {},
                                 redirect: {
@@ -75,22 +70,22 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
                                     destination: `/groups/${context.params.groupId}/forum`
                                 }
                             }
-    
-                        } catch(error){
-    
-                            if(error.data?.status){
-    
+
+                        } catch (error) {
+
+                            if (error.data?.status) {
+
                                 props.forms[createDiscussionForm.id].errors = error.data.body || {
                                     _error: error.data.statusText
                                 };
                                 props.forms[createDiscussionForm.id].initialValues = body;
-    
+
                             } else {
-    
+
                                 return handleSSRErrorProps({ props, error });
-    
+
                             }
-            
+
                         }
 
                     }
@@ -104,6 +99,7 @@ const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 
             }
         })
+    })
 });
 
 /**

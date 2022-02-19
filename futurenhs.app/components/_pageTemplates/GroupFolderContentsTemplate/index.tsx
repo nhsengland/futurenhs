@@ -34,7 +34,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     folder,
     folderContents,
     actions,
-    pagination
+    pagination,
+    theme
 }) => {
 
     const router = useRouter();
@@ -222,6 +223,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
             actions={actions}
             text={entityText}
             image={image} 
+            theme={theme}
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
                     {hasBreadCrumb &&
