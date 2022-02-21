@@ -86,7 +86,7 @@ jobs:
     displayName: 'Build front end'
     inputs:
      workingDirectory: '$(Build.SourcesDirectory)/MVCForum'
-     gulpFile: '$(Build.SourcesDirectory)/MVCForum/gulpfile.js'
+     gulpFile: '$(Build.SourcesDirectory)/MVCForum/gulpfilepipeline.js'
      targets: 'buildWeb'
      gulpjs: '$(Build.SourcesDirectory)/MVCForum/node_modules/gulp/bin/gulp.js'
      enableCodeCoverage: false
