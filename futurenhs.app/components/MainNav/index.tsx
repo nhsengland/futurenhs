@@ -27,6 +27,7 @@ export const MainNav: (props: Props) => JSX.Element =  ({
                         const generatedClasses = {
                             link: classNames('c-main-nav_level-1-link', {
                                 [`c-main-nav_level-1-link--active`]: isActive,
+                                [`u-border-theme-${themeId}`]: isActive && typeof themeId !== 'undefined',
                                 [`u-text-theme-${themeId}`]: typeof themeId !== 'undefined'
                             }),
                             icon: classNames('c-main-nav_level-1-icon', {

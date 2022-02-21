@@ -128,7 +128,7 @@
         left: 0;
         right: 0;
         margin: 0;
-        background-color: $t-site-header-background;
+        background-color: $color_nhsuk-blue;
 
         @include respond-to(desktop) {
             position: static;
@@ -219,7 +219,7 @@
     }
 
     &_search-button-icon {
-        fill: $t-site-header-background;
+        fill: $color_nhsuk-blue;
         height: 50px;
         width: $nhsuk-spacing-point-4;
     }
@@ -237,8 +237,8 @@
             &[open] { //sass-lint:disable-line no-attribute-selectors
                 box-shadow: 0 0 20px 0 $black-tint;
                 border-radius: 4px 4px 0 0;
-                background-color: $t-site-background-one;
-                color: $t-text-one;
+                background-color: $white;
+                color: $nhsuk-text-color;
             }
         }
 
@@ -247,11 +247,11 @@
     &_root-nav-trigger {
         @include small-heading;
         font-weight: bold;
-        color: $t-text-one;
+        color: $nhsuk-text-color;
         display: flex;
         align-items: center;
         fill: $color_nhsuk-grey-2;
-        background: $t-transparent_nhsuk-grey-4;
+        background: transparentize($color_nhsuk-grey-4, .5);
         padding: 16px 20px;
         border: 0;
         border-left: 4px solid $color_nhsuk-grey-2;
@@ -298,7 +298,7 @@
             position: absolute;
             z-index: 2;
             box-shadow: 0 10px 20px 0 $black-tint;
-            background-color: $t-site-background-one;
+            background-color: $white;
             border-radius: 0 0 4px 4px;
             width: 300px;
             padding: 8px 16px;
@@ -333,7 +333,7 @@
         display: block;
         font-weight: bold;
         margin: 0 0 $nhsuk-spacing-point-3;
-        color: $t-interaction-one;
+        color: $color_nhsuk-blue;
         padding: derived-dimension(1);
 
         &:focus {

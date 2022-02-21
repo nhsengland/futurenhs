@@ -1,5 +1,5 @@
 .c-site-footer {
-    background-color: $t-transparent_nhsuk-grey-4;
+    background-color: transparentize($color_nhsuk-grey-4, .5);
     border-top: 4px solid $blue;
 
     &_content {
@@ -30,7 +30,7 @@
     &_copyright {
         @include small-text;
         font-weight: $nhsuk-font-bold;
-        color: $t-copyright-color;
+        color: #425462;
 
         @include respond-to(desktop) {
             text-align: right;

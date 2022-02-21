@@ -1,7 +1,7 @@
 .c-site-header {
     position: relative;
     width: 100%;
-    background-color: $t-site-header-background;
+    background-color: $color_nhsuk-blue;
     z-index: 999;
 
     @include respond-to(desktop) {
