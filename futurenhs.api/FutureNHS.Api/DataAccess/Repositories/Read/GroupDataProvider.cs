@@ -36,7 +36,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             IEnumerable<GroupSummary> groups;
 
             const string query =
-                @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS NameText, g.Description AS StrapLineText, 
+                @"SELECT g.Id AS Id, g.Theme, g.Slug AS Slug, g.Name AS NameText, g.Description AS StrapLineText, 
 				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
 				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id) AS DiscussionCount,
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
@@ -90,7 +90,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             IEnumerable<GroupSummary> groups;
 
             const string query =
-                @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS NameText, g.Description AS StrapLineText, 
+                @"SELECT g.Id AS Id,g.Theme, g.Slug AS Slug, g.Name AS NameText, g.Description AS StrapLineText, 
 				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
 				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id) AS DiscussionCount,
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
@@ -135,7 +135,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
         public async Task<Group?> GetGroupAsync(string slug, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT g.Id AS Id, g.Slug AS Slug, g.Name AS Name, g.Description AS StrapLine, g.PublicGroup AS IsPublic,		
+                @"SELECT g.Id AS Id, g.Theme, g.Slug AS Slug, g.Name AS Name, g.Description AS StrapLine, g.PublicGroup AS IsPublic,		
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName,  image.MediaType AS MediaType
 				FROM [Group] g
                 LEFT JOIN Image image ON image.Id = g.ImageId  
@@ -160,7 +160,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
                     Slug = slug
                 }, splitOn: "id");
 
-            var @group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
+            var group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
 
             return group;
         }
