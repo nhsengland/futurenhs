@@ -10,6 +10,7 @@ describe('Search listing template', () => {
         id: 'mockPageId',
         user: undefined,
         term: 'mockTermTestingItRandomlyToGet0Results',
+        minLength: 3,
         resultsList: [],
         contentText: {
             title: 'Search',

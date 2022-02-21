@@ -62,6 +62,7 @@ export const Header: (props: Props) => JSX.Element = ({
     const headerAccordionId: string = 'header-accordion';
     const userAccordionId: string = 'user-accordion';
     const logOutRoute: string = routes.LOG_OUT;
+    const shouldRenderUserLink: boolean = Boolean(user?.id);
     const shouldRenderAdminLink: boolean = actions?.includes(actionTypes.SITE_ADMIN_VIEW);
 
     const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
@@ -156,11 +157,13 @@ export const Header: (props: Props) => JSX.Element = ({
                                                             shouldCloseOnLeave={true}>
                                                                 <div className="c-site-header-nav_sub-nav-content">
                                                                     <ul className={`u-list-none u-p-0 u-m-0`} role="menu" aria-label="Account navigation">
-                                                                        <li className="c-site-header-nav_sub-nav-item" role="none">
-                                                                            <Link href="/todo">
-                                                                                <a role="menuitem" className="c-site-header-nav_sub-nav-child">{editProfile}</a>
-                                                                            </Link>
-                                                                        </li>
+                                                                        {shouldRenderUserLink &&
+                                                                            <li className="c-site-header-nav_sub-nav-item" role="none">
+                                                                                <Link href={`${routes.USERS}/${user.id}`}>
+                                                                                    <a role="menuitem" className="c-site-header-nav_sub-nav-child">{editProfile}</a>
+                                                                                </Link>
+                                                                            </li>
+                                                                        }
                                                                         {shouldRenderAdminLink && 
                                                                             <li className="c-site-header-nav_sub-nav-item" role="none">
                                                                                 <Link href={routes.ADMIN}>

@@ -1,6 +1,7 @@
 export const enum routes {
     HOME = '/',
     ADMIN = '/admin',
+    USERS = '/users',
     LOG_OUT = '/log-out',
     GROUPS = '/groups',
     ACCESSIBILITY = '/accessibility-statement',
