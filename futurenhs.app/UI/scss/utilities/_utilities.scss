@@ -70,4 +70,24 @@ $t-utility-themes: (
         fill: $theme;
     }
 
+    .u-border-theme-#{$number} {
+        border-color: $theme;
+    }
+
+    .u-border-top-theme-#{$number} {
+        border-top-color: $theme;
+    }
+
+    .u-border-right-theme-#{$number} {
+        border-right-color: $theme;
+    }
+
+    .u-border-bottom-theme-#{$number} {
+        border-bottom-color: $theme;
+    }
+
+    .u-border-left-theme-#{$number} {
+        border-left-color: $theme;
+    }
+
 }

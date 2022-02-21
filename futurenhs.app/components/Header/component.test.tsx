@@ -6,6 +6,7 @@ import { Props } from './interfaces';
 
 const testProps: Props = {
     text: {
+        admin: 'Admin',
         editProfile: 'Edit profile',
         logOut: 'Log out',
         logOutHeading: 'Log out',

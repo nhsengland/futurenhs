@@ -22,14 +22,7 @@ export const withTextContent = (config: HofConfig, dependencies?: {
          */
         try {
 
-            const [
-                pageTextContentData
-            ] = await Promise.all([
-                getPageTextContentService({
-                    id: routeId,
-                    locale: locale
-                })
-            ]);
+            const [pageTextContentData] = await Promise.all([getPageTextContentService({ id: routeId, locale })]);
 
             props.contentText = pageTextContentData.data;
 
