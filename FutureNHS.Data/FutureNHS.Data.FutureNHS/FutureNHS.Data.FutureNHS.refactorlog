@@ -294,4 +294,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="RequestToJoinReasonUTC" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="d3b7f894-4cba-4967-a7d2-f4c9727c9e91" ChangeDateTime="02/21/2022 13:43:41">
+    <Property Name="ElementName" Value="[dbo].[Group].[Theme]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Group]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ThemeId" />
+  </Operation>
 </Operations>

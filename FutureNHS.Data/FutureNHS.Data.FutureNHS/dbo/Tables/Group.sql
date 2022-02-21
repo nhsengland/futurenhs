@@ -22,7 +22,7 @@
     [Introduction]       NVARCHAR (4000)  DEFAULT ('') NOT NULL,
     [AboutUs]            NVARCHAR (4000)  NULL,
     [ImageId]            UNIQUEIDENTIFIER NULL,
-    [Theme]              NVARCHAR (32) NULL, 
+    [ThemeId]              UNIQUEIDENTIFIER NULL, 
     [IsDeleted]          BIT              DEFAULT ((0)) NOT NULL,
     [RowVersion]         ROWVERSION       NOT NULL,
     CONSTRAINT [PK_dbo.Group] PRIMARY KEY CLUSTERED ([Id] ASC),

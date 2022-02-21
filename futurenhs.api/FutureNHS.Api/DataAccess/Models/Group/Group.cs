@@ -8,7 +8,7 @@
         public string Slug { get; init; }
         public bool IsPublic { get; init; }
         public ImageData Image { get; init; }
-        public string Theme { get; init; }
+        public Guid? ThemeId { get; init; }
 
     }
 }
