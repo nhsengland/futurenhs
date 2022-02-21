@@ -8,7 +8,7 @@ import { withConfig } from '@hofs/withConfig';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupDiscussions } from '@services/getGroupDiscussions';
-import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
+import { selectUser, selectPagination, selectParam } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -17,18 +17,21 @@ import { Props } from '@components/_pageTemplates/GroupForumTemplate/interfaces'
 import { Pagination } from '@appTypes/pagination';
 
 const routeId: string = 'd7752e9e-4f47-41ec-bc07-70508d8dcd9b';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
-    routeId: routeId,
+    props,
     getServerSideProps: withConfig({
-        routeId: routeId,
+        props,
+        routeId,
         getServerSideProps: withGroup({
-            routeId: routeId,
+            props,
             getServerSideProps: withTextContent({
-                routeId: routeId,
+                props,
+                routeId,
                 getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                     /**
@@ -36,7 +39,6 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                      */
                     const user: User = selectUser(context);
                     const groupId: string = selectParam(context, routeParams.GROUPID);
-                    const props: Props = selectProps(context);
                     const pagination: Pagination = {
                         pageNumber: selectPagination(context).pageNumber ?? 1,
                         pageSize: selectPagination(context).pageSize ?? 5

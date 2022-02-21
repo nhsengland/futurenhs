@@ -1,30 +1,36 @@
 import { GetServerSideProps } from 'next';
 
-import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
+import { actions } from '@constants/actions';
+import { withAuth } from '@hofs/withAuth'
 import { withTextContent } from '@hofs/withTextContent'
-import { selectProps } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { AdminDashboardTemplate } from '@components/_pageTemplates/AdminDashboardTemplate';
 import { Props } from '@components/_pageTemplates/AdminDashboardTemplate/interfaces';
 
 const routeId: string = '9e86c5cc-6836-4319-8d9d-b96249d4c909';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
- export const getServerSideProps: GetServerSideProps = withTextContent({
-    routeId: routeId,
-    getServerSideProps: async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = withAuth({
+    props,
+    getServerSideProps: withTextContent({
+        props,
+        routeId,
+        getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-        const props: Props = selectProps(context);
+            /**
+             * Return data to page template
+             */
+             return {
+                notFound: !props.actions.includes(actions.SITE_ADMIN_VIEW),
+                props: props
+            }
 
-        /**
-         * Return data to page template
-         */
-        return handleSSRSuccessProps({ props });
-
-    }
+        }
+    })
 });
 
 /**

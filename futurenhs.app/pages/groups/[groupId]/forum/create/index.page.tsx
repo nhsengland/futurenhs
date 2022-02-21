@@ -7,7 +7,7 @@ import { actions as actionConstants } from '@constants/actions';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectCsrfToken, selectBody, selectProps, selectParam, selectUser } from '@selectors/context';
+import { selectCsrfToken, selectBody, selectParam, selectUser } from '@selectors/context';
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
@@ -19,22 +19,24 @@ import { GroupCreateDiscussionTemplate } from '@components/_pageTemplates/GroupC
 import { Props } from '@components/_pageTemplates/GroupCreateDiscussionTemplate/interfaces';
 
 const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
+    props,
     getServerSideProps: withGroup({
-        routeId: routeId,
+        props,
         getServerSideProps: withForms({
-            routeId: routeId,
+            props,
+            routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const csrfToken: string = selectCsrfToken(context);
                 const body: any = selectBody(context);
-                const props: Props = selectProps(context);
 
                 /**
                  * Return page not found if user doesn't have permissions to create a discussion

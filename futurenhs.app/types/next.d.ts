@@ -11,6 +11,7 @@ export interface GetServerSidePropsContext extends NextGetServerSidePropsContext
 }
 
 export interface HofConfig {
-    routeId?: string;
+    props: any;
     getServerSideProps: GetServerSideProps;
+    routeId?: string;
 }

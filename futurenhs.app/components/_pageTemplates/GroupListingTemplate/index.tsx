@@ -23,6 +23,7 @@ import { Props } from './interfaces';
  */
 export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     user,
+    actions,
     contentText,
     isGroupMember,
     groupsList,
@@ -70,95 +71,98 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
      */
     return (
 
-        <StandardLayout user={user} className="u-bg-theme-3">
-            <Head>
-                <title>{title}</title>
-                <meta name="description" content={metaDescription} />
-            </Head>
-            <LayoutColumnContainer>
-                <GroupPageHeader 
-                    id="my-groups"
-                    text={{
-                        mainHeading: mainHeading, 
-                        description: intro,
-                        navMenuTitle: navMenuTitle
-                    }} 
-                    navMenuList={[
-                        {
-                            url: '/groups',
-                            text: 'My groups',
-                            isActive: pathname === '/groups'
-                        },
-                        {
-                            url: '/groups/discover',
-                            text: 'Discover new groups',
-                            isActive: pathname === '/groups/discover'
-                        }
-                    ]}
-                    className="u-bg-theme-14" />
-                <PageBody>
-                    <LayoutColumn desktop={8}>
-                        <h2>{secondaryHeading}</h2>
-                        {intro &&
-                            <p className="u-text-lead u-text-theme-7 u-mb-4">{intro}</p>
-                        }
-                        <AriaLiveRegion>
-                            <DynamicListContainer 
-                                containerElementType="ul" 
-                                shouldFocusLatest={shouldEnableLoadMore}
-                                className="u-list-none u-p-0">
-                                    {dynamicGroupsList?.map?.(({ 
-                                        image, 
-                                        text, 
-                                        groupId, 
-                                        totalDiscussionCount, 
-                                        totalMemberCount 
-                                    }, index) => {
+        <StandardLayout 
+            user={user} 
+            actions={actions}
+            className="u-bg-theme-3">
+                <Head>
+                    <title>{title}</title>
+                    <meta name="description" content={metaDescription} />
+                </Head>
+                <LayoutColumnContainer>
+                    <GroupPageHeader 
+                        id="my-groups"
+                        text={{
+                            mainHeading: mainHeading, 
+                            description: intro,
+                            navMenuTitle: navMenuTitle
+                        }} 
+                        navMenuList={[
+                            {
+                                url: '/groups',
+                                text: 'My groups',
+                                isActive: pathname === '/groups'
+                            },
+                            {
+                                url: '/groups/discover',
+                                text: 'Discover new groups',
+                                isActive: pathname === '/groups/discover'
+                            }
+                        ]}
+                        className="u-bg-theme-14" />
+                    <PageBody>
+                        <LayoutColumn desktop={8}>
+                            <h2>{secondaryHeading}</h2>
+                            {intro &&
+                                <p className="u-text-lead u-text-theme-7 u-mb-4">{intro}</p>
+                            }
+                            <AriaLiveRegion>
+                                <DynamicListContainer 
+                                    containerElementType="ul" 
+                                    shouldFocusLatest={shouldEnableLoadMore}
+                                    className="u-list-none u-p-0">
+                                        {dynamicGroupsList?.map?.(({ 
+                                            image, 
+                                            text, 
+                                            groupId, 
+                                            totalDiscussionCount, 
+                                            totalMemberCount 
+                                        }, index) => {
 
-                                        const { mainHeading, strapLine } = text ?? {};
-                                        
-                                        const imageToUse = image ? image : defaultGroupLogos.large;
+                                            const { mainHeading, strapLine } = text ?? {};
+                                            
+                                            const imageToUse = image ? image : defaultGroupLogos.large;
 
-                                        return (
+                                            return (
 
-                                            <li key={index}>
-                                                <Card image={imageToUse} className="u-border-b-theme-11 u-mb-4">
-                                                    <h3 className="c-card_heading o-truncated-text-lines-3">
-                                                        <Link href={`/groups/${groupId}`}>
-                                                            <a>{mainHeading}</a>
-                                                        </Link>        
-                                                    </h3>
-                                                    <div className="c-card_body">
-                                                        <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                            {strapLine}
-                                                        </p>
-                                                        <div className="c-card_footer u-text-theme-0">
-                                                            <p className="c-card_footer-item">
-                                                                <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
-                                                                <span>{`${totalMemberCount} Members`}</span>
+                                                <li key={index}>
+                                                    <Card image={imageToUse} className="u-border-b-theme-11 u-mb-4">
+                                                        <h3 className="c-card_heading o-truncated-text-lines-3">
+                                                            <Link href={`/groups/${groupId}`}>
+                                                                <a>{mainHeading}</a>
+                                                            </Link>        
+                                                        </h3>
+                                                        <div className="c-card_body">
+                                                            <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                                {strapLine}
                                                             </p>
-                                                            <p className="c-card_footer-item">
-                                                                <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
-                                                                <span>{`${totalDiscussionCount} Discussions`}</span>
-                                                            </p>
+                                                            <div className="c-card_footer u-text-theme-0">
+                                                                <p className="c-card_footer-item">
+                                                                    <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
+                                                                    <span>{`${totalMemberCount} Members`}</span>
+                                                                </p>
+                                                                <p className="c-card_footer-item">
+                                                                    <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
+                                                                    <span>{`${totalDiscussionCount} Discussions`}</span>
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </Card>
-                                            </li>
+                                                    </Card>
+                                                </li>
 
-                                        )
+                                            )
 
-                                    })}
-                            </DynamicListContainer>
-                        </AriaLiveRegion>
-                        <PaginationWithStatus 
-                            id="group-list-pagination"
-                            shouldEnableLoadMore={shouldEnableLoadMore}
-                            getPageAction={handleGetPage}
-                            {...dynamicPagination} />
-                    </LayoutColumn>
-                </PageBody>
-            </LayoutColumnContainer>
+                                        })}
+                                </DynamicListContainer>
+                            </AriaLiveRegion>
+                            <PaginationWithStatus 
+                                id="group-list-pagination"
+                                shouldEnableLoadMore={shouldEnableLoadMore}
+                                getPageAction={handleGetPage}
+                                {...dynamicPagination} />
+                        </LayoutColumn>
+                    </PageBody>
+                </LayoutColumnContainer>
         </StandardLayout>
 
     )

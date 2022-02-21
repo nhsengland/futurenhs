@@ -1,5 +1,12 @@
 export const enum actions {
     SITE_MEMBERS_ADD = 'https://schema.collaborate.future.nhs.uk/members/v1/add',
+    SITE_ADMIN_VIEW = "https://schema.collaborate.future.nhs.uk/admin/v1/view",
+    SITE_ADMIN_MEMBERS_ADD = "https://schema.collaborate.future.nhs.uk/members/v1/add",
+    SITE_ADMIN_MEMBERS_EDIT = "https://schema.collaborate.future.nhs.uk/members/v1/edit",
+    SITE_ADMIN_MEMBERS_DELETE = "https://schema.collaborate.future.nhs.uk/members/v1/delete",
+    SITE_ADMIN_GROUPS_ADD = "https://schema.collaborate.future.nhs.uk/groups/v1/add",
+    SITE_ADMIN_GROUPS_EDIT = "https://schema.collaborate.future.nhs.uk/groups/v1/edit",
+    SITE_ADMIN_GROUPS_DELETE = "https://schema.collaborate.future.nhs.uk/groups/v1/delete",
     GROUPS_DISCUSSIONS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/discussions/add',
     GROUPS_COMMENTS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/add',
     GROUPS_FOLDERS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/folders/add',

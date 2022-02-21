@@ -26,7 +26,8 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     contentText,
     resultsList = [],
     pagination,
-    user
+    user,
+    actions
 }) => {
 
     const resultsCount: number = resultsList.length;
@@ -161,6 +162,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
         <StandardLayout
             searchTerm={term}
             user={user}
+            actions={actions}
             className="u-bg-theme-3">
             <Head>
                 <title>{title}</title>

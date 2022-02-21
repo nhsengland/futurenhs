@@ -5,7 +5,7 @@ import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { withAuth } from '@hofs/withAuth';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroups } from '@services/getGroups';
-import { selectUser, selectPagination, selectProps } from '@selectors/context';
+import { selectUser, selectPagination } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -14,21 +14,23 @@ import { Props } from '@components/_pageTemplates/GroupListingTemplate/interface
 import { Pagination } from '@appTypes/pagination';
 
 const routeId: string = '8190d347-e29a-4577-baa8-446bcae428d9';
+const props: Partial<Props> = {};
 const isMember: boolean = false;
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
+    props,
     getServerSideProps: withTextContent({
-        routeId: routeId,
+        props,
+        routeId,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
 
             /**
              * Get data from request context
              */
             const user: User = selectUser(context);
-            const props: Props = selectProps(context);
             const pagination: Pagination = {
                 pageNumber: selectPagination(context).pageNumber ?? 1,
                 pageSize: selectPagination(context).pageSize ?? 10

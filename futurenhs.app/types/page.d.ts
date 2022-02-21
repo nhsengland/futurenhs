@@ -10,7 +10,7 @@ import { Theme } from '@appTypes/theme';
 
 export interface Page {
     id: string;
-    groupId?: string;
+    actions?: Array<actions>;
     csrfToken?: string;
     forms?: Record<string, FormConfig>;
     services?: Record<string, Service>;
@@ -22,8 +22,8 @@ export interface Page {
 }
 
 export interface GroupPage extends Page {
+    groupId?: string;
     image: Image;
     contentText: GroupsPageTextContent;
     entityText: any;
-    actions: Array<actions>;
 }

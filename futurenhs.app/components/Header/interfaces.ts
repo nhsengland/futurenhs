@@ -1,4 +1,5 @@
 import { User } from '@appTypes/user';
+import { actions } from '@constants/actions';
 
 export interface Props {
     skipLinkList?: Array<{
@@ -15,6 +16,7 @@ export interface Props {
         }
     }>;
     text: { 
+        admin: string;
         editProfile: string;
         logOut: string;
         logOutHeading: string; 
@@ -23,6 +25,7 @@ export interface Props {
         logOutConfirm: string;
     };
     user: User;
+    actions?: Array<actions>;
     shouldRenderSearch?: boolean;
     shouldRenderNavigation?: boolean;
     searchTerm?: any;

@@ -27,6 +27,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderBreadCrumb = true, 
     shouldRenderMainNav = true,
     user,
+    actions,
     breadCrumbList,
     searchTerm,
     className, 
@@ -80,6 +81,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
             <Header
                 skipLinkList={skipLinkList}
                 text={{
+                    admin: 'Admin',
                     editProfile: 'My profile',
                     logOut: 'Log Off',
                     logOutHeading: 'Log Off', 
@@ -88,6 +90,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                     logOutConfirm: 'Yes, log off'
                 }}
                 user={user}
+                actions={actions}
                 shouldRenderSearch={shouldRenderSearch} 
                 shouldRenderNavigation={shouldRenderUserNavigation}
                 navMenuList={mainNavMenuList}

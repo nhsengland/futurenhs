@@ -9,6 +9,7 @@ const NoopTemplate = (props: any) => null;
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withLogOut({
+    props: {},
     getServerSideProps: async (context: GetServerSidePropsContext) => {
     
             return {

@@ -12,7 +12,7 @@ import { withTextContent } from '@hofs/withTextContent';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
-import { selectUser, selectParam, selectProps, selectPagination, selectCsrfToken, selectBody } from '@selectors/context';
+import { selectUser, selectParam, selectPagination, selectCsrfToken, selectBody } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
@@ -22,17 +22,21 @@ import { GroupDiscussionTemplate } from '@components/_pageTemplates/GroupDiscuss
 import { Props } from '@components/_pageTemplates/GroupDiscussionTemplate/interfaces';
 
 const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
+    props,
     getServerSideProps: withGroup({
-        routeId: routeId,
+        props,
         getServerSideProps: withForms({
-            routeId: routeId,
+            props,
+            routeId,
             getServerSideProps: withTextContent({
-                routeId: routeId,
+                props,
+                routeId,
                 getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                     const user: User = selectUser(context);
@@ -41,7 +45,6 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                     const pagination: Pagination = selectPagination(context);
                     const csrfToken: any = selectCsrfToken(context);
                     const body: any = selectBody(context);
-                    const props: Props = selectProps(context);
 
                     props.discussionId = discussionId;
 

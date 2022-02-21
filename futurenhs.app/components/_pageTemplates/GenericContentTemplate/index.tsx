@@ -7,6 +7,7 @@ import { Props } from './interfaces';
 
 export const GenericContentTemplate: (props: Props) => JSX.Element = ({
     user,
+    actions,
     contentText
 }) => {
 
@@ -22,6 +23,7 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
             shouldRenderSearch={isAuthenticated}
             shouldRenderUserNavigation={isAuthenticated}
             shouldRenderMainNav={isAuthenticated}
+            actions={actions}
             className="u-bg-theme-3">
                 <Head>
                     <title>{title}</title>

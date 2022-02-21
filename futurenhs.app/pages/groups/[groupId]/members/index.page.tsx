@@ -8,7 +8,7 @@ import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupMembers } from '@services/getGroupMembers';
 import { getPendingGroupMembers } from '@services/getPendingGroupMembers';
-import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
+import { selectUser, selectPagination, selectParam } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { Pagination } from '@appTypes/pagination';
 import { User } from '@appTypes/user';
@@ -17,20 +17,22 @@ import { GroupMemberListingTemplate } from '@components/_pageTemplates/GroupMemb
 import { Props } from '@components/_pageTemplates/GroupMemberListingTemplate/interfaces';
 
 const routeId: string = '3d4a3b47-ba2c-43fa-97cf-90de93eeb4f8';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
+    props,
     getServerSideProps: withGroup({
-        routeId: routeId,
+        props,
         getServerSideProps: withTextContent({
-            routeId: routeId,
+            props,
+            routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
-                const props: Props = selectProps(context);
 
                 const pagination: Pagination = {
                     pageNumber: selectPagination(context).pageNumber ?? 1,

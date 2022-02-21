@@ -8,7 +8,7 @@ import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { getGroupFolderContents } from '@services/getGroupFolderContents';
-import { selectUser, selectPagination, selectParam, selectProps } from '@selectors/context';
+import { selectUser, selectPagination, selectParam } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
@@ -17,21 +17,24 @@ import { GroupFolderContentsTemplate } from '@components/_pageTemplates/GroupFol
 import { Props } from '@components/_pageTemplates/GroupFolderContentsTemplate/interfaces';
 
 const routeId: string = '3ea9a707-4686-4129-a9fc-9041a6d5ae6e';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
+    props,
     getServerSideProps: withGroup({
-        routeId: routeId,
+        props,
+        routeId,
         getServerSideProps: withTextContent({
-            routeId: routeId,
+            props,
+            routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const folderId: string = selectParam(context, routeParams.FOLDERID);
-                const props: Props = selectProps(context);
                 const pagination: Pagination = {
                     pageNumber: selectPagination(context).pageNumber ?? 1,
                     pageSize: selectPagination(context).pageSize ?? 10

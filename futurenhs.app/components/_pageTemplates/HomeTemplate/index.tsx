@@ -11,7 +11,8 @@ import { Props } from './interfaces';
  */
 export const HomeTemplate: (props: Props) => JSX.Element = ({
     contentText,
-    user
+    user,
+    actions
 }) => {
 
     const { title, 
@@ -20,16 +21,19 @@ export const HomeTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <StandardLayout user={user} className="u-bg-theme-3">
-            <Head>
-                <title>{title}</title>
-                <meta name="description" content={metaDescription} />
-            </Head>
-            <LayoutColumnContainer>
-                <LayoutColumn className="u-px-4 u-py-10">
-                    <h1>{mainHeading}</h1>
-                </LayoutColumn>
-            </LayoutColumnContainer>
+        <StandardLayout 
+            user={user} 
+            actions={actions}
+            className="u-bg-theme-3">
+                <Head>
+                    <title>{title}</title>
+                    <meta name="description" content={metaDescription} />
+                </Head>
+                <LayoutColumnContainer>
+                    <LayoutColumn className="u-px-4 u-py-10">
+                        <h1>{mainHeading}</h1>
+                    </LayoutColumn>
+                </LayoutColumnContainer>
         </StandardLayout>
 
     )

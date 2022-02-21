@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
+import { actions as actionTypes } from '@constants/actions';
 import { initials } from '@helpers/formatters/initials';
 import { Image } from '@components/Image';
 import { Link } from '@components/Link';
@@ -37,6 +38,7 @@ export const Header: (props: Props) => JSX.Element = ({
     navMenuList,
     text,
     user,
+    actions,
     searchTerm
 }) => {
 
@@ -49,6 +51,7 @@ export const Header: (props: Props) => JSX.Element = ({
     const userInitials: string = initials({ value: userName });
 
     const { editProfile,
+            admin,
             logOut,
             logOutHeading, 
             logOutBody,
@@ -59,6 +62,8 @@ export const Header: (props: Props) => JSX.Element = ({
     const headerAccordionId: string = 'header-accordion';
     const userAccordionId: string = 'user-accordion';
     const logOutRoute: string = routes.LOG_OUT;
+    const shouldRenderAdminLink: boolean = actions?.includes(actionTypes.SITE_ADMIN_VIEW);
+
     const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
 
     const handleAccordionToggle = (id: string, isOpen: boolean) => {
@@ -156,6 +161,13 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                                 <a role="menuitem" className="c-site-header-nav_sub-nav-child">{editProfile}</a>
                                                                             </Link>
                                                                         </li>
+                                                                        {shouldRenderAdminLink && 
+                                                                            <li className="c-site-header-nav_sub-nav-item" role="none">
+                                                                                <Link href={routes.ADMIN}>
+                                                                                    <a role="menuitem" className="c-site-header-nav_sub-nav-child">{admin}</a>
+                                                                                </Link>
+                                                                            </li>
+                                                                        }
                                                                         <li className="c-site-header-nav_sub-nav-item" role="none">
                                                                             <Link href={logOutRoute}>
                                                                                 <a className="c-button c-button--outline c-site-header-nav_sub-nav-child" onClick={handleLogoutRequest}>

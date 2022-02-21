@@ -3,13 +3,12 @@ import { GetServerSideProps } from 'next';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { defaultGroupLogos } from '@constants/icons';
-import { selectUser, selectParam, selectProps } from '@selectors/context';
+import { selectUser, selectParam } from '@selectors/context';
 import { getGroup } from '@services/getGroup';
 import { GetGroupService } from '@services/getGroup';
 import { getGroupActions } from '@services/getGroupActions';
 import { GetGroupActionsService } from '@services/getGroupActions';
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
-import { GroupPage } from '@appTypes/page';
 import { User } from '@appTypes/user';
 
 export const withGroup = (config: HofConfig, dependencies?: {
@@ -20,7 +19,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
     const getGroupService = dependencies?.getGroupService ?? getGroup;
     const getGroupActionsService = dependencies?.getGroupActionsService ?? getGroupActions;
 
-    const { getServerSideProps } = config;
+    const { props, getServerSideProps } = config;
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 
@@ -29,7 +28,6 @@ export const withGroup = (config: HofConfig, dependencies?: {
          */
         const groupId: string = selectParam(context, routeParams.GROUPID);
         const user: User = selectUser(context);
-        const props: GroupPage = selectProps(context);
 
         /**
          * Get data from services
@@ -44,7 +42,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
             props.groupId = groupId;
             props.entityText = groupData.data.text ?? {};
             props.image = groupData.data.image ?? defaultGroupLogos.small;
-            props.actions = actionsData.data ?? null;
+            props.actions = [...props.actions ?? [], ...actionsData.data ?? []];
             props.theme = { // TODO - this will come from getGroupService
                 background: 10,
                 content: 1,
@@ -56,8 +54,6 @@ export const withGroup = (config: HofConfig, dependencies?: {
             return handleSSRErrorProps({ props, error });
 
         }
-
-        context.props = props;
 
         return await getServerSideProps(context);
 

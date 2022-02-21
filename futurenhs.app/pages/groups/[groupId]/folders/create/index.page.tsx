@@ -7,7 +7,7 @@ import { actions as actionConstants } from '@constants/actions';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectCsrfToken, selectBody, selectParam, selectUser, selectProps, selectQuery } from '@selectors/context';
+import { selectCsrfToken, selectBody, selectParam, selectUser, selectQuery } from '@selectors/context';
 import { postGroupFolder } from '@services/postGroupFolder';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -18,15 +18,19 @@ import { GroupCreateFolderTemplate } from '@components/_pageTemplates/GroupCreat
 import { Props } from '@components/_pageTemplates/GroupCreateFolderTemplate/interfaces';
 
 const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
+    props,
     getServerSideProps: withGroup({
-        routeId: routeId,
+        props,
+        routeId,
         getServerSideProps: withForms({
-            routeId: routeId,
+            props,
+            routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const user: User = selectUser(context);
@@ -34,7 +38,6 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 const folderId: string = selectQuery(context, routeParams.FOLDERID);
                 const csrfToken: string = selectCsrfToken(context);
                 const body: any = selectBody(context);
-                const props: Props = selectProps(context);
 
                 if (!props.actions?.includes(actionConstants.GROUPS_FOLDERS_ADD)) {
 

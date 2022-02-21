@@ -10,20 +10,14 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 
 import { Props } from './interfaces';
-import { useState } from 'react';
-import { getSearchResults } from '@services/getSearchResults';
-import { RichText } from '@components/RichText';
-import { SearchResult } from '@appTypes/search';
-import { ContentType } from '@appTypes/search-content';
-import { matchText } from '@helpers/formatters/matchText';
-import { capitalise } from '@helpers/formatters/capitalise';
 
 /**
  * Admin dashboard template
  */
 export const AdminDashboardTemplate: (props: Props) => JSX.Element = ({
     contentText,
-    user
+    user,
+    actions
 }) => {
 
     const shouldEnableLoadMore: boolean = true;
@@ -41,6 +35,7 @@ export const AdminDashboardTemplate: (props: Props) => JSX.Element = ({
 
         <StandardLayout
             user={user}
+            actions={actions}
             className="u-bg-theme-3">
                 <Head>
                     <title>{title}</title>

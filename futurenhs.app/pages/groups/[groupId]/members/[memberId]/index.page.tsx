@@ -7,7 +7,7 @@ import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupMember } from '@services/getGroupMember';
-import { selectUser, selectParam, selectProps } from '@selectors/context';
+import { selectUser, selectParam } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -15,22 +15,24 @@ import { GroupMemberTemplate } from '@components/_pageTemplates/GroupMemberTempl
 import { Props } from '@components/_pageTemplates/GroupMemberTemplate/interfaces';
 
 const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
-    routeId: routeId,
+    props,
     getServerSideProps: withGroup({
-        routeId: routeId,
+        props,
+        routeId,
         getServerSideProps: withTextContent({
-            routeId: routeId,
+            props,
+            routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const memberId: string = selectParam(context, routeParams.MEMBERID);
-                const props: Props = selectProps(context);
 
                 /**
                  * Get data from services

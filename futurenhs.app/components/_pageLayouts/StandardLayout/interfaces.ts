@@ -1,4 +1,5 @@
 import { BreadCrumbList } from '@appTypes/routing';
+import { actions } from '@constants/actions';
 
 export interface Props {
     shouldRenderSearch?: boolean;
@@ -7,6 +8,7 @@ export interface Props {
     shouldRenderBreadCrumb?: boolean; 
     shouldRenderMainNav?: boolean;
     user?: any;
+    actions?: Array<actions>;
     breadCrumbList?: BreadCrumbList;
     searchTerm?: any;
     className?: string; 

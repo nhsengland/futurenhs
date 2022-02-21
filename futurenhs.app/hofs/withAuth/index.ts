@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next';
+import { getSiteActions } from '@services/getSiteActions';
 import { getAuth } from '@services/getAuth';
 import { GetAuthService } from '@services/getAuth';
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
@@ -9,19 +10,22 @@ export const withAuth = (config: HofConfig, dependencies?: {
 
     const getAuthService = dependencies?.getAuthService ?? getAuth;
 
-    const { getServerSideProps } = config;
+    const { props, getServerSideProps } = config;
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 
         try {
 
-            const { data } = await getAuthService({
+            const { data: user } = await getAuthService({
                 cookies: context.req.cookies
             });
 
-            context.props = context.props || {};
-            context.props.user = data;
-            context.req.user = data;
+            props.user = user;
+            context.req.user = user;
+
+            const { data: actions } = await getSiteActions({ user });
+
+            props.actions = actions;
 
             return await getServerSideProps(context);
 

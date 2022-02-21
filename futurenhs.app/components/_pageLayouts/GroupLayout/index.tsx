@@ -53,30 +53,33 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
 
     return (
 
-        <StandardLayout breadCrumbList={breadCrumbList} {...rest}>
-            <Head>
-                <title>{title}</title>
-                <meta name="description" content={metaDescription} />
-            </Head>
-            <LayoutColumnContainer>
-                <ErrorBoundary boundaryId="group-page-header">
-                    <GroupPageHeader 
-                        id="group"
-                        text={{
-                            mainHeading: mainHeading, 
-                            description: strapLine,
-                            navMenuTitle: 'Group menu'
-                        }}
-                        image={image}
-                        theme={theme}
-                        shouldRenderActionsMenu={true}
-                        actionsMenuList={actionsMenuList}
-                        navMenuList={navMenuList} />
-                </ErrorBoundary>
-                <ErrorBoundary boundaryId="group-page-body">
-                    {children}
-                </ErrorBoundary>
-            </LayoutColumnContainer>
+        <StandardLayout 
+            breadCrumbList={breadCrumbList} 
+            actions={actions}
+            {...rest}>
+                <Head>
+                    <title>{title}</title>
+                    <meta name="description" content={metaDescription} />
+                </Head>
+                <LayoutColumnContainer>
+                    <ErrorBoundary boundaryId="group-page-header">
+                        <GroupPageHeader 
+                            id="group"
+                            text={{
+                                mainHeading: mainHeading, 
+                                description: strapLine,
+                                navMenuTitle: 'Group menu'
+                            }}
+                            image={image}
+                            theme={theme}
+                            shouldRenderActionsMenu={true}
+                            actionsMenuList={actionsMenuList}
+                            navMenuList={navMenuList} />
+                    </ErrorBoundary>
+                    <ErrorBoundary boundaryId="group-page-body">
+                        {children}
+                    </ErrorBoundary>
+                </LayoutColumnContainer>
         </StandardLayout>
 
     )

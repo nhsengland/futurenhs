@@ -18,6 +18,7 @@ describe('withLogOut hof', () => {
         }
 
         const withOutput = withLogOut({
+            props: {},
             getServerSideProps: mockGetServerSideProps
         });
         

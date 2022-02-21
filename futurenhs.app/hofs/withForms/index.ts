@@ -1,17 +1,16 @@
 import { GetServerSideProps } from 'next';
 
 import formConfigs from '@formConfigs/index';
-import { selectCsrfToken, selectProps } from '@selectors/context';
+import { selectCsrfToken } from '@selectors/context';
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
 import { FormConfig } from '@appTypes/form';
 
 export const withForms = (config: HofConfig, dependencies?: {}): GetServerSideProps => {
 
-    const { getServerSideProps } = config;
+    const { props, getServerSideProps } = config;
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 
-        const props: any = selectProps(context);
         const csrfToken: string = selectCsrfToken(context);
 
         const clonedFormConfigs: Record<string, FormConfig> = {};

@@ -4,26 +4,28 @@ import { actions } from '@constants/actions';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectCsrfToken, selectProps } from '@selectors/context';
+import { selectCsrfToken } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { GroupUpdateTemplate } from '@components/_pageTemplates/GroupUpdateTemplate';
 import { Props } from '@components/_pageTemplates/GroupUpdateTemplate/interfaces';
 
 const routeId: string = '578dfcc6-857f-4eda-8779-1d9b110888c7';
+const props: Partial<Props> = {};
 
 /**
  * Get props to inject into page on the initial server-side request
  */
 export const getServerSideProps: GetServerSideProps = withAuth({
+    props,
     getServerSideProps: withGroup({
-        routeId: routeId,
+        props,
         getServerSideProps: withForms({
-            routeId: routeId,
+            props,
+            routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const csrfToken: string = selectCsrfToken(context);
-                const props: Props = selectProps(context);
 
                 /**
                  * Return data to page template
