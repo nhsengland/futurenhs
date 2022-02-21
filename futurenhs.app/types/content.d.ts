@@ -5,6 +5,8 @@ export interface GenericPageTextContent {
     intro?: string;
     navMenuTitle?: string;
     secondaryHeading?: string;
+    noResults?:string;
+    noResultsMinTermLength?: string;
 }
 
 export interface GroupsPageTextContent extends GenericPageTextContent {

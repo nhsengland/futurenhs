@@ -41,6 +41,7 @@ export const getServerSideProps: GetServerSideProps = withAuth({
                 const [searchResults] = await Promise.all([getSearchResults({ term, pagination, minLength })]);
 
                 props.term = term;
+                props.minLength = minLength;
                 props.resultsList = searchResults.data ?? [];
                 props.pagination = searchResults.pagination;
 

@@ -23,6 +23,7 @@ import { capitalise } from '@helpers/formatters/capitalise';
  */
 export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     term,
+    minLength,
     contentText,
     resultsList = [],
     pagination,
@@ -36,7 +37,9 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
     const { metaDescription,
         title,
-        mainHeading } = contentText ?? {};
+        mainHeading, noResults, noResultsMinTermLength } = contentText ?? {};
+
+    const noResultsMessage: string = (!term || term.length < minLength) ? noResultsMinTermLength : noResults;
 
     const [dynamicSearchResultsList, setSearchResultsList] = useState(resultsList);
     const [dynamicPagination, setPagination] = useState(pagination);
@@ -102,9 +105,9 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
             return <Link href={resourceHref}>
                 <a>
                     {isParentDiscussion && <span>{capitalise({ value: item.type })} on discussion: </span>}
-                    <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText({ 
-                        value: item.content.title, 
-                        term: term 
+                    <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText({
+                        value: item.content.title,
+                        term: term
                     })} />
                 </a>
             </Link>
@@ -114,8 +117,8 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
         return <Link href={resourceHref}>
             <a>
-                <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText({ 
-                    value: capitalise({ value: item.content.title }), 
+                <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText({
+                    value: capitalise({ value: item.content.title }),
                     term: term
                 })} />
             </a>
@@ -143,8 +146,8 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
         /* Construct body */
         const body: JSX.Element = <RichText wrapperElementType='span' stripHtmlPattern={stripHtmlPattern} bodyHtml={matchText({
-            value: capitalise({ 
-                value: item.content.body 
+            value: capitalise({
+                value: item.content.body
             }),
             term: term
         })} />
@@ -171,35 +174,35 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
             <div className="u-px-4 u-py-10">
                 <h1>{`${mainHeading}: ${term} - ${dynamicPagination?.totalRecords ?? 0} results found`}</h1>
                 {!hasResults &&
-                    <p>Sorry no results found</p>
+                    <p>{noResultsMessage}</p>
                 }
                 <AriaLiveRegion>
                     {hasResults &&
                         <LayoutColumnContainer>
                             <LayoutColumn desktop={10}>
-                                <DynamicListContainer 
+                                <DynamicListContainer
                                     containerElementType="ul"
                                     shouldFocusLatest={shouldEnableLoadMore}
                                     className="u-p-0 u-list-none">
-                                        {formattedData.map(({ metaHeader, title, body }, index) => {
+                                    {formattedData.map(({ metaHeader, title, body }, index) => {
 
-                                            return (
+                                        return (
 
-                                                <li key={index} className={generatedClasses.block}>
-                                                    <h2 className={generatedClasses.title}>{title}</h2>
-                                                    <p className={generatedClasses.header}>{metaHeader}</p>
-                                                    <p className={generatedClasses.body}>{body}</p>
-                                                </li>
-                                            )
+                                            <li key={index} className={generatedClasses.block}>
+                                                <h2 className={generatedClasses.title}>{title}</h2>
+                                                <p className={generatedClasses.header}>{metaHeader}</p>
+                                                <p className={generatedClasses.body}>{body}</p>
+                                            </li>
+                                        )
 
-                                        })}
+                                    })}
                                 </DynamicListContainer>
-                            <PaginationWithStatus
-                                id="search-result-list-pagination"
-                                shouldEnableLoadMore={true}
-                                getPageAction={handleGetPage}
-                                totalRecords={dynamicPagination.totalRecords}
-                                {...dynamicPagination} />
+                                <PaginationWithStatus
+                                    id="search-result-list-pagination"
+                                    shouldEnableLoadMore={true}
+                                    getPageAction={handleGetPage}
+                                    totalRecords={dynamicPagination.totalRecords}
+                                    {...dynamicPagination} />
                             </LayoutColumn>
                         </LayoutColumnContainer>
                     }
