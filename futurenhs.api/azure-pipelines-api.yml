@@ -9,7 +9,7 @@ trigger:
     - TRY-RI-VNEXT-APP
  paths:
     include:
-    - FutureNHS/*
+    - FutureNHS.Api/*
 
 jobs:
 - job: CheckChangesInPaths
