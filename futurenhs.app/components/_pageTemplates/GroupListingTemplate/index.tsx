@@ -130,7 +130,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                             const themeAccentId: number = selectThemeAccentId(themes, themeId);
 
                                             const generatedClasses = {
-                                                wrapper: classNames('u-mb-4', `u-border-bottom-theme-${themeAccentId}`)
+                                                wrapper: classNames('u-mb-4', `u-border-b-theme-${themeAccentId}`, `hover:u-border-b-theme-${themeAccentId}-darker`)
                                             }
 
                                             return (

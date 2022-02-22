@@ -201,7 +201,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                         const generatedClasses = {
                                                             link: classNames('c-site-header-nav_root-nav-trigger u-border-theme-8', {
                                                                 [`c-site-header-nav_root-nav-trigger--active`]: isActive,
-                                                                [`u-border-theme-8-${themeId}`]: typeof themeId !== 'undefined'
+                                                                [`u-border-theme-${themeId}`]: typeof themeId !== 'undefined'
                                                             }),
                                                             icon: classNames('c-site-header-nav_root-nav-content-icon', {
                                                                 [`u-fill-theme-${themeId}`]: typeof themeId !== 'undefined'

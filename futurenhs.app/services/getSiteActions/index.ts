@@ -29,7 +29,7 @@ export const getSiteActions = async ({
     const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: 'GET' }), 30000);
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
-
+    
     const { ok, status, statusText } = apiMeta;
 
     if(!ok){

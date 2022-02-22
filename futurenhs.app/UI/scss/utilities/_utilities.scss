@@ -46,48 +46,22 @@
 
 // TODO - work out why tailwind.config.js isn't correctly rendering fill theme classes
 // so that this duplication can be removed
-$t-utility-themes: (
-    "0": $black,
-    "1": $white,
-    "2": $very-light-grey,
-    "3": $light-grey,
-    "4": $light-mid-grey,
-    "5": $mid-grey,
-    "6": $dark-mid-grey,
-    "7": $dark-grey,
-    "8": $blue,
-    "9": $green,
-    "10": $purple,
-    "11": $aqua,
-    "12": $dark-red,
-    "13": $red,
-    "14": $dark-blue,
-);
+// $t-utility-themes: (
+//     "0": $black,
+//     "1": $white,
+//     "2": $very-light-grey,
+//     "3": $light-grey,
+//     "4": $light-mid-grey,
+//     "5": $mid-grey,
+//     "6": $dark-mid-grey,
+//     "7": $dark-grey,
+//     "8": $blue,
+//     "9": $green,
+//     "10": $purple,
+//     "11": $aqua,
+//     "12": $dark-red,
+//     "13": $red,
+//     "14": $dark-blue,
+// );
 
-@each $number, $theme in $t-utility-themes {
 
-    .u-fill-theme-#{$number} {
-        fill: $theme;
-    }
-
-    .u-border-theme-#{$number} {
-        border-color: $theme;
-    }
-
-    .u-border-top-theme-#{$number} {
-        border-top-color: $theme;
-    }
-
-    .u-border-right-theme-#{$number} {
-        border-right-color: $theme;
-    }
-
-    .u-border-bottom-theme-#{$number} {
-        border-bottom-color: $theme;
-    }
-
-    .u-border-left-theme-#{$number} {
-        border-left-color: $theme;
-    }
-
-}

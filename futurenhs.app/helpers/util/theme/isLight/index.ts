@@ -2,7 +2,9 @@ import tailwindConfig from "../../../../tailwind.config";
 
 export const isLight = ({ colorId, threshold = 235 }) => {
 
-    let color = tailwindConfig.theme.colors[`theme-${colorId}`];
+    let themeColor = tailwindConfig.theme.colors[`theme-${colorId}`]; //themeColor = {DEFAULT: .., lighter:, darker, 75}
+    let color = themeColor.DEFAULT ?? themeColor; 
+
     let r, g, b, hsp;
     
     // Check the format of the color, HEX or RGB?

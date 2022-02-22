@@ -99,12 +99,19 @@ const getAuthHandler = ({ status }) => rest.get('*/auth/userinfo', async (req, r
     ctx.status(status)
 ));
 
+//mock getSiteActions
+const getSiteActions = rest.get('*/v1/users/*/actions', async (req, res, ctx) => res(
+    ctx.json([
+        // 'https://schema.collaborate.future.nhs.uk/admin/v1/view',
+        'msw Mock Action',
+    ])
+));
 /**
  * all handlers
  */
-export const handlers = { getSearchResultsHandler, getAuthHandler };
+export const handlers = { getSearchResultsHandler, getAuthHandler, getSiteActions };
 
 /**
  * default handlers
  */
-export const defaultHandlers = [];
+export const defaultHandlers = [getSiteActions];
