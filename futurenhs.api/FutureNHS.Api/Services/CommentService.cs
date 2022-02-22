@@ -1,5 +1,7 @@
 ﻿using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
+using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Comment;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -10,19 +12,22 @@ namespace FutureNHS.Api.Services
     public class CommentService : ICommentService
     {
         private const string DefaultRole = "Standard Members";
-        private const string AddDiscussionRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/add";
+        private const string AddCommentRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/add";
+        private const string EditCommentRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/edit";
+
 
         private readonly ILogger<DiscussionService> _logger;
         private readonly ICommentCommand _commentCommand;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
 
-        public CommentService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, ICommentCommand commentCommand)
+        public CommentService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, 
+            ICommentCommand commentCommand)
         {
-            _systemClock = systemClock;
-            _commentCommand = commentCommand;
-            _permissionsService = permissionsService;
-            _logger = logger;
+            _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+            _commentCommand = commentCommand ?? throw new ArgumentNullException(nameof(commentCommand));
+            _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task CreateCommentAsync(Guid userId, string slug, Guid discussionId, Comment comment, CancellationToken cancellationToken)
@@ -32,7 +37,7 @@ namespace FutureNHS.Api.Services
 
             var now = _systemClock.UtcNow.UtcDateTime;
             
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddDiscussionRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddCommentRole, cancellationToken);
 
             if (!userCanPerformAction)
             {
@@ -64,7 +69,7 @@ namespace FutureNHS.Api.Services
 
             var now = _systemClock.UtcNow.UtcDateTime;
 
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddDiscussionRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddCommentRole, cancellationToken);
 
             if (!userCanPerformAction)
             {
@@ -95,6 +100,47 @@ namespace FutureNHS.Api.Services
             };
 
             await _commentCommand.CreateCommentAsync(discussionDto, cancellationToken);
+        }
+
+        public async Task UpdateCommentAsync(Guid userId, string slug, Guid discussionId, Guid commentId, Comment comment, byte[] rowVersion, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+            if (Guid.Empty == discussionId) throw new ArgumentOutOfRangeException(nameof(discussionId));
+            if (Guid.Empty == commentId) throw new ArgumentOutOfRangeException(nameof(commentId));
+
+            var now = _systemClock.UtcNow.UtcDateTime;
+
+            var userCanAddComment = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddCommentRole, cancellationToken);
+            if (!userCanAddComment)
+            {
+                _logger.LogError($"Forbidden: UpdateCommentAsync - User:{0} does not have access to group:{1}", userId, slug);
+                throw new SecurityException($"Forbidden: User does not have access to this group");
+            }
+
+            var userCanEditComment = await _permissionsService.UserCanPerformActionAsync(userId, slug, EditCommentRole, cancellationToken);
+            var databaseCommentDto = await _commentCommand.GetCommentAsync(commentId, cancellationToken);
+            if (databaseCommentDto.CreatedById != userId && !userCanEditComment)
+            {
+                _logger.LogError($"Forbidden: UpdateCommentAsync - User:{0} does not have permission to edit comment:{1}", userId, commentId);
+                throw new ForbiddenException("Forbidden: User does not have permission to edit this comment");
+            }
+
+            if (!databaseCommentDto.RowVersion.SequenceEqual(rowVersion))
+            {
+                _logger.LogError($"Precondition Failed: UpdateCommentAsync - Comment:{0} has changed prior to submission ", commentId);
+                throw new PreconditionFailedExeption("Precondition Failed: Comment has changed prior to submission");
+            }
+
+            var commentDto = new CommentDto()
+            {
+                Id = databaseCommentDto.Id,
+                Content = comment.Content,
+                ModifiedBy = userId,
+                ModifiedAtUTC = now,
+            };
+
+            await _commentCommand.UpdateCommentAsync(commentDto, rowVersion, cancellationToken);
         }
     }
 }

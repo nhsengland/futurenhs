@@ -46,7 +46,6 @@ namespace FutureNHS.Api.Services
             return permissions.Distinct();
         }
 
-
         public async Task<IEnumerable<string>?> GetUserPermissionsForGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
         {
             if (userId == Guid.Empty) throw new ArgumentException("Cannot be EMPTY", nameof(userId));

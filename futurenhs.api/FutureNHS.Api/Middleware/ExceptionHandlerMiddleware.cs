@@ -47,6 +47,10 @@ namespace FutureNHS.Api.Middleware
                     httpStatusCode = HttpStatusCode.NotFound;
                     result = JsonSerializer.Serialize(new { error = recordNotFoundException.Message });
                     break;
+                case ForbiddenException forbiddenException:
+                    httpStatusCode = HttpStatusCode.Forbidden;
+                    result = JsonSerializer.Serialize(new { error = forbiddenException.Message });
+                    break;
                 default:
                     result = JsonSerializer.Serialize(new { error = exception.Message });
                     break;

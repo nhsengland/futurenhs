@@ -172,7 +172,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
 
             return (totalCount, GenerateCommentModelFromData(commentsData));
-        }
+        }        
 
         private IEnumerable<Comment> GenerateCommentModelFromData(IEnumerable<CommentData> commentData)
         {

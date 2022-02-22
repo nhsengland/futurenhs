@@ -1,6 +1,6 @@
 ﻿namespace FutureNHS.Api.DataAccess.Models.Comment
 {
-    public record CommentData
+    public sealed class CommentData : BaseData
     {
         public Guid Id { get; init; }
         public string Content { get; init; }

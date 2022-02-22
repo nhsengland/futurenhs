@@ -8,5 +8,6 @@ namespace FutureNHS.Api.Services.Interfaces
     {
         Task CreateCommentAsync(Guid userId, string slug, Guid discussionId, Comment comment, CancellationToken cancellationToken);
         Task CreateCommentReplyAsync(Guid userId, string slug, Guid discussionId, Guid replyingToComment, Comment comment, CancellationToken cancellationToken);
+        Task UpdateCommentAsync(Guid userId, string slug, Guid discussionId, Guid commentId, Comment comment, byte[] rowVersion, CancellationToken cancellationToken);
     }
 }

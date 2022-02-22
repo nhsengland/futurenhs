@@ -1,3 +1,4 @@
+using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
@@ -7,6 +8,7 @@ using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Ganss.XSS;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Comment = FutureNHS.Api.Models.Comment.Comment;
 
 namespace FutureNHS.Api.Controllers
@@ -18,17 +20,29 @@ namespace FutureNHS.Api.Controllers
     {
         private readonly ILogger<CommentController> _logger;
         private readonly ICommentsDataProvider _commentsDataProvider;
-        private readonly IPermissionsService _permissionsService;
+        private readonly ICommentCommand _commentCommand;
         private readonly ICommentService _commentService;
         private readonly IHtmlSanitizer _htmlSanitizer;
 
-        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, IPermissionsService permissionsService, ICommentService commentService, IHtmlSanitizer htmlSanitizer)
+        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, 
+            ICommentService commentService, IHtmlSanitizer htmlSanitizer, ICommentCommand commentCommand)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _commentsDataProvider = commentsDataProvider ?? throw new ArgumentNullException(nameof(commentsDataProvider));
-            _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
             _commentService = commentService ?? throw new ArgumentNullException(nameof(commentService));
-            _htmlSanitizer = htmlSanitizer;
+            _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
+            _commentCommand = commentCommand ?? throw new ArgumentNullException(nameof(commentCommand));
+        }
+
+        [HttpGet]
+        [Route("groups/{slug}/discussions/{discussionsId:guid}/comments/{commentId:guid}")]
+        [Route("users/{userId}/groups/{slug}/discussions/{discussionsId:guid}/comments/{commentId:guid}")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetCommentsForDiscussionAsync(Guid? userId, string slug, Guid discussionsId, Guid commentId, CancellationToken cancellationToken)
+        {
+            var comment = await _commentCommand.GetCommentAsync(commentId, cancellationToken);
+
+            return Ok(comment);
         }
 
         [HttpGet]
@@ -91,5 +105,28 @@ namespace FutureNHS.Api.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}")]
+        public async Task<IActionResult> UpdateCommentAsync(Guid membershipUserId, string slug, Guid discussionId, Guid commentId, Comment comment, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var request = Request;            
+            if (!request.Headers.ContainsKey(HeaderNames.IfMatch))
+            {
+                return BadRequest(new { error = "If-Match header not set" });
+            }
+
+            byte[] rowVersion = Convert.FromBase64String(request.Headers[HeaderNames.IfMatch].ToString());
+
+            comment.Content = _htmlSanitizer.Sanitize(comment.Content);
+
+            await _commentService.UpdateCommentAsync(membershipUserId, slug, discussionId, commentId, comment, rowVersion, cancellationToken);
+
+            return Ok();
+        }
     }
 }
