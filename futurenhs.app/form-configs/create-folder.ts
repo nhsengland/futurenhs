@@ -11,7 +11,7 @@ export const createFolderForm: FormConfig = {
                     inputType: 'text',
                     text: {
                         label: 'Enter a folder title',
-                        hintHtml: 'This is a hint offering some short guidance to users'
+                        hint: 'This is a hint offering some short guidance to users'
                     },
                     component: 'input',
                     validators: [
@@ -25,7 +25,7 @@ export const createFolderForm: FormConfig = {
                     name: 'description',
                     text: {
                         label: 'Enter a folder description',
-                        hintHtml: 'This is a hint offering some short guidance to users'
+                        hint: 'This is a hint offering some short guidance to users'
                     },
                     component: 'textArea'
                 }

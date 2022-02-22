@@ -2,41 +2,51 @@ import { FormField } from '@appTypes/form';
 
 import { required } from './required';
 import { email } from './email';
+import { maxLength } from './maxLength';
 
 const validationFunctions: any = {
     required: required,
-    email: email
+    email: email,
+    maxLength: maxLength
 };
 
 export const validate = (submission: any, fields: Array<FormField>, fieldNameModifier?: string): Record<string, string> => {
 
     const errors: any = {};
 
-    fields?.forEach(({ name, validators }) => {
+    const recursiveValidator = (fields) => {
 
-        const derivedName: string = fieldNameModifier ? `${name}-${fieldNameModifier}` : name;
+        fields?.forEach(({ validators, name, fields: childFields }) => {
 
-        if(validators?.length > 0){
+            const derivedName: string = fieldNameModifier ? `${name}-${fieldNameModifier}` : name;
 
-            for(let i = 0; i < validators.length; i++){
+            if (validators?.length > 0) {
 
-                const validator = validators[i]; 
-                const { type } = validator;
-    
-                const error: string = validationFunctions[type](validator)(submission[derivedName]);
-    
-                if(error){
-    
-                    errors[derivedName] = error;
-                    break;
-    
+                for (let i = 0; i < validators.length; i++) {
+
+                    const validator = validators[i];
+                    const { type } = validator;
+
+                    const error: string = validationFunctions[type](validator)(submission[derivedName]);
+
+                    if (error) {
+
+                        errors[derivedName] = error;
+                        break;
+
+                    }
+
                 }
-    
+
             }
 
-        }
+            recursiveValidator(childFields);
 
-    });
+        });
+
+    };
+
+    recursiveValidator(fields);
 
     return errors;
 

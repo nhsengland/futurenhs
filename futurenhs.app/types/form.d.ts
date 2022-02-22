@@ -8,14 +8,23 @@ export interface FormField {
     name: string;
     text: {
         label?: string;
-        hintHtml?: string;
+        legend?: string;
+        hint?: string;
     };
+    fields?: Array<FormField>;
+    options?: Array<{
+        name: string;
+        label: string;
+    }>;
     shouldRenderAsRte?: boolean;
+    shouldRenderRemainingCharacterCount?: boolean;
     validators?: Array<{
         type: ValidatorType;
+        maxLength?: number;
         message: string;
     }>;
     className?: string;
+    optionClassName?: string;
 }
 
 export interface FormStep {

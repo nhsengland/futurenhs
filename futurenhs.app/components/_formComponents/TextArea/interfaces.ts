@@ -15,8 +15,8 @@ export interface Props {
         hint?: string;
         error?: string;
     };
-    isRequired?: boolean;
     shouldRenderAsRte?: boolean;
     shouldRenderRemainingCharacterCount?: boolean;
+    validators?: Array<any>;
     className?: string;
 }

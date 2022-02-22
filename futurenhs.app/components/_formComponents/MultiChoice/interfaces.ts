@@ -1,8 +1,9 @@
 export interface Props {
     input: {
         name: string;
-        value: string;
+        value: string | number;
         onChange: any;
+        onBlur: any;
     };
     meta: {
         error: string;
@@ -14,8 +15,13 @@ export interface Props {
         hint?: string;
         error?: string;
     };
-    inputType?: 'text' | 'email' | 'password' | 'number' | 'file';
-    shouldRenderRemainingCharacterCount?: boolean;
-    validators?: Array<any>;
+    options: Array<{
+        name: string;
+        label: string;
+    }>
+    inputType?: 'radio' | 'checkBox';
+    isRequired?: boolean;
+    isDisabled?: boolean;
     className?: string;
+    optionClassName?: string;
 }

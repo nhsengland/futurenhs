@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { Editor } from '@tinymce/tinymce-react';
 
 import { RichText } from '@components/RichText';
+import { RemainingCharacterCount } from '@components/RemainingCharacterCount';
 import { getAriaFieldAttributes } from '@helpers/util/form';
 
 import { Props } from './interfaces';
@@ -20,9 +21,9 @@ export const TextArea: (props: Props) => JSX.Element = ({
         submitError
     },
     text,
-    isRequired,
     shouldRenderAsRte,
     shouldRenderRemainingCharacterCount,
+    validators,
     className
 }) => {
 
@@ -33,6 +34,8 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const { label, hint } = text ?? {};
     const id: string = name;
     const shouldRenderError: boolean = (Boolean(error) || Boolean(submitError)) && touched;
+    const isRequired: boolean = Boolean(validators?.find(({ type }) => type === 'required'));
+    const maxLength: boolean = validators?.find(({ type }) => type === 'maxLength')?.maxLength;
 
     const handleRteInit = (_, editor) => editorRef.current = editor;
     const handleRteChange = (value: any) => onChange(value);
@@ -51,15 +54,16 @@ export const TextArea: (props: Props) => JSX.Element = ({
     };
 
     const generatedClasses: any = {
-        wrapper: classNames('c-form-group', className, {
-            ['c-form-group--error']: shouldRenderError,
-            ['c-form-group--focus']: isRteFocussed
+        wrapper: classNames('nhsuk-form-group', className, {
+            ['nhsuk-form-group--error']: shouldRenderError,
+            ['c-form-group--focus']: isRteFocussed,
+            ['u-overflow-hidden']: shouldRenderRemainingCharacterCount && maxLength
         }),
-        label: classNames('c-label'),
-        hint: classNames('c-hint'),
-        error: classNames('c-error-message', 'field-validation-error'),
-        input: classNames('c-textarea', {
-            ['c-input--error']: shouldRenderError
+        label: classNames('nhsuk-label'),
+        hint: classNames('nhsuk-hint'),
+        error: classNames('nhsuk-error-message'),
+        input: classNames('nhsuk-textarea', {
+            ['nhsuk-textarea--error']: shouldRenderError
         })
     };
 
@@ -122,7 +126,13 @@ export const TextArea: (props: Props) => JSX.Element = ({
                         className={generatedClasses.input} />
             
             }
-
+            {(shouldRenderRemainingCharacterCount && maxLength) &&
+                <RemainingCharacterCount
+                    id={generatedIds.remainingCharacters}
+                    currentCharacterCount={value?.length ?? 0}
+                    maxCharacterCount={maxLength}
+                    className="u-float-right" />
+            }
         </div>
 
     )

@@ -49,8 +49,6 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
 
     const handleSubmit = async (submission) => {
 
-        console.log(1);
-
         try {
 
             const response = await postGroupFolder({
@@ -60,13 +58,9 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                 body: submission
             });
 
-            console.log(2);
-
             router.push(folderHref);
 
         } catch(error){
-
-            console.log(3, error);
 
             setErrors({
                 [error.data.status]: error.data.statusText

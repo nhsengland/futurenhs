@@ -87,6 +87,44 @@ export const Form: (props: Props) => JSX.Element = ({
         cancelButton: classNames('c-form_cancel-button', 'c-button', 'c-button-outline', 'c-button--min-width', cancelButtonClassName)
     };
 
+    const renderFields = (fields?: Array<FormField>): Array<JSX.Element> => {
+
+        if(!fields){
+
+            return null;
+
+        }
+
+        return fields?.map(({ 
+            name, 
+            inputType, 
+            text, 
+            component,
+            fields,
+            className,
+            ...rest 
+        }) => {
+
+            return (
+
+                <Field
+                    key={name}
+                    instanceId={instanceId}
+                    name={name}
+                    inputType={inputType}
+                    text={text}
+                    component={formComponents[component]}
+                    className={className}
+                    {...rest}>
+                        {renderFields(fields)}
+                </Field>
+
+            )
+
+        });
+
+    }
+
     return (
 
         <FinalForm
@@ -145,30 +183,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                 defaultValue={instanceId} />
                         }
                         <div className={generatedClasses.body}>
-                            {fields?.map(({ 
-                                name, 
-                                inputType, 
-                                text, 
-                                shouldRenderAsRte,
-                                component,
-                                className 
-                            }) => {
-
-                                return (
-
-                                    <Field
-                                        key={name}
-                                        name={name}
-                                        inputType={inputType}
-                                        text={text}
-                                        component={formComponents[component]}
-                                        instanceId={instanceId}
-                                        shouldRenderAsRte={shouldRenderAsRte}
-                                        className={className} />
-
-                                )
-
-                            })}
+                            {renderFields(fields)}
                         </div>
                         <div className={generatedClasses.buttonContainer}>
                             {shouldRenderCancelButton &&

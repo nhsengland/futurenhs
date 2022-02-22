@@ -3,6 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
 import { GroupUpdateTemplate } from './index';
+import forms from '@formConfigs/index';
 import { Props } from './interfaces';
 
 describe('Group update template', () => {
@@ -20,6 +21,7 @@ describe('Group update template', () => {
         folderId: 'mockId',
         user: undefined,
         actions: [],
+        forms: forms,
         contentText: null,
         entityText: {
             title: 'Mock title text',

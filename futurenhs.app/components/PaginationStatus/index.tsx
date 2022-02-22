@@ -14,7 +14,7 @@ export const PaginationStatus: (props: Props) => JSX.Element = ({
     totalRecords
 }) => {
 
-    if(!pageNumber || !pageSize || !totalRecords){
+    if(!pageNumber || !pageSize || !totalRecords || totalRecords < pageSize){
 
         return null;
 
