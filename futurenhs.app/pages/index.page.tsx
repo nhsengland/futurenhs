@@ -17,18 +17,18 @@ const props: Partial<Props> = {};
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withTextContent({
-        props,
-        routeId: routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
+            props,
+            routeId: routeId,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
 
 
-            /**
-             * Return data to page template
-             */
-            return handleSSRSuccessProps({ props });
+                /**
+                 * Return data to page template
+                 */
+                return handleSSRSuccessProps({ props });
 
-        }
-    })
+            }
+        })
 });
 
 /**

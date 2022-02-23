@@ -13,6 +13,7 @@ import { LayoutWidthContainer } from '@components/LayoutWidthContainer';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
+import { CookieBanner } from '@components/CookieBanner';
 import { mainNavMenuList, footerNavMenuList } from '@constants/navigation';
 import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb';
 import { BreadCrumbList } from '@appTypes/routing';
@@ -20,18 +21,18 @@ import { useMediaQuery } from '@hooks/useMediaQuery';
 
 import { Props } from './interfaces';
 
-export const StandardLayout: (props: Props) => JSX.Element = ({ 
+export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderSearch = true,
     shouldRenderUserNavigation = true,
     shouldRenderPhaseBanner = true,
-    shouldRenderBreadCrumb = true, 
+    shouldRenderBreadCrumb = true,
     shouldRenderMainNav = true,
     user,
     actions,
     breadCrumbList,
     searchTerm,
-    className, 
-    children 
+    className,
+    children
 }) => {
 
     const router = useRouter();
@@ -39,7 +40,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 
     const currentPathName: string = router?.pathname;
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || '';
-    const breadCrumbDescriptionHtml: string = "<span class=\"u-text-bold\">Need help?</span> <a target=\"_blank\" rel=\"noopener\" href=\"https://futurenhstest.service-now.com/csm/?id=futurenhs_test\">Visit our support site</a>" 
+    const breadCrumbDescriptionHtml: string = "<span class=\"u-text-bold\">Need help?</span> <a target=\"_blank\" rel=\"noopener\" href=\"https://futurenhstest.service-now.com/csm/?id=futurenhs_test\">Visit our support site</a>"
 
     mainNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
     footerNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
@@ -48,7 +49,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     const breadCrumbListToUse: BreadCrumbList = breadCrumbList ?? getBreadCrumbList({ pathElementList: currentRoutePathElements });
     const skipLinkList: Array<any> = [];
 
-    if(shouldRenderMainNav){
+    if(shouldRenderMainNav) {
 
         skipLinkList.push({
             id: '#main-nav',
@@ -78,20 +79,21 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 
         <>
             <Head assetPath={assetPath} />
+            <CookieBanner />
             <Header
                 skipLinkList={skipLinkList}
                 text={{
                     admin: 'Admin',
                     editProfile: 'My profile',
                     logOut: 'Log Off',
-                    logOutHeading: 'Log Off', 
+                    logOutHeading: 'Log Off',
                     logOutBody: 'Are you sure you would like to log off?',
                     logOutCancel: 'Cancel',
                     logOutConfirm: 'Yes, log off'
                 }}
                 user={user}
                 actions={actions}
-                shouldRenderSearch={shouldRenderSearch} 
+                shouldRenderSearch={shouldRenderSearch}
                 shouldRenderNavigation={shouldRenderUserNavigation}
                 navMenuList={mainNavMenuList}
                 searchTerm={searchTerm} />
@@ -114,7 +116,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                             <ErrorBoundary boundaryId="bread-crumb">
                                 <LayoutColumnContainer className="u-py-4">
                                     <LayoutColumn tablet={8}>
-                                        <BreadCrumb 
+                                        <BreadCrumb
                                             text={{
                                                 ariaLabel: 'Site breadcrumb'
                                             }}
@@ -125,9 +127,9 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                             className="u--mt-0.5 u-fill-theme-5" />
                                     </LayoutColumn>
                                     <LayoutColumn tablet={4} className="u-text-right u-hidden tablet:u-block">
-                                        <RichText 
-                                            wrapperElementType="p" 
-                                            bodyHtml={breadCrumbDescriptionHtml} 
+                                        <RichText
+                                            wrapperElementType="p"
+                                            bodyHtml={breadCrumbDescriptionHtml}
                                             className="u-mb-0" />
                                     </LayoutColumn>
                                 </LayoutColumnContainer>
@@ -141,7 +143,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                             {shouldRenderMainNav &&
                                 <>
                                     <LayoutColumn hasGutters={false} mobile={0}>
-                                        <MainNav navMenuList={mainNavMenuList}/>
+                                        <MainNav navMenuList={mainNavMenuList} />
                                     </LayoutColumn>
                                     <LayoutColumn className={generatedClasses.content}>
                                         {children}
@@ -167,5 +169,5 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
         </>
 
     )
-    
+
 }
