@@ -1,0 +1,14 @@
+.c-theme-tokens {
+    display: flex;
+    align-items: center;
+    margin: -#{$nhsuk-spacing-point-2} 0 0;
+
+    &_theme {
+        display: block;
+        margin: 0 $nhsuk-spacing-point-4 0 0;
+        border-radius: 50%;
+        border-style: solid;
+        border-width: $nhsuk-spacing-point-1 / 2; 
+    }
+
+}

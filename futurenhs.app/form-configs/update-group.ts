@@ -1,6 +1,25 @@
 import { formTypes } from "@constants/forms";
 import { themes } from "@constants/themes";
+import { isLight } from '@helpers/util/theme/isLight';
 import { FormConfig } from '@appTypes/form';
+import { Theme } from "@appTypes/theme";
+
+const getThemeLabel = ({ themeId, number }): string => {
+
+    const theme: Theme = themes[themeId];
+
+    const backgroundBorderClass: string = isLight({ colorId: theme.background }) ? 'u-border-theme-4' : `u-border-theme-${theme.background}`;
+    const contentBorderClass: string = isLight({ colorId: theme.content }) ? 'u-border-theme-4' : `u-border-theme-${theme.content}`;
+    const accentBorderClass: string = isLight({ colorId: theme.accent }) ? 'u-border-theme-4' : `u-border-theme-${theme.accent}`;
+
+    return `<span class="c-theme-tokens">
+                <span class=\"u-sr-only\">Theme ${number}</span>
+                <span label="Background" class="c-theme-tokens_theme u-w-10 u-h-10 u-bg-theme-${theme.background} ${backgroundBorderClass}"></span>
+                <span label="Text" class="c-theme-tokens_theme u-w-6 u-h-6 u-bg-theme-${theme.content} ${contentBorderClass}"></span>
+                <span label="Accent" class="c-theme-tokens_theme u-w-6 u-h-6 u-bg-theme-${theme.accent} ${accentBorderClass}"></span>
+            </span>`;
+
+}
 
 export const updateGroupForm: FormConfig = {
     id: formTypes.UPDATE_GROUP,
@@ -62,44 +81,72 @@ export const updateGroupForm: FormConfig = {
                     component: 'multiChoice',
                     options: [
                         {
-                            name: '36d49305-eca8-4176-bfea-d25af21469b9',
-                            label: 'Theme 1'
+                            value: '36d49305-eca8-4176-bfea-d25af21469b9',
+                            label: getThemeLabel({
+                                themeId: '36d49305-eca8-4176-bfea-d25af21469b9',
+                                number: 1
+                            })
                         },
                         {
-                            name: '0fca6809-a71f-4733-a622-343967acbad9',
-                            label: 'Theme 2'
+                            value: '0fca6809-a71f-4733-a622-343967acbad9',
+                            label: getThemeLabel({
+                                themeId: '0fca6809-a71f-4733-a622-343967acbad9',
+                                number: 2
+                            })
                         },
                         {
-                            name: '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56',
-                            label: 'Theme 3'
+                            value: '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56',
+                            label: getThemeLabel({
+                                themeId: '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56',
+                                number: 3
+                            })                        },
+                        {
+                            value: '5e7b315b-67b0-457d-8d44-ed2d4bcfac1d',
+                            label: getThemeLabel({
+                                themeId: '5e7b315b-67b0-457d-8d44-ed2d4bcfac1d',
+                                number: 4
+                            })                         
                         },
                         {
-                            name: '5e7b315b-67b0-457d-8d44-ed2d4bcfac1d',
-                            label: 'Theme 4'
+                            value: '5053a8c6-ea4d-4125-9dc3-475e3e931fee',
+                            label: getThemeLabel({
+                                themeId: '5053a8c6-ea4d-4125-9dc3-475e3e931fee',
+                                number: 5
+                            })
                         },
                         {
-                            name: '5053a8c6-ea4d-4125-9dc3-475e3e931fee',
-                            label: 'Theme 5'
+                            value: '53bce171-d6a3-4721-8199-92f10fca5ef2',
+                            label: getThemeLabel({
+                                themeId: '53bce171-d6a3-4721-8199-92f10fca5ef2',
+                                number: 6
+                            })                        },
+                        {
+                            value: 'e71b38fc-c200-4a7c-b484-6bc786fd0aa6',
+                            label: getThemeLabel({
+                                themeId: 'e71b38fc-c200-4a7c-b484-6bc786fd0aa6',
+                                number: 7
+                            })
                         },
                         {
-                            name: '53bce171-d6a3-4721-8199-92f10fca5ef2',
-                            label: 'Theme 6'
+                            value: '217a1f99-5b25-4e3b-be3d-29c55c46be05',
+                            label: getThemeLabel({
+                                themeId: '217a1f99-5b25-4e3b-be3d-29c55c46be05',
+                                number: 8
+                            })
                         },
                         {
-                            name: 'e71b38fc-c200-4a7c-b484-6bc786fd0aa6',
-                            label: 'Theme 7'
+                            value: 'a7101d5f-acce-4ef7-b1c9-5dbf20d54580',
+                            label: getThemeLabel({
+                                themeId: 'a7101d5f-acce-4ef7-b1c9-5dbf20d54580',
+                                number: 9
+                            })
                         },
                         {
-                            name: '217a1f99-5b25-4e3b-be3d-29c55c46be05',
-                            label: 'Theme 8'
-                        },
-                        {
-                            name: 'a7101d5f-acce-4ef7-b1c9-5dbf20d54580',
-                            label: 'Theme 9'
-                        },
-                        {
-                            name: 'a9d8566d-162a-4fa3-b159-f604b12c214d',
-                            label: 'Theme 10'
+                            value: 'a9d8566d-162a-4fa3-b159-f604b12c214d',
+                            label: getThemeLabel({
+                                themeId: 'a9d8566d-162a-4fa3-b159-f604b12c214d',
+                                number: 10
+                            })
                         }
                     ],
                     validators: [
@@ -126,11 +173,11 @@ export const updateGroupForm: FormConfig = {
                             },
                             options: [
                                 {
-                                    name: 'yes',
+                                    value: 'yes',
                                     label: 'Yes'
                                 },
                                 {
-                                    name: 'no',
+                                    value: 'no',
                                     label: 'No'
                                 }
                             ],
@@ -150,11 +197,11 @@ export const updateGroupForm: FormConfig = {
                             },
                             options: [
                                 {
-                                    name: 'yes',
+                                    value: 'yes',
                                     label: 'Yes'
                                 },
                                 {
-                                    name: 'no',
+                                    value: 'no',
                                     label: 'No'
                                 }
                             ],
@@ -174,11 +221,11 @@ export const updateGroupForm: FormConfig = {
                             },
                             options: [
                                 {
-                                    name: 'yes',
+                                    value: 'yes',
                                     label: 'Yes'
                                 },
                                 {
-                                    name: 'no',
+                                    value: 'no',
                                     label: 'No'
                                 }
                             ],

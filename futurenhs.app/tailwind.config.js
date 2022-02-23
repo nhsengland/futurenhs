@@ -39,7 +39,13 @@ module.exports = {
             ['theme-11']: '#00A499',
             ['theme-12']: 'rgba(138, 21, 56, 1)',
             ['theme-13']: '#d5281b',
-            ['theme-14']: 'rgba(0, 48, 135, 1)'
+            ['theme-14']: 'rgba(0, 48, 135, 1)',
+            ['theme-15']: '#ffeb3b',
+            ['theme-16']: '#41b6e6',
+            ['theme-17']: '#ed8b00',
+            ['theme-18']: '#ffb81c',
+            ['theme-19']: '#78be20',
+            ['theme-20']: '#006747'
         }
     },
     variants: {

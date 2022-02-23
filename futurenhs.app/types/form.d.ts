@@ -13,7 +13,7 @@ export interface FormField {
     };
     fields?: Array<FormField>;
     options?: Array<{
-        name: string;
+        value: string;
         label: string;
     }>;
     shouldRenderAsRte?: boolean;

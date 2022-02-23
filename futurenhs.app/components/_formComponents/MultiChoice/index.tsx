@@ -101,7 +101,7 @@ export const MultiChoice: Function = ({
                                 onBlur={handleBlur}
                                 className={generatedClasses.input} />
                             <label htmlFor={childId} className={generatedClasses.label}>
-                                {label}
+                                <RichText bodyHtml={label} />
                             </label>
                         </div>
 
