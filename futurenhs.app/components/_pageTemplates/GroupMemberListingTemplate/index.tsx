@@ -30,7 +30,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     entityText,
     contentText,
     image,
-    theme,
+    themeId,
     pagination
 }) => {
 
@@ -260,7 +260,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             actions={actions}
             text={entityText}
             image={image} 
-            theme={theme}
+            themeId={themeId}
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
                     {shouldRenderPendingMembersList &&

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 
-import { defaultTheme } from '@constants/themes';
+import { defaultThemeId, themes } from '@constants/themes';
 import { actions } from '@constants/actions';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { Dialog } from '@components/Dialog';
@@ -27,7 +27,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     shouldRenderActionsMenu,
     actionsMenuList,
     navMenuList,
-    theme,
+    themeId,
     className
 }) => {
 
@@ -51,7 +51,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
     const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP);
     const activeMenuItemText: string = navMenuList?.find(({ isActive }) => isActive)?.text;
-    const themeToUse: Theme = theme ?? defaultTheme;
+    const themeToUse: Theme = themeId && themes[themeId] ? themes[themeId] : themes[defaultThemeId];
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,

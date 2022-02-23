@@ -58,7 +58,8 @@ describe('getGroup service', () => {
                 altText: 'TBC',
                 height: 100,
                 width: 100,
-            }
+            },
+            themeId: undefined
         });
 
     });

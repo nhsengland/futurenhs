@@ -6,8 +6,7 @@ $card-hero-padding: 10px;
 
 .c-comment {
     $self: &;
-    padding: $nhsuk-spacing-point-4;
-    background: $color_nhsuk-white;
+    margin: 0;
     border: $card-border-width solid $card-border-color;
     border-left-width: $card-border-highlight-width;
     position: relative;

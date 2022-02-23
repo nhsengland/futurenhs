@@ -5,6 +5,7 @@ import { GroupsPageTextContent } from '@appTypes/content';
 export interface Group {
     text: GroupsPageTextContent;
     groupId?: string; 
+    themeId?: string;
     image?: Image;
     totalDiscussionCount?: number; 
     totalMemberCount?: number;    

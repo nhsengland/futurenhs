@@ -1,4 +1,5 @@
-import React from 'react';
+import { useCallback } from 'react';
+import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import Image from 'next/image';
 
@@ -7,21 +8,36 @@ import { Props } from './interfaces';
 export const Card: (props: Props) => JSX.Element = ({
     image,
     children,
+    clickableHref,
     className
 }) => {
+
+    const router = useRouter();
 
     const { src, altText, height, width } = image ?? {};
 
     const generatedClasses: any = {
-        wrapper: classNames('c-card', className),
+        wrapper: classNames('nhsuk-card', className, {
+            ['nhsuk-card--clickable']: clickableHref
+        }),
         hero: classNames('c-card_hero'),
         heroBody: classNames('c-card_hero-body'),
-        body: classNames('c-card_body')
+        body: classNames('nhsuk-card__content')
     };
+
+    const handleClick = useCallback((event) => {
+
+        if(clickableHref && !event.target.href){
+
+            router.push(clickableHref);
+
+        }
+
+    }, [clickableHref]);
 
     return (
 
-        <div className={generatedClasses.wrapper}>
+        <div className={generatedClasses.wrapper} onClick={handleClick}>
             {image &&
                 <div className={generatedClasses.hero}>
                     <div className={generatedClasses.heroBody}>
@@ -33,7 +49,9 @@ export const Card: (props: Props) => JSX.Element = ({
                     </div>
                 </div>
             }
-            {children}
+            <div className={generatedClasses.body}>
+                {children}
+            </div>
         </div>
 
     );

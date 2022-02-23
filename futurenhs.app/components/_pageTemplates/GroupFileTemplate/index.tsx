@@ -27,7 +27,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
     file,
     contentText,
     entityText,
-    theme,
+    themeId,
     image
 }) => {
 
@@ -113,7 +113,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
             actions={actions}
             text={entityText}
             image={image} 
-            theme={theme}
+            themeId={themeId}
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
                     {hasBreadCrumb &&

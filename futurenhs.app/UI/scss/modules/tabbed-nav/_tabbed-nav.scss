@@ -60,7 +60,8 @@
         padding: 14px $nhsuk-spacing-point-3;
         box-shadow: 0 5px transparent;
 
-        &:visited {
+        &:visited,
+        &:hover {
             color: inherit;
         }
 

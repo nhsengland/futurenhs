@@ -51,7 +51,8 @@ export const getGroup = async ({
             height: apiData?.image?.height ?? null,
             width: apiData?.image?.width ?? null,
             altText: 'TBC'
-        } : null
+        } : null,
+        themeId: apiData.themeId
     };
 
     return {

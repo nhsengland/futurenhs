@@ -1,6 +1,8 @@
 export const enum routes {
     HOME = '/',
     ADMIN = '/admin',
+    ADMIN_USERS = '/admin/users',
+    ADMIN_GROUPS = '/admin/groups',
     USERS = '/users',
     LOG_OUT = '/log-out',
     GROUPS = '/groups',

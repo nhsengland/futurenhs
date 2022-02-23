@@ -122,13 +122,14 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                             const { mainHeading, strapLine } = text ?? {};
                                             
                                             const imageToUse = image ? image : defaultGroupLogos.large;
+                                            const cardLinkHref: string = `/groups/${groupId}`;
 
                                             return (
 
                                                 <li key={index}>
-                                                    <Card image={imageToUse} className="u-border-b-theme-11 u-mb-4">
+                                                    <Card image={imageToUse} clickableHref={cardLinkHref} className="u-border-b-theme-11 u-mb-4">
                                                         <h3 className="c-card_heading o-truncated-text-lines-3">
-                                                            <Link href={`/groups/${groupId}`}>
+                                                            <Link href={cardLinkHref}>
                                                                 <a>{mainHeading}</a>
                                                             </Link>        
                                                         </h3>

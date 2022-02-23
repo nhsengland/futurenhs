@@ -4,6 +4,10 @@ $card-border-color: $color_nhsuk-grey-4;
 $card-border-hover-color: $color_nhsuk-grey-3;
 $card-hero-padding: 10px;
 
+.nhsuk-card {
+    overflow: hidden;
+}
+
 .c-card {
     $self: &;
     //sass-lint:disable-block nesting-depth force-element-nesting no-combinators no-important
@@ -22,12 +26,13 @@ $card-hero-padding: 10px;
     }
 
     &_hero {
+        float: left;
         position: relative;
-        margin: 0 $nhsuk-spacing-point-4 0 0;
+        margin: $nhsuk-spacing-point-4 $nhsuk-spacing-point-3 $nhsuk-spacing-point-2 $nhsuk-spacing-point-4;
 
         @include respond-to(tablet) {
-            float: left;
-            margin: -#{$nhsuk-spacing-point-3} $nhsuk-spacing-point-4 -#{$nhsuk-spacing-point-3} -#{$nhsuk-spacing-point-3};
+            margin: $nhsuk-spacing-point-2 $nhsuk-spacing-point-4 $nhsuk-spacing-point-2 $nhsuk-spacing-point-2;
+            //margin: -#{$nhsuk-spacing-point-3} $nhsuk-spacing-point-4 -#{$nhsuk-spacing-point-3} -#{$nhsuk-spacing-point-3};
         }
 
     }
@@ -60,6 +65,12 @@ $card-hero-padding: 10px;
         position: relative;
         width: 100%;
         margin: $nhsuk-spacing-point-3 0 0;
+        clear: both;
+
+        @include respond-to(tablet) {
+            clear: right;
+        }
+
     }
 
     &_content {

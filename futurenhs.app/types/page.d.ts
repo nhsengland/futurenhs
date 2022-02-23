@@ -6,7 +6,6 @@ import { FormConfig } from '@appTypes/form';
 import { Service } from '@appTypes/service';
 import { GenericPageTextContent, GroupsPageTextContent } from '@appTypes/content';
 import { User } from '@appTypes/user';
-import { Theme } from '@appTypes/theme';
 
 export interface Page {
     id: string;
@@ -18,7 +17,7 @@ export interface Page {
     errors?: Array<Record<string>>;
     contentText?: GenericPageTextContent;
     user?: User;
-    theme?: Theme;
+    themeId?: string;
 }
 
 export interface GroupPage extends Page {

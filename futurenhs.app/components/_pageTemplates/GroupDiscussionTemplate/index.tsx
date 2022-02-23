@@ -38,7 +38,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     discussionId,
     user,
     csrfToken,
-    theme,
+    themeId,
     contentText,
     entityText,
     image,
@@ -271,7 +271,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             actions={actions}
             text={entityText}
             image={image}
-            theme={theme}
+            themeId={themeId}
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
                     {shouldRenderCommentAndReplyForms &&

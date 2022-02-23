@@ -19,7 +19,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     id,
     text,
     image,
-    theme,
+    themeId,
     actions,
     children,
     ...rest 
@@ -71,7 +71,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                                 navMenuTitle: 'Group menu'
                             }}
                             image={image}
-                            theme={theme}
+                            themeId={themeId}
                             shouldRenderActionsMenu={true}
                             actionsMenuList={actionsMenuList}
                             navMenuList={navMenuList} />

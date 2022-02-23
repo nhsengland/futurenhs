@@ -28,7 +28,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     contentText,
     entityText,
     image,
-    theme,
+    themeId,
     pagination,
     actions,
     discussionsList
@@ -93,7 +93,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
             actions={actions}
             text={entityText}
             image={image}
-            theme={theme}
+            themeId={themeId}
             className="u-bg-theme-3">
                 <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
                     <LayoutColumn tablet={8} className="c-page-body">
@@ -124,13 +124,14 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                 const createdDate: string = dateTime({ value: created });
                                                 const lastCommentUserName: string = modifiedBy.text.userName;
                                                 const lastCommentDate: string = dateTime({ value: modified });
+                                                const cardLinkHref: string = `${groupBasePath}/forum/${discussionId}`;
 
                                                 return (
 
                                                     <li key={index}>
-                                                        <Card className="u-border-b-theme-10 u-mb-4">
+                                                        <Card clickableHref={cardLinkHref} className="u-border-b-theme-10 u-mb-4">
                                                             <h3 className="c-card_heading desktop:u-mb-4">
-                                                                <Link href={`${groupBasePath}/forum/${discussionId}`}>
+                                                                <Link href={cardLinkHref}>
                                                                     <a>
                                                                         {isSticky && <span className="u-sr-only">Sticky: </span>}
                                                                         {title}

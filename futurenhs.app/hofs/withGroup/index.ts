@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { defaultThemeId } from '@constants/themes';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { defaultGroupLogos } from '@constants/icons';
@@ -40,14 +41,10 @@ export const withGroup = (config: HofConfig, dependencies?: {
             ]);
 
             props.groupId = groupId;
+            props.themeId = groupData.data.themeId ?? defaultThemeId;
             props.entityText = groupData.data.text ?? {};
             props.image = groupData.data.image ?? defaultGroupLogos.small;
             props.actions = [...props.actions ?? [], ...actionsData.data ?? []];
-            props.theme = { // TODO - this will come from getGroupService
-                background: 10,
-                content: 1,
-                accent: 10
-            };
 
         } catch (error) {
 

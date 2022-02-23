@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import { UserMeta } from '@components/UserMeta';
 import { RichText } from '@components/RichText';
+import { Card } from '@components/Card';
 import { Reply } from '@components/Reply';
 import { Like } from '@components/Like';
 import { Link } from '@components/Link';
@@ -36,7 +37,7 @@ export const Comment: (props: Props) => JSX.Element = ({
 
     return (
 
-        <div className={generatedClasses.wrapper}>
+        <Card className={generatedClasses.wrapper}>
             <header>
                 <UserMeta
                     image={image}
@@ -79,7 +80,7 @@ export const Comment: (props: Props) => JSX.Element = ({
                 }
             </footer>
             {children}
-        </div>
+        </Card>
 
     );
 }

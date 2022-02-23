@@ -1,6 +1,7 @@
 @import 'node_modules/nhsuk-frontend/packages/core/settings/all';
 @import 'node_modules/nhsuk-frontend/packages/core/tools/all';
 @import 'node_modules/nhsuk-frontend/packages/core/objects/_form-group';
+@import 'node_modules/nhsuk-frontend/packages/core/styles/_typography';
 @import 'node_modules/nhsuk-frontend/packages/components/error-message/_error-message';
 @import 'node_modules/nhsuk-frontend/packages/components/fieldset/_fieldset';
 @import 'node_modules/nhsuk-frontend/packages/components/label/_label';
@@ -9,6 +10,7 @@
 @import 'node_modules/nhsuk-frontend/packages/components/textarea/_textarea';
 @import 'node_modules/nhsuk-frontend/packages/components/radios/_radios';
 @import 'node_modules/nhsuk-frontend/packages/components/checkboxes/_checkboxes';
+@import 'node_modules/nhsuk-frontend/packages/components/card/card';
 
 @import 'variables/variables';
 @import 'mixins/mixins';

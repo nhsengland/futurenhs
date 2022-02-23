@@ -31,6 +31,8 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
+                console.log(context);
+
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
 

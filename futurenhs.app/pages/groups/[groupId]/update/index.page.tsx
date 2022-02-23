@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { formTypes } from '@constants/forms';
 import { actions } from '@constants/actions';
 import { withAuth } from '@hofs/withAuth';
 import { withGroup } from '@hofs/withGroup';
@@ -26,6 +27,14 @@ export const getServerSideProps: GetServerSideProps = withAuth({
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                 const csrfToken: string = selectCsrfToken(context);
+
+                console.log(props.themeId);
+
+                props.forms[formTypes.UPDATE_GROUP].initialValues = {
+                    'name': props.entityText.title,
+                    'strapline': props.entityText.strapLine,
+                    'themeId': [props.themeId]
+                }
 
                 /**
                  * Return data to page template

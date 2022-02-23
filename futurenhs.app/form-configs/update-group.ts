@@ -54,7 +54,7 @@ export const updateGroupForm: FormConfig = {
                     inputType: 'file'
                 },
                 {
-                    name: 'theme',
+                    name: 'themeId',
                     text: {
                         label: 'Choose your theme colour',
                         hint: 'Please choose a colour theme for your group. Please note, all colour combinations are accessible. For more information, see our knowledge hub.'
