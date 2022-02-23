@@ -48,7 +48,7 @@ export const updateGroupForm: FormConfig = {
                     name: 'logo',
                     text: {
                         label: 'Logo (optional)',
-                        hint: 'Please upload your logo or an icon. If not, we will use our default FutureNHS icon shown.'
+                        hint: 'Please upload your logo or an icon. If not, we will use the existing image icon shown.'
                     },
                     component: 'input',
                     inputType: 'file'

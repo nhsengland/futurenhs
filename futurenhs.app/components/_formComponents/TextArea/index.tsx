@@ -85,7 +85,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
             <label
                 htmlFor={id}
                 className={generatedClasses.label}>
-                {label}
+                    {label}
             </label>
             {hint &&
                 <RichText

@@ -1,12 +1,10 @@
 import { useRouter } from 'next/router';
 
-import { routeParams } from '@constants/routes';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BackLink } from '@components/BackLink';
 import { UserProfile } from '@components/UserProfile';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';  
 
@@ -15,12 +13,9 @@ import { Props } from './interfaces';
  */
 export const SiteUserTemplate: (props: Props) => JSX.Element = ({
     user,
-    entityText,
     contentText,
     member,
-    actions,
-    theme,
-    image
+    actions
 }) => {
 
     const { secondaryHeading, 
