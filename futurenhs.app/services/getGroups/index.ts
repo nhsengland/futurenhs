@@ -67,6 +67,7 @@ export const getGroups: Service = async ({
                 strapLine: datum.strapLineText ?? null
             } as any,
             groupId: datum.slug,
+            themeId: datum.themeId,
             totalMemberCount: datum.memberCount ?? 0,
             totalDiscussionCount: datum.discussionCount ?? 0,
             image: datum.image ? {

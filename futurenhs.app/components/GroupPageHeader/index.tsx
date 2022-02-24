@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 
-import { defaultThemeId, themes } from '@constants/themes';
+import { themes } from '@constants/themes';
+import { selectTheme } from '@selectors/themes';
 import { actions } from '@constants/actions';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { Dialog } from '@components/Dialog';
@@ -51,7 +52,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
     const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP);
     const activeMenuItemText: string = navMenuList?.find(({ isActive }) => isActive)?.text;
-    const themeToUse: Theme = themeId && themes[themeId] ? themes[themeId] : themes[defaultThemeId];
+    const { background, content }: Theme = selectTheme(themes, themeId);
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,
@@ -59,9 +60,9 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     };
 
     const generatedClasses: any = {
-        wrapper: classNames('c-page-header', `u-bg-theme-${themeToUse.background}`, `u-text-theme-${themeToUse.content}`),
+        wrapper: classNames('c-page-header', `u-bg-theme-${background}`, `u-text-theme-${content}`),
         header: classNames('c-page-header_header'),
-        heading: classNames('c-page-header_heading', `u-text-theme-${themeToUse.content}`, 'o-truncated-text-lines-3'),
+        heading: classNames('c-page-header_heading', `u-text-theme-${content}`, 'o-truncated-text-lines-3'),
         hero: classNames('c-page-header_hero'),
         heroBody: classNames('c-page-header_hero-body'),
         description: classNames('c-page-header_description', 'tablet:o-truncated-text-lines-2'),

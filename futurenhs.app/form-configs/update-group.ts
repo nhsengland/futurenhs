@@ -1,22 +1,25 @@
 import { formTypes } from "@constants/forms";
 import { themes } from "@constants/themes";
+import { selectTheme } from "@selectors/themes";
 import { isLight } from '@helpers/util/theme/isLight';
 import { FormConfig } from '@appTypes/form';
 import { Theme } from "@appTypes/theme";
 
 const getThemeLabel = ({ themeId, number }): string => {
 
-    const theme: Theme = themes[themeId];
+    const { background, 
+            content, 
+            accent }: Theme = selectTheme(themes, themeId);
 
-    const backgroundBorderClass: string = isLight({ colorId: theme.background }) ? 'u-border-theme-4' : `u-border-theme-${theme.background}`;
-    const contentBorderClass: string = isLight({ colorId: theme.content }) ? 'u-border-theme-4' : `u-border-theme-${theme.content}`;
-    const accentBorderClass: string = isLight({ colorId: theme.accent }) ? 'u-border-theme-4' : `u-border-theme-${theme.accent}`;
+    const backgroundBorderClass: string = isLight({ colorId: background }) ? 'u-border-theme-4' : `u-border-theme-${background}`;
+    const contentBorderClass: string = isLight({ colorId: content }) ? 'u-border-theme-4' : `u-border-theme-${content}`;
+    const accentBorderClass: string = isLight({ colorId: accent }) ? 'u-border-theme-4' : `u-border-theme-${accent}`;
 
     return `<span class="c-theme-tokens">
                 <span class=\"u-sr-only\">Theme ${number}</span>
-                <span label="Background" class="c-theme-tokens_theme u-w-10 u-h-10 u-bg-theme-${theme.background} ${backgroundBorderClass}"></span>
-                <span label="Text" class="c-theme-tokens_theme u-w-6 u-h-6 u-bg-theme-${theme.content} ${contentBorderClass}"></span>
-                <span label="Accent" class="c-theme-tokens_theme u-w-6 u-h-6 u-bg-theme-${theme.accent} ${accentBorderClass}"></span>
+                <span label="Background" class="c-theme-tokens_theme u-w-10 u-h-10 u-bg-theme-${background} ${backgroundBorderClass}"></span>
+                <span label="Text" class="c-theme-tokens_theme u-w-6 u-h-6 u-bg-theme-${content} ${contentBorderClass}"></span>
+                <span label="Accent" class="c-theme-tokens_theme u-w-6 u-h-6 u-bg-theme-${accent} ${accentBorderClass}"></span>
             </span>`;
 
 }

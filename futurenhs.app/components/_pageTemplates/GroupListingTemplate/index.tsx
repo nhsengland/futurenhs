@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import Head from 'next/head';
+import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
+import { selectThemeAccentId } from '@selectors/themes';
 import { defaultGroupLogos } from '@constants/icons';
+import { themes } from '@constants/themes';
 import { Link } from '@components/Link';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { DynamicListContainer } from '@components/DynamicListContainer';
@@ -115,6 +118,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                             image, 
                                             text, 
                                             groupId, 
+                                            themeId,
                                             totalDiscussionCount, 
                                             totalMemberCount 
                                         }, index) => {
@@ -123,11 +127,16 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                             
                                             const imageToUse = image ? image : defaultGroupLogos.large;
                                             const cardLinkHref: string = `/groups/${groupId}`;
+                                            const themeAccentId: number = selectThemeAccentId(themes, themeId);
+
+                                            const generatedClasses = {
+                                                wrapper: classNames('u-mb-4', `u-border-bottom-theme-${themeAccentId}`)
+                                            }
 
                                             return (
 
                                                 <li key={index}>
-                                                    <Card image={imageToUse} clickableHref={cardLinkHref} className="u-border-b-theme-11 u-mb-4">
+                                                    <Card image={imageToUse} clickableHref={cardLinkHref} className={generatedClasses.wrapper}>
                                                         <h3 className="c-card_heading o-truncated-text-lines-3">
                                                             <Link href={cardLinkHref}>
                                                                 <a>{mainHeading}</a>

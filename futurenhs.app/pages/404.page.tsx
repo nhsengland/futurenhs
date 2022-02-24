@@ -1,9 +1,12 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
+import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb';
 import { Link } from '@components/Link';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { BreadCrumbList } from '@appTypes/routing';
 
 /**
  * Error 404 page
@@ -12,6 +15,14 @@ const Index: (props) => JSX.Element = ({
 
 }) => {
 
+    const { asPath } = useRouter();
+
+    const currentRoutePathElements: Array<string> = asPath?.split('/')?.filter((item) => item) ?? [];
+    const breadCrumbList: BreadCrumbList = getBreadCrumbList({ 
+        pathElementList: currentRoutePathElements, 
+        shouldIncludeAllParams: true
+    });
+
     return (
 
         <StandardLayout
@@ -19,6 +30,7 @@ const Index: (props) => JSX.Element = ({
             shouldRenderMainNav={false}
             shouldRenderSearch={false}
             shouldRenderUserNavigation={false}
+            breadCrumbList={breadCrumbList}
             className="u-bg-theme-1">
                 <Head>
                     <title>Page not found</title>

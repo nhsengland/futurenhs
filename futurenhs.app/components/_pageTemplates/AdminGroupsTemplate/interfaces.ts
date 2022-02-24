@@ -1,7 +1,14 @@
+import { Group } from '@appTypes/group';
 import { Page } from '@appTypes/page';
-import { SearchResult } from '@appTypes/search';
+import { GenericPageTextContent } from '@appTypes/content';
+
+declare interface ContentText extends GenericPageTextContent {
+    usersHeading: string;
+    noGroups: string;
+    createGroup: string;
+}
 
 export interface Props extends Page {
-    term: string | Array<string>;
-    resultsList: Array<SearchResult>;
+    groupsList: Array<Group>;
+    contentText: ContentText;
 }

@@ -32,7 +32,7 @@ export const AdminHomeTemplate: (props: Props) => JSX.Element = ({
             actions={actions}
             contentText={contentText}
             className="u-bg-theme-3">
-                <LayoutColumnContainer>
+                <LayoutColumnContainer className="c-page-body">
                     {shouldRenderUsersLink &&
                         <LayoutColumn tablet={4}>
                             <Card clickableHref={routes.ADMIN_USERS}>

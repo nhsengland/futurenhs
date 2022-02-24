@@ -2,13 +2,16 @@ import { BreadCrumbList } from '@appTypes/routing';
 
 declare interface Config {
     pathElementList: Array<string>;
+    shouldIncludeAllParams?: boolean;
 }
 
 export const getBreadCrumbList = ({
-    pathElementList
+    pathElementList,
+    shouldIncludeAllParams
 }: Config): BreadCrumbList => {
 
     const breadCrumbElementList: BreadCrumbList = [];
+    const lastIndex: number = shouldIncludeAllParams ? pathElementList?.length : pathElementList?.length -1
 
     try {
 
@@ -21,7 +24,7 @@ export const getBreadCrumbList = ({
     
             pathElementList.forEach((item, index) => {
     
-                if(index < pathElementList.length -1){
+                if(index < lastIndex){
         
                     breadCrumbElementList.push({
                         element: item,

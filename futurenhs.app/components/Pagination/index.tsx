@@ -103,7 +103,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
 
     }, [shouldEnableLoadMore]);
 
-    if(totalPages < 2 || (isLoadMoreEnabled && pageNumber === totalPages)){
+    if(!Number(totalPages) || totalPages < 2 || (isLoadMoreEnabled && pageNumber === totalPages)){
 
         return null;
 

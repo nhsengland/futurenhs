@@ -1,6 +1,6 @@
 import { Page } from '@appTypes/page';
 import { GenericPageTextContent } from '@appTypes/content';
-import { SearchResult } from '@appTypes/search';
+import { Member } from '@appTypes/member';
 
 declare interface ContentText extends GenericPageTextContent {
     usersHeading: string;
@@ -9,6 +9,6 @@ declare interface ContentText extends GenericPageTextContent {
 }
 
 export interface Props extends Page {
-    usersList: Array<SearchResult>;
+    usersList: Array<Member>;
     contentText: ContentText;
 }
