@@ -5,6 +5,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { RichText } from '@components/RichText';
 import { RemainingCharacterCount } from '@components/RemainingCharacterCount';
 import { getAriaFieldAttributes } from '@helpers/util/form';
+import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
 
 import { Props } from './interfaces';
 
@@ -28,6 +29,11 @@ export const TextArea: (props: Props) => JSX.Element = ({
 }) => {
 
     const editorRef = useRef(null);
+    const textAreaRef = useRef(null);
+
+    const entry = useIntersectionObserver(textAreaRef, {});
+    const isVisible = !!entry?.isIntersecting || !globalThis.IntersectionObserver;
+  
     const [shouldLoadRte, setShouldLoadRte] = useState(false);
     const [isRteFocussed, setIsRteFocussed] = useState(false);
 
@@ -63,6 +69,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
         hint: classNames('nhsuk-hint'),
         error: classNames('nhsuk-error-message'),
         input: classNames('nhsuk-textarea', {
+            ['u-invisible']: shouldLoadRte,
             ['nhsuk-textarea--error']: shouldRenderError
         })
     };
@@ -75,9 +82,9 @@ export const TextArea: (props: Props) => JSX.Element = ({
 
     useEffect(() => {
 
-        shouldRenderAsRte && setShouldLoadRte(true);
+        (isVisible && shouldRenderAsRte) && setShouldLoadRte(true);
 
-    }, []);
+    }, [isVisible]);
 
     return (
 
@@ -109,7 +116,6 @@ export const TextArea: (props: Props) => JSX.Element = ({
                         onFocus={handleRteFocus}
                         onBlur={handleRteBlur}
                         init={{
-                            height: 500,
                             menubar: false,
                             plugins: ['autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap'],
                             toolbar: 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
@@ -119,6 +125,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
 
                 :   <textarea
                         {...ariaInputProps}
+                        ref={textAreaRef}
                         id={id}
                         name={name}
                         value={value}

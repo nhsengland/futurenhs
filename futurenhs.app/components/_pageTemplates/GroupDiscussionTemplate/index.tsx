@@ -163,13 +163,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 body: submission
             });
 
-            const targetPageNumber: number = Math.ceil(dynamicPagination.totalRecords / dynamicPagination.pageSize);
-
             setErrors({});
-            handleGetPage({
-                pageNumber: targetPageNumber,
-                pageSize: dynamicPagination.pageSize
-            });
+            handleGetPage(dynamicPagination as any);
 
         } catch (error) {
 
@@ -378,6 +373,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                         {hasReplies &&
                                                             <Accordion
                                                                 id={additionalRepliesAccordionId}
+                                                                isOpen={true}
                                                                 toggleChildren={<span>Show more replies</span>}
                                                                 toggleClassName="c-comment_replies-toggle u-text-bold">
                                                                     <ul className="u-list-none u-m-0 u-p-0">

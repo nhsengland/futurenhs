@@ -54,7 +54,7 @@ export const Comment: (props: Props) => JSX.Element = ({
                 </UserMeta>
             </header>
             <RichText bodyHtml={body} wrapperElementType="div" className="u-mb-6" />
-            <footer className="u-flex u-items-start">
+            <footer className="u-flex u-flex-col tablet:u-flex-row u-items-start">
                 <Like
                     targetId={commentId}
                     likeCount={likeCount}
@@ -76,7 +76,8 @@ export const Comment: (props: Props) => JSX.Element = ({
                         submitAction={replySubmitAction}
                         text={{
                             reply: 'Reply'
-                        }} />
+                        }} 
+                        className="u-flex-grow"/>
                 }
             </footer>
             {children}
