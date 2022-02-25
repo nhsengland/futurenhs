@@ -7,7 +7,8 @@ const assetPrefix = '';
 module.exports = withPWA({
     pwa: {
         disable: process.env.NODE_ENV === 'development',
-        runtimeCaching: swRunTimeCachingConfig
+        runtimeCaching: swRunTimeCachingConfig,
+        buildExcludes: [/middleware-manifest.json$/]
     },
     webpack(config) {
 
