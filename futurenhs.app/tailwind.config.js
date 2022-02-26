@@ -1,7 +1,7 @@
 module.exports = {
     prefix: 'u-',
     purge: {
-        enabled: false,
+        enabled: true,
         layers: ["base", "components", "utilities"],
         content: [
             "./pages/**/*.js",
@@ -12,7 +12,8 @@ module.exports = {
             "./components/**/*.ts",
             "./components/**/*.jsx",
             "./components/**/*.tsx"
-        ]
+        ],
+        safelist: [/bg-theme-/, /text-theme-/]
     },
     darkMode: false,
     theme: {

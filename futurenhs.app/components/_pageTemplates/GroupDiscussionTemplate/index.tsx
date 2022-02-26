@@ -373,7 +373,6 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                         {hasReplies &&
                                                             <Accordion
                                                                 id={additionalRepliesAccordionId}
-                                                                isOpen={true}
                                                                 toggleChildren={<span>Show more replies</span>}
                                                                 toggleClassName="c-comment_replies-toggle u-text-bold">
                                                                     <ul className="u-list-none u-m-0 u-p-0">
