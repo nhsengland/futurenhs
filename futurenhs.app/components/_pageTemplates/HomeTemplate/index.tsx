@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { PageBody } from '@components/PageBody';
 
 import { Props } from './interfaces';
 
@@ -30,8 +31,10 @@ export const HomeTemplate: (props: Props) => JSX.Element = ({
                     <meta name="description" content={metaDescription} />
                 </Head>
                 <LayoutColumnContainer>
-                    <LayoutColumn className="u-px-4 u-py-10">
-                        <h1>{mainHeading}</h1>
+                    <LayoutColumn>
+                        <PageBody>
+                            <h1 className="nhsuk-heading-l">{mainHeading}</h1>
+                        </PageBody>
                     </LayoutColumn>
                 </LayoutColumnContainer>
         </StandardLayout>

@@ -119,7 +119,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                             menubar: false,
                             plugins: ['autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap'],
                             toolbar: 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
-                            content_style: 'body { font-family: Helvetica, Arial, sans-serif; font-size: 14px }'
+                            content_style: 'body { font-family: Helvetica, Arial, sans-serif; font-size: 19px }'
                         }}
                     />
 

@@ -104,11 +104,11 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                                 submitButtonClassName="u-float-right">
                                     {name &&
                                         <>
-                                            <h2 className="o-truncated-text-lines-3">{name}</h2>
+                                            <h2 className="nhsuk-heading-l o-truncated-text-lines-3">{name}</h2>
                                             <hr />
                                         </>
                                     }
-                                    {name ? <h3>Add Folder</h3> : <h2>Add Folder</h2>}
+                                    {name ? <h3 className="nhsuk-heading-m">Add Folder</h3> : <h2 className="nhsuk-heading-l">Add Folder</h2>}
                                     <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
                             </FormWithErrorSummary>
                         </LayoutColumn>

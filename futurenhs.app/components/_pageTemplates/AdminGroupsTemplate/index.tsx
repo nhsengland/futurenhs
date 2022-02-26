@@ -148,7 +148,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
             className="u-bg-theme-3">
             <LayoutColumnContainer className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
                 <LayoutColumn tablet={8} className="c-page-body">
-                    <h2>{secondaryHeading}</h2>
+                    <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                     <AriaLiveRegion>
                         {hasUsers
 

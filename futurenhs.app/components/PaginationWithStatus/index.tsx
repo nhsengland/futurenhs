@@ -26,6 +26,12 @@ export const PaginationWithStatus: (props: Props) => JSX.Element = ({
         controls: classNames('')
     }
 
+    if(totalRecords <= pageSize){
+
+        return null;
+
+    }
+
     return (
 
         <LayoutColumnContainer className={generatedClasses.wrapper}>

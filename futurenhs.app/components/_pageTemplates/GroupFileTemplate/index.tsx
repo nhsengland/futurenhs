@@ -125,7 +125,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                             shouldLinkCrumbs={false}
                             className="u-text-lead u-mb-10 u-fill-theme-0" />
                     }
-                    <h2>{name}</h2>
+                    <h2 className="nhsuk-heading-l">{name}</h2>
                     <hr />
                     <RichText wrapperElementType="p" bodyHtml={body} />
                     {createdBy &&
@@ -183,7 +183,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                     <AriaLiveRegion>
                         {shouldRenderFilePreview &&
                             <>
-                                <h2>File preview</h2>
+                                <h2 className="nhsuk-heading-l">File preview</h2>
                                 <iframe src="https://www.bbc.co.uk" className="u-w-full"></iframe> 
                             </>
                         }

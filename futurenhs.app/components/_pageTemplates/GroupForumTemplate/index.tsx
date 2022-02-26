@@ -97,7 +97,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
             className="u-bg-theme-3">
                 <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
                     <LayoutColumn tablet={8} className="c-page-body">
-                        <h2>{discussionsHeading}</h2>
+                        <h2 className="nhsuk-heading-l">{discussionsHeading}</h2>
                         <AriaLiveRegion>
                             {hasDiscussions
 

@@ -265,7 +265,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                 <LayoutColumn className="c-page-body">
                     {shouldRenderPendingMembersList &&
                         <div className="u-mb-12">
-                            <h2>{pendingMemberRequestsHeading}</h2>
+                            <h2 className="nhsuk-heading-l">{pendingMemberRequestsHeading}</h2>
                             {hasPendingMembersList 
                             
                                 ?   <DataGrid 
@@ -283,7 +283,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                             }
                         </div>
                     }
-                    <h2>{membersHeading}</h2>
+                    <h2 className="nhsuk-heading-l">{membersHeading}</h2>
                     <AriaLiveRegion>
                         {hasMembersList 
                         

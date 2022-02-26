@@ -58,7 +58,7 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
                                 cancelHref="/"
                                 submitAction={() => {}}
                                 bodyClassName="u-mb-12">
-                                    <h2>Edit group information</h2>
+                                    <h2 className="nhsuk-heading-l">Edit group information</h2>
                                     <p className="u-text-lead u-text-theme-7 u-mb-4">Edit your group title, description, introduction, logo and choose a colour pallette for your group.</p>
                             </FormWithErrorSummary>
                         </LayoutColumn>

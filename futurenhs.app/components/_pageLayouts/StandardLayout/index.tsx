@@ -64,7 +64,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames('u-flex-grow', className),
-        breadCrumb: classNames('u-bg-theme-1', 'u-hidden', 'tablet:u-block'),
+        breadCrumb: classNames('u-bg-theme-1'),
         main: classNames('u-flex u-flex-grow'),
         content: classNames({
             ['u-m-0']: shouldRenderMainNav && isMobile,
@@ -124,7 +124,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                             truncationEndIndex={6}
                                             className="u--mt-0.5 u-fill-theme-5" />
                                     </LayoutColumn>
-                                    <LayoutColumn tablet={4} className="u-text-right">
+                                    <LayoutColumn tablet={4} className="u-text-right u-hidden tablet:u-block">
                                         <RichText 
                                             wrapperElementType="p" 
                                             bodyHtml={breadCrumbDescriptionHtml} 

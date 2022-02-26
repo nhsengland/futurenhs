@@ -105,7 +105,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                         className="u-bg-theme-14" />
                     <PageBody>
                         <LayoutColumn desktop={8}>
-                            <h2>{secondaryHeading}</h2>
+                            <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                             {intro &&
                                 <p className="u-text-lead u-text-theme-7 u-mb-4">{intro}</p>
                             }

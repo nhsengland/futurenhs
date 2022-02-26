@@ -29,4 +29,5 @@
 
 .c-form-group--focus .tox-tinymce {
     @include nhsuk-focused-input;
+    border: 0.25rem solid #212b32;
 }

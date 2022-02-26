@@ -283,7 +283,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         text={{
                             link: "Back to discussions"
                         }} />
-                    <h2 className="u-text-5xl">{title}</h2>
+                    <h2 className="nhsuk-heading-xl">{title}</h2>
                     {body &&
                         <RichText bodyHtml={body} wrapperElementType="div" className="u-mb-8" />
                     }
@@ -398,7 +398,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     </ErrorBoundary>
                     {shouldRenderCommentAndReplyForms &&
                         <>
-                            <h3 className="u-text-3xl">Join in the conversation</h3>
+                            <h3 className="nhsuk-heading-l">Join in the conversation</h3>
                             <p className="u-text-bold">You're signed in <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
                             <Form
                                 csrfToken={csrfToken}

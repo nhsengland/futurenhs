@@ -108,7 +108,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 submitAction={handleSubmit}
                                 cancelHref={forumHref}
                                 bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1">
-                                    <h2>Create discussion</h2>
+                                    <h2 className="nhsuk-heading-l">Create discussion</h2>
                             </FormWithErrorSummary>
                         </LayoutColumn>
                     </LayoutColumnContainer>
