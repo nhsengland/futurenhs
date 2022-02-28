@@ -40,5 +40,26 @@ class Helpers{
     var newID = id.slice(0, 8) + '-' + id.slice(9, 13) + '-' + id.slice(14, 18) + '-' + id.slice(19, 23) + '-' + id.slice(24, 32);
     return newID
   }
+
+  /**
+  *  in instances where more than one element is present but not enabled, allows you to quickly select only the active ones
+  * @param {string} selector - a selector that $ or $$ would understand
+  * @param {number} instance (optional) - in the case where you expect multible buttons, picks the specified one( if not provided gets first one )
+  */
+   getEnabledInstance(elementQuery, instance = 1 ){
+    var result
+    browser.waitUntil(()=>{
+      try{
+        result = $$(elementQuery)
+      }
+      catch (e){
+        console.log(e)
+        return false
+      }
+      result = result.filter((element => element.isClickable()));
+      return result.length >= instance;
+    },{timeout: 10000, timeoutMsg: `never found an enabled element for "${elementQuery}"`})
+    return result[instance-1]
+  }
 }
 module.exports = new Helpers()
