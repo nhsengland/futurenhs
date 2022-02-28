@@ -11,9 +11,10 @@ module.exports = {
             "./components/**/*.js",
             "./components/**/*.ts",
             "./components/**/*.jsx",
-            "./components/**/*.tsx"
+            "./components/**/*.tsx",
+            "./form-configs/**/*.ts"
         ],
-        safelist: [/bg-theme-/, /text-theme-/]
+        safelist: [/bg-theme-/, /text-theme-/, /border-theme-/]
     },
     darkMode: false,
     theme: {
