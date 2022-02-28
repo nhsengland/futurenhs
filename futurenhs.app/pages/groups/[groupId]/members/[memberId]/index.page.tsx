@@ -5,6 +5,7 @@ import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
+import { withForms } from '@hofs/withForms';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupMember } from '@services/getGroupMember';
 import { selectUser, selectParam } from '@selectors/context';
@@ -24,37 +25,39 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withGroup({
         props,
-        routeId,
-        getServerSideProps: withTextContent({
+        getServerSideProps: withForms({
             props,
-            routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
+            getServerSideProps: withTextContent({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-                const user: User = selectUser(context);
-                const groupId: string = selectParam(context, routeParams.GROUPID);
-                const memberId: string = selectParam(context, routeParams.MEMBERID);
+                    const user: User = selectUser(context);
+                    const groupId: string = selectParam(context, routeParams.GROUPID);
+                    const memberId: string = selectParam(context, routeParams.MEMBERID);
 
-                /**
-                 * Get data from services
-                 */
-                try {
+                    /**
+                     * Get data from services
+                     */
+                    try {
 
-                    const [memberData] = await Promise.all([getGroupMember({ groupId, user, memberId})]);
+                        const [memberData] = await Promise.all([getGroupMember({ groupId, user, memberId })]);
 
-                    props.member = memberData.data;
+                        props.member = memberData.data;
 
-                } catch (error) {
+                    } catch (error) {
 
-                    return handleSSRErrorProps({ props, error });
+                        return handleSSRErrorProps({ props, error });
+
+                    }
+
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props });
 
                 }
-
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props });
-
-            }
+            })
         })
     })
 });
