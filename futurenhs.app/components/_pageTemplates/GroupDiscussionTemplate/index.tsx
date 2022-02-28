@@ -405,7 +405,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 formId={formTypes.CREATE_DISCUSSION_COMMENT}
                                 fields={createCommentfields}
                                 text={{
-                                    submitButton: 'Add comment'
+                                    submitButton: 'Add Comment'
                                 }}
                                 validationFailAction={handleValidationFailure}
                                 submitAction={handleCommentSubmit} />
