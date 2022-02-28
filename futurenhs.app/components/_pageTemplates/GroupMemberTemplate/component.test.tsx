@@ -3,6 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
 import { GroupMemberTemplate } from './index';
+import forms from '@formConfigs/index';
 import { Props } from './interfaces';
 
 describe('Group member template', () => {
@@ -21,6 +22,7 @@ describe('Group member template', () => {
         user: undefined,
         member: null,
         actions: [],
+        forms: forms,
         contentText: null,
         entityText: {
             title: 'Mock title text',
