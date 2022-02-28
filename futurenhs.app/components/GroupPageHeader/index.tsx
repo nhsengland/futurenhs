@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 
+import { getRouteToParam } from '@helpers/routing/getRouteToParam';
+import { routeParams } from '@constants/routes';
 import { themes } from '@constants/themes';
 import { selectTheme } from '@selectors/themes';
 import { actions } from '@constants/actions';
@@ -23,12 +25,12 @@ import { Props } from './interfaces';
 
 export const GroupPageHeader: (props: Props) => JSX.Element = ({
     id,
+    themeId,
     image,
     text,
     shouldRenderActionsMenu,
     actionsMenuList,
     navMenuList,
-    themeId,
     className
 }) => {
 
@@ -37,10 +39,6 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const [isActionsAccordionOpen, setIsActionsAccordionOpen] = useState(false);
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true);
     const [isLeaveGroupModalOpen, setIsLeaveGroupModalOpen] = useState(false);
-
-    const handleLeaveGroup = (): any => setIsLeaveGroupModalOpen(true);
-    const handleDiscardLeaveGroupCancel = () => setIsLeaveGroupModalOpen(false);
-    const handleDiscardLeaveGroupConfirm = () => router.push('/');
 
     const actionsMenuTitleText: string = 'Actions';
     const { mainHeading, 
@@ -74,6 +72,20 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
         navTrigger: classNames('c-page-header_nav-trigger'),
         navTriggerIcon: classNames('c-page-header_nav-trigger-icon'),
         navContent: classNames('c-page-header_nav-content')
+    };
+
+    const handleLeaveGroup = (): any => setIsLeaveGroupModalOpen(true);
+    const handleLeaveGroupCancel = () => setIsLeaveGroupModalOpen(false);
+    const handleLeaveGroupConfirm = () => {
+
+        const groupBasePath: string = getRouteToParam({
+            router: router,
+            paramName: routeParams.GROUPID,
+            shouldIncludeParam: true
+        });
+        
+        router.push(`${groupBasePath}/leave`);
+        
     };
 
     const getAccordionIcon = useCallback((isOpen: boolean) => isOpen ? iconNames.CHEVRON_UP : iconNames.CHEVRON_DOWN, [isActionsAccordionOpen, isMenuAccordionOpen]);
@@ -163,8 +175,8 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                                                 cancelButton: 'Cancel',
                                                                 confirmButton: 'Yes, leave group'
                                                             }}
-                                                            cancelAction={handleDiscardLeaveGroupCancel}
-                                                            confirmAction={handleDiscardLeaveGroupConfirm}>
+                                                            cancelAction={handleLeaveGroupCancel}
+                                                            confirmAction={handleLeaveGroupConfirm}>
                                                                 <h3>Leave this group</h3>
                                                                 <p className="u-text-bold">Are you sure you would like to leave the group?</p>
                                                         </Dialog>

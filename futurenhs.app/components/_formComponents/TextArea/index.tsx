@@ -31,13 +31,16 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const editorRef = useRef(null);
     const textAreaRef = useRef(null);
 
-    const entry = useIntersectionObserver(textAreaRef, {});
+    const entry = useIntersectionObserver(textAreaRef, {
+        freezeOnceVisible: true
+    });
     const isVisible = !!entry?.isIntersecting || !globalThis.IntersectionObserver;
   
     const [shouldLoadRte, setShouldLoadRte] = useState(false);
     const [isRteFocussed, setIsRteFocussed] = useState(false);
 
     const { label, hint } = text ?? {};
+
     const id: string = name;
     const shouldRenderError: boolean = (Boolean(error) || Boolean(submitError)) && touched;
     const isRequired: boolean = Boolean(validators?.find(({ type }) => type === 'required'));

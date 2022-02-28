@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import Error from 'next/error';
+import ErrorPage from '@pages/500.page';
 import { withApplicationInsights } from 'next-applicationinsights';
 
 import { getEnvVar } from '@helpers/util/env';
@@ -12,7 +12,7 @@ const App = ({ Component, pageProps }) => {
 
     if(errors?.find((error) => error[500])){
 
-        return <Error statusCode={500} />
+        return <ErrorPage statusCode={500} />
 
     }
 

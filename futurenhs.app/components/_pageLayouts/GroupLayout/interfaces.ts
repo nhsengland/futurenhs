@@ -2,7 +2,7 @@ import { GroupsPageTextContent } from "@appTypes/content";
 import { Image } from "@appTypes/image";
 
 export interface Props {
-    id: 'index' | 'forum' | 'files' | 'members';
+    tabId: 'index' | 'forum' | 'files' | 'members';
     shouldRenderSearch?: boolean;
     shouldRenderUserNavigation?: boolean;
     shouldRenderPhaseBanner?: boolean;

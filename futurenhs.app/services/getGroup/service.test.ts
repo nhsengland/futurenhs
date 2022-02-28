@@ -1,14 +1,14 @@
 import { getGroup } from './index';
 import { User } from '@appTypes/user';
 
-let mockSetGetFetchOptions: any;
+let mockSetFetchOptions: any;
 let mockFetchJSON: any;
 
 describe('getGroup service', () => {
 
     beforeEach(() => {
 
-        mockSetGetFetchOptions = jest.fn();
+        mockSetFetchOptions = jest.fn();
         mockFetchJSON = jest.fn();
 
     });
@@ -42,7 +42,7 @@ describe('getGroup service', () => {
             groupId: 'mock-slug'
         },
         {
-            setGetFetchOptions: mockSetGetFetchOptions,
+            setFetchOptions: mockSetFetchOptions,
             fetchJSON: mockFetchJSON
         });
 

@@ -108,12 +108,12 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <GroupLayout 
-            id="files"
+            tabId="files"
+            themeId={themeId}
             user={user}
             actions={actions}
             text={entityText}
             image={image} 
-            themeId={themeId}
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
                     {hasBreadCrumb &&

@@ -88,12 +88,12 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <GroupLayout
-            id="forum"
+            tabId="forum"
+            themeId={themeId}
             user={user}
             actions={actions}
             text={entityText}
             image={image}
-            themeId={themeId}
             className="u-bg-theme-3">
                 <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
                     <LayoutColumn tablet={8} className="c-page-body">

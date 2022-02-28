@@ -1,4 +1,4 @@
-import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import {ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -9,7 +9,7 @@ export type Options = ({
 });
 
 export type Dependencies = ({
-    setGetFetchOptions?: any;
+    setFetchOptions?: any;
     fetchJSON?: any;
 });
 
@@ -19,7 +19,7 @@ export const getUser: GetUserService = async ({
     cookies
 }, dependencies): Promise<ServiceResponse<User>> => {
 
-    const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
+    const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
     let existingCookies: string = '';
@@ -31,9 +31,13 @@ export const getUser: GetUserService = async ({
     });
 
     const apiUrl: string = process.env.NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({
-        Cookie: existingCookies
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({
+        method: 'GET',
+        customHeaders: {
+            Cookie: existingCookies
+        }
     }), 1000);
+
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
 
@@ -41,7 +45,7 @@ export const getUser: GetUserService = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting auth', {
+        throw new ServiceError('Error getting user', {
             status: status,
             statusText: statusText,
             body: apiData

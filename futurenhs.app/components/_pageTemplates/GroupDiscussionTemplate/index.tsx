@@ -261,12 +261,12 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <GroupLayout
-            id="forum"
+            tabId="forum"
+            themeId={themeId}
             user={user}
             actions={actions}
             text={entityText}
             image={image}
-            themeId={themeId}
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
                     {shouldRenderCommentAndReplyForms &&

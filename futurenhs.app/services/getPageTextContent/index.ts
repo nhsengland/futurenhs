@@ -7,7 +7,7 @@ declare type Options = ({
 });
 
 declare type Dependencies = ({
-    setGetFetchOptions: any;
+    setFetchOptions: any;
     fetchJSON: any;
 });
 

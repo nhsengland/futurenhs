@@ -16,10 +16,10 @@ import { BreadCrumbList } from '@appTypes/routing';
 import { Props } from './interfaces';
 
 export const GroupLayout: (props: Props) => JSX.Element = ({
-    id,
+    tabId,
+    themeId,
     text,
     image,
-    themeId,
     actions,
     children,
     ...rest 
@@ -40,7 +40,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
 
     const navMenuList = getGroupNavMenuList({
         groupRoute: groupRoute,
-        activeId: id
+        activeId: tabId
     });
     
     const currentRoutePathElements: Array<string> = groupRoute?.split('/')?.filter((item) => item) ?? [];

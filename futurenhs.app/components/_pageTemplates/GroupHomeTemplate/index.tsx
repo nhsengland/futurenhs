@@ -15,12 +15,12 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <GroupLayout 
-            id="index"
+            tabId="index"
+            themeId={themeId}
             user={user}
             text={entityText}
             image={image}
             actions={actions}
-            themeId={themeId}
             className="u-bg-theme-3">
                 <LayoutColumn tablet={8} className="c-page-body">
                     

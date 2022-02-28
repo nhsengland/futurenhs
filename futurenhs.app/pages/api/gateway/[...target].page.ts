@@ -1,4 +1,4 @@
-import { setGetFetchOpts, setPostFetchOpts, fetchJSON } from '@helpers/fetch';
+import { setFetchOpts, fetchJSON } from '@helpers/fetch';
 import { FetchOptions, FetchResponse } from '@appTypes/fetch';
 
 export default async function handler(req, res) {
@@ -9,7 +9,12 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.SHAREDSECRETS_APIAPPLICATION}`
     };
 
-    const fetchOpts: FetchOptions = method === 'GET' ? setGetFetchOpts(headers) : setPostFetchOpts(headers, req.body);
+    const fetchOpts: FetchOptions = setFetchOpts({
+        method: method,
+        customHeaders: headers, 
+        body: req.body
+    });
+
     const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
 
     const apiData: any = apiResponse.json;

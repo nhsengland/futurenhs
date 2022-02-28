@@ -68,32 +68,25 @@ export const getFetchHeadersForJSON = (customHeaders: object = {}): Headers => {
 }
 
 /**
- * Returns a default options object to use for GET requests
+ * Returns a default options object to use for requests
  */
-export const setGetFetchOpts = (customHeaders: object): FetchOptions => {
+export const setFetchOpts = ({
+    method,
+    customHeaders,
+    body
+}: {
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+    customHeaders?: Headers;
+    body?: any;
+}): FetchOptions => {
 
     const fetchOpts: FetchOptions = {
-        method: 'GET',
+        method: method,
         credentials: 'include',
         headers: getFetchHeadersForJSON(customHeaders)
     };
 
-    return fetchOpts;
-
-};
-
-/**
- * Returns a default options object to use for POST requests
- */
-export const setPostFetchOpts = (customHeaders: object = {}, body?: any): FetchOptions => {
-
-    const fetchOpts: FetchOptions = {
-        method: 'POST',
-        credentials: 'include',
-        headers: getFetchHeadersForJSON(customHeaders)
-    };
-
-    if(body){
+    if(body && method === 'POST' || method === 'PUT' || method === 'PATCH'){
 
         fetchOpts.body = JSON.stringify(body);
 

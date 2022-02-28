@@ -218,6 +218,15 @@ nextApp
         });
 
         /**
+         * TODO - CSRF for non GET requests on the gateway
+         */
+        app.delete('/api/gateway/*', (req, res) => {
+
+            return handle(req, res);
+
+        });
+
+        /**
          * Handle POST requests
          */
         app.post('*', csrfProtection, (req, res) => {

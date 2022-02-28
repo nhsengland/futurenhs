@@ -1,19 +1,13 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { ServiceError } from '..';
-import { ServiceResponse } from '@appTypes/service';
 import { FetchResponse } from '@appTypes/fetch';
+import { ApiResponse, ServiceResponse } from '@appTypes/service';
+import { Group } from '@appTypes/group';
 import { User } from '@appTypes/user';
 
 declare type Options = ({
     groupId: string;
     user: User;
-    csrfToken: string;
-    body: {
-        _csrf: string;
-        formId: string;
-        title: string;
-        comment: string;
-    }
 });
 
 declare type Dependencies = ({
@@ -21,33 +15,30 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const postGroupFolder = async ({
+export type DeleteGroupMembershipService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<Group>>;
+
+export const deleteGroupMembership = async ({
     groupId,
-    user,
-    csrfToken,
-    body
-}: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
+    user
+}: Options, dependencies?: Dependencies): Promise<ServiceResponse<Group>> => {
 
     const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
     const { id } = user;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders`;
-
-    const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'POST',
-        body: body
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/leave`;
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({
+        method: 'DELETE'
     }), 30000);
-    
+    const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
-    const apiData: any = apiResponse.json;
 
     const { ok, status, statusText } = apiMeta;
 
     if(!ok){
 
-        throw new ServiceError('Error posting new group folder', {
+        throw new ServiceError('Error deleting group membership', {
             status: status,
             statusText: statusText,
             body: apiData
@@ -55,6 +46,6 @@ export const postGroupFolder = async ({
 
     }
 
-    return null;
+    return {};
 
 }

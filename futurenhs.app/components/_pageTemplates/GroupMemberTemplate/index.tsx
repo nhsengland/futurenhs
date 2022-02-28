@@ -38,12 +38,12 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <GroupLayout 
-            id="members"
+            tabId="members"
+            themeId={themeId}
             user={user}
             actions={actions}
             text={entityText}
             image={image} 
-            themeId={themeId}
             className="u-bg-theme-3">
                 <LayoutColumn className="c-page-body">
                     <BackLink 

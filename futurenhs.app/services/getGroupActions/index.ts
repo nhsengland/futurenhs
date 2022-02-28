@@ -1,6 +1,6 @@
 import { actions } from '@constants/actions';
 import { ServiceError } from '..';
-import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -11,7 +11,7 @@ declare type Options = ({
 });
 
 declare type Dependencies = ({
-    setGetFetchOptions: any;
+    setFetchOptions: any;
     fetchJSON: any;
 });
 
@@ -22,13 +22,13 @@ export const getGroupActions = async ({
     user
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Array<actions>>> => {
 
-    const setGetFetchOptions = dependencies?.setGetFetchOptions ?? setGetFetchOptionsHelper;
+    const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
     const { id } = user;
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/actions`;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setGetFetchOptions({}), 30000);
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: 'GET' }), 30000);
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
 

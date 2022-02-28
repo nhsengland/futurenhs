@@ -1,14 +1,14 @@
 import { ServiceError } from '@services/index';
 import { getUser } from './index';
 
-let mockSetGetFetchOptions: any;
+let mockSetFetchOptions: any;
 let mockFetchJSON: any;
 
 describe('getAuth service', () => {
 
     beforeEach(() => {
 
-        mockSetGetFetchOptions = jest.fn();
+        mockSetFetchOptions = jest.fn();
         mockFetchJSON = jest.fn();
 
     });
@@ -22,12 +22,15 @@ describe('getAuth service', () => {
             }
         },
         {
-            setGetFetchOptions: mockSetGetFetchOptions,
+            setFetchOptions: mockSetFetchOptions,
             fetchJSON: mockFetchJSON
         })
 
-        await expect(mockSetGetFetchOptions).toBeCalledWith({
-            Cookie: 'cookie1=value1; cookie2=value2'
+        await expect(mockSetFetchOptions).toBeCalledWith({
+            method: 'GET',
+            customHeaders: {
+                Cookie: 'cookie1=value1; cookie2=value2'
+            }
         });
 
     });
@@ -63,7 +66,7 @@ describe('getAuth service', () => {
             }
         },
         {
-            setGetFetchOptions: mockSetGetFetchOptions,
+            setFetchOptions: mockSetFetchOptions,
             fetchJSON: mockFetchJSON
         });
 

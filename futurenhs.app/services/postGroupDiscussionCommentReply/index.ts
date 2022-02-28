@@ -1,4 +1,4 @@
-import { setPostFetchOpts as setPostFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { ServiceError } from '..';
 import { Service, ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -17,7 +17,7 @@ declare type Options = ({
 });
 
 declare type Dependencies = ({
-    setPostFetchOptions: any;
+    setFetchOptions: any;
     fetchJSON: any;
 });
 
@@ -32,15 +32,18 @@ export const postGroupDiscussionCommentReply: Service = async ({
     body
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
 
-    const setPostFetchOptions = dependencies?.setPostFetchOptions ?? setPostFetchOptionsHelper;
+    const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
     const { id } = user;
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/replies`;
 
-    const apiResponse: any = await fetchJSON(apiUrl, setPostFetchOptions({}, {
-        Content: body[`content-${body['_instance-id']}`]
+    const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
+        method: 'POST',
+        body: {
+            Content: body[`content-${body['_instance-id']}`]
+        }
     }), 30000);
 
     const apiMeta: any = apiResponse.meta;

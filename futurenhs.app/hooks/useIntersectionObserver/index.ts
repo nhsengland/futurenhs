@@ -1,41 +1,44 @@
 import { RefObject, useEffect, useState } from 'react'
 
 interface Args extends IntersectionObserverInit {
-  freezeOnceVisible?: boolean
+    freezeOnceVisible?: boolean
 }
 
 export const useIntersectionObserver = (
-  elementRef: RefObject<Element>,
-  {
-    threshold = 0,
-    root = null,
-    rootMargin = '0%',
-    freezeOnceVisible = false,
-  }: Args,
+    elementRef: RefObject<Element>,
+    {
+        threshold = 0,
+        root = null,
+        rootMargin = '0%',
+        freezeOnceVisible = false,
+    }: Args,
 ): IntersectionObserverEntry | undefined => {
-  const [entry, setEntry] = useState<IntersectionObserverEntry>()
 
-  const frozen = entry?.isIntersecting && freezeOnceVisible
+    const [entry, setEntry] = useState<IntersectionObserverEntry>()
 
-  const updateEntry = ([entry]: IntersectionObserverEntry[]): void => {
-    setEntry(entry)
-  }
+    const frozen = entry?.isIntersecting && freezeOnceVisible
 
-  useEffect(() => {
-    const node = elementRef?.current // DOM Ref
-    const hasIOSupport = !!window.IntersectionObserver
+    const updateEntry = ([entry]: IntersectionObserverEntry[]): void => {
+        setEntry(entry)
+    }
 
-    if (!hasIOSupport || frozen || !node) return
+    useEffect(() => {
 
-    const observerParams = { threshold, root, rootMargin }
-    const observer = new IntersectionObserver(updateEntry, observerParams)
+        const node = elementRef?.current;
+        const hasIOSupport = !!window.IntersectionObserver;
 
-    observer.observe(node)
+        if (!hasIOSupport || frozen || !node) return
 
-    return () => observer.disconnect()
+        const observerParams = { threshold, root, rootMargin };
+        const observer = new IntersectionObserver(updateEntry, observerParams);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elementRef, JSON.stringify(threshold), root, rootMargin, frozen])
+        observer.observe(node);
 
-  return entry
+        return () => observer.disconnect();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [elementRef, JSON.stringify(threshold), root, rootMargin, frozen]);
+
+    return entry;
+
 }

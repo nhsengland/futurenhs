@@ -30,12 +30,12 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <GroupLayout 
-            id="index"
+            tabId="index"
+            themeId={themeId}
             user={user}
             actions={actions}
             text={entityText}
             image={image} 
-            themeId={themeId}
             className="u-bg-theme-3">            
                 <LayoutColumn className="c-page-body">
                     <LayoutColumnContainer>
