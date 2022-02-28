@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { withAuth } from '@hofs/withAuth';
+import { withUser } from '@hofs/withUser';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroups } from '@services/getGroups';
 import { selectUser, selectPagination } from '@selectors/context';
@@ -20,7 +20,7 @@ const isMember: boolean = true;
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withTextContent({
         props,

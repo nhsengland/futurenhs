@@ -4,7 +4,7 @@ import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
-import { withAuth } from '@hofs/withAuth';
+import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
 import { selectCsrfToken, selectBody, selectParam, selectUser, selectQuery } from '@selectors/context';
@@ -23,7 +23,7 @@ const props: Partial<Props> = {};
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withGroup({
         props,

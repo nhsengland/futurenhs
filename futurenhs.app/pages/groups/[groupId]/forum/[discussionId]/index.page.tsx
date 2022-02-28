@@ -5,7 +5,7 @@ import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
-import { withAuth } from '@hofs/withAuth';
+import { withUser } from '@hofs/withUser';
 import { withForms } from '@hofs/withForms';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
@@ -27,7 +27,7 @@ const props: Partial<Props> = {};
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withGroup({
         props,

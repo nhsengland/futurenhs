@@ -1,5 +1,5 @@
 import { ServiceError } from '@services/index';
-import { getAuth } from './index';
+import { getUser } from './index';
 
 let mockSetGetFetchOptions: any;
 let mockFetchJSON: any;
@@ -15,7 +15,7 @@ describe('getAuth service', () => {
 
     it('creates a cookies header to fetch with', async () => {
 
-        getAuth({
+        getUser({
             cookies: {
                 cookie1: 'value1',
                 cookie2: 'value2'
@@ -56,7 +56,7 @@ describe('getAuth service', () => {
 
         })
 
-        const response = await getAuth({
+        const response = await getUser({
             cookies: {
                 cookie1: 'value1',
                 cookie2: 'value2'

@@ -1,6 +1,6 @@
-import { withAuth } from './index';
+import { withUser } from './index';
 import { ServiceError } from '@services/index';
-import { GetAuthService } from '@services/getAuth';
+import { GetUserService } from '@services/getUser';
 
 const mockUser = {
     id: 'mockId',
@@ -14,7 +14,7 @@ const mockUser = {
     }
 };
 
-describe('withAuth hof', () => {
+describe('withUser hof', () => {
 
     it('passes user data into the request context on successful auth', async () => {
 
@@ -23,7 +23,7 @@ describe('withAuth hof', () => {
             req: {}
         }
 
-        const mockGetAuthService: GetAuthService = () => new Promise((resolve) => {
+        const mockGetAuthService: GetUserService = () => new Promise((resolve) => {
 
             resolve({
                 data: mockUser
@@ -31,7 +31,7 @@ describe('withAuth hof', () => {
     
         });
 
-        const withOutput = withAuth({
+        const withOutput = withUser({
             props: {},
             getServerSideProps: mockGetServerSideProps
         }, {
@@ -51,7 +51,7 @@ describe('withAuth hof', () => {
             req: {}
         }
 
-        const mockGetAuthService: GetAuthService = () => new Promise((resolve) => {
+        const mockGetAuthService: GetUserService = () => new Promise((resolve) => {
 
             throw new ServiceError('No auth', {
                 status: 401,
@@ -60,7 +60,7 @@ describe('withAuth hof', () => {
     
         });
 
-        const withOutput = withAuth({
+        const withOutput = withUser({
             props: {},
             getServerSideProps: mockGetServerSideProps
         }, {

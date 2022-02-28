@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 
-import { withAuth } from '@hofs/withAuth';
+import { withUser } from '@hofs/withUser';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 const NoopTemplate = (props: any) => null;
@@ -9,7 +9,7 @@ const props: Partial<any> = {};
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: async (context: GetServerSidePropsContext) => {
 

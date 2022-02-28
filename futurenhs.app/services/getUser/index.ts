@@ -1,7 +1,7 @@
 import { setGetFetchOpts as setGetFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
-import { Service, ApiResponse, ServiceResponse } from '@appTypes/service';
+import {ApiResponse, ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
 
 export type Options = ({
@@ -13,9 +13,9 @@ export type Dependencies = ({
     fetchJSON?: any;
 });
 
-export type GetAuthService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<User>>;
+export type GetUserService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<User>>;
 
-export const getAuth: GetAuthService = async ({
+export const getUser: GetUserService = async ({
     cookies
 }, dependencies): Promise<ServiceResponse<User>> => {
 

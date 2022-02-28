@@ -33,7 +33,7 @@ export const HomeTemplate: (props: Props) => JSX.Element = ({
                 <LayoutColumnContainer>
                     <LayoutColumn>
                         <PageBody>
-                            <h1 className="nhsuk-heading-l">{mainHeading}</h1>
+                            <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
                         </PageBody>
                     </LayoutColumn>
                 </LayoutColumnContainer>

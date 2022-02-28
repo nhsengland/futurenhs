@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 
-import { withAuth } from '@hofs/withAuth'
+import { withUser } from '@hofs/withUser';
 import { withTextContent } from '@hofs/withTextContent'
 import { GetServerSidePropsContext } from '@appTypes/next';
 
@@ -13,7 +13,7 @@ const props: Partial<Props> = {};
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withTextContent({
         props,

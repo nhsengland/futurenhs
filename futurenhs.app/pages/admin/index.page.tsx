@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { actions } from '@constants/actions';
-import { withAuth } from '@hofs/withAuth';
+import { withUser } from '@hofs/withUser';
 import { withTextContent } from '@hofs/withTextContent';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
@@ -14,7 +14,7 @@ const routeId: string = '439794f2-9c58-4b6f-9fe8-d77a841e3055';
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withAuth({
+export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withTextContent({
         routeId,
