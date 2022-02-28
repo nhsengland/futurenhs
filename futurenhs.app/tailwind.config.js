@@ -1,9 +1,7 @@
-const Color = require('color')
-const alpha = (clr, val) => Color(clr).alpha(val).rgb().string()
-const lighten = (clr, val) => Color(clr).lighten(val).rgb().string()
-const darken = (clr, val) => Color(clr).darken(val).rgb().string()
+const { alpha, lighten, darken } = require('./helpers/util/tailwind/color');
+const { generateBorderSides } = require('./helpers/util/tailwind/plugins/border-sides');
 
-const _colors = {
+const themeColors = {
     ['theme-0']: 'rgba(0, 0, 0, 1)',
     ['theme-1']: '#fff',
     ['theme-2']: 'rgba(247, 249, 250, 1)',
@@ -27,65 +25,16 @@ const _colors = {
     ['theme-20']: '#006747'
 };
 
-const colorsWithTint = Object.keys(_colors).map(
-    (colorName) => ({
-        [colorName]: {
-            DEFAULT: _colors[colorName], // => .bg-brand
-            lighter: lighten(_colors[colorName], 0.1), // => .bg-brand-lighter
-            darker: darken(_colors[colorName], 0.1), // => .bg-brand-darker
-            '75': alpha(_colors[colorName], 0.75), // => .bg-brand-75
-        }
-    })
+//add darker and lighter tints to colors
+Object.keys(themeColors).map((colorName) => {
+    themeColors[colorName] = {
+        DEFAULT: themeColors[colorName],
+        lighter: lighten(themeColors[colorName], 0.1),
+        darker: darken(themeColors[colorName], 0.25),
+        '75': alpha(themeColors[colorName], 0.75),
+    }
+}
 );
-
-const generateBorderSidesPlugin = ({ e, addUtilities, theme }) => {
-    const themeColors = theme("colors");
-    const individualBorderColors = Object.keys(themeColors).map(
-        (colorName) => {
-
-            if (typeof (themeColors[colorName]) == 'string') {
-                return ({
-                    [`.border-b-${colorName}`]: {
-                        borderBottomColor: themeColors[colorName],
-                    },
-                    [`.border-t-${colorName}`]: {
-                        borderTopColor: themeColors[colorName],
-                    },
-                    [`.border-l-${colorName}`]: {
-                        borderLeftColor: themeColors[colorName],
-                    },
-                    [`.border-r-${colorName}`]: {
-                        borderRightColor: themeColors[colorName],
-                    },
-                })
-            }
-
-            const colors = {};
-
-            Object.keys(themeColors[colorName]).forEach(level => {
-                const variant = level.toLocaleLowerCase() === "default" ? '' : `-${level}`;
-
-                colors[`.border-b-${colorName}${variant}`] = {
-                    borderBottomColor: themeColors[colorName][level]
-                }
-                colors[`.border-t-${colorName}${variant}`] = {
-                    borderTopColor: themeColors[colorName][level]
-                }
-                colors[`.border-l-${colorName}${variant}`] = {
-                    borderLeftColor: themeColors[colorName][level]
-                }
-                colors[`.border-r-${colorName}${variant}`] = {
-                    borderRightColor: themeColors[colorName][level]
-                }
-
-            });
-
-            return colors;
-        }
-    );
-
-    addUtilities(individualBorderColors, ['hover', 'DEFAULT']);
-};
 
 module.exports = {
     prefix: 'u-',
@@ -103,7 +52,7 @@ module.exports = {
             "./components/**/*.tsx",
             "./form-configs/**/*.ts"
         ],
-        safelist: [/bg-theme-/, /text-theme-/, /border-theme-/]
+        safelist: [/bg-theme-/, /text-theme-/, /border-theme-/,  /(border-[lrtb])((\-\w+))+/gi]
     },
     darkMode: false,
     theme: {
@@ -112,7 +61,7 @@ module.exports = {
             'desktop': '960px',
             'desktop-large': '1446px',
         },
-        colors: Object.assign({}, ...colorsWithTint),
+        colors: themeColors,
         fill: theme => theme('colors'),
         stroke: theme => theme('colors'),
     },
@@ -122,5 +71,5 @@ module.exports = {
             // IF you wish to extend variants for border-{side}-theme-n, then look at how the plugin adds the utilities
         }
     },
-    plugins: [generateBorderSidesPlugin]
+    plugins: [generateBorderSides]
 }
