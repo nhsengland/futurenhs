@@ -86,7 +86,6 @@ SELECT @editUser = id FROM [dbo].[MembershipUser] WHERE Email = 'autoEditUser@te
 UPDATE [dbo].[MembershipUser] SET FirstName = 'autoEdit', 
 								  Surname = 'User',
 								  Initials = 'AU',
-								  Avatar = NULL,
 								  Pronouns = ''
 							  WHERE Id = @editUser
 
