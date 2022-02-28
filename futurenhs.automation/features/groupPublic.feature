@@ -32,7 +32,7 @@ Scenario: FNHS44 - View Files and Folders of Public Group
     And the 'Delete Folder' link is not displayed
     When I click 'docTest' on the 'docTest' row of the 'Group Files' table
     Then the 'docTest' header is displayed  
-    And the 'Download file' link is displayed
+    And the 'Download' link is displayed
 
 @Core 
 Scenario: FNHS45 - Join a public group

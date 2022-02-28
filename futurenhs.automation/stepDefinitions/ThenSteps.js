@@ -48,9 +48,9 @@ Then(/^(there are|there are more) (discussion|comment|reply) cards displayed$/, 
   forumPage.cardCountComparison(compareArg, cardType);
 });
 
-Then(/^there are no replies available on the '([^"]*)' comment card$/, function(cardTitle) {
-  forumPage.loadRepliesNotExisting(cardTitle);
-});
+Then(/^the card count is displayed as '([^"]*)'$/, function(textVal){
+  forumPage.paginationValidation(textVal);
+})
 
 Then(/^the '([^"]*)' discussion card is pinned$/, function(cardTitle) {
   forumPage.pinnedDiscussionValidation(cardTitle);
@@ -63,15 +63,7 @@ Then(/^the text editor is empty$/, function(){
 })
 
 Then(/^the '([^"]*)' error (message|summary) is displayed$/, function (messageTxt, errorType) {
-  switch (errorType) {
-    case 'message':
-        formPage.fieldErrorValidation(messageTxt);      
-      break;
-    case 'summary':
-      formPage.errorSummaryValidation(messageTxt);
-      break;
-    default: throw new Error('Unable to match an errorType')
-  } 
+  formPage.formErrorValidation(messageTxt, errorType);
 });
 
 Then(/^the '([^"]*)' (field|text area) contains '([^"]*)'$/, function (fieldLabel, fieldType, fieldValue) {

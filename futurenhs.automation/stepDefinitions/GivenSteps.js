@@ -32,3 +32,7 @@ Given(/^I ensure the browser is in mobile emulation$/, function () {
 Given(/^I create '([^"]*)' system page$/, function (pageName) {
   adminPage.createSystemPages(pageName);
 });
+
+Given(/^I pause the page for '([^"]*)' ms$/, function (seconds) {
+  browser.pause(seconds);
+});

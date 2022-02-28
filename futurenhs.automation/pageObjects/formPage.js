@@ -13,10 +13,10 @@ class formPage extends basePage{
             case "field" : this.inputFieldSet(valueToSet, label)
                 break;
             case "text area" : this.textAreaSet(valueToSet, label)
-                break
-            case "text editor" : this.richTextSet(valueToSet, label)
-                break
-            default : throw new Error(`Type of control not found ` + interactionType)
+                break;
+            case "text editor" : this.textEditorSet(valueToSet, label)                
+                break;
+            default : throw new Error(`Type of control not found ` + interactionType);
         }
     }
 
@@ -36,15 +36,11 @@ class formPage extends basePage{
      * @param {string} label - the textual value of the desired label used as part of the selector
      */
     inputFieldSet(valueToSet, label){
-        try{
-            var fieldLabel = this.findLabel(label);
-            var fieldInput = fieldLabel.parentElement().$('input');
-            helpers.waitForLoaded(fieldInput)
-            fieldInput.setValue(valueToSet);
-            browser.keys('Tab');    
-        } catch (error){
-            throw new Error (`Error setting textBox "${valueToSet}" : ${error}`)
-        }
+        var fieldLabel = this.findLabel(label);
+        var fieldInput = fieldLabel.parentElement().$('input');
+        helpers.waitForLoaded(fieldInput)
+        fieldInput.setValue(valueToSet);
+        browser.keys('Tab');    
     }
 
     /**
@@ -53,37 +49,40 @@ class formPage extends basePage{
      * @param {string} label - the textual value of the desired label used as part of the selector
      */
     textAreaSet(valueToSet, label){
-        try{
-            var fieldLabel = this.findLabel(label);
-            var areaInput = fieldLabel.parentElement().$('textarea');
-            helpers.waitForLoaded(areaInput)
-            areaInput.setValue(valueToSet);
-            browser.keys('Tab');
-        } catch (error){
-            throw new Error (`Error setting textArea "${valueToSet}" : ${error}`)
-        }
+        var fieldLabel = this.findLabel(label);
+        var areaInput = fieldLabel.parentElement().$('textarea');
+        helpers.waitForLoaded(areaInput)
+        areaInput.setValue(valueToSet);
+        browser.keys('Tab');
     }
 
     /**
      * Method for setting textual value within a tinymce rich text editor
      * @param {string} valueToSet - textual value to set within the rich text editor
      */
-    richTextSet(valueToSet){
-        try{
-            var newFrame = $(`iframe[id=tinymce-editor_ifr]`);
-            newFrame.waitForExist();
-            browser.switchToFrame(newFrame);
-            var txtEditor = $(`//html/body[@id="tinymce"]`);
-            helpers.waitForLoaded(txtEditor)
-            if(valueToSet === 'Comment posted by the automation'){
-                valueToSet = valueToSet + ' - ' + helpers.randomIDGenerator();
-                global.postedComment = valueToSet
-            }
-            txtEditor.setValue(valueToSet);
-            browser.switchToParentFrame();
-        } catch (error){
-            throw new Error (`Error setting rich text "${valueToSet}" : ${error}`)
+    textEditorSet(valueToSet, label){
+        var txtEditorLabel = helpers.getEnabledInstance(`//label[starts-with(normalize-space(.), "${label}")]`);
+        //Find the unique ID for the desired text editor iFrame
+        txtEditorLabel.scrollIntoView();
+        var editorId = txtEditorLabel.getAttribute('for').toString();
+        //Switch to new frame and navigate to the editor to input text
+        var newFrame = $(`iframe#${editorId}_ifr`)
+        newFrame.waitForExist();
+        browser.switchToFrame(0);
+        var txtEditor = $(`//html/body[@id="tinymce"]`);
+        helpers.waitForLoaded(txtEditor);
+        //Custom exception for adding GUID to end of specific post for other test purposes
+        if(valueToSet === 'Comment posted by the automation'){
+            valueToSet = valueToSet + ' - ' + helpers.randomIDGenerator();
+            global.postedComment = valueToSet
         }
+        //Set value and return to main frame of the page
+        txtEditor.setValue(valueToSet);
+        browser.switchToParentFrame();
+        //Find sumbit button of the editor
+        var submitbtn = txtEditorLabel.parentElement().parentElement().parentElement().$('./div[2]/button');
+        //Click submit button of the editor
+        helpers.click(submitbtn);
     }
 
     /**
@@ -93,16 +92,22 @@ class formPage extends basePage{
      * @param {integer} instance - numerical value of the desired instance of the dropdown, this is used to combat hidden/duplicated fields
      */
     dropdownSelect(dropdownOption, label, instance){ 
-        try{
-            instance = instance ? instance - 1 : 0
-            var dropdown = this.findLabel(label)
-            helpers.click(dropdown);
-            helpers.click(dropdown.$(`../select/option[contains(text(), "${dropdownOption}")]`));
-        } catch (error){
-            throw new Error(`Unable to locate the '${dropdownOption}' option, on the '${label}' dropdown : '${error}'`);
-        }
+        instance = instance ? instance - 1 : 0
+        var dropdown = this.findLabel(label)
+        helpers.click(dropdown);
+        helpers.click(dropdown.$(`../select/option[contains(text(), "${dropdownOption}")]`));
     }
 
+    /**
+     * 
+     * @param {*} label 
+     */
+    radioButtonSelect(){}
+
+    /**
+     * 
+     * @param {*} label 
+     */
     checkboxSelect(label){
         try{
             var checkbox = this.findLabel(label)
@@ -142,51 +147,21 @@ class formPage extends basePage{
      * Function to locate and validate an error message displayed within a form page
      * @param {string} messageTxt - textual value of the error message to validate against
      */
-    errorSummaryValidation(messageTxt) {
-        var summaryBody
-        if(browser.getUrl().includes('/admin')){
-            // CONTROL FOR MVC FORUM ADMIN PORTAL
-            summaryBody = $('//div[@class="validation-summary-errors"]/ul')
+    formErrorValidation(messageTxt, errorType) {
+        var foundErrors        
+        var errors = ''
+        if(errorType === 'summary'){
+            var summaryBody = $('//div[contains(@class, "c-error-summary")][*[normalize-space(.) = "There is a problem"]]/ul');
+            helpers.waitForLoaded(summaryBody);        
+            foundErrors = summaryBody.$$('./li');
         } else {
-            summaryBody = $('//div[@aria-labelledby="error-summary-title"][*[normalize-space(.) = "There is a problem"]]/div/ul');
+            foundErrors = $$('//span[@class="nhsuk-error-message"]');
         }
-        helpers.waitForLoaded(summaryBody);
-        var foundErrors = ''
-        var summaryList = summaryBody.$$('./li');
-        summaryList.forEach(error => {
-            foundErrors = foundErrors.concat(error.getText(), ', ');            
+        foundErrors.forEach(error => {
+            errors = errors.concat(error.getText(), ', ');            
         });
-        expect(foundErrors.includes(messageTxt)).toEqual(true);
+        expect(errors.includes(messageTxt)).toEqual(true);
     }
 
-    fieldErrorValidation(messageTxt) {
-        var fieldError = $('//span[contains(@class, "c-error-message")]');
-        var txtEditorError = $('//p[@class="js-tinyMCE-error-notEmpty c-error-message"]');
-        if(fieldError.isDisplayed() === true){
-            var errorString = ''
-            var foundErrors = $$('//span[contains(@class, "c-error-message")]');
-            foundErrors.forEach(error => {
-                errorString = errorString.concat(error.getText(), ', ');
-            });
-        } else if(txtEditorError.isDisplayed() === true) {
-            var foundError = txtEditorError.getText();
-            expect(foundError).toEqual(messageTxt);
-        } else {
-            throw new Error('Unable to locate error message based on known error selectors')
-        }
-    }
-
-    /**
-     * Function to validate the Tiny MCE rich text editor is cleared of any set textual values
-     */
-    textEditorCleared(){
-        var newFrame = $(`iframe[id=tinymce-editor_ifr]`);
-        newFrame.waitForExist();
-        browser.switchToFrame(newFrame);
-        var txtEditor = $(`//html/body[@data-id="tinymce-editor"]/p`);
-        helpers.waitForLoaded(txtEditor)
-        expect(txtEditor.getText()).toEqual('')
-        browser.switchToParentFrame();
-    }
 }
 module.exports = new formPage();

@@ -29,7 +29,7 @@ Examples:
     | /terms-and-conditions     | Terms and Conditions    |
     | /privacy-policy           | Privacy Policy          |
     | /cookies                  | Cookies                 | 
-    | /accessibility-statement  | Accessibility Statement |
+    | /accessibility-statement  | Accessibility           |
     | /contact-us               | Contact Us              |
 
 @Core
@@ -136,6 +136,6 @@ Scenario: FNHS08 - Log In Error Validation
     And I click the 'Log In' button
     Then the '<error message>' error message is displayed
 Examples:
-    | email                | password    | error message                                |
-    |                      | Tempest2020 | Unable to log in. Please check your details. |
-    | autoAdmin@test.co.uk |             | Unable to log in. Please check your details. |
+    | email                | password    | error message                  |
+    |                      | Tempest2020 | The Username field is required |
+    | autoAdmin@test.co.uk |             | The Password field is required |

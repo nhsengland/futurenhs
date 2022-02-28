@@ -10,79 +10,68 @@ Background:
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Forum' tab
-    Then the 'All Discussions' header is displayed 
+    Then the 'All Discussions' header is displayed
 
 
 @Core
-Scenario Outline: FNHS48 - Like/Unlike a comment
-    When I click the 'General Discussion Validation' link
-    Then the 'General Discussion Validation' header is displayed 
-    And the 'Comment for Like test' comment card is displayed
-    | AA                    |
-    | Auto Admin            |
-    | <Pre Action State>    |
-    When I <Action Type> the 'Comment for Like test' comment card 
-    Then the 'Comment for Like test' comment card is displayed
-    | AA                    |
-    | Auto Admin            |
-    | <Post Action State>   |
-Examples:
-    | Pre Action State | Action Type | Post Action State |
-    | 0 likes Reply    | like        | 1 likes Reply     |
-    | 1 likes Reply    | unlike      | 0 likes Reply     |
-
-@Core
-Scenario: FNHS49 - Load more Comments is available
-    When I click the 'General Discussion Validation' link
-    Then the 'General Discussion Validation' header is displayed 
+Scenario: FNHS49 - Load more discussions validation 
     And the 'Load more' button is displayed
-    And there are comment cards displayed
+    And there are discussion cards displayed
+    Then the card count is displayed as 'Showing 1 - 5 of 7 items'
     When I click the 'Load more' button
-    Then there are more comment cards displayed
+    Then there are more discussion cards displayed
+    Then the card count is displayed as 'Showing 1 - 7 of 7 items'
 
 
-Scenario: FNHS50 - Load more replies does not exist
-    When I click the 'forumSubmission Discussion' link
-    Then the 'forumSubmission Discussion' header is displayed 
-    And the 'Unable to reply to comment test' comment card is displayed
-    | AU                              |
-    | Auto User                       |
-    | 0 likes                         |
-    And there are no replies available on the 'Unable to reply to comment test' comment card
+Scenario: FNHS50 - Navigate to next page of a discussion
+    When I click the 'General Discussion Validation' link
+    Then the 'General Discussion Validation' header is displayed 
+    And the 'First Comment' comment card is displayed
+    | AA         |
+    | auto Admin |
+    | 0 likes    |
+    | Reply      |
+    Then the card count is displayed as 'Showing 1 - 10 of 11 items'
+    When I click the 'Next' link
+    And the 'Eleventh Comment' comment card is displayed
+    | AA         |
+    | auto Admin |
+    | 0 likes    |
+    | Reply      |
+    Then the card count is displayed as 'Showing 11 - 11 of 11 items'
+
 
 @Core
-Scenario: FNHS51 - Load more Replies
+Scenario: FNHS51 - Show more Replies
     When I click the 'General Discussion Validation' link
     Then the 'General Discussion Validation' header is displayed 
     And the 'First Comment' comment card is displayed
     | AA                |
-    | Auto Admin        |
-    | 0 likes Reply     |
-    | Load more replies |
+    | auto Admin        |
+    | 0 likes           |
+    | Reply             |
+    | Show more replies |
     And the 'First blank reply' reply card is displayed
     | AU                                   |
-    | Auto User                            |
-    | Reply to Auto Admin “First Comment ” |
+    | auto User                            |
     | 0 likes                              |
-    When I click the 'Load more replies' button
+    When I open the 'Show more replies' accordion
     And the 'Second blank reply' reply card is displayed
     | AU                                   |
-    | Auto User                            |
-    | Reply to Auto Admin “First Comment ” |
+    | auto User                            |
     | 0 likes                              |
     And the 'Third blank reply' reply card is displayed
     | AU                                   |
-    | Auto User                            |
-    | Reply to Auto Admin “First Comment ” |
+    | auto User                            |
     | 0 likes                              |
     And the 'Fourth blank reply' reply card is displayed
     | AU                                   |
-    | Auto User                            |
-    | Reply to Auto Admin “First Comment ” |
+    | auto User                            |  
     | 0 likes                              |
 
 @Core
-Scenario: FNHS52 - Forum Load More Discussions
-    Then there are discussion cards displayed
-    When I click the 'Load more' button
-    Then there are more discussion cards displayed
+Scenario: FNHS52 - Forum Navigate Back to Discussion Page
+    When I click the 'General Discussion Validation' link
+    Then the 'General Discussion Validation' header is displayed
+    When I click the 'Back to discussions' link
+    Then the 'All Discussions' header is displayed

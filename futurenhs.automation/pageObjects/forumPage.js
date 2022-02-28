@@ -13,15 +13,13 @@ class formPage extends basePage{
     cardTypeSelector(cardType, cardText){
         var card = ''
         switch(cardType){
-            case "comment" : card = $(`//div[@class="c-card c-card--comment u-border-left-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`) 
+            case "comment" : card = $(`//div[@class="nhsuk-card c-comment u-border-l-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`) 
             break;
-            case "discussion" : card = $(`//div[@class="c-card u-border-bottom-theme-10"]/div[h2/a[contains(text(), "${cardText}")]]`)
+            case "discussion" : card = $(`//div[@class="nhsuk-card u-border-b-theme-10 u-mb-4 nhsuk-card--clickable"]/div[h3/a[contains(text(), "${cardText}")]]`)
             break;
-            case "post" : card = $(`//div[@class="c-card c-card--post u-border-left-theme-8"]/div[h2[starts-with(normalize-space(.), "${cardText}")]]`)
+            case "reply" : card = $(`//div[@class="nhsuk-card c-comment c-comment--reply u-border-l-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`)
             break;
-            case "reply" : card = $(`//div[@class="c-card c-card--reply u-border-left-theme-8"]/div[p[starts-with(normalize-space(.), "${cardText}")]]`)
-            break;
-            case "group" : card = $(`//div[@class="c-card u-border-bottom-theme-11 u-mb-4"]/div[h3/a[starts-with(normalize-space(.), "${cardText}")]]`)
+            case "group" : card = $(`//div[@class="nhsuk-card u-border-b-theme-11 u-mb-4 nhsuk-card--clickable"]/div[h3/a[starts-with(normalize-space(.), "${cardText}")]]`)
             break;
         }
         helpers.waitForLoaded(card)
@@ -40,13 +38,16 @@ class formPage extends basePage{
         }
         var cardFound = this.cardTypeSelector(cardType, cardText);
         var foundValues = cardFound.getText().replace(/\n/g, ', ');
+        var valuesArray = foundValues.split(', ');
         try {
             for(var i = 0; i < expectedValues.length; i++){
                 var expectedString = expectedValues[i].toString();
                 if(expectedString.includes('[PRETTYDATE]')){
-                    expectedString = expectedString.split(' [')[0];
+                    var dateMatch = valuesArray.find(date => this.dateValidator(date))
+                    expect(dateMatch).toBeTruthy();
+                } else {
+                    expect(foundValues.includes(expectedString)).toEqual(true)
                 }
-                expect(foundValues.includes(expectedString)).toEqual(true)
             };
         } catch (error) {
             throw new Error(`Could not locate the expected value of "${expectedString}" within the found values "${foundValues}"`)
@@ -58,15 +59,15 @@ class formPage extends basePage{
      * With the expected scenario being that upon state change the amount of cards found is greater than originally found.
      * @param {string} compareArg - step argument used for second stage of the function to perform comparison 
      */
-    cardCountComparison(compareArg) {
+    cardCountComparison(compareArg, cardType) {
         if(compareArg != "there are more") {
-            helpers.waitForLoaded('//div[@class="c-card_body"]');
-            var cardsFound = $$('//div[@class="c-card_body"]').filter(item => item.isDisplayed());
+            helpers.waitForLoaded('//div[@class="nhsuk-card u-border-b-theme-10 u-mb-4 nhsuk-card--clickable"]');
+            var cardsFound = $$('//div[@class="nhsuk-card u-border-b-theme-10 u-mb-4 nhsuk-card--clickable"]').filter(item => item.isDisplayed());
             foundAmount = cardsFound.length
             expect(foundAmount).toBeGreaterThan(0);
         } else {
             browser.waitUntil(() => {
-                var cardsFound = $$('//div[@class="c-card_body"]').filter(item => item.isDisplayed());
+                var cardsFound = $$('//div[@class="nhsuk-card u-border-b-theme-10 u-mb-4 nhsuk-card--clickable"]').filter(item => item.isDisplayed());
                 return cardsFound.length > foundAmount
             },
             {
@@ -77,6 +78,15 @@ class formPage extends basePage{
     }
 
     /**
+     * Function to get the pagination counter text displayed on the page, and compare against expected value
+     * @param {*} text 
+     */
+    paginationValidation(text) {
+        var paginationCounter = $(`//p[@class="c-pagination-status"]`)
+        expect(paginationCounter.getText()).toEqual(text)
+    }
+
+    /**
      * Two stage function used to like/unlike a card and validate that the like/unlike action has been completed
      * @param {string} clickAction - used for IF condition to define interaction with the card
      * @param {string} cardText - The main body of the card, and used to locate the exact card expected
@@ -84,38 +94,28 @@ class formPage extends basePage{
      */
     cardLikeClick(clickAction, cardText, cardType) {
         var cardFound = this.cardTypeSelector(cardType, cardText);
-        var likeButton = cardFound.$(`./div[3]/p[1]/a`);
+        var likeButton = cardFound.$(`./footer/button`);
         if(clickAction === 'like') {
-                expect(likeButton.getAttribute('data-hasvoted')).toBe('false'); 
+                expect(likeButton.getAttribute('aria-label')).toBe('like'); 
                 helpers.click(likeButton);
                 browser.waitUntil(
-                    () => (likeButton.getAttribute('data-hasvoted')) === 'true',
+                    () => (likeButton.getAttribute('aria-label')) === 'Remove like',
                     {
                         timeout: 2000,
-                        timeoutMsg: 'expected the like button to be highlighted'
+                        timeoutMsg: 'Expected the like to exist'
                     }
                 );
         } else {
-            expect(likeButton.getAttribute('data-hasvoted')).toBe('true'); 
+            expect(likeButton.getAttribute('aria-label')).toBe('Remove like'); 
             helpers.click(likeButton);
             browser.waitUntil(
-                () => (likeButton.getAttribute('data-hasvoted')) === 'false',
+                () => (likeButton.getAttribute('aria-label')) === 'like',
                 {
                     timeout: 2000,
-                    timeoutMsg: 'expected the like button to not be highlighted'
+                    timeoutMsg: 'Expected the like to have been removed'
                 }
             );
         }
-    }
-
-    /**
-     * Function to validate that "Load more replies" button does not exist on the desired card
-     * @param {string} cardText - The main body of the card, and used to locate the exact card expected
-     */
-    loadRepliesNotExisting(cardText) {
-        var cardFound = this.cardTypeSelector('comment', cardText);
-        var loadMoreButton = cardFound.$(`button`);
-        loadMoreButton.waitForExist({timeout: 5000, reverse: true});
     }
 
     /**
@@ -124,9 +124,11 @@ class formPage extends basePage{
      */
     pinnedDiscussionValidation(cardText) {
         var cardFound = this.cardTypeSelector('discussion', cardText);
-        var pinnedIcon = cardFound.$('./div[2]/div/p');
-        pinnedIcon.waitForExist({timeout: 5000});
-        expect(cardFound.$('./div[2]/div/p/span').getHTML(false)).toBe('Discussion is pinned')
+        console.log(cardFound.$(`./div`).nextElement().getAttribute('class'))
+        var pinnedIcon = cardFound.$('./div/svg/use');
+        pinnedIcon.waitForDisplayed({timeout: 5000});
+        //*[@id="main"]/div[3]/div/div[2]/div/div[2]/div[1]/div[1]/ul/li[1]/div/div/div/svg/use
+        //html/body/div[1]/main/div[3]/div/div[2]/div/div[2]/div[1]/div[1]/ul/li[1]/div/div/div/svg/use
     }
 
     /**
@@ -134,7 +136,7 @@ class formPage extends basePage{
      */
     replyToPostClick(cardText, cardType){
         var replyCard = this.cardTypeSelector(cardType, cardText);
-        var replyLink = replyCard.$(`./div[@class="c-card_footer"]//a/span[normalize-space(.) = "Reply"]`);
+        var replyLink = replyCard.$(`./footer/div[@class="c-reply u-flex-grow"]/details/summary`);
         helpers.click(replyLink);
     }
 }
