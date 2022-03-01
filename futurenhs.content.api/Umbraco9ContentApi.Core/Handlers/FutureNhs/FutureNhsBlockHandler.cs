@@ -26,15 +26,15 @@
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<ContentModel>> GetAllBlocks()
+        public async Task<IEnumerable<ContentModel>> GetAllBlocksAsync()
         {
             var contentModels = new List<ContentModel>();
             var blocksFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Blocks");
-            var publishedBlocks = await _futureNhsContentService.GetPublishedChildren(blocksFolderGuid);
+            var publishedBlocks = await _futureNhsContentService.GetPublishedChildrenAsync(blocksFolderGuid);
 
             foreach (var block in publishedBlocks)
             {
-                contentModels.Add(await _futureNhsContentService.Resolve(block));
+                contentModels.Add(await _futureNhsContentService.ResolveAsync(block));
             }
 
             return contentModels;

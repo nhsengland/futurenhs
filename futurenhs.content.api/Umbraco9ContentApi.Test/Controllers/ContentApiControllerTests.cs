@@ -47,10 +47,10 @@ namespace Umbraco9ContentApi.Test.Controller
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
             var content = GetTestModel();
-            _mockFutureNhsContentHandler.Setup(x => x.GetContent(It.IsAny<Guid>())).ReturnsAsync(content);
+            _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(content);
 
             // Act
-            var result = await controller.Get(contentId);
+            var result = await controller.GetAsync(contentId);
             var itemResult = result as OkObjectResult;
 
 
@@ -71,12 +71,12 @@ namespace Umbraco9ContentApi.Test.Controller
         public async Task GetContent_Failure()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.GetContent(It.IsAny<Guid>())).ReturnsAsync(() => null);
+            _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(() => null);
             var controller = GetController();
             var contentId = new Guid("8E87CC7B-26BD-4543-906D-53652F5B6F02");
 
             // Act
-            var result = await controller.Get(contentId);
+            var result = await controller.GetAsync(contentId);
             var itemResult = result as NotFoundResult;
 
             // Assert
@@ -96,11 +96,11 @@ namespace Umbraco9ContentApi.Test.Controller
         {
             // Arrange
             var contentList = GetTestBlocks();
-            _mockFutureNhsContentHandler.Setup(x => x.GetAllContent()).ReturnsAsync(contentList);
+            _mockFutureNhsContentHandler.Setup(x => x.GetAllContentAsync()).ReturnsAsync(contentList);
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAll();
+            var result = await controller.GetAllAsync();
             var itemResult = result as OkObjectResult;
 
             // Assert
@@ -122,11 +122,11 @@ namespace Umbraco9ContentApi.Test.Controller
         public async Task GetAllContent_NotFound()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.GetAllContent()).ReturnsAsync(new List<ContentModel>());
+            _mockFutureNhsContentHandler.Setup(x => x.GetAllContentAsync()).ReturnsAsync(new List<ContentModel>());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAll();
+            var result = await controller.GetAllAsync();
             var itemResult = result as NotFoundResult;
 
 
@@ -151,10 +151,10 @@ namespace Umbraco9ContentApi.Test.Controller
             var content = GetMockContentItem(contentId);
             var pageName = "New Page";
             _mockFutureNhsContentHandler.Setup(
-                x => x.CreateContent(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(content.Object);
+                x => x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(content.Object);
 
             // Act
-            var result = await controller.Create(pageName);
+            var result = await controller.CreateAsync(pageName);
             var itemResult = result as OkObjectResult;
 
 
@@ -175,10 +175,10 @@ namespace Umbraco9ContentApi.Test.Controller
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
             var content = GetMockContentItem(contentId);
             _mockFutureNhsContentHandler.Setup(
-                x => x.CreateContent(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(content.Object);
+                x => x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(content.Object);
 
             // Act
-            var result = await controller.Create(string.Empty);
+            var result = await controller.CreateAsync(string.Empty);
             var itemResult = result as BadRequestObjectResult;
 
 
@@ -200,10 +200,10 @@ namespace Umbraco9ContentApi.Test.Controller
             var content = GetMockContentItem(contentId);
             var pageName = "New Page";
             _mockFutureNhsContentHandler.Setup(x => 
-                x.CreateContent(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(() => null);
+                x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(() => null);
 
             // Act
-            var result = await controller.Create(pageName);
+            var result = await controller.CreateAsync(pageName);
             var itemResult = result as ObjectResult;
 
             // Assert
@@ -226,10 +226,10 @@ namespace Umbraco9ContentApi.Test.Controller
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsContentHandler.Setup(x => x.PublishContent(It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockFutureNhsContentHandler.Setup(x => x.PublishContentAsync(It.IsAny<Guid>())).ReturnsAsync(true);
 
             // Act
-            var result = await controller.Publish(contentId);
+            var result = await controller.PublishAsync(contentId);
             var itemResult = result as OkObjectResult;
 
             // Assert
@@ -247,10 +247,10 @@ namespace Umbraco9ContentApi.Test.Controller
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsContentHandler.Setup(x => x.PublishContent(It.IsAny<Guid>())).ReturnsAsync(false);
+            _mockFutureNhsContentHandler.Setup(x => x.PublishContentAsync(It.IsAny<Guid>())).ReturnsAsync(false);
 
             // Act
-            var result = await controller.Publish(contentId);
+            var result = await controller.PublishAsync(contentId);
             var itemResult = result as ObjectResult;
 
             // Assert
@@ -274,11 +274,11 @@ namespace Umbraco9ContentApi.Test.Controller
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
             var updateRequest = GetUpdateRequest("Test Title", "Test Description", "Test Content");
-            _mockFutureNhsContentHandler.Setup(x => x.UpdateContent(
+            _mockFutureNhsContentHandler.Setup(x => x.UpdateContentAsync(
                 It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
             // Act
-            var result = await controller.Update(contentId, updateRequest);
+            var result = await controller.UpdateAsync(contentId, updateRequest);
             var itemResult = result as OkObjectResult;
 
             // Assert
@@ -297,11 +297,11 @@ namespace Umbraco9ContentApi.Test.Controller
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
             var updateRequest = GetUpdateRequest("Test Title", "Test Description", "Test Content");
-            _mockFutureNhsContentHandler.Setup(x => x.UpdateContent(
+            _mockFutureNhsContentHandler.Setup(x => x.UpdateContentAsync(
                 It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 
             // Act
-            var result = await controller.Update(contentId, updateRequest);
+            var result = await controller.UpdateAsync(contentId, updateRequest);
             var itemResult = result as ObjectResult;
 
             // Assert
@@ -320,7 +320,7 @@ namespace Umbraco9ContentApi.Test.Controller
             var updateRequest = GetUpdateRequest(null, null, null);
 
             // Act
-            var result = await controller.Update(contentId, updateRequest);
+            var result = await controller.UpdateAsync(contentId, updateRequest);
             var itemResult = result as BadRequestObjectResult;
 
             // Assert
@@ -342,10 +342,10 @@ namespace Umbraco9ContentApi.Test.Controller
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsContentHandler.Setup(x => x.DeleteContent(It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(true);
 
             // Act
-            var result = await controller.Delete(contentId);
+            var result = await controller.DeleteAsync(contentId);
             var itemResult = result as OkObjectResult;
 
             // Assert
@@ -363,10 +363,10 @@ namespace Umbraco9ContentApi.Test.Controller
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsContentHandler.Setup(x => x.DeleteContent(It.IsAny<Guid>())).ReturnsAsync(false);
+            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(false);
 
             // Act
-            var result = await controller.Delete(contentId);
+            var result = await controller.DeleteAsync(contentId);
             var itemResult = result as ObjectResult;
 
             // Assert

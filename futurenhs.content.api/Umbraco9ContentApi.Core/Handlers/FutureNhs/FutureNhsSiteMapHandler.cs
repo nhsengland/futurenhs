@@ -27,10 +27,10 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<GroupSitemapItemViewModel>> GetGroupSitemapItems(Guid pageId)
+        public async Task<IEnumerable<GroupSitemapItemViewModel>> GetGroupSitemapItemsAsync(Guid pageId)
         {
             // Get published page
-            var page = await _futureNhsContentService.GetPublished(pageId);
+            var page = await _futureNhsContentService.GetPublishedAsync(pageId);
 
             // If it doesn't exist, return as empty.
             if (page is null)

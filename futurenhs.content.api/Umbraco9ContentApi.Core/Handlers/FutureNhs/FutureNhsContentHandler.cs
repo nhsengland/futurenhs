@@ -28,7 +28,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<IContent?> CreateContent(string pageName, string? pageParentId = null, bool publish = false)
+        public async Task<IContent?> CreateContentAsync(string pageName, string? pageParentId = null, bool publish = false)
         {
             if (string.IsNullOrWhiteSpace(pageName))
             {
@@ -49,28 +49,28 @@
             // if publish is true, also publish the created page.
             if (publish)
             {
-                var createResult = await _futureNhsContentService.Create(parent, pageName, pageDocumentTypeAlias);
+                var createResult = await _futureNhsContentService.CreateAsync(parent, pageName, pageDocumentTypeAlias);
 
                 if (createResult is not null)
                 {
-                    await PublishContent(createResult.Key);
+                    await PublishContentAsync(createResult.Key);
                 }
 
                 return createResult;
             }
 
-            return await _futureNhsContentService.Create(parent, pageName, pageDocumentTypeAlias);
+            return await _futureNhsContentService.CreateAsync(parent, pageName, pageDocumentTypeAlias);
         }
 
         /// <inheritdoc />
-        public async Task<bool> UpdateContent(Guid id, string title, string description, string pageContent)
+        public async Task<bool> UpdateContentAsync(Guid id, string title, string description, string pageContent)
         {
             if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && string.IsNullOrWhiteSpace(pageContent))
             {
                 return false;
             }
 
-            var pageTemplateContent = await _futureNhsContentService.Get(id);
+            var pageTemplateContent = await _futureNhsContentService.GetAsync(id);
 
             if (!string.IsNullOrWhiteSpace(title))
             {
@@ -88,49 +88,49 @@
                 pageTemplateContent.SetValue("pageContent", pageContent);
             }
 
-            var pagePublishedContent = await _futureNhsContentService.GetPublished(id);
+            var pagePublishedContent = await _futureNhsContentService.GetPublishedAsync(id);
 
             if (pagePublishedContent is not null && pagePublishedContent.IsPublished())
             {
-                var result = await _futureNhsContentService.SaveAndPublish(pageTemplateContent);
+                var result = await _futureNhsContentService.SaveAndPublishAsync(pageTemplateContent);
                 return result;
             }
             else
             {
-                var result = await _futureNhsContentService.Save(pageTemplateContent);
+                var result = await _futureNhsContentService.SaveAsync(pageTemplateContent);
                 return result;
             }
         }
 
         /// <inheritdoc />
-        public async Task<bool> PublishContent(Guid id)
+        public async Task<bool> PublishContentAsync(Guid id)
         {
-            return await _futureNhsContentService.Publish(id);
+            return await _futureNhsContentService.PublishAsync(id);
         }
 
         /// <inheritdoc />
-        public async Task<ContentModel> GetContent(Guid id)
+        public async Task<ContentModel> GetContentAsync(Guid id)
         {
-            var content = await _futureNhsContentService.GetPublished(id);
-            return await _futureNhsContentService.Resolve(content);
+            var content = await _futureNhsContentService.GetPublishedAsync(id);
+            return await _futureNhsContentService.ResolveAsync(content);
         }
 
         /// <inheritdoc />
-        public async Task<bool> DeleteContent(Guid id)
+        public async Task<bool> DeleteContentAsync(Guid id)
         {
-            return await _futureNhsContentService.Delete(id);
+            return await _futureNhsContentService.DeleteAsync(id);
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<ContentModel>> GetAllContent()
+        public async Task<IEnumerable<ContentModel>> GetAllContentAsync()
         {
             var contentModels = new List<ContentModel>();
             var pagesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
-            var pages = await _futureNhsContentService.GetPublishedChildren(pagesFolderGuid);
+            var pages = await _futureNhsContentService.GetPublishedChildrenAsync(pagesFolderGuid);
 
             foreach (var page in pages)
             {
-                contentModels.Add(await _futureNhsContentService.Resolve(page));
+                contentModels.Add(await _futureNhsContentService.ResolveAsync(page));
             }
 
             return contentModels;

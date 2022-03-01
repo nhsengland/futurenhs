@@ -29,22 +29,22 @@
         }
 
         /// <inheritdoc />
-        public async Task<ContentModel> GetTemplate(Guid id)
+        public async Task<ContentModel> GetTemplateAsync(Guid id)
         {
-            var template = await _futureNhsContentService.GetPublished(id);
-            return await _futureNhsContentService.Resolve(template);
+            var template = await _futureNhsContentService.GetPublishedAsync(id);
+            return await _futureNhsContentService.ResolveAsync(template);
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<ContentModel>> GetAllTemplates()
+        public async Task<IEnumerable<ContentModel>> GetAllTemplatesAsync()
         {
             var contentModels = new List<ContentModel>();
             var templatesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Templates");
-            var templates = await _futureNhsContentService.GetPublishedChildren(templatesFolderGuid);
+            var templates = await _futureNhsContentService.GetPublishedChildrenAsync(templatesFolderGuid);
 
             foreach (var template in templates)
             {
-                contentModels.Add(await _futureNhsContentService.Resolve(template));
+                contentModels.Add(await _futureNhsContentService.ResolveAsync(template));
             }
 
             return contentModels;

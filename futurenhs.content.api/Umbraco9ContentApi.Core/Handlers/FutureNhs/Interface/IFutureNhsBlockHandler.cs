@@ -8,6 +8,6 @@
         /// Gets all blocks.
         /// </summary>
         /// <returns>All blocks.</returns>
-        Task<IEnumerable<ContentModel>> GetAllBlocks();
+        Task<IEnumerable<ContentModel>> GetAllBlocksAsync();
     }
 }

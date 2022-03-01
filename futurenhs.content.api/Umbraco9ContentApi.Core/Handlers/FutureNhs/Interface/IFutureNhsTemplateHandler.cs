@@ -9,12 +9,12 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Specified template.</returns>
-        Task<ContentModel> GetTemplate(Guid id);
+        Task<ContentModel> GetTemplateAsync(Guid id);
 
         /// <summary>
         /// Gets all templates.
         /// </summary>
         /// <returns>All templates.</returns>
-        Task<IEnumerable<ContentModel>> GetAllTemplates();
+        Task<IEnumerable<ContentModel>> GetAllTemplatesAsync();
     }
 }

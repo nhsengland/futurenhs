@@ -53,11 +53,11 @@ namespace Umbraco9ContentApi.Test
         {
             // Arrange
             _guid = Guid.NewGuid();
-            _contentService.Setup(x => x.Resolve(It.IsAny<IPublishedContent>()).Result).Returns(new ContentModel() { System = new SystemModel() { Id = _guid } });
+            _contentService.Setup(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result).Returns(new ContentModel() { System = new SystemModel() { Id = _guid } });
             CustomContentHandlerSetup();
 
             // Act
-            var result = _contentHandler.GetContent(_guid).Result;
+            var result = _contentHandler.GetContentAsync(_guid).Result;
 
             // Assert
             Assert.AreEqual(result.System.Id, _guid);
@@ -70,11 +70,11 @@ namespace Umbraco9ContentApi.Test
             var content = new Mock<IPublishedContent>();
             _guid = Guid.NewGuid();
             content.Setup(x => x.IsPublished(It.IsAny<string>())).Returns(false);
-            _contentService.Setup(x => x.Publish(It.IsAny<Guid>()).Result).Returns(true);
+            _contentService.Setup(x => x.PublishAsync(It.IsAny<Guid>()).Result).Returns(true);
             CustomContentHandlerSetup();
 
             // Act
-            var result = _contentHandler.PublishContent(_guid).Result;
+            var result = _contentHandler.PublishContentAsync(_guid).Result;
 
             // Assert
             Assert.AreEqual(result, true);
@@ -84,11 +84,11 @@ namespace Umbraco9ContentApi.Test
         public void DeleteContent_Test()
         {
             // Arrange 
-            _contentService.Setup(x => x.Delete(It.IsAny<Guid>()).Result).Returns(true);
+            _contentService.Setup(x => x.DeleteAsync(It.IsAny<Guid>()).Result).Returns(true);
             CustomContentHandlerSetup();
 
             // Act  
-            var result = _contentHandler.DeleteContent(_guid).Result;
+            var result = _contentHandler.DeleteContentAsync(_guid).Result;
 
             // Assert
             Assert.AreEqual(result, true);
@@ -104,9 +104,9 @@ namespace Umbraco9ContentApi.Test
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
 
-            _contentService.Setup(x => x.GetPublishedChildren(It.IsAny<Guid>()).Result).Returns(GenerateContentModels());
+            _contentService.Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()).Result).Returns(GenerateContentModels());
 
-            _contentService.SetupSequence(x => x.Resolve(It.IsAny<IPublishedContent>()).Result)
+            _contentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
                 .Returns(new ContentModel() { System = new SystemModel() { Id = _guidList[0] } })
                 .Returns(new ContentModel() { System = new SystemModel() { Id = _guidList[1] } })
                 .Returns(new ContentModel() { System = new SystemModel() { Id = _guidList[2] } })
@@ -116,7 +116,7 @@ namespace Umbraco9ContentApi.Test
 
 
             // Act
-            var result = _contentHandler.GetAllContent().Result;
+            var result = _contentHandler.GetAllContentAsync().Result;
 
             // Assert
             Assert.AreEqual(_guidList, result.Select(x => x.System.Id).ToList());

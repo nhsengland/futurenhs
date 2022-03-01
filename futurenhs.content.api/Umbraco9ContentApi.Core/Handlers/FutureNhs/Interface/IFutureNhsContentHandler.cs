@@ -12,7 +12,7 @@
         /// <param name="pageParentId">The page parent identifier.</param>
         /// <param name="publish">if set to <c>true</c> [publish].</param>
         /// <returns>Created content.</returns>
-        Task<IContent> CreateContent(string pageName, string? pageParentId = null, bool publish = false);
+        Task<IContent> CreateContentAsync(string pageName, string? pageParentId = null, bool publish = false);
 
         /// <summary>
         /// Updates the content of the page.
@@ -22,33 +22,33 @@
         /// <param name="description">The description.</param>
         /// <param name="pageContent">The content.</param>
         /// <returns>True or false.</returns>
-        Task<bool> UpdateContent(Guid id, string title, string description, string pageContent);
+        Task<bool> UpdateContentAsync(Guid id, string title, string description, string pageContent);
 
         /// <summary>
         /// Publishes the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>True or false.</returns>
-        Task<bool> PublishContent(Guid id);
+        Task<bool> PublishContentAsync(Guid id);
 
         /// <summary>
         /// Deletes the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>True or false.</returns>
-        Task<bool> DeleteContent(Guid id);
+        Task<bool> DeleteContentAsync(Guid id);
 
         /// <summary>
         /// Gets the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Specified content.</returns>
-        Task<ContentModel> GetContent(Guid id);
+        Task<ContentModel> GetContentAsync(Guid id);
 
         /// <summary>
         /// Gets all content.
         /// </summary>
         /// <returns>All content.</returns>
-        Task<IEnumerable<ContentModel>> GetAllContent();
+        Task<IEnumerable<ContentModel>> GetAllContentAsync();
     }
 }

@@ -16,28 +16,28 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Published contents children.</returns>
-        Task<IEnumerable<IPublishedContent>> GetPublishedChildren(Guid id);
+        Task<IEnumerable<IPublishedContent>> GetPublishedChildrenAsync(Guid id);
 
         /// <summary>
         /// Gets the content.
         /// </summary>
         /// <param name="id">The unique identifier.</param>
         /// <returns>Published content.</returns>
-        Task<IPublishedContent> GetPublished(Guid id);
+        Task<IPublishedContent> GetPublishedAsync(Guid id);
 
         /// <summary>
         /// Gets the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Task<IContent> Get(Guid id);
+        Task<IContent> GetAsync(Guid id);
 
         /// <summary>
         /// Resolves the content.
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns>Content model.</returns>
-        Task<ContentModel> Resolve(IPublishedContent content);
+        Task<ContentModel> ResolveAsync(IPublishedContent content);
 
         /// <summary>
         /// Creates the content.
@@ -46,41 +46,41 @@
         /// <param name="contentName">Name of the content.</param>
         /// <param name="documentTypeAlias">The document type alias.</param>
         /// <returns></returns>
-        Task<IContent?> Create(Guid parentContentId, string contentName, string documentTypeAlias);
+        Task<IContent?> CreateAsync(Guid parentContentId, string contentName, string documentTypeAlias);
 
         /// <summary>
         /// Deletes the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Operation result.</returns>
-        Task<bool> Delete(Guid id);
+        Task<bool> DeleteAsync(Guid id);
 
         /// <summary>
         /// Publishes the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>PPublish result.</returns>
-        Task<bool> Publish(Guid id);
+        Task<bool> PublishAsync(Guid id);
 
         /// <summary>
         /// Gets the  specified template's blocks.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Blocks for specified template.</returns>
-        Task<IEnumerable<ContentModel>> GetTemplateBlocks(Guid id);
+        Task<IEnumerable<ContentModel>> GetTemplateBlocksAsync(Guid id);
 
         /// <summary>
         /// Saves the content.
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        Task<bool> Save(IContent content);
+        Task<bool> SaveAsync(IContent content);
 
         /// <summary>
         /// Saves the content and publish.
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        Task<bool> SaveAndPublish(IContent content);
+        Task<bool> SaveAndPublishAsync(IContent content);
     }
 }

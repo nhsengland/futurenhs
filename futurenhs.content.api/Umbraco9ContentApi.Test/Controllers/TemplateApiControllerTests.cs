@@ -43,11 +43,11 @@
         {
             // Arrange
             var contentList = GetTestBlocks();
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplates()).ReturnsAsync(contentList);
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplatesAsync()).ReturnsAsync(contentList);
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAll();
+            var result = await controller.GetAllAsync();
             var itemResult = result as OkObjectResult;
 
             // Assert
@@ -69,11 +69,11 @@
         public async Task GetAllTemplates_NotFound()
         {
             // Arrange
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplates()).ReturnsAsync(new List<ContentModel>());
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplatesAsync()).ReturnsAsync(new List<ContentModel>());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAll();
+            var result = await controller.GetAllAsync();
             var itemResult = result as NotFoundResult;
 
 
@@ -96,10 +96,10 @@
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
             var content = GetTestModel();
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplate(It.IsAny<Guid>())).ReturnsAsync(content);
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplateAsync(It.IsAny<Guid>())).ReturnsAsync(content);
 
             // Act
-            var result = await controller.Get(contentId);
+            var result = await controller.GetAsync(contentId);
             var itemResult = result as OkObjectResult;
 
 
@@ -120,12 +120,12 @@
         public async Task GetTemplate_Failure()
         {
             // Arrange
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplate(It.IsAny<Guid>())).ReturnsAsync(() => null);
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplateAsync(It.IsAny<Guid>())).ReturnsAsync(() => null);
             var controller = GetController();
             var contentId = new Guid("8E87CC7B-26BD-4543-906D-53652F5B6F02");
 
             // Act
-            var result = await controller.Get(contentId);
+            var result = await controller.GetAsync(contentId);
             var itemResult = result as NotFoundResult;
             
             // Assert

@@ -34,9 +34,9 @@
         /// <remarks></remarks>
         [HttpGet("{blockId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> Get(Guid blockId)
+        public async Task<ActionResult> GetAsync(Guid blockId)
         {
-            var content = await _futureNhsContentHandler.GetContent(blockId);
+            var content = await _futureNhsContentHandler.GetContentAsync(blockId);
 
             if (content is null)
             {
@@ -53,9 +53,9 @@
         /// <remarks></remarks>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> GetAllAsync()
         {
-            var blocks = await _futureNhsBlockHandler.GetAllBlocks();
+            var blocks = await _futureNhsBlockHandler.GetAllBlocksAsync();
 
             if (blocks is not null && blocks.Any())
             {
@@ -72,9 +72,9 @@
         /// <returns>The block identifier.</returns>
         /// <remarks></remarks>
         [HttpDelete("{blockId:guid}")]
-        public async Task<ActionResult> Delete(Guid blockId)
+        public async Task<ActionResult> DeleteAsync(Guid blockId)
         {
-            var result = await _futureNhsContentHandler.DeleteContent(blockId);
+            var result = await _futureNhsContentHandler.DeleteContentAsync(blockId);
 
             if (result)
             {

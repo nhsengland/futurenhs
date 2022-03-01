@@ -12,6 +12,6 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
         /// </summary>
         /// <param name="pageId">The page identifier.</param>
         /// <returns>Group sitemap items.</returns>
-        Task<IEnumerable<GroupSitemapItemViewModel>> GetGroupSitemapItems(Guid pageId);
+        Task<IEnumerable<GroupSitemapItemViewModel>> GetGroupSitemapItemsAsync(Guid pageId);
     }
 }

@@ -27,32 +27,32 @@
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<IPublishedContent>> GetPublishedChildren(Guid id)
+        public async Task<IEnumerable<IPublishedContent>> GetPublishedChildrenAsync(Guid id)
         {
             var children = _publishedContent.Content(id).Children;
             return children is not null && children.Any() ? children : new List<IPublishedContent>();
         }
 
         /// <inheritdoc />
-        public async Task<IPublishedContent> GetPublished(Guid id)
+        public async Task<IPublishedContent> GetPublishedAsync(Guid id)
         {
             return _publishedContent.Content(id);
         }
 
         /// <inheritdoc />
-        public async Task<IContent> Get(Guid id)
+        public async Task<IContent> GetAsync(Guid id)
         {
             return _contentService.GetById(id);
         }
 
         /// <inheritdoc />
-        public async Task<ContentModel> Resolve(IPublishedContent content)
+        public async Task<ContentModel> ResolveAsync(IPublishedContent content)
         {
             return _contentResolver.Value.ResolveContent(content);
         }
 
         /// <inheritdoc />
-        public async Task<IContent?> Create(Guid parentContentId, string contentName, string documentTypeAlias)
+        public async Task<IContent?> CreateAsync(Guid parentContentId, string contentName, string documentTypeAlias)
         {
             var parentContent = _contentService.GetById(parentContentId);
             var result = _contentService.CreateAndSave(contentName, parentContent, documentTypeAlias);
@@ -60,7 +60,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var content = _contentService.GetById(id);
 
@@ -80,7 +80,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<bool> Publish(Guid id)
+        public async Task<bool> PublishAsync(Guid id)
         {
             var content = _contentService.GetById(id);
             var result = _contentService.SaveAndPublish(content);
@@ -88,7 +88,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<ContentModel>> GetTemplateBlocks(Guid id)
+        public async Task<IEnumerable<ContentModel>> GetTemplateBlocksAsync(Guid id)
         {
             var contentModels = new List<ContentModel>();
             var template = _publishedContent.Content(id);
@@ -102,21 +102,21 @@
 
             foreach (var block in blocks)
             {
-                contentModels.Add(await Resolve(block));
+                contentModels.Add(await ResolveAsync(block));
             }
 
             return contentModels is not null ? contentModels : new List<ContentModel>();
         }
 
         /// <inheritdoc />
-        public async Task<bool> Save(IContent content)
+        public async Task<bool> SaveAsync(IContent content)
         {
             var result = _contentService.Save(content);
             return true ? result.Success : false;
         }
 
         /// <inheritdoc />
-        public async Task<bool> SaveAndPublish(IContent content)
+        public async Task<bool> SaveAndPublishAsync(IContent content)
         {
             var result = _contentService.SaveAndPublish(content);
             return true ? result.Success : false;

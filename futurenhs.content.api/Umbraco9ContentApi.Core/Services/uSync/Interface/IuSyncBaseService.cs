@@ -8,6 +8,6 @@ namespace Umbraco9ContentApi.Core.Services.uSync.Interface
         /// Initiate import.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<uSyncAction>> Import();
+        Task<IEnumerable<uSyncAction>> ImportAsync();
     }
 }

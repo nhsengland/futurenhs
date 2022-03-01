@@ -56,7 +56,7 @@ namespace Umbraco9ContentApi.Core.Services.uSync
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<uSyncAction>> Import()
+        public async Task<IEnumerable<uSyncAction>> ImportAsync()
         {
             dataTypeHandler = new DataTypeHandler(
                 _logger,

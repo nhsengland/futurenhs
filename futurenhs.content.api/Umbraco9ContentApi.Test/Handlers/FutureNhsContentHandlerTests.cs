@@ -48,12 +48,12 @@
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Create(It.IsAny<Guid>(),
+                .Setup(x => x.CreateAsync(It.IsAny<Guid>(),
                     It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(mockContent.Object);
 
             // Act
-            var contentResult = await contentHandler.CreateContent(newPageName);
+            var contentResult = await contentHandler.CreateContentAsync(newPageName);
 
             // Assert
             Assert.IsNotNull(contentResult);
@@ -70,7 +70,7 @@
             var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.CreateContent(string.Empty);
+            var contentResult = await contentHandler.CreateContentAsync(string.Empty);
 
             // Assert
             Assert.IsNull(contentResult);
@@ -100,17 +100,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAndPublish(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, newPageName, newDescription, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, newDescription, newPageContent);
 
             // Assert
             Assert.IsTrue(contentResult);
@@ -132,17 +132,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAndPublish(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, newPageName, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, string.Empty, string.Empty);
 
             // Assert
             Assert.IsTrue(contentResult);
@@ -164,17 +164,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAndPublish(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, string.Empty, newDescription, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, newDescription, string.Empty);
 
             // Assert
             Assert.IsTrue(contentResult);
@@ -196,17 +196,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAndPublish(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, string.Empty, string.Empty, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
             Assert.IsTrue(contentResult);
@@ -230,17 +230,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.Save(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, newPageName, newDescription, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, newDescription, newPageContent);
 
             // Assert
             Assert.IsTrue(contentResult);
@@ -262,17 +262,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.Save(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, newPageName, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, string.Empty, string.Empty);
 
             // Assert
             Assert.IsTrue(contentResult);
@@ -294,17 +294,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.Save(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, string.Empty, newDescription, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, newDescription, string.Empty);
 
             // Assert
             Assert.IsTrue(contentResult);
@@ -326,17 +326,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.Save(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, string.Empty, string.Empty, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
             Assert.IsTrue(contentResult);
@@ -356,7 +356,7 @@
             var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(Guid.NewGuid(), string.Empty, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(Guid.NewGuid(), string.Empty, string.Empty, string.Empty);
 
             // Assert
             Assert.IsFalse(contentResult);
@@ -380,17 +380,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAndPublish(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, newPageName, newDescription, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, newDescription, newPageContent);
 
             // Assert
             Assert.IsFalse(contentResult);
@@ -412,17 +412,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAndPublish(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, newPageName, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, string.Empty, string.Empty);
 
             // Assert
             Assert.IsFalse(contentResult);
@@ -444,17 +444,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAndPublish(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, string.Empty, newDescription, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, newDescription, string.Empty);
 
             // Assert
             Assert.IsFalse(contentResult);
@@ -476,17 +476,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAndPublish(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, string.Empty, string.Empty, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
             Assert.IsFalse(contentResult);
@@ -510,17 +510,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.Save(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, newPageName, newDescription, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, newDescription, newPageContent);
 
             // Assert
             Assert.IsFalse(contentResult);
@@ -542,17 +542,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.Save(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, newPageName, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, string.Empty, string.Empty);
 
             // Assert
             Assert.IsFalse(contentResult);
@@ -574,17 +574,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.Save(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, string.Empty, newDescription, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, newDescription, string.Empty);
 
             // Assert
             Assert.IsFalse(contentResult);
@@ -606,17 +606,17 @@
             var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.Get(It.IsAny<Guid>()))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.Save(It.IsAny<IContent>()))
+            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContent(parentId, string.Empty, string.Empty, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
             Assert.IsFalse(contentResult);

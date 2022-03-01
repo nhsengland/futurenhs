@@ -34,9 +34,9 @@
         /// <remarks></remarks>
         [HttpGet("{templateId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> Get(Guid templateId)
+        public async Task<ActionResult> GetAsync(Guid templateId)
         {
-            var template = await _futureNhsTemplateHandler.GetTemplate(templateId);
+            var template = await _futureNhsTemplateHandler.GetTemplateAsync(templateId);
 
             if (template is null)
             {
@@ -53,9 +53,9 @@
         /// <remarks></remarks>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> GetAllAsync()
         {
-            var templates = await _futureNhsTemplateHandler.GetAllTemplates();
+            var templates = await _futureNhsTemplateHandler.GetAllTemplatesAsync();
 
             if (templates is null | !templates.Any())
             {
@@ -73,7 +73,7 @@
         [HttpDelete("{templateId:guid}")]
         public virtual async Task<ActionResult> Delete(Guid templateId)
         {
-            var result = await _futureNhsContentHandler.DeleteContent(templateId);
+            var result = await _futureNhsContentHandler.DeleteContentAsync(templateId);
 
             if (result)
             {

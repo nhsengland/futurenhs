@@ -32,13 +32,13 @@
         /// <response code="500">Error. Import unsuccessful.</response>
         /// <returns>True or false.</returns>
         [HttpPost("{import:bool}/import")]
-        public async Task<ActionResult> DoUSyncImport(bool import)
+        public async Task<ActionResult> DoUSyncImportAsync(bool import)
         {
             bool result = false;
 
             if (import)
             {
-                result = _uSyncHandler.RunImport().Result;
+                result = _uSyncHandler.RunImportAsync().Result;
             }
 
             // import end

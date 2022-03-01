@@ -46,17 +46,17 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedChildren(It.IsAny<Guid>()))
+                .Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(new List<IPublishedContent>()
                 {
                     mockContent.Object
                 });
 
-            _mockFutureNhsContentService.SetupSequence(x => x.Resolve(It.IsAny<IPublishedContent>()).Result)
+            _mockFutureNhsContentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
                 .Returns(new ContentModel() { System = new SystemModel() { Id = contentId } });
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocks();
+            var contentResult = await contentHandler.GetAllBlocksAsync();
 
             // Assert
             Assert.NotNull(contentResult);
@@ -79,11 +79,11 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedChildren(It.IsAny<Guid>()))
+                .Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(new List<IPublishedContent>());
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocks();
+            var contentResult = await contentHandler.GetAllBlocksAsync();
 
             // Assert
             Assert.NotNull(contentResult);
@@ -106,7 +106,7 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocks();
+            var contentResult = await contentHandler.GetAllBlocksAsync();
 
             // Assert
             Assert.NotNull(contentResult);

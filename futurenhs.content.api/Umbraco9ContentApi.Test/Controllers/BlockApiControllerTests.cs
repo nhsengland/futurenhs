@@ -37,15 +37,15 @@
         /// Gets all blocks success.
         /// </summary>
         [Test]
-        public async Task GetAllBlocks_Success()
+        public async Task GetAllBlocks_SuccessAsync()
         {
             // Arrange
             var contentList = GetTestBlocks();
-            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocks()).ReturnsAsync(contentList);
+            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync()).ReturnsAsync(contentList);
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAll();
+            var result = await controller.GetAllAsync();
             var itemResult = result as OkObjectResult;
 
             // Assert
@@ -64,14 +64,14 @@
         /// Gets all blocks not found.
         /// </summary>
         [Test]
-        public async Task GetAllBlocks_NotFound()
+        public async Task GetAllBlocks_NotFoundAsync()
         {
             // Arrange
-            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocks()).ReturnsAsync(new List<ContentModel>());
+            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync()).ReturnsAsync(new List<ContentModel>());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAll();
+            var result = await controller.GetAllAsync();
             var itemResult = result as NotFoundObjectResult;
 
 

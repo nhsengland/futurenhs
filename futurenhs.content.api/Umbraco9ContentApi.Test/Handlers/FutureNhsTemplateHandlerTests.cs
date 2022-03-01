@@ -41,10 +41,10 @@
             var contentId = new Guid("A90E7522-18B4-444F-A736-0422A85C0D52");
             var publishedContent = GetMockPublishedContentItem(true);
             var content = GetTestModel();
-            _mockFutureNhsContentService.Setup(x => x.GetPublished(It.IsAny<Guid>())).ReturnsAsync(publishedContent.Object);
+            _mockFutureNhsContentService.Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(publishedContent.Object);
 
             // Act
-            var result = handler.GetTemplate(contentId);
+            var result = handler.GetTemplateAsync(contentId);
 
             // Assert
             Assert.NotNull(result);
@@ -70,17 +70,17 @@
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedChildren(It.IsAny<Guid>()))
+                .Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(new List<IPublishedContent>()
                 {
                     mockContent.Object
                 });
 
-            _mockFutureNhsContentService.SetupSequence(x => x.Resolve(It.IsAny<IPublishedContent>()).Result)
+            _mockFutureNhsContentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
                 .Returns(new ContentModel() { System = new SystemModel() { Id = contentId } });
 
             // Act
-            var contentResult = await contentHandler.GetAllTemplates();
+            var contentResult = await contentHandler.GetAllTemplatesAsync();
 
             // Assert
             Assert.NotNull(contentResult);

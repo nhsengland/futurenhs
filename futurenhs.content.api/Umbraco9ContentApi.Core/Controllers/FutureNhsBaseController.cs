@@ -22,7 +22,7 @@ namespace Umbraco9ContentApi.Core.Controllers.Base
         [HttpGet("{id:guid}")]
         public virtual async Task<ActionResult> Get(Guid id)
         {
-            var content = await _futureNhsContentHandler.GetContent(id);
+            var content = await _futureNhsContentHandler.GetContentAsync(id);
 
             if (content is null)
             {
@@ -40,7 +40,7 @@ namespace Umbraco9ContentApi.Core.Controllers.Base
         [HttpDelete("{id:guid}")]
         public virtual async Task<ActionResult> Delete(Guid id)
         {
-            var result = await _futureNhsContentHandler.DeleteContent(id);
+            var result = await _futureNhsContentHandler.DeleteContentAsync(id);
 
             if (result)
             {

@@ -42,7 +42,7 @@
             var controller = GetController();
             var contentId = new Guid("A90E7522-18B4-444F-A736-0422A85C0D52");
             var content = GetTestModel();
-            _mockFutureNhsContentHandler.Setup(x => x.GetContent(It.IsAny<Guid>())).ReturnsAsync(content);
+            _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(content);
 
             // Act
             var result = await controller.Get(contentId);
@@ -66,7 +66,7 @@
         public async Task GetItem_Failure()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.GetContent(It.IsAny<Guid>())).ReturnsAsync(() => null);
+            _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(() => null);
             var controller = GetController();
             var contentId = new Guid("100C7B19-AFD5-4624-B5C5-47E61ABB767A");
 
@@ -91,7 +91,7 @@
         public async Task DeleteItem_Success()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.DeleteContent(It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(true);
             var controller = GetController();
             var contentId = new Guid("A90E7522-18B4-444F-A736-0422A85C0D52");
 
@@ -113,7 +113,7 @@
         public async Task DeleteItem_Failure()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.DeleteContent(It.IsAny<Guid>())).ReturnsAsync(false);
+            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(false);
             var controller = GetController();
             var contentId = new Guid("6087DBA7-E10D-430D-B4F7-FC9408F893C0");
 
