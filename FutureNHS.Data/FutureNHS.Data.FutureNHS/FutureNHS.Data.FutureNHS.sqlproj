@@ -106,6 +106,7 @@
     <Build Include="dbo\Stored Procedures\usp_delete_folder.sql" />
     <Build Include="dbo\Tables\Image.sql" />
     <None Include="Data\LocalDevSeedData.sql" />
+    <Build Include="dbo\Tables\GroupSite.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " Include="Data\SeedData.sql" />

@@ -33,7 +33,7 @@
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
             <param name="futureNhsBlockHandler">The future Nhs block handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.Get(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetAsync(System.Guid)">
             <summary>
             Gets the specified block.
             </summary>
@@ -41,14 +41,14 @@
             <returns>The specified block.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetAll">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetAllAsync">
             <summary>
             Gets all blocks.
             </summary>
             <returns>All blocks.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.Delete(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.DeleteAsync(System.Guid)">
             <summary>
             Deletes the specified block.
             </summary>
@@ -67,7 +67,7 @@
             </summary>
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Get(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetAsync(System.Guid)">
             <summary>
             Gets the specified content.
             </summary>
@@ -75,14 +75,14 @@
             <returns>The specified content.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetAll">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetAllAsync">
             <summary>
             Gets all content.
             </summary>
             <returns>All content.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Create(System.String,System.String,System.Boolean)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.CreateAsync(System.String,System.String,System.Boolean)">
             <summary>
             Creates the content.
             </summary>
@@ -92,7 +92,7 @@
             <returns>Created page identifier.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Publish(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.PublishAsync(System.Guid)">
             <summary>
             Publishes the specified content.
             </summary>
@@ -100,7 +100,7 @@
             <returns>The content identifier.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Update(System.Guid,Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.UpdateAsync(System.Guid,Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest)">
             <summary>
             Updates the specified request.
             </summary>                                                                                                                                                                                                                                                           
@@ -113,7 +113,7 @@
             <response code="404">Not found.</response>
             <response code="500">Error.</response>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Delete(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.DeleteAsync(System.Guid)">
             <summary>
             Deletes the specified content.
             </summary>
@@ -151,7 +151,7 @@
             </summary>
             <seealso cref="T:Umbraco.Cms.Web.Common.Controllers.UmbracoApiController" />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapApiController.Get(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapApiController.GetAsync(System.Guid)">
             <summary>
             Gets the specified page identifier.
             </summary>
@@ -170,7 +170,7 @@
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
             <param name="futureNhsTemplateHandler">The future Nhs template handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.Get(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetAsync(System.Guid)">
             <summary>
             Gets the specified template identifier.
             </summary>
@@ -178,7 +178,7 @@
             <returns>The specified template.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetAll">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetAllAsync">
             <summary>
             Gets all templates.
             </summary>
@@ -204,13 +204,13 @@
             </summary>
             <param name="uSyncHandler">The uSync handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.uSyncApiController.DoUSyncImport(System.Boolean)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.uSyncApiController.DoUSyncImportAsync(System.Boolean)">
             <summary>
             Imports all usync items.
             </summary>
             <param name="import">if set to <c>true</c> [import].</param>
             <remarks></remarks>
-            <response code="200">Succees! Import successful.</response>
+            <response code="200">Success! Import successful.</response>
             <response code="500">Error. Import unsuccessful.</response>
             <returns>True or false.</returns>
         </member>
@@ -244,7 +244,7 @@
             </summary>
             <param name="futureNhsContentService">The future NHS content service.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetAllBlocks">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetAllBlocksAsync">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler">
@@ -260,22 +260,22 @@
             <param name="futureNhsContentService">The future NHS content service.</param>
             <param name="config">The configuration.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.CreateContent(System.String,System.String,System.Boolean)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.CreateContentAsync(System.String,System.String,System.Boolean)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.UpdateContent(System.Guid,System.String,System.String,System.String)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.UpdateContentAsync(System.Guid,System.String,System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.PublishContent(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.PublishContentAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetContent(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetContentAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.DeleteContent(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.DeleteContentAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetAllContent">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetAllContentAsync">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler">
@@ -291,7 +291,7 @@
             <param name="futureNhsContentService">The future NHS content service.</param>
             <param name="futureNhsSiteMapService">The future NHS site map service.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.GetGroupSitemapItems(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.GetGroupSitemapItemsAsync(System.Guid)">
             <inheritdoc />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.PopulateGroupSiteMapItemViewModel(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
@@ -299,7 +299,7 @@
             Populates the group site map item view model.
             </summary>
             <param name="root">The root.</param>
-            <returns>SiteMapItemViewModel.</returns>
+            <returns>GroupSiteMapItemViewModel.</returns>
         </member>
         <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler">
             <summary>
@@ -313,19 +313,19 @@
             </summary>
             <param name="futureNhsContentService">The future NHS content service.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetTemplate(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetTemplateAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetAllTemplates">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetAllTemplatesAsync">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler.GetAllBlocks">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler.GetAllBlocksAsync">
             <summary>
             Gets all blocks.
             </summary>
             <returns>All blocks.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.CreateContent(System.String,System.String,System.Boolean)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.CreateContentAsync(System.String,System.String,System.Boolean)">
             <summary>
             Creates the content.
             </summary>
@@ -334,7 +334,7 @@
             <param name="publish">if set to <c>true</c> [publish].</param>
             <returns>Created content.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.UpdateContent(System.Guid,System.String,System.String,System.String)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.UpdateContentAsync(System.Guid,System.String,System.String,System.String)">
             <summary>
             Updates the content of the page.
             </summary>
@@ -344,28 +344,28 @@
             <param name="pageContent">The content.</param>
             <returns>True or false.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.PublishContent(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.PublishContentAsync(System.Guid)">
             <summary>
             Publishes the content.
             </summary>
             <param name="id">The identifier.</param>
             <returns>True or false.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.DeleteContent(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.DeleteContentAsync(System.Guid)">
             <summary>
             Deletes the content.
             </summary>
             <param name="id">The identifier.</param>
             <returns>True or false.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetContent(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetContentAsync(System.Guid)">
             <summary>
             Gets the content.
             </summary>
             <param name="id">The identifier.</param>
             <returns>Specified content.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetAllContent">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetAllContentAsync">
             <summary>
             Gets all content.
             </summary>
@@ -376,27 +376,27 @@
             FutureNhsSitemapHandler interface.
             </summary>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler.GetGroupSitemapItems(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler.GetGroupSitemapItemsAsync(System.Guid)">
             <summary>
             Gets the group site map items.
             </summary>
             <param name="pageId">The page identifier.</param>
             <returns>Group sitemap items.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetTemplate(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetTemplateAsync(System.Guid)">
             <summary>
             Gets the template.
             </summary>
             <param name="id">The identifier.</param>
             <returns>Specified template.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetAllTemplates">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetAllTemplatesAsync">
             <summary>
             Gets all templates.
             </summary>
             <returns>All templates.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.Interface.IuSyncHandler.RunImport">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.Interface.IuSyncHandler.RunImportAsync">
             <summary>
             Runs the import.
             </summary>
@@ -418,12 +418,12 @@
             <param name="uSyncMediaTypeService">The u synchronize media type service.</param>
             <param name="uSyncMediaService">The u synchronize media service.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler.RunImport">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler.RunImportAsync">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Models.GroupSitemapItemViewModel">
             <summary>
-            The SiteMapItemViewModel for front end website tree.
+            The GroupSiteMapItemViewModel for front end website structure.
             </summary>
         </member>
         <member name="T:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest">
@@ -464,34 +464,34 @@
             <param name="contentResolver">The content resolver.</param>
             <param name="contentService">The content service.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublishedChildren(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublishedChildrenAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublished(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublishedAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Get(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Resolve(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.ResolveAsync(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Create(System.Guid,System.String,System.String)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.CreateAsync(System.Guid,System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Delete(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.DeleteAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Publish(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.PublishAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetTemplateBlocks(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetTemplateBlocksAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Save(Umbraco.Cms.Core.Models.IContent)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveAsync(Umbraco.Cms.Core.Models.IContent)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveAndPublish(Umbraco.Cms.Core.Models.IContent)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveAndPublishAsync(Umbraco.Cms.Core.Models.IContent)">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService">
@@ -499,35 +499,35 @@
             Exposes and extends the Umbraco API.
             </summary>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedChildren(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedChildrenAsync(System.Guid)">
             <summary>
             Gets the published children.
             </summary>
             <param name="id">The identifier.</param>
             <returns>Published contents children.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublished(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedAsync(System.Guid)">
             <summary>
             Gets the content.
             </summary>
             <param name="id">The unique identifier.</param>
             <returns>Published content.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Get(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetAsync(System.Guid)">
             <summary>
             Gets the content.
             </summary>
             <param name="id">The identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Resolve(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.ResolveAsync(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
             <summary>
             Resolves the content.
             </summary>
             <param name="content">The content.</param>
             <returns>Content model.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Create(System.Guid,System.String,System.String)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.CreateAsync(System.Guid,System.String,System.String)">
             <summary>
             Creates the content.
             </summary>
@@ -536,42 +536,42 @@
             <param name="documentTypeAlias">The document type alias.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Delete(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.DeleteAsync(System.Guid)">
             <summary>
             Deletes the content.
             </summary>
             <param name="id">The identifier.</param>
             <returns>Operation result.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Publish(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.PublishAsync(System.Guid)">
             <summary>
             Publishes the content.
             </summary>
             <param name="id">The identifier.</param>
             <returns>PPublish result.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetTemplateBlocks(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetTemplateBlocksAsync(System.Guid)">
             <summary>
             Gets the  specified template's blocks.
             </summary>
             <param name="id">The identifier.</param>
             <returns>Blocks for specified template.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Save(Umbraco.Cms.Core.Models.IContent)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveAsync(Umbraco.Cms.Core.Models.IContent)">
             <summary>
             Saves the content.
             </summary>
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveAndPublish(Umbraco.Cms.Core.Models.IContent)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveAndPublishAsync(Umbraco.Cms.Core.Models.IContent)">
             <summary>
             Saves the content and publish.
             </summary>
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncBaseService.Import">
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncBaseService.ImportAsync">
             <summary>
             Initiate import.
             </summary>
@@ -598,7 +598,7 @@
             <param name="uSyncConfigService">The u synchronize configuration service.</param>
             <param name="syncItemFactory">The synchronize item factory.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncContentService.Import">
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncContentService.ImportAsync">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Services.uSync.uSyncDataTypeService">
@@ -622,7 +622,7 @@
             <param name="uSyncConfigService">The u synchronize configuration service.</param>
             <param name="syncItemFactory">The synchronize item factory.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncDataTypeService.Import">
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncDataTypeService.ImportAsync">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaService">
@@ -646,7 +646,7 @@
             <param name="uSyncConfigService">The u synchronize configuration service.</param>
             <param name="syncItemFactory">The synchronize item factory.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaService.Import">
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaService.ImportAsync">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaTypeService">
@@ -670,7 +670,7 @@
             <param name="uSyncConfigService">The u synchronize configuration service.</param>
             <param name="syncItemFactory">The synchronize item factory.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaTypeService.Import">
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaTypeService.ImportAsync">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Services.uSyncContentTypesService">
@@ -694,7 +694,7 @@
             <param name="uSyncConfigService">The u synchronize configuration service.</param>
             <param name="syncItemFactory">The synchronize item factory.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.uSyncContentTypesService.Import">
+        <member name="M:Umbraco9ContentApi.Core.Services.uSyncContentTypesService.ImportAsync">
             <inheritdoc />
         </member>
     </members>

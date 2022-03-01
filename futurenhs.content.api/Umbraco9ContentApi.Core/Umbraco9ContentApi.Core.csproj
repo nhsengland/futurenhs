@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>C:\Source\CDS NHS Futures\src\FutureNHSContentApi\Documentation\FutureNhsContentApi.xml</DocumentationFile>
+    <DocumentationFile>..\Documentation\FutureNhsContentApi.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
