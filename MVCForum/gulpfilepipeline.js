@@ -240,7 +240,6 @@ const scss = (done) => {
             },
         }))
         .pipe(sassLint.format())
-        .pipe(sassLint.failOnError())
         .pipe(sassThemes(`${uiAssetsSrcPath}/scss/theme-variables/**/*.scss`))
         .pipe(sass({
             outputStyle: 'compressed'
