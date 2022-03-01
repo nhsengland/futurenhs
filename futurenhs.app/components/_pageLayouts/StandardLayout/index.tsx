@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import Script from 'next/script';
 import { useRouter } from 'next/router';
 
 import { mediaQueries } from '@constants/css';
@@ -49,7 +50,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     const breadCrumbListToUse: BreadCrumbList = breadCrumbList ?? getBreadCrumbList({ pathElementList: currentRoutePathElements });
     const skipLinkList: Array<any> = [];
 
-    if(shouldRenderMainNav) {
+    if (shouldRenderMainNav) {
 
         skipLinkList.push({
             id: '#main-nav',

@@ -11,6 +11,7 @@ export interface Props {
         emailLabel: string;
     };    
     image?: Image;
+    children?: any;
     className?: string;
 }
 

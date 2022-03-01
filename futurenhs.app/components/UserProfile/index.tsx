@@ -10,6 +10,7 @@ export const UserProfile: (props: Props) => JSX.Element = ({
     member,
     text,
     image,
+    children,
     className
 }) => {
 
@@ -66,6 +67,7 @@ export const UserProfile: (props: Props) => JSX.Element = ({
                     </>
                 }
             </dl>
+            {children}
         </div>
 
     );

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import Head from 'next/head';
 
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
@@ -10,7 +11,8 @@ import { Props } from './interfaces';
 export const GenericContentTemplate: (props: Props) => JSX.Element = ({
     user,
     actions,
-    contentText
+    contentText,
+    className
 }) => {
 
     const isAuthenticated: boolean = Boolean(user);
@@ -18,6 +20,10 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
     const { metaDescription, 
             title, 
             mainHeading } = contentText ?? {};
+
+    const generatedClasses: any = {
+        wrapper: classNames('u-bg-theme-3', className)
+    }
 
     return (
 
@@ -27,7 +33,7 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
             shouldRenderMainNav={isAuthenticated}
             user={user}
             actions={actions}
-            className="u-bg-theme-3">
+            className={generatedClasses.wrapper}>
                 <Head>
                     <title>{title}</title>
                     <meta name="description" content={metaDescription} />
@@ -35,7 +41,7 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
                 <LayoutColumnContainer>
                     <LayoutColumn>
                         <PageBody>
-                            <h1>{mainHeading}</h1>
+                            <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
                         </PageBody>
                     </LayoutColumn>
                 </LayoutColumnContainer>

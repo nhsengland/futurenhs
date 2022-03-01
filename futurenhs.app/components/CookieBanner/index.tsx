@@ -1,16 +1,17 @@
 import Cookies from 'js-cookie';
+import classNames from 'classnames';
 import { useState, useEffect } from 'react';
+
 import { LayoutWidthContainer } from '@components/LayoutWidthContainer';
 import { RichText } from '@components/RichText';
-import classNames from 'classnames';
+import { cookiePreferences } from '@constants/cookies';
 
 import { Props } from './interfaces'
 
-
 export const CookieBanner: (props: Props) => JSX.Element = ({
-    cookieName = 'fnhs-cookie-preference',
-    cookieAcceptValue = 'accepted',
-    cookieRejectValue = 'rejected',
+    cookieName = cookiePreferences.COOKIE_NAME,
+    cookieAcceptValue = cookiePreferences.ACCEPTED,
+    cookieRejectValue = cookiePreferences.REJECTED,
     expiresInDays = 90,
     text = {
         title: 'Cookies on the NHS website',
@@ -47,6 +48,7 @@ export const CookieBanner: (props: Props) => JSX.Element = ({
 
         Cookies.set(cookieName, cookieAcceptValue, { expires: expiresInDays });
         setShouldRenderBanner(false);
+        window.location.reload();
 
     };
 
@@ -54,10 +56,12 @@ export const CookieBanner: (props: Props) => JSX.Element = ({
 
         Cookies.set(cookieName, cookieRejectValue, { expires: expiresInDays });
         setShouldRenderBanner(false);
+        window.location.reload();
 
     };
 
-    if (shouldRenderBanner) 
+    if (shouldRenderBanner) {
+
         return (
             <LayoutWidthContainer>
                 <div className={generatedClasses.wrapper}>
@@ -73,6 +77,7 @@ export const CookieBanner: (props: Props) => JSX.Element = ({
             </LayoutWidthContainer>
         )
     
+    }
 
     return null;
 

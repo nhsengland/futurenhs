@@ -9,6 +9,7 @@ import { User } from '@appTypes/user';
 
 export interface Page {
     id: string;
+    themeId?: string;
     actions?: Array<actions>;
     csrfToken?: string;
     forms?: Record<string, FormConfig>;
@@ -17,7 +18,7 @@ export interface Page {
     errors?: Array<Record<string>>;
     contentText?: GenericPageTextContent;
     user?: User;
-    themeId?: string;
+    className?: string;
 }
 
 export interface GroupPage extends Page {

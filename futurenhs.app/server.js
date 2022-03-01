@@ -21,11 +21,11 @@ const generateNonce = () => randomBytes(16).toString('base64');
 const generateCSP = (nonce) => {
 
     const csp = {
-        'default-src': isTest ? '*' : `'self' https://assets.nhs.uk https://dc.services.visualstudio.com/v2/track`,
+        'default-src': isTest ? '*' : `'self' https://assets.nhs.uk https://dc.services.visualstudio.com/v2/track https://www.google-analytics.com`,
         'img-src': `'self' data:`,
         'style-src': `'self' 'unsafe-inline'`,
         'script-src': `'self' 'nonce-${nonce}'`,
-        'script-src-elem': `'self' 'nonce-${nonce}'`,
+        'script-src-elem': `'self' 'nonce-${nonce}' https://www.googletagmanager.com`,
         'font-src': `'unsafe-inline' https://assets.nhs.uk`
     };
     

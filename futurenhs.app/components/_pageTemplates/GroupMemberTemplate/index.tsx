@@ -9,7 +9,9 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BackLink } from '@components/BackLink';
 import { UserProfile } from '@components/UserProfile';
-import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
+import { Form } from '@components/Form';
+import { ErrorSummary } from '@components/ErrorSummary';
+import { Accordion } from '@components/Accordion';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 
 import { Props } from './interfaces';  
@@ -44,25 +46,6 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
 
     const shouldRenderUpdateForm: boolean = actions.includes(actionsConstants.GROUPS_MEMBERS_EDIT);
 
-    const renderUserProfile = () => {
-        
-        return (
-        
-            <UserProfile
-                member={member}
-                text={{
-                    heading: secondaryHeading,
-                    firstNameLabel: firstNameLabel,
-                    lastNameLabel: lastNameLabel,
-                    pronounsLabel: pronounsLabel,
-                    emailLabel: emailLabel
-                }}
-                className="tablet:u-justify-center tablet:u-mt-16" />
-
-        )
-
-    };
-
     return (
 
         <GroupLayout 
@@ -81,28 +64,29 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                         }} />
                     <LayoutColumnContainer justify="centre">
                         <LayoutColumn tablet={11}>
-                            {shouldRenderUpdateForm
-                            
-                                ?   <FormWithErrorSummary 
-                                        csrfToken=""
-                                        formId=""
-                                        fields={fields}
-                                        errors={{}}
-                                        text={{
-                                            errorSummary: {
-                                                body: 'There was a problem'
-                                            },
-                                            form: {
-                                                submitButton: 'Save changes'
-                                            }
-                                        }}
-                                        submitAction={() => {}}>
-                                            {renderUserProfile()}
-                                    </FormWithErrorSummary>
-
-                                :   renderUserProfile()
-                                
-                            }  
+                            {shouldRenderUpdateForm &&
+                                <ErrorSummary />
+                            }
+                            <UserProfile
+                                member={member}
+                                text={{
+                                    heading: secondaryHeading,
+                                    firstNameLabel: firstNameLabel,
+                                    lastNameLabel: lastNameLabel,
+                                    pronounsLabel: pronounsLabel,
+                                    emailLabel: emailLabel
+                                }}
+                                className="tablet:u-justify-center tablet:u-mt-16" />  
+                            {shouldRenderUpdateForm &&
+                                <Form 
+                                    csrfToken=""
+                                    formId=""
+                                    fields={fields}
+                                    text={{
+                                        submitButton: 'Save changes'
+                                    }}
+                                    submitAction={() => {}} />
+                            } 
                         </LayoutColumn>
                     </LayoutColumnContainer>
                 </LayoutColumn>
