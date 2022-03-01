@@ -2,6 +2,7 @@ const { series, parallel } = require('gulp'),
     mvcforum = require('./MVCForum/gulpfile'),
     db = require('./futurenhs.data/gulpfile'),
     api = require('./futurenhs.api/gulpfile'),
+	contentApi = require('./futurenhs.content.api/gulpfile'),
     app = require('./futurenhs.app/gulpfile');
 
     
@@ -25,6 +26,8 @@ const deactivate = (done) => {
  */
 
  const activateApi = series(api.stopSite, api.msbuild, api.startSite);
+ 
+ const activateContentApi = series(contentApi.stopSite, contentApi.msbuild, contentApi.startSite);
 
 /**
  * DATABASE TASKS
@@ -62,15 +65,15 @@ const watchApp = (done) => {
  * PLATFORM TASKS
  */
 
-const activate = series(activateDb, activateMvcForum, activateApi, activateApp);
+const activate = series(activateDb, activateMvcForum, activateApi, activateContentApi, activateApp);
 
-const activateNoApp = series(activateDb, activateMvcForum, activateApi);
+const activateNoApp = series(activateDb, activateMvcForum, activateApi, activateContentApi);
 
 const activateNoApi = series(activateDb, activateMvcForum, activateApp);
 
 const activateAutomation = series(buildAutomationDb, activateMvcForum, activateApi, activateApp);
 
-const deactivate = series(mvcforum.stopSite, api.stopSite, app.stopSite);
+const deactivate = series(mvcforum.stopSite, api.stopSite, contentApi.stopSite, app.stopSite);
 
 module.exports = {
     activate,
@@ -78,6 +81,7 @@ module.exports = {
     activateNoApi,
     activateAutomation,
     activateApi,
+	activateContentApi,
     activateMvcForum,
     activateDb,
     buildAutomationDb,

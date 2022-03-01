@@ -1,0 +1,701 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Umbraco9ContentApi.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Umbraco9ContentApi.Core.Composers.FutureNhsServiceComposer">
+            <summary>
+            Registers custom services on startup. 
+            </summary>
+            <seealso cref="T:Umbraco.Cms.Core.Composing.IComposer" />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Composers.uSyncServiceComposer">
+            <summary>
+            Registers custom services on startup. 
+            </summary>
+            <seealso cref="T:Umbraco.Cms.Core.Composing.IComposer" />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Constants.uSync.uSyncDirectoryPaths">
+            <summary>
+            uSync directory paths.
+            </summary>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Controllers.BlockApiController">
+            <summary>
+            Block Api controller.
+            </summary>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler,Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.BlockApiController"/> class.
+            </summary>
+            <param name="futureNhsContentHandler">The future Nhs content handler.</param>
+            <param name="futureNhsBlockHandler">The future Nhs block handler.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.Get(System.Guid)">
+            <summary>
+            Gets the specified block.
+            </summary>
+            <param name="blockId">The content identifier.</param>
+            <returns>The specified block.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetAll">
+            <summary>
+            Gets all blocks.
+            </summary>
+            <returns>All blocks.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.Delete(System.Guid)">
+            <summary>
+            Deletes the specified block.
+            </summary>
+            <param name="blockId">The block identifier.</param>
+            <returns>The block identifier.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Controllers.ContentApiController">
+            <summary>
+            Content Api controller.
+            </summary>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.ContentApiController" /> class.
+            </summary>
+            <param name="futureNhsContentHandler">The future Nhs content handler.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Get(System.Guid)">
+            <summary>
+            Gets the specified content.
+            </summary>
+            <param name="contentId">The content identifier.</param>
+            <returns>The specified content.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetAll">
+            <summary>
+            Gets all content.
+            </summary>
+            <returns>All content.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Create(System.String,System.String,System.Boolean)">
+            <summary>
+            Creates the content.
+            </summary>
+            <param name="pageName">Name of the page.</param>
+            <param name="pageParentId">The page parent identifier.</param>
+            <param name="publish">if set to <c>true</c> [publish].</param>
+            <returns>Created page identifier.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Publish(System.Guid)">
+            <summary>
+            Publishes the specified content.
+            </summary>
+            <param name="contentId">The content identifier.</param>
+            <returns>The content identifier.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Update(System.Guid,Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest)">
+            <summary>
+            Updates the specified request.
+            </summary>                                                                                                                                                                                                                                                           
+            <param name="contentId">The content identifier.</param>
+            <param name="request">The update request.</param>
+            <returns>The content identifier.</returns>
+            <remarks></remarks>
+            <response code="200">Succees.</response>
+            <response code="400">Bad request.</response>
+            <response code="404">Not found.</response>
+            <response code="500">Error.</response>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.Delete(System.Guid)">
+            <summary>
+            Deletes the specified content.
+            </summary>
+            <param name="contentId">The content identifier.</param>
+            <returns>The content identifier.</returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Controllers.DefaultRenderController">
+            <summary>
+            Overrides the default homepage view to redirect to the swagger page.
+            </summary>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.DefaultRenderController.Index">
+            <summary>
+            Default route.
+            </summary>
+            <returns>A redirect to the swagger page.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.Base.FutureNhsBaseController.Get(System.Guid)">
+            <summary>
+            Gets the specified identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>The content.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.Base.FutureNhsBaseController.Delete(System.Guid)">
+            <summary>
+            Deletes the specified identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Delete operation result.</returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Controllers.SitemapApiController">
+            <summary>
+            Sitemap Api Controller.
+            </summary>
+            <seealso cref="T:Umbraco.Cms.Web.Common.Controllers.UmbracoApiController" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapApiController.Get(System.Guid)">
+            <summary>
+            Gets the specified page identifier.
+            </summary>
+            <param name="pageId">The page identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Controllers.TemplateApiController">
+            <summary>
+            Template Api controller.
+            </summary>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler,Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.TemplateApiController"/> class.
+            </summary>
+            <param name="futureNhsContentHandler">The future Nhs content handler.</param>
+            <param name="futureNhsTemplateHandler">The future Nhs template handler.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.Get(System.Guid)">
+            <summary>
+            Gets the specified template identifier.
+            </summary>
+            <param name="templateId">The template identifier.</param>
+            <returns>The specified template.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetAll">
+            <summary>
+            Gets all templates.
+            </summary>
+            <returns>All templates.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.Delete(System.Guid)">
+            <summary>
+            Deletes the specified template.
+            </summary>
+            <param name="templateId">The template identifier.</param>
+            <returns>The template identifier.</returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Controllers.uSyncApiController">
+            <summary>
+            uSync Api controller to access uSync handlers.
+            </summary>
+            <seealso cref="T:Umbraco.Cms.Web.Common.Controllers.UmbracoApiController" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.uSyncApiController.#ctor(Umbraco9ContentApi.Core.Handlers.uSync.Interface.IuSyncHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.uSyncApiController"/> class.
+            </summary>
+            <param name="uSyncHandler">The uSync handler.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.uSyncApiController.DoUSyncImport(System.Boolean)">
+            <summary>
+            Imports all usync items.
+            </summary>
+            <param name="import">if set to <c>true</c> [import].</param>
+            <remarks></remarks>
+            <response code="200">Succees! Import successful.</response>
+            <response code="500">Error. Import unsuccessful.</response>
+            <returns>True or false.</returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Converters.BlockPickerConverter">
+            <summary>
+            BlockPickerConverter generates content models for template blocks.
+            </summary>
+            <seealso cref="T:UmbracoContentApi.Core.Converters.IConverter" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.#ctor(System.Lazy{UmbracoContentApi.Core.Resolvers.IContentResolver})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Converters.BlockPickerConverter"/> class.
+            </summary>
+            <param name="contentResolver">The content resolver.</param>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.EditorAlias">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.Convert(System.Object,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler">
+            <summary>
+            The handler that handles block methods and calls the content service.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.#ctor(Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler"/> class.
+            </summary>
+            <param name="futureNhsContentService">The future NHS content service.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetAllBlocks">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler">
+            <summary>
+            The handler that handles content methods and calls the content service.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.#ctor(Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler" /> class.
+            </summary>
+            <param name="futureNhsContentService">The future NHS content service.</param>
+            <param name="config">The configuration.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.CreateContent(System.String,System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.UpdateContent(System.Guid,System.String,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.PublishContent(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetContent(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.DeleteContent(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetAllContent">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler">
+            <summary>
+            FutureNhsSitemapHandler to access FutureNhsSitemapService class.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.#ctor(Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService,Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsSiteMapService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler"/> class.
+            </summary>
+            <param name="futureNhsContentService">The future NHS content service.</param>
+            <param name="futureNhsSiteMapService">The future NHS site map service.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.GetGroupSitemapItems(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.PopulateGroupSiteMapItemViewModel(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
+            <summary>
+            Populates the group site map item view model.
+            </summary>
+            <param name="root">The root.</param>
+            <returns>SiteMapItemViewModel.</returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler">
+            <summary>
+            The handler that handles template methods and calls the content service.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.#ctor(Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler"/> class.
+            </summary>
+            <param name="futureNhsContentService">The future NHS content service.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetTemplate(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetAllTemplates">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler.GetAllBlocks">
+            <summary>
+            Gets all blocks.
+            </summary>
+            <returns>All blocks.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.CreateContent(System.String,System.String,System.Boolean)">
+            <summary>
+            Creates the content.
+            </summary>
+            <param name="pageName">Name of the page.</param>
+            <param name="pageParentId">The page parent identifier.</param>
+            <param name="publish">if set to <c>true</c> [publish].</param>
+            <returns>Created content.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.UpdateContent(System.Guid,System.String,System.String,System.String)">
+            <summary>
+            Updates the content of the page.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="title">The title.</param>
+            <param name="description">The description.</param>
+            <param name="pageContent">The content.</param>
+            <returns>True or false.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.PublishContent(System.Guid)">
+            <summary>
+            Publishes the content.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>True or false.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.DeleteContent(System.Guid)">
+            <summary>
+            Deletes the content.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>True or false.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetContent(System.Guid)">
+            <summary>
+            Gets the content.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Specified content.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetAllContent">
+            <summary>
+            Gets all content.
+            </summary>
+            <returns>All content.</returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler">
+            <summary>
+            FutureNhsSitemapHandler interface.
+            </summary>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler.GetGroupSitemapItems(System.Guid)">
+            <summary>
+            Gets the group site map items.
+            </summary>
+            <param name="pageId">The page identifier.</param>
+            <returns>Group sitemap items.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetTemplate(System.Guid)">
+            <summary>
+            Gets the template.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Specified template.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetAllTemplates">
+            <summary>
+            Gets all templates.
+            </summary>
+            <returns>All templates.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.Interface.IuSyncHandler.RunImport">
+            <summary>
+            Runs the import.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler">
+            <summary>
+            Handler for uSync services.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Handlers.uSync.Interface.IuSyncHandler" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler.#ctor(Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncContentService,Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncContentTypeService,Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncDataTypeService,Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncMediaTypeService,Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncMediaService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler"/> class.
+            </summary>
+            <param name="uSyncContentService">The u synchronize content service.</param>
+            <param name="uSyncContentTypeService">The u synchronize content type service.</param>
+            <param name="uSyncDataTypeService">The u synchronize data type service.</param>
+            <param name="uSyncMediaTypeService">The u synchronize media type service.</param>
+            <param name="uSyncMediaService">The u synchronize media service.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler.RunImport">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Models.GroupSitemapItemViewModel">
+            <summary>
+            The SiteMapItemViewModel for front end website tree.
+            </summary>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest">
+            <summary>
+            The request used to update the content for a web page.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest.Title">
+            <summary>
+            Gets or sets the title.
+            </summary>
+            <value>
+            The title.
+            </value>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+            <value>
+            The description.
+            </value>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest.PageContent">
+            <summary>
+            Gets or sets the content.
+            </summary>
+            <value>
+            The content.
+            </value>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.#ctor(Umbraco.Cms.Core.IPublishedContentQuery,System.Lazy{UmbracoContentApi.Core.Resolvers.IContentResolver},Umbraco.Cms.Core.Services.IContentService)">
+            <summary>Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService" /> class.</summary>
+            <param name="publishedContent">Content of the published.</param>
+            <param name="contentResolver">The content resolver.</param>
+            <param name="contentService">The content service.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublishedChildren(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublished(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Get(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Resolve(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Create(System.Guid,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Delete(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Publish(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetTemplateBlocks(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.Save(Umbraco.Cms.Core.Models.IContent)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveAndPublish(Umbraco.Cms.Core.Models.IContent)">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService">
+            <summary>
+            Exposes and extends the Umbraco API.
+            </summary>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedChildren(System.Guid)">
+            <summary>
+            Gets the published children.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Published contents children.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublished(System.Guid)">
+            <summary>
+            Gets the content.
+            </summary>
+            <param name="id">The unique identifier.</param>
+            <returns>Published content.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Get(System.Guid)">
+            <summary>
+            Gets the content.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Resolve(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
+            <summary>
+            Resolves the content.
+            </summary>
+            <param name="content">The content.</param>
+            <returns>Content model.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Create(System.Guid,System.String,System.String)">
+            <summary>
+            Creates the content.
+            </summary>
+            <param name="parentContentId">The parent content identifier.</param>
+            <param name="contentName">Name of the content.</param>
+            <param name="documentTypeAlias">The document type alias.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Delete(System.Guid)">
+            <summary>
+            Deletes the content.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Operation result.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Publish(System.Guid)">
+            <summary>
+            Publishes the content.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>PPublish result.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetTemplateBlocks(System.Guid)">
+            <summary>
+            Gets the  specified template's blocks.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Blocks for specified template.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.Save(Umbraco.Cms.Core.Models.IContent)">
+            <summary>
+            Saves the content.
+            </summary>
+            <param name="content">The content.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveAndPublish(Umbraco.Cms.Core.Models.IContent)">
+            <summary>
+            Saves the content and publish.
+            </summary>
+            <param name="content">The content.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncBaseService.Import">
+            <summary>
+            Initiate import.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Services.uSync.uSyncContentService">
+            <summary>
+            uSyncContentService.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncBaseService" />
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncContentService" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncContentService.#ctor(Microsoft.Extensions.Logging.ILogger{uSync.BackOffice.SyncHandlers.Handlers.ContentHandler},Umbraco.Cms.Core.Services.IContentService,Umbraco.Cms.Core.Cache.AppCaches,Umbraco.Cms.Core.Services.IEntityService,Umbraco.Cms.Core.Strings.IShortStringHelper,uSync.BackOffice.Services.SyncFileService,uSync.BackOffice.Services.uSyncEventService,uSync.BackOffice.Configuration.uSyncConfigService,uSync.Core.ISyncItemFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncContentService"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+            <param name="contentService">The content service.</param>
+            <param name="appCaches">The application caches.</param>
+            <param name="entityService">The entity service.</param>
+            <param name="shortStringHelper">The short string helper.</param>
+            <param name="uSyncFileService">The u synchronize file service.</param>
+            <param name="uSyncEventService">The u synchronize event service.</param>
+            <param name="uSyncConfigService">The u synchronize configuration service.</param>
+            <param name="syncItemFactory">The synchronize item factory.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncContentService.Import">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Services.uSync.uSyncDataTypeService">
+            <summary>
+            uSyncDataTypeService.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncBaseService" />
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncDataTypeService" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncDataTypeService.#ctor(Microsoft.Extensions.Logging.ILogger{uSync.BackOffice.SyncHandlers.Handlers.DataTypeHandler},Umbraco.Cms.Core.Services.IDataTypeService,Umbraco.Cms.Core.Cache.AppCaches,Umbraco.Cms.Core.Services.IEntityService,Umbraco.Cms.Core.Strings.IShortStringHelper,uSync.BackOffice.Services.SyncFileService,uSync.BackOffice.Services.uSyncEventService,uSync.BackOffice.Configuration.uSyncConfigService,uSync.Core.ISyncItemFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncDataTypeService"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+            <param name="dataTypeService">The data type service.</param>
+            <param name="appCaches">The application caches.</param>
+            <param name="entityService">The entity service.</param>
+            <param name="shortStringHelper">The short string helper.</param>
+            <param name="uSyncFileService">The u synchronize file service.</param>
+            <param name="uSyncEventService">The u synchronize event service.</param>
+            <param name="uSyncConfigService">The u synchronize configuration service.</param>
+            <param name="syncItemFactory">The synchronize item factory.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncDataTypeService.Import">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaService">
+            <summary>
+            uSyncMediaService.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncBaseService" />
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncMediaService" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaService.#ctor(Microsoft.Extensions.Logging.ILogger{uSync.BackOffice.SyncHandlers.Handlers.MediaHandler},Umbraco.Cms.Core.Services.IMediaService,Umbraco.Cms.Core.Cache.AppCaches,Umbraco.Cms.Core.Services.IEntityService,Umbraco.Cms.Core.Strings.IShortStringHelper,uSync.BackOffice.Services.SyncFileService,uSync.BackOffice.Services.uSyncEventService,uSync.BackOffice.Configuration.uSyncConfigService,uSync.Core.ISyncItemFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaService"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+            <param name="mediaService">The media service.</param>
+            <param name="appCaches">The application caches.</param>
+            <param name="entityService">The entity service.</param>
+            <param name="shortStringHelper">The short string helper.</param>
+            <param name="uSyncFileService">The u synchronize file service.</param>
+            <param name="uSyncEventService">The u synchronize event service.</param>
+            <param name="uSyncConfigService">The u synchronize configuration service.</param>
+            <param name="syncItemFactory">The synchronize item factory.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaService.Import">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaTypeService">
+            <summary>
+            uSyncMediaTypeService.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncBaseService" />
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncMediaTypeService" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaTypeService.#ctor(Microsoft.Extensions.Logging.ILogger{uSync.BackOffice.SyncHandlers.Handlers.MediaTypeHandler},Umbraco.Cms.Core.Services.IMediaTypeService,Umbraco.Cms.Core.Cache.AppCaches,Umbraco.Cms.Core.Services.IEntityService,Umbraco.Cms.Core.Strings.IShortStringHelper,uSync.BackOffice.Services.SyncFileService,uSync.BackOffice.Services.uSyncEventService,uSync.BackOffice.Configuration.uSyncConfigService,uSync.Core.ISyncItemFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaTypeService"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+            <param name="mediaTypeService">The media type service.</param>
+            <param name="appCaches">The application caches.</param>
+            <param name="entityService">The entity service.</param>
+            <param name="shortStringHelper">The short string helper.</param>
+            <param name="uSyncFileService">The u synchronize file service.</param>
+            <param name="uSyncEventService">The u synchronize event service.</param>
+            <param name="uSyncConfigService">The u synchronize configuration service.</param>
+            <param name="syncItemFactory">The synchronize item factory.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSync.uSyncMediaTypeService.Import">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Services.uSyncContentTypesService">
+            <summary>
+            uSyncContentTypeService.
+            </summary>
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.uSyncBaseService" />
+            <seealso cref="T:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncContentTypeService" />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSyncContentTypesService.#ctor(Microsoft.Extensions.Logging.ILogger{uSync.BackOffice.SyncHandlers.Handlers.ContentTypeHandler},Umbraco.Cms.Core.Services.IContentTypeService,Umbraco.Cms.Core.Cache.AppCaches,Umbraco.Cms.Core.Services.IEntityService,Umbraco.Cms.Core.Strings.IShortStringHelper,uSync.BackOffice.Services.SyncFileService,uSync.BackOffice.Services.uSyncEventService,uSync.BackOffice.Configuration.uSyncConfigService,uSync.Core.ISyncItemFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Services.uSyncContentTypesService"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+            <param name="contentTypeService">The content type service.</param>
+            <param name="appCaches">The application caches.</param>
+            <param name="entityService">The entity service.</param>
+            <param name="shortStringHelper">The short string helper.</param>
+            <param name="uSyncFileService">The u synchronize file service.</param>
+            <param name="uSyncEventService">The u synchronize event service.</param>
+            <param name="uSyncConfigService">The u synchronize configuration service.</param>
+            <param name="syncItemFactory">The synchronize item factory.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.uSyncContentTypesService.Import">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
