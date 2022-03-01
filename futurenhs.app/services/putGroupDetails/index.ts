@@ -35,6 +35,7 @@ export const putGroupDetails = async ({
         customHeaders: {
             'csrf-token': csrfToken
         },
+        isMultiPartForm: true,
         body: body
     }), 30000);
     

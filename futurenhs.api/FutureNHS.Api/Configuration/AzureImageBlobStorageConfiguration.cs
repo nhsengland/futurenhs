@@ -2,8 +2,8 @@
 {    
     public sealed class AzureImageBlobStorageConfiguration
     {
-        public string PrimaryServiceUrl { get; init; }
-        public string GeoRedundantServiceUrl { get; init; }
+        public Uri? PrimaryServiceUrl { get; init; }
+        public Uri? GeoRedundantServiceUrl { get; init; }
         public string ContainerName { get; init; }
     }
 }

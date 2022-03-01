@@ -1,7 +1,7 @@
-﻿using FutureNHS.Api.DataAccess.Repositories.Read;
-using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Repositories.Write;
-using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
+﻿using FutureNHS.Api.DataAccess.Database.Read;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Write;
+using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 
 namespace FutureNHS.Api.DataAccess
 {

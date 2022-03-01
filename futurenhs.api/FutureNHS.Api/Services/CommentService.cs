@@ -1,6 +1,5 @@
-﻿using FutureNHS.Api.DataAccess.DTOs;
-using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
+﻿using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
+using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Comment;
 using FutureNHS.Api.Services.Interfaces;
@@ -16,12 +15,12 @@ namespace FutureNHS.Api.Services
         private const string EditCommentRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/edit";
 
 
-        private readonly ILogger<DiscussionService> _logger;
+        private readonly ILogger<CommentService> _logger;
         private readonly ICommentCommand _commentCommand;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
 
-        public CommentService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, 
+        public CommentService(ISystemClock systemClock, ILogger<CommentService> logger, IPermissionsService permissionsService, 
             ICommentCommand commentCommand)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));

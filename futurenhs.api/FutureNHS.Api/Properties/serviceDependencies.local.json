@@ -4,15 +4,7 @@
       "type": "secrets.user"
     },
     "appInsights1": {
-      "secretStore": "LocalSecretsFile",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/microsoft.insights/components/AppInsights",
-      "type": "appInsights.azure",
-      "connectionId": "APPINSIGHTS_CONNECTIONSTRING"
-    },
-    "storage1": {
-      "secretStore": null,
-      "type": "storage.emulator",
-      "connectionId": "AzureImageBlobStorage"
+      "type": "appInsights.sdk"
     }
   }
 }

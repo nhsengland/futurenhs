@@ -3,19 +3,26 @@ using Azure.Identity;
 using FutureNHS.Api.Authorization;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess;
-using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders;
-using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Providers;
+using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Providers.RetryPolicy;
+using FutureNHS.Api.DataAccess.Storage.Providers;
+using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
+using FutureNHS.Api.Helpers;
+using FutureNHS.Api.Helpers.Interfaces;
 using FutureNHS.Api.Middleware;
 using FutureNHS.Api.Services;
-using FutureNHS.Infrastructure.Repositories.Database.RetryPolicy;
 using Ganss.XSS;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
-using Microsoft.Extensions.Internal;
+//using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSwaggerGen();
@@ -122,11 +129,15 @@ if (!string.IsNullOrWhiteSpace(appInsightsInstrumentationKey))
     builder.Services.AddApplicationInsightsTelemetry(appInsightsInstrumentationKey);
 
     builder.Services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>(
-        (module, o) => {
+        (module, o) =>
+        {
             module.EnableSqlCommandTextInstrumentation = true;
         });
 }
-else builder.Services.AddLogging();
+
+builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme);
+
+builder.Services.AddLogging();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -135,13 +146,16 @@ if (useAppConfig)
     builder.Services.AddAzureAppConfiguration();
 }
 
+builder.Services.AddMemoryCache();
+
 builder.Services.Configure<Features>(settings.GetSection("FeatureManagement"), binderOptions => binderOptions.BindNonPublicProperties = true);
 builder.Services.Configure<AzurePlatformConfiguration>(settings.GetSection("AzurePlatform"));
 builder.Services.Configure<SharedSecrets>(settings.GetSection("SharedSecrets"));
 builder.Services.Configure<AzureImageBlobStorageConfiguration>(settings.GetSection("AzurePlatform:AzureImageBlobStorage"));
-
+builder.Services.Configure<AzureFileBlobStorageConfiguration>(settings.GetSection("AzurePlatform:AzureFileBlobStorage"));
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
+builder.Services.AddScoped<IFileTypeValidator, FileTypeValidator>();
 builder.Services.AddScoped<IAzureSqlDbConnectionFactory>(
     sp => {
         var config = sp.GetRequiredService<IOptionsSnapshot<AzurePlatformConfiguration>>().Value.AzureSql;
@@ -153,6 +167,32 @@ builder.Services.AddScoped<IAzureSqlDbConnectionFactory>(
         var logger = sp.GetRequiredService<ILogger<AzureSqlDbConnectionFactory>>();
 
         return new AzureSqlDbConnectionFactory(config.ReadWriteConnectionString, config.ReadOnlyConnectionString, sp.GetRequiredService<IDbRetryPolicy>(), logger);
+    });
+
+builder.Services.AddScoped<IFileBlobStorageProvider>(
+    sp => {
+        var config = sp.GetRequiredService<IOptionsSnapshot<AzureFileBlobStorageConfiguration>>().Value;
+
+        if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
+        if (config.PrimaryServiceUrl is null) throw new ApplicationException("The azure read write connection string is missing from the files configuration section");
+        if (config.GeoRedundantServiceUrl is null) throw new ApplicationException("The azure read only connection string is missing from the files configuration section");
+
+        var logger = sp.GetRequiredService<ILogger<BlobStorageProvider>>();
+
+        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(),config.PrimaryServiceUrl, config.GeoRedundantServiceUrl, logger, sp.GetRequiredService<IMemoryCache>());
+    });
+
+builder.Services.AddScoped<IImageBlobStorageProvider>(
+    sp => {
+        var config = sp.GetRequiredService<IOptionsSnapshot<AzureImageBlobStorageConfiguration>>().Value;
+
+        if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
+        if (config.PrimaryServiceUrl is null) throw new ApplicationException("The azure read write connection string is missing from the files configuration section");
+        if (config.GeoRedundantServiceUrl is null) throw new ApplicationException("The azure read only connection string is missing from the files configuration section");
+
+        var logger = sp.GetRequiredService<ILogger<BlobStorageProvider>>();
+
+        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(),config.PrimaryServiceUrl, config.GeoRedundantServiceUrl, logger, sp.GetRequiredService<IMemoryCache>());
     });
 
 builder.Services.AddSwaggerGen();
@@ -174,30 +214,30 @@ builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
 // It requires Realm to be set in the options if SuppressWWWAuthenticateHeader is not set.
 // If an implementation of IApiKeyProvider interface is used as well as options.Events.OnValidateKey delegate is also set then this delegate will be used first.
 
-builder.Services.AddScoped<IApiKeyRepository>(
-    sp => {
-        var config = sp.GetRequiredService<IOptionsSnapshot<SharedSecrets>>().Value;
+//builder.Services.AddScoped<IApiKeyRepository>(
+//    sp => {
+//        var config = sp.GetRequiredService<IOptionsSnapshot<SharedSecrets>>().Value;
 
-        if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
-        if (string.IsNullOrWhiteSpace(config.WebApplication)) throw new ApplicationException("The Web Application Key is missing from the Shared secrets configuration section");
-        if (string.IsNullOrWhiteSpace(config.Owner)) throw new ApplicationException("The Owner is missing from the Shared secrets configuration section");
+//        if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
+//        if (string.IsNullOrWhiteSpace(config.WebApplication)) throw new ApplicationException("The Web Application Key is missing from the Shared secrets configuration section");
+//        if (string.IsNullOrWhiteSpace(config.Owner)) throw new ApplicationException("The Owner is missing from the Shared secrets configuration section");
 
-        var logger = sp.GetRequiredService<ILogger<IApiKeyRepository>>();
+//        var logger = sp.GetRequiredService<ILogger<IApiKeyRepository>>();
 
-        return new ApiKeyRepository(config.WebApplication, config.Owner, logger);
-    });
+//        return new ApiKeyRepository(config.WebApplication, config.Owner, logger);
+//    });
 
-builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
+
 
     // The below AddApiKeyInHeaderOrQueryParams without type parameter will require options.Events.OnValidateKey delegete to be set.
     //.AddApiKeyInHeaderOrQueryParams(options =>
 
-    // The below AddApiKeyInHeaderOrQueryParams with type parameter will add the ApiKeyProvider to the dependency container. 
-    .AddApiKeyInAuthorizationHeader<ApiKeyProvider>(options =>
-    {
-        options.Realm = "FutureNHS";
-        options.KeyName = "Bearer";
-    });
+// The below AddApiKeyInHeaderOrQueryParams with type parameter will add the ApiKeyProvider to the dependency container. 
+//.AddApiKeyInAuthorizationHeader<ApiKeyProvider>(options =>
+//{
+//    options.Realm = "FutureNHS";
+//    options.KeyName = "Bearer";
+//});
 builder.Services.AddAzureClients(clientBuilder =>
 {
     clientBuilder.AddBlobServiceClient(builder.Configuration["AzureImageBlobStorage:blob"], preferMsi: true);

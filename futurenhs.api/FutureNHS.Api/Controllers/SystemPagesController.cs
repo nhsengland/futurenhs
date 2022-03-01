@@ -1,5 +1,5 @@
 ﻿using FutureNHS.Api.Attributes;
-using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers

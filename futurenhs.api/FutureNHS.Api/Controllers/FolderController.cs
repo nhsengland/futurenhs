@@ -1,4 +1,4 @@
-using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Models.Discussion;
 using FutureNHS.Api.Models.Folder;
 using FutureNHS.Api.Models.Pagination.Filter;

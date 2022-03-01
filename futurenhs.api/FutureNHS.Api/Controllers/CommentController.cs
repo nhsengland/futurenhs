@@ -1,8 +1,6 @@
 using FutureNHS.Api.Attributes;
-using FutureNHS.Api.DataAccess.DTOs;
-using FutureNHS.Api.DataAccess.Models.Comment;
-using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;

@@ -1,13 +1,13 @@
-﻿using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders;
-using FutureNHS.Api.DataAccess.Repositories.Database.DatabaseProviders.Interfaces;
-using FutureNHS.Infrastructure.Repositories.Database.RetryPolicy;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FutureNHS.Api.DataAccess.Database.Providers;
+using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Providers.RetryPolicy;
+using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FutureNHS_WOPI_Host_UnitTests.PlatformHelpers
+namespace FutureNHS.Tests
 {
     [TestClass]
     public sealed class AzureSqlDbConnectionFactoryTests

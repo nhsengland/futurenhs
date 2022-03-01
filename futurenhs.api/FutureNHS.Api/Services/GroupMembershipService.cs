@@ -1,5 +1,5 @@
-﻿using FutureNHS.Api.DataAccess.DTOs;
-using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
+﻿using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
+using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 

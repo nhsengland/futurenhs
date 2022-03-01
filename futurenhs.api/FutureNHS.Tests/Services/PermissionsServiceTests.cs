@@ -1,6 +1,6 @@
-﻿using FutureNHS.Api.DataAccess.Models.Permissions;
-using FutureNHS.Api.DataAccess.Repositories.Read;
-using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+﻿using FutureNHS.Api.DataAccess.Database.Read;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Models.Permissions;
 using FutureNHS.Api.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,7 +8,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 

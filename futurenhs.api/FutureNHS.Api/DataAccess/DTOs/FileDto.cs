@@ -2,20 +2,20 @@
 {
     public sealed record FileDto
     {
-        public string Title { get; init; }
-        public string Description { get; init; }
-        public string FileName { get; init; }
-        public int FileSizeBytes { get; init; }
-        public string FileExtension { get; init; }
-        public string BlobName { get; init; }
-        public Guid CreatedBy { get; init; }
-        public DateTime CreatedAtUTC { get; init; }
-        public Guid? ModifiedBy { get; init; }
-        public DateTime? ModifiedAtUTC { get; init; }
-        public Guid? ParentFolder { get; init; }
-        public Guid FileStatus { get; init; }
-        public byte[] BlobHash { get; init; }
-        public bool IsDeleted { get; init; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string FileName { get; set; }
+        public long FileSizeBytes { get; set; }
+        public string FileExtension { get; set; }
+        public string BlobName { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime CreatedAtUTC { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedAtUTC { get; set; }
+        public Guid? ParentFolder { get; set; }
+        public Guid FileStatus { get; set; }
+        public byte[] BlobHash { get; set; }
+        public bool IsDeleted { get; set; }
         public byte[] RowVersion { get; set; }
     }
 }

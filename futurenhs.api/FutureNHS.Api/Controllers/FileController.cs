@@ -1,4 +1,7 @@
-using FutureNHS.Api.DataAccess.Repositories.Read.Interfaces;
+using System.Net;
+using FutureNHS.Api.Attributes;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -32,21 +35,36 @@ namespace FutureNHS.Api.Controllers
             var file = await _fileAndFolderDataProvider.GetFileAsync(id, cancellationToken);
 
             if (file is null)
-            { 
+            {
                 return NotFound();
             }
 
             return Ok(file);
         }
 
+        //[HttpPost]
+        //[Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/files")]
+
+        //public async Task<IActionResult> CreateFileAsync(Guid userId, string slug, Guid folderId, FutureNHS.Api.Models.File.File file, CancellationToken cancellationToken)
+        //{
+        //    await _fileService.CreateFileAsync(userId, slug, folderId, file, cancellationToken);
+
+        //    return Ok(file);
+        //}
+
         [HttpPost]
+        [DisableFormValueModelBinding]
         [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/files")]
-
-        public async Task<IActionResult> CreateFileAsync(Guid userId,string slug, Guid folderId, FutureNHS.Api.Models.File.File file, CancellationToken cancellationToken)
+        public async Task<IActionResult> UploadDocumentStream(Guid userId, string slug, Guid folderId, CancellationToken cancellationToken)
         {
-            await _fileService.CreateFileAsync(userId,slug, folderId, file, cancellationToken);
+            if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+            {
+                return BadRequest("The data submitted is not in the multiform format");
+            }
 
-            return Ok(file);
+            await _fileService.UploadFileMultipartDocument(userId,slug,folderId,HttpContext.Request.Body, HttpContext.Request.ContentType, cancellationToken);
+            
+            return Ok();
         }
     }
 }

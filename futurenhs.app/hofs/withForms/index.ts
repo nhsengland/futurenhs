@@ -15,22 +15,34 @@ export const withForms = (config: HofConfig, dependencies?: {}): GetServerSidePr
 
         const clonedFormConfigs: Record<string, FormConfig> = {};
 
-        /**
-         * Ensure the imports are not inadvertently mutated later
-         */
-        Object.keys(formConfigs).forEach((key) => {
+        console.log(clonedFormConfigs);
 
-            clonedFormConfigs[key] = {
-                id: formConfigs[key].id,
-                steps: formConfigs[key].steps
-            };
+        try {
 
-        });
+            /**
+             * Ensure the imports are not inadvertently mutated later
+             */
+            Object.keys(formConfigs).forEach((key) => {
 
-        props.csrfToken = csrfToken;
-        props.forms = clonedFormConfigs;
+                console.log(key, formConfigs[key]);
 
-        return await getServerSideProps(context);
+                clonedFormConfigs[key] = {
+                    id: formConfigs[key]?.id,
+                    steps: formConfigs[key]?.steps
+                };
+
+            });
+
+            props.csrfToken = csrfToken;
+            props.forms = clonedFormConfigs;
+
+            return await getServerSideProps(context);
+
+        } catch(error){
+
+            console.log(error);
+
+        }
 
     }
 
