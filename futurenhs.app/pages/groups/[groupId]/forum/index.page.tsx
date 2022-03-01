@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { layoutIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withConfig } from '@hofs/withConfig';
@@ -43,6 +44,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         pageNumber: selectPagination(context).pageNumber ?? 1,
                         pageSize: selectPagination(context).pageSize ?? 5
                     };
+
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = 'forum';
                 
                     /**
                      * Get data from services

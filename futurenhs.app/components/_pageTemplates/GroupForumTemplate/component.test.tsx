@@ -17,10 +17,15 @@ describe('Group forum template', () => {
 
     const props: Props = {
         id: 'mockId',
+        tabId: 'files',
         user: undefined,
         actions: [],
         discussionsList: [],
-        contentText: null,
+        contentText: {
+            discussionsHeading: 'Discussions',
+            noDiscussions: 'No discussions',
+            createDiscussion: 'Create discussion'
+        },
         entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
@@ -36,7 +41,7 @@ describe('Group forum template', () => {
 
         render(<GroupForumTemplate {...props} />);
 
-        expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
+        expect(screen.getAllByText('Discussions').length).toEqual(1);
 
     });
     

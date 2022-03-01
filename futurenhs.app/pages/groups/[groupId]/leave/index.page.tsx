@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { routes } from '@constants/routes';
 import { routeParams } from '@constants/routes';
+import { layoutIds } from '@constants/routes';
 import { selectParam } from '@selectors/context';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
@@ -25,6 +26,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: async (context: GetServerSidePropsContext) => {
 
             const groupId: string = selectParam(context, routeParams.GROUPID);
+
+            props.layoutId = layoutIds.GROUP;
+            props.tabId = 'index';
 
             /**
              * Get data from services

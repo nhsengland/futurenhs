@@ -23,6 +23,7 @@ import { useMediaQuery } from '@hooks/useMediaQuery';
 import { Props } from './interfaces';
 
 export const StandardLayout: (props: Props) => JSX.Element = ({
+    routeId,
     shouldRenderSearch = true,
     shouldRenderUserNavigation = true,
     shouldRenderPhaseBanner = true,
@@ -50,7 +51,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     const breadCrumbListToUse: BreadCrumbList = breadCrumbList ?? getBreadCrumbList({ pathElementList: currentRoutePathElements });
     const skipLinkList: Array<any> = [];
 
-    if (shouldRenderMainNav) {
+    if (shouldRenderMainNav && user) {
 
         skipLinkList.push({
             id: '#main-nav',
@@ -65,14 +66,17 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     });
 
     const generatedClasses: any = {
-        wrapper: classNames('u-flex-grow', className),
+        wrapper: classNames('u-flex-grow', {
+            ['u-bg-theme-3']: user,
+            ['u-bg-theme-1']: !user
+        }, className),
         breadCrumb: classNames('u-bg-theme-1'),
         main: classNames('u-flex u-flex-grow'),
         content: classNames({
-            ['u-m-0']: shouldRenderMainNav && isMobile,
-            ['u-max-w-full']: shouldRenderMainNav && isMobile,
-            ['u-w-0']: shouldRenderMainNav,
-            ['u-w-full']: !shouldRenderMainNav
+            ['u-m-0']: shouldRenderMainNav && user && isMobile,
+            ['u-max-w-full']: shouldRenderMainNav && user && isMobile,
+            ['u-w-0']: shouldRenderMainNav && user,
+            ['u-w-full']: !shouldRenderMainNav && user
         })
     };
 
@@ -141,7 +145,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 <div className="u-overflow-hidden u-flex u-h-full">
                     <LayoutWidthContainer className={generatedClasses.main}>
                         <ErrorBoundary boundaryId="main-content">
-                            {shouldRenderMainNav &&
+                            {(shouldRenderMainNav && user) &&
                                 <>
                                     <LayoutColumn hasGutters={false} mobile={0}>
                                         <MainNav navMenuList={mainNavMenuList} />
@@ -151,7 +155,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                     </LayoutColumn>
                                 </>
                             }
-                            {!shouldRenderMainNav &&
+                            {(!shouldRenderMainNav || !user) &&
                                 <div className={generatedClasses.content}>
                                     {children}
                                 </div>

@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
+import { layoutIds } from '@constants/routes';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
 import { withUser } from '@hofs/withUser';
@@ -47,6 +48,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const body: any = selectBody(context);
 
                     props.discussionId = discussionId;
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = 'forum';
 
                     if(body){
         

@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { layoutIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { selectUser, selectParam } from '@selectors/context';
 import { withUser } from '@hofs/withUser';
@@ -24,7 +25,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withGroup({
         props,
-        routeId,
         getServerSideProps: withTextContent({
             props,
             routeId,
@@ -35,6 +35,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 const fileId: string = selectParam(context, routeParams.FILEID);
 
                 props.fileId = fileId;
+                props.layoutId = layoutIds.GROUP;
+                props.tabId = 'files';
 
                 /**
                  * Get data from services

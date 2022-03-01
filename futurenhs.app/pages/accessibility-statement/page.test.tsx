@@ -2,10 +2,12 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import Page, { getServerSideProps } from './index.page';
+import { layoutIds } from '@constants/routes';
 import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfaces';
 
 const props: Props = {
     id: 'mockId',
+    layoutId: layoutIds.BASE,
     user: undefined,
     contentText: {
         title: 'mockTitle',

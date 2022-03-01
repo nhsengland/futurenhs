@@ -2,8 +2,6 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
-import { capitalise } from '@helpers/formatters/capitalise';
-import { dateTime } from '@helpers/formatters/dateTime';
 import { actions as actionConstants } from '@constants/actions';
 import { SVGIcon } from '@components/SVGIcon';
 import { Link } from '@components/Link';
@@ -22,7 +20,6 @@ import { Props } from './interfaces';
  */
 export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
     contentText,
-    user,
     actions,
     pagination,
     groupsList
@@ -141,11 +138,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <AdminLayout
-            user={user}
-            actions={actions}
-            contentText={contentText}
-            className="u-bg-theme-3">
+        <>
             <LayoutColumnContainer className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
                 <LayoutColumn tablet={8} className="c-page-body">
                     <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
@@ -182,7 +175,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
                     </LayoutColumn>
                 }
             </LayoutColumnContainer>
-        </AdminLayout>
+        </>
 
     )
 

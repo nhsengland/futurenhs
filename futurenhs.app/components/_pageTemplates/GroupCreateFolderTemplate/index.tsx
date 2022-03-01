@@ -19,15 +19,11 @@ import { Props } from './interfaces';
  */
 export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     groupId,
-    themeId,
     csrfToken,
     forms,
     user,
-    actions,
     folder,
-    contentText,
-    entityText,
-    image
+    contentText
 }) => {
 
     const router = useRouter();
@@ -60,7 +56,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
 
             router.push(folderHref);
 
-        } catch(error){
+        } catch (error) {
 
             setErrors({
                 [error.data.status]: error.data.statusText
@@ -72,49 +68,42 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <GroupLayout 
-            tabId="files"
-            themeId={themeId}
-            user={user}
-            actions={actions}
-            text={entityText}
-            image={image} 
-            className="u-bg-theme-3">            
-                <LayoutColumn className="c-page-body">
-                    <LayoutColumnContainer>
-                        <LayoutColumn tablet={8}>
-                            <FormWithErrorSummary
-                                csrfToken={csrfToken}
-                                formId={formTypes.CREATE_FOLDER}
-                                fields={fields}
-                                errors={errors}
-                                initialValues={initialValues}
-                                text={{
-                                    errorSummary: {
-                                        body: 'There is a problem'
-                                    },
-                                    form: {
-                                        submitButton: 'Save and continue',
-                                        cancelButton: 'Cancel'
-                                    }
-                                }} 
-                                submitAction={handleSubmit}
-                                cancelHref={folderHref}
-                                bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1"
-                                submitButtonClassName="u-float-right">
-                                    {name &&
-                                        <>
-                                            <h2 className="nhsuk-heading-l o-truncated-text-lines-3">{name}</h2>
-                                            <hr />
-                                        </>
-                                    }
-                                    {name ? <h3 className="nhsuk-heading-m">Add Folder</h3> : <h2 className="nhsuk-heading-l">Add Folder</h2>}
-                                    <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
-                            </FormWithErrorSummary>
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-                </LayoutColumn>
-        </GroupLayout>
+        <>
+            <LayoutColumn className="c-page-body">
+                <LayoutColumnContainer>
+                    <LayoutColumn tablet={8}>
+                        <FormWithErrorSummary
+                            csrfToken={csrfToken}
+                            formId={formTypes.CREATE_FOLDER}
+                            fields={fields}
+                            errors={errors}
+                            initialValues={initialValues}
+                            text={{
+                                errorSummary: {
+                                    body: 'There is a problem'
+                                },
+                                form: {
+                                    submitButton: 'Save and continue',
+                                    cancelButton: 'Cancel'
+                                }
+                            }}
+                            submitAction={handleSubmit}
+                            cancelHref={folderHref}
+                            bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1"
+                            submitButtonClassName="u-float-right">
+                            {name &&
+                                <>
+                                    <h2 className="nhsuk-heading-l o-truncated-text-lines-3">{name}</h2>
+                                    <hr />
+                                </>
+                            }
+                            {name ? <h3 className="nhsuk-heading-m">Add Folder</h3> : <h2 className="nhsuk-heading-l">Add Folder</h2>}
+                            <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
+                        </FormWithErrorSummary>
+                    </LayoutColumn>
+                </LayoutColumnContainer>
+            </LayoutColumn>
+        </>
 
     )
 

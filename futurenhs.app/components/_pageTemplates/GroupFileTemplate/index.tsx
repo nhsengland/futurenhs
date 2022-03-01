@@ -21,14 +21,9 @@ import { Props } from './interfaces';
  * Group file detail template
  */
 export const GroupFileTemplate: (props: Props) => JSX.Element = ({
-    user,
-    actions,
     fileId,
     file,
-    contentText,
-    entityText,
-    themeId,
-    image
+    contentText
 }) => {
 
     const router = useRouter();
@@ -45,7 +40,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
         shouldIncludeParam: true
     });
 
-    if(path?.length > 0){
+    if (path?.length > 0) {
 
         breadCrumbList.push({
             element: `${groupBasePath}/folders`,
@@ -54,15 +49,15 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
 
         path?.forEach(({ element, text }) => {
 
-            if(element !== fileId){
-    
+            if (element !== fileId) {
+
                 breadCrumbList.push({
                     element: `${groupBasePath}/folders/${element}`,
                     text: text
                 });
-    
+
             }
-    
+
         });
 
     }
@@ -107,89 +102,82 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <GroupLayout 
-            tabId="files"
-            themeId={themeId}
-            user={user}
-            actions={actions}
-            text={entityText}
-            image={image} 
-            className="u-bg-theme-3">
-                <LayoutColumn className="c-page-body">
-                    {hasBreadCrumb &&
-                        <BreadCrumb 
-                            text={{
-                                ariaLabel: 'Folders'
-                            }}
-                            breadCrumbList={breadCrumbList}
-                            shouldLinkCrumbs={false}
-                            className="u-text-lead u-mb-10 u-fill-theme-0" />
-                    }
-                    <h2 className="nhsuk-heading-l">{name}</h2>
-                    <hr />
-                    <RichText wrapperElementType="p" bodyHtml={body} />
-                    {createdBy &&
-                        <p className="u-mb-14">
-                            <span className="u-text-bold u-mr-6">Owner</span>
-                            <Link href={`${groupBasePath}/members/${createdBy.id}`}>{createdBy.text.userName}</Link>
-                        </p>
-                    }
-                    <DataGrid
-                        id="group-table-file"
+        <>
+            <LayoutColumn className="c-page-body">
+                {hasBreadCrumb &&
+                    <BreadCrumb
                         text={{
-                            caption: 'File data'
-                        }} 
-                        shouldRenderCaption={true}
-                        columnList={[
-                            {
-                                children: 'Name'
-                            },
-                            {
-                                children: 'Modified by'
-                            },
-                            {
-                                children: 'Last update'
-                            },
-                            {
-                                children: 'Actions',
-                                className: 'tablet:u-text-right'
-                            }
-                        ]}
-                        rowList={[
-                            [
-                                {
-                                    children: 'File name',
-                                    className: generatedCellClasses.name,
-                                    headerClassName: generatedHeaderCellClasses.name
-                                },
-                                {
-                                    children: 'User',
-                                    className: generatedCellClasses.modifiedBy,
-                                    headerClassName: generatedHeaderCellClasses.modifiedBy
-                                },
-                                {
-                                    children: dateTime({ value: '2021-12-10T02:16:03Z' }),
-                                    className: generatedCellClasses.lastUpdate,
-                                    headerClassName: generatedHeaderCellClasses.lastUpdate
-                                },
-                                {
-                                    children: <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" /><a href="/">Download</a></>,
-                                    className: generatedCellClasses.actions,
-                                    headerClassName: generatedHeaderCellClasses.actions
-                                }
-                            ]
-                        ]} 
-                        className="u-mb-12" />
-                    <AriaLiveRegion>
-                        {shouldRenderFilePreview &&
-                            <>
-                                <h2 className="nhsuk-heading-l">File preview</h2>
-                                <iframe src="https://www.bbc.co.uk" className="u-w-full"></iframe> 
-                            </>
+                            ariaLabel: 'Folders'
+                        }}
+                        breadCrumbList={breadCrumbList}
+                        shouldLinkCrumbs={false}
+                        className="u-text-lead u-mb-10 u-fill-theme-0" />
+                }
+                <h2 className="nhsuk-heading-l">{name}</h2>
+                <hr />
+                <RichText wrapperElementType="p" bodyHtml={body} />
+                {createdBy &&
+                    <p className="u-mb-14">
+                        <span className="u-text-bold u-mr-6">Owner</span>
+                        <Link href={`${groupBasePath}/members/${createdBy.id}`}>{createdBy.text.userName}</Link>
+                    </p>
+                }
+                <DataGrid
+                    id="group-table-file"
+                    text={{
+                        caption: 'File data'
+                    }}
+                    shouldRenderCaption={true}
+                    columnList={[
+                        {
+                            children: 'Name'
+                        },
+                        {
+                            children: 'Modified by'
+                        },
+                        {
+                            children: 'Last update'
+                        },
+                        {
+                            children: 'Actions',
+                            className: 'tablet:u-text-right'
                         }
-                    </AriaLiveRegion>
-                </LayoutColumn>
-        </GroupLayout>
+                    ]}
+                    rowList={[
+                        [
+                            {
+                                children: 'File name',
+                                className: generatedCellClasses.name,
+                                headerClassName: generatedHeaderCellClasses.name
+                            },
+                            {
+                                children: 'User',
+                                className: generatedCellClasses.modifiedBy,
+                                headerClassName: generatedHeaderCellClasses.modifiedBy
+                            },
+                            {
+                                children: dateTime({ value: '2021-12-10T02:16:03Z' }),
+                                className: generatedCellClasses.lastUpdate,
+                                headerClassName: generatedHeaderCellClasses.lastUpdate
+                            },
+                            {
+                                children: <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" /><a href="/">Download</a></>,
+                                className: generatedCellClasses.actions,
+                                headerClassName: generatedHeaderCellClasses.actions
+                            }
+                        ]
+                    ]}
+                    className="u-mb-12" />
+                <AriaLiveRegion>
+                    {shouldRenderFilePreview &&
+                        <>
+                            <h2 className="nhsuk-heading-l">File preview</h2>
+                            <iframe src="https://www.bbc.co.uk" className="u-w-full"></iframe>
+                        </>
+                    }
+                </AriaLiveRegion>
+            </LayoutColumn>
+        </>
 
     )
 

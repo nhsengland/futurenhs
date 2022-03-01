@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
+import { layoutIds } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
@@ -37,6 +38,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 const groupId: string = selectParam(context, routeParams.GROUPID);
                 const csrfToken: string = selectCsrfToken(context);
                 const body: any = selectBody(context);
+
+                props.layoutId = layoutIds.GROUP;
+                props.tabId = 'forum';
 
                 /**
                  * Return page not found if user doesn't have permissions to create a discussion

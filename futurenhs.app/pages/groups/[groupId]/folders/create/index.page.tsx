@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { layoutIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
@@ -38,6 +39,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 const folderId: string = selectQuery(context, routeParams.FOLDERID);
                 const csrfToken: string = selectCsrfToken(context);
                 const body: any = selectBody(context);
+
+                props.layoutId = layoutIds.GROUP;
+                props.tabId = 'files';
 
                 if (!props.actions?.includes(actionConstants.GROUPS_FOLDERS_ADD)) {
 

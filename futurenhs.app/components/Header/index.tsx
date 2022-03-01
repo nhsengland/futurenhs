@@ -112,7 +112,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                 alt="Future NHS home page" />
                         </a>
                     </Link>
-                    {(shouldRenderSearch || shouldRenderNavigation) && 
+                    {((shouldRenderSearch || shouldRenderNavigation) && user) && 
                         <div className="c-site-header_nav c-site-header-nav">
                             <Accordion
                                 isOpen={isMainAccordionOpen}

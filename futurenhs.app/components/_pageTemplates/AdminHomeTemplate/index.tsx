@@ -2,7 +2,6 @@
 import { actions as actionConstants } from '@constants/actions';
 import { routes } from '@constants/routes';
 import { Link } from '@components/Link';
-import { AdminLayout } from '@components/_pageLayouts/AdminLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { Card } from '@components/Card';
@@ -14,7 +13,6 @@ import { Props } from './interfaces';
  */
 export const AdminHomeTemplate: (props: Props) => JSX.Element = ({
     contentText,
-    user,
     actions
 }) => {
 
@@ -27,28 +25,24 @@ export const AdminHomeTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <AdminLayout
-            user={user}
-            actions={actions}
-            contentText={contentText}
-            className="u-bg-theme-3">
-                <LayoutColumnContainer className="c-page-body">
-                    {shouldRenderUsersLink &&
-                        <LayoutColumn tablet={4}>
-                            <Card clickableHref={routes.ADMIN_USERS}>
-                                <h2 className="nhsuk-card__heading nhsuk-heading-m"><Link href={routes.ADMIN_USERS}>Manage users</Link></h2>
-                            </Card>
-                        </LayoutColumn>
-                    }
-                    {shouldRenderGroupsLink &&
-                        <LayoutColumn tablet={4}>
-                            <Card clickableHref={routes.ADMIN_GROUPS}>
-                                <h2 className="nhsuk-card__heading nhsuk-heading-m"><Link href={routes.ADMIN_GROUPS}>Manage groups</Link></h2>
-                            </Card>
-                        </LayoutColumn>
-                    }
-                </LayoutColumnContainer>
-        </AdminLayout>
+        <>
+            <LayoutColumnContainer className="c-page-body">
+                {shouldRenderUsersLink &&
+                    <LayoutColumn tablet={4}>
+                        <Card clickableHref={routes.ADMIN_USERS}>
+                            <h2 className="nhsuk-card__heading nhsuk-heading-m"><Link href={routes.ADMIN_USERS}>Manage users</Link></h2>
+                        </Card>
+                    </LayoutColumn>
+                }
+                {shouldRenderGroupsLink &&
+                    <LayoutColumn tablet={4}>
+                        <Card clickableHref={routes.ADMIN_GROUPS}>
+                            <h2 className="nhsuk-card__heading nhsuk-heading-m"><Link href={routes.ADMIN_GROUPS}>Manage groups</Link></h2>
+                        </Card>
+                    </LayoutColumn>
+                }
+            </LayoutColumnContainer>
+        </>
 
     )
 

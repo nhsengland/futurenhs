@@ -18,6 +18,7 @@ describe('Group update template', () => {
 
     const props: Props = {
         id: 'mockId',
+        tabId: 'index',
         folderId: 'mockId',
         user: undefined,
         actions: [],
@@ -38,7 +39,7 @@ describe('Group update template', () => {
 
         render(<GroupUpdateTemplate {...props} />);
 
-        expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
+        expect(screen.getAllByText('Edit group information').length).toEqual(1);
 
     });
     

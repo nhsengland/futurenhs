@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { Link } from '@components/Link';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
-import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { DynamicListContainer } from '@components/DynamicListContainer';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -26,9 +25,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
     minLength,
     contentText,
     resultsList = [],
-    pagination,
-    user,
-    actions
+    pagination
 }) => {
 
     const resultsCount: number = resultsList.length;
@@ -162,11 +159,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
     return (
 
-        <StandardLayout
-            searchTerm={term}
-            user={user}
-            actions={actions}
-            className="u-bg-theme-3">
+        <>
             <Head>
                 <title>{title}</title>
                 <meta name="description" content={metaDescription} />
@@ -208,7 +201,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
                     }
                 </AriaLiveRegion>
             </div>
-        </StandardLayout>
+        </>
 
     )
 

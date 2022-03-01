@@ -19,19 +19,15 @@ describe('Group member template', () => {
 
     const props: Props = {
         id: 'mockPageId',
+        tabId: 'members',
         user: undefined,
         member: null,
         actions: [],
         forms: forms,
-        contentText: null,
-        entityText: {
-            title: 'Mock title text',
-            metaDescription: 'Mock meta description text',
-            mainHeading: 'Mock main heading html',
-            intro: 'Mock intro html',
-            navMenuTitle: 'Mock nav menu title text',
+        contentText: {
             secondaryHeading: 'Mock secondary heading html'
         },
+        entityText: null,
         image: null
     };
 
@@ -39,7 +35,7 @@ describe('Group member template', () => {
 
         render(<GroupMemberTemplate {...props} />);
 
-        expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
+        expect(screen.getAllByText('Mock secondary heading html').length).toEqual(1);
 
     });
     

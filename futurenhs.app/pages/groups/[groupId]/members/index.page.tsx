@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
+import { layoutIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
@@ -31,15 +32,15 @@ export const getServerSideProps: GetServerSideProps = withUser({
             routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-                console.log(context);
-
                 const user: User = selectUser(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
-
                 const pagination: Pagination = {
                     pageNumber: selectPagination(context).pageNumber ?? 1,
                     pageSize: selectPagination(context).pageSize ?? 10
                 };
+
+                props.layoutId = layoutIds.GROUP;
+                props.tabId = 'members';
 
                 /**
                  * Get data from services

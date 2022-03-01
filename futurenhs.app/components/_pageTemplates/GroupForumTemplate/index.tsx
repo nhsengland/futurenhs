@@ -26,9 +26,6 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     groupId,
     user,
     contentText,
-    entityText,
-    image,
-    themeId,
     pagination,
     actions,
     discussionsList
@@ -87,108 +84,101 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
      */
     return (
 
-        <GroupLayout
-            tabId="forum"
-            themeId={themeId}
-            user={user}
-            actions={actions}
-            text={entityText}
-            image={image}
-            className="u-bg-theme-3">
-                <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
-                    <LayoutColumn tablet={8} className="c-page-body">
-                        <h2 className="nhsuk-heading-l">{discussionsHeading}</h2>
-                        <AriaLiveRegion>
-                            {hasDiscussions
+        <>
+            <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
+                <LayoutColumn tablet={8} className="c-page-body">
+                    <h2 className="nhsuk-heading-l">{discussionsHeading}</h2>
+                    <AriaLiveRegion>
+                        {hasDiscussions
 
-                                ?   <DynamicListContainer 
-                                        containerElementType="ul" 
-                                        shouldFocusLatest={shouldEnableLoadMore}
-                                        className="u-list-none u-p-0">
-                                            {dynamicDiscussionsList?.map?.(({
-                                                text,
-                                                discussionId,
-                                                viewCount,
-                                                responseCount,
-                                                created,
-                                                createdBy,
-                                                modified,
-                                                modifiedBy,
-                                                isSticky
-                                            }, index) => {
+                            ? <DynamicListContainer
+                                containerElementType="ul"
+                                shouldFocusLatest={shouldEnableLoadMore}
+                                className="u-list-none u-p-0">
+                                {dynamicDiscussionsList?.map?.(({
+                                    text,
+                                    discussionId,
+                                    viewCount,
+                                    responseCount,
+                                    created,
+                                    createdBy,
+                                    modified,
+                                    modifiedBy,
+                                    isSticky
+                                }, index) => {
 
-                                                const { title } = text ?? {};
-                                                const creatorUserInitials: string = initials({ value: createdBy.text.userName });
-                                                const creatorUserName: string = createdBy.text.userName;
-                                                const creatorUserId: string = createdBy.id;
-                                                const createdDate: string = dateTime({ value: created });
-                                                const lastCommentUserName: string = modifiedBy.text.userName;
-                                                const lastCommentDate: string = dateTime({ value: modified });
-                                                const cardLinkHref: string = `${groupBasePath}/forum/${discussionId}`;
+                                    const { title } = text ?? {};
+                                    const creatorUserInitials: string = initials({ value: createdBy.text.userName });
+                                    const creatorUserName: string = createdBy.text.userName;
+                                    const creatorUserId: string = createdBy.id;
+                                    const createdDate: string = dateTime({ value: created });
+                                    const lastCommentUserName: string = modifiedBy.text.userName;
+                                    const lastCommentDate: string = dateTime({ value: modified });
+                                    const cardLinkHref: string = `${groupBasePath}/forum/${discussionId}`;
 
-                                                return (
+                                    return (
 
-                                                    <li key={index}>
-                                                        <Card clickableHref={cardLinkHref} className="u-border-b-theme-10 hover:u-border-b-theme-10-darker u-mb-4">
-                                                            <h3 className="c-card_heading desktop:u-mb-4">
-                                                                <Link href={cardLinkHref}>
-                                                                    <a>
-                                                                        {isSticky && <span className="u-sr-only">Sticky: </span>}
-                                                                        {title}
-                                                                    </a>
-                                                                </Link>
-                                                            </h3>
-                                                            <UserMeta
-                                                                image={null}
-                                                                text={{
-                                                                    initials: creatorUserInitials
-                                                                }}
-                                                                className="u-text-theme-7">
-                                                                <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
-                                                                {responseCount > 0 &&
-                                                                    <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
-                                                                }
-                                                            </UserMeta>
-                                                            <div className="c-card_footer u-text-theme-0">
-                                                                <p className="c-card_footer-item">
-                                                                    <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
-                                                                    <span>{`${responseCount} Comments`}</span>
-                                                                </p>
-                                                                <p className="c-card_footer-item">
-                                                                    <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
-                                                                    <span>{`${viewCount} Views`}</span>
-                                                                </p>
-                                                                {isSticky &&
-                                                                    <SVGIcon name="icon-pin" className="c-card_footer-icon u-fill-theme-0 u-float-right u-w-4 u-h-4 u-m-0" />
-                                                                }
-                                                            </div>
-                                                        </Card>
-                                                    </li>
+                                        <li key={index}>
+                                            <Card clickableHref={cardLinkHref} className="u-border-b-theme-10 hover:u-border-b-theme-10-darker u-mb-4">
+                                                <h3 className="c-card_heading desktop:u-mb-4">
+                                                    <Link href={cardLinkHref}>
+                                                        <a>
+                                                            {isSticky && <span className="u-sr-only">Sticky: </span>}
+                                                            {title}
+                                                        </a>
+                                                    </Link>
+                                                </h3>
+                                                <UserMeta
+                                                    image={null}
+                                                    text={{
+                                                        initials: creatorUserInitials
+                                                    }}
+                                                    className="u-text-theme-7">
+                                                    <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
+                                                    {responseCount > 0 &&
+                                                        <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
+                                                    }
+                                                </UserMeta>
+                                                <div className="c-card_footer u-text-theme-0">
+                                                    <p className="c-card_footer-item">
+                                                        <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
+                                                        <span>{`${responseCount} Comments`}</span>
+                                                    </p>
+                                                    <p className="c-card_footer-item">
+                                                        <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
+                                                        <span>{`${viewCount} Views`}</span>
+                                                    </p>
+                                                    {isSticky &&
+                                                        <SVGIcon name="icon-pin" className="c-card_footer-icon u-fill-theme-0 u-float-right u-w-4 u-h-4 u-m-0" />
+                                                    }
+                                                </div>
+                                            </Card>
+                                        </li>
 
-                                                )
+                                    )
 
-                                            })}
-                                    </DynamicListContainer>
+                                })}
+                            </DynamicListContainer>
 
-                                :   <p>{noDiscussions}</p>
+                            : <p>{noDiscussions}</p>
 
-                            }
-                        </AriaLiveRegion>
-                        <PaginationWithStatus
-                            id="group-list-pagination"
-                            shouldEnableLoadMore={shouldEnableLoadMore}
-                            getPageAction={handleGetPage}
-                            {...dynamicPagination} />
+                        }
+                    </AriaLiveRegion>
+                    <PaginationWithStatus
+                        id="group-list-pagination"
+                        shouldEnableLoadMore={shouldEnableLoadMore}
+                        getPageAction={handleGetPage}
+                        {...dynamicPagination} />
+                </LayoutColumn>
+                {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
+                    <LayoutColumn tablet={4} className="c-page-body">
+                        <Link href={`${router.asPath}/create`}>
+                            <a className="c-button u-w-full">{createDiscussion}</a>
+                        </Link>
                     </LayoutColumn>
-                    {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
-                        <LayoutColumn tablet={4} className="c-page-body">
-                            <Link href={`${router.asPath}/create`}>
-                                <a className="c-button u-w-full">{createDiscussion}</a>
-                            </Link>
-                        </LayoutColumn>
-                    }
-                </div>
-        </GroupLayout>
+                }
+            </div>
+        </>
 
     )
 

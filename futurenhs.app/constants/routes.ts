@@ -21,3 +21,9 @@ export const enum routeParams {
     MEMBERID = 'memberId',
     DISCUSSIONID = 'discussionId',
 }
+
+export const enum layoutIds {
+    BASE = 'base',
+    GROUP = 'group',
+    ADMIN = 'admin'
+}

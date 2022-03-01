@@ -18,6 +18,7 @@ describe('Group create discussion template', () => {
 
     const props: Props = {
         id: 'mockId',
+        tabId: 'forum',
         folderId: 'mockId',
         user: undefined,
         actions: [],
@@ -40,7 +41,7 @@ describe('Group create discussion template', () => {
 
         render(<GroupCreateDiscussionTemplate {...props} />);
 
-        expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
+        expect(screen.getAllByText('Create Discussion').length).toEqual(2);
 
     });
     

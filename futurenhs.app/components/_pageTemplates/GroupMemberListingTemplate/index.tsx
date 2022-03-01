@@ -8,7 +8,6 @@ import { actions as userActions } from '@constants/actions';
 import { Link } from '@components/Link';
 import { SVGIcon } from '@components/SVGIcon';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
-import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { DataGrid } from '@components/DataGrid';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
@@ -16,7 +15,7 @@ import { getGroupMembers } from '@services/getGroupMembers';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { capitalise } from '@helpers/formatters/capitalise';
 
-import { Props } from './interfaces';  
+import { Props } from './interfaces';
 
 /**
  * Group member listing template
@@ -27,10 +26,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     actions,
     pendingMembers,
     members,
-    entityText,
     contentText,
-    image,
-    themeId,
     pagination
 }) => {
 
@@ -61,65 +57,65 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             children: 'Actions'
         }
     ];
-    const pendingMemberRowList = useMemo(() => pendingMembers?.map(({ 
+    const pendingMemberRowList = useMemo(() => pendingMembers?.map(({
         fullName,
-        email, 
+        email,
         requestDate }) => {
 
-            const generatedCellClasses = {
-                name: classNames({
-                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
-                }),
-                email: classNames({
-                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
-                }),
-                requestDate: classNames({
-                    ['u-justify-between u-w-full tablet:u-w-1/6']: true,
-                }),
-                actions: classNames({
-                    ['u-w-full tablet:u-w-1/6']: true,
-                })
-            };
+        const generatedCellClasses = {
+            name: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/4']: true
+            }),
+            email: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/4']: true
+            }),
+            requestDate: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/6']: true,
+            }),
+            actions: classNames({
+                ['u-w-full tablet:u-w-1/6']: true,
+            })
+        };
 
-            const generatedHeaderCellClasses = {
-                name: classNames({
-                    ['u-text-bold']: true
-                }),
-                email: classNames({
-                    ['u-text-bold']: true
-                }),
-                requestDate: classNames({
-                    ['u-text-bold']: true
-                }),
-                actions: classNames({
-                    ['u-hidden']: true
-                })
-            };
+        const generatedHeaderCellClasses = {
+            name: classNames({
+                ['u-text-bold']: true
+            }),
+            email: classNames({
+                ['u-text-bold']: true
+            }),
+            requestDate: classNames({
+                ['u-text-bold']: true
+            }),
+            actions: classNames({
+                ['u-hidden']: true
+            })
+        };
 
-            const rows = [
-                {
-                    children: fullName,
-                    className: generatedCellClasses.name,
-                    headerClassName: generatedHeaderCellClasses.name
-                },
-                {
-                    children: email,
-                    className: generatedCellClasses.email,
-                    headerClassName: generatedHeaderCellClasses.email
-                },
-                {
-                    children: `${dateTime({ value: requestDate })}`,
-                    className: generatedCellClasses.requestDate,
-                    headerClassName: generatedHeaderCellClasses.requestDate
-                },
-                {
-                    children: <span className="u-flex u-justify-between u-w-full"><a href="#">Accept</a><a href="#">Reject</a></span>,
-                    className: generatedCellClasses.actions,
-                    headerClassName: generatedHeaderCellClasses.actions
-                }
-            ];
+        const rows = [
+            {
+                children: fullName,
+                className: generatedCellClasses.name,
+                headerClassName: generatedHeaderCellClasses.name
+            },
+            {
+                children: email,
+                className: generatedCellClasses.email,
+                headerClassName: generatedHeaderCellClasses.email
+            },
+            {
+                children: `${dateTime({ value: requestDate })}`,
+                className: generatedCellClasses.requestDate,
+                headerClassName: generatedHeaderCellClasses.requestDate
+            },
+            {
+                children: <span className="u-flex u-justify-between u-w-full"><a href="#">Accept</a><a href="#">Reject</a></span>,
+                className: generatedCellClasses.actions,
+                headerClassName: generatedHeaderCellClasses.actions
+            }
+        ];
 
-            return rows;
+        return rows;
 
     }), [pendingMembers]);
 
@@ -142,7 +138,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
         }
     ];
 
-    if(shouldRenderMemberEditColumn){
+    if (shouldRenderMemberEditColumn) {
 
         memberColumnList.push({
             children: `Actions`,
@@ -151,86 +147,86 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
     }
 
-    const memberRowList = useMemo(() => membersList?.map(({ 
-        id, 
+    const memberRowList = useMemo(() => membersList?.map(({
+        id,
         fullName,
         role,
-        joinDate, 
+        joinDate,
         lastLogInDate }) => {
 
-            const generatedCellClasses = {
-                name: classNames({
-                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
-                }),
-                role: classNames({
-                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
-                }),
-                joinDate: classNames({
-                    ['u-justify-between u-w-full tablet:u-w-1/6']: true,
-                }),
-                lastLoginDate: classNames({
-                    ['u-justify-between u-w-full tablet:u-w-1/6']: true,
-                })
-            };
+        const generatedCellClasses = {
+            name: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/4']: true
+            }),
+            role: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/4']: true
+            }),
+            joinDate: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/6']: true,
+            }),
+            lastLoginDate: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/6']: true,
+            })
+        };
 
-            const generatedHeaderCellClasses = {
-                name: classNames({
-                    ['u-text-bold']: true
-                }),
-                role: classNames({
-                    ['u-text-bold']: true
-                }),
-                joinDate: classNames({
-                    ['u-text-bold']: true
-                }),
-                lastLoginDate: classNames({
-                    ['u-text-bold']: true
-                })
-            };
+        const generatedHeaderCellClasses = {
+            name: classNames({
+                ['u-text-bold']: true
+            }),
+            role: classNames({
+                ['u-text-bold']: true
+            }),
+            joinDate: classNames({
+                ['u-text-bold']: true
+            }),
+            lastLoginDate: classNames({
+                ['u-text-bold']: true
+            })
+        };
 
-            const rows = [
-                {
-                    children: <Link href={`${groupBasePath}/members/${id}`}>{fullName || role}</Link>,
-                    className: generatedCellClasses.name,
-                    headerClassName: generatedHeaderCellClasses.name
-                },
-                {
-                    children: `${capitalise({ value: role })}`,
-                    className: generatedCellClasses.role,
-                    headerClassName: generatedHeaderCellClasses.role
-                },
-                {
-                    children: `${dateTime({ value: joinDate })}`,
-                    className: generatedCellClasses.joinDate,
-                    headerClassName: generatedHeaderCellClasses.joinDate
-                },
-                {
-                    children: `${dateTime({ value: lastLogInDate })}`,
-                    className: generatedCellClasses.lastLoginDate,
-                    headerClassName: generatedHeaderCellClasses.lastLoginDate
-                }
-            ];
-
-            if(shouldRenderMemberEditColumn){
-
-                rows.push({
-                    children: <Link href={`${groupBasePath}/members}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
-                    className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
-                    headerClassName: 'u-hidden'
-                });
-
+        const rows = [
+            {
+                children: <Link href={`${groupBasePath}/members/${id}`}>{fullName || role}</Link>,
+                className: generatedCellClasses.name,
+                headerClassName: generatedHeaderCellClasses.name
+            },
+            {
+                children: `${capitalise({ value: role })}`,
+                className: generatedCellClasses.role,
+                headerClassName: generatedHeaderCellClasses.role
+            },
+            {
+                children: `${dateTime({ value: joinDate })}`,
+                className: generatedCellClasses.joinDate,
+                headerClassName: generatedHeaderCellClasses.joinDate
+            },
+            {
+                children: `${dateTime({ value: lastLogInDate })}`,
+                className: generatedCellClasses.lastLoginDate,
+                headerClassName: generatedHeaderCellClasses.lastLoginDate
             }
+        ];
 
-            return rows;
+        if (shouldRenderMemberEditColumn) {
+
+            rows.push({
+                children: <Link href={`${groupBasePath}/members}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                headerClassName: 'u-hidden'
+            });
+
+        }
+
+        return rows;
 
     }), [membersList]);
 
     const hasPendingMembersList: Boolean = pendingMemberRowList?.length > 0;
     const hasMembersList: Boolean = memberRowList?.length > 0;
 
-    const handleGetPage = async ({ 
-        pageNumber: requestedPageNumber, 
-        pageSize: requestedPageSize 
+    const handleGetPage = async ({
+        pageNumber: requestedPageNumber,
+        pageSize: requestedPageSize
     }) => {
 
         const { data: additionalMembers, pagination } = await getGroupMembers({
@@ -247,68 +243,61 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
     };
 
-    const { pendingMemberRequestsHeading, 
-            membersHeading,
-            noPendingMembers,
-            noMembers } = contentText ?? {};
+    const { pendingMemberRequestsHeading,
+        membersHeading,
+        noPendingMembers,
+        noMembers } = contentText ?? {};
 
     return (
 
-        <GroupLayout 
-            tabId="members"
-            themeId={themeId}
-            user={user}
-            actions={actions}
-            text={entityText}
-            image={image} 
-            className="u-bg-theme-3">
-                <LayoutColumn className="c-page-body">
-                    {shouldRenderPendingMembersList &&
-                        <div className="u-mb-12">
-                            <h2 className="nhsuk-heading-l">{pendingMemberRequestsHeading}</h2>
-                            {hasPendingMembersList 
-                            
-                                ?   <DataGrid 
-                                        id="group-table-pending-members"
-                                        columnList={pendingMemberColumnList}
-                                        rowList={pendingMemberRowList}
-                                        text={{
-                                            caption: `${pendingMemberRequestsHeading} list`
-                                        }} 
-                                        shouldRenderCaption={false}
-                                        className="u-mb-11" />
+        <>
+            <LayoutColumn className="c-page-body">
+                {shouldRenderPendingMembersList &&
+                    <div className="u-mb-12">
+                        <h2 className="nhsuk-heading-l">{pendingMemberRequestsHeading}</h2>
+                        {hasPendingMembersList
 
-                                :   <p>{noPendingMembers}</p>
+                            ? <DataGrid
+                                id="group-table-pending-members"
+                                columnList={pendingMemberColumnList}
+                                rowList={pendingMemberRowList}
+                                text={{
+                                    caption: `${pendingMemberRequestsHeading} list`
+                                }}
+                                shouldRenderCaption={false}
+                                className="u-mb-11" />
 
-                            }
-                        </div>
-                    }
-                    <h2 className="nhsuk-heading-l">{membersHeading}</h2>
-                    <AriaLiveRegion>
-                        {hasMembersList 
-                        
-                            ?   <>
-                                    <DataGrid 
-                                        id="group-table-members"
-                                        columnList={memberColumnList}
-                                        rowList={memberRowList}
-                                        text={{
-                                            caption: `${membersHeading} list`
-                                        }} 
-                                        shouldRenderCaption={false} />
-                                    <PaginationWithStatus 
-                                        id="member-list-pagination"
-                                        shouldEnableLoadMore={true}
-                                        getPageAction={handleGetPage}
-                                        {...dynamicPagination} />
-                                </>
-
-                            :   <p>{noMembers}</p>
+                            : <p>{noPendingMembers}</p>
 
                         }
-                    </AriaLiveRegion>
-                </LayoutColumn>
-        </GroupLayout>
+                    </div>
+                }
+                <h2 className="nhsuk-heading-l">{membersHeading}</h2>
+                <AriaLiveRegion>
+                    {hasMembersList
+
+                        ? <>
+                            <DataGrid
+                                id="group-table-members"
+                                columnList={memberColumnList}
+                                rowList={memberRowList}
+                                text={{
+                                    caption: `${membersHeading} list`
+                                }}
+                                shouldRenderCaption={false} />
+                            <PaginationWithStatus
+                                id="member-list-pagination"
+                                shouldEnableLoadMore={true}
+                                getPageAction={handleGetPage}
+                                {...dynamicPagination} />
+                        </>
+
+                        : <p>{noMembers}</p>
+
+                    }
+                </AriaLiveRegion>
+            </LayoutColumn>
+        </>
 
     )
 

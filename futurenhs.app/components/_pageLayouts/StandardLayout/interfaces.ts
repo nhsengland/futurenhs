@@ -2,6 +2,7 @@ import { BreadCrumbList } from '@appTypes/routing';
 import { actions } from '@constants/actions';
 
 export interface Props {
+    routeId?: string;
     shouldRenderSearch?: boolean;
     shouldRenderUserNavigation?: boolean;
     shouldRenderPhaseBanner?: boolean;

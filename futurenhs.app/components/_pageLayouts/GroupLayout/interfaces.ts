@@ -12,7 +12,7 @@ export interface Props {
     actions?: any;
     themeId?: string;
     className?: string;
-    text?: GroupsPageTextContent;
+    entityText?: GroupsPageTextContent;
     image?: Image;
     children?: any;
 }

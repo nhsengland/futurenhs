@@ -18,6 +18,7 @@ describe('Group folders template', () => {
 
     const props: Props = {
         id: 'mockId',
+        tabId: 'files',
         folderId: 'mockId',
         user: undefined,
         actions: [],
@@ -25,14 +26,7 @@ describe('Group folders template', () => {
             'create-folder': createFolderForm
         },
         contentText: null,
-        entityText: {
-            title: 'Mock title text',
-            metaDescription: 'Mock meta description text',
-            mainHeading: 'Mock main heading html',
-            intro: 'Mock intro html',
-            navMenuTitle: 'Mock nav menu title text',
-            secondaryHeading: 'Mock secondary heading html'
-        },
+        entityText: null,
         image: null
     };
 
@@ -40,7 +34,7 @@ describe('Group folders template', () => {
 
         render(<GroupCreateFolderTemplate {...props} />);
 
-        expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
+        expect(screen.getAllByText('Save and continue').length).toEqual(1);
 
     });
     

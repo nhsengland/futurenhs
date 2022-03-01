@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
+import { layoutIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -16,11 +17,15 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    routeId,
     getServerSideProps: withGroup({
         props,
         routeId,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
+
+            props.layoutId = layoutIds.GROUP;
+            props.tabId = 'index';
+
+            console.log(props);
 
             /**
              * Return data to page template

@@ -18,6 +18,7 @@ describe('Group member listing template', () => {
 
     const props: Props = {
         id: 'mockPageId',
+        tabId: 'members',
         user: undefined,
         actions: [],
         contentText: { 
@@ -51,7 +52,7 @@ describe('Group member listing template', () => {
 
         render(<GroupMemberListingTemplate {...props} />);
 
-        expect(await screen.findByText('Mock main heading html')).toBeVisible();
+        expect(await screen.findByText('Mock members heading')).toBeVisible();
 
     });
 

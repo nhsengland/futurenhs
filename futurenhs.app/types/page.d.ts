@@ -1,6 +1,7 @@
 import { actions } from '@constants/actions';
 import { Image } from './image';
 
+import { layoutIds } from '@constants/routes';
 import { Pagination } from '@appTypes/pagination';
 import { FormConfig } from '@appTypes/form';
 import { Service } from '@appTypes/service';
@@ -10,6 +11,7 @@ import { User } from '@appTypes/user';
 export interface Page {
     id: string;
     themeId?: string;
+    layoutId?: layoutIds;
     actions?: Array<actions>;
     csrfToken?: string;
     forms?: Record<string, FormConfig>;
@@ -23,6 +25,7 @@ export interface Page {
 
 export interface GroupPage extends Page {
     groupId?: string;
+    tabId: 'index' | 'forum' | 'files' | 'members';
     image: Image;
     contentText: GroupsPageTextContent;
     entityText: any;

@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { formTypes } from '@constants/forms';
 import { actions } from '@constants/actions';
+import { layoutIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
@@ -28,13 +29,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                 const csrfToken: string = selectCsrfToken(context);
 
-                console.log(props.themeId);
-
                 props.forms[formTypes.UPDATE_GROUP].initialValues = {
                     'name': props.entityText.title,
                     'strapline': props.entityText.strapLine,
                     'themeId': [props.themeId]
-                }
+                };
+                props.layoutId = layoutIds.GROUP;
+                props.tabId = 'index';
 
                 /**
                  * Return data to page template

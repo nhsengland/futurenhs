@@ -18,7 +18,7 @@ import { Props } from './interfaces';
 export const GroupLayout: (props: Props) => JSX.Element = ({
     tabId,
     themeId,
-    text,
+    entityText,
     image,
     actions,
     children,
@@ -49,13 +49,14 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     const { title, 
             metaDescription, 
             mainHeading,
-            strapLine } = text ?? {};
+            strapLine } = entityText ?? {};
 
     return (
 
         <StandardLayout 
             breadCrumbList={breadCrumbList} 
             actions={actions}
+            className="u-bg-theme-3"
             {...rest}>
                 <Head>
                     <title>{title}</title>

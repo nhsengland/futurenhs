@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
+import { layoutIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
@@ -44,6 +45,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const [memberData] = await Promise.all([getGroupMember({ groupId, user, memberId })]);
 
                         props.member = memberData.data;
+                        props.layoutId = layoutIds.GROUP;
+                        props.tabId = 'members';
 
                     } catch (error) {
 

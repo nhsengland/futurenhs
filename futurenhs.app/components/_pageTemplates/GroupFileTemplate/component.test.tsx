@@ -17,6 +17,7 @@ describe('Group file template', () => {
 
     const props: Props = {
         id: 'mockId',
+        tabId: 'files',
         fileId: 'mockId',
         file: {
             id: 'mockId',
@@ -41,7 +42,7 @@ describe('Group file template', () => {
 
         render(<GroupFileTemplate {...props} />);
 
-        expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
+        expect(screen.getAllByText('Mock file name').length).toEqual(1);
 
     });
     

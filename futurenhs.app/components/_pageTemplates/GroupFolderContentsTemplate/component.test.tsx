@@ -18,12 +18,20 @@ describe('Group folders template', () => {
 
     const props: Props = {
         id: 'mockId',
-        folderId: 'mockId',
+        tabId: 'files',
+        folderId: null,
         folder: null,
         folderContents: [],
         user: undefined,
         actions: [],
-        contentText: null,
+        contentText: {
+            foldersHeading: 'Folders',
+            noFolders: 'No folders',
+            createFile: 'Create file',
+            createFolder: 'Create folder',
+            updateFolder: 'Update folder',
+            deleteFolder: 'Delet Folder'
+        },
         entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
@@ -39,7 +47,7 @@ describe('Group folders template', () => {
 
         render(<GroupFolderContentsTemplate {...props} />);
 
-        expect(screen.getAllByText('Mock main heading html').length).toEqual(1);
+        expect(screen.getAllByText('Folders').length).toEqual(1);
 
     });
     
