@@ -8,6 +8,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write.Interfaces
         Task<CommentData> GetCommentAsync(Guid commentId, CancellationToken cancellationToken);
         Task CreateCommentAsync(CommentDto comment, CancellationToken cancellationToken = default);
         Task UpdateCommentAsync(CommentDto comment, byte[] rowVersion, CancellationToken cancellationToken = default);
+        Task DeleteCommentAsync(CommentDto comment, byte[] rowVersion, CancellationToken cancellationToken = default);
         Task<Guid?> GetThreadIdForComment(Guid commentId, CancellationToken cancellationToken);
     }
 }

@@ -11,9 +11,10 @@ namespace FutureNHS.Api.Services
     public class CommentService : ICommentService
     {
         private const string DefaultRole = "Standard Members";
+
         private const string AddCommentRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/add";
         private const string EditCommentRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/edit";
-
+        private const string DeleteCommentRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/delete";
 
         private readonly ILogger<CommentService> _logger;
         private readonly ICommentCommand _commentCommand;
@@ -114,7 +115,7 @@ namespace FutureNHS.Api.Services
             if (!userCanAddComment)
             {
                 _logger.LogError($"Forbidden: UpdateCommentAsync - User:{0} does not have access to group:{1}", userId, slug);
-                throw new SecurityException($"Forbidden: User does not have access to this group");
+                throw new ForbiddenException($"Forbidden: User does not have access to this group");
             }
 
             var userCanEditComment = await _permissionsService.UserCanPerformActionAsync(userId, slug, EditCommentRole, cancellationToken);
@@ -140,6 +141,46 @@ namespace FutureNHS.Api.Services
             };
 
             await _commentCommand.UpdateCommentAsync(commentDto, rowVersion, cancellationToken);
+        }
+
+        public async Task DeleteCommentAsync(Guid userId, string slug, Guid discussionId, Guid commentId, byte[] rowVersion, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+            if (Guid.Empty == discussionId) throw new ArgumentOutOfRangeException(nameof(discussionId));
+            if (Guid.Empty == commentId) throw new ArgumentOutOfRangeException(nameof(commentId));
+
+            var now = _systemClock.UtcNow.UtcDateTime;
+
+            var userCanAddComment = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddCommentRole, cancellationToken);
+            if (!userCanAddComment)
+            {
+                _logger.LogError($"Forbidden: DeleteCommentAsync - User:{0} does not have access to group:{1}", userId, slug);
+                throw new ForbiddenException($"Forbidden: User does not have access to this group");
+            }
+
+            var userCanDeleteComment = await _permissionsService.UserCanPerformActionAsync(userId, slug, DeleteCommentRole, cancellationToken);
+            var databaseCommentDto = await _commentCommand.GetCommentAsync(commentId, cancellationToken);
+            if (databaseCommentDto.CreatedById != userId && !userCanDeleteComment)
+            {
+                _logger.LogError($"Forbidden: DeleteCommentAsync - User:{0} does not have permission to delete comment:{1}", userId, commentId);
+                throw new ForbiddenException("Forbidden: User does not have permission to delete this comment");
+            }
+
+            if (!databaseCommentDto.RowVersion.SequenceEqual(rowVersion))
+            {
+                _logger.LogError($"Precondition Failed: DeleteCommentAsync - Comment:{0} has changed prior to submission", commentId);
+                throw new PreconditionFailedExeption("Precondition Failed: Comment has changed prior to submission");
+            }
+
+            var commentDto = new CommentDto()
+            {
+                Id = databaseCommentDto.Id,
+                ModifiedBy = userId,
+                ModifiedAtUTC = now,
+            };
+
+            await _commentCommand.DeleteCommentAsync(commentDto, rowVersion, cancellationToken);
         }
     }
 }

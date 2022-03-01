@@ -27,7 +27,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                 @$"SELECT
                                 [{nameof(CommentData.Id)}]                  = comment.Id,
-                                [{nameof(CommentData.Content)}]             = comment.Content, 
+                                [{nameof(CommentData.Content)}]             = ( SELECT      CASE 
+																				WHEN        comment.IsDeleted = 0
+																				THEN        comment.Content
+																				ELSE        NULL
+																				END
+																			  ), 
 	                            [{nameof(CommentData.CreatedByThisUser)}]	= ( SELECT      CASE 
                                                                                 WHEN        comment.CreatedBy = @UserId 
                                                                                 THEN        CAST(1 as bit) 
@@ -106,7 +111,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                 @$"SELECT
                                 [{nameof(CommentData.Id)}]                  = comment.Id,
-                                [{nameof(CommentData.Content)}]             = comment.Content, 
+                                [{nameof(CommentData.Content)}]             = ( SELECT      CASE 
+																				WHEN        comment.IsDeleted = 0
+																				THEN        comment.Content
+																				ELSE        NULL
+																				END
+																			  ), 
 	                            [{nameof(CommentData.CreatedByThisUser)}]	= ( SELECT      CASE 
                                                                                 WHEN        comment.CreatedBy = @UserId
                                                                                 THEN        CAST(1 as bit) 
@@ -138,7 +148,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
                     ON              CreateUser.Id = comment.CreatedBy		
-					WHERE           comment.ThreadId = @ThreadId 
+					WHERE           comment.ThreadId = @ThreadId
                     AND             groups.Slug = @Slug
                     ORDER BY        comment.CreatedAtUTC
 
@@ -152,7 +162,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					ON			    discussion.Id = comment.Discussion_Id
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
-					WHERE           comment.ThreadId = @ThreadId 
+					WHERE           comment.ThreadId = @ThreadId
                     AND             groups.Slug = @Slug";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);

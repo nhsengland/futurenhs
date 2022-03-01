@@ -30,7 +30,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(CommentData.RowVersion)}]          = comment.RowVersion
 
                     FROM            Comment comment	
-					WHERE           comment.Id = @commentId;";
+					WHERE           comment.Id = @commentId
+                    AND             comment.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
@@ -99,6 +100,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 throw new DBConcurrencyException("Error: User request to add a comment was not successful");
             }
         }
+
         public async Task UpdateCommentAsync(CommentDto comment, byte[] rowVersion, CancellationToken cancellationToken)
         {
             const string query =
@@ -127,8 +129,40 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             if (result != 1)
             {
-                _logger.LogError("Error: User request to add a comment was not successful", queryDefinition);
-                throw new DBConcurrencyException("Error: User request to add a comment was not successful");
+                _logger.LogError("Error: User request to edit a comment was not successful", queryDefinition);
+                throw new DBConcurrencyException("Error: User request to edit a comment was not successful");
+            }
+        }
+
+        public async Task DeleteCommentAsync(CommentDto comment, byte[] rowVersion, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                 @" UPDATE        [dbo].[Comment]
+                    SET                                   
+                                  [ModifiedBy] = @ModifiedBy
+                                 ,[ModifiedAtUTC] = @ModifiedAtUtc
+                                 ,[IsDeleted] = 1
+                    
+                    WHERE 
+                                 [Id] = @CommentId
+                    AND          [RowVersion] = @RowVersion";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                CommentId = comment.Id,
+                ModifiedBy = comment.ModifiedBy,
+                ModifiedAtUTC = comment.ModifiedAtUTC,
+                RowVersion = rowVersion
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.ExecuteAsync(queryDefinition);
+
+            if (result != 1)
+            {
+                _logger.LogError("Error: User request to delete a comment was not successful", queryDefinition);
+                throw new DBConcurrencyException("Error: User request to delete a comment was not successful");
             }
         }
 

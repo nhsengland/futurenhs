@@ -126,5 +126,27 @@ namespace FutureNHS.Api.Controllers
 
             return Ok();
         }
+
+        [HttpDelete]
+        [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}")]
+        public async Task<IActionResult> DeleteCommentAsync(Guid membershipUserId, string slug, Guid discussionId, Guid commentId, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var request = Request;
+            if (!request.Headers.ContainsKey(HeaderNames.IfMatch))
+            {
+                return BadRequest(new { error = "If-Match header not set" });
+            }
+
+            byte[] rowVersion = Convert.FromBase64String(request.Headers[HeaderNames.IfMatch].ToString());
+
+            await _commentService.DeleteCommentAsync(membershipUserId, slug, discussionId, commentId, rowVersion, cancellationToken);
+
+            return Ok();
+        }
     }
 }

@@ -51,6 +51,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/delete");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/delete");
@@ -90,6 +91,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/delete");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/delete");
@@ -133,6 +135,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/delete");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/delete");
