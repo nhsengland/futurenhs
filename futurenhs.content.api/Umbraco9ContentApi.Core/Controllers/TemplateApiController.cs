@@ -38,7 +38,7 @@
         {
             var template = await _futureNhsTemplateHandler.GetTemplate(templateId);
 
-            if (template == null)
+            if (template is null)
             {
                 return NotFound();
             }
@@ -57,7 +57,7 @@
         {
             var templates = await _futureNhsTemplateHandler.GetAllTemplates();
 
-            if (templates == null | !templates.Any())
+            if (templates is null | !templates.Any())
             {
                 return NotFound();
             }

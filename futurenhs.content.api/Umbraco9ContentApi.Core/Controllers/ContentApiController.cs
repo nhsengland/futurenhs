@@ -37,7 +37,7 @@
         {
             var content = await _futureNhsContentHandler.GetContent(contentId);
 
-            if (content == null)
+            if (content is null)
             {
                 return NotFound();
             }
@@ -56,7 +56,7 @@
         {
             var content = await _futureNhsContentHandler.GetAllContent();
 
-            if (content == null || !content.Any())
+            if (content is null || !content.Any())
             {
                 return NotFound();
             }
@@ -82,7 +82,7 @@
 
             var result = await _futureNhsContentHandler.CreateContent(pageName, pageParentId, publish);
 
-            if (result != null)
+            if (result is not null)
             {
                 return Ok(result.Key);
             }

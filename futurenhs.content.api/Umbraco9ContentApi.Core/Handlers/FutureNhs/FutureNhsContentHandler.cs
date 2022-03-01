@@ -40,7 +40,7 @@
             var pageFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
 
             // If a parent page id is supplied and is a valid guid, set that page as the page parent. Else use the pages folder.
-            Guid parent = pageParentId != null && Guid.TryParse(pageParentId, out pageParentGuid)
+            Guid parent = pageParentId is not null && Guid.TryParse(pageParentId, out pageParentGuid)
                 ? pageParentGuid
                 : pageFolderGuid;
 
@@ -51,7 +51,7 @@
             {
                 var createResult = await _futureNhsContentService.Create(parent, pageName, pageDocumentTypeAlias);
 
-                if (createResult != null)
+                if (createResult is not null)
                 {
                     await PublishContent(createResult.Key);
                 }
@@ -90,7 +90,7 @@
 
             var pagePublishedContent = await _futureNhsContentService.GetPublished(id);
 
-            if (pagePublishedContent != null && pagePublishedContent.IsPublished())
+            if (pagePublishedContent is not null && pagePublishedContent.IsPublished())
             {
                 var result = await _futureNhsContentService.SaveAndPublish(pageTemplateContent);
                 return result;

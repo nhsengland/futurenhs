@@ -33,7 +33,7 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
             var page = await _futureNhsContentService.GetPublished(pageId);
 
             // If it doesn't exist, return as empty.
-            if (page == null)
+            if (page is null)
             {
                 return Enumerable.Empty<GroupSitemapItemViewModel>();
             }

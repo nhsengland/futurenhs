@@ -46,19 +46,19 @@
             try
             {
                 uSyncImportResults = await _uSyncContentTypeService.Import();
-                if (uSyncImportResults != null) contentTypeCount = uSyncImportResults.Where(x => x.Success).Count();
+                if (uSyncImportResults is not null) contentTypeCount = uSyncImportResults.Where(x => x.Success).Count();
 
                 uSyncImportResults = await _uSyncDataTypeService.Import();
-                if (uSyncImportResults != null) dataTypeCount = uSyncImportResults.Where(x => x.Success).Count();
+                if (uSyncImportResults is not null) dataTypeCount = uSyncImportResults.Where(x => x.Success).Count();
 
                 uSyncImportResults = await _uSyncMediaTypeService.Import();
-                if (uSyncImportResults != null) MediaTypeCount = uSyncImportResults.Where(x => x.Success).Count();
+                if (uSyncImportResults is not null) MediaTypeCount = uSyncImportResults.Where(x => x.Success).Count();
 
                 uSyncImportResults = await _uSyncContentService.Import();
-                if (uSyncImportResults != null) contentCount = uSyncImportResults.Where(x => x.Success).Count();
+                if (uSyncImportResults is not null) contentCount = uSyncImportResults.Where(x => x.Success).Count();
 
                 uSyncImportResults = await _uSyncMediaService.Import();
-                if (uSyncImportResults != null) mediaCount = uSyncImportResults.Where(x => x.Success).Count();
+                if (uSyncImportResults is not null) mediaCount = uSyncImportResults.Where(x => x.Success).Count();
             }
             catch (Exception e)
             {

@@ -38,7 +38,7 @@
         {
             var content = await _futureNhsContentHandler.GetContent(blockId);
 
-            if (content == null)
+            if (content is null)
             {
                 return NotFound();
             }
@@ -57,7 +57,7 @@
         {
             var blocks = await _futureNhsBlockHandler.GetAllBlocks();
 
-            if (blocks != null && blocks.Any())
+            if (blocks is not null && blocks.Any())
             {
                 return Ok(blocks);
             }

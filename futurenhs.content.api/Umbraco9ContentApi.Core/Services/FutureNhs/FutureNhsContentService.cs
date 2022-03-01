@@ -30,7 +30,7 @@
         public async Task<IEnumerable<IPublishedContent>> GetPublishedChildren(Guid id)
         {
             var children = _publishedContent.Content(id).Children;
-            return children != null && children.Any() ? children : new List<IPublishedContent>();
+            return children is not null && children.Any() ? children : new List<IPublishedContent>();
         }
 
         /// <inheritdoc />
@@ -64,7 +64,7 @@
         {
             var content = _contentService.GetById(id);
 
-            if (content == null)
+            if (content is null)
             {
                 return false;
             }
@@ -95,7 +95,7 @@
             var blocks = template.GetProperty("blockPicker")
                 .GetValue() as List<IPublishedContent>;
 
-            if (blocks == null || !blocks.Any())
+            if (blocks is null || !blocks.Any())
             {
                 return new List<ContentModel>();
             }
@@ -105,7 +105,7 @@
                 contentModels.Add(await Resolve(block));
             }
 
-            return contentModels != null ? contentModels : new List<ContentModel>();
+            return contentModels is not null ? contentModels : new List<ContentModel>();
         }
 
         /// <inheritdoc />

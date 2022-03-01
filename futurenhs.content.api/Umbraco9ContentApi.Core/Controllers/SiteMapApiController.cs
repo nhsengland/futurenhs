@@ -31,7 +31,7 @@ namespace Umbraco9ContentApi.Core.Controllers
         {
             var siteMapItems = await _futureNhsSiteMapHandler.GetGroupSitemapItems(pageId);
 
-            if (siteMapItems == null || !siteMapItems.Any())
+            if (siteMapItems is null || !siteMapItems.Any())
             {
                 return NotFound();
             }

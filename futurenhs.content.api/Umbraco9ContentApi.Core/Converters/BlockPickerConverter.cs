@@ -27,7 +27,7 @@ namespace Umbraco9ContentApi.Core.Converters
         /// <inheritdoc />
         public object Convert(object value, Dictionary<string, object>? options = null)
         {
-            if (value == null)
+            if (value is null)
             {
                 throw new ArgumentNullException(nameof(value), $"A value for {EditorAlias} is required.");
             }

@@ -24,7 +24,7 @@ namespace Umbraco9ContentApi.Core.Controllers.Base
         {
             var content = await _futureNhsContentHandler.GetContent(id);
 
-            if (content == null)
+            if (content is null)
             {
                 return NoContent();
             }
