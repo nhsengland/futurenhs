@@ -1,6 +1,6 @@
 import React from 'react';
 import * as nextRouter from 'next/router';
-import { render, screen } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
 
 import { GroupFileTemplate } from './index';
 import { Props } from './interfaces';
@@ -22,7 +22,19 @@ describe('Group file template', () => {
         file: {
             id: 'mockId',
             type: 'file',
-            name: 'Mock file name'
+            name: 'Mock file name',
+            createdBy: {
+                id: '1',
+                text: {
+                    userName: 'Mock username'
+                }
+            },
+            path: [
+                {
+                    element: 'p',
+                    text: 'Mock breadcrumb'
+                }
+            ]
         },
         user: undefined,
         actions: [],
@@ -45,5 +57,50 @@ describe('Group file template', () => {
         expect(screen.getAllByText('Mock file name').length).toEqual(1);
 
     });
-    
+
+    it('conditionally renders breadcrumbs if path is included in props.file', () => {
+        
+        render(<GroupFileTemplate {...props} />);
+
+        expect(screen.getAllByText('Mock breadcrumb').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            file: {
+                id: 'mockId',
+                type: 'file',
+                name: 'Mock file name'
+            }
+        });
+
+        render(<GroupFileTemplate {...propsCopy}/>);
+
+        expect(screen.queryByText('Mock breadcrumb')).toBeNull();
+
+    });
+
+
+    it('conditionally renders username if createdBy is included in props.file', () => {
+
+        render(<GroupFileTemplate {...props} />);
+
+        expect(screen.getAllByText('Mock username').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            file: {
+                id: 'mockId',
+                type: 'file',
+                name: 'Mock file name'
+            }
+        });
+
+        render(<GroupFileTemplate {...propsCopy}/>);
+
+        expect(screen.queryByText('Mock username')).toBeNull();
+        
+    });
+
 });

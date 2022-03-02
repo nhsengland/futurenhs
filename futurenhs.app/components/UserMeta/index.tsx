@@ -14,7 +14,7 @@ export const UserMeta: (props: Props) => JSX.Element = ({
 
     const generatedClasses = {
         wrapper: classNames('c-user-meta', className),
-        avatar: classNames('c-user-meta_avatar', 'u-h-12', 'u-w-12', 'u-min-w-fit'),
+        avatar: classNames('c-user-meta_avatar', 'u-h-12', 'u-w-12'),
         body: classNames('c-user-meta_body')
     }
 

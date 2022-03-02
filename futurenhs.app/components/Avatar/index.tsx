@@ -19,7 +19,7 @@ export const Avatar: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames('c-avatar', className),
         image: classNames('c-avatar_image'),
-        fallBack: classNames('c-avatar_fallback', 'u-min-w-fit'),
+        fallBack: classNames('c-avatar_fallback'),
         fallBackInitials: classNames('c-avatar_fallback-initials')
     };
 

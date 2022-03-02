@@ -115,7 +115,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     const creatorUserName: string = createdBy.text.userName;
                                     const creatorUserId: string = createdBy.id;
                                     const createdDate: string = dateTime({ value: created });
-                                    const lastCommentUserName: string = modifiedBy.text.userName;
+                                    const lastCommentUserName: string = modifiedBy?.text.userName;
                                     const lastCommentDate: string = dateTime({ value: modified });
                                     const cardLinkHref: string = `${groupBasePath}/forum/${discussionId}`;
 

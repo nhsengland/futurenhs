@@ -53,7 +53,7 @@ module.exports = {
         '<rootDir>/hofs/**/*.{ts,tsx,js,jsx}',
         '<rootDir>/services/**/*.{ts,tsx,js,jsx}',
         '<rootDir>/selectors/**/*.{ts,tsx,js,jsx}',
-        '<rootDir>/pages/**/*.{ts,tsx,js,jsx}',
+        '<rootDir>/pages/**/*.{ts,tsx,js,jsx}'
     ],
     coverageDirectory: 'test-reports/unit',
     coveragePathIgnorePatterns: [

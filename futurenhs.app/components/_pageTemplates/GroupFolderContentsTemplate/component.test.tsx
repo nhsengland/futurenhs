@@ -1,6 +1,7 @@
 import React from 'react';
 import * as nextRouter from 'next/router';
-import { render, screen } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
+import { actions as userActions } from '@constants/actions';
 
 import { GroupFolderContentsTemplate } from './index';
 import { Props } from './interfaces';
@@ -19,18 +20,43 @@ describe('Group folders template', () => {
     const props: Props = {
         id: 'mockId',
         tabId: 'files',
-        folderId: null,
-        folder: null,
-        folderContents: [],
+        folderId: 'mockId',
+        folder: {
+            id: 'mockId',
+            type: 'folder',
+            text: {
+                name: 'Mock folder',
+                body: 'Mock folder body text'
+            },
+            path: [
+                {
+                    element: 'p',
+                    text: 'Mock breadcrumb'
+                }
+            ]
+        },
+        folderContents: [
+            {
+                id: 'mockId',
+                name: 'Mock folder content name',
+                type: 'file'
+            }
+        ],
         user: undefined,
-        actions: [],
+        actions: [
+            userActions.GROUPS_FOLDERS_EDIT,
+            userActions.GROUPS_FOLDERS_DELETE,
+            userActions.GROUPS_FOLDERS_ADD,
+            userActions.GROUPS_FILES_ADD
+
+        ],
         contentText: {
-            foldersHeading: 'Folders',
+            foldersHeading: 'Mock folder heading',
             noFolders: 'No folders',
-            createFile: 'Create file',
             createFolder: 'Create folder',
             updateFolder: 'Update folder',
-            deleteFolder: 'Delet Folder'
+            deleteFolder: 'Delete folder',
+            createFile: 'Upload file'
         },
         entityText: {
             title: 'Mock title text',
@@ -47,8 +73,164 @@ describe('Group folders template', () => {
 
         render(<GroupFolderContentsTemplate {...props} />);
 
-        expect(screen.getAllByText('Folders').length).toEqual(1);
+        expect(screen.getAllByText('Mock folder').length).toEqual(1);
 
     });
     
+    it('conditionally renders breadcrumbs if path is included in props.folder', () => {
+        
+        render(<GroupFolderContentsTemplate {...props} />);
+
+        expect(screen.getAllByText('Mock breadcrumb').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            folder: {
+                id: 'mockId',
+                type: 'file',
+                text: {
+                    name: 'Mock folder'
+                }
+            }
+        });
+
+        render(<GroupFolderContentsTemplate {...propsCopy}/>);
+
+        expect(screen.queryByText('Mock breadcrumb')).toBeNull();
+
+    });
+
+
+    it('conditionally renders delete/edit buttons', () => {
+
+        render(<GroupFolderContentsTemplate {...props} />);
+
+        expect(screen.getAllByText('Update folder').length).toBe(1);
+        expect(screen.getAllByText('Delete folder').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            actions: []
+        });
+
+        render(<GroupFolderContentsTemplate {...propsCopy}/>);
+
+        expect(screen.queryByText('Update folder')).toBeNull();
+        expect(screen.queryByText('Delete folder')).toBeNull();
+
+    });
+
+
+    it('conditionally renders folder name', () => {
+        
+        render(<GroupFolderContentsTemplate {...props} />);
+        
+        expect(screen.getAllByText('Mock folder').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            folderId: null
+        });
+
+        render(<GroupFolderContentsTemplate {...propsCopy}/>);
+
+        expect(screen.getAllByText('Mock folder heading').length).toBe(1);
+
+    });
+
+
+    it('conditionally renders folder body text', () => {
+        
+        render(<GroupFolderContentsTemplate {...props} />);
+        
+        expect(screen.getAllByText('Mock folder body text').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            folder: {
+                id: 'mockId',
+                type: 'folder',
+                text: {
+                    name: 'Mock folder',
+                }
+            }
+        });
+
+
+        render(<GroupFolderContentsTemplate {...propsCopy} />);
+
+        expect(screen.queryByText('Mock folder body text')).toBeNull();
+
+    });
+    
+
+    it('conditionally renders folder contents', () => {
+
+        render(<GroupFolderContentsTemplate {...props} />);
+        
+        expect(screen.getAllByText('Mock folder content name').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            folderContents: null,
+            folderId: null
+        });
+
+        render(<GroupFolderContentsTemplate {...propsCopy} />);
+
+        expect(screen.getAllByText('No folders').length).toBe(1);
+
+    })
+
+
+    it('conditionally renders create folder button', () => {
+
+        render(<GroupFolderContentsTemplate {...props} />);
+        
+        expect(screen.getAllByText('Create folder').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            actions: [
+                userActions.GROUPS_FOLDERS_EDIT,
+                userActions.GROUPS_FOLDERS_DELETE,
+                userActions.GROUPS_FILES_ADD
+            ]
+        });
+
+        render(<GroupFolderContentsTemplate {...propsCopy} />);
+
+        expect(screen.queryByText('Create folder')).toBeNull();
+
+    });
+
+
+    it('conditionally renders create folder button', () => {
+
+        render(<GroupFolderContentsTemplate {...props} />);
+        
+        expect(screen.getAllByText('Upload file').length).toBe(1);
+
+        cleanup();
+
+        const propsCopy: Props = Object.assign({}, props, {
+            actions: [
+                userActions.GROUPS_FOLDERS_EDIT,
+                userActions.GROUPS_FOLDERS_DELETE,
+                userActions.GROUPS_FOLDERS_ADD,
+            ]
+        });
+
+        render(<GroupFolderContentsTemplate {...propsCopy} />);
+
+        expect(screen.queryByText('Upload file')).toBeNull();
+
+    });
+
 });

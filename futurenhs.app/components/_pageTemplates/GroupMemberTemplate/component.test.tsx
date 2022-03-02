@@ -21,7 +21,12 @@ describe('Group member template', () => {
         id: 'mockPageId',
         tabId: 'members',
         user: undefined,
-        member: null,
+        member: {
+            firstName: 'Mock first name',
+            lastName: 'Mock last name',
+            pronouns: 'Mock pronouns',
+            email: 'Mock email'
+        },
         actions: [],
         forms: forms,
         contentText: {
@@ -36,6 +41,24 @@ describe('Group member template', () => {
         render(<GroupMemberTemplate {...props} />);
 
         expect(screen.getAllByText('Mock secondary heading html').length).toEqual(1);
+
+    });
+
+    it('renders contentText info if provided', () => {
+
+        const propsCopy: Props = Object.assign({}, props, {
+            contentText: {
+                secondaryHeading: 'Mock secondary heading',
+                firstNameLabel: 'Mock first name label',
+                lastNameLabel: 'Mock last name label',
+                pronounsLabel: 'Mock pronouns label',
+                emailLabel: 'Mock email label'
+            }
+        });
+        
+        render(<GroupMemberTemplate {...propsCopy} />);
+
+        expect(screen.getAllByText('Mock first name label').length).toBe(1);
 
     });
     

@@ -23,7 +23,9 @@ describe('Group update template', () => {
         user: undefined,
         actions: [],
         forms: forms,
-        contentText: null,
+        contentText: {
+            mainHeading: 'Mock main heading'
+        },
         entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
@@ -39,7 +41,7 @@ describe('Group update template', () => {
 
         render(<GroupUpdateTemplate {...props} />);
 
-        expect(screen.getAllByText('Edit group information').length).toEqual(1);
+        expect(screen.getAllByText('Mock main heading').length).toEqual(1);
 
     });
     

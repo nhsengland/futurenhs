@@ -4,9 +4,8 @@ export interface Discussion {
     discussionId?: string;
     responseCount?: number; 
     viewCount?: number;
-    createdBy?: Partial<User>;
-    createdBy?: Partial<User>;
-    created?: string;
+    createdBy: Partial<User>;
+    created: string;
     modifiedBy?: Partial<User>;
     modified?: string;
     isSticky?: boolean;
