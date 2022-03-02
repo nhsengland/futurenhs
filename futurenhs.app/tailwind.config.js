@@ -52,7 +52,7 @@ module.exports = {
             "./components/**/*.tsx",
             "./form-configs/**/*.ts"
         ],
-        safelist: [/bg-theme-/, /text-theme-/, /border-theme-/,  /(border-[lrtb])((\-\w+))+/gi]
+        safelist: [/bg-theme-/, /text-theme-/, /border-theme-/, /fill-theme-/,  /(border-[lrtb])((\-\w+))+/gi]
     },
     darkMode: false,
     theme: {

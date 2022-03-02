@@ -25,6 +25,8 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
     actions,
 }) => {
 
+    const router = useRouter();
+
     const fields = selectFormDefaultFields(forms, formTypes.UPDATE_GROUP_MEMBER);
 
     const { secondaryHeading,
@@ -33,13 +35,13 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             pronounsLabel,
             emailLabel } = contentText ?? {};
 
-    const router = useRouter();
     const backLinkHref: string = getRouteToParam({
         router: router,
         paramName: routeParams.MEMBERID
     });
 
     const shouldRenderUpdateForm: boolean = actions.includes(actionsConstants.GROUPS_MEMBERS_EDIT);
+    const shouldRenderAccordionOpen: boolean = Boolean(router.query.edit);
 
     return (
 
@@ -65,14 +67,19 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                         }}
                         className="tablet:u-justify-center tablet:u-mt-16" />
                     {shouldRenderUpdateForm &&
-                        <Form
-                            csrfToken=""
-                            formId=""
-                            fields={fields}
-                            text={{
-                                submitButton: 'Save changes'
-                            }}
-                            submitAction={() => { }} />
+                        <Accordion 
+                            id=""
+                            isOpen={shouldRenderAccordionOpen}
+                            toggleChildren="Edit member">
+                                <Form
+                                    csrfToken=""
+                                    formId=""
+                                    fields={fields}
+                                    text={{
+                                        submitButton: 'Save changes'
+                                    }}
+                                    submitAction={() => { }} />
+                        </Accordion>
                     }
                 </LayoutColumn>
             </LayoutColumnContainer>

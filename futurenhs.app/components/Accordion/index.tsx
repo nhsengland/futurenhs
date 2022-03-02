@@ -13,6 +13,7 @@ export const Accordion: (props: Props) => JSX.Element = ({
     isDisabled = false,
     isOpen = false,
     shouldCloseOnLeave = false,
+    shouldCloseOnContentClick = false,
     toggleAction
 }) => {
 
@@ -63,6 +64,19 @@ export const Accordion: (props: Props) => JSX.Element = ({
     }
 
     /**
+     * Handles content event
+     */
+    const handleContentClick: any = (event: Event): void => {
+
+        if (shouldCloseOnContentClick && wrapperRef.current) {
+
+            wrapperRef.current?.removeAttribute('open');
+    
+        }
+
+    }
+
+    /**
      * Handles click or focus outside the component
      */
     const handleLeave: any = (event: Event): void => {
@@ -105,7 +119,7 @@ export const Accordion: (props: Props) => JSX.Element = ({
                 <summary className={generatedClasses.toggle}>
                     {toggleChildren}
                 </summary>
-                <div id={id} className={generatedClasses.content}>
+                <div id={id} className={generatedClasses.content} onClick={handleContentClick}>
                     {React.Children.map(children, (child: any) => {
 
                         const isReactComponent: boolean = typeof child?.type === 'function';

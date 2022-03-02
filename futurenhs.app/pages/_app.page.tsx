@@ -15,25 +15,51 @@ const App = ({ Component, pageProps }) => {
     const router = useRouter();
     const { errors, layoutId } = pageProps;
 
-    if(errors?.find((error) => error[500])){
+    const hasServerError: boolean = errors?.filter(error => Object.keys(error).filter(key => Number(key) >= 500)).length > 0;
 
-        return <ErrorPage statusCode={500} />
+    if(hasServerError){
+
+        return (
+        
+            <StandardLayout {...pageProps} user={null}>
+                <ErrorPage statusCode={500} />
+            </StandardLayout>
+
+        )
 
     }
 
     if(layoutId === layoutIds.GROUP){
 
-        return <GroupLayout {...pageProps}><Component {...pageProps} key={router.asPath} /></GroupLayout>
+        return (
+        
+            <GroupLayout {...pageProps}>
+                <Component {...pageProps} key={router.asPath} />
+            </GroupLayout>
+
+        )
 
     }
 
     if(layoutId === layoutIds.ADMIN){
 
-        return <AdminLayout {...pageProps}><Component {...pageProps} key={router.asPath} /></AdminLayout>
+        return (
+        
+            <AdminLayout {...pageProps}>
+                <Component {...pageProps} key={router.asPath} />
+            </AdminLayout>
+
+        )
 
     }
 
-    return <StandardLayout {...pageProps}><Component {...pageProps} key={router.asPath} /></StandardLayout>
+    return (
+    
+        <StandardLayout {...pageProps}>
+            <Component {...pageProps} key={router.asPath} />
+        </StandardLayout>
+
+    )
     
 }
 

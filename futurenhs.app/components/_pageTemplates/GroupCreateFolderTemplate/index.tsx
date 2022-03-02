@@ -6,7 +6,6 @@ import { formTypes } from '@constants/forms';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { selectFormDefaultFields, selectFormInitialValues, selectFormErrors } from '@selectors/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
-import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
@@ -89,7 +88,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                             }}
                             submitAction={handleSubmit}
                             cancelHref={folderHref}
-                            bodyClassName="u-mb-14 u-px-14 u-pt-12 u-pb-8 u-bg-theme-1"
+                            bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1"
                             submitButtonClassName="u-float-right">
                             {name &&
                                 <>

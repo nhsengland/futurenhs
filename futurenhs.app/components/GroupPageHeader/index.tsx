@@ -135,6 +135,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                 id={generatedIds.actionsAccordion}
                                 isOpen={isActionsAccordionOpen}
                                 shouldCloseOnLeave={true}
+                                shouldCloseOnContentClick={isMobile}
                                 toggleAction={handleAccordionToggle}
                                 toggleClassName={generatedClasses.actionsTrigger}
                                 toggleChildren={
@@ -196,6 +197,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         id={generatedIds.menuAccordion}
                         isOpen={isMenuAccordionOpen}
                         shouldCloseOnLeave={isMobile}
+                        shouldCloseOnContentClick={isMobile}
                         toggleAction={handleAccordionToggle}
                         toggleClassName={generatedClasses.navTrigger}
                         toggleChildren={

@@ -3,6 +3,7 @@ export interface Props {
     isDisabled?: boolean;
     isOpen?: boolean;
     shouldCloseOnLeave?: boolean;
+    shouldCloseOnContentClick?: boolean;
     toggleAction?: (id: string, isOpen: boolean) => any;
     children: any;
     toggleChildren: any;

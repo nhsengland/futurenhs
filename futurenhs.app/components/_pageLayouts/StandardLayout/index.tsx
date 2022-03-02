@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import Script from 'next/script';
 import { useRouter } from 'next/router';
 
 import { mediaQueries } from '@constants/css';
@@ -70,7 +69,9 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
             ['u-bg-theme-3']: user,
             ['u-bg-theme-1']: !user
         }, className),
-        breadCrumb: classNames('u-bg-theme-1'),
+        breadCrumb: classNames('u-bg-theme-1', {
+            ['u-hidden']: breadCrumbListToUse.length === 0
+        }, 'tablet:u-block'),
         main: classNames('u-flex u-flex-grow'),
         content: classNames({
             ['u-m-0']: shouldRenderMainNav && user && isMobile,

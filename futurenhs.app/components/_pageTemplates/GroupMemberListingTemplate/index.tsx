@@ -210,7 +210,12 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
         if (shouldRenderMemberEditColumn) {
 
             rows.push({
-                children: <Link href={`${groupBasePath}/members}/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
+                children: <Link href={{
+                    pathname: `${groupBasePath}/members/${id}`,
+                    query: { 
+                        edit: 'true' 
+                    }
+                } as any}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden'
             });
@@ -244,9 +249,9 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     };
 
     const { pendingMemberRequestsHeading,
-        membersHeading,
-        noPendingMembers,
-        noMembers } = contentText ?? {};
+            membersHeading,
+            noPendingMembers,
+            noMembers } = contentText ?? {};
 
     return (
 

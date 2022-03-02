@@ -228,7 +228,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     <>
                         <LayoutColumnContainer>
                             <LayoutColumn tablet={6} desktop={8} className="u-self-center">
-                                <h2 className="nhsuk-heading-xl u-m-0 o-truncated-text-lines-3">{name}</h2>
+                                <h2 className="nhsuk-heading-l u-m-0 o-truncated-text-lines-3">{name}</h2>
                             </LayoutColumn>
                             {(folderId && (hasEditFolderAction || hasDeleteFolderAction)) &&
                                 <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
