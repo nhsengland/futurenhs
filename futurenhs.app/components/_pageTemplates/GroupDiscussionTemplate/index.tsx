@@ -68,6 +68,16 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         shouldIncludeParam: true
     });
 
+    const { 
+        createdByLabel,
+        lastCommentLabel,
+        totalRecordsLabel,
+        viewCountLabel,
+        moreRepliesLabel,
+        secondaryHeading,
+        signedInLabel
+    } = contentText ?? {};
+
     const { id, text } = user ?? {};
     const { userName } = text ?? {};
     const { text: discussionText,
@@ -284,18 +294,18 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 initials: creatorUserInitials
                             }}
                             className="u-m-0 u-text-theme-7">
-                            <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
+                            <span className="u-text-bold u-block">{createdByLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
                             {(responseCount > 0 && lastCommentUserName) &&
-                                <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
+                                <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
                             }
                         </UserMeta>
                     </LayoutColumn>
                     <LayoutColumn tablet={4} className="u-self-end tablet:u-text-right u-text-theme-7 u-text-bold u-mt-4">
                         {totalRecords > 0 &&
-                            <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" /> {totalRecords} comments</span>
+                            <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" /> {totalRecords} {totalRecordsLabel}</span>
                         }
                         {viewCount > 0 &&
-                            <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCount} views</>
+                            <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCount} {viewCountLabel}</>
                         }
                     </LayoutColumn>
                 </LayoutColumnContainer>
@@ -362,7 +372,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                     {hasReplies &&
                                                         <Accordion
                                                             id={additionalRepliesAccordionId}
-                                                            toggleChildren={<span>Show more replies</span>}
+                                                            toggleChildren={<span>{moreRepliesLabel}</span>}
                                                             toggleClassName="c-comment_replies-toggle u-text-bold">
                                                             <ul className="u-list-none u-m-0 u-p-0">
                                                                 {repliesComponents.splice(1)}
@@ -387,8 +397,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 </ErrorBoundary>
                 {shouldRenderCommentAndReplyForms &&
                     <>
-                        <h3 className="nhsuk-heading-l">Join in the conversation</h3>
-                        <p className="u-text-bold">You're signed in <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
+                        <h3 className="nhsuk-heading-l">{secondaryHeading}</h3>
+                        <p className="u-text-bold">{signedInLabel} <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
                         <Form
                             csrfToken={csrfToken}
                             formId={formTypes.CREATE_DISCUSSION_COMMENT}

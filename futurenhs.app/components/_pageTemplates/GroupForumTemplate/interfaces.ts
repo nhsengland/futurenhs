@@ -6,6 +6,9 @@ declare interface ContentText extends GroupsPageTextContent {
     discussionsHeading: string; 
     noDiscussions: string;
     createDiscussion: string;
+    createdByLabel?: string;
+    lastCommentLabel?: string;
+    stickyLabel?: string;
 }
 
 export interface Props extends GroupPage {

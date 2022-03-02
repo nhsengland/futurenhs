@@ -21,6 +21,8 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
     const initialValues = selectFormInitialValues(forms, formTypes.UPDATE_GROUP);
     const fields = selectFormDefaultFields(forms, formTypes.UPDATE_GROUP);
 
+    const { mainHeading, secondaryHeading } = contentText ?? {}
+
     return (
 
         <>
@@ -45,8 +47,8 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
                             cancelHref="/"
                             submitAction={() => { }}
                             bodyClassName="u-mb-12">
-                            <h2 className="nhsuk-heading-l">Edit group information</h2>
-                            <p className="u-text-lead u-text-theme-7 u-mb-4">Edit your group title, description, introduction, logo and choose a colour pallette for your group.</p>
+                            <h2 className="nhsuk-heading-l">{mainHeading}</h2>
+                            <p className="u-text-lead u-text-theme-7 u-mb-4">{secondaryHeading}</p>
                         </FormWithErrorSummary>
                     </LayoutColumn>
                 </LayoutColumnContainer>

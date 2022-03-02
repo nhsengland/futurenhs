@@ -7,6 +7,9 @@ declare interface ContentText extends GroupsPageTextContent {
     membersHeading: string;
     noPendingMembers: string;
     noMembers: string;
+    acceptMember: string;
+    rejectMember: string;
+    editMember: string;
 }
 
 export interface Props extends GroupPage {

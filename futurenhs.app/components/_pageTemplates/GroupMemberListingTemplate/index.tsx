@@ -34,6 +34,14 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     const [membersList, setMembersList] = useState(members);
     const [dynamicPagination, setPagination] = useState(pagination);
 
+    const { pendingMemberRequestsHeading,
+        membersHeading,
+        noPendingMembers,
+        noMembers,
+        acceptMember,
+        rejectMember,
+        editMember } = contentText ?? {};
+
     const groupBasePath: string = getRouteToParam({
         router: router,
         paramName: routeParams.GROUPID,
@@ -109,7 +117,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                 headerClassName: generatedHeaderCellClasses.requestDate
             },
             {
-                children: <span className="u-flex u-justify-between u-w-full"><a href="#">Accept</a><a href="#">Reject</a></span>,
+                children: <span className="u-flex u-justify-between u-w-full"><a href="#">{acceptMember}</a><a href="#">{rejectMember}</a></span>,
                 className: generatedCellClasses.actions,
                 headerClassName: generatedHeaderCellClasses.actions
             }
@@ -215,7 +223,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                     query: { 
                         edit: 'true' 
                     }
-                } as any}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
+                } as any}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />{editMember}</a></Link>,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden'
             });
@@ -247,11 +255,6 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
         setPagination(pagination);
 
     };
-
-    const { pendingMemberRequestsHeading,
-            membersHeading,
-            noPendingMembers,
-            noMembers } = contentText ?? {};
 
     return (
 

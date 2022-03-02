@@ -6,6 +6,7 @@ import { layoutIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
+import { withTextContent } from '@hofs/withTextContent';
 import { selectCsrfToken } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
@@ -25,27 +26,31 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: withForms({
             props,
             routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
+            getServerSideProps: withTextContent({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-                const csrfToken: string = selectCsrfToken(context);
+                    const csrfToken: string = selectCsrfToken(context);
 
-                props.forms[formTypes.UPDATE_GROUP].initialValues = {
-                    'name': props.entityText.title,
-                    'strapline': props.entityText.strapLine,
-                    'themeId': [props.themeId]
-                };
-                props.layoutId = layoutIds.GROUP;
-                props.tabId = 'index';
+                    props.forms[formTypes.UPDATE_GROUP].initialValues = {
+                        'name': props.entityText.title,
+                        'strapline': props.entityText.strapLine,
+                        'themeId': [props.themeId]
+                    };
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = 'index';
 
-                /**
-                 * Return data to page template
-                 */
-                return {
-                    notFound: !props.actions.includes(actions.GROUPS_EDIT),
-                    props: props
+                    /**
+                     * Return data to page template
+                     */
+                    return {
+                        notFound: !props.actions.includes(actions.GROUPS_EDIT),
+                        props: props
+                    }
+
                 }
-
-            }
+            })
         })
     })
 });

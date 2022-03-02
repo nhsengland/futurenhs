@@ -34,6 +34,8 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     const { text } = folder ?? {};
     const { name } = text ?? {};
 
+    const {secondaryHeading} = contentText ?? {};
+
     const groupBasePath: string = getRouteToParam({
         router: router,
         paramName: routeParams.GROUPID,
@@ -96,7 +98,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                                     <hr />
                                 </>
                             }
-                            {name ? <h3 className="nhsuk-heading-m">Add Folder</h3> : <h2 className="nhsuk-heading-l">Add Folder</h2>}
+                            {name ? <h3 className="nhsuk-heading-m">{secondaryHeading}</h3> : <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>}
                             <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
                         </FormWithErrorSummary>
                     </LayoutColumn>

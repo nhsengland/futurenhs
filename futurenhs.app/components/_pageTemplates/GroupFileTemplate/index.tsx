@@ -29,6 +29,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
     const router = useRouter();
     const [shouldRenderFilePreview, setShouldRenderFilePreview] = useState(false);
 
+    const { previewLabel, createdByLabel } = contentText ?? {};
     const { path, name, createdBy, text: fileText } = file ?? {};
     const { body } = fileText ?? {};
 
@@ -118,7 +119,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                 <RichText wrapperElementType="p" bodyHtml={body} />
                 {createdBy &&
                     <p className="u-mb-14">
-                        <span className="u-text-bold u-mr-6">Owner</span>
+                        <span className="u-text-bold u-mr-6">{createdByLabel}</span>
                         <Link href={`${groupBasePath}/members/${createdBy.id}`}>{createdBy.text.userName}</Link>
                     </p>
                 }
@@ -171,7 +172,7 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                 <AriaLiveRegion>
                     {shouldRenderFilePreview &&
                         <>
-                            <h2 className="nhsuk-heading-l">File preview</h2>
+                            <h2 className="nhsuk-heading-l">{previewLabel}</h2>
                             <iframe src="https://www.bbc.co.uk" className="u-w-full"></iframe>
                         </>
                     }

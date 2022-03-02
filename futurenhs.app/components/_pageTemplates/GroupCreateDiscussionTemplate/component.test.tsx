@@ -25,7 +25,9 @@ describe('Group create discussion template', () => {
         forms: {
             'create-discussion': createDiscussionForm
         },
-        contentText: null,
+        contentText: {
+            secondaryHeading: 'Mock secondary heading'
+        },
         entityText: {
             title: 'Mock title text',
             metaDescription: 'Mock meta description text',
@@ -41,7 +43,7 @@ describe('Group create discussion template', () => {
 
         render(<GroupCreateDiscussionTemplate {...props} />);
 
-        expect(screen.getAllByText('Create Discussion').length).toEqual(2);
+        expect(screen.getAllByText('Mock secondary heading').length).toEqual(1);
 
     });
     

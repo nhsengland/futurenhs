@@ -47,7 +47,10 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
     const { discussionsHeading,
             noDiscussions,
-            createDiscussion } = contentText ?? {};
+            createDiscussion,
+            createdByLabel,
+            lastCommentLabel,
+            stickyLabel } = contentText ?? {};
 
     /**
      * Client-side list pagination
@@ -123,7 +126,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                 <h3 className="c-card_heading desktop:u-mb-4">
                                                     <Link href={cardLinkHref}>
                                                         <a>
-                                                            {isSticky && <span className="u-sr-only">Sticky: </span>}
+                                                            {isSticky && <span className="u-sr-only">{stickyLabel} </span>}
                                                             {title}
                                                         </a>
                                                     </Link>
@@ -134,9 +137,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                         initials: creatorUserInitials
                                                     }}
                                                     className="u-text-theme-7">
-                                                    <span className="u-text-bold u-block">Created by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
+                                                    <span className="u-text-bold u-block">{createdByLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
                                                     {responseCount > 0 &&
-                                                        <span className="u-block u-mt-1">Last comment by <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
+                                                        <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
                                                     }
                                                 </UserMeta>
                                                 <div className="c-card_footer u-text-theme-0">

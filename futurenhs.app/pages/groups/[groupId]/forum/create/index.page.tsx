@@ -18,6 +18,7 @@ import { User } from '@appTypes/user';
 import { createDiscussionForm } from '@formConfigs/create-discussion';
 import { GroupCreateDiscussionTemplate } from '@components/_pageTemplates/GroupCreateDiscussionTemplate';
 import { Props } from '@components/_pageTemplates/GroupCreateDiscussionTemplate/interfaces';
+import { withTextContent } from '@hofs/withTextContent';
 
 const routeId: string = 'fcf3d540-9a55-418c-b317-a14146ae075f';
 const props: Partial<Props> = {};
@@ -32,63 +33,68 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: withForms({
             props,
             routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
+            getServerSideProps: withTextContent({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-                const user: User = selectUser(context);
-                const groupId: string = selectParam(context, routeParams.GROUPID);
-                const csrfToken: string = selectCsrfToken(context);
-                const body: any = selectBody(context);
+                    const user: User = selectUser(context);
+                    const groupId: string = selectParam(context, routeParams.GROUPID);
+                    const csrfToken: string = selectCsrfToken(context);
+                    const body: any = selectBody(context);
 
-                props.layoutId = layoutIds.GROUP;
-                props.tabId = 'forum';
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = 'forum';
 
-                /**
-                 * Return page not found if user doesn't have permissions to create a discussion
-                 */
-                if (!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)) {
+                    /**
+                     * Return page not found if user doesn't have permissions to create a discussion
+                     */
+                    if (!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)) {
 
-                    return {
-                        notFound: true
+                        return {
+                            notFound: true
+                        }
+
                     }
 
-                }
+                    /**
+                     * Handle server-side form post
+                     */
+                    if (body) {
 
-                /**
-                 * Handle server-side form post
-                 */
-                if (body) {
+                        const validationErrors: Record<string, string> = validate(body, selectFormDefaultFields(props.forms, createDiscussionForm.id));
 
-                    const validationErrors: Record<string, string> = validate(body, selectFormDefaultFields(props.forms, createDiscussionForm.id));
+                        props.forms[createDiscussionForm.id].errors = validationErrors;
+                        props.forms[createDiscussionForm.id].initialValues = body;
 
-                    props.forms[createDiscussionForm.id].errors = validationErrors;
-                    props.forms[createDiscussionForm.id].initialValues = body;
+                        if (Object.keys(validationErrors).length === 0) {
 
-                    if (Object.keys(validationErrors).length === 0) {
+                            try {
 
-                        try {
+                                const submission = await postGroupDiscussion({ groupId, user, csrfToken, body });
 
-                            const submission = await postGroupDiscussion({ groupId, user, csrfToken, body });
-
-                            return {
-                                props: {},
-                                redirect: {
-                                    permanent: false,
-                                    destination: `/groups/${context.params.groupId}/forum`
+                                return {
+                                    props: {},
+                                    redirect: {
+                                        permanent: false,
+                                        destination: `/groups/${context.params.groupId}/forum`
+                                    }
                                 }
-                            }
 
-                        } catch (error) {
+                            } catch (error) {
 
-                            if (error.data?.status) {
+                                if (error.data?.status) {
 
-                                props.forms[createDiscussionForm.id].errors = error.data.body || {
-                                    _error: error.data.statusText
-                                };
-                                props.forms[createDiscussionForm.id].initialValues = body;
+                                    props.forms[createDiscussionForm.id].errors = error.data.body || {
+                                        _error: error.data.statusText
+                                    };
+                                    props.forms[createDiscussionForm.id].initialValues = body;
 
-                            } else {
+                                } else {
 
-                                return handleSSRErrorProps({ props, error });
+                                    return handleSSRErrorProps({ props, error });
+
+                                }
 
                             }
 
@@ -96,14 +102,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                     }
 
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props });
+
                 }
-
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props });
-
-            }
+            })
         })
     })
 });
