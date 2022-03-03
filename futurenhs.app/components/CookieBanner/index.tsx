@@ -14,7 +14,7 @@ export const CookieBanner: (props: Props) => JSX.Element = ({
     cookieRejectValue = cookiePreferences.REJECTED,
     expiresInDays = 90,
     text = {
-        title: 'Cookies on the NHS website',
+        title: 'Cookies on the FutureNHS website',
         body: [
             'We\'ve put some small files called cookies on your device to make our site work.',
             'We\'d also like to use analytics cookies. These send information about how our site is used to services called Hotjar and Google Analytics. We use this information to improve our site.',

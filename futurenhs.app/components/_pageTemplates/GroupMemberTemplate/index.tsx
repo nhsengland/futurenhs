@@ -76,7 +76,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                                     formId=""
                                     fields={fields}
                                     text={{
-                                        submitButton: 'Save changes'
+                                        submitButton: 'Save Changes'
                                     }}
                                     submitAction={() => { }} />
                         </Accordion>
