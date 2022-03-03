@@ -3,7 +3,7 @@ Feature: groupPublic
 
 Background: 
     Given I have navigated to '/'
-    Given I have logged in as a 'user'
+    Given I have logged in as a 'user' and accept the cookies
     When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
 
@@ -15,6 +15,25 @@ Scenario: FNHS43 - View Forum of Public Group
     When I click the 'Forum' tab
     Then the 'All Discussions' header is displayed
     And the 'New Discussion' link is not displayed
+    And the 'Public Discussion Test' discussion card is displayed
+    | AA                                     |
+    | Created by auto Admin [PRETTYDATE]     |
+    | Last comment by                        |
+    | 11 Comments                            |
+    When I click the 'Public Discussion Test' link
+    Then the 'A discussion to validate public access/view in read only format' textual value is displayed
+    And the '7 comments' textual value is displayed
+    And the 'First Public Comment' comment card is displayed
+    | AA                |
+    | auto Admin        |
+    | 0 likes           |
+    | Reply             |
+    | Show more replies |
+    And the 'First Public Reply' reply card is displayed
+    | AA                                   |
+    | auto Admin                           |
+    | 0 likes                              |
+    And the 'Add Comment' button is not displayed
 
 
 Scenario: FNHS44 - View Files and Folders of Public Group

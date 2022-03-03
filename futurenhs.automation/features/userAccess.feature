@@ -39,7 +39,7 @@ Scenario: FNHS02 - Unauthenticated page redirect
 
 @Core
 Scenario: FNHS03 - Invite User Form
-    And I have logged in as a 'admin'
+    And I have logged in as a 'admin' and accept the cookies
     When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link
@@ -53,7 +53,7 @@ Scenario: FNHS03 - Invite User Form
 
 
 Scenario Outline: FNHS04 - Invite User Error Validation
-    Given I have logged in as a 'admin'
+    Given I have logged in as a 'admin' and accept the cookies
     When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link

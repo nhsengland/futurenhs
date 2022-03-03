@@ -3,7 +3,7 @@ Feature: Forum Submission
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'user'
+    And I have logged in as a 'user' and accept the cookies
     When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed 
     When I click the 'Automation Admin Group' link
@@ -32,7 +32,7 @@ Examples:
     | 1 like           | unlike      | 0 likes           |
 
 @Core
-Scenario: FNHS53 - Post a comment in a discussion (2570)
+Scenario: FNHS53 - Post a comment in a discussion
     When I click the 'forumSubmission Discussion' link
     Then the 'forumSubmission Discussion' header is displayed
     When I enter 'Comment posted by the automation' into the 'Your comment' text editor

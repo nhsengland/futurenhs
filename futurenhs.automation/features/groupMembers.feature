@@ -3,7 +3,7 @@ Feature: groupMembers
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'admin'
+    And I have logged in as a 'admin' and accept the cookies
     When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
 
@@ -69,19 +69,17 @@ Scenario: FNHS30 - View group member profile page
     # And the 'Joined' label is displayed
     # And the 'Member' checkbox is selected
 
-@Pending
-Scenario Outline: FNHS93 - Group Member Change Role
+
+Scenario Outline: FNHS93 - Change members role
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     Then the 'Group members' table exists
-    When I click 'Auto User' on the 'Auto User' row of the 'Group Members' table
+    When I click 'auto User' on the 'auto User' row of the 'Group Members' table
     Then the 'Member Profile' header is displayed
-    # FUNCTIONALITY NOT EXISTING IN FRAMEWORK, NEED TO KNOW MARKUP TO BUILD METHOD
-    And the '<initial role>' checkbox is selected
-    When I select the '<new role>' checkbox
-    Then the '<new role>' checkbox is selected
-    When I click the 'Save changes' option
+    When I open the 'Edit member' accordion
+    When I select the '<new role>' radio button for 'Member role'
+    When I click the 'Save Changes' button
     Then I confirm this on the open '' dialog
 Examples:
     | initial role | new role |
@@ -89,7 +87,7 @@ Examples:
     | Admin        | Member   |
 
 @Pending
-Scenario: FNHS94 - Group Member Remove From Group
+Scenario: FNHS94 - Remove member from a group
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab

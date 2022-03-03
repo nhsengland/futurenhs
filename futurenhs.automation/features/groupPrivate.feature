@@ -5,7 +5,7 @@ Feature: groupPrivate
 
 Background: 
     Given I have navigated to '/'
-    Given I have logged in as a 'admin'
+    Given I have logged in as a 'admin' and accept the cookies
     When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
 

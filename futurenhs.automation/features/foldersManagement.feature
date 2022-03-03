@@ -3,7 +3,7 @@ Feature: forumAdmin
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'admin'
+    And I have logged in as a 'admin' and accept the cookies
     Given I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link
@@ -40,6 +40,7 @@ Scenario: FNHS92 - Empty Folder page validation
     When I click the 'Empty Folder' link
     Then the 'Empty Folder' header is displayed
     And the 'Empty Folder for testing' textual value is displayed       
+    # Error message/Empty message validation
     Then the 'Upload File' link is displayed
     And the 'Add Folder' link is displayed
     And the 'Edit Folder' link is displayed

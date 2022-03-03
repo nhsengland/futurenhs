@@ -3,7 +3,7 @@ Feature: filesManagement
 
 Background:
 	Given I have navigated to '/'
-	And I have logged in as an 'admin'
+	And I have logged in as an 'admin' and accept the cookies
 	And I click the 'Groups' nav icon
 	Then the 'My Groups' header is displayed
 	When I click the 'Automation Admin Group' link

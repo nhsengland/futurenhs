@@ -3,7 +3,7 @@ Feature: forumAdmin
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'admin'
+    And I have logged in as a 'admin' and accept the cookies
     When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link
@@ -20,7 +20,7 @@ Scenario: FNHS58 - Create a new discussion
     Then the 'All Discussions' header is displayed
     
 
-Scenario: FNHS59 - Create a discussion (No Title) error validation, w/Cancel validation
+Scenario: FNHS59 - Create a discussion with no title validation, and cancel
     When I click the 'New Discussion' link
     Then the 'Create Discussion' header is displayed
     When I click the 'Create Discussion' button
@@ -34,7 +34,7 @@ Scenario: FNHS59 - Create a discussion (No Title) error validation, w/Cancel val
     Then the 'All Discussions' header is displayed
 
 
-Scenario: FNHS60 - Discussion card validation
+Scenario: FNHS60 - Created discussion card validation
     Then the 'autoTestDiscussion' discussion card is displayed
     | AA                                      |
     | Created by Auto Admin [PRETTYDATE]      |
@@ -60,7 +60,7 @@ Scenario: FNHS62 - Pinned Discussion Validation
 
 
 ##ISSUE IN PLATFORM MUST BE LAST TEST OF FEATURE FILE
-Scenario: FNHS63 - Create a discussion (No Comment) error validation
+Scenario: FNHS63 - Create a discussion with no content error validation
     When I click the 'New Discussion' link
     Then the 'Create Discussion' header is displayed
     When I enter 'discussion title' into the 'Title' field

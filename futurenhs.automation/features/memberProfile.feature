@@ -1,4 +1,3 @@
-@Pending
 Feature: Member Profile
     User journeys around users accessing and modifying their own personal information within FNHS
 
@@ -7,7 +6,7 @@ Background:
 
 
 Scenario: FNHS78 - View my profile page
-    Given I have logged in as a 'admin'    
+    Given I have logged in as a 'admin' and accept the cookies
     Then the 'My Groups' header is displayed
     When I open the 'Auto Admin' accordion
     And I click the 'My profile' link
@@ -31,7 +30,7 @@ Scenario: FNHS79 - Edit my profile avatar upload
     And the 'Upload an image' textual value is displayed
     And I upload the '/media/test.png' file
     And I select the 'Please confirm that all changes are in line with the platform' checkbox
-    And I click the 'Save changes' option
+    And I click the 'Save Changes' button
     Then the 'My profile' header is displayed
 
 # FORMATTING ERROR WITH TEXT AND BOUNDARIES MEANS UNABLE TO INTERACT WITH ELEMENTS
@@ -48,7 +47,7 @@ Scenario Outline: FNHS80 - Edit my profile
     And the profile values are displayed
     | Email | autoEditUser@test.co.uk |
     And I select the 'Please confirm that all changes are in line with the platform' checkbox
-    And I click the 'Save changes' option
+    And I click the 'Save Changes' button
     Then the 'My profile' header is displayed
     And the profile values are displayed
     | <label> | <input> |
@@ -74,7 +73,7 @@ Scenario Outline: FNHS81 - Edit my profile error validation
     And I enter '<lastname>' into the 'Last name' field
     And I enter '<pronoun>' into the 'Preferred pronouns' field
     And I select the 'Please confirm that all changes are in line with the platform' checkbox
-    And I click the 'Save changes' option
+    And I click the 'Save Changes' button
     Then the '<error message>' textual value is displayed
 Examples:
     | firstname | lastname | pronoun | error message               |
@@ -92,6 +91,6 @@ Scenario: FNHS82 - Edit my profile w/o accepting T&Cs
     Then the 'My profile' header is displayed
     When I click the 'Edit my profile' link
     Then the 'Edit my profile' header is displayed
-    When I click the 'Save changes' option
+    When I click the 'Save Changes' button
     Then the 'Please confirm that all changes are in line with the platform terms and conditions.' error summary is displayed
     And the 'Please confirm that all changes are in line with the platform terms and conditions.' textual value is displayed

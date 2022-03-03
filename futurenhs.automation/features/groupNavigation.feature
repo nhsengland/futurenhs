@@ -3,7 +3,7 @@ Feature: Groups
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'user'
+    And I have logged in as a 'user' and accept the cookies
     When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
 
@@ -75,7 +75,7 @@ Scenario: FNHS17 - Group Members validation
     And the 'Group Members' table exists
 
 
-Scenario: FNHS18 - Group about Us page validation
+Scenario: FNHS18 - Group about us validation
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
     When I click the 'About Us' tab
