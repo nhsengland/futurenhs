@@ -13,13 +13,15 @@ class formPage extends basePage{
     cardTypeSelector(cardType, cardText){
         var card = ''
         switch(cardType){
-            case "comment" : card = $(`//div[@class="nhsuk-card c-comment u-border-l-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`) 
+            case "comment" : card = $(`//div[@class="nhsuk-card c-comment u-border-l-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
-            case "discussion" : card = $(`//div[@class="nhsuk-card u-border-b-theme-10 u-mb-4 nhsuk-card--clickable"]/div[h3/a[contains(text(), "${cardText}")]]`)
+            case "discussion" : card = $(`//div[@class="nhsuk-card u-border-b-theme-10 hover:u-border-b-theme-10-darker u-mb-4 nhsuk-card--clickable"]/div[h3/a[contains(text(), "${cardText}")]]`);
             break;
-            case "reply" : card = $(`//div[@class="nhsuk-card c-comment c-comment--reply u-border-l-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`)
+            case "reply" : card = $(`//div[@class="nhsuk-card c-comment c-comment--reply u-border-l-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
-            case "group" : card = $(`//div[@class="nhsuk-card u-border-b-theme-11 u-mb-4 nhsuk-card--clickable"]/div[h3/a[starts-with(normalize-space(.), "${cardText}")]]`)
+            case "group" : card = $(`//div[@class="nhsuk-card u-border-b-theme-11 u-mb-4 nhsuk-card--clickable"]/div[h3/a[starts-with(normalize-space(.), "${cardText}")]]`);
+            break;
+            case "search result" : card = $(`//li[h2/a[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
         }
         helpers.waitForLoaded(card)
