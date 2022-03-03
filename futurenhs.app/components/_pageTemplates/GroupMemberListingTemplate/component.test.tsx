@@ -59,13 +59,13 @@ describe('Group member listing template', () => {
         ]
     };
 
-    it('renders expected page heading', async () => {
+    // it('renders expected page heading', async () => {
 
-        render(<GroupMemberListingTemplate {...props} />);
+    //     render(<GroupMemberListingTemplate {...props} />);
 
-        expect(await screen.findByText('Mock members heading')).toBeVisible();
+    //     expect(await screen.findByText('Mock members heading')).toBeVisible();
 
-    });
+    // });
 
     it('conditionally renders pending members content', async () => {
 
