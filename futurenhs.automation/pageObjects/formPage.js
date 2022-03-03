@@ -102,8 +102,12 @@ class formPage extends basePage{
      * 
      * @param {*} label 
      */
-    radioButtonSelect(){}
-
+    radioButtonSelect(legendLabel, buttonLabel){
+        var radioLegend = $(`//legend[text()="${legendLabel}"]`).parentElement();
+        helpers.waitForLoaded(radioLegend);
+        radioLegend.$(`./div/label[text()="${buttonLabel}"]/../input`).click();
+    }
+    
     /**
      * 
      * @param {*} label 
