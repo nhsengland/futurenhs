@@ -15,7 +15,7 @@
     /// Registers custom services on startup. 
     /// </summary>
     /// <seealso cref="IComposer" />
-    public class FutureNhsServiceComposer : IComposer
+    public sealed class FutureNhsServiceComposer : IComposer
     {
         public void Compose(IUmbracoBuilder builder)
         {

@@ -17,7 +17,7 @@ namespace Umbraco9ContentApi.Core.Services.uSync
     /// </summary>
     /// <seealso cref="uSyncBaseService" />
     /// <seealso cref="IuSyncDataTypeService" />
-    public class uSyncDataTypeService : uSyncBaseService, IuSyncDataTypeService
+    public sealed class uSyncDataTypeService : uSyncBaseService, IuSyncDataTypeService
     {
         public DataTypeHandler dataTypeHandler;
         public ILogger<DataTypeHandler> _logger;

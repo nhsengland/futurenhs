@@ -10,7 +10,7 @@
     /// Block Api controller.
     /// </summary>
     [Route("api/block")]
-    public class BlockApiController : UmbracoApiController
+    public sealed class BlockApiController : UmbracoApiController
     {
         private readonly IFutureNhsContentHandler _futureNhsContentHandler;
         private readonly IFutureNhsBlockHandler _futureNhsBlockHandler;

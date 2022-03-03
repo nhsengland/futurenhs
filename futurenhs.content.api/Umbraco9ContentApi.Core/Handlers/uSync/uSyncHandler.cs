@@ -8,7 +8,7 @@
     /// Handler for uSync services.
     /// </summary>
     /// <seealso cref="IuSyncHandler" />
-    public class uSyncHandler : IuSyncHandler
+    public sealed class uSyncHandler : IuSyncHandler
     {
         private IEnumerable<uSyncAction> uSyncImportResults = new List<uSyncAction>();
         private int contentTypeCount = 0;

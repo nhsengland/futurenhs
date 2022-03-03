@@ -17,7 +17,7 @@ namespace Umbraco9ContentApi.Core.Services.uSync
     /// </summary>
     /// <seealso cref="uSyncBaseService" />
     /// <seealso cref="IuSyncMediaTypeService" />
-    public class uSyncMediaTypeService : uSyncBaseService, IuSyncMediaTypeService
+    public sealed class uSyncMediaTypeService : uSyncBaseService, IuSyncMediaTypeService
     {
         public MediaTypeHandler mediaTypeHandler;
         public ILogger<MediaTypeHandler> _logger;

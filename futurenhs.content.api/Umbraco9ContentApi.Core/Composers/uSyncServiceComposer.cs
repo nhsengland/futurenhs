@@ -13,7 +13,7 @@
     /// Registers custom services on startup. 
     /// </summary>
     /// <seealso cref="IComposer" />
-    public class uSyncServiceComposer : IComposer
+    public sealed class uSyncServiceComposer : IComposer
     {
         public void Compose(IUmbracoBuilder builder)
         {

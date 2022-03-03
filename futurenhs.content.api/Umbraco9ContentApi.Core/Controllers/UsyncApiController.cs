@@ -10,7 +10,7 @@
     /// </summary>
     /// <seealso cref="UmbracoApiController" />
     [Route("api/usync")]
-    public class uSyncApiController : UmbracoApiController
+    public sealed class uSyncApiController : UmbracoApiController
     {
         private readonly IuSyncHandler _uSyncHandler;
 

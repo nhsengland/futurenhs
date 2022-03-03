@@ -11,7 +11,7 @@ namespace Umbraco9ContentApi.Core.Controllers
     /// </summary>
     /// <seealso cref="UmbracoApiController" />
     [Route("api/sitemap")]
-    public class SitemapApiController : UmbracoApiController
+    public sealed class SitemapApiController : UmbracoApiController
     {
         IFutureNhsSiteMapHandler _futureNhsSiteMapHandler;
 

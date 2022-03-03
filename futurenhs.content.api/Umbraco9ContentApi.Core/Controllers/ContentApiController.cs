@@ -12,7 +12,7 @@
     /// Content Api controller.
     /// </summary>
     [Route("api/content")]
-    public class ContentApiController : UmbracoApiController
+    public sealed class ContentApiController : UmbracoApiController
     {
         private readonly IFutureNhsContentHandler _futureNhsContentHandler;
 

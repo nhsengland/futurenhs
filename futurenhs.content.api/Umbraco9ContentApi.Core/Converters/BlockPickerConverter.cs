@@ -8,7 +8,7 @@ namespace Umbraco9ContentApi.Core.Converters
     /// BlockPickerConverter generates content models for template blocks.
     /// </summary>
     /// <seealso cref="IConverter" />
-    public class BlockPickerConverter : IConverter
+    public sealed class BlockPickerConverter : IConverter
     {
         private readonly Lazy<IContentResolver> _contentResolver;
 

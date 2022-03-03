@@ -10,7 +10,7 @@
     /// Template Api controller.
     /// </summary>
     [Route("api/template")]
-    public class TemplateApiController : UmbracoApiController
+    public sealed class TemplateApiController : UmbracoApiController
     {
         private readonly IFutureNhsContentHandler _futureNhsContentHandler;
         private readonly IFutureNhsTemplateHandler _futureNhsTemplateHandler;
@@ -71,7 +71,7 @@
         /// <param name="templateId">The template identifier.</param>
         /// <returns>The template identifier.</returns>
         [HttpDelete("{templateId:guid}")]
-        public virtual async Task<ActionResult> Delete(Guid templateId)
+        public async Task<ActionResult> Delete(Guid templateId)
         {
             var result = await _futureNhsContentHandler.DeleteContentAsync(templateId);
 

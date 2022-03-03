@@ -11,7 +11,7 @@
     /// The handler that handles content methods and calls the content service.
     /// </summary>
     /// <seealso cref="IFutureNhsContentHandler" />
-    public class FutureNhsContentHandler : IFutureNhsContentHandler
+    public sealed class FutureNhsContentHandler : IFutureNhsContentHandler
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;

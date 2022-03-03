@@ -10,7 +10,7 @@
     /// The handler that handles block methods and calls the content service.
     /// </summary>
     /// <seealso cref="IFutureNhsBlockHandler" />
-    public class FutureNhsBlockHandler : IFutureNhsBlockHandler
+    public sealed class FutureNhsBlockHandler : IFutureNhsBlockHandler
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;

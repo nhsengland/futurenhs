@@ -5,7 +5,7 @@ using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
 
 namespace Umbraco9ContentApi.Core.Services.FutureNhs
 {
-    public class FutureNhsSiteMapService : IFutureNhsSiteMapService
+    public sealed class FutureNhsSiteMapService : IFutureNhsSiteMapService
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;

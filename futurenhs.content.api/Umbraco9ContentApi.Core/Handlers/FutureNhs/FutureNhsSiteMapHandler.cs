@@ -10,7 +10,7 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
     /// FutureNhsSitemapHandler to access FutureNhsSitemapService class.
     /// </summary>
     /// <seealso cref="IFutureNhsSiteMapHandler" />
-    public class FutureNhsSiteMapHandler : IFutureNhsSiteMapHandler
+    public sealed class FutureNhsSiteMapHandler : IFutureNhsSiteMapHandler
     {
         private readonly IFutureNhsContentService _futureNhsContentService;
         private readonly IFutureNhsSiteMapService _futureNhsSiteMapService;

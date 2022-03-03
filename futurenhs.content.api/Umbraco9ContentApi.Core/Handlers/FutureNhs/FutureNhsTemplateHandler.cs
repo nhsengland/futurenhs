@@ -13,7 +13,7 @@
     /// The handler that handles template methods and calls the content service.
     /// </summary>
     /// <seealso cref="IFutureNhsTemplateHandler" />
-    public class FutureNhsTemplateHandler : IFutureNhsTemplateHandler
+    public sealed class FutureNhsTemplateHandler : IFutureNhsTemplateHandler
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;

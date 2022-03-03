@@ -9,7 +9,7 @@
     using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
 
     /// <inheritdoc />
-    public class FutureNhsContentService : IFutureNhsContentService
+    public sealed class FutureNhsContentService : IFutureNhsContentService
     {
         private readonly Lazy<IContentResolver> _contentResolver;
         private readonly IPublishedContentQuery _publishedContent;
