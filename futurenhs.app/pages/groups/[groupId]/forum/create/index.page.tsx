@@ -2,13 +2,14 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { routeParams } from '@constants/routes';
 import { layoutIds } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectCsrfToken, selectBody, selectParam, selectUser } from '@selectors/context';
+import { selectBody, selectCsrfToken, selectParam, selectUser } from '@selectors/context';
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
@@ -71,7 +72,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             try {
 
-                                const submission = await postGroupDiscussion({ groupId, user, csrfToken, body });
+                            const formData: any = getServerSideMultiPartFormData(body);
+
+                            await postGroupDiscussion({ groupId, user, body: formData });
 
                                 return {
                                     props: {},
@@ -88,9 +91,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     props.forms[createDiscussionForm.id].errors = error.data.body || {
                                         _error: error.data.statusText
                                     };
-                                    props.forms[createDiscussionForm.id].initialValues = body;
-
-                                } else {
 
                                     return handleSSRErrorProps({ props, error });
 

@@ -1,29 +1,48 @@
+import { FormData } from 'formdata-node';
+
 /**
  * Returns relevant aria attributes for a field's current state
  */
- export const getAriaFieldAttributes = (isRequired: boolean, isError: boolean, describedBy?: Array<string>, labelledBy?: string): any => {
+export const getServerSideMultiPartFormData = (body: Record<any, any>): FormData => {
 
-	let ariaProps: any = {};
+    const formData: any = new FormData();
 
-	if(isRequired){
+    for(const fieldName in body){
 
-		ariaProps['aria-required'] = 'true';
+        formData.set(fieldName, body[fieldName]);
 
-	}
+    }
 
-	if(isError){
+    return formData;
 
-		ariaProps['aria-invalid'] = 'true';
+};
 
-	}
+/**
+ * Returns relevant aria attributes for a field's current state
+ */
+export const getAriaFieldAttributes = (isRequired: boolean, isError: boolean, describedBy?: Array<string>, labelledBy?: string): any => {
 
-	if(describedBy?.length){
+    let ariaProps: any = {};
+
+    if (isRequired) {
+
+        ariaProps['aria-required'] = 'true';
+
+    }
+
+    if (isError) {
+
+        ariaProps['aria-invalid'] = 'true';
+
+    }
+
+    if (describedBy?.length) {
 
         let ids: string = '';
 
         describedBy.forEach((id: string) => {
 
-            if(id){
+            if (id) {
 
                 ids += `${ids ? ' ' : ''}${id}`
 
@@ -31,7 +50,7 @@
 
         });
 
-        if(ids){
+        if (ids) {
 
             ariaProps['aria-describedby'] = ids;
 
@@ -39,12 +58,12 @@
 
     }
 
-    if(labelledBy){
+    if (labelledBy) {
 
         ariaProps['aria-labelledby'] = labelledBy;
 
     }
 
-	return ariaProps;
+    return ariaProps;
 
 };

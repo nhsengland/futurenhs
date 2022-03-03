@@ -9,11 +9,7 @@ declare type Options = ({
     commentId: string;
     user: User;
     csrfToken: string;
-    body: {
-        _csrf: string;
-        formId: string;
-        content: string;
-    }
+    body: FormData;
 });
 
 declare type Dependencies = ({
@@ -37,12 +33,14 @@ export const postGroupDiscussionCommentReply: Service = async ({
 
     const { id } = user;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/replies`;
+    const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/replies`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: 'POST',
         body: {
-            Content: body[`content-${body['_instance-id']}`]
+            _csrf: body.get('_csrf'),
+            Content: body.get(`content-${body.get('_instance-id')}`)
         }
     }), 30000);
 

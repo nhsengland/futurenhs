@@ -29,20 +29,13 @@ export const MultiChoice: Function = ({
     optionClassName
 }: Props): JSX.Element => {
 
-
-    if (value && !Array.isArray(value)) {
-
-        throw new Error('provided value is not an array');
-
-    }
-
     /**
      * Render out checkboxes/ radio buttons and bind event handler to update values
      */
     const renderInputs: Function = (options: Array<any>): any => {
 
         const hasError: boolean = touched && Boolean(error);
-        const currentValues: Array<any> = value && Array.isArray(value) ? value : [];
+        const currentValues: Array<any> = value && Array.isArray(value) ? value : [value];
 
         return (
 

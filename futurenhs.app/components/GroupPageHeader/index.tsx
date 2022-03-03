@@ -135,7 +135,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                 id={generatedIds.actionsAccordion}
                                 isOpen={isActionsAccordionOpen}
                                 shouldCloseOnLeave={true}
-                                shouldCloseOnContentClick={isMobile}
+                                shouldCloseOnContentClick={true}
                                 toggleAction={handleAccordionToggle}
                                 toggleClassName={generatedClasses.actionsTrigger}
                                 toggleChildren={

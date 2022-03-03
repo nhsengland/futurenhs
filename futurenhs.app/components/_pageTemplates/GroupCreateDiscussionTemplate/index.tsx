@@ -45,19 +45,11 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Client-side submission handler
      */
-    const handleSubmit = async (submission) => {
+    const handleSubmit = async (formData: FormData): Promise<void> => {
 
         try {
 
-            const response = await services.postGroupDiscussion({
-                groupId: groupId,
-                user: user,
-                csrfToken: csrfToken,
-                body: {
-                    formId: formTypes.CREATE_DISCUSSION,
-                    ...submission
-                }
-            });
+            await services.postGroupDiscussion({ groupId, user, body: formData as any });
 
             router.push(forumHref);
 

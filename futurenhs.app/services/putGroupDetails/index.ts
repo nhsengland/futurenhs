@@ -6,6 +6,7 @@ import { User } from '@appTypes/user';
 declare type Options = ({
     groupId: string;
     user: User;
+    csrfToken: string,
     body: FormData;
 });
 
@@ -14,9 +15,10 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const postGroupDiscussion = async ({
+export const putGroupDetails = async ({
     groupId,
     user,
+    csrfToken,
     body
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
 
@@ -26,16 +28,16 @@ export const postGroupDiscussion = async ({
     const { id } = user;
 
     const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
-    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/discussions`;
-    const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'POST',
-        body: {
-            _csrf: body.get('_csrf'),
-            Title: body.get('title'),
-            Content: body.get('content')
-        }
-    }), 30000);
+    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}`;
 
+    const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
+        method: 'PUT',
+        customHeaders: {
+            'csrf-token': csrfToken
+        },
+        body: body
+    }), 30000);
+    
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;
 
@@ -43,7 +45,7 @@ export const postGroupDiscussion = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting new group discussion', {
+        throw new ServiceError('Error putting group details', {
             status: status,
             statusText: statusText,
             body: apiData

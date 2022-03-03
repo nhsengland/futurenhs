@@ -1,19 +1,13 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
-import { FetchResponse } from '@appTypes/fetch';
 import { User } from '@appTypes/user';
 
 declare type Options = ({
     groupId: string;
     user: User;
     csrfToken: string;
-    body: {
-        _csrf: string;
-        formId: string;
-        title: string;
-        comment: string;
-    }
+    body: FormData;
 });
 
 declare type Dependencies = ({
@@ -33,10 +27,14 @@ export const postGroupFolder = async ({
 
     const { id } = user;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders`;
+    const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: 'POST',
+        customHeaders: {
+            'csrf-token': csrfToken
+        },
         body: body
     }), 30000);
     

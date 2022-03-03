@@ -123,16 +123,16 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side comment submission
      */
-    const handleCommentSubmit = async (submission) => {
+    const handleCommentSubmit = async (formData: FormData): Promise<void> => {
 
         try {
 
-            const response = await services.postGroupDiscussionComment({
+            await services.postGroupDiscussionComment({
                 groupId: groupId,
                 discussionId: discussionId,
                 user: user,
                 csrfToken: csrfToken,
-                body: submission
+                body: formData
             });
 
             const targetPageNumber: number = Math.ceil((Number(dynamicPagination.totalRecords) + 1) / dynamicPagination.pageSize);
@@ -156,17 +156,17 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side comment reply submission
      */
-    const handleCommentReplySubmit = async (submission) => {
+    const handleCommentReplySubmit = async (formData: FormData): Promise<void> => {
 
         try {
 
-            const response = await services.postGroupDiscussionCommentReply({
+            await services.postGroupDiscussionCommentReply({
                 groupId: groupId,
                 discussionId: discussionId,
-                commentId: submission['_instance-id'],
+                commentId: formData.get('_instance-id'),
                 user: user,
                 csrfToken: csrfToken,
-                body: submission
+                body: formData
             });
 
             setErrors({});

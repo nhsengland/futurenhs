@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Link } from '@components/Link';
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
@@ -70,10 +70,23 @@ export const Form: (props: Props) => JSX.Element = ({
         setIsCancelModalOpen(true);
 
     };
-    const handleDiscardFormCancel = () => setIsCancelModalOpen(false);
-    const handleDiscardFormConfirm = () => router.push(cancelHref);
-    const handleChange = (props: any): any => changeAction?.(props);
-    const handleValidate = (submission: any): any => validate(submission, fields);
+    const handleDiscardFormCancel = (): void => setIsCancelModalOpen(false);
+    const handleDiscardFormConfirm = (): Promise<boolean> => router.push(cancelHref);
+    const handleChange = (props: any): void => changeAction?.(props);
+    const handleValidate = (submission: any): Record<string, string> => validate(submission, fields);
+    const handleSubmit = (submission: any): void => {
+
+        const formData: FormData = new FormData();
+
+        for(const fieldName in submission){
+
+            formData.append(fieldName, submission[fieldName]);
+
+        }
+        
+        submitAction?.(formData);
+        
+    };
 
     const { submitButton, cancelButton } = text ?? {};
 
@@ -87,7 +100,39 @@ export const Form: (props: Props) => JSX.Element = ({
         cancelButton: classNames('c-form_cancel-button', 'c-button', 'c-button-outline', 'c-button--min-width', cancelButtonClassName)
     };
 
-    const renderFields = (fields?: Array<FormField>): Array<JSX.Element> => {
+    const hasUploadFields = useCallback((fields?: Array<FormField>): boolean => {
+
+        let hasUploadFields: boolean = false;
+
+        if(!fields){
+
+            return hasUploadFields;
+
+        }
+
+        const iterator = (fields: Array<FormField>) => {
+
+            fields?.forEach(({ component, inputType, fields: childFields }) => {
+
+                if(component === 'input' && inputType === 'file'){
+
+                    hasUploadFields = true;
+
+                }
+
+                iterator(childFields);
+
+            })
+
+        };
+
+        iterator(fields);
+
+        return hasUploadFields;
+
+    }, [fields]);
+    
+    const renderFields = useCallback((fields?: Array<FormField>): Array<JSX.Element> => {
 
         if(!fields){
 
@@ -123,13 +168,15 @@ export const Form: (props: Props) => JSX.Element = ({
 
         });
 
-    }
+    }, [fields]);
+
+    const encType: string = hasUploadFields(fields) ? 'multipart/form-data' : null;
 
     return (
 
         <FinalForm
             initialValues={initialValues}
-            onSubmit={submitAction}
+            onSubmit={handleSubmit}
             validate={handleValidate}
             render={({ 
                 form,
@@ -142,6 +189,7 @@ export const Form: (props: Props) => JSX.Element = ({
                 <form 
                     action={action} 
                     method={method}
+                    encType="multipart/form-data"
                     onSubmit={(event: any) => {
 
                         event.preventDefault();

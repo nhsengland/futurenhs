@@ -6,6 +6,7 @@ import { routeParams } from '@constants/routes';
 import { layoutIds } from '@constants/routes';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
+import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { withUser } from '@hofs/withUser';
 import { withForms } from '@hofs/withForms';
 import { withGroup } from '@hofs/withGroup';
@@ -13,7 +14,7 @@ import { withTextContent } from '@hofs/withTextContent';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
-import { selectUser, selectParam, selectPagination, selectCsrfToken, selectBody } from '@selectors/context';
+import { selectUser, selectParam, selectPagination, selectBody } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
@@ -44,7 +45,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const groupId: string = selectParam(context, routeParams.GROUPID);
                     const discussionId: string = selectParam(context, routeParams.DISCUSSIONID);
                     const pagination: Pagination = selectPagination(context);
-                    const csrfToken: any = selectCsrfToken(context);
                     const body: any = selectBody(context);
 
                     props.discussionId = discussionId;
@@ -62,7 +62,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             try {
 
-                                const submission = await postGroupDiscussionComment({ groupId, discussionId, user, csrfToken, body });
+                                const formData: any = getServerSideMultiPartFormData(body);
+
+                                await postGroupDiscussionComment({ groupId, discussionId, user, body: formData });
 
                             } catch(error){
 

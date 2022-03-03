@@ -48,7 +48,7 @@ export const ErrorSummary = React.forwardRef(({
 
                                 if(typeof errors[key] !== 'string'){
 
-                                    throw new Error('Expected error to be string');
+                                    errors[key] = (errors[key] as any)?.message ?? 'An unexpected error occurred';
 
                                 }
 

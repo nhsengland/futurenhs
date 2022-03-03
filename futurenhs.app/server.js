@@ -11,6 +11,7 @@ const url = require('url');
 const { join } = require('path');
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
+const formData = require("express-form-data");
 const { randomBytes } = require('crypto');
 const { AbortController } = require('node-abort-controller');
 
@@ -44,22 +45,15 @@ const generateCSP = (nonce) => {
  */
 const app = express();
 
-/**
- * Create a CSRF handler
- */
-const csrfProtection = csrf({ 
-    cookie: {
-        secure: true
-    }
-});
-
 let server = undefined;
 
 /**
  * Bind middleware
  */
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(formData.parse({}));
+//app.use(formData.stream());
+app.use(formData.union());
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 
 /**
@@ -90,9 +84,18 @@ nextApp
         }
 
         /**
+         * Create a CSRF handler
+         */
+        const csrfProtection = csrf({ 
+            cookie: {
+                secure: true
+            }
+        });
+
+        /**
          * Set response headers
          */
-        app.use((req, res, next) => {
+        app.use(csrfProtection, (req, res, next) => {
 
             const nonce = generateNonce();
             
@@ -205,24 +208,6 @@ nextApp
             }
                 
             return handle(req, res, parsedUrl);
-
-        });
-
-        /**
-         * TODO - CSRF for non GET requests on the gateway
-         */
-        app.post('/api/gateway/*', (req, res) => {
-
-            return handle(req, res);
-
-        });
-
-        /**
-         * TODO - CSRF for non GET requests on the gateway
-         */
-        app.delete('/api/gateway/*', (req, res) => {
-
-            return handle(req, res);
 
         });
 
