@@ -11,8 +11,11 @@ Given(/^I have navigated to '([^"]*)'( and accept the cookies)?$/, function (url
   }
 });
 
-Given(/^I have logged in as a.? '([^"]*)'$/, function (userType) {
+Given(/^I have logged in as a.? '([^"]*)'( and accept the cookies)?$/, function (userType, cookies) {
   loginPage.loginUser(userType);
+  if(cookies){
+    genericPage.acceptCookies();
+  }
 });
 
 Given(/^I have logged off as the current user$/, function () {

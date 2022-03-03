@@ -74,9 +74,15 @@ class genericPage extends basePage{
             grouppages : $(`//div[@id="my-groups-menu"]/..`),
             groupmenu : $(`//div[@id="group-menu"]/..`)
         }
-        helpers.click(accordion[desiredAccordion]);
-        var link = accordion[desiredAccordion].$(`.//*[text()[normalize-space() = "${linkValue}"]]`);
-        helpers.click(link);
+        var chosenAccordion = accordion[desiredAccordion]
+        helpers.click(chosenAccordion);
+        var accordionOptions = chosenAccordion.$$('./div/ul/li')
+        accordionOptions.forEach(elem => {
+            if(elem.getText() === linkValue){
+                helpers.click(elem)
+                return
+            }   
+        });
     }
 
     /**
@@ -143,11 +149,11 @@ class genericPage extends basePage{
      * 
      */
     acceptCookies(){
-        var cookieBanner = $(`//div[@class="c-cookie-banner "]`);
-        if(helpers.waitForLoaded(cookieBanner)){
-            var acceptCookiesBtn = cookieBanner.$(`./div/div[2]/button[1]`);
+        var cookieBanner = $(`//div[@class="u-py-6 c-cookie-banner"]`);
+        if(cookieBanner.waitForDisplayed({timeout: 5000})){
+            var acceptCookiesBtn = cookieBanner.$(`./button[text()="I'm OK with analytics cookies"]`);
             helpers.click(acceptCookiesBtn);
         }
-    }
+    }    
 }
 module.exports = new genericPage();
