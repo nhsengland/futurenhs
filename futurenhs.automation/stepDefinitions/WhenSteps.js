@@ -4,6 +4,7 @@ const formPage = require('../pageObjects/formPage');
 const forumPage = require('../pageObjects/forumPage');
 const tablePOM = require('../pageObjects/table');
 const filesPage = require('../pageObjects/filesPage');
+const search = require('../pageObjects/search');
 
   
   When(/^I click the '([^"]*)' (button|link|option|tab|nav icon)$/, function (textValue, contentType) {
@@ -30,6 +31,10 @@ const filesPage = require('../pageObjects/filesPage');
     genericPage.contentClick('link', 'Delete');
     genericPage.acceptBrowserAlert();
   });
+  
+  When(/^I search for '([^"]*)'$/, function(inputVal){
+    search.search(inputVal)
+  });
 
   // FormPage Steps
 
@@ -43,7 +48,11 @@ const filesPage = require('../pageObjects/filesPage');
 
   When(/^I select the ('([^"]*)' )?checkbox$/, function (label) {
     formPage.checkboxSelect(label);
-  })
+  });
+
+  When(/^I select the '([^"]*)' radio button for '([^"]*)'$/, function (radioOption, legend) {
+    formPage.radioButtonSelect(legend, radioOption);
+  });
   
   // ForumPage Steps
 

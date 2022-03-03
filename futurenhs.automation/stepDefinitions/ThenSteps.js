@@ -3,6 +3,7 @@ const filesPage = require('../pageObjects/filesPage');
 const formPage = require('../pageObjects/formPage');
 const forumPage = require('../pageObjects/forumPage');
 const genericPage = require('../pageObjects/genericPage');
+const search = require('../pageObjects/search');
 const tablePOM = require('../pageObjects/table');
 const axe = require('../util/axe');
 const lighthouse = require('../util/lighthouse');
@@ -25,7 +26,15 @@ Then(/^the breadcrumb navigation displays '([^"]*)'$/, function(breadcrumb){
 
 Then(/^the group image is displayed$/, function(){
   genericPage.groupImageValidation();
-})
+});
+
+Then(/^the search bar is available$/, function(){
+  search.searchBarValidation();
+});
+
+Then(/^there are '([^"]*)' search results displayed$/, function(amount){
+  search.searchResultsCardCount(amount)
+});
 
 //// Generic Content Steps
 
@@ -39,7 +48,7 @@ Then(/^the '([^"]*)' (header|textual value|link|button|option) is not displayed$
 
 //// ForumPage Steps
 
-Then(/^the '([^"]*)' (reply|discussion|comment|group|post) card is displayed$/, function (cardTitle, cardType, table) {
+Then(/^the '([^"]*)' (reply|discussion|comment|group|post|search result) card is displayed$/, function (cardTitle, cardType, table) {
   var cardContent = table.raw().flat();
   forumPage.cardValidation(cardTitle, cardType, cardContent);
 });
