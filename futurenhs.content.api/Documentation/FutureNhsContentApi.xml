@@ -421,11 +421,6 @@
         <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler.RunImportAsync">
             <inheritdoc />
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Models.GroupSitemapItemViewModel">
-            <summary>
-            The GroupSiteMapItemViewModel for front end website structure.
-            </summary>
-        </member>
         <member name="T:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest">
             <summary>
             The request used to update the content for a web page.
@@ -454,6 +449,46 @@
             <value>
             The content.
             </value>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel">
+            <summary>
+            The SitemapGroupItemViewModel for front end website structure.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Title">
+            <summary>
+            Gets or sets the title.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.ParentId">
+            <summary>
+            Gets or sets the parent identifier.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Url">
+            <summary>
+            Gets or sets the URL.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Date">
+            <summary>
+            Gets or sets the date.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Level">
+            <summary>
+            Gets or sets the level.
+            </summary>
         </member>
         <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService">
             <inheritdoc />

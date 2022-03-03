@@ -26,7 +26,7 @@ namespace Umbraco9ContentApi.Core.Controllers
         /// <param name="pageId">The page identifier.</param>
         /// <returns></returns>
         [HttpGet("{pageId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GroupSitemapItemViewModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SitemapGroupItemViewModel>))]
         public async Task<ActionResult> GetAsync(Guid pageId)
         {
             var siteMapItems = await _futureNhsSiteMapHandler.GetGroupSitemapItemsAsync(pageId);

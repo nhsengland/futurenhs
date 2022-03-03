@@ -27,7 +27,7 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<GroupSitemapItemViewModel>> GetGroupSitemapItemsAsync(Guid pageId)
+        public async Task<IEnumerable<SitemapGroupItemViewModel>> GetGroupSitemapItemsAsync(Guid pageId)
         {
             // Get published page
             var page = await _futureNhsContentService.GetPublishedAsync(pageId);
@@ -35,7 +35,7 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
             // If it doesn't exist, return as empty.
             if (page is null)
             {
-                return Enumerable.Empty<GroupSitemapItemViewModel>();
+                return Enumerable.Empty<SitemapGroupItemViewModel>();
             }
             else
             {
@@ -57,14 +57,14 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
         /// </summary>
         /// <param name="root">The root.</param>
         /// <returns>GroupSiteMapItemViewModel.</returns>
-        private IEnumerable<GroupSitemapItemViewModel> PopulateGroupSiteMapItemViewModel(IPublishedContent root)
+        private IEnumerable<SitemapGroupItemViewModel> PopulateGroupSiteMapItemViewModel(IPublishedContent root)
         {
-            var list = new List<GroupSitemapItemViewModel>();
+            var list = new List<SitemapGroupItemViewModel>();
             var descendants = root.Descendants().Where(x => x.IsPublished());
 
             foreach (var item in descendants)
             {
-                yield return new GroupSitemapItemViewModel()
+                yield return new SitemapGroupItemViewModel()
                 {
                     Name = item.Name,
                     Title = item.Value("title", fallback: Fallback.ToDefaultValue, defaultValue: "No title."),
