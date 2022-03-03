@@ -5,9 +5,9 @@ export default async function handler(req, res) {
 
     const apiUrl: string = req.originalUrl.split(`gateway`)[1];
     const method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = req.method;
-    const headers: any = {
+    const headers: any = Object.assign({}, req.headers, {
         'Authorization': `Bearer ${process.env.SHAREDSECRETS_APIAPPLICATION}`
-    };
+    });
 
     const fetchOpts: FetchOptions = setFetchOpts({
         method: method,
