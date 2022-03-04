@@ -9,6 +9,7 @@
         public bool IsPublic { get; init; }
         public ImageData Image { get; init; }
         public Guid? ThemeId { get; init; }
+        public bool IsMember { get; init; }
 
     }
 }

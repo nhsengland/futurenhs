@@ -132,13 +132,23 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
             return (totalCount, groups);
         }
 
-        public async Task<Group?> GetGroupAsync(string slug, CancellationToken cancellationToken = default)
+        public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Description AS StrapLine, g.PublicGroup AS IsPublic,		
+                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Description AS StrapLine, g.PublicGroup AS IsPublic,( SELECT      CASE 
+                                                                                    WHEN        groupUser.MembershipUser_Id = @UserId
+                                                                                    AND         groupUser.Approved = 1
+                                                                                    AND         groupUser.Rejected = 0
+                                                                                    AND         groupUser.Locked = 0
+                                                                                    AND         groupUser.Banned = 0
+                                                                                    THEN        CAST(1 as bit) 
+                                                                                    ELSE        CAST(0 as bit) 
+                                                                                    END
+                                                                                  ) AS IsMember,		
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName,  image.MediaType AS MediaType
 				FROM [Group] g
                 LEFT JOIN Image image ON image.Id = g.ImageId  
+                LEFT JOIN GroupUser groupUser ON GroupUser.Group_Id = g.Id  
                 WHERE g.Slug = @Slug AND g.IsDeleted = 0";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
@@ -157,7 +167,8 @@ namespace FutureNHS.Api.DataAccess.Repositories.Read
 
                 }, new
                 {
-                    Slug = slug
+                    Slug = slug,
+                    UserId = userId
                 }, splitOn: "id");
 
             var group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");

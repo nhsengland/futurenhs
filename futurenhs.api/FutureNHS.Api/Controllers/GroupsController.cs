@@ -61,10 +61,10 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("groups/{slug}")]
-        public async Task<IActionResult> GetGroupAsync(string slug, CancellationToken cancellationToken)
+        [Route("users/{userId:guid}/groups/{slug}")]
+        public async Task<IActionResult> GetGroupAsync(string slug,Guid userId, CancellationToken cancellationToken)
         {
-            var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
+            var group = await _groupDataProvider.GetGroupAsync(slug, userId, cancellationToken);
 
             if (group is null)
             { 
@@ -78,7 +78,7 @@ namespace FutureNHS.Api.Controllers
         [Route("users/{userId:guid}/groups/{slug}/actions")]
         public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
         {
-            var group = await _groupDataProvider.GetGroupAsync(slug, cancellationToken);
+            var group = await _groupDataProvider.GetGroupAsync(slug, userId, cancellationToken);
 
             if (group is null)
             {
