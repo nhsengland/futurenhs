@@ -157,7 +157,7 @@ builder.Services.AddCors(opt =>
         builder.WithOrigins("http://localhost:5000")
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .AllowCredentials();
+            .AllowCredentials().SetPreflightMaxAge(TimeSpan.FromSeconds(2520));
     });
 });
 

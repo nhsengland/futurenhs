@@ -52,6 +52,13 @@ namespace FutureNHS.Api.Controllers
         //    return Ok(file);
         //}
 
+        [HttpOptions]
+        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/files")]
+        public async Task<IActionResult> PreFlightRoute()
+        {
+            return NoContent();
+        }
+
         [HttpPost]
         [DisableFormValueModelBinding]
         [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/files")]
