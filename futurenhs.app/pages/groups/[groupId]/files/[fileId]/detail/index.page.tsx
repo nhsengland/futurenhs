@@ -12,8 +12,8 @@ import { getGroupFile } from '@services/getGroupFile';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-import { GroupFilePreviewTemplate } from '@components/_pageTemplates/GroupFilePreviewTemplate';
-import { Props } from '@components/_pageTemplates/GroupFilePreviewTemplate/interfaces';
+import { GroupFileDetailTemplate } from '@components/_pageTemplates/GroupFileDetailTemplate';
+import { Props } from '@components/_pageTemplates/GroupFileDetailTemplate/interfaces';
 
 const routeId: string = 'b74b9b6b-0462-4c2a-8859-51d0df17f68f';
 const props: Partial<Props> = {};
@@ -66,4 +66,4 @@ export const getServerSideProps: GetServerSideProps = withUser({
 /**
  * Export page template
  */
-export default GroupFilePreviewTemplate;
+export default GroupFileDetailTemplate;

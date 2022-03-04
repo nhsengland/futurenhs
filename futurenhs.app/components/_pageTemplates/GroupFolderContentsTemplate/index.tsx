@@ -5,6 +5,7 @@ import classNames from 'classnames';
 
 import { actions as userActions } from '@constants/actions';
 import { routeParams } from '@constants/routes';
+import { iconMap } from '@constants/icons';
 import { BreadCrumb } from '@components/BreadCrumb';
 import { SVGIcon } from '@components/SVGIcon';
 import { dateTime } from '@helpers/formatters/dateTime';
@@ -94,17 +95,6 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
 
     const hasBreadCrumb: boolean = breadCrumbList.length > 0;
 
-    const iconMap = {
-        ['.doc']: 'icon-docx',
-        ['.docx']: 'icon-docx',
-        ['.xls']: 'icon-xls',
-        ['.xlsx']: 'icon-xls',
-        ['.ppt']: 'icon-ppt',
-        ['.pptx']: 'icon-ppt',
-        ['.pdf']: 'icon-pdf',
-        ['.txt']: 'icon-document'
-    };
-
     const gridRowList = useMemo(() => folderContentsList?.map(({
         id,
         type,
@@ -118,7 +108,9 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
         const { body } = text ?? {};
 
         const isFolder: boolean = type === 'folder';
-        const href: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
+        const itemPath: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
+        const fileDetailPath: string = `${fileBasePath}/${encodeURIComponent(id)}/detail`;
+        const fileDownloadPath: string = `/tbc`;
 
         let iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
 
@@ -138,7 +130,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                 ['u-hidden']: isFolder
             }),
             actions: classNames({
-                ['u-w-full tablet:u-w-1/6 tablet:u-text-right']: true,
+                ['u-w-full tablet:u-w-1/6']: true,
                 ['u-hidden']: isFolder
             })
         };
@@ -168,7 +160,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                 headerClassName: generatedHeaderCellClasses.type
             },
             {
-                children: <Link href={href}><a className="o-truncated-text-lines-3">{name}</a></Link>,
+                children: <Link href={itemPath}><a className="o-truncated-text-lines-3">{name}</a></Link>,
                 className: generatedCellClasses.name,
                 headerClassName: generatedHeaderCellClasses.name
             },
@@ -183,7 +175,10 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                 headerClassName: generatedHeaderCellClasses.modified
             },
             {
-                children: isFolder ? '' : <><a href="/" className="u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download</a></>,
+                children: isFolder ? '' : <>
+                    <Link href={fileDownloadPath}><a className="u-block u-mb-4 u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
+                    <Link href={fileDetailPath}><a className="u-block u-align-top"><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
+                </>,
                 className: generatedCellClasses.actions,
                 headerClassName: generatedHeaderCellClasses.actions
             }
@@ -295,8 +290,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                         children: 'Modified'
                                     },
                                     {
-                                        children: 'Actions',
-                                        className: 'tablet:u-text-right'
+                                        children: 'Actions'
                                     }
                                 ]}
                                 rowList={gridRowList} />

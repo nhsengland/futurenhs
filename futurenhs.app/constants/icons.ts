@@ -19,3 +19,14 @@ export const defaultGroupLogos = {
         altText: 'Group logo'
     }
 }
+
+export const iconMap = {
+    ['.doc']: 'icon-docx',
+    ['.docx']: 'icon-docx',
+    ['.xls']: 'icon-xls',
+    ['.xlsx']: 'icon-xls',
+    ['.ppt']: 'icon-ppt',
+    ['.pptx']: 'icon-ppt',
+    ['.pdf']: 'icon-pdf',
+    ['.txt']: 'icon-document'
+};

@@ -2,10 +2,10 @@ import React from 'react';
 import * as nextRouter from 'next/router';
 import { render, screen, cleanup } from '@testing-library/react';
 
-import { GroupFileTemplate } from './index';
+import { GroupFilePreviewTemplate } from './index';
 import { Props } from './interfaces';
 
-describe('Group file template', () => {
+describe('Group file preview template', () => {
 
     (nextRouter as any).useRouter = jest.fn();
     (nextRouter as any).useRouter.mockImplementation(() => ({ 
@@ -52,7 +52,7 @@ describe('Group file template', () => {
 
     it('renders correctly', () => {
 
-        render(<GroupFileTemplate {...props} />);
+        render(<GroupFilePreviewTemplate {...props} />);
 
         expect(screen.getAllByText('Mock file name').length).toEqual(1);
 
@@ -60,7 +60,7 @@ describe('Group file template', () => {
 
     it('conditionally renders breadcrumbs if path is included in props.file', () => {
         
-        render(<GroupFileTemplate {...props} />);
+        render(<GroupFilePreviewTemplate {...props} />);
 
         expect(screen.getAllByText('Mock breadcrumb').length).toBe(1);
 
@@ -74,33 +74,10 @@ describe('Group file template', () => {
             }
         });
 
-        render(<GroupFileTemplate {...propsCopy}/>);
+        render(<GroupFilePreviewTemplate {...propsCopy}/>);
 
         expect(screen.queryByText('Mock breadcrumb')).toBeNull();
 
-    });
-
-
-    it('conditionally renders username if createdBy is included in props.file', () => {
-
-        render(<GroupFileTemplate {...props} />);
-
-        expect(screen.getAllByText('Mock username').length).toBe(1);
-
-        cleanup();
-
-        const propsCopy: Props = Object.assign({}, props, {
-            file: {
-                id: 'mockId',
-                type: 'file',
-                name: 'Mock file name'
-            }
-        });
-
-        render(<GroupFileTemplate {...propsCopy}/>);
-
-        expect(screen.queryByText('Mock username')).toBeNull();
-        
     });
 
 });

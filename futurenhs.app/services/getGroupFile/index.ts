@@ -32,7 +32,7 @@ export const getGroupFile = async ({
     const id: string = user.id;
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/files/${fileId}`;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: 'FETCH' }), 30000);
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: 'GET' }), 30000);
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
 

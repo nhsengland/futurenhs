@@ -27,3 +27,10 @@ export const enum layoutIds {
     GROUP = 'group',
     ADMIN = 'admin'
 }
+
+export const enum groupTabIds {
+    INDEX = 'index',
+    FORUM = 'forum',
+    FILES = 'files',
+    MEMBERS = 'members'
+}

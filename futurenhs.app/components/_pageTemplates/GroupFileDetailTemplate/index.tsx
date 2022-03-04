@@ -1,11 +1,8 @@
-import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
 import { Link } from '@components/Link';
 import { dateTime } from '@helpers/formatters/dateTime';
-import { AriaLiveRegion } from '@components/AriaLiveRegion';
-import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { DataGrid } from '@components/DataGrid';
 import { RichText } from '@components/RichText';
@@ -20,16 +17,15 @@ import { Props } from './interfaces';
 /**
  * Group file detail template
  */
-export const GroupFileTemplate: (props: Props) => JSX.Element = ({
+export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
     fileId,
     file,
     contentText
 }) => {
 
     const router = useRouter();
-    const [shouldRenderFilePreview, setShouldRenderFilePreview] = useState(false);
 
-    const { previewLabel, createdByLabel } = contentText ?? {};
+    const { createdByLabel } = contentText ?? {};
     const { path, name, createdBy, text: fileText } = file ?? {};
     const { body } = fileText ?? {};
 
@@ -94,12 +90,6 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
             ['u-hidden']: true
         })
     };
-
-    useEffect(() => {
-
-        setShouldRenderFilePreview(true);
-
-    }, []);
 
     return (
 
@@ -169,14 +159,6 @@ export const GroupFileTemplate: (props: Props) => JSX.Element = ({
                         ]
                     ]}
                     className="u-mb-12" />
-                <AriaLiveRegion>
-                    {shouldRenderFilePreview &&
-                        <>
-                            <h2 className="nhsuk-heading-l">{previewLabel}</h2>
-                            <iframe src="https://www.bbc.co.uk" className="u-w-full"></iframe>
-                        </>
-                    }
-                </AriaLiveRegion>
             </LayoutColumn>
         </>
 
