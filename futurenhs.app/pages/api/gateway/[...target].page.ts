@@ -11,9 +11,12 @@ export default async function handler(req, res) {
 
     const fetchOpts: FetchOptions = setFetchOpts({
         method: method,
-        customHeaders: headers, 
+        customHeaders: headers,
+        isMultiPartForm: true,
         body: req.body
     });
+
+    console.log(fetchOpts);
 
     const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
 
