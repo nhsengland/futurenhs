@@ -35,7 +35,10 @@ export const postGroupFolder = async ({
         customHeaders: {
             'csrf-token': csrfToken
         },
-        body: body
+        body: {
+            Title: body.get('name'),
+            Description: body.get('description')
+        }
     }), 30000);
     
     const apiMeta: any = apiResponse.meta;
