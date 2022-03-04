@@ -69,115 +69,109 @@ namespace FutureNHS.Api.Services
                 throw new SecurityException($"Error: User does not have access");
             }
 
-            var files = await this.UploadMultipartContent(requestBody, contentType, cancellationToken);
-            if (files.Any())
+            var file = await this.UploadMultipartContent(requestBody, contentType, cancellationToken);
+
+            file.CreatedBy = userId;
+            file.ParentFolder = folderId;
+            try
             {
-                foreach (var file in files)
-                {
-                    file.CreatedBy = userId;
-                    file.ParentFolder = folderId;
-                    try
-                    {
-                        await CreateFileAsync(file, cancellationToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex,$"Error: CreateFileAsync - Error adding file to database");
-                        await _blobStorageProvider.DeleteFileAsync(file.BlobName);
-                    }
-                }
+                await CreateFileAsync(file, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error: CreateFileAsync - Error adding file to database");
+                await _blobStorageProvider.DeleteFileAsync(file.BlobName);
             }
         }
 
         /// based on microsoft example https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/mvc/models/file-uploads/samples/
         /// and large file streaming example https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0#upload-large-files-with-streaming
-        private async Task<List<FileDto>> UploadMultipartContent(Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        private async Task<FileDto> UploadMultipartContent(Stream requestBody, string? contentType, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             // Check if HttpRequest (Form Data) is a Multipart Content Type
             if (!MultipartRequestHelper.IsMultipartContentType(contentType))
             {
-                throw new InvalidDataException( $"Expected a multipart request, but got {contentType}");
+                throw new InvalidDataException($"Expected a multipart request, but got {contentType}");
             }
-            FormOptions defaultFormOptions = new FormOptions();
+            var defaultFormOptions = new FormOptions();
             // Create a Collection of KeyValue Pairs.
             var formAccumulator = new KeyValueAccumulator();
             // Determine the Multipart Boundary.
             var boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(contentType), defaultFormOptions.MultipartBoundaryLengthLimit);
             var reader = new MultipartReader(boundary, requestBody);
             var section = await reader.ReadNextSectionAsync(cancellationToken);
-            var files = new List<FileDto>();
-            FileDto fileDto = new FileDto();
+            var fileDto = new FileDto();
+
             // Loop through each 'Section', starting with the current 'Section'.
             while (section != null)
             {
-               
+
                 // Check if the current 'Section' has a ContentDispositionHeader.
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
                 if (hasContentDispositionHeader)
                 {
                     if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
                     {
-                        try
+                        if (contentDisposition != null)
                         {
-                            if (contentDisposition != null)
+                            var sectionFileName = contentDisposition.FileName.Value;
+                            // use an encoded filename in case there is anything weird
+                            var encodedFileName = WebUtility.HtmlEncode(Path.GetFileName(sectionFileName));
+
+                            // read the section filename to get the content type
+                            var fileExtension = Path.GetExtension(sectionFileName);
+
+                            // now make it unique
+                            var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+
+                            if (!_acceptedFileTypes.Contains(fileExtension.ToLower()))
                             {
-                                var sectionFileName = contentDisposition.FileName.Value;
-                                // use an encoded filename in case there is anything weird
-                                var encodedFileName = WebUtility.HtmlEncode(Path.GetFileName(sectionFileName));
-
-                                // read the section filename to get the content type
-                                var fileExtension = Path.GetExtension(sectionFileName);
-
-                                // now make it unique
-                                var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
-
-                                if (!_acceptedFileTypes.Contains(fileExtension.ToLower()))
-                                {
-                                    _logger.LogError("file extension:{0} is not an accepted file", fileExtension);
-                                    throw new ConstraintException("The file is not an accepted file");
-                                }
-
-                                await _blobStorageProvider.CreateConnectionAsync();
-
-                                await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName, MimeTypesMap.GetMimeType(encodedFileName), cancellationToken);
-
-                                // trick to get the size without reading the stream in memory
-                                var size = section.Body.Position;
-
-                                //var fileContentTypeMatchesExtension = _fileTypeValidator.ContentMatchesExtension(section.Body,fileExtension);
-
-                                // check size limit in case somehow a larger file got through. we can't do it until after the upload because we don't want to put the stream in memory
-                                if (MaxFileSizeBytes < size)
-                                {
-                                    await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
-                                    _logger.LogError("File size:{0} is greater than the max allowed size:{1}", size, MaxFileSizeBytes);
-                                    throw new ConstraintException("File size is greater than the max allowed size");
-                                }
-
-                                //if (fileContentTypeMatchesExtension is false)
-                                //{
-                                //    await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
-                                //    _logger.LogError("File extension:{0} does not match the file signature", fileExtension);
-                                //    throw new FormatException("File extension} does not match the file signature");
-                                //}
-
-                                var now = _systemClock.UtcNow.UtcDateTime;
-
-                                fileDto.FileName = encodedFileName;
-                                fileDto.FileExtension = fileExtension;
-                                fileDto.FileSizeBytes = size;
-                                fileDto.BlobName = uniqueFileName;
-                                fileDto.CreatedAtUTC = now;
-
+                                _logger.LogError("file extension:{0} is not an accepted file", fileExtension);
+                                throw new ConstraintException("The file is not an accepted file");
                             }
-                        }
-                        //TODO catch specific azure exceptions
-                        catch (Exception e)
-                        {
-                            _logger.LogError("An error occurred uploading file - Exception: {0}", e.StackTrace);
-                            throw;
+
+                            await _blobStorageProvider.CreateConnectionAsync();
+
+                            try
+                            {
+                                await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName,
+                                    MimeTypesMap.GetMimeType(encodedFileName), cancellationToken);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(ex, "An error occurred uploading file to blob storage");
+                                throw;
+                            }
+
+                            // trick to get the size without reading the stream in memory
+                            var size = section.Body.Position;
+
+                            // check size limit in case somehow a larger file got through. we can't do it until after the upload because we don't want to put the stream in memory
+                            if (MaxFileSizeBytes < size)
+                            {
+                                await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
+                                _logger.LogError("File size:{0} is greater than the max allowed size:{1}", size, MaxFileSizeBytes);
+                                throw new ConstraintException("File size is greater than the max allowed size");
+                            }
+
+                            // TODO MimeDetective does not work when stream has already been uploaded - figure out a solution
+                            //if (fileContentTypeMatchesExtension is false)
+                            //{
+                            //    await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
+                            //    _logger.LogError("File extension:{0} does not match the file signature", fileExtension);
+                            //    throw new FormatException("File extension} does not match the file signature");
+                            //}
+
+                            var now = _systemClock.UtcNow.UtcDateTime;
+
+                            fileDto.FileName = encodedFileName;
+                            fileDto.FileExtension = fileExtension;
+                            fileDto.FileSizeBytes = size;
+                            fileDto.BlobName = uniqueFileName;
+                            fileDto.CreatedAtUTC = now;
+
                         }
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
@@ -212,7 +206,7 @@ namespace FutureNHS.Api.Services
                 var titleFound = formValues.TryGetValue("title", out var title);
                 if (titleFound is false || string.IsNullOrEmpty(title))
                 {
-                   throw new ArgumentNullException($"Title was not provided");
+                    throw new ArgumentNullException($"Title was not provided");
                 }
                 var descriptionFound = formValues.TryGetValue("description", out var description);
                 if (descriptionFound is false || string.IsNullOrEmpty(title))
@@ -231,9 +225,8 @@ namespace FutureNHS.Api.Services
 
                 fileDto.Title = title;
                 fileDto.Description = description;
-                files.Add(fileDto);
             }
-            return files;
+            return fileDto;
         }
 
         private static Encoding? GetEncoding(MultipartSection section)

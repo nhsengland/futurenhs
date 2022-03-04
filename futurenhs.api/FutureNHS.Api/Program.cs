@@ -187,12 +187,12 @@ builder.Services.AddScoped<IFileBlobStorageProvider>(
         var config = sp.GetRequiredService<IOptionsSnapshot<AzureFileBlobStorageConfiguration>>().Value;
 
         if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
-        if (config.PrimaryServiceUrl is null) throw new ApplicationException("The azure read write connection string is missing from the files configuration section");
-        if (config.GeoRedundantServiceUrl is null) throw new ApplicationException("The azure read only connection string is missing from the files configuration section");
+        if (string.IsNullOrWhiteSpace(config.ConnectionString)) throw new ApplicationException("The blob connection string is missing from the files configuration section");
+        if (string.IsNullOrWhiteSpace(config.ContainerName)) throw new ApplicationException("The blob container name is missing from the files configuration section");
 
         var logger = sp.GetRequiredService<ILogger<BlobStorageProvider>>();
 
-        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(),config.PrimaryServiceUrl, config.GeoRedundantServiceUrl, logger, sp.GetRequiredService<IMemoryCache>());
+        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(),config.ConnectionString, config.ContainerName, logger, sp.GetRequiredService<IMemoryCache>());
     });
 
 builder.Services.AddScoped<IImageBlobStorageProvider>(
@@ -200,12 +200,12 @@ builder.Services.AddScoped<IImageBlobStorageProvider>(
         var config = sp.GetRequiredService<IOptionsSnapshot<AzureImageBlobStorageConfiguration>>().Value;
 
         if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
-        if (config.PrimaryServiceUrl is null) throw new ApplicationException("The azure read write connection string is missing from the files configuration section");
-        if (config.GeoRedundantServiceUrl is null) throw new ApplicationException("The azure read only connection string is missing from the files configuration section");
+        if (string.IsNullOrWhiteSpace(config.ConnectionString)) throw new ApplicationException("The blob connection string is missing from the files configuration section");
+        if (string.IsNullOrWhiteSpace(config.ContainerName)) throw new ApplicationException("The blob container name is missing from the files configuration section");
 
         var logger = sp.GetRequiredService<ILogger<BlobStorageProvider>>();
 
-        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(),config.PrimaryServiceUrl, config.GeoRedundantServiceUrl, logger, sp.GetRequiredService<IMemoryCache>());
+        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(),config.ConnectionString, config.ContainerName, logger, sp.GetRequiredService<IMemoryCache>());
     });
 
 builder.Services.AddSwaggerGen();
