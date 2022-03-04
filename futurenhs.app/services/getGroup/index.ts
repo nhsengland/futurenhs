@@ -3,8 +3,10 @@ import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
 import { Group } from '@appTypes/group';
+import { User } from '@appTypes/user';
 
 declare type Options = ({
+    user: User;
     groupId: string;
 });
 
@@ -16,13 +18,16 @@ declare type Dependencies = ({
 export type GetGroupService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<Group>>;
 
 export const getGroup = async ({
+    user,
     groupId
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Group>> => {
 
     const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}`;
+    const id: string = user.id;
+
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}`;
     const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: 'GET' }), 30000);
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;

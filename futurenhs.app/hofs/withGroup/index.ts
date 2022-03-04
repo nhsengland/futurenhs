@@ -36,7 +36,7 @@ export const withGroup = (config: HofConfig, dependencies?: {
         try {
 
             const [groupData, actionsData] = await Promise.all([
-                getGroupService({ groupId }),
+                getGroupService({ user, groupId }),
                 getGroupActionsService({ groupId, user })
             ]);
 
