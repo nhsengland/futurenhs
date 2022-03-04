@@ -5,8 +5,8 @@ declare type ValidatorType = string;
 export interface FormField {
     component: Component;
     inputType?: InputType;
-    name: string;
-    text: {
+    name?: string;
+    text?: {
         label?: string;
         legend?: string;
         hint?: string;

@@ -261,7 +261,14 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                             </Link>
                         }
                         {(folderId && hasAddFileAction) &&
-                            <a href="/" className="c-button c-button--outline u-min-w-70 u-w-72 u-drop-shadow">{createFile}</a>
+                            <Link href={{
+                                pathname: `${groupBasePath}/files/create`,
+                                query: { 
+                                    folderId: folderId 
+                                }
+                            }}>
+                                <a className="c-button c-button--outline u-min-w-70 u-w-72 u-drop-shadow">{createFile}</a>
+                            </Link>
                         }
                     </p>
                 }

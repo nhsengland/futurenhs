@@ -54,41 +54,49 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
 };
 
 /**
- * Returns a Headers object for standard Fetch JSON requests
- */
-export const getFetchHeadersForJSON = (customHeaders: object = {}): Headers => {
-
-    const headers: Headers = new Headers(Object.assign({}, {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    }, customHeaders));
-
-    return headers;
-
-}
-
-/**
  * Returns a default options object to use for requests
  */
-export const setFetchOpts = ({
+ export const setFetchOpts = ({
     method,
     customHeaders,
+    isMultiPartForm,
     body
 }: {
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
     customHeaders?: Headers;
+    isMultiPartForm?: boolean;
     body?: any;
 }): FetchOptions => {
+
+    const headers: Headers = new Headers({
+        'Accept': 'application/json'
+    });
+
+    if(!isMultiPartForm){
+
+        headers.set('Content-Type', 'application/json');
+
+    }
+
+    if(customHeaders){
+
+        for(const key in customHeaders){
+
+            headers.set(key, customHeaders[key]);
+
+        }
+
+    }
 
     const fetchOpts: FetchOptions = {
         method: method,
         credentials: 'include',
-        headers: getFetchHeadersForJSON(customHeaders)
+        headers: headers
     };
 
     if(body && method === 'POST' || method === 'PUT' || method === 'PATCH'){
 
-        fetchOpts.body = JSON.stringify(body);
+        fetchOpts.body = isMultiPartForm ? body : JSON.stringify(body);
 
     }
 
