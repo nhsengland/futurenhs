@@ -148,6 +148,19 @@ if (useAppConfig)
 
 builder.Services.AddMemoryCache();
 
+var _policyName = "CorsPolicy";
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(name: _policyName, builder =>
+    {
+        builder.WithOrigins("http://localhost:5000/")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
 builder.Services.Configure<Features>(settings.GetSection("FeatureManagement"), binderOptions => binderOptions.BindNonPublicProperties = true);
 builder.Services.Configure<AzurePlatformConfiguration>(settings.GetSection("AzurePlatform"));
 builder.Services.Configure<SharedSecrets>(settings.GetSection("SharedSecrets"));
@@ -253,6 +266,8 @@ builder.Services.AddAzureClients(clientBuilder =>
 
 var app = builder.Build();
 
+app.UseRouting();
+app.UseCors(_policyName);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
