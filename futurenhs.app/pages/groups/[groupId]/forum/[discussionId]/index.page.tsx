@@ -14,7 +14,7 @@ import { withTextContent } from '@hofs/withTextContent';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
-import { selectUser, selectParam, selectPagination, selectBody } from '@selectors/context';
+import { selectUser, selectParam, selectPagination, selectFormData } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
@@ -45,26 +45,24 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const groupId: string = selectParam(context, routeParams.GROUPID);
                     const discussionId: string = selectParam(context, routeParams.DISCUSSIONID);
                     const pagination: Pagination = selectPagination(context);
-                    const body: any = selectBody(context);
+                    const formData: any = selectFormData(context);;
 
                     props.discussionId = discussionId;
                     props.layoutId = layoutIds.GROUP;
                     props.tabId = 'forum';
 
-                    if(body){
+                    if(formData){
         
-                        const validationErrors: Record<string, string> = validate(body, selectFormDefaultFields(props.forms, createDiscussionCommentForm.id));
+                        const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionCommentForm.id));
 
                         props.forms[createDiscussionCommentForm.id].errors = validationErrors;
-                        props.forms[createDiscussionCommentForm.id].initialValues = body;
+                        props.forms[createDiscussionCommentForm.id].initialValues = formData;
 
                         if(Object.keys(validationErrors).length === 0) {
 
                             try {
 
-                                const formData: any = getServerSideMultiPartFormData(body);
-
-                                await postGroupDiscussionComment({ groupId, discussionId, user, body: formData });
+                                await postGroupDiscussionComment({ groupId, discussionId, user, body: getServerSideMultiPartFormData(formData) as any });
 
                             } catch(error){
 
@@ -73,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     props.forms[createDiscussionCommentForm.id].errors = error.data.body || {
                                         _error: error.data.statusText
                                     };
-                                    props.forms[createDiscussionCommentForm.id].initialValues = body;
+                                    props.forms[createDiscussionCommentForm.id].initialValues = formData;
 
                                 } else {
 

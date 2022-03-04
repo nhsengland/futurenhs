@@ -8,7 +8,7 @@ import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectCsrfToken, selectBody, selectParam, selectUser, selectQuery } from '@selectors/context';
+import { selectCsrfToken, selectFormData, selectParam, selectUser, selectQuery } from '@selectors/context';
 import { postGroupFolder } from '@services/postGroupFolder';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -29,7 +29,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withGroup({
         props,
-        routeId,
         getServerSideProps: withForms({
             props,
             routeId,
@@ -42,7 +41,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const groupId: string = selectParam(context, routeParams.GROUPID);
                     const folderId: string = selectQuery(context, routeParams.FOLDERID);
                     const csrfToken: string = selectCsrfToken(context);
-                    const body: any = selectBody(context);
+                    const formData: any = selectFormData(context);
 
                     props.layoutId = layoutIds.GROUP;
                     props.tabId = groupTabIds.FILES;
@@ -78,11 +77,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     /**
                      * handle server-side form POST
                      */
-                    if (body) {
+                    if (formData) {
+
+                        props.forms[createFolderForm.id].initialValues = formData;
 
                         try {
 
-                            await postGroupFolder({ groupId, folderId, user, csrfToken, body });
+                            await postGroupFolder({ groupId, folderId, user, csrfToken, body: formData });
 
                             return {
                                 props: {},
@@ -99,7 +100,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 props.forms[createFolderForm.id].errors = error.data.body || {
                                     _error: error.data.statusText
                                 };
-                                props.forms[createFolderForm.id].initialValues = body;
 
                             } else {
 

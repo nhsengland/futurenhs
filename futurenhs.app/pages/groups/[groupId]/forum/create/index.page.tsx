@@ -9,7 +9,7 @@ import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectBody, selectCsrfToken, selectParam, selectUser } from '@selectors/context';
+import { selectFormData, selectCsrfToken, selectParam, selectUser } from '@selectors/context';
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const user: User = selectUser(context);
                     const groupId: string = selectParam(context, routeParams.GROUPID);
                     const csrfToken: string = selectCsrfToken(context);
-                    const body: any = selectBody(context);
+                    const formData: any = selectFormData(context);;
 
                     props.layoutId = layoutIds.GROUP;
                     props.tabId = 'forum';
@@ -61,23 +61,20 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     /**
                      * Handle server-side form post
                      */
-                    if (body) {
+                    if (formData) {
 
-                        const validationErrors: Record<string, string> = validate(body, selectFormDefaultFields(props.forms, createDiscussionForm.id));
+                        const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionForm.id));
 
                         props.forms[createDiscussionForm.id].errors = validationErrors;
-                        props.forms[createDiscussionForm.id].initialValues = body;
+                        props.forms[createDiscussionForm.id].initialValues = formData;
 
                         if (Object.keys(validationErrors).length === 0) {
 
                             try {
 
-                            const formData: any = getServerSideMultiPartFormData(body);
-
-                            await postGroupDiscussion({ groupId, user, body: formData });
+                                await postGroupDiscussion({ groupId, user, body: getServerSideMultiPartFormData(formData) as any });
 
                                 return {
-                                    props: {},
                                     redirect: {
                                         permanent: false,
                                         destination: `/groups/${context.params.groupId}/forum`
