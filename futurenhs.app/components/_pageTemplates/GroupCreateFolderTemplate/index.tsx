@@ -18,6 +18,7 @@ import { Props } from './interfaces';
  */
 export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     groupId,
+    folderId,
     csrfToken,
     forms,
     user,
@@ -44,16 +45,11 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
 
     const folderHref: string = `${groupBasePath}/folders`;
 
-    const handleSubmit = async (submission) => {
+    const handleSubmit = async (formData: FormData) => {
 
         try {
 
-            const response = await postGroupFolder({
-                groupId: groupId,
-                user: user,
-                csrfToken: csrfToken,
-                body: submission
-            });
+            await postGroupFolder({ groupId, folderId, user, csrfToken, body: formData });
 
             router.push(folderHref);
 
@@ -92,14 +88,14 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                             cancelHref={folderHref}
                             bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1"
                             submitButtonClassName="u-float-right">
-                            {name &&
-                                <>
-                                    <h2 className="nhsuk-heading-l o-truncated-text-lines-3">{name}</h2>
-                                    <hr />
-                                </>
-                            }
-                            {name ? <h3 className="nhsuk-heading-m">{secondaryHeading}</h3> : <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>}
-                            <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
+                                {name &&
+                                    <>
+                                        <h2 className="nhsuk-heading-l o-truncated-text-lines-3">{name}</h2>
+                                        <hr />
+                                    </>
+                                }
+                                {name ? <h3 className="nhsuk-heading-m">{secondaryHeading}</h3> : <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>}
+                                <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
                         </FormWithErrorSummary>
                     </LayoutColumn>
                 </LayoutColumnContainer>

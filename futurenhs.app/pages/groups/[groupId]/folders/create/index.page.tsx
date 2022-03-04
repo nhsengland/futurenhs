@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
@@ -45,7 +45,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const body: any = selectBody(context);
 
                     props.layoutId = layoutIds.GROUP;
-                    props.tabId = 'files';
+                    props.tabId = groupTabIds.FILES;
+                    props.folderId = folderId;
 
                     if (!props.actions?.includes(actionConstants.GROUPS_FOLDERS_ADD)) {
 
@@ -81,7 +82,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                         try {
 
-                            const submission = await postGroupFolder({ groupId, user, csrfToken, body });
+                            await postGroupFolder({ groupId, folderId, user, csrfToken, body });
 
                             return {
                                 props: {},

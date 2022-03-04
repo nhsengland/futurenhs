@@ -5,6 +5,7 @@ import { User } from '@appTypes/user';
 
 declare type Options = ({
     groupId: string;
+    folderId: string;
     user: User;
     csrfToken: string;
     body: FormData;
@@ -17,6 +18,7 @@ declare type Dependencies = ({
 
 export const postGroupFolder = async ({
     groupId,
+    folderId,
     user,
     csrfToken,
     body
@@ -28,7 +30,8 @@ export const postGroupFolder = async ({
     const { id } = user;
 
     const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
-    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders`;
+    const subFolder: string = folderId ? `/${folderId}` : '';
+    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders${subFolder}`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: 'POST',

@@ -243,7 +243,10 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     <h2 className="nhsuk-heading-l">{foldersHeading}</h2>
                 }
                 {body &&
-                    <RichText wrapperElementType="p" bodyHtml={body} />
+                    <RichText 
+                        wrapperElementType="p" 
+                        bodyHtml={body}
+                        className="u-mb-10" />
                 }
                 {(!hasFolderContents && !folderId) &&
                     <p className="u-mb-12">{noFolders}</p>
