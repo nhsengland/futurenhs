@@ -12,7 +12,7 @@ export interface Props {
     };
     action?: string;
     method?: string;
-    submitAction: (formData: FormData) => Promise<any>;
+    submitAction: (formData: FormData) => any;
     changeAction?: (props: any) => any;
     validationFailAction?: any;
     cancelHref?: string;
