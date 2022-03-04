@@ -1,18 +1,26 @@
 import { GetServerSideProps } from 'next';
+
+import { cookiePreferences } from '@constants/cookies';
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
 
 export const withLogOut = (config: HofConfig, dependencies?: {}): GetServerSideProps => {
 
     const { getServerSideProps } = config;
 
+    const cookiesToRetain: Array<string> = [cookiePreferences.COOKIE_NAME];
+
     return async (context: GetServerSidePropsContext): Promise<any> => {
 
-        for (var prop in context.req.cookies) {
+        for (var cookieName in context.req.cookies) {
 
-            (context.res as any).cookie(prop, '', {
-                ['expires']: new Date(0),
-                ['max-age']: 0
-            });
+            if(!cookiesToRetain.includes(cookieName)){
+
+                (context.res as any).cookie(cookieName, '', {
+                    ['expires']: new Date(0),
+                    ['max-age']: 0
+                });
+
+            }
     
         }
 
