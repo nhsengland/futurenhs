@@ -39,7 +39,13 @@ describe('getGroup service', () => {
         })
 
         const response = await getGroup({
-            groupId: 'mock-slug'
+            groupId: 'mock-slug',
+            user: {
+                id: 'mockId',
+                text: {
+                    userName: 'Mock Name'
+                }
+            }
         },
         {
             setFetchOptions: mockSetFetchOptions,
