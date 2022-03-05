@@ -43,7 +43,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
         shouldIncludeParam: true
     });
 
-    const folderHref: string = `${groupBasePath}/folders`;
+    const folderHref: string = `${groupBasePath}/folders${folderId ? '/' + folderId : ''}`;
 
     const handleSubmit = async (formData: FormData) => {
 

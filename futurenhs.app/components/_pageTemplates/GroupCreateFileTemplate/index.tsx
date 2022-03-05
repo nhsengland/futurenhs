@@ -40,7 +40,7 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
 
     const { text } = folder ?? {};
     const { name } = text ?? {};
-    const folderHref: string = `${groupBasePath}/folders`;
+    const folderHref: string = `${groupBasePath}/folders/${folderId}`;
 
     const handleSubmit = async (submission) => {
 
