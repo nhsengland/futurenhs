@@ -15,16 +15,12 @@ export const withForms = (config: HofConfig, dependencies?: {}): GetServerSidePr
 
         const clonedFormConfigs: Record<string, FormConfig> = {};
 
-        console.log(clonedFormConfigs);
-
         try {
 
             /**
              * Ensure the imports are not inadvertently mutated later
              */
             Object.keys(formConfigs).forEach((key) => {
-
-                console.log(key, formConfigs[key]);
 
                 clonedFormConfigs[key] = {
                     id: formConfigs[key]?.id,
