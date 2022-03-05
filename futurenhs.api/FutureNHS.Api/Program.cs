@@ -166,6 +166,7 @@ builder.Services.Configure<AzurePlatformConfiguration>(settings.GetSection("Azur
 builder.Services.Configure<SharedSecrets>(settings.GetSection("SharedSecrets"));
 builder.Services.Configure<AzureImageBlobStorageConfiguration>(settings.GetSection("AzurePlatform:AzureImageBlobStorage"));
 builder.Services.Configure<AzureFileBlobStorageConfiguration>(settings.GetSection("AzurePlatform:AzureFileBlobStorage"));
+builder.Services.Configure<AzureBlobStorageConnectionStrings>(settings.GetSection("AzureBlobStorage"));
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
 builder.Services.AddScoped<IFileTypeValidator, FileTypeValidator>();
@@ -184,28 +185,30 @@ builder.Services.AddScoped<IAzureSqlDbConnectionFactory>(
 
 builder.Services.AddScoped<IFileBlobStorageProvider>(
     sp => {
+        var connection = sp.GetRequiredService<IOptionsSnapshot<AzureBlobStorageConnectionStrings>>().Value;
         var config = sp.GetRequiredService<IOptionsSnapshot<AzureFileBlobStorageConfiguration>>().Value;
-
+        
         if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
-        if (string.IsNullOrWhiteSpace(config.ConnectionString)) throw new ApplicationException("The blob connection string is missing from the files configuration section");
+        if (string.IsNullOrWhiteSpace(connection.FilePrimaryConnectionString)) throw new ApplicationException("The blob connection string is missing from the files configuration section");
         if (string.IsNullOrWhiteSpace(config.ContainerName)) throw new ApplicationException("The blob container name is missing from the files configuration section");
 
         var logger = sp.GetRequiredService<ILogger<BlobStorageProvider>>();
 
-        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(),config.ConnectionString, config.ContainerName, logger, sp.GetRequiredService<IMemoryCache>());
+        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(), connection.FilePrimaryConnectionString, config.ContainerName,config.PrimaryServiceUrl,logger, sp.GetRequiredService<IMemoryCache>());
     });
 
 builder.Services.AddScoped<IImageBlobStorageProvider>(
     sp => {
+        var connection = sp.GetRequiredService<IOptionsSnapshot<AzureBlobStorageConnectionStrings>>().Value;
         var config = sp.GetRequiredService<IOptionsSnapshot<AzureImageBlobStorageConfiguration>>().Value;
 
         if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
-        if (string.IsNullOrWhiteSpace(config.ConnectionString)) throw new ApplicationException("The blob connection string is missing from the files configuration section");
+        if (string.IsNullOrWhiteSpace(connection.ImagePrimaryConnectionString)) throw new ApplicationException("The blob connection string is missing from the files configuration section");
         if (string.IsNullOrWhiteSpace(config.ContainerName)) throw new ApplicationException("The blob container name is missing from the files configuration section");
 
         var logger = sp.GetRequiredService<ILogger<BlobStorageProvider>>();
 
-        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(),config.ConnectionString, config.ContainerName, logger, sp.GetRequiredService<IMemoryCache>());
+        return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(), connection.ImagePrimaryConnectionString, config.ContainerName, config.PrimaryServiceUrl, logger, sp.GetRequiredService<IMemoryCache>());
     });
 
 builder.Services.AddSwaggerGen();

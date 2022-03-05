@@ -42,6 +42,21 @@ namespace FutureNHS.Api.Controllers
             return Ok(file);
         }
 
+        [HttpGet]
+        [Route("users/{userId}/groups/{slug}/files/{id:guid}/download")]
+
+        public async Task<IActionResult> GetFileDownloadUrlAsync(Guid userId,string slug, Guid id, CancellationToken cancellationToken)
+        {
+            var file = await _fileService.GetFileDownloadUrl(userId, slug,id, cancellationToken);
+
+            if (file is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(file);
+        }
+
         //[HttpPost]
         //[Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/files")]
 

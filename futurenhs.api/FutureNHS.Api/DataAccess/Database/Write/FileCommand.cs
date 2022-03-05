@@ -3,6 +3,8 @@ using Dapper;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Comment;
+using FutureNHS.Api.Exceptions;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
@@ -78,6 +80,52 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 _logger.LogError("Error: CreateFileAsync User:{0} request to add file to folder:{1} was not successful", file.CreatedBy, file.ParentFolder);
                 throw new DBConcurrencyException("Error: User request to add file was not successful");
             }
+        }
+
+        public async Task<FileDto> GetFileAsync(Guid id, string status, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$"SELECT
+                                [{nameof(FileDto.Id)}]                  = [file].Id,
+                                [{nameof(FileDto.Title)}]               = [file].Title,          
+                                [{nameof(FileDto.Description)}]         = [file].Description,
+                                [{nameof(FileDto.FileName)}]            = [file].FileName,
+                                [{nameof(FileDto.FileSizeBytes)}]       = [file].FileSizeBytes,
+                                [{nameof(FileDto.FileExtension)}]       = [file].FileExtension,
+                                [{nameof(FileDto.BlobName)}]            = [file].BlobName,          
+                                [{nameof(FileDto.CreatedBy)}]           = [file].CreatedBy,
+                                [{nameof(FileDto.CreatedAtUTC)}]        = FORMAT([file].CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(FileDto.ModifiedBy)}]          = [file].ModifiedBy,
+                                [{nameof(FileDto.ModifiedAtUTC)}]       = FORMAT([file].ModifiedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(FileDto.ParentFolder)}]        = [file].ParentFolder,
+                                [{nameof(FileDto.FileStatus)}]          = [file].FileStatus,
+                                [{nameof(FileDto.BlobHash)}]            = [file].BlobHash,
+                                [{nameof(FileDto.IsDeleted)}]           = [file].IsDeleted          
+             
+
+                    FROM            [File] [file]	
+					JOIN			FileStatus status 
+					ON				status.Id = [file].FileStatus
+					WHERE           [file].Id = @Id
+                    AND             [file].IsDeleted = 0
+                    AND             status.Name = @Status";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryMultipleAsync(query, new
+            {
+                Id = id,
+                Status = status
+            });
+
+            var fileDto = await reader.ReadSingleOrDefaultAsync<FileDto>();
+            if (fileDto is null)
+            {
+                _logger.LogError($"Not Found: File:{0} not found", id);
+                throw new NotFoundException("Not Found: File not found");
+            }
+
+            return fileDto;
         }
 
         public async Task<Guid> GetFileStatus(string fileStatus, CancellationToken cancellationToken)

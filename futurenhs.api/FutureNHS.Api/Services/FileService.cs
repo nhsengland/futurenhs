@@ -9,8 +9,10 @@ using System.Security;
 using System.Text;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
+using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Helpers.Interfaces;
 using HeyRed.Mime;
@@ -24,9 +26,9 @@ namespace FutureNHS.Api.Services
 {
     public class FileService : IFileService
     {
-        private const string DefaultRole = "Standard Members";
-        private const string AddDiscussionRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/add";
-
+        private const string AddFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/add";
+        private const string DownloadFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/download";
+        private const string VerifiedFileStatus = "Verified";
         private readonly ILogger<DiscussionService> _logger;
         private readonly IFileCommand _fileCommand;
         private readonly IFileBlobStorageProvider _blobStorageProvider;
@@ -58,12 +60,27 @@ namespace FutureNHS.Api.Services
             await _fileCommand.CreateFileAsync(fileDto, cancellationToken);
         }
 
-        // TODO Need to figure out how we rollback if cancellation is requested or prevent it?
-        public async Task UploadFileMultipartDocument(Guid userId, string slug, Guid folderId, Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        public async Task<string> GetFileDownloadUrl(Guid userId, string slug, Guid fileId, CancellationToken cancellationToken)
         {
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddDiscussionRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddFileRole, cancellationToken);
+            if (userCanPerformAction is false)
+            {
+                _logger.LogError($"Error: DownloadFileAsync - User:{0} does not have access to group:{1}", userId, slug);
+                throw new SecurityException($"Error: User does not have access");
+            }
+            
+            var file = await _fileCommand.GetFileAsync(fileId, VerifiedFileStatus, cancellationToken);
 
-            if (!userCanPerformAction)
+            var downloadUri = _blobStorageProvider.GetRelativeDownloadUrl(file.BlobName, file.FileName, SharedAccessBlobPermissions.Read, cancellationToken);
+            return downloadUri;
+        }
+
+        // TODO Need to figure out how we rollback if cancellation is requested or prevent it?
+            public async Task UploadFileMultipartDocument(Guid userId, string slug, Guid folderId, Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        {
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddFileRole, cancellationToken);
+
+            if (userCanPerformAction is false)
             {
                 _logger.LogError($"Error: CreateFileAsync - User:{0} does not have access to group:{1}", userId, slug);
                 throw new SecurityException($"Error: User does not have access");
@@ -131,9 +148,6 @@ namespace FutureNHS.Api.Services
                                 _logger.LogError("file extension:{0} is not an accepted file", fileExtension);
                                 throw new ConstraintException("The file is not an accepted file");
                             }
-
-                            await _blobStorageProvider.CreateConnectionAsync();
-
                             try
                             {
                                 await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName,
@@ -228,6 +242,7 @@ namespace FutureNHS.Api.Services
             }
             return fileDto;
         }
+
 
         private static Encoding? GetEncoding(MultipartSection section)
         {

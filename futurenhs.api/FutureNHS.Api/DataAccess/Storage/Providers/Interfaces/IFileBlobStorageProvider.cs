@@ -1,4 +1,7 @@
-﻿namespace FutureNHS.Api.DataAccess.Storage.Providers.Interfaces
+﻿using Azure.Storage.Sas;
+using Microsoft.Azure.Storage.Blob;
+
+namespace FutureNHS.Api.DataAccess.Storage.Providers.Interfaces
 {
     public interface IFileBlobStorageProvider
     {
@@ -7,6 +10,7 @@
 
         Task DeleteFileAsync(string blobName);
 
-        Task CreateConnectionAsync();
+        string GetRelativeDownloadUrl(string blobName, string fileName, SharedAccessBlobPermissions downloadPermissions,
+            CancellationToken cancellationToken);
     }
 }

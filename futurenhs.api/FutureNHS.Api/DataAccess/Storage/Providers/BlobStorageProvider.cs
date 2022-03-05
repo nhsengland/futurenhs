@@ -18,24 +18,25 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
     {
         const int TOKEN_SAS_TIMEOUT_IN_MINUTES = 40;                 // Aligns with authentication cookie timeout policy for which we have an NFR
 
+        private const string BlobStorageDownloadUserDelegationKeyCacheKey =
+            "AzureFileBlobStorageDownload:UserDelegationKey";
 
-        public readonly string _connectionString;
-        public readonly string _containerName;
+        private readonly Uri _downloadEndpoint;
         private readonly ILogger<BlobStorageProvider> _logger;
-        private readonly IMemoryCache _memoryCache;
         private readonly ISystemClock _systemClock;
 
-        private CloudBlobContainer? _cloudBlobContainer;
-        private CloudBlobClient? _cloudBlobClient;
+        private readonly CloudBlobContainer? _cloudBlobContainer;
 
 
-        public BlobStorageProvider(ISystemClock systemClock, string connectionString, string containerName, ILogger<BlobStorageProvider> logger, IMemoryCache memoryCache)
+        public BlobStorageProvider(ISystemClock systemClock, string connectionString, string containerName, Uri downloadEndpoint, ILogger<BlobStorageProvider> logger, IMemoryCache memoryCache)
         {
-            _connectionString = connectionString;
-            _containerName = containerName;
-            _memoryCache = memoryCache;
             _systemClock = systemClock;
             _logger = logger;
+            _downloadEndpoint = downloadEndpoint;
+
+            var cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+            var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+            _cloudBlobContainer = cloudBlobClient.GetContainerReference(containerName);
         }
 
         public async Task UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
@@ -93,16 +94,39 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
             await blob.DeleteIfExistsAsync();
         }
 
-        public async Task CreateConnectionAsync()
+        public string GetRelativeDownloadUrl(string blobName, string fileName, SharedAccessBlobPermissions downloadPermissions, CancellationToken cancellationToken)
         {
-            if (_cloudBlobClient is null)
-            {
-                var storageAccount = CloudStorageAccount.Parse(_connectionString);
+            if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));
+            if (_cloudBlobContainer == null) throw new InvalidOperationException("A connection to blob storage was not created"); ;
 
-                _cloudBlobClient = storageAccount.CreateCloudBlobClient();
-                _cloudBlobContainer = _cloudBlobClient.GetContainerReference(_containerName);
+            var blob = _cloudBlobContainer.GetBlockBlobReference(blobName);
+
+            var policy = new SharedAccessBlobPolicy
+            {
+                Permissions = downloadPermissions,
+                SharedAccessStartTime = _systemClock.UtcNow,
+                SharedAccessExpiryTime = _systemClock.UtcNow.AddMinutes(TOKEN_SAS_TIMEOUT_IN_MINUTES)
+            };
+
+            var sasBlobHeaders = new SharedAccessBlobHeaders()
+            {
+                // allows us to download file with original filename not blob name
+                ContentDisposition = $"attachment; filename=\"{fileName}\""
+            };
+
+            try
+            {
+                var sas = blob.GetSharedAccessSignature(policy, sasBlobHeaders);
+
+                return $"{_downloadEndpoint}/{blobName}{sas}";
+            }
+
+            //TODO catch specific exception for failing to generate sas token
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, $"Unable to generate download token for blob: {blobName}'", blobName);
+                throw new ApplicationException("Unable to generate download token");
             }
         }
-
     }
 }
