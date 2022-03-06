@@ -26,7 +26,7 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
     const router = useRouter();
 
     const { createdByLabel } = contentText ?? {};
-    const { path, name, createdBy, text: fileText } = file ?? {};
+    const { path, name, createdBy, modified, modifiedBy, downloadLink, text: fileText } = file ?? {};
     const { body } = fileText ?? {};
 
     const breadCrumbList: BreadCrumbList = [];
@@ -137,22 +137,22 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
                     rowList={[
                         [
                             {
-                                children: 'File name',
+                                children: name,
                                 className: generatedCellClasses.name,
                                 headerClassName: generatedHeaderCellClasses.name
                             },
                             {
-                                children: 'User',
+                                children: modifiedBy?.text?.userName ?? '',
                                 className: generatedCellClasses.modifiedBy,
                                 headerClassName: generatedHeaderCellClasses.modifiedBy
                             },
                             {
-                                children: dateTime({ value: '2021-12-10T02:16:03Z' }),
+                                children: modified ? dateTime({ value: modified }) : '',
                                 className: generatedCellClasses.lastUpdate,
                                 headerClassName: generatedHeaderCellClasses.lastUpdate
                             },
                             {
-                                children: <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" /><a href="/">Download</a></>,
+                                children: <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" /><a href={downloadLink}>Download</a></>,
                                 className: generatedCellClasses.actions,
                                 headerClassName: generatedHeaderCellClasses.actions
                             }

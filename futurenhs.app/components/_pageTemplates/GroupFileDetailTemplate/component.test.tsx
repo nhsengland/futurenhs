@@ -54,7 +54,7 @@ describe('Group file detail template', () => {
 
         render(<GroupFileDetailTemplate {...props} />);
 
-        expect(screen.getAllByText('Mock file name').length).toEqual(1);
+        expect(screen.getAllByText('Mock file name').length).toEqual(2);
 
     });
 

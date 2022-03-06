@@ -25,4 +25,5 @@ export interface FolderContent {
         body?: string;
     };
     path?: BreadCrumbList;
+    downloadLink?: string;
 }
