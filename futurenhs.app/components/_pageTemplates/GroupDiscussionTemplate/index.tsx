@@ -26,6 +26,7 @@ import { BackLink } from '@components/BackLink';
 import { UserMeta } from '@components/UserMeta';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
+import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -68,7 +69,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         shouldIncludeParam: true
     });
 
-    const { 
+    const {
         createdByLabel,
         lastCommentLabel,
         totalRecordsLabel,
@@ -113,7 +114,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side validation failure in forms
      */
-    const handleValidationFailure = (errors): any => {
+    const handleValidationFailure = (errors: FormErrors): void => {
 
         setErrors(errors);
         errorSummaryRef?.current?.focus?.();
@@ -123,62 +124,65 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side comment submission
      */
-    const handleCommentSubmit = async (formData: FormData): Promise<void> => {
+    const handleCommentSubmit = async (formData: FormData): Promise<FormErrors> => {
 
-        try {
+        return new Promise((resolve) => {
 
-            await services.postGroupDiscussionComment({
-                groupId: groupId,
-                discussionId: discussionId,
-                user: user,
-                csrfToken: csrfToken,
-                body: formData
+            services.postGroupDiscussionComment({ groupId, discussionId, user, csrfToken, body: formData }).then(() => {
+
+                const targetPageNumber: number = Math.ceil((Number(dynamicPagination.totalRecords) + 1) / dynamicPagination.pageSize);
+
+                setErrors({});
+                handleGetPage({
+                    pageNumber: targetPageNumber,
+                    pageSize: dynamicPagination.pageSize
+                });
+
+                resolve({});
+
+            })
+            .catch ((error) => {
+
+                const errors: FormErrors = {
+                    [error.data.status]: error.data.statusText
+                };
+
+                setErrors(errors);
+                resolve(errors);
+
             });
 
-            const targetPageNumber: number = Math.ceil((Number(dynamicPagination.totalRecords) + 1) / dynamicPagination.pageSize);
-
-            setErrors({});
-            handleGetPage({
-                pageNumber: targetPageNumber,
-                pageSize: dynamicPagination.pageSize
-            });
-
-        } catch (error) {
-
-            setErrors({
-                [error.data.status]: error.data.statusText
-            });
-
-        }
+        });
 
     };
 
     /**
      * Handle client-side comment reply submission
      */
-    const handleCommentReplySubmit = async (formData: FormData): Promise<void> => {
+    const handleCommentReplySubmit = async (formData: FormData): Promise<FormErrors> => {
 
-        try {
+        return new Promise((resolve) => {
 
-            await services.postGroupDiscussionCommentReply({
-                groupId: groupId,
-                discussionId: discussionId,
-                commentId: formData.get('_instance-id'),
-                user: user,
-                csrfToken: csrfToken,
-                body: formData
+            services.postGroupDiscussionCommentReply({ groupId, discussionId, user, csrfToken, commentId: formData.get('_instance-id'), body: formData }).then(() => {
+
+                setErrors({});
+                handleGetPage(dynamicPagination as any);
+
+                resolve({});
+
+            })
+            .catch((error) => {
+
+                const errors: FormErrors = {
+                    [error.data.status]: error.data.statusText
+                };
+
+                setErrors(errors);
+                resolve(errors);
+
             });
 
-            setErrors({});
-            handleGetPage(dynamicPagination as any);
-
-        } catch (error) {
-
-            setErrors({
-                [error.data.status]: error.data.statusText
-            });
-
-        }
+        });
 
     };
 
@@ -192,15 +196,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         try {
 
-            const { data: newComments, pagination } = await services.getGroupDiscussionCommentsWithReplies({
-                user: user,
-                groupId: groupId,
-                discussionId: discussionId,
-                pagination: {
-                    pageNumber: requestedPageNumber,
-                    pageSize: requestedPageSize
-                }
-            });
+            const { data: newComments, pagination } = await services.getGroupDiscussionCommentsWithReplies({ user, groupId, discussionId, pagination: {
+                pageNumber: requestedPageNumber,
+                pageSize: requestedPageSize
+            }});
 
             setDiscussionsList(newComments);
             setPagination(pagination);
@@ -226,37 +225,37 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             likeCount,
             isLiked }) => {
 
-            const replyingUserInitials: string = initials({ value: createdBy?.text?.userName });
-            const replyingUserName: string = createdBy?.text?.userName;
-            const replyingUserId: string = createdBy?.id;
-            const replyCreatedDate: string = dateTime({ value: created });
+                const replyingUserInitials: string = initials({ value: createdBy?.text?.userName });
+                const replyingUserName: string = createdBy?.text?.userName;
+                const replyingUserId: string = createdBy?.id;
+                const replyCreatedDate: string = dateTime({ value: created });
 
-            const { body } = text ?? {};
+                const { body } = text ?? {};
 
-            return (
+                return (
 
-                <li key={commentId} className="c-comment_reply-container u-m-0 u-py-6">
-                    <Comment
-                        csrfToken={csrfToken}
-                        commentId={commentId}
-                        text={{
-                            userName: replyingUserName,
-                            initials: replyingUserInitials,
-                            body: body
-                        }}
-                        userProfileLink={`${groupBasePath}/members/${replyingUserId}`}
-                        date={replyCreatedDate}
-                        shouldEnableReplies={shouldRenderCommentAndReplyForms}
-                        replyValidationFailAction={handleValidationFailure}
-                        replySubmitAction={handleCommentReplySubmit}
-                        shouldEnableLikes={shouldRenderCommentAndReplyForms}
-                        likeCount={likeCount}
-                        isLiked={isLiked}
-                        likeAction={handleLike}
-                        className="c-comment--reply u-border-l-theme-8" />
-                </li>
+                    <li key={commentId} className="c-comment_reply-container u-m-0 u-py-6">
+                        <Comment
+                            csrfToken={csrfToken}
+                            commentId={commentId}
+                            text={{
+                                userName: replyingUserName,
+                                initials: replyingUserInitials,
+                                body: body
+                            }}
+                            userProfileLink={`${groupBasePath}/members/${replyingUserId}`}
+                            date={replyCreatedDate}
+                            shouldEnableReplies={shouldRenderCommentAndReplyForms}
+                            replyValidationFailAction={handleValidationFailure}
+                            replySubmitAction={handleCommentReplySubmit}
+                            shouldEnableLikes={shouldRenderCommentAndReplyForms}
+                            likeCount={likeCount}
+                            isLiked={isLiked}
+                            likeAction={handleLike}
+                            className="c-comment--reply u-border-l-theme-8" />
+                    </li>
 
-            )
+                )
 
         })
     };
@@ -364,21 +363,21 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                 isLiked={isLiked}
                                                 likeAction={handleLike}
                                                 className="u-border-l-theme-8">
-                                                    {hasReply &&
-                                                        <ul className="u-list-none c-comment_replies-list u-p-0">
-                                                            {repliesComponents[0]}
+                                                {hasReply &&
+                                                    <ul className="u-list-none c-comment_replies-list u-p-0">
+                                                        {repliesComponents[0]}
+                                                    </ul>
+                                                }
+                                                {hasReplies &&
+                                                    <Accordion
+                                                        id={additionalRepliesAccordionId}
+                                                        toggleChildren={<span>{moreRepliesLabel}</span>}
+                                                        toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                        <ul className="u-list-none u-m-0 u-p-0">
+                                                            {repliesComponents.splice(1)}
                                                         </ul>
-                                                    }
-                                                    {hasReplies &&
-                                                        <Accordion
-                                                            id={additionalRepliesAccordionId}
-                                                            toggleChildren={<span>{moreRepliesLabel}</span>}
-                                                            toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                            <ul className="u-list-none u-m-0 u-p-0">
-                                                                {repliesComponents.splice(1)}
-                                                            </ul>
-                                                        </Accordion>
-                                                    }
+                                                    </Accordion>
+                                                }
                                             </Comment>
                                         </li>
 

@@ -10,6 +10,7 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
 import { postGroupFile } from '@services/postGroupFile';
+import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -40,39 +41,40 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
 
     const { text } = folder ?? {};
     const { name } = text ?? {};
+    
     const folderHref: string = `${groupBasePath}/folders/${folderId}`;
 
-    const handleSubmit = async (submission) => {
+    const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
 
-        try {
+        return new Promise((resolve) => {
 
-            const response = await postGroupFile({
-                groupId: groupId,
-                folderId: folderId,
-                user: user,
-                csrfToken: csrfToken,
-                body: submission
+            postGroupFile({ groupId, folderId, user, csrfToken, body: formData }).then(() => {
+
+                router.push(folderHref);
+                resolve({});
+
+            })
+            .catch((error) => {
+
+                if(error.data){
+
+                    setErrors({
+                        [error.data.status]: error.data.statusText
+                    });
+    
+                } else {
+    
+                    setErrors({
+                        ['Error']: error.message
+                    });
+    
+                }
+    
+                resolve({});
+
             });
 
-            router.push(folderHref);
-
-        } catch (error) {
-
-            if(error.data){
-
-                setErrors({
-                    [error.data.status]: error.data.statusText
-                });
-
-            } else {
-
-                setErrors({
-                    ['Error']: error.message
-                });
-
-            }
-
-        }
+        });
 
     }
 

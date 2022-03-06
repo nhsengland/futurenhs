@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import { ErrorSummary } from '@components/ErrorSummary';
 import { Form } from '@components/Form';
+import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -30,7 +31,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side validation failure in forms
      */
-     const handleValidationFailure = (errors): any => {
+    const handleValidationFailure = (errors: FormErrors): void => {
 
         setValidationErrors(errors);
 
@@ -42,10 +43,11 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side submit
      */
-    const handleSubmit = (body): any => {
+    const handleSubmit = (formData: FormData): Promise<FormErrors> => {
 
         setValidationErrors({});
-        submitAction?.(body);
+        
+        return submitAction?.(formData);
 
     };
 

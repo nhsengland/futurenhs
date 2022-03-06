@@ -37,3 +37,5 @@ export interface FormConfig {
     errors?: Record<string, string>;
     steps: Array<FormStep>;
 }
+
+export type FormErrors = Record<string, string>;

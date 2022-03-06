@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { Link } from '@components/Link';
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
 
+import { Link } from '@components/Link';
 import { formComponents } from '@components/_formComponents';
 import { Dialog } from '@components/Dialog';
 import { validate } from '@helpers/validators';
@@ -35,6 +35,14 @@ export const Form: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const { submitButton, cancelButton } = text ?? {};
+
+    const shouldRenderCancelButton: boolean = Boolean(cancelButton) && Boolean(cancelHref);
+    const noop = useCallback(() => {}, []);
+
     /**
      * Create unique field instances from the supplied fields template
      */
@@ -62,7 +70,6 @@ export const Form: (props: Props) => JSX.Element = ({
 
     });
 
-    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const handleCancel = (event: any): any => {
 
         event.preventDefault();
@@ -74,23 +81,6 @@ export const Form: (props: Props) => JSX.Element = ({
     const handleDiscardFormConfirm = (): Promise<boolean> => router.push(cancelHref);
     const handleChange = (props: any): void => changeAction?.(props);
     const handleValidate = (submission: any): Record<string, string> => validate(submission, fields);
-    const handleSubmit = (submission: any): void => {
-
-        const formData: FormData = new FormData();
-
-        for (const fieldName in submission) {
-
-            formData.append(fieldName, submission[fieldName]);
-
-        }
-
-        submitAction?.(formData);
-
-    };
-
-    const { submitButton, cancelButton } = text ?? {};
-
-    const shouldRenderCancelButton: boolean = Boolean(cancelButton) && Boolean(cancelHref);
 
     const generatedClasses: any = {
         wrapper: classNames('c-form', className),
@@ -100,6 +90,9 @@ export const Form: (props: Props) => JSX.Element = ({
         cancelButton: classNames('c-form_cancel-button', 'c-button', 'c-button-outline', 'c-button--min-width', cancelButtonClassName)
     };
 
+    /**
+     * Recursively render field components from field config
+     */
     const renderFields = useCallback((fields?: Array<FormField>): Array<JSX.Element> => {
 
         if (!fields) {
@@ -129,7 +122,7 @@ export const Form: (props: Props) => JSX.Element = ({
                     component={formComponents[component]}
                     className={className}
                     {...rest}>
-                    {renderFields(fields)}
+                        {renderFields(fields)}
                 </Field>
 
             )
@@ -138,17 +131,20 @@ export const Form: (props: Props) => JSX.Element = ({
 
     }, [fields]);
 
+    /**
+     * Render
+     */
     return (
 
         <FinalForm
             initialValues={initialValues}
-            onSubmit={handleSubmit}
+            onSubmit={noop}
             validate={handleValidate}
             render={({
                 form,
                 errors,
+                handleSubmit,
                 hasValidationErrors,
-                submitting
             }) => (
 
                 <form
@@ -159,92 +155,117 @@ export const Form: (props: Props) => JSX.Element = ({
 
                         event.preventDefault();
 
-                        /**
-                         * Handle client-side validation failure in forms
-                         */
-                        if (hasValidationErrors) {
+                        if (!isProcessing) {
 
-                            validationFailAction?.(errors);
+                            /**
+                             * Run final-form's submit handler to ensure internal state and field validation state is correctly updated
+                             * NOTE: This is *not* being used to actually handle the submission because it's not set up to support multi-part forms correctly
+                             */
+                            handleSubmit();
 
-                        /**
-                         * Submit and then reset the form on success
-                         */
-                        } else {
+                            /**
+                             * Handle client-side validation failure in forms
+                             */
+                            if (hasValidationErrors) {
 
-                            const formData: FormData = new FormData(event.target);
+                                validationFailAction?.(errors);
 
-                            submitAction?.(formData);
-                            //form.restart();
+                            /**
+                             * Submit and then reset the form on success
+                             */
+                            } else {
+
+                                const formData: FormData = new FormData(event.target);
+
+                                //setIsProcessing(true);
+                                submitAction?.(formData)?.then((errors: Record<string, string>) => {
+
+                                    //setIsProcessing(false);
+
+                                    console.log(1234);
+
+                                    if(!errors || Object.keys(errors).length === 0){
+
+                                        /**
+                                         * Clear the form if the submission completed without errors
+                                         */
+                                        form.restart();
+
+                                    }
+
+                                });
+
+                            }
 
                         }
 
                     }}
                     className={generatedClasses.wrapper}>
-                    <Field
-                        key="_csrf"
-                        id={`_csrf${instanceId ?? ''}`}
-                        name="_csrf"
-                        component={formComponents.hidden}
-                        initialValue={csrfToken}
-                        defaultValue={csrfToken} />
-                    <Field
-                        key="_form-id"
-                        id={`_form-id${instanceId ?? ''}`}
-                        name="_form-id"
-                        component={formComponents.hidden}
-                        initialValue={csrfToken}
-                        defaultValue={formId} />
-                    {instanceId &&
                         <Field
-                            key="_instance-id"
-                            id={`_instance-id${instanceId}`}
-                            name="_instance-id"
+                            key="_csrf"
+                            id={`_csrf${instanceId ?? ''}`}
+                            name="_csrf"
                             component={formComponents.hidden}
-                            defaultValue={instanceId} />
-                    }
-                    <div className={generatedClasses.body}>
-                        {renderFields(fields)}
-                    </div>
-                    <div className={generatedClasses.buttonContainer}>
-                        {shouldRenderCancelButton &&
-                            <>
-                                <Link href={cancelHref}>
-                                    <a className={generatedClasses.cancelButton} onClick={handleCancel}>
-                                        {cancelButton}
-                                    </a>
-                                </Link>
-                                <Dialog
-                                    id="dialog-discard-discussion"
-                                    isOpen={isCancelModalOpen}
-                                    text={{
-                                        cancelButton: 'Cancel',
-                                        confirmButton: 'Yes, discard'
-                                    }}
-                                    cancelAction={handleDiscardFormCancel}
-                                    confirmAction={handleDiscardFormConfirm}>
-                                    <h3>Entered Data will be lost</h3>
-                                    <p className="u-text-bold">Any entered details will be discarded. Are you sure you wish to proceed?</p>
-                                </Dialog>
-                            </>
+                            initialValue={csrfToken}
+                            defaultValue={csrfToken} />
+                        <Field
+                            key="_form-id"
+                            id={`_form-id${instanceId ?? ''}`}
+                            name="_form-id"
+                            component={formComponents.hidden}
+                            initialValue={csrfToken}
+                            defaultValue={formId} />
+                        {instanceId &&
+                            <Field
+                                key="_instance-id"
+                                id={`_instance-id${instanceId}`}
+                                name="_instance-id"
+                                component={formComponents.hidden}
+                                defaultValue={instanceId} />
                         }
-                        <button
-                            disabled={submitting}
-                            type="submit"
-                            className={generatedClasses.submitButton}>
-                            {submitButton}
-                        </button>
-                    </div>
-                    <FormSpy
-                        subscription={{
-                            touched: true,
-                            errors: true,
-                            submitErrors: true,
-                            submitFailed: true,
-                            submitSucceeded: true,
-                            modifiedSinceLastSubmit: true
-                        }}
-                        onChange={handleChange}
-                    />
+                        <div className={generatedClasses.body}>
+                            {renderFields(fields)}
+                        </div>
+                        <div className={generatedClasses.buttonContainer}>
+                            {shouldRenderCancelButton &&
+                                <>
+                                    <Link href={cancelHref}>
+                                        <a className={generatedClasses.cancelButton} onClick={handleCancel}>
+                                            {cancelButton}
+                                        </a>
+                                    </Link>
+                                    <Dialog
+                                        id="dialog-discard-discussion"
+                                        isOpen={isCancelModalOpen}
+                                        text={{
+                                            cancelButton: 'Cancel',
+                                            confirmButton: 'Yes, discard'
+                                        }}
+                                        cancelAction={handleDiscardFormCancel}
+                                        confirmAction={handleDiscardFormConfirm}>
+                                        <h3>Entered Data will be lost</h3>
+                                        <p className="u-text-bold">Any entered details will be discarded. Are you sure you wish to proceed?</p>
+                                    </Dialog>
+                                </>
+                            }
+                            <button
+                                disabled={isProcessing}
+                                type="submit"
+                                className={generatedClasses.submitButton}>
+                                {submitButton}
+                            </button>
+                        </div>
+                        <FormSpy
+                            subscription={{
+                                touched: true,
+                                errors: true,
+                                submitErrors: true,
+                                submitFailed: true,
+                                submitSucceeded: true,
+                                modifiedSinceLastSubmit: true
+                            }}
+                            onChange={handleChange}
+                        />
                 </form>
 
             )}

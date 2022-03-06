@@ -5,6 +5,7 @@ import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { putGroupDetails } from '@services/putGroupDetails';
+import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -32,21 +33,28 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side update submission
      */
-    const handleSubmit = async (formData: FormData): Promise<void> => {
+    const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
 
-        try {
+        return new Promise((resolve) => {
 
-            await services.putGroupDetails({ groupId, user, csrfToken, body: formData });
+            services.putGroupDetails({ groupId, user, csrfToken, body: formData }).then(() => {
 
-            setErrors({});
+                setErrors({});
+                resolve({});
 
-        } catch (error) {
+            })
+            .catch((error) => {
 
-            setErrors({
-                [error.data.status]: error.data.statusText
+                const errors: FormErrors = {
+                    [error.data.status]: error.data.statusText
+                };
+
+                setErrors(errors);
+                resolve(errors);
+
             });
 
-        }
+        });
 
     };
 

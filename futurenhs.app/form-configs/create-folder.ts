@@ -27,7 +27,13 @@ export const createFolderForm: FormConfig = {
                         label: 'Enter a folder description',
                         hint: 'This is a hint offering some short guidance to users'
                     },
-                    component: 'textArea'
+                    component: 'textArea',
+                    validators: [
+                        {
+                            type: 'required',
+                            message: 'Enter the folder description'
+                        }
+                    ]
                 }
             ]
         }

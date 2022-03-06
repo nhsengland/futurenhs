@@ -9,6 +9,7 @@ import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
+import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -45,7 +46,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Client-side submission handler
      */
-    const handleSubmit = async (formData: FormData): Promise<void> => {
+    const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
 
         try {
 
@@ -53,11 +54,17 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 
             router.push(forumHref);
 
+            return Promise.resolve({});
+
         } catch (error) {
 
-            setErrors({
+            const errors: FormErrors = {
                 [error.data.status]: error.data.statusText
-            });
+            };
+
+            setErrors(errors);
+
+            return Promise.resolve(errors);
 
         }
 

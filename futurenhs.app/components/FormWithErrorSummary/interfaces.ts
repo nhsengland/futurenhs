@@ -19,7 +19,7 @@ export interface Props {
     action?: string;
     method?: string;
     cancelHref?: string;
-    submitAction: any;
+    submitAction: (formData: FormData) => Promise<Record<string, string>>;
     changeAction?: any;
     className?: string;
     bodyClassName?: string;

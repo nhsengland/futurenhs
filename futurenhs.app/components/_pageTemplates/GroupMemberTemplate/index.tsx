@@ -12,6 +12,7 @@ import { Form } from '@components/Form';
 import { ErrorSummary } from '@components/ErrorSummary';
 import { Accordion } from '@components/Accordion';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
+import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -42,6 +43,20 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
 
     const shouldRenderUpdateForm: boolean = actions.includes(actionsConstants.GROUPS_MEMBERS_EDIT);
     const shouldRenderAccordionOpen: boolean = Boolean(router.query.edit);
+
+    /**
+     * Handle client-side update submission
+     */
+     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
+
+        return new Promise((resolve) => {
+
+            // TODO
+            resolve({});
+
+        });
+
+    };
 
     return (
 
@@ -78,7 +93,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                                     text={{
                                         submitButton: 'Save Changes'
                                     }}
-                                    submitAction={() => { }} />
+                                    submitAction={handleSubmit} />
                         </Accordion>
                     }
                 </LayoutColumn>

@@ -10,6 +10,7 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
 import { postGroupFolder } from '@services/postGroupFolder';
+import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -45,21 +46,29 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
 
     const folderHref: string = `${groupBasePath}/folders${folderId ? '/' + folderId : ''}`;
 
-    const handleSubmit = async (formData: FormData) => {
+    const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
 
-        try {
+        return new Promise((resolve) => {
 
-            await postGroupFolder({ groupId, folderId, user, csrfToken, body: formData });
+            postGroupFolder({ groupId, folderId, user, csrfToken, body: formData }).then(() => {
 
-            router.push(folderHref);
+                router.push(folderHref);
 
-        } catch (error) {
+                resolve({});
 
-            setErrors({
-                [error.data.status]: error.data.statusText
+            })
+            .catch((error) => {
+
+                const errors: FormErrors = {
+                    [error.data.status]: error.data.statusText
+                };
+    
+                setErrors(errors);
+                resolve(errors);
+
             });
 
-        }
+        });
 
     }
 

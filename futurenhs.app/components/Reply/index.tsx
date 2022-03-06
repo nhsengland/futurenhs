@@ -7,6 +7,7 @@ import { Accordion } from '@components/Accordion';
 import { SVGIcon } from '@components/SVGIcon';
 import { selectFormDefaultFields } from '@selectors/forms';
 import forms from '@formConfigs/index';
+import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -31,10 +32,11 @@ export const Reply: (props: Props) => JSX.Element = ({
 
     });
 
-    const handleSubmit = ((...props) => {
+    const handleSubmit = ((formData: FormData): Promise<FormErrors> => {
 
         setIsReplyAccordionOpen(false);
-        submitAction(...props);
+
+        return submitAction(formData);
 
     });
 
