@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -37,6 +38,7 @@ export const getGroup = async ({
     if(!ok){
 
         throw new ServiceError('Error getting group', {
+            serviceId: services.GET_GROUP,
             status: status,
             statusText: statusText,
             body: apiData

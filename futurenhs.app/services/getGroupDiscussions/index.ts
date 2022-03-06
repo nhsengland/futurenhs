@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
@@ -52,6 +53,7 @@ export const getGroupDiscussions = async ({
     if(!ok){
 
         throw new ServiceError('Error getting group discussions', {
+            serviceId: services.GET_GROUP_DISCUSSIONS,
             status: status,
             statusText: statusText,
             body: apiData

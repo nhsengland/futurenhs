@@ -1,4 +1,5 @@
 import { actions } from '@constants/actions';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { FetchResponse } from '@appTypes/fetch';
@@ -37,6 +38,7 @@ export const getGroupActions = async ({
     if(!ok){
 
         throw new ServiceError('Error getting group actions', {
+            serviceId: services.GET_GROUP_ACTIONS,
             status: status,
             statusText: statusText,
             body: apiData

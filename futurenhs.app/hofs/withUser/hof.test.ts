@@ -1,6 +1,7 @@
 import { withUser } from './index';
 import { ServiceError } from '@services/index';
 import { GetUserService } from '@services/getUser';
+import { services } from '@constants/services';
 
 const mockUser = {
     id: 'mockId',
@@ -54,6 +55,7 @@ describe('withUser hof', () => {
         const mockGetAuthService: GetUserService = () => new Promise((resolve) => {
 
             throw new ServiceError('No auth', {
+                serviceId: services.GET_USER,
                 status: 401,
                 statusText: 'Denied'
             });

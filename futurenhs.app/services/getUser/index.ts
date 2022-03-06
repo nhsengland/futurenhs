@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import {ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -46,6 +47,7 @@ export const getUser: GetUserService = async ({
     if(!ok){
 
         throw new ServiceError('Error getting user', {
+            serviceId: services.GET_USER,
             status: status,
             statusText: statusText,
             body: apiData

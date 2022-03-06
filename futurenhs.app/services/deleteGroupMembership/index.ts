@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -39,6 +40,7 @@ export const deleteGroupMembership = async ({
     if(!ok){
 
         throw new ServiceError('Error deleting group membership', {
+            serviceId: services.DELETE_GROUP_MEMBERSHIP,
             status: status,
             statusText: statusText,
             body: apiData

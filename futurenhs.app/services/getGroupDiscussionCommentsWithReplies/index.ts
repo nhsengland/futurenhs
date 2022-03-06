@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { getGroupDiscussionCommentReplies as getGroupDiscussionCommentRepliesService } from '@services/getGroupDiscussionCommentReplies';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
@@ -57,6 +58,7 @@ export const getGroupDiscussionCommentsWithReplies = async ({
     if(!ok){
 
         throw new ServiceError('Error getting group discussion comments with replies', {
+            serviceId: services.GET_GROUP_DISCUSSION_COMMENTS_WITH_REPLIES,
             status: status,
             statusText: statusText,
             body: apiData

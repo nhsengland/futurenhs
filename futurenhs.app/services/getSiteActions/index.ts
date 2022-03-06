@@ -1,4 +1,5 @@
 import { actions } from '@constants/actions';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { FetchResponse } from '@appTypes/fetch';
@@ -35,6 +36,7 @@ export const getSiteActions = async ({
     if(!ok){
 
         throw new ServiceError('Error getting site actions', {
+            serviceId: services.GET_SITE_ACTIONS,
             status: status,
             statusText: statusText,
             body: apiData

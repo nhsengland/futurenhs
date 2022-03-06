@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
 import { FetchResponse } from '@appTypes/fetch';
@@ -42,6 +43,7 @@ export const getGroupDiscussion = async ({
     if(!ok){
 
         throw new ServiceError('Error getting group discussion', {
+            serviceId: services.GET_GROUP_DISCUSSION,
             status: status,
             statusText: statusText,
             body: apiData

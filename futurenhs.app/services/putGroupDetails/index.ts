@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -47,6 +48,7 @@ export const putGroupDetails = async ({
     if(!ok){
 
         throw new ServiceError('Error putting group details', {
+            serviceId: services.PUT_GROUP_DETAILS,
             status: status,
             statusText: statusText,
             body: apiData

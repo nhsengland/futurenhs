@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -49,6 +50,7 @@ export const postGroupFile = async ({
     if(!ok){
 
         throw new ServiceError('Error posting new group file', {
+            serviceId: services.POST_GROUP_FILE,
             status: status,
             statusText: statusText,
             body: apiData
