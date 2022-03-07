@@ -1,3 +1,4 @@
+import { actions } from '@constants/actions';
 import { Image } from '@appTypes/image';
 
 export interface Props {
@@ -9,16 +10,12 @@ export interface Props {
         description?: string;
         navMenuTitle: string;   
     };
-    shouldRenderActionsMenu?: boolean;
-    actionsMenuList?: Array<{
-        id: string;
-        url: string;
-        text: string;
-    }>;
     navMenuList?: Array<{
         url: string;
         text: string;
         isActive?: boolean;
     }>;
+    actions?: Array<actions>;
+    shouldRenderActionsMenu?: boolean;
     className?: string;
 }

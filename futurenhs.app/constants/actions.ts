@@ -7,6 +7,9 @@ export const enum actions {
     SITE_ADMIN_GROUPS_ADD = "https://schema.collaborate.future.nhs.uk/groups/v1/add",
     SITE_ADMIN_GROUPS_EDIT = "https://schema.collaborate.future.nhs.uk/groups/v1/edit",
     SITE_ADMIN_GROUPS_DELETE = "https://schema.collaborate.future.nhs.uk/groups/v1/delete",
+    GROUPS_JOIN = 'https://schema.collaborate.future.nhs.uk/groups/v1/join',
+    GROUPS_LEAVE = 'https://schema.collaborate.future.nhs.uk/groups/v1/leave',
+    GROUPS_EDIT = 'https://schema.collaborate.future.nhs.uk/groups/v1/edit',
     GROUPS_DISCUSSIONS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/discussions/add',
     GROUPS_COMMENTS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/discussions/comments/add',
     GROUPS_FOLDERS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/folders/add',
@@ -19,6 +22,4 @@ export const enum actions {
     GROUPS_MEMBERS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/add',
     GROUPS_MEMBERS_EDIT = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/edit',
     GROUPS_MEMBERS_DELETE = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/delete',
-    GROUPS_EDIT = 'https://schema.collaborate.future.nhs.uk/groups/v1/edit',
-    GROUPS_LEAVE = 'LOCAL_GROUPS_LEAVE'
 };

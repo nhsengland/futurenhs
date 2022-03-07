@@ -46,7 +46,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     footerNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
     mainNavMenuList.forEach((menuItem) => { 
         
-        menuItem.isActiveRoot = menuItem.url === '/' ? currentPathName === '/' :  currentPathName.startsWith(menuItem.url); 
+        menuItem.isActiveRoot = menuItem.url === '/' ? currentPathName === '/' :  currentPathName?.startsWith(menuItem.url); 
         menuItem.isActive = menuItem.url === currentPathName 
     
     });

@@ -33,11 +33,6 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
         shouldIncludeParam: true
     });
 
-    const actionsMenuList = getActionNavMenuList({
-        groupRoute: groupRoute,
-        actions: actions
-    });
-
     const navMenuList = getGroupNavMenuList({
         groupRoute: groupRoute,
         activeId: tabId
@@ -73,8 +68,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                             }}
                             image={image}
                             themeId={themeId}
-                            shouldRenderActionsMenu={true}
-                            actionsMenuList={actionsMenuList}
+                            actions={actions}
                             navMenuList={navMenuList} />
                     </ErrorBoundary>
                     <ErrorBoundary boundaryId="group-page-body">

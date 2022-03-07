@@ -97,6 +97,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                             isActive: pathname === '/groups/discover'
                         }
                     ]}
+                    shouldRenderActionsMenu={false}
                     className="u-bg-theme-14" />
                 <PageBody>
                     <LayoutColumn desktop={8}>

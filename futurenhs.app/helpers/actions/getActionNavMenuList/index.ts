@@ -30,11 +30,15 @@ export const getActionNavMenuList = ({
 
     }
 
-    actionsMenuList.push({
-        id: userActions.GROUPS_LEAVE,
-        url: '/',
-        text: 'Leave group'
-    });
+    if(actions?.includes(userActions.GROUPS_LEAVE)){
+
+        actionsMenuList.push({
+            id: userActions.GROUPS_LEAVE,
+            url: '/',
+            text: 'Leave group'
+        });
+
+    }
 
     if(actions?.includes(userActions.GROUPS_MEMBERS_ADD)){
 

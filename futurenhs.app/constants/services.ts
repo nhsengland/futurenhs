@@ -22,6 +22,7 @@ export const enum services {
     POST_GROUP_DISCUSSION_COMMENT_REPLY = 'postGroupDiscussionCommentReply',
     POST_GROUP_FOLDER = 'postGroupFolder',
     POST_GROUP_FILE = 'postGroupFile',
+    POST_GROUP_MEMBERSHIP = 'postGroupMembership',
     PUT_GROUP_DETAILS = 'putGroupDetails',
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
 };
