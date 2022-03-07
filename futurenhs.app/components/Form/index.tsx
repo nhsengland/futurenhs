@@ -85,9 +85,9 @@ export const Form: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames('c-form', className),
         body: classNames('c-form_body', bodyClassName),
-        buttonContainer: classNames('u-flex', 'u-justify-between'),
-        submitButton: classNames('c-form_submit-button', 'c-button', 'c-button--min-width', submitButtonClassName),
-        cancelButton: classNames('c-form_cancel-button', 'c-button', 'c-button-outline', 'c-button--min-width', cancelButtonClassName)
+        buttonContainer: classNames('tablet:u-flex', 'u-justify-between'),
+        submitButton: classNames('c-form_submit-button', 'c-button', 'c-button--min-width', 'u-w-full', 'tablet:u-w-auto', 'u-mb-4', submitButtonClassName),
+        cancelButton: classNames('c-form_cancel-button', 'c-button', 'c-button-outline', 'c-button--min-width', 'u-w-full', 'u-mb-4', 'tablet:u-w-auto', cancelButtonClassName)
     };
 
     /**

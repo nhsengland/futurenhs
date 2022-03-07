@@ -229,9 +229,9 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                 <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
                                     <p className="u-mb-0">
                                         <Link href={`${groupBasePath}/folders/create`}>
-                                            <a className="c-button c-button--outline u-mr-2 u-drop-shadow">{deleteFolder}</a>
+                                            <a className="c-button c-button--outline u-mr-2 u-my-4 u-w-full tablet:u-w-auto tablet:u-my-0 u-drop-shadow">{deleteFolder}</a>
                                         </Link>
-                                        <a href="/" className="c-button c-button--outline u-drop-shadow">{updateFolder}</a>
+                                        <a href="/" className="c-button c-button--outline u-w-full tablet:u-w-auto u-drop-shadow">{updateFolder}</a>
                                     </p>
                                 </LayoutColumn>
                             }
@@ -252,10 +252,10 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     <p className="u-mb-12">{noFolders}</p>
                 }
                 {(hasAddFolderAction || hasAddFileAction) &&
-                    <p className="u-mb-10">
+                    <p className="u-mb-6">
                         {hasAddFolderAction &&
                             <Link href={`${groupBasePath}/folders/create${folderId ? '?folderId=' + folderId : ''}`}>
-                                <a className="c-button c-button--outline u-mr-2 u-w-72 u-drop-shadow">{createFolder}</a>
+                                <a className="c-button c-button--outline u-mr-2 u-mb-4 u-w-full tablet:u-w-72 u-drop-shadow">{createFolder}</a>
                             </Link>
                         }
                         {(folderId && hasAddFileAction) &&
@@ -265,7 +265,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                     folderId: folderId 
                                 }
                             }}>
-                                <a className="c-button c-button--outline u-min-w-70 u-w-72 u-drop-shadow">{createFile}</a>
+                                <a className="c-button c-button--outline u-w-full tablet:u-w-72 u-drop-shadow">{createFile}</a>
                             </Link>
                         }
                     </p>
