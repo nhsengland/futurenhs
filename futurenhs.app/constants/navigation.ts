@@ -33,6 +33,7 @@ export const mainNavMenuList = [
         url: routes.HOME,
         text: 'Home',
         isActive: false,
+        isActiveRoot: false,
         meta: {
             themeId: 8,
             iconName: 'icon-home'
@@ -42,6 +43,7 @@ export const mainNavMenuList = [
         url: routes.GROUPS,
         text: 'Groups',
         isActive: false,
+        isActiveRoot: false,
         meta: {
             themeId: 11,
             iconName: 'icon-group'

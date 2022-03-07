@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
 import { actions as actionTypes } from '@constants/actions';
@@ -22,6 +23,9 @@ import { capitalise } from '@helpers/formatters/capitalise';
 
 import { Props } from './interfaces'
 
+/**
+ * Site header
+ */
 export const Header: (props: Props) => JSX.Element = ({
     skipLinkList = [
         {
@@ -41,6 +45,8 @@ export const Header: (props: Props) => JSX.Element = ({
     actions,
     searchTerm
 }) => {
+
+    const router = useRouter();
 
     const [isMainAccordionOpen, setIsMainAccordionOpen] = useState(true);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -67,6 +73,9 @@ export const Header: (props: Props) => JSX.Element = ({
 
     const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
 
+    /**
+     * Handle expanding or collapsing accordions
+     */
     const handleAccordionToggle = (id: string, isOpen: boolean) => {
         
         id === headerAccordionId && domHelpers.lockBodyScroll(!isDesktop && isOpen);
@@ -74,8 +83,14 @@ export const Header: (props: Props) => JSX.Element = ({
 
     };
 
+    /**
+     * Handle dismissing the confirmation modal on cancel
+     */
     const handleLogoutCancel = () => setIsLogoutModalOpen(false);
 
+    /**
+     * Handle dismissing the confirmation modal on confirm and redirecting to logout route
+     */
     const handleLogoutConfirm = () => {
 
         setIsLogoutModalOpen(false);
@@ -83,6 +98,9 @@ export const Header: (props: Props) => JSX.Element = ({
 
     };
 
+    /**
+     * Handle rendering the confirmation modal on logout
+     */
     const handleLogoutRequest = (event: any): void => {
 
         event.preventDefault();
@@ -90,6 +108,10 @@ export const Header: (props: Props) => JSX.Element = ({
 
     };
 
+    /**
+     * When the media breapoint changes to desktop
+     * ensure that the main nav is displayed and the body scroll lock is removed
+     */
     useEffect(() => {
 
         domHelpers.lockBodyScroll(false);
@@ -97,6 +119,9 @@ export const Header: (props: Props) => JSX.Element = ({
 
     }, [isDesktop]);
 
+    /**
+     * Render
+     */
     return (
 
         <header id="nav" className="c-site-header">

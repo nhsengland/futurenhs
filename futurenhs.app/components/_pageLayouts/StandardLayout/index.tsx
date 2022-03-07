@@ -43,8 +43,13 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || '';
     const breadCrumbDescriptionHtml: string = "<span class=\"u-text-bold\">Need help?</span> <a target=\"_blank\" rel=\"noopener\" href=\"https://futurenhstest.service-now.com/csm/?id=futurenhs_test\">Visit our support site</a>"
 
-    mainNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
     footerNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
+    mainNavMenuList.forEach((menuItem) => { 
+        
+        menuItem.isActiveRoot = menuItem.url === '/' ? currentPathName === '/' :  currentPathName.startsWith(menuItem.url); 
+        menuItem.isActive = menuItem.url === currentPathName 
+    
+    });
 
     const currentRoutePathElements: Array<string> = router?.asPath?.split('/').filter((item) => item);
     const breadCrumbListToUse: BreadCrumbList = breadCrumbList ?? getBreadCrumbList({ pathElementList: currentRoutePathElements });

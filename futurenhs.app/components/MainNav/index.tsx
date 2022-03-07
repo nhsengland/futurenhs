@@ -20,14 +20,20 @@ export const MainNav: (props: Props) => JSX.Element =  ({
         <div className={generatedClasses.wrapper}>
             <nav id="main-nav" aria-label="Main">
                 <ul className={generatedClasses.nav} role="menubar">
-                    {navMenuList?.map(({ url, text, isActive, meta }, index) => {
+                    {navMenuList?.map(({ 
+                        url, 
+                        text, 
+                        isActive, 
+                        isActiveRoot, 
+                        meta 
+                    }, index) => {
 
                         const { themeId, iconName } = meta ?? {};
 
                         const generatedClasses = {
                             link: classNames('c-main-nav_level-1-link', {
-                                [`c-main-nav_level-1-link--active`]: isActive,
-                                [`u-border-theme-${themeId}`]: isActive && typeof themeId !== 'undefined',
+                                [`c-main-nav_level-1-link--active`]: isActive || isActiveRoot,
+                                [`u-border-theme-${themeId}`]: (isActive || isActiveRoot) && typeof themeId !== 'undefined',
                                 [`u-text-theme-${themeId}`]: typeof themeId !== 'undefined'
                             }),
                             icon: classNames('c-main-nav_level-1-icon', {

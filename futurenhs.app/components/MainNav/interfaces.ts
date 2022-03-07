@@ -3,6 +3,7 @@ export interface Props {
         url: string;
         text: string;
         isActive?: boolean;
+        isActiveRoot?: boolean;
         meta?: {
             themeId?: number | string;
             iconName?: string;
