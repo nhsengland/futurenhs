@@ -20,6 +20,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             switch (role)
             {
                 case "Admin":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/admin/{DefaultApiVerison}/view");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/edit");
@@ -46,6 +49,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             switch (role)
             {
                 case "Admin":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/edit");
@@ -60,7 +66,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/delete");
-                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/add");
                     break;
                 case "Standard Members":
@@ -82,6 +87,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             {
                 case "Admin":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/edit");
@@ -98,6 +105,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
                     break;
                 case "Standard Members":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/add");
@@ -121,6 +130,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             {
                 case "Admin":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/edit");
@@ -137,6 +148,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
                     break;
                 case "Standard Members":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/add");
