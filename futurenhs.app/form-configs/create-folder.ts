@@ -14,10 +14,16 @@ export const createFolderForm: FormConfig = {
                         hint: 'This is a hint offering some short guidance to users'
                     },
                     component: 'input',
+                    shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
                             type: 'required',
                             message: 'Enter the folder title'
+                        },
+                        {
+                            type: 'maxLength',
+                            maxLength: 1000,
+                            message: 'Enter 1000 or fewer characters'
                         }
                     ]
                 },
@@ -28,10 +34,16 @@ export const createFolderForm: FormConfig = {
                         hint: 'This is a hint offering some short guidance to users'
                     },
                     component: 'textArea',
+                    shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
                             type: 'required',
                             message: 'Enter the folder description'
+                        },
+                        {
+                            type: 'maxLength',
+                            maxLength: 4000,
+                            message: 'Enter 4000 or fewer characters'
                         }
                     ]
                 }

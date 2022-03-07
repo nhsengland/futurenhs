@@ -17,7 +17,7 @@ export const getRouteToParam = ({
 
         if(!paramValue){
 
-            throw new Error(`Param ${paramName} does not exist in router params ${router.query}`);
+            return '';
 
         }
 
