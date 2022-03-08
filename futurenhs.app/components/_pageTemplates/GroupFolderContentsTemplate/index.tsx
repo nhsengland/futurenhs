@@ -132,11 +132,11 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     ['u-hidden']: !body
                 }),
                 modified: classNames({
-                    ['u-flex-col u-w-full tablet:u-w-1/4']: true,
+                    ['u-hidden tablet:u-flex-col u-w-full tablet:u-w-1/4']: true,
                     ['u-hidden']: isFolder
                 }),
                 actions: classNames({
-                    ['u-w-full tablet:u-w-1/6']: true,
+                    ['u-w-full tablet:u-w-1/6 u-justify-between']: true,
                     ['u-hidden']: isFolder
                 })
             };

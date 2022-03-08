@@ -174,7 +174,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                     <span className="c-site-header-nav_root-nav-image">
                                                                         <Avatar image={null} initials={userInitials} />
                                                                     </span>
-                                                                    <span>{capitalise({ value: userName })}</span>
+                                                                    <span className="o-truncated-text-lines-1">{capitalise({ value: userName })}</span>
                                                                     <SVGIcon name={getAccordionIcon(isUserAccordionOpen)} className="c-site-header-nav_root-nav-icon" />
                                                                 </>
                                                             }

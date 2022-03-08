@@ -280,6 +280,7 @@
         overflow: hidden;
         margin-right: 20px;
         border: 3px solid $color_nhsuk-white;
+        flex-shrink: 0;
     }
 
     &_root-nav-icon {
