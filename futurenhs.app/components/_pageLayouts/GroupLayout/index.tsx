@@ -7,7 +7,6 @@ import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { GroupPageHeader } from '@components/GroupPageHeader';
 import { ErrorBoundary } from '@components/ErrorBoundary';
-import { getActionNavMenuList } from '@helpers/actions/getActionNavMenuList';
 import { getGroupNavMenuList } from '@helpers/routing/getGroupNavMenuList';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb';
@@ -22,6 +21,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     image,
     actions,
     children,
+    shouldRenderGroupHeader = true,
     ...rest 
 }) => {
 
@@ -58,19 +58,21 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                     <meta name="description" content={metaDescription} />
                 </Head>
                 <LayoutColumnContainer>
-                    <ErrorBoundary boundaryId="group-page-header">
-                        <GroupPageHeader 
-                            id="group"
-                            text={{
-                                mainHeading: mainHeading, 
-                                description: strapLine,
-                                navMenuTitle: 'Group menu'
-                            }}
-                            image={image}
-                            themeId={themeId}
-                            actions={actions}
-                            navMenuList={navMenuList} />
-                    </ErrorBoundary>
+                    {shouldRenderGroupHeader &&
+                        <ErrorBoundary boundaryId="group-page-header">
+                            <GroupPageHeader 
+                                id="group"
+                                text={{
+                                    mainHeading: mainHeading, 
+                                    description: strapLine,
+                                    navMenuTitle: 'Group menu'
+                                }}
+                                image={image}
+                                themeId={themeId}
+                                actions={actions}
+                                navMenuList={navMenuList} />
+                        </ErrorBoundary>
+                    }
                     <ErrorBoundary boundaryId="group-page-body">
                         {children}
                     </ErrorBoundary>

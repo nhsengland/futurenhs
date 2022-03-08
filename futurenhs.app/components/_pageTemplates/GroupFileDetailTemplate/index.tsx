@@ -106,7 +106,10 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
                 }
                 <h2 className="nhsuk-heading-l">{name}</h2>
                 <hr />
-                <RichText wrapperElementType="p" bodyHtml={body} />
+                <RichText 
+                    wrapperElementType="p" 
+                    bodyHtml={body}
+                    className="u-mb-10" />
                 {createdBy &&
                     <p className="u-mb-14">
                         <span className="u-text-bold u-mr-6">{createdByLabel}</span>

@@ -11,4 +11,7 @@ export interface Props extends GroupPage {
     contentText: ContentText;
     fileId: string;
     file: FolderContent;
+    shouldRenderGroupHeader?: boolean;
+    shouldRenderPhaseBanner?: boolean;
+    shouldRenderBreadCrumb?: boolean;
 }

@@ -37,6 +37,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 props.fileId = fileId;
                 props.layoutId = layoutIds.GROUP;
                 props.tabId = groupTabIds.FILES;
+                props.shouldRenderPhaseBanner = false;
+                props.shouldRenderBreadCrumb = false;
+                props.shouldRenderGroupHeader = false;
 
                 /**
                  * Get data from services

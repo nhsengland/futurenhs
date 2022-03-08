@@ -74,7 +74,7 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <>
-            <LayoutColumn className="c-page-body">
+            <LayoutColumn className="c-page-body u-pt-4">
                 {hasBreadCrumb &&
                     <BreadCrumb
                         text={{

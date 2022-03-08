@@ -8,6 +8,7 @@ export interface Props {
     shouldRenderPhaseBanner?: boolean;
     shouldRenderBreadCrumb?: boolean; 
     shouldRenderMainNav?: boolean;
+    shouldRenderGroupHeader?: boolean;
     user?: any;
     actions?: any;
     themeId?: string;

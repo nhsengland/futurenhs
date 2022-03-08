@@ -103,86 +103,91 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
         text,
         modified,
         modifiedBy,
-        createdBy }) => {
+        createdBy,
+        downloadLink }) => {
 
-        const { body } = text ?? {};
+            const { body } = text ?? {};
 
-        const isFolder: boolean = type === 'folder';
-        const itemPath: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
-        const fileDetailPath: string = `${fileBasePath}/${encodeURIComponent(id)}/detail`;
-        const fileDownloadPath: string = `/tbc`;
+            const isFolder: boolean = type === 'folder';
+            const itemPath: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
+            const fileDetailPath: string = `${fileBasePath}/${encodeURIComponent(id)}/detail`;
+            const fileDownloadPath: string = downloadLink;
 
-        let iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
+            let iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
 
-        const generatedCellClasses = {
-            type: classNames({
-                ['u-text-center u-text-base u-w-1/6 tablet:u-w-8 u-items-center u-justify-end']: true
-            }),
-            name: classNames({
-                ['u-w-5/6 tablet:u-w-1/6']: true
-            }),
-            description: classNames({
-                ['u-flex-col u-w-full tablet:u-w-1/3']: true,
-                ['u-hidden']: !body
-            }),
-            modified: classNames({
-                ['u-flex-col u-w-full tablet:u-w-1/4']: true,
-                ['u-hidden']: isFolder
-            }),
-            actions: classNames({
-                ['u-w-full tablet:u-w-1/6']: true,
-                ['u-hidden']: isFolder
-            })
-        };
+            const generatedCellClasses = {
+                type: classNames({
+                    ['u-text-center u-text-base u-w-1/6 tablet:u-w-8 u-items-center u-justify-end']: true
+                }),
+                name: classNames({
+                    ['u-w-5/6 tablet:u-w-1/6']: true
+                }),
+                description: classNames({
+                    ['u-flex-col u-w-full tablet:u-w-1/3']: true,
+                    ['u-hidden']: !body
+                }),
+                modified: classNames({
+                    ['u-flex-col u-w-full tablet:u-w-1/4']: true,
+                    ['u-hidden']: isFolder
+                }),
+                actions: classNames({
+                    ['u-w-full tablet:u-w-1/6']: true,
+                    ['u-hidden']: isFolder
+                })
+            };
 
-        const generatedHeaderCellClasses = {
-            type: classNames({
-                ['u-hidden']: true
-            }),
-            name: classNames({
-                ['u-hidden']: true
-            }),
-            description: classNames({
-                ['u-text-bold']: true
-            }),
-            modified: classNames({
-                ['u-text-bold']: true
-            }),
-            actions: classNames({
-                ['u-hidden']: true
-            })
-        };
+            const generatedHeaderCellClasses = {
+                type: classNames({
+                    ['u-hidden']: true
+                }),
+                name: classNames({
+                    ['u-hidden']: true
+                }),
+                description: classNames({
+                    ['u-text-bold']: true
+                }),
+                modified: classNames({
+                    ['u-text-bold']: true
+                }),
+                actions: classNames({
+                    ['u-hidden']: true
+                })
+            };
 
-        return [
-            {
-                children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-text-bold u-hidden tablet:u-block">{extension}</span></>,
-                className: generatedCellClasses.type,
-                headerClassName: generatedHeaderCellClasses.type
-            },
-            {
-                children: <Link href={itemPath}><a className="o-truncated-text-lines-3">{name}</a></Link>,
-                className: generatedCellClasses.name,
-                headerClassName: generatedHeaderCellClasses.name
-            },
-            {
-                children: <RichText bodyHtml={body} wrapperElementType='span' className='o-truncated-text-lines-3' />,
-                className: generatedCellClasses.description,
-                headerClassName: generatedHeaderCellClasses.description
-            },
-            {
-                children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({ value: modified })}</p>${modifiedBy?.text?.userName && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy.text.userName + '</p>'}${createdBy?.text?.userName && '<p><span class="u-text-bold">Author</span> ' + createdBy.text.userName + '</p>'}`} />,
-                className: generatedCellClasses.modified,
-                headerClassName: generatedHeaderCellClasses.modified
-            },
-            {
-                children: isFolder ? '' : <>
-                    <Link href={fileDownloadPath}><a className="u-block u-mb-4 u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
-                    <Link href={fileDetailPath}><a className="u-block u-align-top"><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
-                </>,
-                className: generatedCellClasses.actions,
-                headerClassName: generatedHeaderCellClasses.actions
-            }
-        ]
+            return [
+                {
+                    children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-text-bold u-hidden tablet:u-block">{extension}</span></>,
+                    className: generatedCellClasses.type,
+                    headerClassName: generatedHeaderCellClasses.type
+                },
+                {
+                    children: <Link href={itemPath}><a className="o-truncated-text-lines-3">{name}</a></Link>,
+                    className: generatedCellClasses.name,
+                    headerClassName: generatedHeaderCellClasses.name
+                },
+                {
+                    children: <RichText bodyHtml={body} wrapperElementType='span' className='o-truncated-text-lines-3' />,
+                    className: generatedCellClasses.description,
+                    headerClassName: generatedHeaderCellClasses.description
+                },
+                {
+                    children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({ value: modified })}</p>${modifiedBy?.text?.userName && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy.text.userName + '</p>'}${createdBy?.text?.userName && '<p><span class="u-text-bold">Author</span> ' + createdBy.text.userName + '</p>'}`} />,
+                    className: generatedCellClasses.modified,
+                    headerClassName: generatedHeaderCellClasses.modified
+                },
+                {
+                    children: isFolder ? '' : <>
+                        {fileDownloadPath && 
+                            <Link href={fileDownloadPath}><a className="u-block u-mb-4 u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
+                        }
+                        {fileDetailPath &&
+                            <Link href={fileDetailPath}><a className="u-block u-align-top"><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
+                        }
+                    </>,
+                    className: generatedCellClasses.actions,
+                    headerClassName: generatedHeaderCellClasses.actions
+                }
+            ]
 
     }), [folderContentsList, folderId]);
 

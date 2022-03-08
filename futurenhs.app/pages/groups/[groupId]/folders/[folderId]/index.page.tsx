@@ -58,18 +58,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     props.folderContents = groupFolderContents.data ?? [];
                     props.pagination = groupFolderContents.pagination;
 
-                    const fileIds: Array<string> = [];
-
-                    props.folderContents.forEach(({ type, id }) => {
-
-                        if(type === 'file'){
-
-                            fileIds.push(id);
-
-                        }
-
-                    });
-
                 } catch (error) {
 
                     return handleSSRErrorProps({ props, error });

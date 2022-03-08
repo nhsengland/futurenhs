@@ -3,8 +3,9 @@ import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
+import { getGroupFileDownload } from '@services/getGroupFileDownload';
 import { FetchResponse } from '@appTypes/fetch';
-import { ApiPaginatedResponse, ServicePaginatedResponse } from '@appTypes/service';
+import { ApiPaginatedResponse, ServicePaginatedResponse, ServiceResponse } from '@appTypes/service';
 import { FolderContent } from '@appTypes/file';
 import { User } from '@appTypes/user';
 
@@ -64,6 +65,30 @@ export const getGroupFolderContents = async ({
 
     }
 
+    const fileIds: Array<string> = [];
+    const requests: Array<any> = [];
+
+    apiData.data?.forEach(({ type, id }) => {
+
+        if(type?.toLowerCase() === 'file'){
+
+            fileIds.push(id);
+            requests.push(getGroupFileDownload({ user, groupId, fileId: id }));
+
+        }
+
+    });
+
+    const fileDownloadLinks: Array<ServiceResponse<any>> = await Promise.all(requests);
+
+    fileIds.forEach((fileId: string, index: number) => {
+
+        const file = apiData.data.find(({ id }) => id === fileId);
+
+        file.downloadLink = fileDownloadLinks[index].data;
+
+    });
+
     apiData.data?.forEach((datum) => {
 
         serviceResponse.data.push({
@@ -84,6 +109,7 @@ export const getGroupFolderContents = async ({
             },
             modified: datum.lastUpdated?.atUtc ?? '',
             extension: datum.additionalMetadata?.fileExtension ?? '',
+            downloadLink: datum.downloadLink,
             text: {
                 body: datum.description ?? ''
             }
