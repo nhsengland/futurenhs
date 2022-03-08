@@ -182,8 +182,6 @@ export const Form: (props: Props) => JSX.Element = ({
 
                                     //setIsProcessing(false);
 
-                                    console.log(1234);
-
                                     if(!errors || Object.keys(errors).length === 0){
 
                                         /**
@@ -221,6 +219,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                 id={`_instance-id${instanceId}`}
                                 name="_instance-id"
                                 component={formComponents.hidden}
+                                initialValue={instanceId}
                                 defaultValue={instanceId} />
                         }
                         <div className={generatedClasses.body}>
