@@ -2,9 +2,9 @@ import { GetServerSideProps } from 'next';
 
 import { routes } from '@constants/routes';
 import { routeParams } from '@constants/routes';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
-import { selectParam } from '@selectors/context';
+import { selectParam, selectCsrfToken } from '@selectors/context';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
@@ -26,43 +26,44 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
 
+            const csrfToken: string = selectCsrfToken(context);
             const groupId: string = selectParam(context, routeParams.GROUPID);
 
             props.layoutId = layoutIds.GROUP;
-            props.tabId = 'index';
+            props.tabId = groupTabIds.INDEX;
 
             /**
              * Return not found if user does not have valid action to join group
              */
-            if(!props.actions?.includes(actionConstants.GROUPS_JOIN)){
+            // if(!props.actions?.includes(actionConstants.GROUPS_JOIN)){
 
-                return {
-                    notFound: true
-                }
+            //     return {
+            //         notFound: true
+            //     }
 
-            }
+            // }
 
             /**
              * Get data from services
              */
             try {
 
-                await postGroupMembership({ groupId, user: props.user });
+                await postGroupMembership({ groupId, csrfToken, user: props.user });
+
+                /**
+                 * Return data to page template
+                 */
+                return {
+                    redirect: {
+                        permanent: false,
+                        destination: routes.GROUPS
+                    }
+                }
 
             } catch (error) {
 
                 return handleSSRErrorProps({ props, error });
 
-            }
-
-            /**
-             * Return data to page template
-             */
-            return {
-                redirect: {
-                    permanent: false,
-                    destination: context.req.url.slice(0, context.req.url.lastIndexOf('/'))
-                }
             }
 
         }

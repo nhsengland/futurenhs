@@ -8,6 +8,8 @@ declare interface Config {
 }
 
 export const handleSSRErrorProps = ({ props, error }: Config): any => {
+
+    console.log(error);
     
     if (error.name === 'ServiceError') {
 

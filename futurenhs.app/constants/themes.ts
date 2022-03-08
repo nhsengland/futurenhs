@@ -59,4 +59,4 @@ export const themes: Record<string, Theme> = {
 /**
  * Default theme variant
  */
-export const defaultThemeId: string = '36d49305-eca8-4176-bfea-d25af21469b9';
+export const defaultThemeId: string = '0fca6809-a71f-4733-a622-343967acbad9';

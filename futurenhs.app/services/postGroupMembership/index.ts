@@ -7,6 +7,7 @@ import { Group } from '@appTypes/group';
 import { User } from '@appTypes/user';
 
 declare type Options = ({
+    csrfToken: string;
     groupId: string;
     user: User;
 });
@@ -19,6 +20,7 @@ declare type Dependencies = ({
 export type PostGroupMembershipService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<Group>>;
 
 export const postGroupMembership = async ({
+    csrfToken,
     groupId,
     user
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Group>> => {
@@ -28,10 +30,14 @@ export const postGroupMembership = async ({
 
     const { id } = user;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/join`;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}/members/join`;
     const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'POST'
+        method: 'POST',
+        body: {
+            _csrf: csrfToken
+        }
     }), 30000);
+
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
 
