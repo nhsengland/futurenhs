@@ -24,5 +24,7 @@ export const enum services {
     POST_GROUP_FILE = 'postGroupFile',
     POST_GROUP_MEMBERSHIP = 'postGroupMembership',
     PUT_GROUP_DETAILS = 'putGroupDetails',
+    PUT_GROUP_FOLDER = 'putGroupFolder',
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
+    DELETE_GROUP_FOLDER = 'deleteGroupFolder',
 };

@@ -66,7 +66,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
         wrapper: classNames('nhsuk-form-group', className, {
             ['nhsuk-form-group--error']: shouldRenderError,
             ['c-form-group--focus']: isRteFocussed,
-            ['u-overflow-hidden']: shouldRenderRemainingCharacterCount && maxLength
+            ['u-clearfix']: shouldRenderRemainingCharacterCount && maxLength
         }),
         label: classNames('nhsuk-label'),
         hint: classNames('nhsuk-hint'),

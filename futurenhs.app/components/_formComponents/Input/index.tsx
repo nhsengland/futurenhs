@@ -39,7 +39,7 @@ export const Input: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames('nhsuk-form-group', className, {
             ['nhsuk-form-group--error']: shouldRenderError,
-            ['u-overflow-hidden']: shouldRenderRemainingCharacterCount && maxLength
+            ['u-clearfix']: shouldRenderRemainingCharacterCount && maxLength
         }),
         label: classNames('nhsuk-label'),
         hint: classNames('nhsuk-hint'),

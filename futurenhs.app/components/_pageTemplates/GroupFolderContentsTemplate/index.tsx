@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { actions as userActions } from '@constants/actions';
 import { routeParams } from '@constants/routes';
 import { iconMap } from '@constants/icons';
+import { Dialog } from '@components/Dialog';
 import { BreadCrumb } from '@components/BreadCrumb';
 import { SVGIcon } from '@components/SVGIcon';
 import { dateTime } from '@helpers/formatters/dateTime';
@@ -36,6 +37,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
+
+    const [isCancelDeleteModalOpen, setIsCancelDeleteModalOpen] = useState(false);
     const [folderContentsList, setFolderContentsList] = useState(folderContents);
     const [dynamicPagination, setPagination] = useState(pagination);
 
@@ -68,6 +71,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     }) : `${groupBasePath}/folders`;
 
     const fileBasePath: string = `${groupBasePath}/files`;
+    const folderUpdatePath: string = `${groupBasePath}/folders/${folderId}/update`;
+    const folderDeletePath: string = `${groupBasePath}/folders/${folderId}/delete`;
 
     const breadCrumbList: BreadCrumbList = [];
 
@@ -211,6 +216,25 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
 
     };
 
+    const handleDeleteFolder = (event: any): void => {
+        
+        event.preventDefault();
+
+        setIsCancelDeleteModalOpen(true);
+
+    };
+    const handleDeleteFolderCancel = () => {
+
+        setIsCancelDeleteModalOpen(false);
+
+    };
+    const handleDeleteFolderConfirm = () => {
+
+        setIsCancelDeleteModalOpen(false);
+        router.push(folderDeletePath);
+
+    };
+
     return (
 
         <>
@@ -233,10 +257,28 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                             {(folderId && (hasEditFolderAction || hasDeleteFolderAction)) &&
                                 <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
                                     <p className="u-mb-0">
-                                        <Link href={`${groupBasePath}/folders/create`}>
-                                            <a className="c-button c-button--outline u-mr-2 u-my-4 u-w-full tablet:u-w-auto tablet:u-my-0 u-drop-shadow">{deleteFolder}</a>
+                                        <Link href={folderDeletePath}>
+                                            <a className="c-button c-button--outline u-mr-2 u-my-4 u-w-full tablet:u-w-auto tablet:u-my-0 u-drop-shadow" onClick={handleDeleteFolder}>
+                                                {deleteFolder}
+                                            </a>
                                         </Link>
-                                        <a href="/" className="c-button c-button--outline u-w-full tablet:u-w-auto u-drop-shadow">{updateFolder}</a>
+                                        <Dialog
+                                            id="dialog-delete-folder"
+                                            isOpen={isCancelDeleteModalOpen}
+                                            text={{
+                                                cancelButton: 'Cancel',
+                                                confirmButton: 'Yes, discard'
+                                            }}
+                                            cancelAction={handleDeleteFolderCancel}
+                                            confirmAction={handleDeleteFolderConfirm}>
+                                                <h3>Folder will be deleted</h3>
+                                                <p className="u-text-bold">Any folder contents will also be discarded. Are you sure you wish to proceed?</p>
+                                        </Dialog>
+                                        <Link href={folderUpdatePath}>
+                                            <a className="c-button c-button--outline u-w-full tablet:u-w-auto u-drop-shadow">
+                                                {updateFolder}
+                                            </a>
+                                        </Link>
                                     </p>
                                 </LayoutColumn>
                             }

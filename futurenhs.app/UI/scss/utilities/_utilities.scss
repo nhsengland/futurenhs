@@ -44,24 +44,6 @@
     min-width: fit-content;
 }
 
-// TODO - work out why tailwind.config.js isn't correctly rendering fill theme classes
-// so that this duplication can be removed
-// $t-utility-themes: (
-//     "0": $black,
-//     "1": $white,
-//     "2": $very-light-grey,
-//     "3": $light-grey,
-//     "4": $light-mid-grey,
-//     "5": $mid-grey,
-//     "6": $dark-mid-grey,
-//     "7": $dark-grey,
-//     "8": $blue,
-//     "9": $green,
-//     "10": $purple,
-//     "11": $aqua,
-//     "12": $dark-red,
-//     "13": $red,
-//     "14": $dark-blue,
-// );
-
-
+.u-clearfix {
+    @include clearfix;
+}
