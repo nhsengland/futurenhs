@@ -17,6 +17,11 @@ export const createDiscussionForm: FormConfig = {
                         {
                             type: 'required',
                             message: 'Enter the discussion title'
+                        },
+                        {
+                            type: 'maxLength',
+                            maxLength: 500,
+                            message: 'Enter 500 or fewer characters'
                         }
                     ]
                 },
@@ -27,10 +32,16 @@ export const createDiscussionForm: FormConfig = {
                     },
                     component: 'textArea',
                     shouldRenderAsRte: true,
+                    shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
                             type: 'required',
                             message: 'Enter the discussion comment'
+                        },
+                        {
+                            type: 'maxLength',
+                            maxLength: 4000,
+                            message: 'Enter 4000 or fewer characters'
                         }
                     ]
                 }
