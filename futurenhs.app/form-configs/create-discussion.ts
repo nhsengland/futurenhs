@@ -32,16 +32,10 @@ export const createDiscussionForm: FormConfig = {
                     },
                     component: 'textArea',
                     shouldRenderAsRte: true,
-                    shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
                             type: 'required',
                             message: 'Enter the discussion comment'
-                        },
-                        {
-                            type: 'maxLength',
-                            maxLength: 4000,
-                            message: 'Enter 4000 or fewer characters'
                         }
                     ]
                 }

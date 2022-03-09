@@ -3,7 +3,7 @@ import Head from 'next/head';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
-import { selectThemeAccentId } from '@selectors/themes';
+import { selectThemeBackgroundId } from '@selectors/themes';
 import { defaultGroupLogos } from '@constants/icons';
 import { themes } from '@constants/themes';
 import { Link } from '@components/Link';
@@ -39,11 +39,11 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     const shouldEnableLoadMore: boolean = true;
 
     const { title,
-        metaDescription,
-        mainHeading,
-        intro,
-        secondaryHeading,
-        navMenuTitle } = contentText ?? {};
+            metaDescription,
+            mainHeading,
+            intro,
+            secondaryHeading,
+            navMenuTitle } = contentText ?? {};
 
     /**
      * Handle client-side pagination
@@ -123,10 +123,10 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
 
                                     const imageToUse = image ? image : defaultGroupLogos.large;
                                     const cardLinkHref: string = `/groups/${groupId}`;
-                                    const themeAccentId: number = selectThemeAccentId(themes, themeId);
+                                    const themeBorderId: number = selectThemeBackgroundId(themes, themeId);
 
                                     const generatedClasses = {
-                                        wrapper: classNames('u-mb-4', `u-border-b-theme-${themeAccentId}`, `hover:u-border-b-theme-${themeAccentId}-darker`)
+                                        wrapper: classNames('u-mb-4', `u-border-b-theme-${themeBorderId}`, `hover:u-border-b-theme-${themeBorderId}-darker`)
                                     }
 
                                     return (

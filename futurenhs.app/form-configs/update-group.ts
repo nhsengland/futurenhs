@@ -102,13 +102,7 @@ export const updateGroupForm: FormConfig = {
                             label: getThemeLabel({
                                 themeId: '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56',
                                 number: 3
-                            })                        },
-                        {
-                            value: '5e7b315b-67b0-457d-8d44-ed2d4bcfac1d',
-                            label: getThemeLabel({
-                                themeId: '5e7b315b-67b0-457d-8d44-ed2d4bcfac1d',
-                                number: 4
-                            })                         
+                            })                        
                         },
                         {
                             value: '5053a8c6-ea4d-4125-9dc3-475e3e931fee',
@@ -122,13 +116,7 @@ export const updateGroupForm: FormConfig = {
                             label: getThemeLabel({
                                 themeId: '53bce171-d6a3-4721-8199-92f10fca5ef2',
                                 number: 6
-                            })                        },
-                        {
-                            value: 'e71b38fc-c200-4a7c-b484-6bc786fd0aa6',
-                            label: getThemeLabel({
-                                themeId: 'e71b38fc-c200-4a7c-b484-6bc786fd0aa6',
-                                number: 7
-                            })
+                            })                        
                         },
                         {
                             value: '217a1f99-5b25-4e3b-be3d-29c55c46be05',
