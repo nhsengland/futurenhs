@@ -6,7 +6,7 @@ import { Props } from './interfaces';
 export const Dialog: (props: Props) => JSX.Element = ({
     id,
     isOpen,
-    appElement = typeof document !== 'undefined' ? document.body : undefined,
+    appElement = typeof document !== 'undefined' ? document.getElementById('__next') : undefined,
     children,
     text,
     confirmAction,

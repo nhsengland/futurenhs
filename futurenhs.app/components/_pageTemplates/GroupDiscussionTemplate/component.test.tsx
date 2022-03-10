@@ -130,7 +130,7 @@ describe('Group discussion template', () => {
 
         render(<GroupDiscussionTemplate {...props}/>);
 
-        expect(screen.getAllByText('99 comments').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Comments: 99').length).toBeGreaterThan(0);
 
         cleanup();
 
@@ -138,27 +138,9 @@ describe('Group discussion template', () => {
 
         render(<GroupDiscussionTemplate {...propsCopy}/>);
 
-        expect(screen.queryByText('99 comments')).toBeNull();
+        expect(screen.queryByText('Comments: 99')).toBeNull();
         
         
-    });
-
-    it('conditionally renders view count if discussion has been viewed', () => {
-        
-        render(<GroupDiscussionTemplate {...props}/>);
-
-        expect(screen.getAllByText('250 views').length).toBeGreaterThan(0);
-
-        cleanup();
-
-        const propsCopy = JSON.parse(JSON.stringify(props));
-        propsCopy.discussion.viewCount = 0;
-
-        render(<GroupDiscussionTemplate {...propsCopy}/>);
-
-        expect(screen.queryByText('250 views')).toBeNull();
-
-
     });
 
     it('conditionally renders discussion comments', () => {
