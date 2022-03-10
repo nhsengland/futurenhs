@@ -142,17 +142,19 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                         <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
                                                     }
                                                 </UserMeta>
-                                                <div className="c-card_footer u-text-theme-0">
-                                                    <p className="c-card_footer-item">
-                                                        <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
-                                                        <span>{`${responseCount} Comments`}</span>
-                                                    </p>
-                                                    <p className="c-card_footer-item">
-                                                        <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
-                                                        <span>{`${viewCount} Views`}</span>
-                                                    </p>
+                                                <div className="c-card_footer u-text-theme-0 u-flex u-justify-between">
+                                                    <div className="u-flex u-flex-col tablet:u-flex-row">
+                                                        <p className="c-card_footer-item">
+                                                            <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
+                                                            <span>{`${responseCount} Comments`}</span>
+                                                        </p>
+                                                        <p className="c-card_footer-item">
+                                                            <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
+                                                            <span>{`${viewCount} Views`}</span>
+                                                        </p>
+                                                    </div>
                                                     {isSticky &&
-                                                        <SVGIcon name="icon-pin" className="c-card_footer-icon u-fill-theme-0 u-float-right u-w-4 u-h-4 u-m-0" />
+                                                        <SVGIcon name="icon-pin" className="u-fill-theme-0 u-float-right u-w-4 u-h-4 u-mb-1 u-self-end" />
                                                     }
                                                 </div>
                                             </Card>

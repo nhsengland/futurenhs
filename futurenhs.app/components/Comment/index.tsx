@@ -77,7 +77,7 @@ export const Comment: (props: Props) => JSX.Element = ({
                         text={{
                             reply: 'Reply'
                         }} 
-                        className="u-flex-grow"/>
+                        className="u-w-full tablet:u-flex-grow tablet:u-w-auto"/>
                 }
             </footer>
             {children}
