@@ -145,11 +145,11 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                                     <div className="c-card_footer u-text-theme-0">
                                                         <p className="c-card_footer-item">
                                                             <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
-                                                            <span>{`${totalMemberCount} Members`}</span>
+                                                            <span>{`Members: ${totalMemberCount}`}</span>
                                                         </p>
                                                         <p className="c-card_footer-item">
                                                             <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
-                                                            <span>{`${totalDiscussionCount} Discussions`}</span>
+                                                            <span>{`Discussions: ${totalDiscussionCount}`}</span>
                                                         </p>
                                                     </div>
                                                 </div>

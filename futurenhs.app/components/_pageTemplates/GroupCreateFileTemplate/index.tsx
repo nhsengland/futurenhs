@@ -103,7 +103,7 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
                             cancelHref={folderHref}
                             bodyClassName=""
                             submitButtonClassName="u-float-right">
-                                <h2 className="nhsuk-heading-xl u-mb-6">{name}</h2>
+                                <h2 className="nhsuk-heading-l u-mb-6">{name}</h2>
                                 <hr />
                                 <h3 className="u-mt-6">Upload a file</h3>
                                 <RichText wrapperElementType="div" className="u-mb-10" bodyHtml="<p>Guidance on maximum file size, supported file formats, making sure they are not uploading any sensitive data, etc.</p><p>All uploaded content must conform to the platform's terms and conditions. 

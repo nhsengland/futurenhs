@@ -20,8 +20,8 @@ export const createDiscussionForm: FormConfig = {
                         },
                         {
                             type: 'maxLength',
-                            maxLength: 500,
-                            message: 'Enter 500 or fewer characters'
+                            maxLength: 100,
+                            message: 'Enter 100 or fewer characters'
                         }
                     ]
                 },
@@ -36,6 +36,11 @@ export const createDiscussionForm: FormConfig = {
                         {
                             type: 'required',
                             message: 'Enter the discussion comment'
+                        },
+                        {
+                            type: 'maxLength',
+                            maxLength: 100000,
+                            message: 'Enter 100,000 or fewer characters'
                         }
                     ]
                 }

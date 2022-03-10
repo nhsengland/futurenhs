@@ -45,8 +45,8 @@ export const updateGroupForm: FormConfig = {
                         },
                         {
                             type: 'maxLength',
-                            maxLength: 450,
-                            message: 'Enter 450 or fewer characters'
+                            maxLength: 255,
+                            message: 'Enter 255 or fewer characters'
                         }
                     ]
                 },
@@ -61,8 +61,8 @@ export const updateGroupForm: FormConfig = {
                     validators: [
                         {
                             type: 'maxLength',
-                            maxLength: 254,
-                            message: 'Enter 254 or fewer characters'
+                            maxLength: 1000,
+                            message: 'Enter 1000 or fewer characters'
                         }
                     ]
                 },
@@ -70,10 +70,22 @@ export const updateGroupForm: FormConfig = {
                     name: 'logo',
                     text: {
                         label: 'Logo (optional)',
-                        hint: 'Please upload your logo or an icon. If not, we will use the existing image icon shown.'
+                        hint: 'Please upload your logo or an icon. If not, we will use the existing image.'
                     },
                     component: 'input',
-                    inputType: 'file'
+                    inputType: 'file',
+                    validators: [
+                        {
+                            type: 'maxFileSize',
+                            maxFileSize: 500000,
+                            message: 'The selected file must be smaller than 500Kb'
+                        },
+                        {
+                            type: 'validFileExtensions',
+                            validFileExtensions: ['jpg', 'png'],
+                            message: 'The selected file must be a JPG or PNG'
+                        }
+                    ]
                 },
                 {
                     name: 'themeId',
@@ -147,89 +159,89 @@ export const updateGroupForm: FormConfig = {
                         }
                     ],
                     optionClassName: 'tablet:u-w-2/5'
-                },
-                {
-                    name: 'features',
-                    text: {
-                        legend: 'Features included in your group',
-                        hint: 'Choose to include a forum, a file area and a members list on your group. These will be displayed in the group header.'
-                    },
-                    component: 'fieldSet',
-                    fields: [
-                        {
-                            name: 'include-forum-page',
-                            inputType: 'multiChoice',
-                            text: {
-                                label: 'Include a forum page?'
-                            },
-                            options: [
-                                {
-                                    value: 'yes',
-                                    label: 'Yes'
-                                },
-                                {
-                                    value: 'no',
-                                    label: 'No'
-                                }
-                            ],
-                            component: 'multiChoice',
-                            validators: [
-                                {
-                                    type: 'required',
-                                    message: 'Select whether the group should include a forum page'
-                                }
-                            ]
-                        },
-                        {
-                            name: 'include-files-page',
-                            inputType: 'text',
-                            text: {
-                                label: 'Include a files page?'
-                            },
-                            options: [
-                                {
-                                    value: 'yes',
-                                    label: 'Yes'
-                                },
-                                {
-                                    value: 'no',
-                                    label: 'No'
-                                }
-                            ],
-                            component: 'multiChoice',
-                            validators: [
-                                {
-                                    type: 'required',
-                                    message: 'Select whether the group should include a files page'
-                                }
-                            ]
-                        },
-                        {
-                            name: 'include-members-page',
-                            inputType: 'multiChoice',
-                            text: {
-                                label: 'Include a members page?'
-                            },
-                            options: [
-                                {
-                                    value: 'yes',
-                                    label: 'Yes'
-                                },
-                                {
-                                    value: 'no',
-                                    label: 'No'
-                                }
-                            ],
-                            component: 'multiChoice',
-                            validators: [
-                                {
-                                    type: 'required',
-                                    message: 'Select whether the group should include a members page'
-                                }
-                            ]
-                        }
-                    ]
                 }
+                // {
+                //     name: 'features',
+                //     text: {
+                //         legend: 'Features included in your group',
+                //         hint: 'Choose to include a forum, a file area and a members list on your group. These will be displayed in the group header.'
+                //     },
+                //     component: 'fieldSet',
+                //     fields: [
+                //         {
+                //             name: 'include-forum-page',
+                //             inputType: 'multiChoice',
+                //             text: {
+                //                 label: 'Include a forum page?'
+                //             },
+                //             options: [
+                //                 {
+                //                     value: 'yes',
+                //                     label: 'Yes'
+                //                 },
+                //                 {
+                //                     value: 'no',
+                //                     label: 'No'
+                //                 }
+                //             ],
+                //             component: 'multiChoice',
+                //             validators: [
+                //                 {
+                //                     type: 'required',
+                //                     message: 'Select whether the group should include a forum page'
+                //                 }
+                //             ]
+                //         },
+                //         {
+                //             name: 'include-files-page',
+                //             inputType: 'text',
+                //             text: {
+                //                 label: 'Include a files page?'
+                //             },
+                //             options: [
+                //                 {
+                //                     value: 'yes',
+                //                     label: 'Yes'
+                //                 },
+                //                 {
+                //                     value: 'no',
+                //                     label: 'No'
+                //                 }
+                //             ],
+                //             component: 'multiChoice',
+                //             validators: [
+                //                 {
+                //                     type: 'required',
+                //                     message: 'Select whether the group should include a files page'
+                //                 }
+                //             ]
+                //         },
+                //         {
+                //             name: 'include-members-page',
+                //             inputType: 'multiChoice',
+                //             text: {
+                //                 label: 'Include a members page?'
+                //             },
+                //             options: [
+                //                 {
+                //                     value: 'yes',
+                //                     label: 'Yes'
+                //                 },
+                //                 {
+                //                     value: 'no',
+                //                     label: 'No'
+                //                 }
+                //             ],
+                //             component: 'multiChoice',
+                //             validators: [
+                //                 {
+                //                     type: 'required',
+                //                     message: 'Select whether the group should include a members page'
+                //                 }
+                //             ]
+                //         }
+                //     ]
+                // }
             ]
         }
     ]

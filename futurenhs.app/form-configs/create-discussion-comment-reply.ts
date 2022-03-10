@@ -17,6 +17,11 @@ export const createDiscussionCommentReplyForm: FormConfig = {
                         {
                             type: 'required',
                             message: 'Enter your reply'
+                        },
+                        {
+                            type: 'maxLength',
+                            maxLength: 100000,
+                            message: 'Enter 100,000 or fewer characters'
                         }
                     ]
                 }

@@ -3,11 +3,15 @@ import { FormField } from '@appTypes/form';
 import { required } from './required';
 import { email } from './email';
 import { maxLength } from './maxLength';
+import { maxFileSize } from './maxFileSize';
+import { validFileExtensions } from './validFileExtensions';
 
 const validationFunctions: any = {
     required: required,
     email: email,
-    maxLength: maxLength
+    maxLength: maxLength,
+    maxFileSize: maxFileSize,
+    validFileExtensions: validFileExtensions
 };
 
 export const validate = (submission: any, fields: Array<FormField>, fieldNameModifier?: string): Record<string, string> => {
@@ -27,7 +31,7 @@ export const validate = (submission: any, fields: Array<FormField>, fieldNameMod
                     const validator = validators[i];
                     const { type } = validator;
 
-                    const error: string = validationFunctions[type](validator)(submission[derivedName]);
+                    const error: string = validationFunctions[type]?.(validator)(submission[derivedName]);
 
                     if (error) {
 

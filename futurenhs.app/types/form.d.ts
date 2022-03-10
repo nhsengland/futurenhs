@@ -21,6 +21,8 @@ export interface FormField {
     validators?: Array<{
         type: ValidatorType;
         maxLength?: number;
+        maxFileSize?: number;
+        validFileExtensions?: Array<string>;
         message: string;
     }>;
     className?: string;

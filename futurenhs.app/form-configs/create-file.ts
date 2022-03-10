@@ -32,10 +32,16 @@ export const createFileForm: FormConfig = {
                                 label: 'Enter a file title',
                             },
                             component: 'input',
+                            shouldRenderRemainingCharacterCount: true,
                             validators: [
                                 {
                                     type: 'required',
                                     message: 'Enter the file title'
+                                },
+                                {
+                                    type: 'maxLength',
+                                    maxLength: 45,
+                                    message: 'Enter 45 or fewer characters'
                                 }
                             ]
                         },
@@ -44,7 +50,15 @@ export const createFileForm: FormConfig = {
                             text: {
                                 label: 'Enter a file description (optional)'
                             },
-                            component: 'textArea'
+                            component: 'textArea',
+                            shouldRenderRemainingCharacterCount: true,
+                            validators: [
+                                {
+                                    type: 'maxLength',
+                                    maxLength: 150,
+                                    message: 'Enter 150 or fewer characters'
+                                }
+                            ]
                         }
                     ]
                 }

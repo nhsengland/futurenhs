@@ -301,17 +301,17 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     </LayoutColumn>
                     <LayoutColumn tablet={4} className="u-self-end tablet:u-text-right u-text-theme-7 u-text-bold u-mt-4">
                         {totalRecords > 0 &&
-                            <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" /> {totalRecords} {totalRecordsLabel}</span>
+                            <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{totalRecordsLabel}: {totalRecords}</span>
                         }
                         {viewCount > 0 &&
-                            <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCount} {viewCountLabel}</>
+                            <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCountLabel}: {viewCount}</>
                         }
                     </LayoutColumn>
                 </LayoutColumnContainer>
                 <hr />
                 {totalRecords > 0 &&
                     <p className="u-hidden tablet:u-block u-text-lead u-text-bold">
-                        {`${totalRecords} comments`}
+                        {`Comments: ${totalRecords}`}
                     </p>
                 }
                 <ErrorBoundary boundaryId="group-discussion-comments">

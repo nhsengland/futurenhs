@@ -146,11 +146,11 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                     <div className="u-flex u-flex-col tablet:u-flex-row">
                                                         <p className="c-card_footer-item">
                                                             <SVGIcon name="icon-comments" className="c-card_footer-icon u-fill-theme-0" />
-                                                            <span>{`${responseCount} Comments`}</span>
+                                                            <span>{`Comments: ${responseCount}`}</span>
                                                         </p>
                                                         <p className="c-card_footer-item">
                                                             <SVGIcon name="icon-view" className="c-card_footer-icon u-fill-theme-0" />
-                                                            <span>{`${viewCount} Views`}</span>
+                                                            <span>{`Views: ${viewCount}`}</span>
                                                         </p>
                                                     </div>
                                                     {isSticky &&
