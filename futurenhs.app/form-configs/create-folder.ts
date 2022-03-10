@@ -30,16 +30,12 @@ export const createFolderForm: FormConfig = {
                 {
                     name: 'description',
                     text: {
-                        label: 'Enter a folder description',
+                        label: 'Enter a folder description (optional)',
                         hint: 'This is a hint offering some short guidance to users'
                     },
                     component: 'textArea',
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
-                        {
-                            type: 'required',
-                            message: 'Enter the folder description'
-                        },
                         {
                             type: 'maxLength',
                             maxLength: 4000,

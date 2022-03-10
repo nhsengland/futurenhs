@@ -44,13 +44,7 @@ export const createFileForm: FormConfig = {
                             text: {
                                 label: 'Enter a file description (optional)'
                             },
-                            component: 'textArea',
-                            validators: [
-                                {
-                                    type: 'required',
-                                    message: 'Enter the file description'
-                                }
-                            ]
+                            component: 'textArea'
                         }
                     ]
                 }

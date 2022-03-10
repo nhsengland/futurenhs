@@ -46,6 +46,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     props.layoutId = layoutIds.GROUP;
                     props.tabId = groupTabIds.FILES;
                     props.folderId = folderId;
+                    props.folder = null;
 
                     if (!props.actions?.includes(actionConstants.GROUPS_FOLDERS_ADD)) {
 
