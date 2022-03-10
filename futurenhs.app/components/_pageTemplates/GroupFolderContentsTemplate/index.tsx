@@ -115,6 +115,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
 
             const isFolder: boolean = type === 'folder';
             const itemPath: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
+            const iconLabel: string = extension || 'Folder';
             const fileDetailPath: string = `${fileBasePath}/${encodeURIComponent(id)}/detail`;
             const fileDownloadPath: string = downloadLink;
 
@@ -161,7 +162,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
 
             return [
                 {
-                    children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-text-bold u-hidden tablet:u-block">{extension}</span></>,
+                    children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-text-bold u-hidden tablet:u-block">{iconLabel}</span></>,
                     className: generatedCellClasses.type,
                     headerClassName: generatedHeaderCellClasses.type
                 },
