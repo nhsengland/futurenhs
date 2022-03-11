@@ -11,6 +11,7 @@ import { Link } from '@components/Link';
 import { Props } from './interfaces';
 
 export const Comment: (props: Props) => JSX.Element = ({
+    id,
     commentId,
     csrfToken,
     image,
@@ -37,7 +38,7 @@ export const Comment: (props: Props) => JSX.Element = ({
 
     return (
 
-        <Card className={generatedClasses.wrapper}>
+        <Card id={id} className={generatedClasses.wrapper}>
             <header>
                 <UserMeta
                     image={image}

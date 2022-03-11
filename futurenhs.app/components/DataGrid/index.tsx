@@ -35,9 +35,9 @@ export const DataGrid: (props: Props) => JSX.Element = ({
 
         <table id={id} className={generatedClasses.wrapper}>
             <caption className={generatedClasses.caption}>{caption}</caption>
-            <thead role="rowgroup" className={generatedClasses.head}>
-                <tr role="row">
-                    {columnList.map(({ children, className }, index) => <th key={index} role="columnheader" scope="col" className={className}>{children}</th>)}
+            <thead className={generatedClasses.head}>
+                <tr>
+                    {columnList.map(({ children, className }, index) => <th key={index} scope="col" className={className}>{children}</th>)}
                 </tr>
             </thead>
             <DynamicListContainer containerElementType="tbody" shouldFocusLatest={true}>
@@ -45,7 +45,7 @@ export const DataGrid: (props: Props) => JSX.Element = ({
 
                     return (
                     
-                        <tr key={index} role="row" className={generatedClasses.bodyRow}>
+                        <tr key={index} className={generatedClasses.bodyRow}>
                             {row.map(({ 
                                 children, 
                                 className, 
@@ -66,14 +66,11 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                             
                                 return (
 
-                                    <td 
-                                        key={index} 
-                                        role="cell" 
-                                        className={generatedCellClasses.bodyCell}>
-                                            {shouldRenderCellHeader &&
-                                                <span aria-hidden={true} className={generatedCellClasses.bodyCellLabel}>{columnList[index].children} </span>
-                                            }
-                                            {children}
+                                    <td key={index} className={generatedCellClasses.bodyCell}>
+                                        {shouldRenderCellHeader &&
+                                            <span aria-hidden={true} className={generatedCellClasses.bodyCellLabel}>{columnList[index].children} </span>
+                                        }
+                                        {children}
                                     </td>
 
                                 )

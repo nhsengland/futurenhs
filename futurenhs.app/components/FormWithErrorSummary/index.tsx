@@ -17,6 +17,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     fields,
     errors,
     submitAction,
+    cancelAction,
     cancelHref,
     text,
     children,

@@ -1,6 +1,7 @@
 import { Image } from '@appTypes/image';
 
 export interface Props {
+    id?: string;
     csrfToken: string;
     commentId: string;
     children?: any;

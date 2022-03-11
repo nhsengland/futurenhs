@@ -39,11 +39,11 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
     const shouldEnableLoadMore: boolean = true;
 
     const { title,
-            metaDescription,
-            mainHeading,
-            intro,
-            secondaryHeading,
-            navMenuTitle } = contentText ?? {};
+        metaDescription,
+        mainHeading,
+        intro,
+        secondaryHeading,
+        navMenuTitle } = contentText ?? {};
 
     /**
      * Handle client-side pagination
@@ -132,7 +132,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                     return (
 
                                         <li key={index}>
-                                            <Card image={imageToUse} clickableHref={cardLinkHref} className={generatedClasses.wrapper}>
+                                            <Card id={`group-${groupId}`} image={imageToUse} clickableHref={cardLinkHref} className={generatedClasses.wrapper}>
                                                 <h3 className="c-card_heading o-truncated-text-lines-3">
                                                     <Link href={cardLinkHref}>
                                                         <a>{mainHeading}</a>

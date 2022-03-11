@@ -129,7 +129,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     return (
 
                                         <li key={index}>
-                                            <Card clickableHref={cardLinkHref} className="u-border-b-theme-10 hover:u-border-b-theme-10-darker u-mb-4">
+                                            <Card id={`discussion-${discussionId}`} clickableHref={cardLinkHref} className="u-border-b-theme-10 hover:u-border-b-theme-10-darker u-mb-4">
                                                 <h3 className="c-card_heading desktop:u-mb-4">
                                                     <Link href={cardLinkHref}>
                                                         <a>

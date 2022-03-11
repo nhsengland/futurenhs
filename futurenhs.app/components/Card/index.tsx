@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Props } from './interfaces';
 
 export const Card: (props: Props) => JSX.Element = ({
+    id,
     image,
     children,
     clickableHref,
@@ -37,7 +38,7 @@ export const Card: (props: Props) => JSX.Element = ({
 
     return (
 
-        <div className={generatedClasses.wrapper} onClick={handleClick}>
+        <div id={id} className={generatedClasses.wrapper} onClick={handleClick}>
             {image &&
                 <div className={generatedClasses.hero}>
                     <div className={generatedClasses.heroBody}>
