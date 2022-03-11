@@ -88,6 +88,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 bodyClassName={bodyClassName}
                 submitButtonClassName={submitButtonClassName}
                 cancelHref={cancelHref}
+                cancelAction={cancelAction}
                 validationFailAction={handleValidationFailure}
                 submitAction={handleSubmit} />
         </>

@@ -363,21 +363,21 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                 isLiked={isLiked}
                                                 likeAction={handleLike}
                                                 className="u-border-l-theme-8">
-                                                {hasReply &&
-                                                    <ul className="u-list-none c-comment_replies-list u-p-0">
-                                                        {repliesComponents[0]}
-                                                    </ul>
-                                                }
-                                                {hasReplies &&
-                                                    <Accordion
-                                                        id={additionalRepliesAccordionId}
-                                                        toggleChildren={<span>{moreRepliesLabel}</span>}
-                                                        toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                        <ul className="u-list-none u-m-0 u-p-0">
-                                                            {repliesComponents.splice(1)}
+                                                    {hasReply &&
+                                                        <ul className="u-list-none c-comment_replies-list u-p-0">
+                                                            {repliesComponents[0]}
                                                         </ul>
-                                                    </Accordion>
-                                                }
+                                                    }
+                                                    {hasReplies &&
+                                                        <Accordion
+                                                            id={additionalRepliesAccordionId}
+                                                            toggleChildren={<span>{moreRepliesLabel}</span>}
+                                                            toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                                <ul className="u-list-none u-m-0 u-p-0">
+                                                                    {repliesComponents.splice(1)}
+                                                                </ul>
+                                                        </Accordion>
+                                                    }
                                             </Comment>
                                         </li>
 

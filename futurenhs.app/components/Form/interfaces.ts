@@ -14,6 +14,7 @@ export interface Props {
     method?: string;
     submitAction: (formData: FormData) => Promise<Record<string, string>>;
     changeAction?: (props: any) => any;
+    cancelAction?: () => any;
     validationFailAction?: any;
     cancelHref?: string;
     className?: string;
