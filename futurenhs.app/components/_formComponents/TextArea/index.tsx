@@ -49,12 +49,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const handleRteInit = (_, editor) => editorRef.current = editor;
     const handleRteChange = (value: any) => onChange(value);
     const handleRteFocus = () => setIsRteFocussed(true);
-    const handleRteBlur = () => {
-
-        onBlur();
-        setIsRteFocussed(false);
-
-    }
+    const handleRteBlur = () => setIsRteFocussed(false);
 
     const generatedIds: any = {
         hint: `${name}-hint`,
