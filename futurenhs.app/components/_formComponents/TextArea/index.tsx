@@ -117,7 +117,8 @@ export const TextArea: (props: Props) => JSX.Element = ({
                             menubar: false,
                             plugins: ['autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap'],
                             toolbar: 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
-                            content_style: 'body { font-family: Helvetica, Arial, sans-serif; font-size: 19px }'
+                            content_style: 'body { font-family: Helvetica, Arial, sans-serif; font-size: 19px }',
+                            iframe_aria_text: "Rich Text Area. To navigate to the formatting toolbar press OPTION-F10 if you are an Apple user or ALT-F10 for all other users. Make sure your screen reader is in Focus or Auto Forms Mode."
                         }}
                     />
 
