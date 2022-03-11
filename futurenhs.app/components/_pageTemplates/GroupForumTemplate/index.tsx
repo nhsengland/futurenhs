@@ -88,7 +88,14 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <>
-            <div className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
+            <div className="u-w-full u-flex u-flex-col tablet:u-flex-row-reverse">
+                {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
+                    <LayoutColumn tablet={4} className="c-page-body">
+                        <Link href={`${router.asPath}/create`}>
+                            <a className="c-button u-w-full">{createDiscussion}</a>
+                        </Link>
+                    </LayoutColumn>
+                }
                 <LayoutColumn tablet={8} className="c-page-body">
                     <h2 className="nhsuk-heading-l">{discussionsHeading}</h2>
                     <AriaLiveRegion>
@@ -175,13 +182,6 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                         getPageAction={handleGetPage}
                         {...dynamicPagination} />
                 </LayoutColumn>
-                {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
-                    <LayoutColumn tablet={4} className="c-page-body">
-                        <Link href={`${router.asPath}/create`}>
-                            <a className="c-button u-w-full">{createDiscussion}</a>
-                        </Link>
-                    </LayoutColumn>
-                }
             </div>
         </>
 
