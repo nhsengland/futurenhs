@@ -194,7 +194,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: <Link href={`${groupBasePath}/members/${id}`}>{fullName || role}</Link>,
+                children: <Link href={`${groupBasePath}/members/${id}`}><a className="o-truncated-text-lines-3">{fullName || role}</a></Link>,
                 className: generatedCellClasses.name,
                 headerClassName: generatedHeaderCellClasses.name
             },
