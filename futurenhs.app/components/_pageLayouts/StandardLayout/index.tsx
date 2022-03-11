@@ -108,7 +108,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 shouldRenderNavigation={shouldRenderUserNavigation}
                 navMenuList={mainNavMenuList}
                 searchTerm={searchTerm} />
-            <main id="main" className={generatedClasses.wrapper}>
+            <main className={generatedClasses.wrapper}>
                 {shouldRenderPhaseBanner &&
                     <div className="u-bg-theme-3">
                         <LayoutWidthContainer>
@@ -156,13 +156,13 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                     <LayoutColumn hasGutters={false} mobile={0}>
                                         <MainNav navMenuList={mainNavMenuList} />
                                     </LayoutColumn>
-                                    <LayoutColumn className={generatedClasses.content}>
+                                    <LayoutColumn id="main" className={generatedClasses.content}>
                                         {children}
                                     </LayoutColumn>
                                 </>
                             }
                             {(!shouldRenderMainNav || !user) &&
-                                <div className={generatedClasses.content}>
+                                <div id="main" className={generatedClasses.content}>
                                     {children}
                                 </div>
                             }

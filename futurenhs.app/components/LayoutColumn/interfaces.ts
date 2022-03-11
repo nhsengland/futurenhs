@@ -1,4 +1,5 @@
 export interface Props {
+    id?: string;
     mobile?: number;
     tablet?: number;
     desktop?: number;

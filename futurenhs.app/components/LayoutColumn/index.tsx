@@ -7,6 +7,7 @@ import { Props } from './interfaces';
  * Layout column
  */
 export const LayoutColumn: (props: Props) => JSX.Element = ({
+    id,
     hasGutters = true,
     mobile = 12,
     tablet,
@@ -29,7 +30,7 @@ export const LayoutColumn: (props: Props) => JSX.Element = ({
 
     return (
 
-        <div className={generatedClasses.wrapper} role={role}>
+        <div id={id} className={generatedClasses.wrapper} role={role}>
             {children}
         </div>
 
