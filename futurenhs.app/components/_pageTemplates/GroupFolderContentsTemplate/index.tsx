@@ -152,7 +152,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
 
             return [
                 {
-                    children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-text-bold u-hidden tablet:u-block">{iconLabel}</span></>,
+                    children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-block u-text-bold u-sr-only tablet:u-not-sr-only">{iconLabel}</span></>,
                     shouldRenderCellHeader: false,
                     className: generatedCellClasses.type
                 },
