@@ -49,7 +49,8 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                             {row.map(({ 
                                 children, 
                                 className, 
-                                headerClassName 
+                                headerClassName,
+                                shouldRenderCellHeader 
                             }, index) => {
 
                                 const generatedCellClasses = {
@@ -69,7 +70,10 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                                         key={index} 
                                         role="cell" 
                                         className={generatedCellClasses.bodyCell}>
-                                            <span className={generatedCellClasses.bodyCellLabel}>{columnList[index].children} </span>{children}
+                                            {shouldRenderCellHeader &&
+                                                <span aria-hidden={true} className={generatedCellClasses.bodyCellLabel}>{columnList[index].children} </span>
+                                            }
+                                            {children}
                                     </td>
 
                                 )

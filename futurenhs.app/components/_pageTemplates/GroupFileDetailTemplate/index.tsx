@@ -72,7 +72,7 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
             ['u-justify-between u-w-full u-w-1/6 tablet:u-w-8 u-items-center']: true
         }),
         actions: classNames({
-            ['u-justify-between u-w-full tablet:u-w-1/6 tablet:u-justify-end tablet:u-text-right']: true
+            ['u-w-full tablet:u-w-1/6 tablet:u-justify-end tablet:u-text-right']: true
         })
     };
 
@@ -85,9 +85,6 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
         }),
         lastUpdate: classNames({
             ['u-text-bold']: true
-        }),
-        actions: classNames({
-            ['u-hidden']: true
         })
     };
 
@@ -141,23 +138,26 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
                         [
                             {
                                 children: name,
+                                shouldRenderCellHeader: true,
                                 className: generatedCellClasses.name,
                                 headerClassName: generatedHeaderCellClasses.name
                             },
                             {
                                 children: modifiedBy?.text?.userName ?? '',
+                                shouldRenderCellHeader: true,
                                 className: generatedCellClasses.modifiedBy,
                                 headerClassName: generatedHeaderCellClasses.modifiedBy
                             },
                             {
                                 children: modified ? dateTime({ value: modified }) : '',
+                                shouldRenderCellHeader: true,
                                 className: generatedCellClasses.lastUpdate,
                                 headerClassName: generatedHeaderCellClasses.lastUpdate
                             },
                             {
                                 children: <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" /><a href={downloadLink}>Download</a></>,
-                                className: generatedCellClasses.actions,
-                                headerClassName: generatedHeaderCellClasses.actions
+                                shouldRenderCellHeader: false,
+                                className: generatedCellClasses.actions
                             }
                         ]
                     ]}

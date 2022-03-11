@@ -2,6 +2,7 @@
     children: any;
     className?: string;
     headerClassName?: string;
+    shouldRenderCellHeader?: boolean;
 };
 
 export type DataRow = Array<DataCell>;
