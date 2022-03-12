@@ -14,6 +14,10 @@ export const enum routes {
     API_LOGIN = '/api/log-in'
 }
 
+export const enum queryParams {
+    RETURNURL = 'returnUrl'
+}
+
 export const enum routeParams {
     GROUPID = 'groupId',
     FOLDERID = 'folderId',

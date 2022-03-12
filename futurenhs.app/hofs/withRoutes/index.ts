@@ -22,6 +22,9 @@ export const withRoutes = (config: HofConfig, dependencies?: {}): GetServerSideP
     
             props.routes = {
                 groupRoot: groupIndexRoute,
+                groupUpdate: groupIndexRoute ? `${groupIndexRoute}/update` : undefined,
+                groupJoin: groupIndexRoute ? `${groupIndexRoute}/join` : undefined,
+                groupLeave: groupIndexRoute ? `${groupIndexRoute}/leave` : undefined,
                 groupForumRoot: groupIndexRoute ? `${groupIndexRoute}/forum` : undefined,
                 groupFoldersRoot: groupIndexRoute ? `${groupIndexRoute}/folders` : undefined,
                 groupFilesRoot: groupIndexRoute ? `${groupIndexRoute}/files` : undefined,

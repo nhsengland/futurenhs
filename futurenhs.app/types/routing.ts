@@ -1,5 +1,8 @@
 export interface Routes {
     groupRoot: string;
+    groupJoin: string;
+    groupLeave: string;
+    groupUpdate: string;
     groupForumRoot: string;
     groupFoldersRoot: string;
     groupFilesRoot: string;
