@@ -9,7 +9,6 @@ import { Dialog } from '@components/Dialog';
 import { BreadCrumb } from '@components/BreadCrumb';
 import { SVGIcon } from '@components/SVGIcon';
 import { dateTime } from '@helpers/formatters/dateTime';
-import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { DataGrid } from '@components/DataGrid';
@@ -42,15 +41,15 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     const [dynamicPagination, setPagination] = useState(pagination);
 
     const { id,
-            text: folderText,
-            path } = folder ?? {};
+        text: folderText,
+        path } = folder ?? {};
     const { name, body } = folderText ?? {};
     const { foldersHeading,
-            noFolders,
-            createFolder,
-            updateFolder,
-            deleteFolder,
-            createFile } = contentText ?? {};
+        noFolders,
+        createFolder,
+        updateFolder,
+        deleteFolder,
+        createFile } = contentText ?? {};
 
     const hasFolderContents: boolean = folderContentsList?.length > 0;
     const hasAddFileAction: boolean = actions?.includes(userActions.GROUPS_FILES_ADD);
@@ -98,81 +97,81 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
         createdBy,
         downloadLink }) => {
 
-            const { body } = text ?? {};
+        const { body } = text ?? {};
 
-            const isFolder: boolean = type === 'folder';
-            const itemPath: string = `${isFolder ? routes.groupFoldersRoot : routes.groupFilesRoot}/${encodeURIComponent(id)}`;
-            const iconLabel: string = extension || 'Folder';
-            const fileDetailPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(id)}/detail`;
-            const fileDownloadPath: string = downloadLink;
-            const iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
+        const isFolder: boolean = type === 'folder';
+        const itemPath: string = `${isFolder ? routes.groupFoldersRoot : routes.groupFilesRoot}/${encodeURIComponent(id)}`;
+        const iconLabel: string = extension || 'Folder';
+        const fileDetailPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(id)}/detail`;
+        const fileDownloadPath: string = downloadLink;
+        const iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
 
-            const generatedCellClasses = {
-                type: classNames({
-                    ['u-text-center u-text-base u-w-1/6 tablet:u-w-8 u-items-center u-justify-end']: true
-                }),
-                name: classNames({
-                    ['u-w-5/6 tablet:u-w-1/6']: true
-                }),
-                description: classNames({
-                    ['u-flex-col u-w-full tablet:u-w-1/3']: true,
-                    ['u-hidden']: !body
-                }),
-                modified: classNames({
-                    ['u-hidden tablet:u-flex-col u-w-full tablet:u-w-1/4']: true,
-                    ['u-hidden']: isFolder
-                }),
-                actions: classNames({
-                    ['u-w-full tablet:u-w-1/6 u-justify-between']: true,
-                    ['u-hidden']: isFolder
-                })
-            };
+        const generatedCellClasses = {
+            type: classNames({
+                ['u-text-center u-text-base u-w-1/6 tablet:u-w-8 u-items-center u-justify-end']: true
+            }),
+            name: classNames({
+                ['u-w-5/6 tablet:u-w-1/6']: true
+            }),
+            description: classNames({
+                ['u-flex-col u-w-full tablet:u-w-1/3']: true,
+                ['u-hidden']: !body
+            }),
+            modified: classNames({
+                ['u-hidden tablet:u-flex-col u-w-full tablet:u-w-1/4']: true,
+                ['u-hidden']: isFolder
+            }),
+            actions: classNames({
+                ['u-w-full tablet:u-w-1/6 u-justify-between']: true,
+                ['u-hidden']: isFolder
+            })
+        };
 
-            const generatedHeaderCellClasses = {
-                description: classNames({
-                    ['u-text-bold']: true
-                }),
-                modified: classNames({
-                    ['u-text-bold']: true
-                })
-            };
+        const generatedHeaderCellClasses = {
+            description: classNames({
+                ['u-text-bold']: true
+            }),
+            modified: classNames({
+                ['u-text-bold']: true
+            })
+        };
 
-            return [
-                {
-                    children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-block u-text-bold u-sr-only tablet:u-not-sr-only">{iconLabel}</span></>,
-                    shouldRenderCellHeader: false,
-                    className: generatedCellClasses.type
-                },
-                {
-                    children: <Link href={itemPath}><a className="o-truncated-text-lines-3">{name}</a></Link>,
-                    shouldRenderCellHeader: false,
-                    className: generatedCellClasses.name
-                },
-                {
-                    children: <RichText bodyHtml={body} wrapperElementType='span' className='o-truncated-text-lines-3' />,
-                    shouldRenderCellHeader: true,
-                    className: generatedCellClasses.description,
-                    headerClassName: generatedHeaderCellClasses.description
-                },
-                {
-                    children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({ value: modified })}</p>${modifiedBy?.text?.userName && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy.text.userName + '</p>'}${createdBy?.text?.userName && '<p><span class="u-text-bold">Author</span> ' + createdBy.text.userName + '</p>'}`} />,
-                    shouldRenderCellHeader: true,
-                    className: generatedCellClasses.modified,
-                    headerClassName: generatedHeaderCellClasses.modified
-                },
-                {
-                    children: isFolder ? '' : <>
-                        {fileDownloadPath && 
-                            <Link href={fileDownloadPath}><a className="u-block u-mb-4 u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
-                        }
-                        {fileDetailPath &&
-                            <Link href={fileDetailPath}><a className="u-block u-align-top"><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
-                        }
-                    </>,
-                    shouldRenderCellHeader: true,
-                    className: generatedCellClasses.actions
-                }
-            ]
+        return [
+            {
+                children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-block u-text-bold u-sr-only tablet:u-not-sr-only">{iconLabel}</span></>,
+                shouldRenderCellHeader: false,
+                className: generatedCellClasses.type
+            },
+            {
+                children: <Link href={itemPath}><a className="o-truncated-text-lines-3">{name}</a></Link>,
+                shouldRenderCellHeader: false,
+                className: generatedCellClasses.name
+            },
+            {
+                children: <RichText bodyHtml={body} wrapperElementType='span' className='o-truncated-text-lines-3' />,
+                shouldRenderCellHeader: true,
+                className: generatedCellClasses.description,
+                headerClassName: generatedHeaderCellClasses.description
+            },
+            {
+                children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({ value: modified })}</p>${modifiedBy?.text?.userName && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy.text.userName + '</p>'}${createdBy?.text?.userName && '<p><span class="u-text-bold">Author</span> ' + createdBy.text.userName + '</p>'}`} />,
+                shouldRenderCellHeader: true,
+                className: generatedCellClasses.modified,
+                headerClassName: generatedHeaderCellClasses.modified
+            },
+            {
+                children: isFolder ? '' : <>
+                    {fileDownloadPath &&
+                        <Link href={fileDownloadPath}><a className="u-block u-mb-4 u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
+                    }
+                    {fileDetailPath &&
+                        <Link href={fileDetailPath}><a className="u-block u-align-top"><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
+                    }
+                </>,
+                shouldRenderCellHeader: true,
+                className: generatedCellClasses.actions
+            }
+        ]
 
     }), [folderContentsList, folderId]);
 
@@ -197,7 +196,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     };
 
     const handleDeleteFolder = (event: any): void => {
-        
+
         event.preventDefault();
 
         setIsCancelDeleteModalOpen(true);
@@ -251,8 +250,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                             }}
                                             cancelAction={handleDeleteFolderCancel}
                                             confirmAction={handleDeleteFolderConfirm}>
-                                                <h3>Folder will be deleted</h3>
-                                                <p className="u-text-bold">Any folder contents will also be discarded. Are you sure you wish to proceed?</p>
+                                            <h3>Folder will be deleted</h3>
+                                            <p className="u-text-bold">Any folder contents will also be discarded. Are you sure you wish to proceed?</p>
                                         </Dialog>
                                         <Link href={folderUpdatePath}>
                                             <a className="c-button c-button--outline u-w-full tablet:u-w-auto u-drop-shadow">
@@ -270,8 +269,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     <h2 className="nhsuk-heading-l">{foldersHeading}</h2>
                 }
                 {body &&
-                    <RichText 
-                        wrapperElementType="p" 
+                    <RichText
+                        wrapperElementType="p"
                         bodyHtml={body}
                         className="u-mb-10" />
                 }
@@ -288,8 +287,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                         {(folderId && hasAddFileAction) &&
                             <Link href={{
                                 pathname: `${routes.groupFilesRoot}/create`,
-                                query: { 
-                                    folderId: folderId 
+                                query: {
+                                    folderId: folderId
                                 }
                             }}>
                                 <a className="c-button c-button--outline u-w-full tablet:u-w-72 u-drop-shadow">{createFile}</a>
@@ -299,32 +298,30 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                 }
                 {hasFolderContents &&
                     <>
-                        <AriaLiveRegion>
-                            <DataGrid
-                                id="group-table-files"
-                                text={{
-                                    caption: 'Group folders'
-                                }}
-                                columnList={[
-                                    {
-                                        children: 'Type',
-                                        className: 'u-text-center'
-                                    },
-                                    {
-                                        children: 'Name'
-                                    },
-                                    {
-                                        children: 'Description'
-                                    },
-                                    {
-                                        children: 'Modified'
-                                    },
-                                    {
-                                        children: 'Actions'
-                                    }
-                                ]}
-                                rowList={gridRowList} />
-                        </AriaLiveRegion>
+                        <DataGrid
+                            id="group-table-files"
+                            text={{
+                                caption: 'Group folders'
+                            }}
+                            columnList={[
+                                {
+                                    children: 'Type',
+                                    className: 'u-text-center'
+                                },
+                                {
+                                    children: 'Name'
+                                },
+                                {
+                                    children: 'Description'
+                                },
+                                {
+                                    children: 'Modified'
+                                },
+                                {
+                                    children: 'Actions'
+                                }
+                            ]}
+                            rowList={gridRowList} />
                         <PaginationWithStatus
                             id="file-list-pagination"
                             shouldEnableLoadMore={true}

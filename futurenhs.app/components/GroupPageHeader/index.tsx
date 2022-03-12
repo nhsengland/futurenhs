@@ -95,7 +95,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 
             actionsMenuList.push({
                 id: actionsConstants.GROUPS_LEAVE,
-                url: `${routes.groupLeave}?${queryParams.RETURNURL}=${router.asPath}`,
+                url: `${routes.groupLeave}?${queryParams.RETURNURL}=${router?.asPath}`,
                 text: 'Leave group'
             });
 
@@ -129,7 +129,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const handleLeaveGroupCancel = () => setIsLeaveGroupModalOpen(false);
     const handleLeaveGroupConfirm = () => {
         
-        router.push(`${routes.groupLeave}?${queryParams.RETURNURL}=${router.asPath}`);
+        router.push(`${routes.groupLeave}?${queryParams.RETURNURL}=${router?.asPath}`);
         setIsLeaveGroupModalOpen(false);
         
     };
@@ -179,7 +179,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         <LayoutColumn tablet={4} desktop={3} className={generatedClasses.actionsWrapper}>
                             {(getActionNavMenuList().length === 0)
 
-                                ?   <Link href={`${routes.groupJoin}?${queryParams.RETURNURL}=${router.asPath}`}>
+                                ?   <Link href={`${routes.groupJoin}?${queryParams.RETURNURL}=${router?.asPath}`}>
                                         <a className="c-button u-w-full">Join group</a>
                                     </Link>
 

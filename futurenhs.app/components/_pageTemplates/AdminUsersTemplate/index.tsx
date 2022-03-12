@@ -10,7 +10,6 @@ import { Link } from '@components/Link';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { DynamicListContainer } from '@components/DynamicListContainer';
 import { DataGrid } from '@components/DataGrid';
 
@@ -150,10 +149,9 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
             <LayoutColumnContainer className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
                 <LayoutColumn tablet={8} className="c-page-body">
                     <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
-                    <AriaLiveRegion>
-                        {hasUsers
+                    {hasUsers
 
-                            ? <DynamicListContainer
+                        ?   <DynamicListContainer
                                 containerElementType="ul"
                                 shouldFocusLatest={shouldEnableLoadMore}
                                 className="u-list-none u-p-0">
@@ -165,10 +163,9 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                                     }} />
                             </DynamicListContainer>
 
-                            : <p>{noUsers}</p>
+                        :   <p>{noUsers}</p>
 
-                        }
-                    </AriaLiveRegion>
+                    }
                     <PaginationWithStatus
                         id="group-list-pagination"
                         shouldEnableLoadMore={shouldEnableLoadMore}

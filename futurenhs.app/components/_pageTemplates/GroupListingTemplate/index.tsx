@@ -7,7 +7,6 @@ import { selectThemeBackgroundId } from '@selectors/themes';
 import { defaultGroupLogos } from '@constants/icons';
 import { themes } from '@constants/themes';
 import { Link } from '@components/Link';
-import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { DynamicListContainer } from '@components/DynamicListContainer';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -105,62 +104,60 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                         {intro &&
                             <p className="u-text-lead u-text-theme-7 u-mb-4">{intro}</p>
                         }
-                        <AriaLiveRegion>
-                            <DynamicListContainer
-                                containerElementType="ul"
-                                shouldFocusLatest={shouldEnableLoadMore}
-                                className="u-list-none u-p-0">
-                                {dynamicGroupsList?.map?.(({
-                                    image,
-                                    text,
-                                    groupId,
-                                    themeId,
-                                    totalDiscussionCount,
-                                    totalMemberCount
-                                }, index) => {
+                        <DynamicListContainer
+                            containerElementType="ul"
+                            shouldFocusLatest={shouldEnableLoadMore}
+                            className="u-list-none u-p-0">
+                            {dynamicGroupsList?.map?.(({
+                                image,
+                                text,
+                                groupId,
+                                themeId,
+                                totalDiscussionCount,
+                                totalMemberCount
+                            }, index) => {
 
-                                    const { mainHeading, strapLine } = text ?? {};
+                                const { mainHeading, strapLine } = text ?? {};
 
-                                    const imageToUse = image ? image : defaultGroupLogos.large;
-                                    const cardLinkHref: string = `/groups/${groupId}`;
-                                    const themeBorderId: number = selectThemeBackgroundId(themes, themeId);
+                                const imageToUse = image ? image : defaultGroupLogos.large;
+                                const cardLinkHref: string = `/groups/${groupId}`;
+                                const themeBorderId: number = selectThemeBackgroundId(themes, themeId);
 
-                                    const generatedClasses = {
-                                        wrapper: classNames('u-mb-4', `u-border-b-theme-${themeBorderId}`, `hover:u-border-b-theme-${themeBorderId}-darker`)
-                                    }
+                                const generatedClasses = {
+                                    wrapper: classNames('u-mb-4', `u-border-b-theme-${themeBorderId}`, `hover:u-border-b-theme-${themeBorderId}-darker`)
+                                }
 
-                                    return (
+                                return (
 
-                                        <li key={index}>
-                                            <Card id={`group-${groupId}`} image={imageToUse} clickableHref={cardLinkHref} className={generatedClasses.wrapper}>
-                                                <h3 className="c-card_heading o-truncated-text-lines-3">
-                                                    <Link href={cardLinkHref}>
-                                                        <a>{mainHeading}</a>
-                                                    </Link>
-                                                </h3>
-                                                <div className="c-card_body">
-                                                    <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
-                                                        {strapLine}
+                                    <li key={index}>
+                                        <Card id={`group-${groupId}`} image={imageToUse} clickableHref={cardLinkHref} className={generatedClasses.wrapper}>
+                                            <h3 className="c-card_heading o-truncated-text-lines-3">
+                                                <Link href={cardLinkHref}>
+                                                    <a>{mainHeading}</a>
+                                                </Link>
+                                            </h3>
+                                            <div className="c-card_body">
+                                                <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
+                                                    {strapLine}
+                                                </p>
+                                                <div className="c-card_footer u-text-theme-0">
+                                                    <p className="c-card_footer-item">
+                                                        <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
+                                                        <span>{`Members: ${totalMemberCount}`}</span>
                                                     </p>
-                                                    <div className="c-card_footer u-text-theme-0">
-                                                        <p className="c-card_footer-item">
-                                                            <SVGIcon name="icon-member" className="c-card_footer-icon u-fill-theme-0" />
-                                                            <span>{`Members: ${totalMemberCount}`}</span>
-                                                        </p>
-                                                        <p className="c-card_footer-item">
-                                                            <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
-                                                            <span>{`Discussions: ${totalDiscussionCount}`}</span>
-                                                        </p>
-                                                    </div>
+                                                    <p className="c-card_footer-item">
+                                                        <SVGIcon name="icon-discussion" className="c-card_footer-icon u-fill-theme-0" />
+                                                        <span>{`Discussions: ${totalDiscussionCount}`}</span>
+                                                    </p>
                                                 </div>
-                                            </Card>
-                                        </li>
+                                            </div>
+                                        </Card>
+                                    </li>
 
-                                    )
+                                )
 
-                                })}
-                            </DynamicListContainer>
-                        </AriaLiveRegion>
+                            })}
+                        </DynamicListContainer>
                         <PaginationWithStatus
                             id="group-list-pagination"
                             shouldEnableLoadMore={shouldEnableLoadMore}

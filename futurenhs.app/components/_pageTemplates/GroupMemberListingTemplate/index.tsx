@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { actions as userActions } from '@constants/actions';
 import { Link } from '@components/Link';
 import { SVGIcon } from '@components/SVGIcon';
-import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { DataGrid } from '@components/DataGrid';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
@@ -273,29 +272,27 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                     </div>
                 }
                 <h2 className="nhsuk-heading-l">{membersHeading}</h2>
-                <AriaLiveRegion>
-                    {hasMembersList
+                {hasMembersList
 
-                        ? <>
-                            <DataGrid
-                                id="group-table-members"
-                                columnList={memberColumnList}
-                                rowList={memberRowList}
-                                text={{
-                                    caption: `${membersHeading} list`
-                                }}
-                                shouldRenderCaption={false} />
-                            <PaginationWithStatus
-                                id="member-list-pagination"
-                                shouldEnableLoadMore={true}
-                                getPageAction={handleGetPage}
-                                {...dynamicPagination} />
-                        </>
+                    ? <>
+                        <DataGrid
+                            id="group-table-members"
+                            columnList={memberColumnList}
+                            rowList={memberRowList}
+                            text={{
+                                caption: `${membersHeading} list`
+                            }}
+                            shouldRenderCaption={false} />
+                        <PaginationWithStatus
+                            id="member-list-pagination"
+                            shouldEnableLoadMore={true}
+                            getPageAction={handleGetPage}
+                            {...dynamicPagination} />
+                    </>
 
-                        : <p>{noMembers}</p>
+                    : <p>{noMembers}</p>
 
-                    }
-                </AriaLiveRegion>
+                }
             </LayoutColumn>
         </>
 

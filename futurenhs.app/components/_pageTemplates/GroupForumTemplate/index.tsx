@@ -7,7 +7,6 @@ import { initials } from '@helpers/formatters/initials';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { Link } from '@components/Link';
 import { DynamicListContainer } from '@components/DynamicListContainer';
-import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { UserMeta } from '@components/UserMeta';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
@@ -40,11 +39,11 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     const shouldRenderCreateDiscussionLink: boolean = actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD);
 
     const { discussionsHeading,
-            noDiscussions,
-            createDiscussion,
-            createdByLabel,
-            lastCommentLabel,
-            stickyLabel } = contentText ?? {};
+        noDiscussions,
+        createDiscussion,
+        createdByLabel,
+        lastCommentLabel,
+        stickyLabel } = contentText ?? {};
 
     /**
      * Client-side list pagination
@@ -78,7 +77,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
     const generatedClasses = {
         wrapper: classNames('u-w-full', 'u-flex', 'u-flex-col', {
-            ['tablet:u-flex-row']: !shouldRenderCreateDiscussionLink, 
+            ['tablet:u-flex-row']: !shouldRenderCreateDiscussionLink,
             ['tablet:u-flex-row-reverse']: shouldRenderCreateDiscussionLink
         })
     };
@@ -99,10 +98,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                 }
                 <LayoutColumn tablet={8} className="c-page-body">
                     <h2 className="nhsuk-heading-l">{discussionsHeading}</h2>
-                    <AriaLiveRegion>
-                        {hasDiscussions
+                    {hasDiscussions
 
-                            ? <DynamicListContainer
+                        ?   <DynamicListContainer
                                 containerElementType="ul"
                                 shouldFocusLatest={shouldEnableLoadMore}
                                 className="u-list-none u-p-0">
@@ -173,10 +171,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                 })}
                             </DynamicListContainer>
 
-                            : <p>{noDiscussions}</p>
+                        :   <p>{noDiscussions}</p>
 
-                        }
-                    </AriaLiveRegion>
+                    }
                     <PaginationWithStatus
                         id="group-list-pagination"
                         shouldEnableLoadMore={shouldEnableLoadMore}
