@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import classNames from 'classnames';
 
 import { actions as actionConstants } from '@constants/actions';
 import { initials } from '@helpers/formatters/initials';
@@ -36,6 +37,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
     const hasDiscussions: boolean = dynamicDiscussionsList.length > 0;
     const shouldEnableLoadMore: boolean = true;
+    const shouldRenderCreateDiscussionLink: boolean = actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD);
 
     const { discussionsHeading,
             noDiscussions,
@@ -74,14 +76,21 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
     };
 
+    const generatedClasses = {
+        wrapper: classNames('u-w-full', 'u-flex', 'u-flex-col', {
+            ['tablet:u-flex-row']: !shouldRenderCreateDiscussionLink, 
+            ['tablet:u-flex-row-reverse']: shouldRenderCreateDiscussionLink
+        })
+    };
+
     /**
      * Render
      */
     return (
 
         <>
-            <div className="u-w-full u-flex u-flex-col tablet:u-flex-row-reverse">
-                {actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD) &&
+            <div className={generatedClasses.wrapper}>
+                {shouldRenderCreateDiscussionLink &&
                     <LayoutColumn tablet={4} className="c-page-body">
                         <Link href={`${router.asPath}/create`}>
                             <a className="c-button u-w-full">{createDiscussion}</a>

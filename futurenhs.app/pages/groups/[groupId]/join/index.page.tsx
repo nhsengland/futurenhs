@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 
-import { routes } from '@constants/routes';
+import { actions as actionConstants } from '@constants/actions';
 import { routeParams } from '@constants/routes';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { selectParam, selectCsrfToken } from '@selectors/context';
@@ -37,13 +37,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 /**
                  * Return not found if user does not have valid action to join group
                  */
-                // if(!props.actions?.includes(actionConstants.GROUPS_JOIN)){
+                if(!props.actions?.includes(actionConstants.GROUPS_JOIN)){
     
-                //     return {
-                //         notFound: true
-                //     }
+                    return {
+                        notFound: true
+                    }
     
-                // }
+                }
     
                 /**
                  * Get data from services
@@ -58,7 +58,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     return {
                         redirect: {
                             permanent: false,
-                            destination: routes.GROUPS
+                            destination: props.routes.groupRoot
                         }
                     }
     

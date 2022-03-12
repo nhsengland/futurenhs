@@ -129,15 +129,10 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const handleLeaveGroup = (): any => setIsLeaveGroupModalOpen(true);
     const handleLeaveGroupCancel = () => setIsLeaveGroupModalOpen(false);
     const handleLeaveGroupConfirm = () => {
-
-        const groupBasePath: string = getRouteToParam({
-            router: router,
-            paramName: routeParams.GROUPID,
-            shouldIncludeParam: true
-        });
-
-        router.push(`${groupBasePath}/leave`);
-
+        
+        router.push(`${routes.groupRoot}/leave`);
+        setIsLeaveGroupModalOpen(false);
+        
     };
 
     const getAccordionIcon = useCallback((isOpen: boolean) => isOpen ? iconNames.CHEVRON_UP : iconNames.CHEVRON_DOWN, [isActionsAccordionOpen, isMenuAccordionOpen]);
@@ -185,9 +180,9 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         <LayoutColumn tablet={4} desktop={3} className={generatedClasses.actionsWrapper}>
                             {(getActionNavMenuList().length === 0)
 
-                                ? <Link href={`${routes.groupRoot}/join`}>
-                                    <a className="c-button u-w-full">Join group</a>
-                                </Link>
+                                ?   <Link href={`${routes.groupRoot}/join`}>
+                                        <a id="join-group" className="c-button u-w-full">Join group</a>
+                                    </Link>
 
                                 : <Accordion
                                     id={generatedIds.actionsAccordion}

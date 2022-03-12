@@ -1,8 +1,7 @@
 import { GetServerSideProps } from 'next';
 
-import { routes } from '@constants/routes';
-import { routeParams } from '@constants/routes';
-import { layoutIds, groupTabIds } from '@constants/routes';
+import { actions as actionConstants} from '@constants/actions';
+import { routeParams, layoutIds, groupTabIds } from '@constants/routes';
 import { selectParam, selectCsrfToken } from '@selectors/context';
 import { withUser } from '@hofs/withUser';
 import { withRoutes } from '@hofs/withRoutes';
@@ -33,6 +32,17 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                 props.layoutId = layoutIds.GROUP;
                 props.tabId = groupTabIds.INDEX;
+
+                /**
+                 * Return not found if user does not have valid action to leave group
+                 */
+                if(!props.actions?.includes(actionConstants.GROUPS_LEAVE)){
+
+                    return {
+                        notFound: true
+                    }
+    
+                }
     
                 /**
                  * Get data from services
@@ -47,7 +57,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     return {
                         redirect: {
                             permanent: false,
-                            destination: routes.GROUPS
+                            destination: props.routes.groupRoot
                         }
                     }
     
