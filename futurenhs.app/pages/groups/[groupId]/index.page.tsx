@@ -1,9 +1,10 @@
 import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
+import { withRoutes } from '@hofs/withRoutes';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { GroupHomeTemplate } from '@components/_pageTemplates/GroupHomeTemplate';
@@ -17,22 +18,23 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            props.layoutId = layoutIds.GROUP;
-            props.tabId = 'index';
-
-            console.log(props);
-
-            /**
-             * Return data to page template
-             */
-            return handleSSRSuccessProps({ props });
-
-        }
+        getServerSideProps: withGroup({
+            props,
+            routeId,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                props.layoutId = layoutIds.GROUP;
+                props.tabId = groupTabIds.INDEX;
+    
+                /**
+                 * Return data to page template
+                 */
+                return handleSSRSuccessProps({ props });
+    
+            }
+        })
     })
 });
 

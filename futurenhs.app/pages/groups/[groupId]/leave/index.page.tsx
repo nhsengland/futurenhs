@@ -5,6 +5,7 @@ import { routeParams } from '@constants/routes';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { selectParam, selectCsrfToken } from '@selectors/context';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { deleteGroupMembership } from '@services/deleteGroupMembership';
@@ -21,40 +22,43 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            const csrfToken: string = selectCsrfToken(context);
-            const groupId: string = selectParam(context, routeParams.GROUPID);
-
-            props.layoutId = layoutIds.GROUP;
-            props.tabId = groupTabIds.INDEX;
-
-            /**
-             * Get data from services
-             */
-            try {
-
-                await deleteGroupMembership({ groupId, csrfToken, user: props.user });
-
+        getServerSideProps: withGroup({
+            props,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                const csrfToken: string = selectCsrfToken(context);
+                const groupId: string = selectParam(context, routeParams.GROUPID);
+    
+                props.layoutId = layoutIds.GROUP;
+                props.tabId = groupTabIds.INDEX;
+    
                 /**
-                 * Return data to page template
+                 * Get data from services
                  */
-                return {
-                    redirect: {
-                        permanent: false,
-                        destination: routes.GROUPS
+                try {
+    
+                    await deleteGroupMembership({ groupId, csrfToken, user: props.user });
+    
+                    /**
+                     * Return data to page template
+                     */
+                    return {
+                        redirect: {
+                            permanent: false,
+                            destination: routes.GROUPS
+                        }
                     }
+    
+                } catch (error) {
+    
+                    return handleSSRErrorProps({ props, error });
+    
                 }
-
-            } catch (error) {
-
-                return handleSSRErrorProps({ props, error });
-
+    
             }
-
-        }
+        })
     })
 });
 

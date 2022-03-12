@@ -2,7 +2,8 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { withUser } from '@hofs/withUser';
-import { withTextContent } from '@hofs/withTextContent'
+import { withTextContent } from '@hofs/withTextContent';
+import { withRoutes } from '@hofs/withRoutes';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { GenericContentTemplate } from '@components/_pageTemplates/GenericContentTemplate';
@@ -17,17 +18,20 @@ const props: Partial<Props> = {};
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
     isRequired: false,
-    getServerSideProps: withTextContent({
+    getServerSideProps: withRoutes({
         props,
-        routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            /**
-             * Return data to page template
-             */
-            return handleSSRSuccessProps({ props });
-
-        }
+        getServerSideProps: withTextContent({
+            props,
+            routeId,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                /**
+                 * Return data to page template
+                 */
+                return handleSSRSuccessProps({ props });
+    
+            }
+        })
     })
 });
 

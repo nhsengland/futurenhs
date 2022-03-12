@@ -3,11 +3,12 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
 import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withForms } from '@hofs/withForms';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
@@ -31,86 +32,89 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withForms({
+        getServerSideProps: withGroup({
             props,
-            routeId,
-            getServerSideProps: withTextContent({
+            getServerSideProps: withForms({
                 props,
                 routeId,
-                getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-                    const user: User = selectUser(context);
-                    const groupId: string = selectParam(context, routeParams.GROUPID);
-                    const discussionId: string = selectParam(context, routeParams.DISCUSSIONID);
-                    const pagination: Pagination = selectPagination(context);
-                    const formData: any = selectFormData(context);;
-
-                    props.discussionId = discussionId;
-                    props.layoutId = layoutIds.GROUP;
-                    props.tabId = 'forum';
-
-                    if(formData){
-        
-                        const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionCommentForm.id));
-
-                        props.forms[createDiscussionCommentForm.id].errors = validationErrors;
-                        props.forms[createDiscussionCommentForm.id].initialValues = formData;
-
-                        if(Object.keys(validationErrors).length === 0) {
-
-                            try {
-
-                                await postGroupDiscussionComment({ groupId, discussionId, user, body: getServerSideMultiPartFormData(formData) as any });
-
-                            } catch(error){
-
-                                if(error.data?.status){
-
-                                    props.forms[createDiscussionCommentForm.id].errors = error.data.body || {
-                                        _error: error.data.statusText
-                                    };
-                                    props.forms[createDiscussionCommentForm.id].initialValues = formData;
-
-                                } else {
-
-                                    return handleSSRErrorProps({ props, error });
-
+                getServerSideProps: withTextContent({
+                    props,
+                    routeId,
+                    getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                        const user: User = selectUser(context);
+                        const groupId: string = selectParam(context, routeParams.GROUPID);
+                        const discussionId: string = selectParam(context, routeParams.DISCUSSIONID);
+                        const pagination: Pagination = selectPagination(context);
+                        const formData: any = selectFormData(context);;
+    
+                        props.discussionId = discussionId;
+                        props.layoutId = layoutIds.GROUP;
+                        props.tabId = groupTabIds.FORUM;
+    
+                        if(formData){
+            
+                            const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionCommentForm.id));
+    
+                            props.forms[createDiscussionCommentForm.id].errors = validationErrors;
+                            props.forms[createDiscussionCommentForm.id].initialValues = formData;
+    
+                            if(Object.keys(validationErrors).length === 0) {
+    
+                                try {
+    
+                                    await postGroupDiscussionComment({ groupId, discussionId, user, body: getServerSideMultiPartFormData(formData) as any });
+    
+                                } catch(error){
+    
+                                    if(error.data?.status){
+    
+                                        props.forms[createDiscussionCommentForm.id].errors = error.data.body || {
+                                            _error: error.data.statusText
+                                        };
+                                        props.forms[createDiscussionCommentForm.id].initialValues = formData;
+    
+                                    } else {
+    
+                                        return handleSSRErrorProps({ props, error });
+    
+                                    }
+    
                                 }
-
+    
                             }
-
+    
                         }
-
+    
+                        /**
+                         * Get data from services
+                         */
+                        try {
+    
+                            const [groupDiscussion, groupDiscussionComments] = await Promise.all([
+                                getGroupDiscussion({ user, groupId, discussionId }),
+                                getGroupDiscussionCommentsWithReplies({ user, groupId, discussionId, pagination })
+                            ]);
+    
+                            props.discussion = groupDiscussion.data;
+                            props.discussionCommentsList = groupDiscussionComments.data;
+                            props.pagination = groupDiscussionComments.pagination;
+    
+                        } catch (error) {
+    
+                            return handleSSRErrorProps({ props, error });
+    
+                        }
+    
+                        /**
+                         * Return data to page template
+                         */
+                        return handleSSRSuccessProps({ props });
+    
                     }
-
-                    /**
-                     * Get data from services
-                     */
-                    try {
-
-                        const [groupDiscussion, groupDiscussionComments] = await Promise.all([
-                            getGroupDiscussion({ user, groupId, discussionId }),
-                            getGroupDiscussionCommentsWithReplies({ user, groupId, discussionId, pagination })
-                        ]);
-
-                        props.discussion = groupDiscussion.data;
-                        props.discussionCommentsList = groupDiscussionComments.data;
-                        props.pagination = groupDiscussionComments.pagination;
-
-                    } catch (error) {
-
-                        return handleSSRErrorProps({ props, error });
-
-                    }
-
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props });
-
-                }
+                })
             })
         })
     })

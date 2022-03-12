@@ -2,9 +2,10 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupFolder } from '@services/getGroupFolder';
@@ -25,51 +26,54 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withTextContent({
+        getServerSideProps: withGroup({
             props,
-            routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-                const user: User = selectUser(context);
-                const groupId: string = selectParam(context, routeParams.GROUPID);
-                const folderId: string = selectParam(context, routeParams.FOLDERID);
-                const pagination: Pagination = {
-                    pageNumber: selectPagination(context).pageNumber ?? 1,
-                    pageSize: selectPagination(context).pageSize ?? 10
-                };
-
-                props.layoutId = layoutIds.GROUP;
-                props.tabId = 'files';
-
-                /**
-                 * Get data from services
-                 */
-                try {
-
-                    const [groupFolder, groupFolderContents] = await Promise.all([
-                        getGroupFolder({ user, groupId, folderId }),
-                        getGroupFolderContents({ user, groupId, folderId, pagination })
-                    ]);
-
-                    props.folderId = folderId;
-                    props.folder = groupFolder.data;
-                    props.folderContents = groupFolderContents.data ?? [];
-                    props.pagination = groupFolderContents.pagination;
-
-                } catch (error) {
-
-                    return handleSSRErrorProps({ props, error });
-
+            getServerSideProps: withTextContent({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                    const user: User = selectUser(context);
+                    const groupId: string = selectParam(context, routeParams.GROUPID);
+                    const folderId: string = selectParam(context, routeParams.FOLDERID);
+                    const pagination: Pagination = {
+                        pageNumber: selectPagination(context).pageNumber ?? 1,
+                        pageSize: selectPagination(context).pageSize ?? 10
+                    };
+    
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = groupTabIds.FILES;
+    
+                    /**
+                     * Get data from services
+                     */
+                    try {
+    
+                        const [groupFolder, groupFolderContents] = await Promise.all([
+                            getGroupFolder({ user, groupId, folderId }),
+                            getGroupFolderContents({ user, groupId, folderId, pagination })
+                        ]);
+    
+                        props.folderId = folderId;
+                        props.folder = groupFolder.data;
+                        props.folderContents = groupFolderContents.data ?? [];
+                        props.pagination = groupFolderContents.pagination;
+    
+                    } catch (error) {
+    
+                        return handleSSRErrorProps({ props, error });
+    
+                    }
+    
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props });
+    
                 }
-
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props });
-
-            }
+            })
         })
     })
 });

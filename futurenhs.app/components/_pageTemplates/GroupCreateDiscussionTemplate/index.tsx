@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { routeParams } from '@constants/routes';
 import { selectFormDefaultFields, selectFormErrors, selectFormInitialValues } from '@selectors/forms';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
@@ -20,6 +18,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
     groupId,
     csrfToken,
     forms,
+    routes,
     user,
     contentText,
     services = {
@@ -35,14 +34,6 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 
     const { secondaryHeading } = contentText ?? {};
 
-    const groupBasePath: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
-
-    const forumHref: string = `${groupBasePath}/forum`;
-
     /**
      * Client-side submission handler
      */
@@ -52,7 +43,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 
             await services.postGroupDiscussion({ groupId, user, body: formData as any });
 
-            router.push(forumHref);
+            router.push(routes.groupForumRoot);
 
             return Promise.resolve({});
 
@@ -95,7 +86,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 }
                             }}
                             submitAction={handleSubmit}
-                            cancelHref={forumHref}
+                            cancelHref={routes.groupForumRoot}
                             bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1">
                             <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                         </FormWithErrorSummary>

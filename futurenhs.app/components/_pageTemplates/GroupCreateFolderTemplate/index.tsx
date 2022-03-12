@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { routeParams } from '@constants/routes';
 import { formTypes } from '@constants/forms';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { selectFormDefaultFields, selectFormInitialValues, selectFormErrors } from '@selectors/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
@@ -22,6 +20,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
     folderId,
     csrfToken,
     forms,
+    routes,
     user,
     folder,
     contentText
@@ -38,13 +37,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
 
     const {secondaryHeading} = contentText ?? {};
 
-    const groupBasePath: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
-
-    const folderHref: string = `${groupBasePath}/folders${folderId ? '/' + folderId : ''}`;
+    const folderHref: string = `${routes.groupFoldersRoot}${folderId ? '/' + folderId : ''}`;
 
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
 

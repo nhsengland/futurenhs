@@ -3,8 +3,9 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupMembers } from '@services/getGroupMembers';
@@ -25,49 +26,52 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withTextContent({
+        getServerSideProps: withGroup({
             props,
-            routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-                const user: User = selectUser(context);
-                const groupId: string = selectParam(context, routeParams.GROUPID);
-                const pagination: Pagination = {
-                    pageNumber: selectPagination(context).pageNumber ?? 1,
-                    pageSize: selectPagination(context).pageSize ?? 10
-                };
-
-                props.layoutId = layoutIds.GROUP;
-                props.tabId = 'members';
-
-                /**
-                 * Get data from services
-                 */
-                try {
-
-                    const [groupMembers, groupPendingMembers] = await Promise.all([
-                        getGroupMembers({ user, groupId, pagination }),
-                        getPendingGroupMembers({ user, groupId })
-                    ]);
-
-                    props.members = groupMembers.data;
-                    props.pagination = groupMembers.pagination;
-                    props.pendingMembers = groupPendingMembers.data;
-
-                } catch (error) {
-
-                    return handleSSRErrorProps({ props, error });
-
+            getServerSideProps: withTextContent({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                    const user: User = selectUser(context);
+                    const groupId: string = selectParam(context, routeParams.GROUPID);
+                    const pagination: Pagination = {
+                        pageNumber: selectPagination(context).pageNumber ?? 1,
+                        pageSize: selectPagination(context).pageSize ?? 10
+                    };
+    
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = groupTabIds.MEMBERS;
+    
+                    /**
+                     * Get data from services
+                     */
+                    try {
+    
+                        const [groupMembers, groupPendingMembers] = await Promise.all([
+                            getGroupMembers({ user, groupId, pagination }),
+                            getPendingGroupMembers({ user, groupId })
+                        ]);
+    
+                        props.members = groupMembers.data;
+                        props.pagination = groupMembers.pagination;
+                        props.pendingMembers = groupPendingMembers.data;
+    
+                    } catch (error) {
+    
+                        return handleSSRErrorProps({ props, error });
+    
+                    }
+    
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props });
+    
                 }
-
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props });
-
-            }
+            })
         })
     })
 });

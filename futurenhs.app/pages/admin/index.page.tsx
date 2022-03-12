@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { actions } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
 import { withTextContent } from '@hofs/withTextContent';
+import { withRoutes } from '@hofs/withRoutes';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { AdminHomeTemplate } from '@components/_pageTemplates/AdminHomeTemplate';
@@ -16,17 +17,20 @@ const routeId: string = '439794f2-9c58-4b6f-9fe8-d77a841e3055';
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withTextContent({
-        routeId,
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            return {
-                props,
-                notFound: !props.actions.includes(actions.SITE_ADMIN_VIEW),
-            }  
+        getServerSideProps: withTextContent({
+            routeId,
+            props,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
     
-        }
+                return {
+                    props,
+                    notFound: !props.actions.includes(actions.SITE_ADMIN_VIEW),
+                }  
+        
+            }
+        })
     })
 });
 

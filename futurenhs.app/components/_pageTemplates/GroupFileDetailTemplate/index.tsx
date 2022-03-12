@@ -8,8 +8,6 @@ import { DataGrid } from '@components/DataGrid';
 import { RichText } from '@components/RichText';
 import { BreadCrumb } from '@components/BreadCrumb';
 import { SVGIcon } from '@components/SVGIcon';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
-import { routeParams } from '@constants/routes';
 import { BreadCrumbList } from '@appTypes/routing';
 
 import { Props } from './interfaces';
@@ -20,7 +18,8 @@ import { Props } from './interfaces';
 export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
     fileId,
     file,
-    contentText
+    contentText,
+    routes
 }) => {
 
     const router = useRouter();
@@ -31,16 +30,10 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
 
     const breadCrumbList: BreadCrumbList = [];
 
-    const groupBasePath: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
-
     if (path?.length > 0) {
 
         breadCrumbList.push({
-            element: `${groupBasePath}/folders`,
+            element: `${routes.groupRoot}`,
             text: 'Files'
         });
 
@@ -49,7 +42,7 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
             if (element !== fileId) {
 
                 breadCrumbList.push({
-                    element: `${groupBasePath}/folders/${element}`,
+                    element: `${routes.groupFoldersRoot}/${element}`,
                     text: text
                 });
 
@@ -110,7 +103,7 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
                 {createdBy &&
                     <p className="u-mb-14">
                         <span className="u-text-bold u-mr-6">{createdByLabel}</span>
-                        <Link href={`${groupBasePath}/members/${createdBy.id}`}>{createdBy.text.userName}</Link>
+                        <Link href={`${routes.groupMembersRoot}/${createdBy.id}`}>{createdBy.text.userName}</Link>
                     </p>
                 }
                 <DataGrid

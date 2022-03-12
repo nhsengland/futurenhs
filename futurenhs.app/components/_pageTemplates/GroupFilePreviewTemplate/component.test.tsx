@@ -1,5 +1,6 @@
 import React from 'react';
 import * as nextRouter from 'next/router';
+import { routes } from '@jestMocks/generic-props';
 import { render, screen, cleanup } from '@testing-library/react';
 
 import { GroupFilePreviewTemplate } from './index';
@@ -17,6 +18,7 @@ describe('Group file preview template', () => {
 
     const props: Props = {
         id: 'mockId',
+        routes: routes,
         tabId: 'files',
         fileId: 'mockId',
         file: {

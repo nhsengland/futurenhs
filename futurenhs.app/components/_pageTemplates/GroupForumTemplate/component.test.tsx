@@ -4,6 +4,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { actions } from '@constants/actions';
 
 import { GroupForumTemplate } from './index';
+import { routes } from '@jestMocks/generic-props';
 import { Props } from './interfaces';
 
 describe('Group forum template', () => {
@@ -18,6 +19,7 @@ describe('Group forum template', () => {
 
     const props: Props = {
         id: 'mockId',
+        routes: routes,
         tabId: 'files',
         user: undefined,
         actions: [

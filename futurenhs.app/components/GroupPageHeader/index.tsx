@@ -30,17 +30,12 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     text,
     navMenuList,
     actions,
+    routes,
     shouldRenderActionsMenu = true,
     className
 }) => {
 
     const router = useRouter();
-
-    const groupRoute: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
 
     const [isActionsAccordionOpen, setIsActionsAccordionOpen] = useState(false);
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true);
@@ -48,8 +43,8 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 
     const actionsMenuTitleText: string = 'Actions';
     const { mainHeading,
-        description,
-        navMenuTitle } = text ?? {};
+            description,
+            navMenuTitle } = text ?? {};
 
     const hasMenuItems: boolean = navMenuList?.length > 0;
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE);
@@ -91,7 +86,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 
             actionsMenuList.push({
                 id: actionsConstants.GROUPS_EDIT,
-                url: `${groupRoute}/update`,
+                url: `${routes.groupRoot}/update`,
                 text: 'Edit group information'
             });
 
@@ -190,7 +185,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         <LayoutColumn tablet={4} desktop={3} className={generatedClasses.actionsWrapper}>
                             {(getActionNavMenuList().length === 0)
 
-                                ? <Link href={`${groupRoute}/join`}>
+                                ? <Link href={`${routes.groupRoot}/join`}>
                                     <a className="c-button u-w-full">Join group</a>
                                 </Link>
 

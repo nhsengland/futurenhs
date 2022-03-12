@@ -8,6 +8,7 @@ describe('Dialog', () => {
     
     const props: Props = {
         id: 'Mock id',
+        appElement: document.getElementById('__next'),
         text: {
             confirmButton: 'Confirm',
             cancelButton: 'Cancel'
@@ -20,7 +21,7 @@ describe('Dialog', () => {
 
     it('renders correctly', () => {
         
-        render(<Dialog {...props}/>);
+        render(<div id="__next"><Dialog {...props}/></div>);
 
         expect(screen.getAllByText('Child').length).toBe(1);
 
@@ -28,7 +29,7 @@ describe('Dialog', () => {
 
     it('Conditionally renders confirm button', () => {
 
-        render(<Dialog {...props}/>);
+        render(<div id="__next"><Dialog {...props}/></div>);
 
         expect(screen.getAllByText('Confirm').length).toBe(1);
 
@@ -46,7 +47,7 @@ describe('Dialog', () => {
 
     it('conditionally renders cancel button', () => {
 
-        render(<Dialog {...props}/>);
+        render(<div id="__next"><Dialog {...props}/></div>);
 
         expect(screen.getAllByText('Cancel').length).toBe(1);
 

@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
 import { actions as userActions } from '@constants/actions';
-import { routeParams } from '@constants/routes';
 import { iconMap } from '@constants/icons';
 import { Dialog } from '@components/Dialog';
 import { BreadCrumb } from '@components/BreadCrumb';
@@ -17,7 +16,6 @@ import { DataGrid } from '@components/DataGrid';
 import { RichText } from '@components/RichText';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { getGroupFolderContents } from '@services/getGroupFolderContents';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { BreadCrumbList } from '@appTypes/routing';
 
 import { Props } from './interfaces';
@@ -33,6 +31,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     folder,
     folderContents,
     actions,
+    routes,
     pagination
 }) => {
 
@@ -59,27 +58,15 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     const hasEditFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_EDIT);
     const hasDeleteFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_DELETE);
 
-    const groupBasePath: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
-
-    const folderBasePath: string = folderId ? getRouteToParam({
-        router: router,
-        paramName: routeParams.FOLDERID
-    }) : `${groupBasePath}/folders`;
-
-    const fileBasePath: string = `${groupBasePath}/files`;
-    const folderUpdatePath: string = `${groupBasePath}/folders/${folderId}/update`;
-    const folderDeletePath: string = `${groupBasePath}/folders/${folderId}/delete`;
+    const folderUpdatePath: string = `${routes.groupFoldersRoot}/${folderId}/update`;
+    const folderDeletePath: string = `${routes.groupFoldersRoot}/${folderId}/delete`;
 
     const breadCrumbList: BreadCrumbList = [];
 
     if (path?.length > 0) {
 
         breadCrumbList.push({
-            element: folderBasePath,
+            element: routes.groupFoldersRoot,
             text: 'Files'
         });
 
@@ -90,7 +77,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
         if (element !== id) {
 
             breadCrumbList.push({
-                element: `${groupBasePath}/folders/${element}`,
+                element: `${routes.groupFoldersRoot}/${element}`,
                 text: text
             });
 
@@ -114,9 +101,9 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
             const { body } = text ?? {};
 
             const isFolder: boolean = type === 'folder';
-            const itemPath: string = `${isFolder ? folderBasePath : fileBasePath}/${encodeURIComponent(id)}`;
+            const itemPath: string = `${isFolder ? routes.groupFoldersRoot : routes.groupFilesRoot}/${encodeURIComponent(id)}`;
             const iconLabel: string = extension || 'Folder';
-            const fileDetailPath: string = `${fileBasePath}/${encodeURIComponent(id)}/detail`;
+            const fileDetailPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(id)}/detail`;
             const fileDownloadPath: string = downloadLink;
             const iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
 
@@ -294,13 +281,13 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                 {(hasAddFolderAction || hasAddFileAction) &&
                     <p className="u-mb-6">
                         {hasAddFolderAction &&
-                            <Link href={`${groupBasePath}/folders/create${folderId ? '?folderId=' + folderId : ''}`}>
+                            <Link href={`${routes.groupFoldersRoot}/create${folderId ? '?folderId=' + folderId : ''}`}>
                                 <a className="c-button c-button--outline u-mr-2 u-mb-4 u-w-full tablet:u-w-72 u-drop-shadow">{createFolder}</a>
                             </Link>
                         }
                         {(folderId && hasAddFileAction) &&
                             <Link href={{
-                                pathname: `${groupBasePath}/files/create`,
+                                pathname: `${routes.groupFilesRoot}/create`,
                                 query: { 
                                     folderId: folderId 
                                 }

@@ -6,6 +6,7 @@ import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { selectUser, selectParam } from '@selectors/context';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupFile } from '@services/getGroupFile';
@@ -23,45 +24,48 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withTextContent({
+        getServerSideProps: withGroup({
             props,
-            routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-                const user: User = selectUser(context);
-                const groupId: string = selectParam(context, routeParams.GROUPID);
-                const fileId: string = selectParam(context, routeParams.FILEID);
-
-                props.fileId = fileId;
-                props.layoutId = layoutIds.GROUP;
-                props.tabId = groupTabIds.FILES;
-                props.shouldRenderPhaseBanner = false;
-                props.shouldRenderBreadCrumb = false;
-                props.shouldRenderGroupHeader = false;
-
-                /**
-                 * Get data from services
-                 */
-                try {
-
-                    const [groupFile] = await Promise.all([getGroupFile({ user, groupId, fileId })]);
-
-                    props.file = groupFile.data;
-
-                } catch (error) {
-
-                    return handleSSRErrorProps({ props, error });
-
+            getServerSideProps: withTextContent({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                    const user: User = selectUser(context);
+                    const groupId: string = selectParam(context, routeParams.GROUPID);
+                    const fileId: string = selectParam(context, routeParams.FILEID);
+    
+                    props.fileId = fileId;
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = groupTabIds.FILES;
+                    props.shouldRenderPhaseBanner = false;
+                    props.shouldRenderBreadCrumb = false;
+                    props.shouldRenderGroupHeader = false;
+    
+                    /**
+                     * Get data from services
+                     */
+                    try {
+    
+                        const [groupFile] = await Promise.all([getGroupFile({ user, groupId, fileId })]);
+    
+                        props.file = groupFile.data;
+    
+                    } catch (error) {
+    
+                        return handleSSRErrorProps({ props, error });
+    
+                    }
+    
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props });
+    
                 }
-
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props });
-
-            }
+            })
         })
     })
 });

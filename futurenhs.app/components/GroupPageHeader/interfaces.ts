@@ -1,5 +1,6 @@
 import { actions } from '@constants/actions';
 import { Image } from '@appTypes/image';
+import { Routes } from '@appTypes/routing';
 
 export interface Props {
     id: string;
@@ -15,6 +16,7 @@ export interface Props {
         text: string;
         isActive?: boolean;
     }>;
+    routes?: Routes;
     actions?: Array<actions>;
     shouldRenderActionsMenu?: boolean;
     className?: string;

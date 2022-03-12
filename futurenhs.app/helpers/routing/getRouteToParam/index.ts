@@ -35,3 +35,30 @@ export const getRouteToParam = ({
     }
 
 };
+
+export const getRouteToParam2 = ({
+    route,
+    param,
+    shouldIncludeParam = true
+}: any): string => {
+
+    if(!route || !param){
+
+        return undefined;
+
+    }
+
+    try {
+
+        const endSliceIndex: number = route.indexOf(param) + (shouldIncludeParam ? param.length : -1);
+        const formattedRoute: string = route?.slice(0, endSliceIndex);
+    
+        return formattedRoute;
+
+    } catch(error){
+
+        return '';
+
+    }
+
+};

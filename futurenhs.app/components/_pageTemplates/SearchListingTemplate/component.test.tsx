@@ -2,6 +2,7 @@ import * as React from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
 import * as nextRouter from 'next/router';
 
+import { routes } from '@jestMocks/generic-props';
 import { SearchListingTemplate } from './index';
 import { Props } from './interfaces';
 
@@ -14,6 +15,7 @@ describe('Search listing template', () => {
 
     const props: Props = {
         id: 'mockPageId',
+        routes: routes,
         user: undefined,
         term: 'mockTermTestingItRandomlyToGet0Results',
         minLength: 3,

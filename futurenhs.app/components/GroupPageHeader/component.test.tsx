@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
+import { routes } from '@jestMocks/generic-props';
 import { GroupPageHeader } from './index';
 
 import { Props } from './interfaces';
@@ -8,9 +9,10 @@ const testProps: Props = {
     id: 'mockId',
     text: {
         mainHeading: 'mockHeading',
-        description: 'mockDescripton',
+        description: 'mockDescription',
         navMenuTitle: 'mockNavMenuTitleText'   
     },
+    routes: routes,
     navMenuList: []
 };
 

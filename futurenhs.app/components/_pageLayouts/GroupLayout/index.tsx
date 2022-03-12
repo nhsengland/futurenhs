@@ -1,14 +1,11 @@
 import classNames from 'classnames';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
-import { routeParams } from '@constants/routes';
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { GroupPageHeader } from '@components/GroupPageHeader';
 import { ErrorBoundary } from '@components/ErrorBoundary';
 import { getGroupNavMenuList } from '@helpers/routing/getGroupNavMenuList';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb';
 import { BreadCrumbList } from '@appTypes/routing';
 
@@ -20,25 +17,18 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     entityText,
     image,
     actions,
+    routes,
     children,
     shouldRenderGroupHeader = true,
     ...rest 
 }) => {
 
-    const router = useRouter();
-
-    const groupRoute: string = getRouteToParam({ 
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
-
     const navMenuList = getGroupNavMenuList({
-        groupRoute: groupRoute,
+        groupRoute: routes.groupRoot,
         activeId: tabId
     });
     
-    const currentRoutePathElements: Array<string> = groupRoute?.split('/')?.filter((item) => item) ?? [];
+    const currentRoutePathElements: Array<string> = routes.groupRoot?.split('/')?.filter((item) => item) ?? [];
     const breadCrumbList: BreadCrumbList = getBreadCrumbList({ pathElementList: currentRoutePathElements });
 
     const { title, 
@@ -70,6 +60,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                                 image={image}
                                 themeId={themeId}
                                 actions={actions}
+                                routes={routes}
                                 navMenuList={navMenuList} />
                         </ErrorBoundary>
                     }

@@ -29,7 +29,8 @@
         "@hofs/*": ["hofs/*"],
         "@lib/*": ["lib/*"],
         "@appTypes/*": ["types/*"],
-        "@formConfigs/*": ["form-configs/*"]
+        "@formConfigs/*": ["form-configs/*"],
+        "@jestMocks/*": ["jest-mocks/*"]
     }
   },
   "include": [

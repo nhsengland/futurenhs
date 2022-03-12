@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroups } from '@services/getGroups';
 import { selectUser, selectPagination } from '@selectors/context';
@@ -22,44 +23,47 @@ const isMember: boolean = true;
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withTextContent({
+    getServerSideProps: withRoutes({
         props,
-        routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            /**
-             * Get data from request context
-             */
-            const user: User = selectUser(context);
-            const pagination: Pagination = {
-                pageNumber: selectPagination(context).pageNumber ?? 1,
-                pageSize: selectPagination(context).pageSize ?? 10
-            };
+        getServerSideProps: withTextContent({
+            props,
+            routeId,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
     
-            props.isGroupMember = isMember;
-
-            /**
-             * Get data from services
-             */
-            try {
+                /**
+                 * Get data from request context
+                 */
+                const user: User = selectUser(context);
+                const pagination: Pagination = {
+                    pageNumber: selectPagination(context).pageNumber ?? 1,
+                    pageSize: selectPagination(context).pageSize ?? 10
+                };
+        
+                props.isGroupMember = isMember;
     
-                const [groupsList] = await Promise.all([getGroups({ user, isMember, pagination })]);
+                /**
+                 * Get data from services
+                 */
+                try {
+        
+                    const [groupsList] = await Promise.all([getGroups({ user, isMember, pagination })]);
+        
+                    props.groupsList = groupsList.data ?? [];
+                    props.pagination = groupsList.pagination;
+                
+                } catch (error) {
     
-                props.groupsList = groupsList.data ?? [];
-                props.pagination = groupsList.pagination;
-            
-            } catch (error) {
-
-                return handleSSRErrorProps({ props, error });
-    
+                    return handleSSRErrorProps({ props, error });
+        
+                }
+        
+                /**
+                 * Return data to page template
+                 */
+                return handleSSRSuccessProps({ props });
+        
             }
-    
-            /**
-             * Return data to page template
-             */
-            return handleSSRSuccessProps({ props });
-    
-        }
+        })
     })
 });
 

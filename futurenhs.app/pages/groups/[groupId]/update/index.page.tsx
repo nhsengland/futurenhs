@@ -5,8 +5,9 @@ import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { routeParams } from '@constants/routes';
 import { formTypes } from '@constants/forms';
 import { actions } from '@constants/actions';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
 import { validate } from '@helpers/validators';
@@ -28,80 +29,83 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withForms({
+        getServerSideProps: withGroup({
             props,
-            routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-                const csrfToken: string = selectCsrfToken(context);
-                const formData: any = selectFormData(context);
-                const groupId: string = selectParam(context, routeParams.GROUPID);
-                const user: User = selectUser(context);
-
-                props.forms[formTypes.UPDATE_GROUP].initialValues = {
-                    'name': props.entityText.title,
-                    'strapline': props.entityText.strapLine,
-                    'themeId': [props.themeId]
-                };
-                props.layoutId = layoutIds.GROUP;
-                props.tabId = 'index';
-
-                /**
-                 * Handle server-side form post
-                 */
-                if (formData) {
-
-                    const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, updateGroupForm.id));
-
-                    props.forms[updateGroupForm.id].errors = validationErrors;
-                    props.forms[updateGroupForm.id].initialValues = formData;
-
-                    if (Object.keys(validationErrors).length === 0) {
-
-                        try {
-
-                            await putGroupDetails({ groupId, user, csrfToken, body: getServerSideMultiPartFormData(formData) as any });
-
-                            return {
-                                props: {},
-                                redirect: {
-                                    permanent: false,
-                                    destination: `/groups/${context.params.groupId}`
+            getServerSideProps: withForms({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                    const csrfToken: string = selectCsrfToken(context);
+                    const formData: any = selectFormData(context);
+                    const groupId: string = selectParam(context, routeParams.GROUPID);
+                    const user: User = selectUser(context);
+    
+                    props.forms[formTypes.UPDATE_GROUP].initialValues = {
+                        'name': props.entityText.title,
+                        'strapline': props.entityText.strapLine,
+                        'themeId': [props.themeId]
+                    };
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = groupTabIds.INDEX;
+    
+                    /**
+                     * Handle server-side form post
+                     */
+                    if (formData) {
+    
+                        const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, updateGroupForm.id));
+    
+                        props.forms[updateGroupForm.id].errors = validationErrors;
+                        props.forms[updateGroupForm.id].initialValues = formData;
+    
+                        if (Object.keys(validationErrors).length === 0) {
+    
+                            try {
+    
+                                await putGroupDetails({ groupId, user, csrfToken, body: getServerSideMultiPartFormData(formData) as any });
+    
+                                return {
+                                    props: {},
+                                    redirect: {
+                                        permanent: false,
+                                        destination: `/groups/${context.params.groupId}`
+                                    }
                                 }
+    
+                            } catch (error) {
+    
+                                if (error.data?.status) {
+    
+                                    props.forms[updateGroupForm.id].errors = error.data.body || {
+                                        _error: error.data.statusText
+                                    };
+                                    props.forms[updateGroupForm.id].initialValues = formData;
+    
+                                } else {
+    
+                                    return handleSSRErrorProps({ props, error });
+    
+                                }
+    
                             }
-
-                        } catch (error) {
-
-                            if (error.data?.status) {
-
-                                props.forms[updateGroupForm.id].errors = error.data.body || {
-                                    _error: error.data.statusText
-                                };
-                                props.forms[updateGroupForm.id].initialValues = formData;
-
-                            } else {
-
-                                return handleSSRErrorProps({ props, error });
-
-                            }
-
+    
                         }
-
+    
                     }
-
+    
+                    /**
+                     * Return data to page template
+                     */
+                    return {
+                        notFound: !props.actions.includes(actions.GROUPS_EDIT),
+                        props: props
+                    }
+    
                 }
-
-                /**
-                 * Return data to page template
-                 */
-                return {
-                    notFound: !props.actions.includes(actions.GROUPS_EDIT),
-                    props: props
-                }
-
-            }
+            })
         })
     })
 });

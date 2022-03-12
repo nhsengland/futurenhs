@@ -40,6 +40,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     csrfToken,
     contentText,
     actions,
+    routes,
     discussion,
     discussionCommentsList,
     pagination,
@@ -61,12 +62,6 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const backLinkHref: string = getRouteToParam({
         router: router,
         paramName: routeParams.DISCUSSIONID
-    });
-
-    const groupBasePath: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
     });
 
     const {
@@ -244,7 +239,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 initials: replyingUserInitials,
                                 body: body
                             }}
-                            userProfileLink={`${groupBasePath}/members/${replyingUserId}`}
+                            userProfileLink={`${routes.groupMembersRoot}/${replyingUserId}`}
                             date={replyCreatedDate}
                             shouldEnableReplies={shouldRenderCommentAndReplyForms}
                             replyValidationFailAction={handleValidationFailure}
@@ -294,9 +289,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 initials: creatorUserInitials
                             }}
                             className="u-m-0 u-text-theme-7">
-                            <span className="u-text-bold u-block">{createdByLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
+                            <span className="u-text-bold u-block">{createdByLabel} <Link href={`${routes.groupMembersRoot}/${creatorUserId}`}><a>{creatorUserName}</a></Link> {createdDate}</span>
                             {(responseCount > 0 && lastCommentUserName) &&
-                                <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
+                                <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${routes.groupMembersRoot}/${creatorUserId}`}><a>{lastCommentUserName}</a></Link> {lastCommentDate}</span>
                             }
                         </UserMeta>
                     </LayoutColumn>
@@ -355,7 +350,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                     initials: commenterUserInitials,
                                                     body: body
                                                 }}
-                                                userProfileLink={`${groupBasePath}/members/${commenterUserId}`}
+                                                userProfileLink={`${routes.groupMembersRoot}/${commenterUserId}`}
                                                 date={commentCreatedDate}
                                                 shouldEnableReplies={shouldRenderCommentAndReplyForms}
                                                 replyValidationFailAction={handleValidationFailure}
@@ -399,7 +394,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 {shouldRenderCommentAndReplyForms &&
                     <>
                         <h3 className="nhsuk-heading-l">{secondaryHeading}</h3>
-                        <p className="u-text-bold">{signedInLabel} <Link href={`${groupBasePath}/members/${id}`}><a>{userName}</a></Link></p>
+                        <p className="u-text-bold">{signedInLabel} <Link href={`${routes.groupMembersRoot}/${id}`}><a>{userName}</a></Link></p>
                         <Form
                             csrfToken={csrfToken}
                             formId={formTypes.CREATE_DISCUSSION_COMMENT}

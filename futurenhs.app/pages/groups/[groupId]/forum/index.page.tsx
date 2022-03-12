@@ -2,10 +2,10 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
-import { withConfig } from '@hofs/withConfig';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupDiscussions } from '@services/getGroupDiscussions';
@@ -25,9 +25,8 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withConfig({
+    getServerSideProps: withRoutes({
         props,
-        routeId,
         getServerSideProps: withGroup({
             props,
             getServerSideProps: withTextContent({
@@ -46,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     };
 
                     props.layoutId = layoutIds.GROUP;
-                    props.tabId = 'forum';
+                    props.tabId = groupTabIds.FORUM;
                 
                     /**
                      * Get data from services

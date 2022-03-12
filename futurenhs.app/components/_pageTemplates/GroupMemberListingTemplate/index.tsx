@@ -1,9 +1,6 @@
 import { useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
-import { routeParams } from '@constants/routes';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { actions as userActions } from '@constants/actions';
 import { Link } from '@components/Link';
 import { SVGIcon } from '@components/SVGIcon';
@@ -24,29 +21,23 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     groupId,
     user,
     actions,
+    routes,
     pendingMembers,
     members,
     contentText,
     pagination
 }) => {
 
-    const router = useRouter();
     const [membersList, setMembersList] = useState(members);
     const [dynamicPagination, setPagination] = useState(pagination);
 
     const { pendingMemberRequestsHeading,
-        membersHeading,
-        noPendingMembers,
-        noMembers,
-        acceptMember,
-        rejectMember,
-        editMember } = contentText ?? {};
-
-    const groupBasePath: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
+            membersHeading,
+            noPendingMembers,
+            noMembers,
+            acceptMember,
+            rejectMember,
+            editMember } = contentText ?? {};
 
     const shouldRenderMemberEditColumn: Boolean = actions?.includes(userActions.GROUPS_MEMBERS_EDIT);
     const shouldRenderPendingMembersList: Boolean = actions?.includes(userActions.GROUPS_MEMBERS_PENDING_VIEW);
@@ -65,65 +56,66 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             children: 'Actions'
         }
     ];
+
     const pendingMemberRowList = useMemo(() => pendingMembers?.map(({
         fullName,
         email,
         requestDate }) => {
 
-        const generatedCellClasses = {
-            name: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/4']: true
-            }),
-            email: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/4']: true
-            }),
-            requestDate: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/6']: true,
-            }),
-            actions: classNames({
-                ['u-w-full tablet:u-w-1/6']: true,
-            })
-        };
+            const generatedCellClasses = {
+                name: classNames({
+                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
+                }),
+                email: classNames({
+                    ['u-justify-between u-w-full tablet:u-w-1/4']: true
+                }),
+                requestDate: classNames({
+                    ['u-justify-between u-w-full tablet:u-w-1/6']: true,
+                }),
+                actions: classNames({
+                    ['u-w-full tablet:u-w-1/6']: true,
+                })
+            };
 
-        const generatedHeaderCellClasses = {
-            name: classNames({
-                ['u-text-bold']: true
-            }),
-            email: classNames({
-                ['u-text-bold']: true
-            }),
-            requestDate: classNames({
-                ['u-text-bold']: true
-            }),
-            actions: classNames({
-                ['u-hidden']: true
-            })
-        };
+            const generatedHeaderCellClasses = {
+                name: classNames({
+                    ['u-text-bold']: true
+                }),
+                email: classNames({
+                    ['u-text-bold']: true
+                }),
+                requestDate: classNames({
+                    ['u-text-bold']: true
+                }),
+                actions: classNames({
+                    ['u-hidden']: true
+                })
+            };
 
-        const rows = [
-            {
-                children: fullName,
-                className: generatedCellClasses.name,
-                headerClassName: generatedHeaderCellClasses.name
-            },
-            {
-                children: email,
-                className: generatedCellClasses.email,
-                headerClassName: generatedHeaderCellClasses.email
-            },
-            {
-                children: `${dateTime({ value: requestDate })}`,
-                className: generatedCellClasses.requestDate,
-                headerClassName: generatedHeaderCellClasses.requestDate
-            },
-            {
-                children: <span className="u-flex u-justify-between u-w-full"><a href="#">{acceptMember}</a><a href="#">{rejectMember}</a></span>,
-                className: generatedCellClasses.actions,
-                headerClassName: generatedHeaderCellClasses.actions
-            }
-        ];
+            const rows = [
+                {
+                    children: fullName,
+                    className: generatedCellClasses.name,
+                    headerClassName: generatedHeaderCellClasses.name
+                },
+                {
+                    children: email,
+                    className: generatedCellClasses.email,
+                    headerClassName: generatedHeaderCellClasses.email
+                },
+                {
+                    children: `${dateTime({ value: requestDate })}`,
+                    className: generatedCellClasses.requestDate,
+                    headerClassName: generatedHeaderCellClasses.requestDate
+                },
+                {
+                    children: <span className="u-flex u-justify-between u-w-full"><a href="#">{acceptMember}</a><a href="#">{rejectMember}</a></span>,
+                    className: generatedCellClasses.actions,
+                    headerClassName: generatedHeaderCellClasses.actions
+                }
+            ];
 
-        return rows;
+            return rows;
 
     }), [pendingMembers]);
 
@@ -194,7 +186,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: <Link href={`${groupBasePath}/members/${id}`}><a className="o-truncated-text-lines-3">{fullName || role}</a></Link>,
+                children: <Link href={`${routes.groupMembersRoot}/${id}`}><a className="o-truncated-text-lines-3">{fullName || role}</a></Link>,
                 className: generatedCellClasses.name,
                 headerClassName: generatedHeaderCellClasses.name
             },
@@ -219,7 +211,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
             rows.push({
                 children: <Link href={{
-                    pathname: `${groupBasePath}/members/${id}`,
+                    pathname: `${routes.groupMembersRoot}/${id}`,
                     query: { 
                         edit: 'true' 
                     }

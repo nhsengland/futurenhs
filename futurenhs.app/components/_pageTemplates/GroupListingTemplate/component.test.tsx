@@ -3,6 +3,7 @@ import * as nextRouter from 'next/router';
 import { cleanup, render, screen } from '@testing-library/react';
 
 import { GroupListingTemplate } from './index';
+import { routes } from '@jestMocks/generic-props';
 import { Props } from './interfaces';
 
 describe('GroupListingTemplate', () => {
@@ -14,6 +15,7 @@ describe('GroupListingTemplate', () => {
 
     const props: Props = {
         id: 'mockPageId',
+        routes: routes,
         user: undefined,
         contentText: {
             title: 'Mock title text',

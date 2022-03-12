@@ -2,12 +2,14 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { layoutIds } from '@constants/routes';
+import { routes } from '@jestMocks/generic-props';
 import Page, { getServerSideProps } from './index.page';
 
 import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfaces';
 
 const props: Props = {
     id: 'mockPageId',
+    routes: routes,
     layoutId: layoutIds.BASE,
     user: undefined,
     contentText: {

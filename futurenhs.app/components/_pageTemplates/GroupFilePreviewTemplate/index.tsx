@@ -23,6 +23,7 @@ import { Props } from './interfaces';
 export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
     fileId,
     file,
+    routes,
     contentText
 }) => {
 
@@ -33,18 +34,12 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
 
     const breadCrumbList: BreadCrumbList = [];
 
-    const groupBasePath: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
-
-    const fileDetailPath: string = `${groupBasePath}/files/${fileId}/detail`;
+    const fileDetailPath: string = `${routes.groupFilesRoot}/${fileId}/detail`;
 
     if (path?.length > 0) {
 
         breadCrumbList.push({
-            element: `${groupBasePath}/folders`,
+            element: `${routes.groupFoldersRoot}`,
             text: 'Files'
         });
 
@@ -53,7 +48,7 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
             if (element !== fileId) {
 
                 breadCrumbList.push({
-                    element: `${groupBasePath}/folders/${element}`,
+                    element: `${routes.groupFoldersRoot}/${element}`,
                     text: text
                 });
 

@@ -3,8 +3,9 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupFolderContents } from '@services/getGroupFolderContents';
@@ -24,45 +25,48 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withTextContent({
+        getServerSideProps: withGroup({
             props,
-            routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-                const user: User = selectUser(context);
-                const groupId: string = selectParam(context, routeParams.GROUPID);
-                const pagination: Pagination = {
-                    pageNumber: selectPagination(context).pageNumber ?? 1,
-                    pageSize: selectPagination(context).pageSize ?? 10
-                };
-
-                props.layoutId = layoutIds.GROUP;
-                props.tabId = 'files';
-
-                /**
-                 * Get data from services
-                 */
-                try {
-
-                    const [groupFolderContents] = await Promise.all([getGroupFolderContents({ user, groupId, pagination })]);
-
-                    props.folderContents = groupFolderContents.data ?? [];
-                    props.pagination = groupFolderContents.pagination;
-
-                } catch (error) {
-
-                    return handleSSRErrorProps({ props, error });
-
+            getServerSideProps: withTextContent({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                    const user: User = selectUser(context);
+                    const groupId: string = selectParam(context, routeParams.GROUPID);
+                    const pagination: Pagination = {
+                        pageNumber: selectPagination(context).pageNumber ?? 1,
+                        pageSize: selectPagination(context).pageSize ?? 10
+                    };
+    
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = groupTabIds.FILES;
+    
+                    /**
+                     * Get data from services
+                     */
+                    try {
+    
+                        const [groupFolderContents] = await Promise.all([getGroupFolderContents({ user, groupId, pagination })]);
+    
+                        props.folderContents = groupFolderContents.data ?? [];
+                        props.pagination = groupFolderContents.pagination;
+    
+                    } catch (error) {
+    
+                        return handleSSRErrorProps({ props, error });
+    
+                    }
+    
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props });
+    
                 }
-
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props });
-
-            }
+            })
         })
     })
 });

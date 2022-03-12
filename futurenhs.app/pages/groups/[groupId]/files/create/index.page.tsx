@@ -2,10 +2,11 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
 import { selectCsrfToken, selectFormData, selectParam, selectUser, selectQuery } from '@selectors/context';
@@ -27,77 +28,80 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        routeId,
-        getServerSideProps: withForms({
+        getServerSideProps: withGroup({
             props,
             routeId,
-            getServerSideProps: withTextContent({
+            getServerSideProps: withForms({
                 props,
                 routeId,
-                getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-                    const user: User = selectUser(context);
-                    const groupId: string = selectParam(context, routeParams.GROUPID);
-                    const folderId: string = selectQuery(context, routeParams.FOLDERID);
-                    const csrfToken: string = selectCsrfToken(context);
-                    const formData: any = selectFormData(context);
-
-                    props.layoutId = layoutIds.GROUP;
-                    props.tabId = 'files';
-
-                    if (!props.actions?.includes(actionConstants.GROUPS_FILES_ADD)) {
-
-                        return {
-                            notFound: true
-                        }
-
-                    }
-
-                    /**
-                     * Get data from services
-                     */
-                    try {
-
-                        const [groupFolder] = await Promise.all([
-                            getGroupFolder({ user, groupId, folderId })
-                        ]);
-
-                        props.folderId = folderId;
-                        props.folder = groupFolder.data;
-
-                    } catch (error) {
-
-                        if(error.data?.status === 404){
-
+                getServerSideProps: withTextContent({
+                    props,
+                    routeId,
+                    getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                        const user: User = selectUser(context);
+                        const groupId: string = selectParam(context, routeParams.GROUPID);
+                        const folderId: string = selectQuery(context, routeParams.FOLDERID);
+                        const csrfToken: string = selectCsrfToken(context);
+                        const formData: any = selectFormData(context);
+    
+                        props.layoutId = layoutIds.GROUP;
+                        props.tabId = groupTabIds.FILES;
+    
+                        if (!props.actions?.includes(actionConstants.GROUPS_FILES_ADD)) {
+    
                             return {
                                 notFound: true
                             }
-
-                        } else {
-
-                            return handleSSRErrorProps({ props, error });
-
+    
                         }
-
+    
+                        /**
+                         * Get data from services
+                         */
+                        try {
+    
+                            const [groupFolder] = await Promise.all([
+                                getGroupFolder({ user, groupId, folderId })
+                            ]);
+    
+                            props.folderId = folderId;
+                            props.folder = groupFolder.data;
+    
+                        } catch (error) {
+    
+                            if(error.data?.status === 404){
+    
+                                return {
+                                    notFound: true
+                                }
+    
+                            } else {
+    
+                                return handleSSRErrorProps({ props, error });
+    
+                            }
+    
+                        }
+    
+                        /**
+                         * handle server-side form POST
+                         */
+                        if (formData) {
+    
+                            // TODO
+    
+                        }
+    
+                        /**
+                         * Return data to page template
+                         */
+                        return handleSSRSuccessProps({ props });
+    
                     }
-
-                    /**
-                     * handle server-side form POST
-                     */
-                    if (formData) {
-
-                        // TODO
-
-                    }
-
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props });
-
-                }
+                })
             })
         })
     })

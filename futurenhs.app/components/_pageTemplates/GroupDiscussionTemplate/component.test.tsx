@@ -2,6 +2,7 @@ import React from 'react';
 import * as nextRouter from 'next/router';
 import { render, screen, cleanup } from '@testing-library/react';
 import { actions as userActions } from '@constants/actions';
+import { routes } from '@jestMocks/generic-props';
 import formConfigs from '@formConfigs/index';
 
 import { GroupDiscussionTemplate } from './index';
@@ -20,6 +21,7 @@ describe('Group discussion template', () => {
     
     const props: Props = {
         id: 'mockId',
+        routes: routes,
         tabId: 'forum',
         user: undefined,
         discussionId: 'mockDiscussionId',

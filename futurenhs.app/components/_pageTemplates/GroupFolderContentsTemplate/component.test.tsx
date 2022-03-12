@@ -4,6 +4,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import { actions as userActions } from '@constants/actions';
 
 import { GroupFolderContentsTemplate } from './index';
+import { routes } from '@jestMocks/generic-props';
 import { Props } from './interfaces';
 
 describe('Group folders template', () => {
@@ -19,6 +20,7 @@ describe('Group folders template', () => {
 
     const props: Props = {
         id: 'mockId',
+        routes: routes,
         tabId: 'files',
         folderId: 'mockId',
         folder: {

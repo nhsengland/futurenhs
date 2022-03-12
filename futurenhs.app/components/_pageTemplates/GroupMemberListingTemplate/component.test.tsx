@@ -3,6 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen, cleanup } from '@testing-library/react';
 
 import { actions } from '@constants/actions';
+import { routes } from '@jestMocks/generic-props';
 import { GroupMemberListingTemplate } from './index';
 import { Props } from './interfaces';
 
@@ -18,6 +19,7 @@ describe('Group member listing template', () => {
 
     const props: Props = {
         id: 'mockPageId',
+        routes: routes,
         tabId: 'members',
         user: undefined,
         actions: [],

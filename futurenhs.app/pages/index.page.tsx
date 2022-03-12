@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withTextContent } from '@hofs/withTextContent';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
@@ -16,7 +17,9 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withTextContent({
+    getServerSideProps: withRoutes({
+        props,
+        getServerSideProps: withTextContent({
             props,
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
@@ -29,6 +32,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
             }
         })
+    })
 });
 
 /**

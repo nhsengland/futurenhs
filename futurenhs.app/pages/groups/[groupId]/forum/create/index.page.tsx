@@ -4,9 +4,10 @@ import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { routeParams } from '@constants/routes';
-import { layoutIds } from '@constants/routes';
+import { layoutIds, groupTabIds } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
 import { selectFormData, selectCsrfToken, selectParam, selectUser } from '@selectors/context';
@@ -29,82 +30,85 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withForms({
+        getServerSideProps: withGroup({
             props,
-            routeId,
-            getServerSideProps: withTextContent({
+            getServerSideProps: withForms({
                 props,
                 routeId,
-                getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-                    const user: User = selectUser(context);
-                    const groupId: string = selectParam(context, routeParams.GROUPID);
-                    const csrfToken: string = selectCsrfToken(context);
-                    const formData: any = selectFormData(context);;
-
-                    props.layoutId = layoutIds.GROUP;
-                    props.tabId = 'forum';
-
-                    /**
-                     * Return page not found if user doesn't have permissions to create a discussion
-                     */
-                    if (!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)) {
-
-                        return {
-                            notFound: true
-                        }
-
-                    }
-
-                    /**
-                     * Handle server-side form post
-                     */
-                    if (formData) {
-
-                        const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionForm.id));
-
-                        props.forms[createDiscussionForm.id].errors = validationErrors;
-                        props.forms[createDiscussionForm.id].initialValues = formData;
-
-                        if (Object.keys(validationErrors).length === 0) {
-
-                            try {
-
-                                await postGroupDiscussion({ groupId, user, body: getServerSideMultiPartFormData(formData) as any });
-
-                                return {
-                                    redirect: {
-                                        permanent: false,
-                                        destination: `/groups/${context.params.groupId}/forum`
-                                    }
-                                }
-
-                            } catch (error) {
-
-                                if (error.data?.status) {
-
-                                    props.forms[createDiscussionForm.id].errors = error.data.body || {
-                                        _error: error.data.statusText
-                                    };
-
-                                    return handleSSRErrorProps({ props, error });
-
-                                }
-
+                getServerSideProps: withTextContent({
+                    props,
+                    routeId,
+                    getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                        const user: User = selectUser(context);
+                        const groupId: string = selectParam(context, routeParams.GROUPID);
+                        const csrfToken: string = selectCsrfToken(context);
+                        const formData: any = selectFormData(context);;
+    
+                        props.layoutId = layoutIds.GROUP;
+                        props.tabId = groupTabIds.FORUM;
+    
+                        /**
+                         * Return page not found if user doesn't have permissions to create a discussion
+                         */
+                        if (!props.actions?.includes(actionConstants.GROUPS_DISCUSSIONS_ADD)) {
+    
+                            return {
+                                notFound: true
                             }
-
+    
                         }
-
+    
+                        /**
+                         * Handle server-side form post
+                         */
+                        if (formData) {
+    
+                            const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionForm.id));
+    
+                            props.forms[createDiscussionForm.id].errors = validationErrors;
+                            props.forms[createDiscussionForm.id].initialValues = formData;
+    
+                            if (Object.keys(validationErrors).length === 0) {
+    
+                                try {
+    
+                                    await postGroupDiscussion({ groupId, user, body: getServerSideMultiPartFormData(formData) as any });
+    
+                                    return {
+                                        redirect: {
+                                            permanent: false,
+                                            destination: `/groups/${context.params.groupId}/forum`
+                                        }
+                                    }
+    
+                                } catch (error) {
+    
+                                    if (error.data?.status) {
+    
+                                        props.forms[createDiscussionForm.id].errors = error.data.body || {
+                                            _error: error.data.statusText
+                                        };
+    
+                                        return handleSSRErrorProps({ props, error });
+    
+                                    }
+    
+                                }
+    
+                            }
+    
+                        }
+    
+                        /**
+                         * Return data to page template
+                         */
+                        return handleSSRSuccessProps({ props });
+    
                     }
-
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props });
-
-                }
+                })
             })
         })
     })

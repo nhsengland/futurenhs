@@ -2,11 +2,13 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { GenericContentTemplate } from './index';
+import { routes } from '@jestMocks/generic-props';
 
 import { Props } from './interfaces';
 
 const props: Props = {
     id: 'mockId',
+    routes: routes,
     user: undefined,
     contentText: {
         title: 'mockTitle',

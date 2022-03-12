@@ -3,10 +3,12 @@ import { render, screen } from '@testing-library/react';
 
 import Page, { getServerSideProps } from './index.page';
 import { layoutIds } from '@constants/routes';
+import { routes } from '@jestMocks/generic-props';
 import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfaces';
 
 const props: Props = {
     id: 'mockId',
+    routes: routes,
     layoutId: layoutIds.BASE,
     user: undefined,
     contentText: {

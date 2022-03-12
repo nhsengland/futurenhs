@@ -3,6 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen } from '@testing-library/react';
 
 import { GroupUpdateTemplate } from './index';
+import { routes } from '@jestMocks/generic-props';
 import forms from '@formConfigs/index';
 import { Props } from './interfaces';
 
@@ -18,6 +19,7 @@ describe('Group update template', () => {
 
     const props: Props = {
         id: 'mockId',
+        routes: routes,
         tabId: 'index',
         folderId: 'mockId',
         user: undefined,

@@ -3,6 +3,7 @@ import * as nextRouter from 'next/router';
 import { render, screen, cleanup } from '@testing-library/react';
 
 import { createFolderForm } from '@formConfigs/create-folder';
+import { routes } from '@jestMocks/generic-props';
 import { GroupCreateFolderTemplate } from './index';
 import { Props } from './interfaces';
 
@@ -18,6 +19,7 @@ describe('Group folders template', () => {
 
     const props: Props = {
         id: 'mockId',
+        routes: routes,
         tabId: 'files',
         folderId: 'mockId',
         folder: {

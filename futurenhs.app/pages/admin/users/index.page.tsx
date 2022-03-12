@@ -2,7 +2,8 @@ import { GetServerSideProps } from 'next';
 
 import { actions } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
-import { withTextContent } from '@hofs/withTextContent'
+import { withTextContent } from '@hofs/withTextContent';
+import { withRoutes } from '@hofs/withRoutes';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { AdminUsersTemplate } from '@components/_pageTemplates/AdminUsersTemplate';
@@ -16,20 +17,23 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withTextContent({
+    getServerSideProps: withRoutes({
         props,
-        routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            /**
-             * Return data to page template
-             */
-             return {
-                notFound: !props.actions.includes(actions.SITE_ADMIN_VIEW),
-                props: props
+        getServerSideProps: withTextContent({
+            props,
+            routeId,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                /**
+                 * Return data to page template
+                 */
+                 return {
+                    notFound: !props.actions.includes(actions.SITE_ADMIN_VIEW),
+                    props: props
+                }
+    
             }
-
-        }
+        })
     })
 });
 

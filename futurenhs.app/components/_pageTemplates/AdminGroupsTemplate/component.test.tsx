@@ -4,6 +4,7 @@ import * as nextRouter from 'next/router';
 import { actions as actionConstants } from '@constants/actions';
 
 import { AdminGroupsTemplate } from './index';
+import { routes } from '@jestMocks/generic-props';
 
 import { Props } from './interfaces';
 
@@ -16,6 +17,7 @@ describe('Admin Groups Template', () => {
     
     const props: Props = {
         id: 'mockId',
+        routes: routes,
         contentText: {
             mainHeading: 'Mock main heading',
             secondaryHeading: 'Mock secondary heading',

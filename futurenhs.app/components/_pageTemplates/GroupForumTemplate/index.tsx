@@ -2,14 +2,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { actions as actionConstants } from '@constants/actions';
-import { routeParams } from '@constants/routes';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { initials } from '@helpers/formatters/initials';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { Link } from '@components/Link';
 import { DynamicListContainer } from '@components/DynamicListContainer';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
-import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
 import { UserMeta } from '@components/UserMeta';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
@@ -28,6 +25,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     contentText,
     pagination,
     actions,
+    routes,
     discussionsList
 }) => {
 
@@ -38,12 +36,6 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
 
     const hasDiscussions: boolean = dynamicDiscussionsList.length > 0;
     const shouldEnableLoadMore: boolean = true;
-
-    const groupBasePath: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.GROUPID,
-        shouldIncludeParam: true
-    });
 
     const { discussionsHeading,
             noDiscussions,
@@ -124,7 +116,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     const createdDate: string = dateTime({ value: created });
                                     const lastCommentUserName: string = modifiedBy?.text.userName;
                                     const lastCommentDate: string = dateTime({ value: modified });
-                                    const cardLinkHref: string = `${groupBasePath}/forum/${discussionId}`;
+                                    const cardLinkHref: string = `${routes.groupForumRoot}/${discussionId}`;
 
                                     return (
 
@@ -144,9 +136,9 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                         initials: creatorUserInitials
                                                     }}
                                                     className="u-text-theme-7">
-                                                    <span className="u-text-bold u-block">{createdByLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
+                                                    <span className="u-text-bold u-block">{createdByLabel} <Link href={`${routes.groupMembersRoot}/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
                                                     {responseCount > 0 &&
-                                                        <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${groupBasePath}/members/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
+                                                        <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${routes.groupMembersRoot}/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
                                                     }
                                                 </UserMeta>
                                                 <div className="c-card_footer u-text-theme-0 u-flex u-justify-between">

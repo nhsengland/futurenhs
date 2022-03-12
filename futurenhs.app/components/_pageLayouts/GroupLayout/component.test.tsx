@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as nextRouter from 'next/router';
 
 import { GroupLayout } from './index';
+import { routes } from '@jestMocks/generic-props';
 
 import { Props } from './interfaces';
 import { render, screen } from '@testing-library/react';
@@ -19,6 +20,7 @@ describe('Group Layout', () => {
 
     const props: Props = {
         tabId: 'index',
+        routes: routes,
         entityText: {
             mainHeading: 'Mock heading'
         }

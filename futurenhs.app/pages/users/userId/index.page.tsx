@@ -1,7 +1,8 @@
 import { GetServerSideProps } from 'next';
 
 import { withUser } from '@hofs/withUser';
-import { withTextContent } from '@hofs/withTextContent'
+import { withTextContent } from '@hofs/withTextContent';
+import { withRoutes } from '@hofs/withRoutes';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { SiteUserTemplate } from '@components/_pageTemplates/SiteUserTemplate';
@@ -15,19 +16,22 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withTextContent({
+    getServerSideProps: withRoutes({
         props,
-        routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            /**
-             * Return data to page template
-             */
-            return {
-                props: props
+        getServerSideProps: withTextContent({
+            props,
+            routeId,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                /**
+                 * Return data to page template
+                 */
+                return {
+                    props: props
+                }
+    
             }
-
-        }
+        })
     })
 });
 

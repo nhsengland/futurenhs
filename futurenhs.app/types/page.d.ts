@@ -4,12 +4,14 @@ import { Image } from './image';
 import { layoutIds } from '@constants/routes';
 import { Pagination } from '@appTypes/pagination';
 import { FormConfig } from '@appTypes/form';
+import { Routes } from '@appTypes/routing';
 import { Service } from '@appTypes/service';
 import { GenericPageTextContent, GroupsPageTextContent } from '@appTypes/content';
 import { User } from '@appTypes/user';
 
 export interface Page {
     id: string;
+    routes: Routes;
     themeId?: string;
     layoutId?: layoutIds;
     actions?: Array<actions>;

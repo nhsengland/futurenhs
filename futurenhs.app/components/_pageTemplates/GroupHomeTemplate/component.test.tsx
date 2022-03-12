@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import * as nextRouter from 'next/router';
 
 import { GroupHomeTemplate } from './index';
+import { routes } from '@jestMocks/generic-props';
 
 import { Props } from './interfaces';
 
@@ -15,7 +16,8 @@ import { Props } from './interfaces';
 }));
 
 const props: Props = {
-    id: "mockId",
+    id: 'mockId',
+    routes: routes,
     tabId: 'index',
     actions: [],
     contentText: {},

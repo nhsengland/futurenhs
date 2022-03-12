@@ -3,9 +3,9 @@ import { GetServerSideProps } from 'next';
 import { routes } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { layoutIds, groupTabIds } from '@constants/routes';
-import { actions as actionConstants } from '@constants/actions';
 import { selectParam, selectCsrfToken } from '@selectors/context';
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { postGroupMembership } from '@services/postGroupMembership';
@@ -22,51 +22,54 @@ const props: Partial<Props> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: withGroup({
+    getServerSideProps: withRoutes({
         props,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            const csrfToken: string = selectCsrfToken(context);
-            const groupId: string = selectParam(context, routeParams.GROUPID);
-
-            props.layoutId = layoutIds.GROUP;
-            props.tabId = groupTabIds.INDEX;
-
-            /**
-             * Return not found if user does not have valid action to join group
-             */
-            // if(!props.actions?.includes(actionConstants.GROUPS_JOIN)){
-
-            //     return {
-            //         notFound: true
-            //     }
-
-            // }
-
-            /**
-             * Get data from services
-             */
-            try {
-
-                await postGroupMembership({ groupId, csrfToken, user: props.user });
-
+        getServerSideProps: withGroup({
+            props,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+    
+                const csrfToken: string = selectCsrfToken(context);
+                const groupId: string = selectParam(context, routeParams.GROUPID);
+    
+                props.layoutId = layoutIds.GROUP;
+                props.tabId = groupTabIds.INDEX;
+    
                 /**
-                 * Return data to page template
+                 * Return not found if user does not have valid action to join group
                  */
-                return {
-                    redirect: {
-                        permanent: false,
-                        destination: routes.GROUPS
+                // if(!props.actions?.includes(actionConstants.GROUPS_JOIN)){
+    
+                //     return {
+                //         notFound: true
+                //     }
+    
+                // }
+    
+                /**
+                 * Get data from services
+                 */
+                try {
+    
+                    await postGroupMembership({ groupId, csrfToken, user: props.user });
+    
+                    /**
+                     * Return data to page template
+                     */
+                    return {
+                        redirect: {
+                            permanent: false,
+                            destination: routes.GROUPS
+                        }
                     }
+    
+                } catch (error) {
+    
+                    return handleSSRErrorProps({ props, error });
+    
                 }
-
-            } catch (error) {
-
-                return handleSSRErrorProps({ props, error });
-
+    
             }
-
-        }
+        })
     })
 });
 
