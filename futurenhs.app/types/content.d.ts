@@ -1,6 +1,7 @@
 export interface GenericPageTextContent {
     metaDescription?: string;
     title?: string;
+    subTitle?: string;
     mainHeading?: string;
     intro?: string;
     navMenuTitle?: string;

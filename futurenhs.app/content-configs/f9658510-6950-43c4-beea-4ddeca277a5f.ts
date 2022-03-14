@@ -1,6 +1,7 @@
 import { GroupsPageTextContent } from '@appTypes/content';
 
 export default {
+    subTitle: 'Discussion',
     createdByLabel: 'Created by',
     lastCommentLabel: 'Last comment by',
     totalRecordsLabel: 'Comments',

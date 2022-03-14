@@ -1,6 +1,7 @@
 import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
+    subTitle: 'Folders',
     foldersHeading: 'Files', 
     noFolders: 'This group currently contains no files or folders', 
     createFolder: 'Add Folder',

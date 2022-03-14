@@ -1,4 +1,5 @@
 export default {
+    subTitle: 'Members',
     pendingMemberRequestsHeading: 'Pending Members', 
     membersHeading: 'Members',
     noPendingMembers: 'This group currently has no outstanding membership requests',
