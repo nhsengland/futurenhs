@@ -42,8 +42,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     const [dynamicPagination, setPagination] = useState(pagination);
 
     const { id,
-        text: folderText,
-        path } = folder ?? {};
+            text: folderText,
+            path } = folder ?? {};
     const { name, body } = folderText ?? {};
     const { foldersHeading,
         noFolders,
@@ -278,6 +278,9 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                         }}
                         breadCrumbList={breadCrumbList}
                         shouldLinkCrumbs={false}
+                        truncationMinPathLength={5}
+                        truncationStartIndex={1}
+                        truncationEndIndex={breadCrumbList.length - 3}
                         className="u-text-lead u-mb-10 u-fill-theme-0" />
                 }
                 {folderId &&

@@ -48,15 +48,15 @@ export const BreadCrumb: (props: Props) => JSX.Element = ({
                 <ol className={generatedClasses.list}>
                     {breadCrumbList.map(({ element, text }, index) => {
 
-                        if(isTruncateable && index > truncationStartIndex && index < truncationEndIndex){
+                        const isTruncationPoint: boolean = isTruncateable && index === truncationStartIndex;
+                        const shouldRenderSeperator: boolean = index < breadCrumbList.length - 1;
+                        const textToUse: string = text ? capitalise({ value: text }) : capitalise({ value: element });
+
+                        if(isTruncateable && !isTruncationPoint && index > truncationStartIndex && index < truncationEndIndex){
 
                             return null
 
                         }
-
-                        const shouldRenderSeperator: boolean = index < breadCrumbList.length - 1;
-                        const isTruncationPoint: boolean = isTruncateable && index === truncationStartIndex;
-                        const textToUse: string = text ? capitalise({ value: text }) : capitalise({ value: element });
                         
                         if(shouldLinkCrumbs){
 
