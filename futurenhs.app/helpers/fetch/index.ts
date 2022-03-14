@@ -1,3 +1,4 @@
+import { requestMethods } from '@constants/fetch';
 import { FetchOptions, FetchResponse } from '@appTypes/fetch';
 
 /**
@@ -62,7 +63,7 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
     isMultiPartForm,
     body
 }: {
-    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+    method: requestMethods,
     customHeaders?: Headers;
     isMultiPartForm?: boolean;
     body?: any;
@@ -94,7 +95,7 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
         headers: headers
     };
 
-    if(body && method === 'POST' || method === 'PUT' || method === 'PATCH'){
+    if(body && method === requestMethods.POST || method === requestMethods.PUT || method === requestMethods.PATCH){
 
         fetchOpts.body = isMultiPartForm ? body : JSON.stringify(body);
 

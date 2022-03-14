@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { routeParams } from '@constants/routes';
+import { requestMethods } from '@constants/fetch';
 import { formTypes } from '@constants/forms';
 import { actions } from '@constants/actions';
 import { layoutIds, groupTabIds } from '@constants/routes';
@@ -11,7 +12,7 @@ import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
 import { validate } from '@helpers/validators';
-import { selectFormData, selectCsrfToken, selectParam, selectUser } from '@selectors/context';
+import { selectFormData, selectCsrfToken, selectParam, selectUser, selectRequestMethod } from '@selectors/context';
 import { selectFormDefaultFields } from '@selectors/forms';
 import { putGroupDetails } from '@services/putGroupDetails';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -42,6 +43,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const formData: any = selectFormData(context);
                     const groupId: string = selectParam(context, routeParams.GROUPID);
                     const user: User = selectUser(context);
+                    const requestMethod: requestMethods = selectRequestMethod(context);
     
                     props.forms[formTypes.UPDATE_GROUP].initialValues = {
                         'name': props.entityText.title,
@@ -54,7 +56,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     /**
                      * Handle server-side form post
                      */
-                    if (formData) {
+                    if (formData && requestMethod === requestMethods.POST) {
     
                         const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, updateGroupForm.id));
     

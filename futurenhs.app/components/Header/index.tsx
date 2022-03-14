@@ -18,6 +18,7 @@ import { useMediaQuery } from '@hooks/useMediaQuery';
 import * as domHelpers from '@helpers/dom';
 import { mediaQueries } from '@constants/css';
 import { iconNames } from '@constants/icons';
+import { requestMethods } from '@constants/fetch';
 import { routes } from '@constants/routes';
 import { capitalise } from '@helpers/formatters/capitalise';
 
@@ -150,7 +151,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                     <>
                                         {shouldRenderSearch &&
                                             <Search 
-                                                method="GET" 
+                                                method={requestMethods.GET} 
                                                 action="/search/" 
                                                 id="term"
                                                 value={searchTerm}

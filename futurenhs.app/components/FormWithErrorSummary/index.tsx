@@ -3,13 +3,14 @@ import classNames from 'classnames';
 
 import { ErrorSummary } from '@components/ErrorSummary';
 import { Form } from '@components/Form';
+import { requestMethods } from '@constants/fetch';
 import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
 export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     action,
-    method = 'POST',
+    method = requestMethods.POST,
     csrfToken,
     formId,
     instanceId,

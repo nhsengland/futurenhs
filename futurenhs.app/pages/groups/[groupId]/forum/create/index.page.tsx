@@ -4,13 +4,14 @@ import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { routeParams } from '@constants/routes';
+import { requestMethods } from '@constants/fetch';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
 import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectFormData, selectCsrfToken, selectParam, selectUser } from '@selectors/context';
+import { selectFormData, selectCsrfToken, selectParam, selectUser, selectRequestMethod } from '@selectors/context';
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
@@ -45,7 +46,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const user: User = selectUser(context);
                         const groupId: string = selectParam(context, routeParams.GROUPID);
                         const csrfToken: string = selectCsrfToken(context);
-                        const formData: any = selectFormData(context);;
+                        const formData: any = selectFormData(context);
+                        const requestMethod: requestMethods = selectRequestMethod(context);
     
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FORUM;
@@ -64,7 +66,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         /**
                          * Handle server-side form post
                          */
-                        if (formData) {
+                        if (formData && requestMethod === requestMethods.POST) {
     
                             const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionForm.id));
     
@@ -80,7 +82,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     return {
                                         redirect: {
                                             permanent: false,
-                                            destination: `/groups/${context.params.groupId}/forum`
+                                            destination: props.routes.groupForumRoot
                                         }
                                     }
     

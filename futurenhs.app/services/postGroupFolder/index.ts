@@ -1,5 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
+import { requestMethods } from '@constants/fetch';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -35,7 +36,7 @@ export const postGroupFolder = async ({
     const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders${subFolder}`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'POST',
+        method: requestMethods.POST,
         customHeaders: {
             'csrf-token': csrfToken
         },

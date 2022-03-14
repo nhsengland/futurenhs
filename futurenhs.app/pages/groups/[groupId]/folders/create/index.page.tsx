@@ -4,12 +4,13 @@ import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
+import { requestMethods } from '@constants/fetch';
 import { actions as actionConstants } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
 import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectCsrfToken, selectFormData, selectParam, selectUser, selectQuery } from '@selectors/context';
+import { selectCsrfToken, selectFormData, selectRequestMethod, selectParam, selectUser, selectQuery } from '@selectors/context';
 import { postGroupFolder } from '@services/postGroupFolder';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -45,6 +46,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const folderId: string = selectQuery(context, routeParams.FOLDERID);
                         const csrfToken: string = selectCsrfToken(context);
                         const formData: any = selectFormData(context);
+                        const requestMethod: string = selectRequestMethod(context);
     
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FILES;
@@ -81,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         /**
                          * handle server-side form POST
                          */
-                        if (formData) {
+                        if (formData && requestMethod === requestMethods.POST) {
     
                             props.forms[createFolderForm.id].initialValues = formData;
     

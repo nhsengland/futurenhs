@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { requestMethods } from '@constants/fetch';
 import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
@@ -29,7 +30,7 @@ export const postGroupDiscussion = async ({
     const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
     const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/discussions`;
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'POST',
+        method: requestMethods.POST,
         body: {
             _csrf: body.get('_csrf'),
             Title: body.get('title'),

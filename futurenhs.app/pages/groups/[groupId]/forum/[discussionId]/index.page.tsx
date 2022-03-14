@@ -4,6 +4,7 @@ import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { routeParams } from '@constants/routes';
 import { layoutIds, groupTabIds } from '@constants/routes';
+import { requestMethods } from '@constants/fetch';
 import { validate } from '@helpers/validators';
 import { selectFormDefaultFields } from '@selectors/forms';
 import { getServerSideMultiPartFormData } from '@helpers/util/form';
@@ -15,7 +16,7 @@ import { withTextContent } from '@hofs/withTextContent';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
-import { selectUser, selectParam, selectPagination, selectFormData } from '@selectors/context';
+import { selectUser, selectParam, selectPagination, selectFormData, selectRequestMethod } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
@@ -48,13 +49,14 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const groupId: string = selectParam(context, routeParams.GROUPID);
                         const discussionId: string = selectParam(context, routeParams.DISCUSSIONID);
                         const pagination: Pagination = selectPagination(context);
-                        const formData: any = selectFormData(context);;
+                        const formData: any = selectFormData(context);
+                        const requestMethod: requestMethods = selectRequestMethod(context);
     
                         props.discussionId = discussionId;
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FORUM;
     
-                        if(formData){
+                        if(formData && requestMethod === requestMethods.POST){
             
                             const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionCommentForm.id));
     

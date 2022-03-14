@@ -6,6 +6,7 @@ import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
 
 export const selectProps = (context: GetServerSidePropsContext): any => context.props ?? {};
+export const selectRequestMethod = (context: GetServerSidePropsContext): any => context.req.method;
 export const selectLocale = (context: GetServerSidePropsContext): string => context.req?.locale?.() ?? '';
 export const selectCsrfToken = (context: GetServerSidePropsContext): string => context.req?.csrfToken?.() ?? '';
 export const selectUser = (context: GetServerSidePropsContext): User => context.req?.user ?? null;

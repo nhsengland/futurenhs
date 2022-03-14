@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react';
 
 import { Search } from './index';
+import { requestMethods } from '@constants/fetch';
 
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    method: 'POST',
+    method: requestMethods.POST,
     action: '/',
     id: 'mockId',
     text: {

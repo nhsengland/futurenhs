@@ -1,5 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
+import { requestMethods } from '@constants/fetch';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -32,7 +33,7 @@ export const postGroupMembership = async ({
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}/members/join`;
     const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'POST',
+        method: requestMethods.POST,
         body: {
             _csrf: csrfToken
         }

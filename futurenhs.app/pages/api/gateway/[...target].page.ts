@@ -1,10 +1,11 @@
 import { setFetchOpts, fetchJSON } from '@helpers/fetch';
 import { FetchOptions, FetchResponse } from '@appTypes/fetch';
+import { requestMethods } from '@constants/fetch';
 
 export default async function handler(req, res) {
 
     const apiUrl: string = req.originalUrl.split(`gateway`)[1];
-    const method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = req.method;
+    const method: requestMethods = req.method;
     const headers: any = {
         'Authorization': `Bearer ${process.env.SHAREDSECRETS_APIAPPLICATION}`
     };

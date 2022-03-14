@@ -7,6 +7,7 @@ import { Link } from '@components/Link';
 import { formComponents } from '@components/_formComponents';
 import { Dialog } from '@components/Dialog';
 import { validate } from '@helpers/validators';
+import { requestMethods } from '@constants/fetch';
 import { FormField } from '@appTypes/form';
 
 import { Props } from './interfaces';
@@ -16,7 +17,7 @@ import { Props } from './interfaces';
  */
 export const Form: (props: Props) => JSX.Element = ({
     action,
-    method = 'POST',
+    method = requestMethods.POST,
     csrfToken,
     formId,
     instanceId,

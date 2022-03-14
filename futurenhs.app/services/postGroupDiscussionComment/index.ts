@@ -1,5 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
+import { requestMethods } from '@constants/fetch';
 import { ServiceError } from '..';
 import { Service, ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -36,7 +37,7 @@ export const postGroupDiscussionComment: Service = async ({
     const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'POST',
+        method: requestMethods.POST,
         body: {
             _csrf: body.get('_csrf'),
             content: body.get('content')
