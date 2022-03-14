@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
@@ -32,18 +32,24 @@ export const Form: (props: Props) => JSX.Element = ({
     className,
     bodyClassName,
     submitButtonClassName,
-    cancelButtonClassName
+    cancelButtonClassName,
+    shouldAddErrorTitle = true
 }) => {
 
     const router = useRouter();
 
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [pageTitle, setPageTitle] = useState(null);
 
     const { submitButton, cancelButton } = text ?? {};
 
     const shouldRenderCancelButton: boolean = Boolean(cancelButton) && (Boolean(cancelHref) || Boolean(cancelAction));
     const noop = useCallback(() => { }, []);
+
+    useEffect(() => {
+        setPageTitle(document.title);
+    }, [])
 
     /**
      * Create unique field instances from the supplied fields template
@@ -191,6 +197,12 @@ export const Form: (props: Props) => JSX.Element = ({
 
                                     validationFailAction?.(errors);
 
+                                    if (shouldAddErrorTitle) {
+
+                                        document.title = `Error: ${pageTitle}`;
+                                        
+                                    }
+
                                     /**
                                      * Submit and then reset the form on success
                                      */
@@ -209,6 +221,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                              * Clear the form if the submission completed without errors
                                              */
                                             form.restart();
+                                            document.title = pageTitle;
 
                                         }
 

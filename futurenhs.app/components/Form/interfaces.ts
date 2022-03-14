@@ -21,4 +21,5 @@ export interface Props {
     bodyClassName?: string;
     submitButtonClassName?: string;
     cancelButtonClassName?: string;
+    shouldAddErrorTitle?: boolean;
 }
