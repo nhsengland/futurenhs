@@ -232,7 +232,7 @@ export const Form: (props: Props) => JSX.Element = ({
                             id={`_form-id${instanceId ?? ''}`}
                             name="_form-id"
                             component={formComponents.hidden}
-                            initialValue={csrfToken}
+                            initialValue={formId}
                             defaultValue={formId} />
                         {instanceId &&
                             <Field

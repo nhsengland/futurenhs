@@ -15,6 +15,7 @@ import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupDiscussion } from '@services/getGroupDiscussion';
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
+import { postGroupDiscussionCommentReply } from '@services/postGroupDiscussionCommentReply';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
 import { selectUser, selectParam, selectPagination, selectFormData, selectRequestMethod } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -22,8 +23,10 @@ import { User } from '@appTypes/user';
 import { Pagination } from '@appTypes/pagination';
 
 import { createDiscussionCommentForm } from '@formConfigs/create-discussion-comment';
+import { createDiscussionCommentReplyForm } from '@formConfigs/create-discussion-comment-reply';
 import { GroupDiscussionTemplate } from '@components/_pageTemplates/GroupDiscussionTemplate';
 import { Props } from '@components/_pageTemplates/GroupDiscussionTemplate/interfaces';
+import { formTypes } from '@constants/forms';
 
 const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f';
 const props: Partial<Props> = {};
@@ -57,35 +60,74 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         props.tabId = groupTabIds.FORUM;
     
                         if(formData && requestMethod === requestMethods.POST){
-            
-                            const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionCommentForm.id));
+
+                            const formId = formData['_form-id'];
+
+                            if(formId === formTypes.CREATE_DISCUSSION_COMMENT){
+
+                                const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionCommentForm.id));
     
-                            props.forms[createDiscussionCommentForm.id].errors = validationErrors;
-                            props.forms[createDiscussionCommentForm.id].initialValues = formData;
-    
-                            if(Object.keys(validationErrors).length === 0) {
-    
-                                try {
-    
-                                    await postGroupDiscussionComment({ groupId, discussionId, user, body: getServerSideMultiPartFormData(formData) as any });
-    
-                                } catch(error){
-    
-                                    if(error.data?.status){
-    
-                                        props.forms[createDiscussionCommentForm.id].errors = error.data.body || {
-                                            _error: error.data.statusText
-                                        };
-                                        props.forms[createDiscussionCommentForm.id].initialValues = formData;
-    
-                                    } else {
-    
-                                        return handleSSRErrorProps({ props, error });
-    
+                                props.forms[createDiscussionCommentForm.id].errors = validationErrors;
+                                props.forms[createDiscussionCommentForm.id].initialValues = formData;
+        
+                                if(Object.keys(validationErrors).length === 0) {
+        
+                                    try {
+        
+                                        await postGroupDiscussionComment({ groupId, discussionId, user, body: getServerSideMultiPartFormData(formData) as any });
+        
+                                    } catch(error){
+        
+                                        if(error.data?.status){
+        
+                                            props.forms[createDiscussionCommentForm.id].errors = error.data.body || {
+                                                _error: error.data.statusText
+                                            };
+                                            props.forms[createDiscussionCommentForm.id].initialValues = formData;
+        
+                                        } else {
+        
+                                            return handleSSRErrorProps({ props, error });
+        
+                                        }
+        
                                     }
-    
+        
                                 }
+
+                            } else if (formId === formTypes.CREATE_DISCUSSION_COMMENT_REPLY){
+
+                                const commentId: string = formData['_instance-id'];
+                                const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, createDiscussionCommentReplyForm.id), commentId);
     
+                                props.forms[createDiscussionCommentReplyForm.id].errors = validationErrors;
+                                props.forms[createDiscussionCommentReplyForm.id].initialValues = formData;
+        
+                                if(Object.keys(validationErrors).length === 0) {
+        
+                                    try {
+        
+                                        await postGroupDiscussionCommentReply({ groupId, discussionId, commentId, user, body: getServerSideMultiPartFormData(formData) as any });
+        
+                                    } catch(error){
+        
+                                        if(error.data?.status){
+        
+                                            props.forms[createDiscussionCommentReplyForm.id].errors = error.data.body || {
+                                                _error: error.data.statusText
+                                            };
+                                            props.forms[createDiscussionCommentReplyForm.id].initialValues = formData;
+        
+                                        } else {
+        
+                                            return handleSSRErrorProps({ props, error });
+        
+                                        }
+        
+                                    }
+        
+                                }
+
                             }
     
                         }
