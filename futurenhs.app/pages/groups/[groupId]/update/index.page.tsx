@@ -7,6 +7,7 @@ import { requestMethods } from '@constants/fetch';
 import { formTypes } from '@constants/forms';
 import { actions } from '@constants/actions';
 import { layoutIds, groupTabIds } from '@constants/routes';
+import { themes, defaultThemeId } from '@constants/themes';
 import { withUser } from '@hofs/withUser';
 import { withRoutes } from '@hofs/withRoutes';
 import { withTextContent } from '@hofs/withTextContent';
@@ -52,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         props.forms[formTypes.UPDATE_GROUP].initialValues = {
                             'name': props.entityText.title,
                             'strapline': props.entityText.strapLine,
-                            'themeId': [props.themeId]
+                            'themeId': props.themeId && themes[props.themeId] ? [props.themeId] : [defaultThemeId]
                         };
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.INDEX;
@@ -77,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                         props: {},
                                         redirect: {
                                             permanent: false,
-                                            destination: `/groups/${context.params.groupId}`
+                                            destination: props.routes.groupRoot
                                         }
                                     }
 
@@ -99,6 +100,10 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 }
 
                             }
+
+                        } else {
+
+
 
                         }
 

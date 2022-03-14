@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
 
 import { Link } from '@components/Link';
 import { dateTime } from '@helpers/formatters/dateTime';
@@ -22,10 +21,8 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
     routes
 }) => {
 
-    const router = useRouter();
-
     const { createdByLabel } = contentText ?? {};
-    const { path, name, createdBy, modified, modifiedBy, downloadLink, text: fileText } = file ?? {};
+    const { path, name, created, createdBy, modified, modifiedBy, downloadLink, text: fileText } = file ?? {};
     const { body } = fileText ?? {};
 
     const breadCrumbList: BreadCrumbList = [];
@@ -142,7 +139,7 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
                                 headerClassName: generatedHeaderCellClasses.modifiedBy
                             },
                             {
-                                children: modified ? dateTime({ value: modified }) : '',
+                                children: modified ? dateTime({ value: modified }) : dateTime({ value: created }),
                                 shouldRenderCellHeader: true,
                                 className: generatedCellClasses.lastUpdate,
                                 headerClassName: generatedHeaderCellClasses.lastUpdate

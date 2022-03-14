@@ -20,6 +20,7 @@ export interface FolderContent {
     name: string;
     modified?: string;
     modifiedBy?: Partial<User>;
+    created?: string;
     createdBy?: Partial<User>;
     text?: {
         body?: string;
