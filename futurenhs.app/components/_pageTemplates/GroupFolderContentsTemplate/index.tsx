@@ -16,6 +16,7 @@ import { RichText } from '@components/RichText';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { getGroupFolderContents } from '@services/getGroupFolderContents';
 import { BreadCrumbList } from '@appTypes/routing';
+import { DataRow } from '@components/DataGrid/interfaces';
 
 import { Props } from './interfaces';
 
@@ -86,94 +87,146 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
 
     const hasBreadCrumb: boolean = breadCrumbList.length > 0;
 
-    const gridRowList = useMemo(() => folderContentsList?.map(({
-        id,
-        type,
-        extension,
-        name,
-        text,
-        modified,
-        modifiedBy,
-        createdBy,
-        downloadLink }) => {
+    const columnList = useMemo((): DataRow => {
 
-        const { body } = text ?? {};
-
-        const isFolder: boolean = type === 'folder';
-        const itemPath: string = `${isFolder ? routes.groupFoldersRoot : routes.groupFilesRoot}/${encodeURIComponent(id)}`;
-        const iconLabel: string = extension || 'Folder';
-        const fileDetailPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(id)}/detail`;
-        const fileDownloadPath: string = downloadLink;
-        const iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
-
-        const generatedCellClasses = {
-            type: classNames({
-                ['u-text-center u-text-base u-w-1/6 tablet:u-w-8 u-items-center u-justify-end']: true
-            }),
-            name: classNames({
-                ['u-w-5/6 tablet:u-w-1/6']: true
-            }),
-            description: classNames({
-                ['u-flex-col u-w-full tablet:u-w-1/3']: true,
-                ['u-hidden']: !body
-            }),
-            modified: classNames({
-                ['u-hidden tablet:u-flex-col u-w-full tablet:u-w-1/4']: true,
-                ['u-hidden']: isFolder
-            }),
-            actions: classNames({
-                ['u-w-full tablet:u-w-1/6 u-justify-between']: true,
-                ['u-hidden']: isFolder
-            })
-        };
-
-        const generatedHeaderCellClasses = {
-            description: classNames({
-                ['u-text-bold']: true
-            }),
-            modified: classNames({
-                ['u-text-bold']: true
-            })
-        };
-
-        return [
+        const columns: DataRow = [
             {
-                children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-block u-text-bold u-sr-only tablet:u-not-sr-only">{iconLabel}</span></>,
-                shouldRenderCellHeader: false,
-                className: generatedCellClasses.type
+                children: 'Type',
+                className: 'u-text-center tablet:u-w-24 desktop:u-w-1/12'
             },
             {
-                children: <Link href={itemPath}><a className="o-truncated-text-lines-3">{name}</a></Link>,
-                shouldRenderCellHeader: false,
-                className: generatedCellClasses.name
+                children: 'Name',
+                className: folderId ? 'tablet:u-w-1/5' : 'tablet:u-w-4/12'
             },
             {
-                children: <RichText bodyHtml={body} wrapperElementType='span' className='o-truncated-text-lines-3' />,
-                shouldRenderCellHeader: true,
-                className: generatedCellClasses.description,
-                headerClassName: generatedHeaderCellClasses.description
+                children: 'Description',
+                className: folderId ? 'tablet:u-w-1/5' : 'tablet:u-w-4/12'
             },
             {
-                children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({ value: modified })}</p>${modifiedBy?.text?.userName && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy.text.userName + '</p>'}${createdBy?.text?.userName && '<p><span class="u-text-bold">Author</span> ' + createdBy.text.userName + '</p>'}`} />,
-                shouldRenderCellHeader: true,
-                className: generatedCellClasses.modified,
-                headerClassName: generatedHeaderCellClasses.modified
-            },
-            {
-                children: isFolder ? '' : <>
-                    {fileDownloadPath &&
-                        <Link href={fileDownloadPath}><a className="u-block u-mb-4 u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
-                    }
-                    {fileDetailPath &&
-                        <Link href={fileDetailPath}><a className="u-block u-align-top"><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
-                    }
-                </>,
-                shouldRenderCellHeader: true,
-                className: generatedCellClasses.actions
+                children: 'Modified'
             }
-        ]
+        ];
 
-    }), [folderContentsList, folderId]);
+        if(folderId){
+
+            columns.push({
+                children: 'Actions'
+            });
+
+        }
+
+        return columns;
+
+    }, [folderId]);
+
+    const gridRowList = useMemo((): Array<DataRow> => {
+
+        const rows: Array<DataRow> = [];
+        
+        folderContentsList?.forEach(({
+            id,
+            type,
+            extension,
+            name,
+            text,
+            modified,
+            modifiedBy,
+            createdBy,
+            downloadLink }) => {
+
+                const row: DataRow = [];
+
+                const { body } = text ?? {};
+
+                const isFolder: boolean = type === 'folder';
+                const itemPath: string = `${isFolder ? routes.groupFoldersRoot : routes.groupFilesRoot}/${encodeURIComponent(id)}`;
+                const iconLabel: string = extension || 'Folder';
+                const fileDetailPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(id)}/detail`;
+                const fileDownloadPath: string = downloadLink;
+                const iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
+
+                const generatedCellClasses = {
+                    type: classNames({
+                        ['u-text-center u-text-base u-items-center u-justify-end']: true
+                    }),
+                    name: classNames({
+                        ['u-flex-grow u-w-4/6']: true
+                    }),
+                    description: classNames({
+                        ['u-flex-col u-w-full']: true,
+                        ['u-hidden']: !body
+                    }),
+                    modified: classNames({
+                        ['u-hidden tablet:u-flex-col u-w-full']: true,
+                        ['u-hidden']: isFolder
+                    }),
+                    actions: classNames({
+                        ['u-w-full u-justify-between']: true,
+                        ['u-hidden']: isFolder
+                    })
+                };
+
+                const generatedHeaderCellClasses = {
+                    description: classNames({
+                        ['u-text-bold']: true
+                    }),
+                    modified: classNames({
+                        ['u-text-bold']: true
+                    }),
+                    actions: classNames({
+                        ['u-w-full u-hidden']: true,
+                        ['u-justify-between tablet:u-block']: !isFolder 
+                    })
+                };
+
+                row.push({
+                    children: <><SVGIcon name={iconName} className="u-w-4 u-h-6" /><span className="u-block u-text-bold u-sr-only tablet:u-not-sr-only">{iconLabel}</span></>,
+                    shouldRenderCellHeader: false,
+                    className: generatedCellClasses.type
+                });
+                row.push({
+                    children: <Link href={itemPath}><a className="o-truncated-text-lines-3">{name}</a></Link>,
+                    shouldRenderCellHeader: false,
+                    className: generatedCellClasses.name
+                });
+                row.push({
+                    children: <RichText bodyHtml={body} wrapperElementType='span' className='o-truncated-text-lines-3' />,
+                    shouldRenderCellHeader: true,
+                    className: generatedCellClasses.description,
+                    headerClassName: generatedHeaderCellClasses.description
+                }),
+                row.push({
+                    children: isFolder ? '' : <RichText bodyHtml={`<p class='u-mb-1'>${dateTime({ value: modified })}</p>${modifiedBy?.text?.userName && '<p class="u-mb-1"><span class="u-text-bold">By</span> ' + modifiedBy.text.userName + '</p>'}${createdBy?.text?.userName && '<p><span class="u-text-bold">Author</span> ' + createdBy.text.userName + '</p>'}`} />,
+                    shouldRenderCellHeader: true,
+                    className: generatedCellClasses.modified,
+                    headerClassName: generatedHeaderCellClasses.modified
+                });
+
+                if(folderId){
+
+                    row.push({
+                        children: isFolder ? '' : <>
+                            {fileDownloadPath &&
+                                <Link href={fileDownloadPath}><a className="u-block tablet:u-mb-4 u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
+                            }
+                            {fileDetailPath &&
+                                <Link href={fileDetailPath}><a className="u-block u-align-top"><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
+                            }
+                        </>,
+                        shouldRenderCellHeader: true,
+                        className: generatedCellClasses.actions,
+                        headerClassName: generatedHeaderCellClasses.actions
+                    });
+
+                }
+
+                rows.push(row);
+
+        });
+
+        return rows;
+
+    }, [folderContentsList, folderId]);
 
     const handleGetPage = async ({
         pageNumber: requestedPageNumber,
@@ -250,8 +303,8 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                             }}
                                             cancelAction={handleDeleteFolderCancel}
                                             confirmAction={handleDeleteFolderConfirm}>
-                                            <h3>Folder will be deleted</h3>
-                                            <p className="u-text-bold">Any folder contents will also be discarded. Are you sure you wish to proceed?</p>
+                                                <h3>Folder will be deleted</h3>
+                                                <p className="u-text-bold">Any folder contents will also be discarded. Are you sure you wish to proceed?</p>
                                         </Dialog>
                                         <Link href={folderUpdatePath}>
                                             <a className="c-button c-button--outline u-w-full tablet:u-w-auto u-drop-shadow">
@@ -303,24 +356,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                             text={{
                                 caption: 'Group folders'
                             }}
-                            columnList={[
-                                {
-                                    children: 'Type',
-                                    className: 'u-text-center'
-                                },
-                                {
-                                    children: 'Name'
-                                },
-                                {
-                                    children: 'Description'
-                                },
-                                {
-                                    children: 'Modified'
-                                },
-                                {
-                                    children: 'Actions'
-                                }
-                            ]}
+                            columnList={columnList}
                             rowList={gridRowList} />
                         <PaginationWithStatus
                             id="file-list-pagination"
