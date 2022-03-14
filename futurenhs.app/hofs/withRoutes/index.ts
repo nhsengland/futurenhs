@@ -21,14 +21,14 @@ export const withRoutes = (config: HofConfig, dependencies?: {}): GetServerSideP
             });
     
             props.routes = {
-                groupRoot: groupIndexRoute,
-                groupUpdate: groupIndexRoute ? `${groupIndexRoute}/update` : undefined,
-                groupJoin: groupIndexRoute ? `${groupIndexRoute}/join` : undefined,
-                groupLeave: groupIndexRoute ? `${groupIndexRoute}/leave` : undefined,
-                groupForumRoot: groupIndexRoute ? `${groupIndexRoute}/forum` : undefined,
-                groupFoldersRoot: groupIndexRoute ? `${groupIndexRoute}/folders` : undefined,
-                groupFilesRoot: groupIndexRoute ? `${groupIndexRoute}/files` : undefined,
-                groupMembersRoot: groupIndexRoute ? `${groupIndexRoute}/members` : undefined
+                groupRoot: groupIndexRoute ? groupIndexRoute : null,
+                groupUpdate: groupIndexRoute ? `${groupIndexRoute}/update` : null,
+                groupJoin: groupIndexRoute ? `${groupIndexRoute}/join` : null,
+                groupLeave: groupIndexRoute ? `${groupIndexRoute}/leave` : null,
+                groupForumRoot: groupIndexRoute ? `${groupIndexRoute}/forum` : null,
+                groupFoldersRoot: groupIndexRoute ? `${groupIndexRoute}/folders` : null,
+                groupFilesRoot: groupIndexRoute ? `${groupIndexRoute}/files` : null,
+                groupMembersRoot: groupIndexRoute ? `${groupIndexRoute}/members` : null
             };
 
         } catch (error) {

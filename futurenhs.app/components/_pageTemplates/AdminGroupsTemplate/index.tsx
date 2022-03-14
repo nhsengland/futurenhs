@@ -138,7 +138,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
 
         <>
             <LayoutColumnContainer className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
-                <LayoutColumn tablet={8} className="c-page-body">
+                <LayoutColumn tablet={9} className="c-page-body">
                     <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                     {hasUsers
 
@@ -164,7 +164,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
                         {...dynamicPagination} />
                 </LayoutColumn>
                 {shouldRenderCreateUserLink &&
-                    <LayoutColumn tablet={4} className="c-page-body">
+                    <LayoutColumn tablet={3} className="c-page-body">
                         <Link href={`${router.asPath}/create`}>
                             <a className="c-button u-w-full">{createGroup}</a>
                         </Link>
