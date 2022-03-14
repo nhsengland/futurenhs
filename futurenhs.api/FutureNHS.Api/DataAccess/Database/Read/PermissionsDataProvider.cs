@@ -66,6 +66,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     break;
                 case "Standard Members":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/download");
                     break;
                 case "Guest":
                     break;
