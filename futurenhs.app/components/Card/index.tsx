@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import Image from 'next/image';
@@ -15,11 +15,13 @@ export const Card: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
+    const [shouldBeClickable, setShouldBeClickable] = useState(false);
+
     const { src, altText, height, width } = image ?? {};
 
     const generatedClasses: any = {
         wrapper: classNames('nhsuk-card', className, {
-            ['nhsuk-card--clickable']: clickableHref
+            ['nhsuk-card--clickable']: shouldBeClickable
         }),
         hero: classNames('c-card_hero'),
         heroBody: classNames('c-card_hero-body'),
@@ -35,6 +37,12 @@ export const Card: (props: Props) => JSX.Element = ({
         }
 
     }, [clickableHref]);
+
+    useEffect(() => {
+
+        setShouldBeClickable(Boolean(clickableHref));
+
+    }, []);
 
     return (
 
