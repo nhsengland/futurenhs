@@ -23,6 +23,7 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication;
+using FutureNHS.Api.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSwaggerGen();
@@ -210,6 +211,7 @@ builder.Services.AddScoped<IImageBlobStorageProvider>(
 
         return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(), connection.ImagePrimaryConnectionString, config.ContainerName, config.PrimaryServiceUrl, logger, sp.GetRequiredService<IMemoryCache>());
     });
+builder.Services.AddScoped<IEtagService, EtagService>();
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();

@@ -2,7 +2,7 @@
 
 namespace FutureNHS.Api.DataAccess.Models
 {
-    public class BaseData
+    public record BaseData
     {
         [JsonIgnore]
         public byte[] RowVersion { get; init; }

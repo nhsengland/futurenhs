@@ -21,15 +21,18 @@ namespace FutureNHS.Api.Controllers
         private readonly ICommentCommand _commentCommand;
         private readonly ICommentService _commentService;
         private readonly IHtmlSanitizer _htmlSanitizer;
+        private readonly IEtagService _etagService;
 
         public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, 
-            ICommentService commentService, IHtmlSanitizer htmlSanitizer, ICommentCommand commentCommand)
+            ICommentService commentService, IHtmlSanitizer htmlSanitizer, ICommentCommand commentCommand,
+            IEtagService etagService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _commentsDataProvider = commentsDataProvider ?? throw new ArgumentNullException(nameof(commentsDataProvider));
             _commentService = commentService ?? throw new ArgumentNullException(nameof(commentService));
             _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
             _commentCommand = commentCommand ?? throw new ArgumentNullException(nameof(commentCommand));
+            _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
         }
 
         [HttpGet]
@@ -112,16 +115,8 @@ namespace FutureNHS.Api.Controllers
                 return BadRequest();
             }
 
-            var request = Request;            
-            if (!request.Headers.ContainsKey(HeaderNames.IfMatch))
-            {
-                return BadRequest(new { error = "If-Match header not set" });
-            }
-
-            byte[] rowVersion = Convert.FromBase64String(request.Headers[HeaderNames.IfMatch].ToString());
-
             comment.Content = _htmlSanitizer.Sanitize(comment.Content);
-
+            var rowVersion = _etagService.GetIfMatch();
             await _commentService.UpdateCommentAsync(membershipUserId, slug, discussionId, commentId, comment, rowVersion, cancellationToken);
 
             return Ok();
@@ -136,14 +131,7 @@ namespace FutureNHS.Api.Controllers
                 return BadRequest();
             }
 
-            var request = Request;
-            if (!request.Headers.ContainsKey(HeaderNames.IfMatch))
-            {
-                return BadRequest(new { error = "If-Match header not set" });
-            }
-
-            byte[] rowVersion = Convert.FromBase64String(request.Headers[HeaderNames.IfMatch].ToString());
-
+            var rowVersion = _etagService.GetIfMatch();
             await _commentService.DeleteCommentAsync(membershipUserId, slug, discussionId, commentId, rowVersion, cancellationToken);
 
             return Ok();

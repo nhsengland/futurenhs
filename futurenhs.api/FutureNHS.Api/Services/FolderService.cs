@@ -4,27 +4,32 @@ using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using System.Security;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
+using FutureNHS.Api.Exceptions;
 
 namespace FutureNHS.Api.Services
 {
     public class FolderService : IFolderService
     {
         private const string DefaultRole = "Standard Members";
-        private const string AddDiscussionRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/add";
+        private const string AddFolderRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/add";
+        private const string EditFolderRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/edit";
 
         private readonly ILogger<DiscussionService> _logger;
         private readonly IFolderCommand _folderCommand;
         private readonly IGroupCommand _groupCommand;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
+        private readonly IEtagService _etagService;
 
-        public FolderService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFolderCommand folderCommand, IGroupCommand groupCommand)
+        public FolderService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, 
+            IFolderCommand folderCommand, IGroupCommand groupCommand, IEtagService etagService)
         {
-            _systemClock = systemClock;
-            _folderCommand = folderCommand;
-            _groupCommand = groupCommand;
-            _permissionsService = permissionsService;
-            _logger = logger;
+            _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+            _folderCommand = folderCommand ?? throw new ArgumentNullException(nameof(folderCommand));
+            _groupCommand = groupCommand ?? throw new ArgumentNullException(nameof(groupCommand));
+            _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
         }
 
         public async Task CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken)
@@ -42,7 +47,7 @@ namespace FutureNHS.Api.Services
                 throw new KeyNotFoundException("Error: Group not found for slug");
             }
 
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupId.Value, AddDiscussionRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupId.Value, AddFolderRole, cancellationToken);
 
             if (!userCanPerformAction)
             {
@@ -81,7 +86,7 @@ namespace FutureNHS.Api.Services
                 throw new KeyNotFoundException("Error: Group not found for slug");
             }
 
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupId.Value, AddDiscussionRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupId.Value, AddFolderRole, cancellationToken);
 
             if (!userCanPerformAction)
             {
@@ -103,6 +108,47 @@ namespace FutureNHS.Api.Services
             };
 
             await _folderCommand.CreateFolderAsync(userId, groupId.Value, folderDto, cancellationToken);
+        }
+
+        public async Task UpdateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, byte[] rowVersion, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (Guid.Empty == folderId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+
+            var now = _systemClock.UtcNow.UtcDateTime;
+
+            var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
+            if (!groupId.HasValue)
+            {
+                _logger.LogError($"Error: UpdateFolderAsync - Group not found for slug:{0}", slug);
+                throw new KeyNotFoundException("Error: Group not found for slug");
+            }
+
+            var userCanEditFolder = await _permissionsService.UserCanPerformActionAsync(userId, slug, EditFolderRole, cancellationToken);
+            var databaseFolderDto = await _folderCommand.GetFolderAsync(folderId, cancellationToken);
+            if (databaseFolderDto.CreatedBy != userId && !userCanEditFolder)
+            {
+                _logger.LogError($"Forbidden: UpdateFolderAsync - User:{0} does not have permission to edit folder:{1}", userId, folderId);
+                throw new ForbiddenException("Forbidden: User does not have permission to edit this folder");
+            }
+
+            if (!databaseFolderDto.RowVersion.SequenceEqual(rowVersion))
+            {
+                _logger.LogError($"Precondition Failed: UpdateFolderAsync - Folder:{0} has changed prior to submission ", folderId);
+                throw new PreconditionFailedExeption("Precondition Failed: Folder has changed prior to submission");
+            }
+
+            var folderDto = new FolderDto()
+            {
+                Id = folderId,
+                Title = folder.Title,
+                Description = folder.Description,
+                ModifiedBy = userId,
+                ModifiedAtUTC = now
+            };
+
+            await _folderCommand.UpdateFolderAsync(userId, folderDto, rowVersion, cancellationToken);
         }
     }
 }

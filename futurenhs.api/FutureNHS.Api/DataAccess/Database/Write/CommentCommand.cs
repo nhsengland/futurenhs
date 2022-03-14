@@ -5,6 +5,7 @@ using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.Exceptions;
+using FutureNHS.Api.Services.Interfaces;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
@@ -35,12 +36,11 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryMultipleAsync(query, new
+            var commentData = await dbConnection.QuerySingleAsync<CommentData>(query, new
             {
                 commentId
             });
 
-            var commentData = await reader.ReadSingleOrDefaultAsync<CommentData>();
             if (commentData is null)
             {
                 _logger.LogError($"Not Found: Comment:{0} not found", commentId);

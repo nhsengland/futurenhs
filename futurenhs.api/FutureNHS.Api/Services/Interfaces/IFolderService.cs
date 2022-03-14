@@ -1,7 +1,4 @@
-﻿using System.Security.Claims;
-using FutureNHS.Api.Models.Comment;
-using FutureNHS.Api.Models.Discussion;
-using FutureNHS.Api.Models.Folder;
+﻿using FutureNHS.Api.Models.Folder;
 
 namespace FutureNHS.Api.Services.Interfaces
 {
@@ -9,5 +6,6 @@ namespace FutureNHS.Api.Services.Interfaces
     {
         Task CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken);
         Task CreateChildFolderAsync(Guid userId, string slug, Guid parentFolderId, Folder folder, CancellationToken cancellationToken);
+        Task UpdateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, byte[] rowVersion, CancellationToken cancellationToken);
     }
 }

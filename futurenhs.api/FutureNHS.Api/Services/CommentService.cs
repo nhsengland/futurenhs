@@ -20,14 +20,16 @@ namespace FutureNHS.Api.Services
         private readonly ICommentCommand _commentCommand;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
+        private readonly IEtagService _etagService;
 
         public CommentService(ISystemClock systemClock, ILogger<CommentService> logger, IPermissionsService permissionsService, 
-            ICommentCommand commentCommand)
+            ICommentCommand commentCommand, IEtagService etagService)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
             _commentCommand = commentCommand ?? throw new ArgumentNullException(nameof(commentCommand));
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
         }
 
         public async Task CreateCommentAsync(Guid userId, string slug, Guid discussionId, Comment comment, CancellationToken cancellationToken)

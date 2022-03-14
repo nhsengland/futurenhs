@@ -2,6 +2,7 @@
 {
     public sealed record FolderDto
     {
+        public Guid Id { get; init; }
         public string Title { get; init; }
         public string Description { get; init; }
         public Guid CreatedBy { get; init; }
