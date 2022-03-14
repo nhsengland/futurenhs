@@ -103,13 +103,6 @@ export const updateGroupForm: FormConfig = {
                             })
                         },
                         {
-                            value: '0fca6809-a71f-4733-a622-343967acbad9',
-                            label: getThemeLabel({
-                                themeId: '0fca6809-a71f-4733-a622-343967acbad9',
-                                number: 2
-                            })
-                        },
-                        {
                             value: '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56',
                             label: getThemeLabel({
                                 themeId: '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56',
@@ -121,34 +114,6 @@ export const updateGroupForm: FormConfig = {
                             label: getThemeLabel({
                                 themeId: '5053a8c6-ea4d-4125-9dc3-475e3e931fee',
                                 number: 5
-                            })
-                        },
-                        {
-                            value: '53bce171-d6a3-4721-8199-92f10fca5ef2',
-                            label: getThemeLabel({
-                                themeId: '53bce171-d6a3-4721-8199-92f10fca5ef2',
-                                number: 6
-                            })                        
-                        },
-                        {
-                            value: '217a1f99-5b25-4e3b-be3d-29c55c46be05',
-                            label: getThemeLabel({
-                                themeId: '217a1f99-5b25-4e3b-be3d-29c55c46be05',
-                                number: 8
-                            })
-                        },
-                        {
-                            value: 'a7101d5f-acce-4ef7-b1c9-5dbf20d54580',
-                            label: getThemeLabel({
-                                themeId: 'a7101d5f-acce-4ef7-b1c9-5dbf20d54580',
-                                number: 9
-                            })
-                        },
-                        {
-                            value: 'a9d8566d-162a-4fa3-b159-f604b12c214d',
-                            label: getThemeLabel({
-                                themeId: 'a9d8566d-162a-4fa3-b159-f604b12c214d',
-                                number: 10
                             })
                         }
                     ],
