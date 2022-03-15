@@ -90,7 +90,7 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
                                     body: 'There is a problem'
                                 },
                                 form: {
-                                    submitButton: 'Upload and continue',
+                                    submitButton: 'Upload File',
                                     cancelButton: 'Cancel'
                                 }
                             }}

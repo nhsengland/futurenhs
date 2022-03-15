@@ -180,7 +180,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                             {(getActionNavMenuList().length === 0)
 
                                 ?   <Link href={`${routes.groupJoin}?${queryParams.RETURNURL}=${router?.asPath}`}>
-                                        <a className="c-button u-w-full">Join group</a>
+                                        <a className="c-button u-w-full">Join Group</a>
                                     </Link>
 
                                 :   <Accordion
