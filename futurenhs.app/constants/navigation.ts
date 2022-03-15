@@ -2,11 +2,6 @@ import { routes } from '@constants/routes';
 
 export const footerNavMenuList = [
     {
-        url: routes.ACCESSIBILITY,
-        text: 'Accessibility Statement',
-        isActive: false
-    },
-    {
         url: routes.CONTACT_US,
         text: 'Contact us',
         isActive: false
