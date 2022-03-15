@@ -164,7 +164,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
                 <meta name="description" content={metaDescription} />
             </Head>
             <div className="u-px-4 u-py-10">
-                <h1 className="nhsuk-heading-xl">{`${mainHeading}: ${term} - ${dynamicPagination?.totalRecords ?? 0} results found`}</h1>
+                <h1 className="nhsuk-heading-xl">{`${mainHeading}: "${term ? term : ""}" - ${dynamicPagination?.totalRecords ?? 0} results found`}</h1>
                 {!hasResults &&
                     <p>{noResultsMessage}</p>
                 }
