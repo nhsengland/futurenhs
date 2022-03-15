@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
@@ -89,7 +90,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                             try {
     
-                                await postGroupFolder({ groupId, folderId, user, csrfToken, body: formData });
+                                await postGroupFolder({ groupId, folderId, user, csrfToken, body: getServerSideMultiPartFormData(formData) as any });
     
                                 return {
                                     props: {},

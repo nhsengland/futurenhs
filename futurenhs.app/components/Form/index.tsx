@@ -22,6 +22,7 @@ export const Form: (props: Props) => JSX.Element = ({
     formId,
     instanceId,
     initialValues = {},
+    initialErrors = {},
     fields: fieldsTemplate,
     changeAction,
     cancelAction,
@@ -71,6 +72,7 @@ export const Form: (props: Props) => JSX.Element = ({
         templatedFields.forEach(field => {
 
             field.name = instanceId ? field.name + '-' + instanceId : field.name;
+            field.initialError = initialErrors[field.name] || null;
 
         });
 
@@ -118,7 +120,7 @@ export const Form: (props: Props) => JSX.Element = ({
                     component={formComponents[component]}
                     className={className}
                     {...rest}>
-                    {renderFields(fields)}
+                        {renderFields(fields)}
                 </Field>
 
             )

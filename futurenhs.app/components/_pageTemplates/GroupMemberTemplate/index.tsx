@@ -93,6 +93,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                                     csrfToken=""
                                     formId=""
                                     fields={fields}
+                                    initialErrors={{}}
                                     text={{
                                         submitButton: 'Save Changes'
                                     }}

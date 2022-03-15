@@ -16,6 +16,7 @@ export interface FormField {
         value: string;
         label: string;
     }>;
+    initialError?: string;
     shouldRenderAsRte?: boolean;
     shouldRenderRemainingCharacterCount?: boolean;
     validators?: Array<{

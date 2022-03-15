@@ -3,6 +3,7 @@ import { Image } from '@appTypes/image';
 export interface Props {
     id?: string;
     csrfToken: string;
+    initialErrors?: any;
     commentId: string;
     children?: any;
     image?: Image;

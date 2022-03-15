@@ -9,6 +9,7 @@ export interface Props {
         submitError: string;
         touched: boolean;
     };
+    initialError?: string;
     text: {
         label: string;
         hint?: string;

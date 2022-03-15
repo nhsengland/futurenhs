@@ -14,6 +14,7 @@ export const Comment: (props: Props) => JSX.Element = ({
     id,
     commentId,
     csrfToken,
+    initialErrors,
     image,
     text,
     userProfileLink,
@@ -73,6 +74,7 @@ export const Comment: (props: Props) => JSX.Element = ({
                     <Reply
                         targetId={commentId}
                         csrfToken={csrfToken}
+                        initialErrors={initialErrors}
                         validationFailAction={replyValidationFailAction}
                         submitAction={replySubmitAction}
                         text={{

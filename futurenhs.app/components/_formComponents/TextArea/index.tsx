@@ -16,6 +16,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
         onChange,
         onBlur
     },
+    initialError,
     meta: {
         touched,
         error,
@@ -42,7 +43,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const { label, hint } = text ?? {};
 
     const id: string = name;
-    const shouldRenderError: boolean = (Boolean(error) || Boolean(submitError)) && touched;
+    const shouldRenderError: boolean = Boolean(initialError) || ((Boolean(error) || Boolean(submitError)) && touched);
     const isRequired: boolean = Boolean(validators?.find(({ type }) => type === 'required'));
     const maxLength: boolean = validators?.find(({ type }) => type === 'maxLength')?.maxLength;
 

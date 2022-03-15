@@ -14,6 +14,7 @@ import { Props } from './interfaces';
 export const Reply: (props: Props) => JSX.Element = ({
     targetId,
     csrfToken,
+    initialErrors,
     text,
     validationFailAction,
     submitAction,
@@ -90,6 +91,7 @@ export const Reply: (props: Props) => JSX.Element = ({
                         instanceId={targetId}
                         csrfToken={csrfToken}
                         fields={fields}
+                        initialErrors={initialErrors}
                         text={{
                             submitButton: 'Reply',
                             cancelButton: 'Cancel'

@@ -13,6 +13,7 @@ export const MultiChoice: Function = ({
         error,
         submitError
     },
+    initialError,
     input: {
         name,
         value,
@@ -109,7 +110,7 @@ export const MultiChoice: Function = ({
 
     }
     
-    const hasError: boolean = touched && Boolean(error);
+    const hasError: boolean = Boolean(initialError) || touched && Boolean(error);
     const shouldRenderErrors: boolean = hasError;
 
     const generatedIds: any = {

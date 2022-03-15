@@ -2,7 +2,8 @@ import { FormField } from '@appTypes/form';
 
 export interface Props {
     csrfToken: string;
-    initialValues?: any;
+    initialValues?: Record<string, any>;
+    initialErrors?: Record<string, string>;
     formId: string;
     instanceId?: string;
     fields: Array<FormField>;

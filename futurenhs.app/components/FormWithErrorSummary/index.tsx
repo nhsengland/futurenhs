@@ -81,6 +81,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 action={action}
                 method={method}
                 initialValues={initialValues}
+                initialErrors={errors}
                 csrfToken={csrfToken}
                 formId={formId}
                 instanceId={instanceId}
