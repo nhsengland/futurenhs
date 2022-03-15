@@ -57,6 +57,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const [errors, setErrors] = useState(Object.assign({}, selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT), selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT_REPLY)));
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(discussionCommentsList);
     const [dynamicPagination, setPagination] = useState(pagination);
+    const [isClient, setIsClient] = useState(false);
 
     const backLinkHref: string = getRouteToParam({
         router: router,

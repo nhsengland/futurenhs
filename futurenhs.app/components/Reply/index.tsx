@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 
 import { formTypes } from '@constants/forms';
@@ -25,6 +25,7 @@ export const Reply: (props: Props) => JSX.Element = ({
     const fields = selectFormDefaultFields(forms, formTypes.CREATE_DISCUSSION_COMMENT_REPLY);
 
     const [isReplyAccordionOpen, setIsReplyAccordionOpen] = useState(false);
+    const [shouldRenderCancelButton, setShouldRenderCancelButton] = useState(false);
 
     const { reply } = text;
 
@@ -34,14 +35,14 @@ export const Reply: (props: Props) => JSX.Element = ({
 
     });
 
-    const handleCancel = ((): void => {
+    const handleCancel = shouldRenderCancelButton ? ((): void => {
 
         const summaryElement: HTMLElement = (wrapperRef.current as any).getElementsByTagName('SUMMARY')?.[0] as HTMLElement;
 
         setIsReplyAccordionOpen(false);
         summaryElement?.focus();
 
-    });
+    }) : null;
 
     const handleSubmit = ((formData: FormData): Promise<FormErrors> => {
 
@@ -66,6 +67,12 @@ export const Reply: (props: Props) => JSX.Element = ({
         })
     };
 
+    useEffect(() => {
+
+        setShouldRenderCancelButton(true);
+
+    }, []);
+
     return (
 
         <div ref={wrapperRef} className={generatedClasses.wrapper}>
@@ -76,19 +83,19 @@ export const Reply: (props: Props) => JSX.Element = ({
                 toggleAction={handleToggle}
                 toggleClassName={generatedClasses.toggle}
                 contentClassName={generatedClasses.content}>
-                <Form
-                    formId={formTypes.CREATE_DISCUSSION_COMMENT_REPLY}
-                    instanceId={targetId}
-                    csrfToken={csrfToken}
-                    fields={fields}
-                    text={{
-                        submitButton: 'Reply',
-                        cancelButton: 'Cancel'
-                    }}
-                    validationFailAction={validationFailAction}
-                    cancelAction={handleCancel}
-                    submitAction={handleSubmit}
-                    className="u-mt-6" />
+                    <Form
+                        formId={formTypes.CREATE_DISCUSSION_COMMENT_REPLY}
+                        instanceId={targetId}
+                        csrfToken={csrfToken}
+                        fields={fields}
+                        text={{
+                            submitButton: 'Reply',
+                            cancelButton: 'Cancel'
+                        }}
+                        validationFailAction={validationFailAction}
+                        cancelAction={handleCancel}
+                        submitAction={handleSubmit}
+                        className="u-mt-6" />
             </Accordion>
         </div>
 
