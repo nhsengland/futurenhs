@@ -13,13 +13,13 @@ class formPage extends basePage{
     cardTypeSelector(cardType, cardText){
         var card = ''
         switch(cardType){
-            case "comment" : card = $(`//div[@class="nhsuk-card c-comment u-border-l-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`);
+            case "comment" : card = $(`//div[starts-with(@id, "comment-")]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
-            case "discussion" : card = $(`//div[@class="nhsuk-card u-border-b-theme-10 hover:u-border-b-theme-10-darker u-mb-4 nhsuk-card--clickable"]/div[h3/a[contains(text(), "${cardText}")]]`);
+            case "discussion" : card = $(`//div[starts-with(@id, "discussion-")]/div[h3/a[contains(text(), "${cardText}")]]`);
             break;
-            case "reply" : card = $(`//div[@class="nhsuk-card c-comment c-comment--reply u-border-l-theme-8"]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`);
+            case "reply" : card = $(`//div[starts-with(@id, "reply-")]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
-            case "group" : card = $(`//div[@class="nhsuk-card u-border-b-theme-11 u-mb-4 nhsuk-card--clickable"]/div[h3/a[starts-with(normalize-space(.), "${cardText}")]]`);
+            case "group" : card = $(`//div[starts-with(@id, "group-")]/div[h3/a[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
             case "search result" : card = $(`//li[h2/a[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
@@ -63,13 +63,13 @@ class formPage extends basePage{
      */
     cardCountComparison(compareArg, cardType) {
         if(compareArg != "there are more") {
-            helpers.waitForLoaded('//div[@class="nhsuk-card u-border-b-theme-10 u-mb-4 nhsuk-card--clickable"]');
-            var cardsFound = $$('//div[@class="nhsuk-card u-border-b-theme-10 u-mb-4 nhsuk-card--clickable"]').filter(item => item.isDisplayed());
+            helpers.waitForLoaded('//div[starts-with(@id, "discussion-")]');
+            var cardsFound = $$('//div[starts-with(@id, "discussion-")]').filter(item => item.isDisplayed());
             foundAmount = cardsFound.length
             expect(foundAmount).toBeGreaterThan(0);
         } else {
             browser.waitUntil(() => {
-                var cardsFound = $$('//div[@class="nhsuk-card u-border-b-theme-10 u-mb-4 nhsuk-card--clickable"]').filter(item => item.isDisplayed());
+                var cardsFound = $$('//div[starts-with(@id, "discussion-")]').filter(item => item.isDisplayed());
                 return cardsFound.length > foundAmount
             },
             {
@@ -126,11 +126,9 @@ class formPage extends basePage{
      */
     pinnedDiscussionValidation(cardText) {
         var cardFound = this.cardTypeSelector('discussion', cardText);
-        console.log(cardFound.$(`./div`).nextElement().getAttribute('class'))
-        var pinnedIcon = cardFound.$('./div/svg/use');
-        pinnedIcon.waitForDisplayed({timeout: 5000});
-        //*[@id="main"]/div[3]/div/div[2]/div/div[2]/div[1]/div[1]/ul/li[1]/div/div/div/svg/use
-        //html/body/div[1]/main/div[3]/div/div[2]/div/div[2]/div[1]/div[1]/ul/li[1]/div/div/div/svg/use
+        var cardValues = cardFound.getText().split('\n')
+        var stickyExists = cardValues.filter(word => word.includes('Sticky:'));
+        expect(stickyExists.toString()).toEqual('Sticky:');
     }
 
     /**
@@ -138,7 +136,7 @@ class formPage extends basePage{
      */
     replyToPostClick(cardText, cardType){
         var replyCard = this.cardTypeSelector(cardType, cardText);
-        var replyLink = replyCard.$(`./footer/div[@class="c-reply u-flex-grow"]/details/summary`);
+        var replyLink = replyCard.$(`./footer/div[starts-with(@class, "c-reply")]/details/summary`);
         helpers.click(replyLink);
     }
 }
