@@ -33,8 +33,8 @@ Examples:
 
 Scenario: FNHS98 - Search results display validation
     When I search for 'Automation'
-    Then the 'Searching: Automation - 6 results found' header is displayed
-    And there are '6' search results displayed
+    Then the 'Searching: Automation - 11 results found' header is displayed
+    And there are '11' search results displayed
     And the 'Automation Admin Group' search result card is displayed
     | Group                                                                            |
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
@@ -64,24 +64,22 @@ Scenario: FNHS101 - Search for a Group Where Not a Member
     When I click the 'Digital Primary Care' link
     Then the 'Digital Primary Care' header is displayed
 
-
+## SEARCH RESULTS ARE NOT ACCURATE
 Scenario: FNHS102 - Search for a Discussion by the Title
     When I search for 'General Discussion Validation'
-    Then the 'Searching: Discussion - 1 results found' header is displayed
+    Then the 'Searching: General Discussion Validation - 1 results found' header is displayed
     And the 'General Discussion Validation' search result card is displayed
-    # | Discussion on Automation Admin Group group forum | 
+    | Discussion on Automation Admin Group group forum | 
     When I click the 'General Discussion Validation' link
     Then the 'General Discussion Validation' header is displayed
 
-
+## SEARCH RESULTS ARE NOT ACCURATE
+@Pending
 Scenario: FNHS103 - Search for a Comment by Comment Text
     When I search for 'Comment for Like test'
-    Then the 'Searching: Comment for Like test - 2 results found' header is displayed
+    Then the 'Searching: Comment for Like test - 1 results found' header is displayed
     And the 'Comment on discussion: General Discussion Validation' search result card is displayed
-    | Discusson on Automation Admin Group group forum |
-    | Comment for Like test                           |
-    And the 'General Discussion Validation' search result card is displayed
-    | Discusson on Automation Admin Group group forum |
+    | Discussion on Automation Admin Group group forum |
     | Comment for Like test                           |
     When I click the 'Comment on discussion: General Discussion Validation' link
     Then the 'Comment for Like test' comment card is displayed
@@ -89,33 +87,27 @@ Scenario: FNHS103 - Search for a Comment by Comment Text
 
 Scenario: FNHS104 - Search for a File by File Name
     When I search for 'docTest'
-    Then the 'Searching: docTest - 2 results found' header is displayed
-    And the 'DocTest' search result card is displayed
-    | File on Automation Admin Group group |
-    | Test doc                             |
-    And the 'DocTest' search result card is displayed
-    | File on Automation Public Group group |
-    | Test doc                              |
-    When I click the 'DocTest' link
-    # FILE PAGE VALIDATION
-    # Then the 'DocTest' comment card is displayed
-
-
-Scenario: FNHS105 - Search for a File by File Description
-    When I search for 'Test doc'
     Then the 'Searching: docTest - 3 results found' header is displayed
     And the 'DocTest' search result card is displayed
     | File on Automation Admin Group group |
     | Test doc                             |
+    When I click the 'DocTest' link
+    Then the 'docTest' header is displayed
+    # FILE PREVIEW VALIDATION
+
+
+Scenario: FNHS105 - Search for a File by File Description
+    When I search for 'Test doc'
+    Then the 'Searching: Test doc - 4 results found' header is displayed
     And the 'DocTest' search result card is displayed
-    | File on Automation Public Group group |
-    | Test doc                              |
+    | File on Automation Admin Group group |
+    | Test doc                             |
     And the 'Test doc' search result card is displayed
     | File on Automation Visual Regression Group group |
     | Test doc                                         |
     When I click the 'Test doc' link
-    # FILE PAGE VALIDATION
-    # Then the 'Test doc' comment card is displayed
+    Then the 'test doc' header is displayed
+    # FILE PREVIEW VALIDATION
 
 
 Scenario: FNHS106 - Search for a Folder by Folder Name

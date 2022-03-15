@@ -90,8 +90,8 @@ Then(/^I download the '([^"]*)' file and compare against the uploaded version$/,
   filesPage.hashCompare(fileName);
 })
 
-Then(/^I download the (doc|pdf) and check the file for '([^"]*)'$/, function(fileType, fileContent) {
-  filesPage.pdfDownloadCheck(fileContent);
+Then(/^I download the '([^"]*)' and check the file for '([^"]*)'$/, function(fileType, fileContent) {
+  filesPage.pdfDownloadCheck(file, fileContent);
 })
 
 Then(/^the collabora file( mobile)? preview is displayed$/, function(mobile){
