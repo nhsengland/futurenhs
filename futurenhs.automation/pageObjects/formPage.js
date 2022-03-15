@@ -80,7 +80,7 @@ class formPage extends basePage{
         txtEditor.setValue(valueToSet);
         browser.switchToParentFrame();
         //Find sumbit button of the editor
-        var submitbtn = txtEditorLabel.parentElement().parentElement().parentElement().$('./div[2]/button');
+        var submitbtn = txtEditorLabel.parentElement().parentElement().parentElement().$('./div[2]/button[starts-with(@class, "c-form_submit-button")]');
         //Click submit button of the editor
         helpers.click(submitbtn);
     }
@@ -105,7 +105,7 @@ class formPage extends basePage{
     radioButtonSelect(legendLabel, buttonLabel){
         var radioLegend = $(`//legend[text()="${legendLabel}"]`).parentElement();
         helpers.waitForLoaded(radioLegend);
-        radioLegend.$(`./div/label[text()="${buttonLabel}"]/../input`).click();
+        helpers.click(radioLegend.$(`./div/label[text()="${buttonLabel}"]`));
     }
     
     /**
@@ -159,7 +159,7 @@ class formPage extends basePage{
             helpers.waitForLoaded(summaryBody);        
             foundErrors = summaryBody.$$('./li');
         } else {
-            foundErrors = $$('//span[@class="nhsuk-error-message"]');
+            foundErrors = $$('//span[contains(@class, "error-message")]');
         }
         foundErrors.forEach(error => {
             errors = errors.concat(error.getText(), ', ');            
