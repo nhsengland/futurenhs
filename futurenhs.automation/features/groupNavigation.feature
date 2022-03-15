@@ -25,15 +25,15 @@ Scenario: FNHS10 - Discover new groups validation
 Scenario: FNHS11 - Group Card Validation
     And the 'Automation Admin Group' group card is displayed
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
-    | 3 Members7 discussions                                                           |
+    | Members: 2Discussions: 7                                                          |
 
 
 Scenario: FNHS13 - Group Card (No Discussion) Validation
     When I click the 'Discover new groups' tab
     Then the 'Discover New Groups' header is displayed
-    Then the 'Automation Public Group' group card is displayed
+    Then the 'Automation Editable Group' group card is displayed
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
-    | 1 Member0 Discussions                                                            |
+    | Members: 1Discussions: 0                                                         |
 
 @Core
 Scenario: FNHS14 - Group tabs navigation
@@ -47,17 +47,16 @@ Scenario: FNHS14 - Group tabs navigation
     Then the 'Files' header is displayed
     When I click the 'Members' tab
     Then the 'Group Members' table exists
-    When I click the 'About Us' tab
-    Then the 'About Us' header is displayed
+    # When I click the 'About Us' tab
+    # Then the 'About Us' header is displayed
     When I click the 'Home' tab
     And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
 
-
+# WILL NEED MORE WORK WHEN PAGE BUILDER IS DEVELOPED
 Scenario: FNHS15 -  Group home validation
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
     And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
-    And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' header is displayed
 
 
 Scenario: FNHS16 - Group forum validation
@@ -66,6 +65,12 @@ Scenario: FNHS16 - Group forum validation
     When I click the 'Forum' tab
     Then the 'All Discussions' header is displayed
     And the 'New Discussion' link is displayed
+    Then the 'General Discussion Validation' discussion card is displayed
+    | AA                                      |
+    | Created by Auto Admin [PRETTYDATE]      |
+    | Last comment by Auto Admin [PRETTYDATE] |
+    | Comments: 15                            |
+    | Views: 0                                |
 
 
 Scenario: FNHS17 - Group Members validation
@@ -74,7 +79,7 @@ Scenario: FNHS17 - Group Members validation
     When I click the 'Members' tab
     And the 'Group Members' table exists
 
-
+@Pending
 Scenario: FNHS18 - Group about us validation
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed

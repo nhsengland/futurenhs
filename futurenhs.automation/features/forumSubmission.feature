@@ -41,11 +41,32 @@ Scenario: FNHS53 - Post a comment in a discussion
     | auto User    |
     | [PRETTYDATE] |
 
+Scenario: FNHS12 - Validate Discussion card comment counter
+    Then the 'forumSubmission' discussion card is displayed
+    | AA                                      |
+    | Created by Auto Admin [PRETTYDATE]      |
+    | Last comment by Auto Admin [PRETTYDATE] |
+    | Comments: 2                             |
+    When I click the 'forumSubmission Discussion' link
+    Then the 'forumSubmission Discussion' header is displayed
+    When I enter 'Comment posted by the automation' into the 'Your comment' text editor
+    Then the 'Comment posted by the automation' comment card is displayed
+    | AU           |
+    | auto User    |
+    | [PRETTYDATE] |
+    When I click the 'Back to discussions' link
+    Then the 'forumSubmission' discussion card is displayed
+    | AA                                      |
+    | Created by Auto Admin [PRETTYDATE]      |
+    | Last comment by Auto Admin [PRETTYDATE] |
+    | Comments: 3                             |
 
+
+# ERROR VALIDATION 100000 character limit
 Scenario: FNHS54 - Post a comment error validation
     When I click the 'forumSubmission Discussion' link
     Then the 'forumSubmission Discussion' header is displayed 
-    And I click the 'Add comment' button
+    And I click the 'Add Comment' button
     Then the 'Enter your comment' error message is displayed
     And the 'Enter your comment' error summary is displayed
 

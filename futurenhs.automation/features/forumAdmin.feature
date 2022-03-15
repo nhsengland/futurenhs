@@ -19,8 +19,8 @@ Scenario: FNHS58 - Create a new discussion
     And I enter 'A brief description about the discussion' into the 'Comment' text editor
     Then the 'All Discussions' header is displayed
     
-
-Scenario: FNHS59 - Create a discussion with no title validation, and cancel
+# ERROR VALIDATION 100000 character limit
+Scenario: FNHS59 - Create a discussion error validation, and cancel
     When I click the 'New Discussion' link
     Then the 'Create Discussion' header is displayed
     When I click the 'Create Discussion' button
@@ -39,7 +39,8 @@ Scenario: FNHS60 - Created discussion card validation
     | AA                                      |
     | Created by Auto Admin [PRETTYDATE]      |
     | Last comment by Auto Admin [PRETTYDATE] |
-    | 0 Comments0 Views                       |
+    | Comments: 0                             |  
+    | Views: 0                                |
 
 @Core
 Scenario: FNHS61 - Validate new discussion details
@@ -57,12 +58,3 @@ Scenario: FNHS62 - Pinned Discussion Validation
     | Created by Auto Admin [PRETTYDATE]     |
     | Last comment by Auto User [PRETTYDATE] |
     And the 'General Discussion Validation' discussion card is pinned
-
-
-##ISSUE IN PLATFORM MUST BE LAST TEST OF FEATURE FILE
-Scenario: FNHS63 - Create a discussion with no content error validation
-    When I click the 'New Discussion' link
-    Then the 'Create Discussion' header is displayed
-    When I enter 'discussion title' into the 'Title' field
-    And I click the 'Create Discussion' button
-    Then the 'Enter the discussion comment' error message is displayed

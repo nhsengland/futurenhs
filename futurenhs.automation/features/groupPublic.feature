@@ -19,10 +19,10 @@ Scenario: FNHS43 - View Forum of Public Group
     | AA                                     |
     | Created by auto Admin [PRETTYDATE]     |
     | Last comment by                        |
-    | 11 Comments                            |
+    | Comments: 11                           |
     When I click the 'Public Discussion Test' link
     Then the 'A discussion to validate public access/view in read only format' textual value is displayed
-    And the '7 comments' textual value is displayed
+    And the 'Comments: 7' textual value is displayed
     And the 'First Public Comment' comment card is displayed
     | AA                |
     | auto Admin        |
@@ -60,22 +60,24 @@ Scenario: FNHS45 - Join a public group
     Then the 'Automation Public Group' header is displayed
     And the 'Join Group' link is displayed
     When I click the 'Join Group' link
+    Then the 'Join Group' link is not displayed
     When I click the 'Members' tab
-    Then the 'Auto User' row is displayed on the 'Group Members' table
+    Then the 'auto User' row is displayed on the 'Group Members' table
 
 
 Scenario: FNHS46 - Cancel leaving a group
     When I click the 'Automation Public Group' link
     Then the 'Automation Public Group' header is displayed
-    When I select 'Leave group' from the group pages accordion
+    When I select 'Leave group' from the actions accordion
     Then I cancel this on the open 'Leave group' dialog
     Then the 'Automation Public Group' header is displayed
-    And the 'Leave Group' link is displayed
+    When I open the 'Actions' accordion
+    And the 'Leave group' link is displayed
 
 @Core 
 Scenario: FNHS47 - Leave a group 
     When I click the 'Automation Public Group' link
     Then the 'Automation Public Group' header is displayed   
-    When I select 'Leave group' from the group pages accordion
+    When I select 'Leave group' from the actions accordion
     Then I confirm this on the open 'Leave group' dialog
     And the 'Join Group' link is displayed
