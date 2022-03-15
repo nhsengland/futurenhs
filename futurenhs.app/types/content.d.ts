@@ -3,6 +3,7 @@ export interface GenericPageTextContent {
     title?: string;
     subTitle?: string;
     mainHeading?: string;
+    bodyHtml?: string;
     intro?: string;
     navMenuTitle?: string;
     secondaryHeading?: string;
