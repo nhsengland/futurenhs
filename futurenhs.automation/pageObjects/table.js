@@ -115,7 +115,7 @@ class table extends basePage{
     tableRowExists(rowValue, tableName){
         var table = this.getTable(tableName);
         helpers.waitForLoaded(table);
-        var tableRow = table.$(`./tbody/tr/td/*[contains(normalize-space(.), "${rowValue}")]`);
+        var tableRow = table.$(`./tbody/tr[*[contains(normalize-space(.), "${rowValue}")]]`);
         expect(tableRow.isExisting()).toEqual(true);
     }
 
