@@ -1,7 +1,7 @@
 import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    title: 'Admin',
+    title: 'Admin - Manage groups',
     metaDescription: 'Admin dashboard',
     mainHeading: 'Admin',
     secondaryHeading: 'Groups',

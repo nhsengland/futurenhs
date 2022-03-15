@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 
+import { layoutIds } from '@constants/routes';
 import { actions } from '@constants/actions';
 import { withUser } from '@hofs/withUser';
 import { withTextContent } from '@hofs/withTextContent';
@@ -23,6 +24,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
             routeId,
             props,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
+
+                props.layoutId = layoutIds.ADMIN
     
                 return {
                     props,
