@@ -35,7 +35,7 @@ describe('Search listing template', () => {
         const { metaDescription,
             title,
             mainHeading } = props.contentText ?? {};
-        expect(screen.getAllByText(`${mainHeading}: ${props.term} - ${props.resultsList.length} results found`).length).toEqual(1);
+        expect(screen.getAllByText(`${mainHeading}: "${props.term}" - ${props.resultsList.length} results found`).length).toEqual(1);
 
     });
 

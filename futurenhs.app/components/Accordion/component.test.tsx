@@ -8,7 +8,8 @@ import { Props } from './interfaces';
 const testProps: Props = {
     id: 'mock',
     isOpen: false,
-    toggleChildren: <p>Toggle</p>,
+    toggleOpenChildren: <p>Toggle</p>,
+    toggleClosedChildren: <p>Toggle</p>,
     children: <p>Body</p>
 };
 
