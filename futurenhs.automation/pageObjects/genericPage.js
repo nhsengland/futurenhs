@@ -95,7 +95,7 @@ class genericPage extends basePage{
         var dialogs = {
             logout:$('//div[@id="dialog-logout"]'),
             leavegroup:$('//div[@id="dialog-leave-group"]'),
-            deletefolder:$('//div[@id="dialog-delete-confirm"]')
+            deletefolder:$('//div[@id="dialog-delete-folder"]')
         }
         var chosenDialog = dialogs[desiredDialog]
         browser.waitUntil(() => chosenDialog.isDisplayed() === true,{timeout: 5000, timeoutMsg: `Unable to locate the "${dialogName}" open dialog`});
@@ -131,10 +131,11 @@ class genericPage extends basePage{
      * @param {string} expectedBreadcrumb - string variable of the expected textual value
      */
     breadcrumbValidation(expectedBreadcrumb){
-        var breadcrumbs = $('//div[contains(@class, "c-breadcrumbs")]');
-        helpers.waitForLoaded(breadcrumbs);
-        var actual = breadcrumbs.getText();
-        expect(actual).toEqual(expectedBreadcrumb);
+        var firstBreadcrumb = expectedBreadcrumb.split(' > ')[0]
+        var expectedBreadcrumb = expectedBreadcrumb.replace(/ > /g, '');
+        var foundBreadcrumb = $(`//ol[@class="c-breadcrumb_list"][*[contains(normalize-space(.), "${firstBreadcrumb}")]]`);
+        var breadcrumbText = foundBreadcrumb.getText();
+        expect(breadcrumbText).toEqual(expectedBreadcrumb);
     }
 
     /**
