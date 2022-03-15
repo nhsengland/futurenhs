@@ -9,7 +9,7 @@ class filesPage extends basePage{
      * @param {string} filePath - the known file path location of the desired file
      */
     mediaUpload(filePath) {
-        var control = $(`//input[@id="FileToUpload_PostedFile"]`);
+        var control = $(`//input[@type="file"]`);
         control.waitForExist();
         control.addValue(browser.uploadFile(process.cwd() + filePath));
     }
@@ -19,7 +19,7 @@ class filesPage extends basePage{
      * @param {string} fileType - file extension we expect and what we use to locate the file within the directory
      * @returns entire file path from Framework root to be then used in other functions
      */
-    fileDownload(fileType){        
+    fileDownload(fileType, fileName){        
         if(browser === 'chrome'){
             var dir = fs.mkdtempSync(global.downloadDir + "/")
             browser.cdp('Page', 'setDownloadBehavior', {
@@ -30,7 +30,9 @@ class filesPage extends basePage{
             var dir = global.downloadDir
         }
         // click download button
-        var downloadBtn = $('//a[text()="Download file"]');
+        var tableRow = $(`//tbody/tr[*[contains(normalize-space(.), "${fileName}")]]`)
+        helpers.waitForLoaded(tableRow);
+        var downloadBtn = tableRow.$('./td/a[text()="Download file"]');
         helpers.click(downloadBtn);
         // locate file
         browser.waitUntil(()=> {return fs.readdirSync(dir).filter(item => item.endsWith(`.${fileType}`)).length > 0}, {timeout: 10000, timeoutMsg: "file not downloaded after 10s"});
@@ -42,7 +44,7 @@ class filesPage extends basePage{
      * @param {Array} expectedContents - the known content we are wanting to check is within the downloaded PDF
      */
     pdfDownloadCheck(expectedContents){
-        var dir = this.fileDownload('pdf')
+        var dir = this.fileDownload(fileName.split('.')[1], fileName.split('.')[0]);
         // collate contents
         var actualPDFContent = "";
         var processing = true
@@ -61,7 +63,7 @@ class filesPage extends basePage{
      * @param {string} fileName - file we're checking against to locate the downloaded and original versions.
      */
     hashCompare(fileName){
-        var dir = this.fileDownload(fileName.split('.')[1]);
+        var dir = this.fileDownload(fileName.split('.')[1], fileName.split('.')[0]);
         function checksum(str) {
             return crypto
               .createHash('md5')
