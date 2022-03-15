@@ -24,7 +24,7 @@ DELETE [dbo].[Discussion] WHERE Id = @testDiscussion AND CreatedBy = @autoAdmin
 -- Delete Folder generated as part of filesManagement.feature
 DECLARE @adminGroup AS uniqueidentifier;
 SELECT @adminGroup = Id FROM [dbo].[Group] WHERE Name = 'Automation Admin Group'
-DELETE FROM [dbo].[Folder] WHERE Group_Id = @adminGroup AND Title != 'Empty Folder' AND Title != 'Automation Test Folder' AND Title != 'Folder 1' AND Title != 'Folder 2' AND Title != 'Folder 3'
+DELETE FROM [dbo].[Folder] WHERE Group_Id = @adminGroup AND Title = 'AutoFolder' AND Title = 'eRacM5cnCLj1QiZ3fLxJzfyduloK9ICFtqTlNPJirR6Q8Sx66hslAURYY2BHhXUgI8W7liWxkEnSatHEowhmuSz15vXRFUyDzsk5pBUD0DHefy0yQkxX24t9jigs6gJzjCXh4uACDxhmXX1i8Zep34rBOv8WMA1Aom2QLQ6GTMtIaUX8uDSENmiEATt1JEk8aZaBJltyk3vBxCBSNBQY7eTgk5MuKdsU8Vc9VFyRI7LDoy9SKCrZQySCWhxn1bSCwlci2YACAf7tiscsxzXUN5u42lD5MUp5vePtpyPivLZivAvCkTAwjxpF4aidt9eo0ksBspZ0dLABHKIEmyfKvFUHxCCt2KmZgtuPMci8hnFIrgKensCH7fOpLa7ycZHDN6bwNsCtKZenECl9ydsv5tbVvQQKV97fSVg8aH9Rf3qaJYWZDv661JlY0SSwdG6V0DW4zdC3jgeIIMHVhQIoHQwAwWx7sh91vHMeUv4RyuHXN8sIYH1HmsYY9wGkHyr3HzjdaxIAxfLMrTlBokqMnzcq3i6tbBGcSetopjVAFr3btacpBIiRpH1cZKAnegU9wvt4EAPXlxZZ5MgQB5hAlcj9P50ZQTV8HTz5DjJ3Eh0sEFY5tHoaQRxEBFQIDXkDlOyFRrb4h8HjzKph3Im6OuMvwQTZjvD7D5B0buXpXv6UohrWxE2JVFa4YkAH8Kz9Geg1l9QT1dhI0zGLUUAGEBiz0j8NbDBgIqSORCXR3D35ohaor2WaWFouqn2eTNlphC3XEe9uxq3LCrtJ7kTM53Sg3SPAKaoeZh48cHyIxhnuupCWJtfGQTGyHVIkEqrGievotncg8NjnSeTDY8dL5O905loEAgXUKSCCfJAyH2JTAvnMcSOu0XKIgrDhlVgc3H1TKuAVcXdcsoDumHCSCFQlJP0DyQHyYyOzMkrbKW8viOFauAghwRFUBo9yvkZ3mpFapEmLnXpUdJMXQvXxR0mmnFYxQ5mYe1YHr4PZ' 
 DELETE FROM [dbo].[Folder] WHERE Group_Id = @adminGroup AND IsDeleted = 1
 
 -- Delete files uploaded as part of filesNavigation.feature
@@ -93,3 +93,13 @@ UPDATE [dbo].[MembershipUser] SET FirstName = 'autoEdit',
 DECLARE @docTest AS uniqueidentifier
 SELECT @docTest = id FROM [dbo].[File] WHERE Title = 'Doc Test'
 UPDATE [dbo].[File] SET Title = 'docTest', Description = 'test doc' WHERE Id = @docTest
+
+-- Reset changes made to DeleteFolder 
+DECLARE @deletefolder AS uniqueidentifier
+SELECT @deletefolder = id FROM [dbo].[Folder] WHERE Title = 'DeleteFolder'
+UPDATE [dbo].[Folder] SET IsDeleted = 0 WHERE Id = @deletefolder
+
+-- Reset changes made to EditableFolder 
+DECLARE @editfolder AS uniqueidentifier
+SELECT @editfolder = id FROM [dbo].[Folder] WHERE Title = 'EditedFolder'
+UPDATE [dbo].[Folder] SET Title = 'EditableFolder' WHERE Id = @editfolder
