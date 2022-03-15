@@ -36,6 +36,8 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             pronounsLabel,
             emailLabel } = contentText ?? {};
 
+    const toggleEditLabel: string = 'Edit member';
+
     const backLinkHref: string = getRouteToParam({
         router: router,
         paramName: routeParams.MEMBERID
@@ -83,9 +85,10 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                         className="tablet:u-justify-center tablet:u-mt-16" />
                     {shouldRenderUpdateForm &&
                         <Accordion 
-                            id=""
+                            id="member-update-accordion"
                             isOpen={shouldRenderAccordionOpen}
-                            toggleChildren="Edit member">
+                            toggleOpenChildren={toggleEditLabel}
+                            toggleClosedChildren={toggleEditLabel}>
                                 <Form
                                     csrfToken=""
                                     formId=""

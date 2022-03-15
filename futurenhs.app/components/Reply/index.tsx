@@ -72,6 +72,7 @@ export const Reply: (props: Props) => JSX.Element = ({
         setShouldRenderCancelButton(true);
 
     }, []);
+    const accordionToggleContent: JSX.Element = <><SVGIcon name="icon-reply" className={generatedClasses.icon} /><span>{reply}</span></>
 
     return (
 
@@ -79,7 +80,8 @@ export const Reply: (props: Props) => JSX.Element = ({
             <Accordion
                 id={generatedIds.replyAccordion}
                 isOpen={isReplyAccordionOpen}
-                toggleChildren={<><SVGIcon name="icon-reply" className={generatedClasses.icon} /><span>{reply}</span></>}
+                toggleOpenChildren={accordionToggleContent}
+                toggleClosedChildren={accordionToggleContent}
                 toggleAction={handleToggle}
                 toggleClassName={generatedClasses.toggle}
                 contentClassName={generatedClasses.content}>

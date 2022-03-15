@@ -134,7 +134,6 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
         
     };
 
-    const getAccordionIcon = useCallback((isOpen: boolean) => isOpen ? iconNames.CHEVRON_UP : iconNames.CHEVRON_DOWN, [isActionsAccordionOpen, isMenuAccordionOpen]);
     const handleAccordionToggle = useCallback((id, isOpen: boolean) => {
 
         id === generatedIds.actionsAccordion && setIsActionsAccordionOpen(isOpen);
@@ -179,67 +178,73 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         <LayoutColumn tablet={4} desktop={3} className={generatedClasses.actionsWrapper}>
                             {(getActionNavMenuList().length === 0)
 
-                                ?   <Link href={`${routes.groupJoin}?${queryParams.RETURNURL}=${router?.asPath}`}>
-                                        <a className="c-button u-w-full">Join Group</a>
-                                    </Link>
+                                ? <Link href={`${routes.groupJoin}`}>
+                                    <a className="c-button u-w-full">Join group</a>
+                                </Link>
 
-                                :   <Accordion
-                                        id={generatedIds.actionsAccordion}
-                                        isOpen={isActionsAccordionOpen}
-                                        shouldCloseOnLeave={true}
-                                        shouldCloseOnContentClick={true}
-                                        toggleAction={handleAccordionToggle}
-                                        toggleClassName={generatedClasses.actionsTrigger}
-                                        toggleChildren={
-                                            <>
-                                                {actionsMenuTitleText}
-                                                <SVGIcon name={getAccordionIcon(isActionsAccordionOpen)} className={generatedClasses.actionsTriggerIcon} />
-                                            </>
-                                        }
-                                        className={generatedClasses.actions}>
-                                            <ul className={generatedClasses.actionsContent}>
-                                                {getActionNavMenuList().map(({ id, url, text }, index) => {
+                                : <Accordion
+                                    id={generatedIds.actionsAccordion}
+                                    isOpen={isActionsAccordionOpen}
+                                    shouldCloseOnLeave={true}
+                                    shouldCloseOnContentClick={true}
+                                    toggleAction={handleAccordionToggle}
+                                    toggleClassName={generatedClasses.actionsTrigger}
+                                    toggleOpenChildren={
+                                        <>
+                                            {actionsMenuTitleText}
+                                            <SVGIcon name={iconNames.CHEVRON_UP} className={generatedClasses.actionsTriggerIcon} />
+                                        </>
+                                    }
+                                    toggleClosedChildren={
+                                        <>
+                                            {actionsMenuTitleText}
+                                            <SVGIcon name={iconNames.CHEVRON_DOWN} className={generatedClasses.actionsTriggerIcon} />
+                                        </>
+                                    }
+                                    className={generatedClasses.actions}>
+                                    <ul className={generatedClasses.actionsContent}>
+                                        {getActionNavMenuList().map(({ id, url, text }, index) => {
 
-                                                    const handleActionMenuItemClick = (event: any) => {
+                                            const handleActionMenuItemClick = (event: any) => {
 
-                                                        if (id === actionsConstants.GROUPS_LEAVE) {
+                                                if (id === actionsConstants.GROUPS_LEAVE) {
 
-                                                            event.preventDefault();
+                                                    event.preventDefault();
 
-                                                            handleLeaveGroup();
+                                                    handleLeaveGroup();
 
-                                                        }
+                                                }
 
-                                                    };
+                                            };
 
-                                                    return (
+                                            return (
 
-                                                        <li key={index} className="u-m-0">
-                                                            <Link href={url}>
-                                                                <a className="c-page-header_actions-content-item u-m-0 u-block u-break-words" onClick={handleActionMenuItemClick}>
-                                                                    {text}
-                                                                </a>
-                                                            </Link>
-                                                            {id === actionsConstants.GROUPS_LEAVE &&
-                                                                <Dialog
-                                                                    id="dialog-leave-group"
-                                                                    isOpen={isLeaveGroupModalOpen}
-                                                                    text={{
-                                                                        cancelButton: 'Cancel',
-                                                                        confirmButton: 'Yes, leave group'
-                                                                    }}
-                                                                    cancelAction={handleLeaveGroupCancel}
-                                                                    confirmAction={handleLeaveGroupConfirm}>
-                                                                        <h3>Leave this group</h3>
-                                                                        <p className="u-text-bold">Are you sure you would like to leave the group?</p>
-                                                                </Dialog>
-                                                            }
-                                                        </li>
+                                                <li key={index} className="u-m-0">
+                                                    <Link href={url}>
+                                                        <a className="c-page-header_actions-content-item u-m-0 u-block u-break-words" onClick={handleActionMenuItemClick}>
+                                                            {text}
+                                                        </a>
+                                                    </Link>
+                                                    {id === actionsConstants.GROUPS_LEAVE &&
+                                                        <Dialog
+                                                            id="dialog-leave-group"
+                                                            isOpen={isLeaveGroupModalOpen}
+                                                            text={{
+                                                                cancelButton: 'Cancel',
+                                                                confirmButton: 'Yes, leave group'
+                                                            }}
+                                                            cancelAction={handleLeaveGroupCancel}
+                                                            confirmAction={handleLeaveGroupConfirm}>
+                                                            <h3>Leave this group</h3>
+                                                            <p className="u-text-bold">Are you sure you would like to leave the group?</p>
+                                                        </Dialog>
+                                                    }
+                                                </li>
 
-                                                    )
+                                            )
 
-                                                })}
-                                        </ul>
+                                        })}
+                                    </ul>
                                 </Accordion>
                             }
                         </LayoutColumn>
@@ -253,10 +258,16 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         shouldCloseOnContentClick={isMobile}
                         toggleAction={handleAccordionToggle}
                         toggleClassName={generatedClasses.navTrigger}
-                        toggleChildren={
+                        toggleOpenChildren={
                             <>
                                 {activeMenuItemText}
-                                <SVGIcon name={getAccordionIcon(isMenuAccordionOpen)} className={generatedClasses.navTriggerIcon} />
+                                <SVGIcon name={iconNames.CHEVRON_UP} className={generatedClasses.navTriggerIcon} />
+                            </>
+                        }
+                        toggleClosedChildren={
+                            <>
+                                {activeMenuItemText}
+                                <SVGIcon name={iconNames.CHEVRON_DOWN} className={generatedClasses.navTriggerIcon} />
                             </>
                         }
                         className={generatedClasses.navContent}>

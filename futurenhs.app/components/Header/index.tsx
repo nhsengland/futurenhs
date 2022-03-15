@@ -72,8 +72,6 @@ export const Header: (props: Props) => JSX.Element = ({
     const shouldRenderUserLink: boolean = Boolean(user?.id);
     const shouldRenderAdminLink: boolean = actions?.includes(actionTypes.SITE_ADMIN_VIEW);
 
-    const getAccordionIcon = (isOpen: boolean) => isOpen ? iconNames.CROSS_CIRCLE : iconNames.PLUS_CIRCLE;
-
     /**
      * Handle expanding or collapsing accordions
      */
@@ -110,7 +108,7 @@ export const Header: (props: Props) => JSX.Element = ({
     };
 
     /**
-     * When the media breapoint changes to desktop
+     * When the media breakpoint changes to desktop
      * ensure that the main nav is displayed and the body scroll lock is removed
      */
     useEffect(() => {
@@ -119,6 +117,7 @@ export const Header: (props: Props) => JSX.Element = ({
         setIsMainAccordionOpen(isDesktop);
 
     }, [isDesktop]);
+
 
     /**
      * Render
@@ -143,7 +142,9 @@ export const Header: (props: Props) => JSX.Element = ({
                             <Accordion
                                 isOpen={isMainAccordionOpen}
                                 id={headerAccordionId}
-                                toggleChildren={"Menu"}
+                                shouldCloseOnRouteChange={!isDesktop}
+                                toggleOpenChildren="Menu"
+                                toggleClosedChildren="Menu"
                                 className="c-site-header-nav_content"
                                 toggleClassName="c-site-header-nav_mobile-trigger c-site-header-nav_mobile-trigger--right"
                                 contentClassName="c-site-header-nav_desktop-container"
@@ -170,13 +171,22 @@ export const Header: (props: Props) => JSX.Element = ({
                                                             className="c-site-header-nav_root-nav-item"
                                                             toggleClassName="c-site-header-nav_root-nav-trigger"
                                                             contentClassName="c-site-header-nav_sub-nav"
-                                                            toggleChildren={
+                                                            toggleOpenChildren={
                                                                 <>
                                                                     <span className="c-site-header-nav_root-nav-image">
                                                                         <Avatar image={null} initials={userInitials} />
                                                                     </span>
                                                                     <span className="o-truncated-text-lines-1">{capitalise({ value: userName })}</span>
-                                                                    <SVGIcon name={getAccordionIcon(isUserAccordionOpen)} className="c-site-header-nav_root-nav-icon" />
+                                                                    <SVGIcon name={iconNames.CROSS_CIRCLE} className="c-site-header-nav_root-nav-icon" />
+                                                                </>
+                                                            }
+                                                            toggleClosedChildren={
+                                                                <>
+                                                                    <span className="c-site-header-nav_root-nav-image">
+                                                                        <Avatar image={null} initials={userInitials} />
+                                                                    </span>
+                                                                    <span className="o-truncated-text-lines-1">{capitalise({ value: userName })}</span>
+                                                                    <SVGIcon name={iconNames.PLUS_CIRCLE} className="c-site-header-nav_root-nav-icon" />
                                                                 </>
                                                             }
                                                             toggleAction={handleAccordionToggle}

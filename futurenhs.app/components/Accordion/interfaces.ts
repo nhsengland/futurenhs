@@ -4,9 +4,11 @@ export interface Props {
     isOpen?: boolean;
     shouldCloseOnLeave?: boolean;
     shouldCloseOnContentClick?: boolean;
+    shouldCloseOnRouteChange?: boolean;
     toggleAction?: (id: string, isOpen: boolean) => any;
     children: any;
-    toggleChildren: any;
+    toggleOpenChildren: any;
+    toggleClosedChildren: any;
     className?: string;
     toggleClassName?: string;
     contentClassName?: string;

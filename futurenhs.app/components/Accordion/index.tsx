@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
 import { Props } from './interfaces';
@@ -6,7 +7,8 @@ import { Props } from './interfaces';
 export const Accordion: (props: Props) => JSX.Element = ({
     id,
     children,
-    toggleChildren,
+    toggleOpenChildren,
+    toggleClosedChildren,
     className,
     toggleClassName,
     contentClassName,
@@ -14,21 +16,24 @@ export const Accordion: (props: Props) => JSX.Element = ({
     isOpen = false,
     shouldCloseOnLeave = false,
     shouldCloseOnContentClick = false,
+    shouldCloseOnRouteChange = false,
     toggleAction
 }) => {
 
     const wrapperRef: any = useRef(null);
+    const router: any = useRouter();
+    const [internalIsOpen, setInternalIsOpen] = useState(isOpen);
 
     const generatedClasses: any = {
         wrapper: classNames('c-accordion', className, {
-            ['c-accordion--open']: isOpen,
+            ['c-accordion--open']: internalIsOpen,
             ['c-accordion--disabled']: isDisabled
         }),
         toggle: classNames('c-accordion_toggle', toggleClassName, {
-            ['c-accordion_toggle--open']: isOpen
+            ['c-accordion_toggle--open']: internalIsOpen
         }),
         content: classNames('c-accordion_content', contentClassName, {
-            ['c-accordion_content--open']: isOpen
+            ['c-accordion_content--open']: internalIsOpen
         })
     };
 
@@ -37,15 +42,18 @@ export const Accordion: (props: Props) => JSX.Element = ({
      */
     const onToggle = () => {
 
-        toggleAction?.(id, wrapperRef.current?.hasAttribute('open'));
+        const isOpen: boolean = wrapperRef.current?.hasAttribute('open');
+
+        setInternalIsOpen(isOpen);
+        toggleAction?.(id, isOpen);
 
     }
-    
+
     /**
      * Toggle the collapsed state of the content area
      */
     const handleToggle = (): void => {
-        
+
         wrapperRef.current?.toggleAttribute('open');
 
     }
@@ -63,15 +71,20 @@ export const Accordion: (props: Props) => JSX.Element = ({
 
     }
 
+
     /**
      * Handles content event
      */
-    const handleContentClick: any = (event: Event): void => {
+    const handleContentClick: any = (event: any): void => {
 
-        if (shouldCloseOnContentClick && wrapperRef.current) {
+        if (wrapperRef.current && shouldCloseOnRouteChange && event.target.tagName === 'A') {
 
             wrapperRef.current?.removeAttribute('open');
-    
+
+        } else if (shouldCloseOnContentClick && wrapperRef.current) {
+
+            wrapperRef.current?.removeAttribute('open');
+
         }
 
     }
@@ -102,35 +115,45 @@ export const Accordion: (props: Props) => JSX.Element = ({
 
             document.removeEventListener('focusin', handleLeave, false);
             document.removeEventListener('click', handleLeave, false);
-        
+
         };
 
 
-    });
+    }, []);
+
+    /**
+     * Update internal isOpen state when prop changes
+     */
+    useEffect(() => {
+
+        setInternalIsOpen(isOpen);
+
+    }, [isOpen]);
+
 
     return (
 
-        <details 
-            ref={wrapperRef} 
+        <details
+            ref={wrapperRef}
             className={generatedClasses.wrapper}
-            open={isOpen}
+            open={internalIsOpen}
             onToggle={onToggle}
             onClick={handleClick}>
-                <summary className={generatedClasses.toggle}>
-                    {toggleChildren}
-                </summary>
-                <div id={id} className={generatedClasses.content} onClick={handleContentClick}>
-                    {React.Children.map(children, (child: any) => {
+            <summary className={generatedClasses.toggle}>
+                {internalIsOpen ? toggleOpenChildren : toggleClosedChildren}
+            </summary>
+            <div id={id} className={generatedClasses.content} onClick={handleContentClick}>
+                {React.Children.map(children, (child: any) => {
 
-                        const isReactComponent: boolean = typeof child?.type === 'function';
-                        const propsToMerge: any = isReactComponent ? {
-                            toggleAction: handleToggle
-                        } : {};
+                    const isReactComponent: boolean = typeof child?.type === 'function';
+                    const propsToMerge: any = isReactComponent ? {
+                        toggleAction: handleToggle
+                    } : {};
 
-                        return React.cloneElement(child, propsToMerge);
+                    return React.cloneElement(child, propsToMerge);
 
-                    })}
-                </div>
+                })}
+            </div>
         </details>
 
     );

@@ -74,6 +74,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         signedInLabel
     } = contentText ?? {};
 
+    const fewerRepliesLabel: string = 'Fewer replies';
+
     const { id, text } = user ?? {};
     const { userName } = text ?? {};
     const { text: discussionText,
@@ -158,7 +160,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         return new Promise((resolve) => {
 
-            services.postGroupDiscussionCommentReply({ groupId, discussionId, user, csrfToken, commentId: formData.get('_instance-id'), body: formData }).then(() => {
+            const commentId: any = formData.get('_instance-id');
+
+            services.postGroupDiscussionCommentReply({ groupId, discussionId, user, csrfToken, commentId, body: formData }).then(() => {
 
                 setErrors({});
                 handleGetPage(dynamicPagination as any);
@@ -313,77 +317,77 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     </p>
                 }
                 <ErrorBoundary boundaryId="group-discussion-comments">
-                    {hasDiscussionComments &&
-                        <DynamicListContainer
-                            containerElementType="ul"
-                            shouldFocusLatest={shouldEnableLoadMore}
-                            className="u-list-none u-p-0">
-                            {dynamicDiscussionCommentsList?.map(({
-                                commentId,
-                                created,
-                                createdBy,
-                                text,
-                                likeCount,
-                                isLiked,
-                                replies
-                            }, index) => {
+                        {hasDiscussionComments &&
+                            <DynamicListContainer
+                                containerElementType="ul"
+                                shouldFocusLatest={shouldEnableLoadMore}
+                                className="u-list-none u-p-0">
+                                {dynamicDiscussionCommentsList?.map(({
+                                    commentId,
+                                    created,
+                                    createdBy,
+                                    text,
+                                    likeCount,
+                                    isLiked,
+                                    replies
+                                }, index) => {
 
-                                const commenterUserInitials: string = initials({ value: createdBy?.text?.userName });
-                                const commenterUserName: string = createdBy?.text?.userName;
-                                const commenterUserId: string = createdBy?.id;
-                                const commentCreatedDate: string = dateTime({ value: created });
-                                const hasReply: boolean = replies?.length > 0;
-                                const hasReplies: boolean = replies?.length > 1;
-                                const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
-                                const additionalRepliesAccordionId: string = `${commentId}-replies`;
+                                    const commenterUserInitials: string = initials({ value: createdBy?.text?.userName });
+                                    const commenterUserName: string = createdBy?.text?.userName;
+                                    const commenterUserId: string = createdBy?.id;
+                                    const commentCreatedDate: string = dateTime({ value: created });
+                                    const hasReply: boolean = replies?.length > 0;
+                                    const hasReplies: boolean = replies?.length > 1;
+                                    const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
+                                    const additionalRepliesAccordionId: string = `${commentId}-replies`;
 
-                                const { body } = text ?? {};
+                                    const { body } = text ?? {};
 
-                                return (
+                                    return (
 
-                                    <li key={index}>
-                                        <Comment
-                                            id={`comment-${commentId}`}
-                                            commentId={commentId}
-                                            csrfToken={csrfToken}
-                                            text={{
-                                                userName: commenterUserName,
-                                                initials: commenterUserInitials,
-                                                body: body
-                                            }}
-                                            userProfileLink={`${routes.groupMembersRoot}/${commenterUserId}`}
-                                            date={commentCreatedDate}
-                                            shouldEnableReplies={shouldRenderCommentAndReplyForms}
-                                            replyValidationFailAction={handleValidationFailure}
-                                            replySubmitAction={handleCommentReplySubmit}
-                                            shouldEnableLikes={shouldRenderCommentAndReplyForms}
-                                            likeCount={likeCount}
-                                            isLiked={isLiked}
-                                            likeAction={handleLike}
-                                            className="u-border-l-theme-8">
-                                            {hasReply &&
-                                                <ul className="u-list-none c-comment_replies-list u-p-0">
-                                                    {repliesComponents[0]}
-                                                </ul>
-                                            }
-                                            {hasReplies &&
-                                                <Accordion
-                                                    id={additionalRepliesAccordionId}
-                                                    toggleChildren={<span>{moreRepliesLabel}</span>}
-                                                    toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                    <ul className="u-list-none u-m-0 u-p-0">
-                                                        {repliesComponents.splice(1)}
-                                                    </ul>
-                                                </Accordion>
-                                            }
-                                        </Comment>
-                                    </li>
+                                        <li key={index}>
+                                            <Comment
+                                                commentId={commentId}
+                                                csrfToken={csrfToken}
+                                                text={{
+                                                    userName: commenterUserName,
+                                                    initials: commenterUserInitials,
+                                                    body: body
+                                                }}
+                                                userProfileLink={`${routes.groupMembersRoot}/${commenterUserId}`}
+                                                date={commentCreatedDate}
+                                                shouldEnableReplies={shouldRenderCommentAndReplyForms}
+                                                replyValidationFailAction={handleValidationFailure}
+                                                replySubmitAction={handleCommentReplySubmit}
+                                                shouldEnableLikes={shouldRenderCommentAndReplyForms}
+                                                likeCount={likeCount}
+                                                isLiked={isLiked}
+                                                likeAction={handleLike}
+                                                className="u-border-l-theme-8">
+                                                    {hasReply &&
+                                                        <ul className="u-list-none c-comment_replies-list u-p-0">
+                                                            {repliesComponents[0]}
+                                                        </ul>
+                                                    }
+                                                    {hasReplies &&
+                                                        <Accordion
+                                                            id={additionalRepliesAccordionId}
+                                                            toggleOpenChildren={<span>{fewerRepliesLabel}</span>}
+                                                            toggleClosedChildren={<span>{moreRepliesLabel}</span>}
+                                                            toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                                <ul className="u-list-none u-m-0 u-p-0">
+                                                                    {repliesComponents.splice(1)}
+                                                                </ul>
+                                                        </Accordion>
+                                                    }
+                                            </Comment>
+                                        </li>
 
-                                )
+                                    )
 
-                            })}
-                        </DynamicListContainer>
-                    }
+                                })}
+                            </DynamicListContainer>
+                        }
                     <PaginationWithStatus
                         id="discussion-list-pagination"
                         shouldEnableLoadMore={false}
