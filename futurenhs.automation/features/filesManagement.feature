@@ -157,6 +157,10 @@ Scenario: FNHS91 - Files Page Breadcrumb Validation
 	Then the 'Folder 2' header is displayed
 	When I click the 'Folder 3' link
 	Then the 'Folder 3' header is displayed
-	And the breadcrumb navigation displays 'Files > ... > Folder 1 > Folder 2 > Folder 3'
+	When I click the 'Folder 4' link
+	Then the 'Folder 4' header is displayed
+	When I click the 'Folder 5' link
+	Then the 'Folder 5' header is displayed
+	And the breadcrumb navigation displays 'Files > ... > Folder 2 > Folder 3 > Folder 4'
 	When I click the '...' link
-	Then the 'Automation Test Folder' header is displayed
+	Then the 'Folder 1' header is displayed

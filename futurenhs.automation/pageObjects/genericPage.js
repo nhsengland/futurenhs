@@ -134,7 +134,7 @@ class genericPage extends basePage{
         var firstBreadcrumb = expectedBreadcrumb.split(' > ')[0]
         var expectedBreadcrumb = expectedBreadcrumb.replace(/ > /g, '');
         var foundBreadcrumb = $(`//ol[@class="c-breadcrumb_list"][*[contains(normalize-space(.), "${firstBreadcrumb}")]]`);
-        var breadcrumbText = foundBreadcrumb.getText();
+        var breadcrumbText = foundBreadcrumb.getText().replace(/\.{3,}\n([^\n]*)/g, '...').replace(/\n/g, '');
         expect(breadcrumbText).toEqual(expectedBreadcrumb);
     }
 
