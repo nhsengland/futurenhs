@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31129.286
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcForum.Web", "MVCForum.Website\MvcForum.Web.csproj", "{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -21,8 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1510FC4-7
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForumAutomation", "MVCForumAutomation\MVCForumAutomation.csproj", "{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcForum.Plugins", "MvcForum.Plugins\MvcForum.Plugins.csproj", "{BB39EE58-187F-45E1-BD15-036D7800A7BA}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -74,18 +72,6 @@ Global
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Release|x86.ActiveCfg = Release|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|x86.Build.0 = Debug|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|x86.ActiveCfg = Release|Any CPU
-		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|x86.Build.0 = Release|Any CPU
 		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -139,7 +125,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35
 		SolutionGuid = {386E92E1-7469-431E-8719-37DD8501EF25}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35
 	EndGlobalSection
 EndGlobal
