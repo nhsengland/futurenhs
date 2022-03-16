@@ -82,7 +82,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 },
                                 form: {
                                     submitButton: 'Create Discussion',
-                                    cancelButton: 'Cancel'
+                                    cancelButton: 'Discard Discussion'
                                 }
                             }}
                             submitAction={handleSubmit}

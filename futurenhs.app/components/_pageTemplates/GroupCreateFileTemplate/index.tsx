@@ -91,7 +91,7 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
                                 },
                                 form: {
                                     submitButton: 'Upload File',
-                                    cancelButton: 'Cancel'
+                                    cancelButton: 'Discard File'
                                 }
                             }}
                             submitAction={handleSubmit}

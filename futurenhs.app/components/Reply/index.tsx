@@ -95,7 +95,7 @@ export const Reply: (props: Props) => JSX.Element = ({
                         initialErrors={initialErrors}
                         text={{
                             submitButton: 'Reply',
-                            cancelButton: 'Cancel'
+                            cancelButton: 'Discard Reply'
                         }}
                         validationFailAction={validationFailAction}
                         cancelAction={handleCancel}

@@ -86,7 +86,7 @@ export const GroupCreateUpdateFolderTemplate: (props: Props) => JSX.Element = ({
                                 },
                                 form: {
                                     submitButton: 'Save and continue',
-                                    cancelButton: 'Cancel'
+                                    cancelButton: 'Discard folder'
                                 }
                             }}
                             submitAction={handleSubmit}
