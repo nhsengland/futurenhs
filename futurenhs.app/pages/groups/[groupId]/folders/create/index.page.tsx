@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getServerSideMultiPartFormData } from '@helpers/util/form';
+import { getStandardServiceHeaders } from '@helpers/fetch';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
@@ -17,9 +18,9 @@ import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-import { createFolderForm } from '@formConfigs/create-folder';
-import { GroupCreateFolderTemplate } from '@components/_pageTemplates/GroupCreateFolderTemplate';
-import { Props } from '@components/_pageTemplates/GroupCreateFolderTemplate/interfaces';
+import { groupFolderForm } from '@formConfigs/group-folder';
+import { GroupCreateUpdateFolderTemplate } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate';
+import { Props } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate/interfaces';
 import { withTextContent } from '@hofs/withTextContent';
 
 const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
@@ -86,17 +87,19 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         if (formData && requestMethod === requestMethods.POST) {
     
-                            props.forms[createFolderForm.id].initialValues = formData;
-    
+                            props.forms[groupFolderForm.id].initialValues = formData;
+
+                            const headers = getStandardServiceHeaders({ csrfToken });
+                            const body = getServerSideMultiPartFormData(formData) as any;
+
                             try {
     
-                                await postGroupFolder({ groupId, folderId, user, csrfToken, body: getServerSideMultiPartFormData(formData) as any });
+                                await postGroupFolder({ groupId, folderId, user, headers, body });
     
                                 return {
-                                    props: {},
                                     redirect: {
                                         permanent: false,
-                                        destination: props.routes.groupFoldersRoot
+                                        destination: props.routes.groupFolder || props.routes.groupFoldersRoot
                                     }
                                 }
     
@@ -104,7 +107,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                                 if (error.data?.status) {
     
-                                    props.forms[createFolderForm.id].errors = error.data.body || {
+                                    props.forms[groupFolderForm.id].errors = error.data.body || {
                                         _error: error.data.statusText
                                     };
     
@@ -133,4 +136,4 @@ export const getServerSideProps: GetServerSideProps = withUser({
 /**
  * Export page template
  */
-export default GroupCreateFolderTemplate;
+export default GroupCreateUpdateFolderTemplate;

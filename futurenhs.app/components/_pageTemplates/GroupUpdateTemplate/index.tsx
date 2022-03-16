@@ -8,6 +8,7 @@ import { putGroupDetails } from '@services/putGroupDetails';
 import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
+import { routes } from '@jestMocks/generic-props';
 
 /**
  * Group create folder template
@@ -79,11 +80,11 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
                                     cancelButton: 'Cancel'
                                 }
                             }}
-                            cancelHref="/"
+                            cancelHref={routes.groupRoot}
                             submitAction={handleSubmit}
                             bodyClassName="u-mb-12">
-                            <h2 className="nhsuk-heading-l">{mainHeading}</h2>
-                            <p className="u-text-lead u-text-theme-7 u-mb-4">{secondaryHeading}</p>
+                                <h2 className="nhsuk-heading-l">{mainHeading}</h2>
+                                <p className="u-text-lead u-text-theme-7 u-mb-4">{secondaryHeading}</p>
                         </FormWithErrorSummary>
                     </LayoutColumn>
                 </LayoutColumnContainer>

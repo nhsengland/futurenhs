@@ -9,7 +9,7 @@ declare type Options = ({
     groupId: string;
     folderId: string;
     user: User;
-    headers?: any;
+    headers: any;
     body: FormData;
 });
 
@@ -18,7 +18,7 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const postGroupFolder = async ({
+export const putGroupFolder = async ({
     groupId,
     folderId,
     user,
@@ -31,12 +31,11 @@ export const postGroupFolder = async ({
 
     const { id } = user;
 
-    const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
-    const subFolder: string = folderId ? `/${folderId}` : '';
-    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders${subFolder}`;
+    const apiBase: string = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders/${folderId}`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
-        method: requestMethods.POST,
+        method: requestMethods.PUT,
         customHeaders: headers,
         body: {
             Title: body.get('name'),
@@ -51,8 +50,8 @@ export const postGroupFolder = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting new group folder', {
-            serviceId: services.POST_GROUP_FOLDER,
+        throw new ServiceError('Error putting updates to group folder', {
+            serviceId: services.PUT_GROUP_FOLDER,
             status: status,
             statusText: statusText,
             body: apiData

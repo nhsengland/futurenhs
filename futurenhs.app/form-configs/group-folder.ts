@@ -1,8 +1,8 @@
 import { formTypes } from "@constants/forms";
 import { FormConfig } from '@appTypes/form';
 
-export const createFolderForm: FormConfig = {
-    id: formTypes.CREATE_FOLDER,
+export const groupFolderForm: FormConfig = {
+    id: formTypes.GROUP_FOLDER,
     steps: [
         {
             fields: [
@@ -10,8 +10,7 @@ export const createFolderForm: FormConfig = {
                     name: 'name',
                     inputType: 'text',
                     text: {
-                        label: 'Enter a folder title',
-                        hint: 'This is a hint offering some short guidance to users'
+                        label: 'Enter a folder title'
                     },
                     component: 'input',
                     shouldRenderRemainingCharacterCount: true,
@@ -30,8 +29,7 @@ export const createFolderForm: FormConfig = {
                 {
                     name: 'description',
                     text: {
-                        label: 'Enter a folder description (optional)',
-                        hint: 'This is a hint offering some short guidance to users'
+                        label: 'Enter a folder description (optional)'
                     },
                     component: 'textArea',
                     shouldRenderRemainingCharacterCount: true,

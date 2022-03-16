@@ -112,3 +112,14 @@ export const timer = (delay: number) => new Promise((resolve) => {
     }, delay);
 
 });
+
+export const getStandardServiceHeaders = ({
+    csrfToken,
+    etag
+}: {
+    csrfToken: string;
+    etag?: string;
+}) => ({
+    'csrf-token': csrfToken,
+    'If-Match': etag
+});

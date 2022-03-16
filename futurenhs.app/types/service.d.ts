@@ -4,6 +4,7 @@ import { Content } from '@appTypes/content';
 import { Pagination, ApiPagination } from '@appTypes/pagination';
 
 export interface ServiceResponse<T> {
+    headers?: Headers;
     data?: T;
     errors?: Array<Record<any>>;
     succeeded?: boolean;
@@ -11,6 +12,7 @@ export interface ServiceResponse<T> {
 }
 
 export interface ServicePaginatedResponse<T> {
+    headers?: Headers;
     pagination?: Pagination;
     data?: T;
     errors?: Array<any>;

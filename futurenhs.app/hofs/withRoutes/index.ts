@@ -29,6 +29,7 @@ export const withRoutes = (config: HofConfig, dependencies?: {}): GetServerSideP
                     groupLeave: groupIndexRoute ? `${groupIndexRoute}/leave` : null,
                     groupForumRoot: groupIndexRoute ? `${groupIndexRoute}/forum` : null,
                     groupFoldersRoot: groupIndexRoute ? `${groupIndexRoute}/folders` : null,
+                    groupFolder: groupIndexRoute && context.params.folderId ? `${groupIndexRoute}/folders/${context.params.folderId}` : null,
                     groupFilesRoot: groupIndexRoute ? `${groupIndexRoute}/files` : null,
                     groupMembersRoot: groupIndexRoute ? `${groupIndexRoute}/members` : null
                 }

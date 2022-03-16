@@ -7,6 +7,7 @@ export const routes: Routes = {
     groupLeave: '/:groupId/leave',
     groupForumRoot: '/:groupId/forum',
     groupFoldersRoot: '/:groupId/folders',
+    groupFolder: '/:groupId/folders/:folderId',
     groupFilesRoot: '/:groupId/files',
     groupMembersRoot: '/:groupId/members',
 };

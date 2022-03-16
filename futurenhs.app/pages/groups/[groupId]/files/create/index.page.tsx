@@ -15,10 +15,8 @@ import { postGroupFile } from '@services/postGroupFile';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
-
-import { createFileForm } from '@formConfigs/create-file';
 import { GroupCreateFileTemplate } from '@components/_pageTemplates/GroupCreateFileTemplate';
-import { Props } from '@components/_pageTemplates/GroupCreateFolderTemplate/interfaces';
+import { Props } from '@components/_pageTemplates/GroupCreateFileTemplate/interfaces';
 import { withTextContent } from '@hofs/withTextContent';
 
 const routeId: string = '2ff0717e-494f-4400-8c33-600c080e27b7';

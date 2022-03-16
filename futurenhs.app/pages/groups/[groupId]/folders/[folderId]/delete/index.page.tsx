@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
 
-import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
@@ -13,8 +12,8 @@ import { selectParam, selectUser, selectQuery, selectCsrfToken } from '@selector
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
-import { GroupCreateFolderTemplate } from '@components/_pageTemplates/GroupCreateFolderTemplate';
-import { Props } from '@components/_pageTemplates/GroupCreateFolderTemplate/interfaces';
+import { GroupCreateUpdateFolderTemplate } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate';
+import { Props } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate/interfaces';
 
 const props: Partial<Props> = {};
 
@@ -62,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     return {
                         redirect: {
                             permanent: false,
-                            destination: '/'
+                            destination: props.routes.groupFoldersRoot
                         }
                     };
     
@@ -80,4 +79,4 @@ export const getServerSideProps: GetServerSideProps = withUser({
 /**
  * Export page template
  */
-export default GroupCreateFolderTemplate;
+export default GroupCreateUpdateFolderTemplate;

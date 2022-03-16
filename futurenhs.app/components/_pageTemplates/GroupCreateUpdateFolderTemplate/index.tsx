@@ -2,20 +2,23 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { formTypes } from '@constants/forms';
+import { getStandardServiceHeaders } from '@helpers/fetch';
 import { selectFormDefaultFields, selectFormInitialValues, selectFormErrors } from '@selectors/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
 import { postGroupFolder } from '@services/postGroupFolder';
+import { putGroupFolder } from '@services/putGroupFolder';
 import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
 /**
- * Group create folder template
+ * Group create/update folder template
  */
-export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
+export const GroupCreateUpdateFolderTemplate: (props: Props) => JSX.Element = ({
+    etag,
     groupId,
     folderId,
     csrfToken,
@@ -27,25 +30,25 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_FOLDER));
+    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.GROUP_FOLDER));
 
-    const initialValues = selectFormInitialValues(forms, formTypes.CREATE_FOLDER);
-    const fields = selectFormDefaultFields(forms, formTypes.CREATE_FOLDER);
+    const initialValues = selectFormInitialValues(forms, formTypes.GROUP_FOLDER);
+    const fields = selectFormDefaultFields(forms, formTypes.GROUP_FOLDER);
 
     const { text } = folder ?? {};
     const { name } = text ?? {};
-
     const {secondaryHeading} = contentText ?? {};
-
-    const folderHref: string = `${routes.groupFoldersRoot}${folderId ? '/' + folderId : ''}`;
 
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
 
         return new Promise((resolve) => {
 
-            postGroupFolder({ groupId, folderId, user, csrfToken, body: formData }).then(() => {
+            const serviceToUse = router.asPath.indexOf('/update') > -1 ? putGroupFolder : postGroupFolder;
+            const headers = getStandardServiceHeaders({ csrfToken, etag });
 
-                router.push(folderHref);
+            serviceToUse({ groupId, folderId, user, headers, body: formData }).then(() => {
+
+                router.push(routes.groupFolder || routes.groupFoldersRoot);
 
                 resolve({});
 
@@ -73,7 +76,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                     <LayoutColumn tablet={8}>
                         <FormWithErrorSummary
                             csrfToken={csrfToken}
-                            formId={formTypes.CREATE_FOLDER}
+                            formId={formTypes.GROUP_FOLDER}
                             fields={fields}
                             errors={errors}
                             initialValues={initialValues}
@@ -87,7 +90,7 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                                 }
                             }}
                             submitAction={handleSubmit}
-                            cancelHref={folderHref}
+                            cancelHref={routes.groupFolder || routes.groupFoldersRoot}
                             bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1"
                             submitButtonClassName="u-float-right">
                                 {name &&
@@ -97,7 +100,6 @@ export const GroupCreateFolderTemplate: (props: Props) => JSX.Element = ({
                                     </>
                                 }
                                 {name ? <h3 className="nhsuk-heading-m">{secondaryHeading}</h3> : <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>}
-                                <RichText wrapperElementType="p" bodyHtml="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
                         </FormWithErrorSummary>
                     </LayoutColumn>
                 </LayoutColumnContainer>
