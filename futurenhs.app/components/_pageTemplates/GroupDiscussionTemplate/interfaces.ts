@@ -8,9 +8,9 @@ declare interface ContentText extends GroupsPageTextContent {
     totalRecordsLabel?: string;
     viewCountLabel?: string;
     moreRepliesLabel?: string;
+    fewerRepliesLabel?: string;
     signedInLabel?: string;
 }
-
 
 export interface Props extends GroupPage {
     contentText: ContentText

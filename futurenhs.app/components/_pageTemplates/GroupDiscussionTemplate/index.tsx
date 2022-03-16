@@ -70,11 +70,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         totalRecordsLabel,
         viewCountLabel,
         moreRepliesLabel,
+        fewerRepliesLabel,
         secondaryHeading,
         signedInLabel
     } = contentText ?? {};
-
-    const fewerRepliesLabel: string = 'Fewer replies';
 
     const { id, text } = user ?? {};
     const { userName } = text ?? {};

@@ -68,12 +68,13 @@ export const Reply: (props: Props) => JSX.Element = ({
         })
     };
 
+    const accordionToggleContent: JSX.Element = <><SVGIcon name="icon-reply" className={generatedClasses.icon} /><span>{reply}</span></>
+
     useEffect(() => {
 
         setShouldRenderCancelButton(true);
 
     }, []);
-    const accordionToggleContent: JSX.Element = <><SVGIcon name="icon-reply" className={generatedClasses.icon} /><span>{reply}</span></>
 
     return (
 
