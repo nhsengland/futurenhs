@@ -1,7 +1,7 @@
 trigger:
  branches:
     include:
-    - TRY-RI-VNEXT-APP
+    - SPRINT
  paths:
     include:
     - MVCForum/*
