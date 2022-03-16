@@ -12,6 +12,7 @@ const { join } = require('path');
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const formData = require("express-form-data");
+const os = require("os");
 const { randomBytes } = require('crypto');
 const { AbortController } = require('node-abort-controller');
 
@@ -51,7 +52,10 @@ let server = undefined;
  * Bind middleware
  */
 app.use(express.json());
-app.use(formData.parse({}));
+app.use(formData.parse({
+    uploadDir: os.tmpdir(),
+    autoClean: true
+}));
 //app.use(formData.stream());
 app.use(formData.union());
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));

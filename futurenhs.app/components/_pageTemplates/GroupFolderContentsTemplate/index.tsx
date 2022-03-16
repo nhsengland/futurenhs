@@ -46,11 +46,11 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
             path } = folder ?? {};
     const { name, body } = folderText ?? {};
     const { foldersHeading,
-        noFolders,
-        createFolder,
-        updateFolder,
-        deleteFolder,
-        createFile } = contentText ?? {};
+            noFolders,
+            createFolder,
+            updateFolder,
+            deleteFolder,
+            createFile } = contentText ?? {};
 
     const hasFolderContents: boolean = folderContentsList?.length > 0;
     const hasAddFileAction: boolean = actions?.includes(userActions.GROUPS_FILES_ADD);
@@ -100,7 +100,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
             },
             {
                 children: 'Description',
-                className: folderId ? 'tablet:u-w-1/5' : 'tablet:u-w-4/12'
+                className: folderId ? 'tablet:u-w-1/5 desktop:u-w-1/4' : 'tablet:u-w-4/12 desktop:u-w-1/4'
             },
             {
                 children: 'Modified'
@@ -150,7 +150,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                         ['u-text-center u-text-base u-items-center u-justify-end']: true
                     }),
                     name: classNames({
-                        ['u-flex-grow u-w-4/6']: true
+                        ['u-flex-grow u-w-4/6 u-truncate']: true
                     }),
                     description: classNames({
                         ['u-flex-col u-w-full']: true,
@@ -185,7 +185,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     className: generatedCellClasses.type
                 });
                 row.push({
-                    children: <Link href={itemPath}><a className="o-truncated-text-lines-3">{name}</a></Link>,
+                    children: <Link href={itemPath}><a>{name}</a></Link>,
                     shouldRenderCellHeader: false,
                     className: generatedCellClasses.name
                 });

@@ -1,7 +1,9 @@
 import { GetServerSideProps } from 'next';
+import { FormDataEncoder } from 'form-data-encoder';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
 import { routeParams } from '@constants/routes';
@@ -91,7 +93,18 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         if (formData && requestMethod === requestMethods.POST) {
     
-                            // TODO
+                            try {
+
+                                const multiPartFormData = getServerSideMultiPartFormData(formData);
+                                const encoded = new FormDataEncoder(multiPartFormData);
+
+                                await postGroupFile({ groupId, folderId, user, csrfToken, headers: encoded.headers, body: multiPartFormData as any });
+
+                            } catch (error) {
+
+                                return handleSSRErrorProps({ props, error });
+
+                            }
     
                         }
     

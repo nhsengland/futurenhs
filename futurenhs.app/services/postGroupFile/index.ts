@@ -10,6 +10,7 @@ declare type Options = ({
     folderId: string,
     user: User;
     csrfToken: string;
+    headers?: any;
     body: FormData;
 });
 
@@ -23,6 +24,7 @@ export const postGroupFile = async ({
     folderId,
     user,
     csrfToken,
+    headers = {},
     body
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
 
@@ -31,13 +33,14 @@ export const postGroupFile = async ({
 
     const { id } = user;
 
-    const apiBase: string = typeof window === 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiBase: string = process.env.NEXT_PUBLIC_API_BASE_URL;
     const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders/${folderId}/files`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
         customHeaders: {
-            'csrf-token': csrfToken
+            'csrf-token': csrfToken,
+            ...headers
         },
         isMultiPartForm: true,
         body: body
