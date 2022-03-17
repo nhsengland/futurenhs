@@ -7,15 +7,15 @@ export default {
     bodyHtml: `
         <p>Last updated: 15/03/2022</p>
         <p>FutureNHS (or collaborate.future.nhs.uk) is provided by NHS England.</p>
-        <p>NHS England is the data controller for pages starting with collaborate.future.nhs.uk - for example <a target="_blank" href="/contact-us">https://collaborate.future.nhs.uk/contact-us</a>.</p>
+        <p>NHS England is the data controller for pages starting with collaborate.future.nhs.uk - for example <a href="/contact-us">https://collaborate.future.nhs.uk/contact-us</a>.</p>
         <p>If you follow a link to a service provided by someone other than NHS England, please be aware that a different organisation will:</p>
         <ul>
             <li>Be the data controller</li>
             <li>Be responsible for processing any data you share with them</li>
             <li>Publish and manage their own privacy notice with details of how to contact them</li>
         </ul>
-        <p>A data controller determines how and why personal data is processed. For more information, read the Cabinet Office’s entry in <a target="_blank" href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" rel="noreferrer nofollow">the Data Protection Public Register</a>.</p>
-        <p>You can find out contact details on our <a target="_blank" href="/contact-us">contact us page</a>.</p>
+        <p>A data controller determines how and why personal data is processed. For more information, read the Cabinet Office’s entry in <a href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" rel="noreferrer nofollow">the Data Protection Public Register</a>.</p>
+        <p>You can find out contact details on our <a href="/contact-us">contact us page</a>.</p>
         <h2>What data we collect</h2>
         <p>Depending on how you use the platform, the types of personal data we may collect from you includes:</p>
         <ul>
@@ -23,7 +23,7 @@ export default {
             <li>your email address and subscription preferences when you sign up to our email alerts</li>
             <li>how you use our emails - for example whether you open them and which links you click on</li>
             <li>your Internet Protocol (IP) address, and details of which version of web browser you used</li>
-            <li>information on how you use the site, using <a target="_blank" href="/cookies">cookies</a> and page tagging techniques</li>
+            <li>information on how you use the site, using <a href="/cookies">cookies</a> and page tagging techniques</li>
         </ul>
         <p>When you register with the FutureNHS platform and create an account we also collect</p>
         <ul>
@@ -31,7 +31,7 @@ export default {
             <li>Optional identity and contact data you provide when you register to use FutureNHS, including for example your role, organisation, geographical location, etc.</li>
             <li>Identifiable FutureNHS usage data that is automatically collected by the platform database when you visit, such as pages visited and documents opened, how often you use the Portal and when</li>
         </ul>
-        <p>We use <a target="_blank" href="https://support.google.com/analytics/topic/2919631" rel="noreferrer nofollow">Google Analytics</a> to collect information about how you use FutureNHS and how the website performs during your visit. This includes IP addresses. The data is anonymised before being used for analytics and web performance processing.</p>
+        <p>We use <a href="https://support.google.com/analytics/topic/2919631" rel="noreferrer nofollow">Google Analytics</a> to collect information about how you use FutureNHS and how the website performs during your visit. This includes IP addresses. The data is anonymised before being used for analytics and web performance processing.</p>
         <p>Google Analytics processes anonymised information about:</p>
         <ul>
             <li>the pages you visit on FutureNHS</li>
@@ -73,7 +73,7 @@ export default {
         <p>We may share this information with [enter organisations or individuals].</p>
         <p>Under the General Data Protection Regulation (GDPR), the lawful bases we rely on for processing this information are:</p>
         <ul>
-            <li>Your consent. You can remove your consent at any time. You can do this by <a target="_blank" href="/contact-us">contacting us</a></li>
+            <li>Your consent. You can remove your consent at any time. You can do this by <a href="/contact-us">contacting us</a></li>
             <li>To perform a public task</li>
         </ul>
         <h2>Your data protection rights</h2>
@@ -87,9 +87,9 @@ export default {
             <li><span class="u-text-bold">Your right to data portability</span> - You have the right to ask that we transfer the personal information you gave us to another organisation, or to you, in certain circumstances.</li>
         </ul>
         <p>You are not required to pay any charge for exercising your rights. If you make a request, we have one month to respond to you.</p>
-        <p>Please <a target="_blank" href="/contact-us">contact us</a> if you wish to make a request.</p>
+        <p>Please <a href="/contact-us">contact us</a> if you wish to make a request.</p>
         <h2>How to complain</h2>
-        <p>If you have any concerns about our use of your personal information, you can <a target="_blank" href="/contact-us">contact us</a> to make a complaint.</p>
+        <p>If you have any concerns about our use of your personal information, you can <a href="/contact-us">contact us</a> to make a complaint.</p>
         <p>You can also complain to the ICO if you are unhappy with how we have used your data.</p>
         <p>The ICO's address:</p>
         <p>Information Commissioner’s Office</p>
@@ -100,7 +100,7 @@ export default {
         <p>SK9 5AF</p>
         <br>
         <p>Helpline number: 0303 123 1113</p>
-        <p>ICO website: <a target="_blank" href="https://www.ico.org.uk" rel="noreferrer nofollow">https://www.ico.org.uk</a></p>
+        <p>ICO website: <a href="https://www.ico.org.uk" rel="noreferrer nofollow">https://www.ico.org.uk</a></p>
 
     `
 } as GenericPageTextContent;
