@@ -1,15 +1,56 @@
-import { FormData } from 'formdata-node';
+const FormData = require('form-data');
 
 /**
- * Returns relevant aria attributes for a field's current state
+ * Converts a form submission object submitted via express-form-data into a basic server-side FormData object
+ * which exposes get methods that reflect those of FormData for use in services to that standard url encoded and multipart form requests
+ * can be handled more generically
  */
-export const getServerSideMultiPartFormData = (body: Record<any, any>): FormData => {
+export interface ServerSideFormData {
+    get: (fieldName: string) => any
+    getAll: () => Record<string, any>;
+};
+
+export const getServerSideFormData = (body: Record<any, any>): ServerSideFormData => {
+
+    class PseudoFormData {
+
+        body;
+
+        constructor(body){
+
+            this.body = body
+
+        }
+
+        public get(fieldName){
+
+            return this.body[fieldName]; 
+
+        }
+
+        public getAll(){
+
+            return this.body;
+
+        }
+
+    }
+
+    return new PseudoFormData(body);
+
+};
+
+/**
+ * Converts a form submission object submitted via express-form-data into a server-side FormData object
+ * for submission to services
+ */
+ export const getServerSideMultiPartFormData = (body: Record<any, any>): any => {
 
     const formData: any = new FormData();
 
     for(const fieldName in body){
 
-        formData.set(fieldName, body[fieldName]);
+        formData.append(fieldName, body[fieldName]);
 
     }
 

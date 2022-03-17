@@ -11,6 +11,7 @@ declare type Options = ({
     user: User;
     groupId: string;
     folderId: string;
+    isForEdit?: boolean;
 });
 
 declare type Dependencies = ({
@@ -21,7 +22,8 @@ declare type Dependencies = ({
 export const getGroupFolder = async ({
     user,
     groupId,
-    folderId
+    folderId,
+    isForEdit
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Folder>> => {
 
     const serviceResponse: ServiceResponse<Folder> = {
@@ -33,7 +35,7 @@ export const getGroupFolder = async ({
 
     const id: string = user.id;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}`;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}${isForEdit ? '/update' : ''}`;
     const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: requestMethods.GET }), 30000);
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;

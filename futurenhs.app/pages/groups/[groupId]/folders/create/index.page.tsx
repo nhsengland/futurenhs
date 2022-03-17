@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { getServerSideMultiPartFormData } from '@helpers/util/form';
 import { getStandardServiceHeaders } from '@helpers/fetch';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
@@ -22,6 +21,7 @@ import { groupFolderForm } from '@formConfigs/group-folder';
 import { GroupCreateUpdateFolderTemplate } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate';
 import { Props } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate/interfaces';
 import { withTextContent } from '@hofs/withTextContent';
+import { ServerSideFormData } from '@helpers/util/form';
 
 const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2';
 const props: Partial<Props> = {};
@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const groupId: string = selectParam(context, routeParams.GROUPID);
                         const folderId: string = selectQuery(context, routeParams.FOLDERID);
                         const csrfToken: string = selectCsrfToken(context);
-                        const formData: any = selectFormData(context);
+                        const formData: ServerSideFormData = selectFormData(context);
                         const requestMethod: string = selectRequestMethod(context);
     
                         props.layoutId = layoutIds.GROUP;
@@ -71,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             try {
     
                                 const [groupFolder] = await Promise.all([getGroupFolder({ user, groupId, folderId })]);
-    
+
                                 props.folder = groupFolder.data;
     
                             } catch (error) {
@@ -87,14 +87,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         if (formData && requestMethod === requestMethods.POST) {
     
-                            props.forms[groupFolderForm.id].initialValues = formData;
+                            props.forms[groupFolderForm.id].initialValues = formData.getAll();
 
                             const headers = getStandardServiceHeaders({ csrfToken });
-                            const body = getServerSideMultiPartFormData(formData) as any;
 
                             try {
     
-                                await postGroupFolder({ groupId, folderId, user, headers, body });
+                                await postGroupFolder({ groupId, folderId, user, headers, body: formData });
     
                                 return {
                                     redirect: {

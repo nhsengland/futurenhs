@@ -1,9 +1,8 @@
 import { GetServerSideProps } from 'next';
-import { FormDataEncoder } from 'form-data-encoder';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { getServerSideMultiPartFormData } from '@helpers/util/form';
+import { getStandardServiceHeaders } from '@helpers/fetch';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
 import { routeParams } from '@constants/routes';
@@ -12,7 +11,7 @@ import { withUser } from '@hofs/withUser';
 import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { selectCsrfToken, selectFormData, selectParam, selectUser, selectQuery, selectRequestMethod } from '@selectors/context';
+import { selectCsrfToken, selectMultiPartFormData, selectParam, selectUser, selectQuery, selectRequestMethod } from '@selectors/context';
 import { postGroupFile } from '@services/postGroupFile';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
@@ -46,13 +45,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const groupId: string = selectParam(context, routeParams.GROUPID);
                         const folderId: string = selectQuery(context, routeParams.FOLDERID);
                         const csrfToken: string = selectCsrfToken(context);
-                        const formData: any = selectFormData(context);
+                        const formData: any = selectMultiPartFormData(context);
                         const requestMethod: requestMethods = selectRequestMethod(context);
     
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FILES;
     
-                        if (!props.actions?.includes(actionConstants.GROUPS_FILES_ADD)) {
+                        if (!props.actions?.includes(actionConstants.GROUPS_FILES_ADD) || !folderId) {
     
                             return {
                                 notFound: true
@@ -71,40 +70,31 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                             props.folderId = folderId;
                             props.folder = groupFolder.data;
+
+                            /**
+                             * handle server-side form POST
+                             */
+                            if (formData && requestMethod === requestMethods.POST) {
+        
+                                const headers = { 
+                                    ...getStandardServiceHeaders({ csrfToken }),
+                                    ...formData.getHeaders()
+                                };
+
+                                await postGroupFile({ groupId, folderId, user, headers, body: formData });
+
+                                return {
+                                    redirect: {
+                                        permanent: false,
+                                        destination: `${props.routes.groupFoldersRoot}/${folderId}`
+                                    }
+                                }
+
+                            }    
     
                         } catch (error) {
-    
-                            if(error.data?.status === 404){
-    
-                                return {
-                                    notFound: true
-                                }
-    
-                            } else {
-    
-                                return handleSSRErrorProps({ props, error });
-    
-                            }
-    
-                        }
-    
-                        /**
-                         * handle server-side form POST
-                         */
-                        if (formData && requestMethod === requestMethods.POST) {
-    
-                            try {
 
-                                const multiPartFormData = getServerSideMultiPartFormData(formData);
-                                const encoded = new FormDataEncoder(multiPartFormData);
-
-                                await postGroupFile({ groupId, folderId, user, csrfToken, headers: encoded.headers, body: multiPartFormData as any });
-
-                            } catch (error) {
-
-                                return handleSSRErrorProps({ props, error });
-
-                            }
+                            return handleSSRErrorProps({ props, error });
     
                         }
     

@@ -1,6 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
-import { requestMethods } from '@constants/fetch';
+import { requestMethods, defaultTimeOutMillis } from '@constants/fetch';
 import { ServiceError } from '..';
 import { Service, ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -10,7 +10,7 @@ declare type Options = ({
     discussionId: string;
     commentId: string;
     user: User;
-    csrfToken: string;
+    headers: string;
     body: FormData;
 });
 
@@ -27,6 +27,7 @@ export const postGroupDiscussionCommentReply: Service = async ({
     discussionId,
     commentId,
     user,
+    headers,
     body
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
 
@@ -40,11 +41,11 @@ export const postGroupDiscussionCommentReply: Service = async ({
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
+        customHeaders: headers,
         body: {
-            _csrf: body.get('_csrf'),
             Content: body.get(`content-${body.get('_instance-id')}`)
         }
-    }), 30000);
+    }), defaultTimeOutMillis);
 
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;

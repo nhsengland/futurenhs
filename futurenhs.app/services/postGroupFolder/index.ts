@@ -1,16 +1,17 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
-import { requestMethods } from '@constants/fetch';
+import { requestMethods, defaultTimeOutMillis } from '@constants/fetch';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
+import { ServerSideFormData } from '@helpers/util/form';
 
 declare type Options = ({
     groupId: string;
     folderId: string;
     user: User;
     headers?: any;
-    body: FormData;
+    body: FormData | ServerSideFormData;
 });
 
 declare type Dependencies = ({
@@ -42,7 +43,7 @@ export const postGroupFolder = async ({
             Title: body.get('name'),
             Description: body.get('description')
         }
-    }), 30000);
+    }), defaultTimeOutMillis);
     
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;

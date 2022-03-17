@@ -55,8 +55,10 @@ export const GroupCreateUpdateFolderTemplate: (props: Props) => JSX.Element = ({
             })
             .catch((error) => {
 
-                const errors: FormErrors = {
+                const errors: FormErrors = error.data ? {
                     [error.data.status]: error.data.statusText
+                } : {
+                    ['error']: error.message
                 };
     
                 setErrors(errors);

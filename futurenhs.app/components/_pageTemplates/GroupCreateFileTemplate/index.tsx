@@ -43,7 +43,7 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
 
         return new Promise((resolve) => {
 
-            postGroupFile({ groupId, folderId, user, csrfToken, body: formData }).then(() => {
+            postGroupFile({ groupId, folderId, user, body: formData }).then(() => {
 
                 router.push(folderHref);
                 resolve({});

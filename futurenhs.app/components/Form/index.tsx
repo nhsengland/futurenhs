@@ -131,6 +131,17 @@ export const Form: (props: Props) => JSX.Element = ({
 
     const handleChange = (props: any): void => changeAction?.(props);
     const handleValidate = (submission: any): Record<string, string> => validate(submission, fields);
+    const handleValidationFailure = (errors: any) => {
+
+        validationFailAction?.(errors);
+
+        if (shouldAddErrorTitle) {
+
+            document.title = `Error: ${pageTitle}`;
+            
+        }
+
+    }; 
 
     /**
      * Render
@@ -197,25 +208,19 @@ export const Form: (props: Props) => JSX.Element = ({
                                  */
                                 if (hasValidationErrors) {
 
-                                    validationFailAction?.(errors);
+                                    handleValidationFailure(errors);
 
-                                    if (shouldAddErrorTitle) {
-
-                                        document.title = `Error: ${pageTitle}`;
-                                        
-                                    }
-
-                                    /**
-                                     * Submit and then reset the form on success
-                                     */
+                                /**
+                                 * Submit and then reset the form on success
+                                 */
                                 } else {
 
                                     const formData: FormData = new FormData(event.target);
 
-                                    //setIsProcessing(true);
+                                    setIsProcessing(true);
                                     submitAction?.(formData)?.then((errors: Record<string, string>) => {
 
-                                        //setIsProcessing(false);
+                                        setIsProcessing(false);
 
                                         if (!errors || Object.keys(errors).length === 0) {
 
@@ -224,6 +229,10 @@ export const Form: (props: Props) => JSX.Element = ({
                                              */
                                             form.restart();
                                             document.title = pageTitle;
+
+                                        } else {
+
+                                            handleValidationFailure(errors);
 
                                         }
 

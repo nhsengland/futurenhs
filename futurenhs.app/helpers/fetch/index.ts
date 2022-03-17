@@ -7,7 +7,7 @@ import { FetchOptions, FetchResponse } from '@appTypes/fetch';
 export const fetchWithTimeOut = (url: string, options: FetchOptions, timeOut: number): Promise<any> => {
 
     return Promise.race([
-        fetch(url, options).then((response: any) => {
+        fetch(url, options as any).then((response: any) => {
 
             return response;
 
@@ -119,7 +119,22 @@ export const getStandardServiceHeaders = ({
 }: {
     csrfToken: string;
     etag?: string;
-}) => ({
-    'csrf-token': csrfToken,
-    'If-Match': etag
-});
+}) => {
+    
+    const headers: Record<string, string> = {};
+
+    if(csrfToken){
+
+        headers['csrf-token'] = csrfToken;
+
+    }
+
+    if(etag){
+
+        headers['If-Match'] = etag;
+
+    }
+
+    return headers;
+
+};

@@ -1,14 +1,16 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
-import { requestMethods } from '@constants/fetch';
+import { requestMethods, defaultTimeOutMillis } from '@constants/fetch';
 import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
+import { ServerSideFormData } from '@helpers/util/form';
 
 declare type Options = ({
     groupId: string;
     user: User;
-    body: FormData;
+    headers?: Headers;
+    body: FormData | ServerSideFormData;
 });
 
 declare type Dependencies = ({
@@ -19,6 +21,7 @@ declare type Dependencies = ({
 export const postGroupDiscussion = async ({
     groupId,
     user,
+    headers,
     body
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
 
@@ -27,16 +30,17 @@ export const postGroupDiscussion = async ({
 
     const { id } = user;
 
-    const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiBase: string = process.env.NEXT_PUBLIC_API_BASE_URL;
     const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/discussions`;
+
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
+        customHeaders: headers,
         body: {
-            _csrf: body.get('_csrf'),
             Title: body.get('title'),
             Content: body.get('content')
         }
-    }), 30000);
+    }), defaultTimeOutMillis);
 
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;

@@ -1,6 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
-import { requestMethods } from '@constants/fetch';
+import { requestMethods, defaultTimeOutMillis } from '@constants/fetch';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -9,7 +9,6 @@ declare type Options = ({
     groupId: string;
     folderId: string,
     user: User;
-    csrfToken: string;
     headers?: any;
     body: FormData;
 });
@@ -23,7 +22,6 @@ export const postGroupFile = async ({
     groupId,
     folderId,
     user,
-    csrfToken,
     headers = {},
     body
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
@@ -39,12 +37,11 @@ export const postGroupFile = async ({
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
         customHeaders: {
-            'csrf-token': csrfToken,
             ...headers
         },
         isMultiPartForm: true,
         body: body
-    }), 30000);
+    }), defaultTimeOutMillis);
     
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;
