@@ -138,18 +138,13 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
         
     };
 
-    const handleAccordionToggle = useCallback((id, isOpen: boolean) => {
-
-        id === generatedIds.actionsAccordion && setIsActionsAccordionOpen(isOpen);
-        id === generatedIds.menuAccordion && setIsMenuAccordionOpen(isOpen);
-
-    }, [isActionsAccordionOpen, isMenuAccordionOpen]);
 
     useEffect(() => {
 
         setIsMenuAccordionOpen(isDesktop);
 
     }, [isDesktop]);
+
 
     return (
 
@@ -193,7 +188,6 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                                 isOpen={isActionsAccordionOpen}
                                                 shouldCloseOnLeave={true}
                                                 shouldCloseOnContentClick={true}
-                                                toggleAction={handleAccordionToggle}
                                                 toggleClassName={generatedClasses.actionsTrigger}
                                                 toggleOpenChildren={
                                                     <>
@@ -265,7 +259,6 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         isOpen={isMenuAccordionOpen}
                         shouldCloseOnLeave={isMobile}
                         shouldCloseOnContentClick={isMobile}
-                        toggleAction={handleAccordionToggle}
                         toggleClassName={generatedClasses.navTrigger}
                         toggleOpenChildren={
                             <>
