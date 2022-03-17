@@ -39,7 +39,7 @@ export const postGroupFolder = async ({
         method: requestMethods.POST,
         headers: headers,
         body: {
-            Title: body.get('Title'),
+            Name: body.get('Name'),
             Description: body.get('Description')
         }
     }), defaultTimeOutMillis);

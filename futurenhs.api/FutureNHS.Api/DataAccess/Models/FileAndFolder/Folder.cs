@@ -1,6 +1,6 @@
 ﻿namespace FutureNHS.Api.DataAccess.Models.FileAndFolder
 {
-    public sealed record Folder : BaseData
+    public sealed record Folder
     {
         public Guid Id { get; init; }
         public string Name { get; init; }
