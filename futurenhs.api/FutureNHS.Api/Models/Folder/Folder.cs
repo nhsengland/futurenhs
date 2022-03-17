@@ -1,8 +1,10 @@
-﻿namespace FutureNHS.Api.Models.Folder
+﻿using FutureNHS.Api.DataAccess.Models;
+
+namespace FutureNHS.Api.Models.Folder
 {
-    public sealed class Folder
+    public sealed record Folder : BaseData
     {
-        public string Title { get; set; }
+        public string Name { get; set; }
 
         public string Description { get; set; }
     }

@@ -1,6 +1,8 @@
-﻿namespace FutureNHS.Api.DataAccess.DTOs
+﻿using FutureNHS.Api.DataAccess.Models;
+
+namespace FutureNHS.Api.DataAccess.DTOs
 {
-    public sealed record FolderDto
+    public sealed record FolderDto : BaseData
     {
         public Guid Id { get; init; }
         public string Title { get; init; }
@@ -13,6 +15,5 @@
         public int FileCount { get; init; }
         public Guid GroupId { get; init; }
         public bool IsDeleted { get; init; }
-        public byte[] RowVersion { get; set; }
     }
 }

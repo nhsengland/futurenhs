@@ -1,5 +1,6 @@
 using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.Models.Folder;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
@@ -25,10 +26,10 @@ namespace FutureNHS.Api.Controllers
         public FolderController(ILogger<FolderController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IFolderService folderService,
             IPermissionsService permissionsService, IEtagService etagService, IHtmlSanitizer htmlSanitizer)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
-            _fileAndFolderDataProvider = fileAndFolderDataProvider ?? throw new ArgumentNullException(nameof(fileAndFolderDataProvider)); ;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _fileAndFolderDataProvider = fileAndFolderDataProvider ?? throw new ArgumentNullException(nameof(fileAndFolderDataProvider));
             _folderService = folderService ?? throw new ArgumentNullException(nameof(folderService)); ;
-            _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService)); ;
+            _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
             _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
             _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
         }
@@ -51,7 +52,7 @@ namespace FutureNHS.Api.Controllers
         {
             var sanitisedFolder = new Folder
             {
-                Title = _htmlSanitizer.Sanitize(folder.Title),
+                Name = _htmlSanitizer.Sanitize(folder.Name),
                 Description = _htmlSanitizer.Sanitize(folder.Description)
             };
 
@@ -61,31 +62,46 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("users/{userId:guid}/groups/{slug}/folders/{id:guid}")]
-        public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Guid id, Folder folder, CancellationToken cancellationToken)
-        {
+        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}")]
+        public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, CancellationToken cancellationToken)
+        {            
             var sanitisedFolder = new Folder
             {
-                Title = _htmlSanitizer.Sanitize(folder.Title),
+                Name = _htmlSanitizer.Sanitize(folder.Name),
                 Description = _htmlSanitizer.Sanitize(folder.Description)
             };
 
-            var folderId = await _folderService.CreateChildFolderAsync(userId, slug, id, sanitisedFolder, cancellationToken);
+			var childFolderId = await _folderService.CreateChildFolderAsync(userId, slug, folderId, sanitisedFolder, cancellationToken);
 
-            return Ok(folderId);
+            return Ok(childFolderId);
+        }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/update")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetUpdateFolderAsync(Guid userId, string slug, Guid folderId, CancellationToken cancellationToken)
+        {
+            var folder = await _folderService.GetFolderAsync(userId, slug, folderId, cancellationToken);
+
+            if (folder is null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(folder);
         }
 
         [HttpPut]
-        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}")]
+        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/update")]
         public async Task<IActionResult> UpdateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, CancellationToken cancellationToken)
         {
             var sanitisedFolder = new Folder
             {
-                Title = _htmlSanitizer.Sanitize(folder.Title),
+                Name = _htmlSanitizer.Sanitize(folder.Name),
                 Description = _htmlSanitizer.Sanitize(folder.Description)
             };
-
             var rowVersion = _etagService.GetIfMatch();
+
             await _folderService.UpdateFolderAsync(userId, slug, folderId, sanitisedFolder, rowVersion, cancellationToken);
 
             return Ok();
@@ -93,7 +109,6 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("users/{userId}/groups/{slug}/folders/{id:guid}")]
-        [TypeFilter(typeof(ETagFilter))]
         public async Task<IActionResult> GetFolderAsync(Guid id, CancellationToken cancellationToken)
         {
             var folder = await _fileAndFolderDataProvider.GetFolderAsync(id, cancellationToken);

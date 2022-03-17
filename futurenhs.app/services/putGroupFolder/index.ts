@@ -32,12 +32,12 @@ export const putGroupFolder = async ({
 
     const { id } = user;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}`;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}/update`;
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.PUT,
         headers: headers,
         body: {
-            Title: body.get('Title'),
+            Name: body.get('Name'),
             Description: body.get('Description')
         }
     }), defaultTimeOutMillis);
