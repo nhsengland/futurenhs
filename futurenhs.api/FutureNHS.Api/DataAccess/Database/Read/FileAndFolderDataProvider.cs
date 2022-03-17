@@ -88,7 +88,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(Folder.Id)}]                               = folders.Id,
                                 [{nameof(Folder.Name)}]                             = folders.Title,
                                 [{nameof(Folder.Description)}]                      = folders.Description,
-                                [{nameof(Folder.RowVersion)}]                       = folders.RowVersion,
                                 [{nameof(Models.Shared.Properties.AtUtc)}]          = FORMAT(folders.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(UserNavProperty.Id)}]                      = CreatedByUser.Id,
                                 [{nameof(UserNavProperty.Name)}]                    = CreatedByUser.FirstName + ' ' + CreatedByUser.Surname,

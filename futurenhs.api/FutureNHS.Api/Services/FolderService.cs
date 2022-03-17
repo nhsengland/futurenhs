@@ -31,11 +31,40 @@ namespace FutureNHS.Api.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        public async Task<Folder> GetFolderAsync(Guid userId, string slug, Guid folderId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (Guid.Empty == folderId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+
+            var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
+            if (!groupId.HasValue)
+            {
+                _logger.LogError($"Error: UpdateFolderAsync - Group not found for slug:{0}", slug);
+                throw new KeyNotFoundException("Error: Group not found for slug");
+            }
+
+            var userCanViewFolder = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddFolderRole, cancellationToken);
+            if (!userCanViewFolder)
+            {
+                _logger.LogError($"Forbidden: GetFolderAsync - User:{0} does not have permission to view folder:{1}", userId, folderId);
+                throw new ForbiddenException("Forbidden: User does not have permission to view this folder");
+            }
+
+            var folderDto = await _folderCommand.GetFolderAsync(folderId, cancellationToken);
+
+            return new Folder
+            {
+                Name = folderDto.Title,
+                Description = folderDto.Description,
+                RowVersion = folderDto.RowVersion
+            };
+        }
+
         public async Task<Guid> CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
-
 
             var now = _systemClock.UtcNow.UtcDateTime;
 
@@ -57,7 +86,7 @@ namespace FutureNHS.Api.Services
 
             var folderDto = new FolderDto()
             {
-                Title = folder.Title,
+                Title = folder.Name,
                 Description = folder.Description,
                 CreatedAtUTC = now,
                 CreatedBy = userId,
@@ -98,11 +127,11 @@ namespace FutureNHS.Api.Services
             {
                 _logger.LogError($"Error: CreateChildFolderAsync - User:{0} does not have access to group:{1}", userId, slug);
                 throw new SecurityException($"Error: User does not have access");
-            }            
+            }
 
             var folderDto = new FolderDto()
             {
-                Title = folder.Title,
+                Title = folder.Name,
                 Description = folder.Description,
                 CreatedAtUTC = now,
                 CreatedBy = userId,
@@ -121,7 +150,6 @@ namespace FutureNHS.Api.Services
 
             return await _folderCommand.CreateFolderAsync(userId, groupId.Value, folderDto, cancellationToken);
         }
-
         public async Task UpdateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, byte[] rowVersion, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
@@ -154,7 +182,7 @@ namespace FutureNHS.Api.Services
             var folderDto = new FolderDto()
             {
                 Id = folderId,
-                Title = folder.Title,
+                Title = folder.Name,
                 Description = folder.Description,
                 ModifiedBy = userId,
                 ModifiedAtUTC = now,
@@ -167,7 +195,6 @@ namespace FutureNHS.Api.Services
 
             if (validationResult.Errors.Count > 0)
                 throw new ValidationException(validationResult);
-
 
             await _folderCommand.UpdateFolderAsync(userId, folderDto, rowVersion, cancellationToken);
         }
