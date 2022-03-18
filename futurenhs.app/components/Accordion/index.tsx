@@ -119,7 +119,7 @@ export const Accordion: (props: Props) => JSX.Element = ({
         };
 
 
-    }, []);
+    }, [shouldCloseOnLeave]);
 
     /**
      * Update internal isOpen state when prop changes

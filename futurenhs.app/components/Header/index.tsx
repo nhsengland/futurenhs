@@ -142,6 +142,7 @@ export const Header: (props: Props) => JSX.Element = ({
                             <Accordion
                                 isOpen={isMainAccordionOpen}
                                 id={headerAccordionId}
+                                shouldCloseOnLeave={!isDesktop}
                                 shouldCloseOnRouteChange={!isDesktop}
                                 toggleOpenChildren="Menu"
                                 toggleClosedChildren="Menu"

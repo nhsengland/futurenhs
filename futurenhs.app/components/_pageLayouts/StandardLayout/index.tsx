@@ -59,7 +59,14 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 
         skipLinkList.push({
             id: '#main-nav',
-            text: 'Skip to main navigation'
+            text: 'Skip to main navigation',
+            className: 'u-hidden tablet:u-block'
+        });
+
+        skipLinkList.push({
+            id:'#header-accordion',
+            text: 'Skip to main navigation',
+            className: 'u-block tablet:u-hidden'
         });
 
     }
