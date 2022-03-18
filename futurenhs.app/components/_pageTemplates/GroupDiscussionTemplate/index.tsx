@@ -7,6 +7,7 @@ import { selectFormErrors } from '@selectors/forms';
 import { actions as actionsConstants } from '@constants/actions';
 import { formTypes } from '@constants/forms';
 import { dateTime } from '@helpers/formatters/dateTime';
+import { truncate } from '@helpers/formatters/truncate';
 import { initials } from '@helpers/formatters/initials';
 import { routeParams } from '@constants/routes';
 import { Link } from '@components/Link';
@@ -26,8 +27,10 @@ import { UserMeta } from '@components/UserMeta';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
 import { FormErrors } from '@appTypes/form';
+import { DiscussionComment } from '@appTypes/discussion';
 
 import { Props } from './interfaces';
+import { getStandardServiceHeaders } from '@helpers/fetch';
 
 /**
  * Group discussion template
@@ -57,7 +60,6 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const [errors, setErrors] = useState(Object.assign({}, selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT), selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT_REPLY)));
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(discussionCommentsList);
     const [dynamicPagination, setPagination] = useState(pagination);
-    const [isClient, setIsClient] = useState(false);
 
     const backLinkHref: string = getRouteToParam({
         router: router,
@@ -78,14 +80,13 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const { id, text } = user ?? {};
     const { userName } = text ?? {};
     const { text: discussionText,
-        created,
-        createdBy,
-        responseCount,
-        modified,
-        modifiedBy,
-        viewCount } = discussion ?? {};
+            created,
+            createdBy,
+            responseCount,
+            modified,
+            modifiedBy,
+            viewCount } = discussion ?? {};
     const { title, body } = discussionText ?? {};
-    const { totalRecords } = dynamicPagination ?? {};
 
     const shouldRenderCommentAndReplyForms: boolean = actions.includes(actionsConstants.GROUPS_COMMENTS_ADD);
     const shouldEnableLoadMore: boolean = true;
@@ -124,7 +125,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         return new Promise((resolve) => {
 
-            services.postGroupDiscussionComment({ groupId, discussionId, user, csrfToken, body: formData }).then(() => {
+            const headers: any = getStandardServiceHeaders({ csrfToken });
+
+            services.postGroupDiscussionComment({ groupId, discussionId, user, headers, body: formData }).then(() => {
 
                 const targetPageNumber: number = Math.ceil((Number(dynamicPagination.totalRecords) + 1) / dynamicPagination.pageSize);
 
@@ -160,8 +163,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         return new Promise((resolve) => {
 
             const commentId: any = formData.get('_instance-id');
+            const headers: any = getStandardServiceHeaders({ csrfToken });
 
-            services.postGroupDiscussionCommentReply({ groupId, discussionId, user, csrfToken, commentId, body: formData }).then(() => {
+            services.postGroupDiscussionCommentReply({ groupId, discussionId, user, commentId, headers, body: formData }).then(() => {
 
                 setErrors({});
                 handleGetPage(dynamicPagination as any);
@@ -169,16 +173,16 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 resolve({});
 
             })
-                .catch((error) => {
+            .catch((error) => {
 
-                    const errors: FormErrors = {
-                        [error.data.status]: error.data.statusText
-                    };
+                const errors: FormErrors = {
+                    [error.data.status]: error.data.statusText
+                };
 
-                    setErrors(errors);
-                    resolve(errors);
+                setErrors(errors);
+                resolve(errors);
 
-                });
+            });
 
         });
 
@@ -215,7 +219,13 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Render replies to individual comments
      */
-    const renderReplies = ({ replies }) => {
+    const renderReplies = ({ replies, createdBy, text }: Partial<DiscussionComment>): Array<JSX.Element> => {
+
+        const parentCommentUserName: string = createdBy?.text?.userName;
+        const parentCommentTeaserText: string = truncate({
+            value: text?.body,
+            limit: 15
+        });
 
         return replies?.map(({
             commentId,
@@ -229,6 +239,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             const replyingUserName: string = createdBy?.text?.userName;
             const replyingUserId: string = createdBy?.id;
             const replyCreatedDate: string = dateTime({ value: created });
+            const source: string = `Reply to ${parentCommentUserName} "${parentCommentTeaserText}"`;
 
             const { body } = text ?? {};
 
@@ -243,6 +254,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         text={{
                             userName: replyingUserName,
                             initials: replyingUserInitials,
+                            source: source,
                             body: body
                         }}
                         userProfileLink={`${routes.groupMembersRoot}/${replyingUserId}`}
@@ -302,8 +314,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         </UserMeta>
                     </LayoutColumn>
                     <LayoutColumn tablet={4} className="u-self-end tablet:u-text-right u-text-theme-7 u-text-bold u-mt-4">
-                        {totalRecords > 0 &&
-                            <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{totalRecordsLabel}: {totalRecords}</span>
+                        {responseCount > 0 &&
+                            <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{totalRecordsLabel}: {responseCount}</span>
                         }
                         {viewCount > 0 &&
                             <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCountLabel}: {viewCount}</>
@@ -311,9 +323,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     </LayoutColumn>
                 </LayoutColumnContainer>
                 <hr />
-                {totalRecords > 0 &&
+                {responseCount > 0 &&
                     <p className="u-hidden tablet:u-block u-text-lead u-text-bold">
-                        {`Comments: ${totalRecords}`}
+                        {`Comments: ${responseCount}`}
                     </p>
                 }
                 <ErrorBoundary boundaryId="group-discussion-comments">
@@ -338,7 +350,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 const commentCreatedDate: string = dateTime({ value: created });
                                 const hasReply: boolean = replies?.length > 0;
                                 const hasReplies: boolean = replies?.length > 1;
-                                const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
+                                const repliesComponents: Array<JSX.Element> = renderReplies({ replies, createdBy, text });
                                 const additionalRepliesAccordionId: string = `${commentId}-replies`;
 
                                 const { body } = text ?? {};

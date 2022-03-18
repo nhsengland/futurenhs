@@ -30,7 +30,7 @@ export const Comment: (props: Props) => JSX.Element = ({
     className
 }) => {
 
-    const { userName, initials, body } = text;
+    const { userName, initials, body, source } = text;
 
     const generatedClasses: any = {
         wrapper: classNames('c-comment', className),
@@ -55,6 +55,9 @@ export const Comment: (props: Props) => JSX.Element = ({
                         <span className="u-block u-text-bold">{date}</span>
                 </UserMeta>
             </header>
+            {source &&
+                <p className="nhsuk-body-s u-mb-3 u-text-theme-6 u-text-bold">{source}</p>
+            }
             <RichText bodyHtml={body} wrapperElementType="div" className="u-mb-6" />
             <footer className="u-flex u-flex-col tablet:u-flex-row u-items-start">
                 <Like

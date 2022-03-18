@@ -37,6 +37,7 @@ describe('Group discussion template', () => {
                 body: 'Mock discussion body text'
             },
             created: '01/01/2022',
+            responseCount: 99,
             viewCount: 250
         },
         discussionCommentsList: [
@@ -136,7 +137,9 @@ describe('Group discussion template', () => {
 
         cleanup();
 
-        const propsCopy: Props = Object.assign({}, props, {pagination: null});
+        const propsCopy: Props = Object.assign({}, props);
+
+        props.discussion.responseCount = 0;
 
         render(<GroupDiscussionTemplate {...propsCopy}/>);
 

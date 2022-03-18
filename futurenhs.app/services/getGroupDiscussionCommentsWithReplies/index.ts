@@ -111,11 +111,11 @@ export const getGroupDiscussionCommentsWithReplies = async ({
 
     commentIdsWithReplies.forEach((commentId: string, index: number) => {
 
-        const parentDiscussion: any = serviceResponse.data.find((comment) => comment.commentId === commentId);
+        const parentComment: any = serviceResponse.data.find((comment) => comment.commentId === commentId);
 
-        if (parentDiscussion && commentReplies[index]?.data?.length > 0) {
+        if (parentComment && commentReplies[index]?.data?.length > 0) {
 
-            parentDiscussion.replies = commentReplies[index]?.data;
+            parentComment.replies = commentReplies[index]?.data;
 
         }
 
