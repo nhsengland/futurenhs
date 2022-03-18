@@ -86,7 +86,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
                 
                     ?   <span aria-current="true" aria-label={`Current page, page ${i}`}>{i}</span> 
                     :   <Link href={{ query: pageQuery }}>
-                            <a className={generatedClasses.link}>{i}</a>
+                            <a className={generatedClasses.link} aria-label={`Go to page ${i}`}>{i}</a>
                         </Link>
                     
                 }
@@ -129,9 +129,9 @@ export const Pagination: (props: Props) => JSX.Element = ({
                 {pageNumber > 1 &&
                     <li className={generatedClasses.prevItem}>
                         <Link href={{ query: previousQuery }}>
-                            <a className={generatedClasses.link}>
+                            <a className={generatedClasses.link} aria-label="Go to previous page">
                                 <SVGIcon name="icon-arrow-left" className={generatedClasses.prevIcon} />
-                                {previous}<span className="u-sr-only"> set of pages</span>
+                                {previous}
                             </a>
                         </Link>
                     </li>
@@ -140,8 +140,8 @@ export const Pagination: (props: Props) => JSX.Element = ({
                 {(pageNumber < totalPages) &&
                     <li className={generatedClasses.nextItem}>
                         <Link href={{ query: nextQuery }}>
-                            <a className={generatedClasses.link}>
-                                {next}<span className="u-sr-only"> set of pages</span>
+                            <a className={generatedClasses.link} aria-label="Go to next page">
+                                {next}
                                 <SVGIcon name="icon-arrow-right" className={generatedClasses.nextIcon} />
                             </a>
                         </Link>
