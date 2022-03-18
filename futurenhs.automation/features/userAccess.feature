@@ -11,26 +11,27 @@ Scenario Outline: FNHS00 - User login and log out
     And I enter '<password>' into the 'Password' field
     And I click the 'Log In' button
     Then the 'TODO: dashboard' header is displayed
-    When I open the '<user>' accordion
+    When I open the 'Menu' accordion
     And I click the 'Log Off' link
     Then I confirm this on the open 'Logout' dialog
     Then the 'Log In' header is displayed
 Examples:
-   | email                | password   | user       |
-   | autoAdmin@test.co.uk | Tempest070 | Auto Admin |
-   | autoUser@test.co.uk  | Tempest070 | Auto User  |
+   | email                | password   | 
+   | autoAdmin@test.co.uk | Tempest070 | 
+   | autoUser@test.co.uk  | Tempest070 | 
 
 
 Scenario Outline: FNHS01 - Access pages without authentication
     Given I have navigated to '<URL>'
     Then the '<Header>' header is displayed
 Examples:
-    | URL                       | Header                  |
-    | /terms-and-conditions     | Terms and Conditions    |
-    | /privacy-policy           | Privacy Policy          |
-    | /cookies                  | Cookies                 | 
-    | /accessibility-statement  | Accessibility           |
-    | /contact-us               | Contact Us              |
+    | URL                   | Header               |
+    | /terms-and-conditions | Terms and Conditions |
+    | /privacy-policy       | Privacy Policy       |
+    | /cookies              | Cookies              |
+    #### Accessibility has been removed for Private Beta until further notice ####
+    # | /accessibility-statement | Accessibility |
+    | /contact-us              | Contact Us    |
 
 @Core
 Scenario: FNHS02 - Unauthenticated page redirect
@@ -129,7 +130,7 @@ Scenario: FNHS07 - Attempt to register as an uninvited user
     Then the 'This user has not been invited onto the platform. Please check the email address provided.' textual value is displayed
 
 
-Scenario: FNHS08 - Log In Error Validation
+Scenario Outline: FNHS08 - Log In Error Validation
     Then the 'Log In' header is displayed
     When I enter '<email>' into the 'Email address' field
     And I enter '<password>' into the 'Password' field
@@ -139,3 +140,22 @@ Examples:
     | email                | password    | error message                  |
     |                      | Tempest2020 | The Username field is required |
     | autoAdmin@test.co.uk |             | The Password field is required |
+
+
+Scenario: FNHS20 - Admin page validation
+    And I have logged in as a 'admin' and accept the cookies
+    When I open the 'Menu' accordion
+    And I click the 'Admin' link
+    Then the 'Admin' header is displayed
+    And the 'Manage users' link is displayed
+    And the 'Manage groups' link is displayed
+
+
+Scenario Outline: FNHS57 - Admin page permission 
+    And I have logged in as a '<user>' and accept the cookies
+    When I open the 'Menu' accordion
+    Then the 'Admin' link <visibility> displayed
+Examples:
+    | user  | visibility |
+    | admin | is         |
+    | user  | is not     |

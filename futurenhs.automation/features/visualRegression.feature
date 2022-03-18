@@ -28,13 +28,20 @@ Scenario: FNHS:V01 - High Level Page Regression
     # Then the 'About Us' header is displayed
     # And the 'groupAboutUsTab' page image is taken and compared to the baseline image
 
-@Pending
-Scenario: FNHS:V02 - Public Pages Regression
+
+Scenario Outline: FNHS:V02 - Public Pages Regression
     Given I have navigated to '/'
-    And I have navigated to '/accessibility-statement'
-    Then the 'accessibilityStatement' page image is taken and compared to the baseline image
+    And I have navigated to '<URL>'
+    Then the '<page>' page image is taken and compared to the baseline image
     And I have navigated to '/members/register'
     Then the 'register' page image is taken and compared to the baseline image
+Examples:
+    | URL                   | <page>             |
+    | /terms-and-conditions | termsAndConditions |
+    | /privacy-policy       | privacyPolicy      |
+    | /cookies              | cookies            | 
+    | /contact-us           | contactUs          |
+
 
 
 Scenario: FNHS:V03 - Group Forum validation

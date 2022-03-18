@@ -80,7 +80,7 @@ Scenario: FNHS103 - Search for a Comment by Comment Text
     Then the 'Searching: Comment for Like test - 1 results found' header is displayed
     And the 'Comment on discussion: General Discussion Validation' search result card is displayed
     | Discussion on Automation Admin Group group forum |
-    | Comment for Like test                           |
+    | Comment for Like test                            |
     When I click the 'Comment on discussion: General Discussion Validation' link
     Then the 'Comment for Like test' comment card is displayed
 
@@ -133,3 +133,19 @@ Scenario: FNHS107 - Search for a File by Folder Description
 
 @Pending
 Scenario: FNHS108 - Search for a Group By the Strapline
+
+@Pending
+Scenario: FNHS109 - Search without any serch term
+    When I search for ''
+    Then the 'Searching: "" - 0 results found' header is displayed
+    And the 'Sorry no results found. Try a search term with at least three characters' textual value is displayed
+
+@Pending
+Scenario Outline: FNHS110 - Search field boundary validation
+    When I search for '<searchTerm>'
+    Then the '<resultsFound>' header is displayed
+    And the '<contentValidation>' textual value is displayed
+Examples:
+    | searchTerm | resultsFound                         | contentValidation                                                        |
+    | at         | Searching: \"at\" - 0 results found  | Sorry no results found. Try a search term with at least three characters |
+    | adm        | Searching: \"adm\" - 1 results found | Automation Admin Group                                                   |

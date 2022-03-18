@@ -16,7 +16,7 @@ Scenario Outline: FNHS72 - Upload a file
 	When I click the 'Empty Folder' link
 	Then the 'Empty Folder' header is displayed
 	When I click the 'Upload File' link
-	Then the 'Upload File' header is displayed
+	Then the 'Upload a file' header is displayed
 	When I enter '<File name>' into the 'Enter a file title' field
 	When I enter '<File description>' into the 'Enter a file description' text area
 	When I upload the '<File to upload>' file
@@ -51,7 +51,7 @@ Scenario Outline: FNHS74 - Upload a file, file error validation
 	When I click the 'Empty Folder' link
 	Then the 'Empty Folder' header is displayed
 	When I click the 'Upload File' link
-	Then the 'Upload File' header is displayed
+	Then the 'Upload a file' header is displayed
 	When I enter '<File name>' into the 'Enter a file title' field
 	When I enter '<File description>' into the 'Enter a file description' text area
 	When I upload the '<File to upload>' file
@@ -70,7 +70,7 @@ Scenario Outline: FNHS75 - Upload a file, form error validation
 	When I click the 'Empty Folder' link
 	Then the 'Empty Folder' header is displayed
 	When I click the 'Upload File' link
-	Then the 'Upload File' header is displayed
+	Then the 'Upload a file' header is displayed
 	When I enter '<File name>' into the 'Enter a file title' field
 	When I enter '<File description>' into the 'Enter a file description' text area
 	When I upload the '<File to upload>' file
@@ -85,7 +85,7 @@ Scenario: FNHS76 - Upload without a file error validation
 	When I click the 'Empty Folder' link
 	Then the 'Empty Folder' header is displayed
 	When I click the 'Upload File' link
-	Then the 'Upload File' header is displayed
+	Then the 'Upload a file' header is displayed
 	When I enter 'Title' into the 'Enter a file title' field
 	When I enter 'Description' into the 'Enter a file description' text area
 	When I click the 'Upload File' button

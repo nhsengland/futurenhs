@@ -6,7 +6,7 @@ Background: Log in
     And I ensure the browser is in mobile emulation
     Then the 'Log In' header is displayed
     And the 'Register your interest' header is displayed
-    And I have logged in as a 'admin'
+	And I have logged in as an 'admin' and accept the cookies
     When I open the 'Menu' accordion
 
 @Core 

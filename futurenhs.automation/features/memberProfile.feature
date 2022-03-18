@@ -6,7 +6,8 @@ Background:
 
 
 Scenario: FNHS78 - View my profile page
-    Given I have logged in as a 'admin' and accept the cookies
+	And I have logged in as an 'admin' and accept the cookies
+	And I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I open the 'Auto Admin' accordion
     And I click the 'My profile' link
@@ -20,9 +21,10 @@ Scenario: FNHS78 - View my profile page
 
 
 Scenario: FNHS79 - Edit my profile avatar upload
-    Given I have logged in as a 'edituser'
+	And I have logged in as an 'edituser' and accept the cookies
+	And I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
-    When I open the 'Autoedit User' accordion
+    When I open the 'Menu' accordion
     And I click the 'My profile' link
     Then the 'My profile' header is displayed
     When I click the 'Edit my profile' link
@@ -36,9 +38,10 @@ Scenario: FNHS79 - Edit my profile avatar upload
 # FORMATTING ERROR WITH TEXT AND BOUNDARIES MEANS UNABLE TO INTERACT WITH ELEMENTS
 @Pending
 Scenario Outline: FNHS80 - Edit my profile
-    Given I have logged in as a 'edituser'    
+	And I have logged in as an 'edituser' and accept the cookies
+	And I click the 'Groups' nav icon   
     Then the 'My Groups' header is displayed
-    When I open the '<username>' accordion
+    When I open the 'menu' accordion
     And I click the 'My profile' link
     Then the 'My profile' header is displayed
     When I click the 'Edit my profile' link
@@ -52,19 +55,20 @@ Scenario Outline: FNHS80 - Edit my profile
     And the profile values are displayed
     | <label> | <input> |
 Examples:
-    | username      | input   | label              |
-    | Autoedit User | him     | Preferred pronouns |
-    | Autoedit User | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | Last name          |
-    | Autoedit j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | Name | Last name |
-    | Autoedit Name | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | Preferred pronouns |
-    | Autoedit Name | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | First name         |
-    | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW Name | New | First name |
+    | input   | label              |
+    | him     | Preferred pronouns |
+    | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | Last name          |
+    | Name    | Last name          |
+    | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | Preferred pronouns |
+    | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | First name         |
+    | New     | First name         |
 
 
 Scenario Outline: FNHS81 - Edit my profile error validation
-    Given I have logged in as a 'user'    
+	And I have logged in as an 'user' and accept the cookies
+	And I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
-    When I open the 'Auto User' accordion
+    When I open the 'Menu' accordion
     And I click the 'My profile' link
     Then the 'My profile' header is displayed
     When I click the 'Edit my profile' link
@@ -84,9 +88,10 @@ Examples:
 
 
 Scenario: FNHS82 - Edit my profile w/o accepting T&Cs
-    Given I have logged in as a 'user'    
+	And I have logged in as an 'user' and accept the cookies
+	And I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
-    When I open the 'Auto User' accordion
+    When I open the 'Menu' accordion
     And I click the 'My profile' link
     Then the 'My profile' header is displayed
     When I click the 'Edit my profile' link
