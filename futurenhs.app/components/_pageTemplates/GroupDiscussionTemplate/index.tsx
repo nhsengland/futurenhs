@@ -347,6 +347,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
                                     <li key={index}>
                                         <Comment
+                                            id={`comment-${commentId}`}
                                             commentId={commentId}
                                             csrfToken={csrfToken}
                                             initialErrors={errors}
