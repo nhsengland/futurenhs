@@ -53,28 +53,43 @@ class genericPage extends basePage{
     }
 
     /**
+     * Function used to locate a desired accordion from known values within the NHS app
+     * @param {*} accordionName - Name/Tag for each known accordion
+     * @returns xpath selector of the accordion that matched the accordionName param
+     */
+    findAccordion(accordionName){
+        var desiredAccordion = accordionName.toLowerCase().replace(/ /g, '');
+        const accordion = {
+            actions : $(`//div[@id="group-actions"]/..`),
+            menu : $(`//div[@id="user-accordion"]/..`),
+            grouppages : $(`//div[@id="my-groups-menu"]/..`),
+            groupmenu : $(`//div[@id="group-menu"]/..`),
+            showmorereplies : $(`//summary[span[text()="Show more replies"]]`),
+            editmember : $(`//div[@id="member-update-accordion"]/..`)
+        }
+        return accordion[desiredAccordion]
+    }   
+
+    /**
      * Click to open the details element to show the available links 
      * @param {string} detailsName - Text value used to locate the element we want to click
      */
     openAccordion(textValue){
-        var accordion = $(`//summary[contains(normalize-space(.), "${textValue}")]`);
-        helpers.click(accordion);
-        expect(accordion.$('..').getProperty('open')).toEqual(true);
+        var desiredAccordion = this.findAccordion(textValue)
+        helpers.click(desiredAccordion);
+        if(textValue === 'Show more replies'){
+            expect(desiredAccordion.$('..').getProperty('open')).toEqual(true);
+        } else {
+            expect(desiredAccordion.getProperty('open')).toEqual(true);
+        }
     }
     
     /**
      * Function to select an option from an accordion list
      * @param {string} linkValue - textual value of the desired link used as the selector
      */
-    accordionSelect(linkValue, groupOption){
-        var desiredAccordion = groupOption.replace(' ', '');
-        const accordion = {
-            actions : $(`//div[@id="group-actions"]/..`),
-            menu : $(`//div[@id="header-accordion"]/..`),
-            grouppages : $(`//div[@id="my-groups-menu"]/..`),
-            groupmenu : $(`//div[@id="group-menu"]/..`)
-        }
-        var chosenAccordion = accordion[desiredAccordion]
+    selectAccordionItem(linkValue, accordionName){        
+        var chosenAccordion = this.findAccordion(accordionName)
         helpers.click(chosenAccordion);
         var accordionOptions = chosenAccordion.$$('./div/ul/li')
         accordionOptions.forEach(elem => {
@@ -151,7 +166,7 @@ class genericPage extends basePage{
      */
     acceptCookies(){
         var cookieBanner = $(`//div[@class="u-py-6 c-cookie-banner"]`);
-        if(cookieBanner.waitForDisplayed({timeout: 5000})){
+        if(cookieBanner.isDisplayed()){
             var acceptCookiesBtn = cookieBanner.$(`./button[text()="I'm OK with analytics cookies"]`);
             helpers.click(acceptCookiesBtn);
         }

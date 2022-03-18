@@ -65,5 +65,5 @@ const search = require('../pageObjects/search');
   });
 
   When(/^I select '([^"]*)' from the (group menu|menu|actions|group pages) accordion$/, function (linkText, groupOption) {
-    genericPage.accordionSelect(linkText, groupOption);
+    genericPage.selectAccordionItem(linkText, groupOption);
   })
