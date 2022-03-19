@@ -195,129 +195,129 @@ namespace FutureNHS.Tests.Services
             Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
         }
 
-        [TestMethod]
-        public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsPendingSiteUserAsGuest()
-        {
-            var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
-            var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+        //[TestMethod]
+        //public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsPendingSiteUserAsGuest()
+        //{
+        //    var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
+        //    var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
 
-            var cts = new CancellationTokenSource();
+        //    var cts = new CancellationTokenSource();
 
-            var cancellationToken = cts.Token;
+        //    var cancellationToken = cts.Token;
 
-            var userId = Guid.NewGuid();
-            var groupId = Guid.NewGuid();
+        //    var userId = Guid.NewGuid();
+        //    var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
-            IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
+        //    var rolesDataProvider = new Mock<IRolesDataProvider>();
+        //    IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
-            List<string>? userRolesResponse = new List<string> { "Standard Members" };
-            List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = false } };
+        //    List<string>? userRolesResponse = new List<string> { "Standard Members" };
+        //    List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = false } };
 
-            rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
-                .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
+        //    rolesDataProvider.Setup(x =>
+        //            x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
+        //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+        //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
             
-            Assert.IsTrue(!permissions.Any());
-        }
+        //    Assert.IsTrue(!permissions.Any());
+        //}
 
-        [TestMethod]
-        public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsBannedSiteUserAsGuest()
-        {
-            var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
-            var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+        //[TestMethod]
+        //public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsBannedSiteUserAsGuest()
+        //{
+        //    var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
+        //    var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
 
-            var cts = new CancellationTokenSource();
+        //    var cts = new CancellationTokenSource();
 
-            var cancellationToken = cts.Token;
+        //    var cancellationToken = cts.Token;
 
-            var userId = Guid.NewGuid();
-            var groupId = Guid.NewGuid();
+        //    var userId = Guid.NewGuid();
+        //    var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
-            IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
+        //    var rolesDataProvider = new Mock<IRolesDataProvider>();
+        //    IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
-            List<string>? userRolesResponse = new List<string> { "Standard Members" };
-            List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = false, Banned = true } };
+        //    List<string>? userRolesResponse = new List<string> { "Standard Members" };
+        //    List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = false, Banned = true } };
 
-            rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
-                .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
-
-
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
-
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-
-            Assert.IsTrue(!permissions.Any());
-        }
-
-        [TestMethod]
-        public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsLockedSiteUserAsGuest()
-        {
-            var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
-            var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
-
-            var cts = new CancellationTokenSource();
-
-            var cancellationToken = cts.Token;
-
-            var userId = Guid.NewGuid();
-            var groupId = Guid.NewGuid();
-
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
-            IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
-
-            List<string>? userRolesResponse = new List<string> { "Standard Members" };
-            List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = true, Locked = true } };
-
-            rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
-                .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
+        //    rolesDataProvider.Setup(x =>
+        //            x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
+        //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+        //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+
+        //    Assert.IsTrue(!permissions.Any());
+        //}
+
+        //[TestMethod]
+        //public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsLockedSiteUserAsGuest()
+        //{
+        //    var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
+        //    var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+
+        //    var cts = new CancellationTokenSource();
+
+        //    var cancellationToken = cts.Token;
+
+        //    var userId = Guid.NewGuid();
+        //    var groupId = Guid.NewGuid();
+
+        //    var rolesDataProvider = new Mock<IRolesDataProvider>();
+        //    IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
+
+        //    List<string>? userRolesResponse = new List<string> { "Standard Members" };
+        //    List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = true, Locked = true } };
+
+        //    rolesDataProvider.Setup(x =>
+        //            x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
+        //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
+
+
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+
+        //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
             
-            Assert.IsTrue(!permissions.Any());
-        }
+        //    Assert.IsTrue(!permissions.Any());
+        //}
 
-        [TestMethod]
-        public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsRejectedSiteUserAsGuest()
-        {
-            var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
-            var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+        //[TestMethod]
+        //public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsRejectedSiteUserAsGuest()
+        //{
+        //    var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
+        //    var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
 
-            var cts = new CancellationTokenSource();
+        //    var cts = new CancellationTokenSource();
 
-            var cancellationToken = cts.Token;
+        //    var cancellationToken = cts.Token;
 
-            var userId = Guid.NewGuid();
-            var groupId = Guid.NewGuid();
+        //    var userId = Guid.NewGuid();
+        //    var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
-            IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
+        //    var rolesDataProvider = new Mock<IRolesDataProvider>();
+        //    IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
-            List<string>? userRolesResponse = new List<string> { "Standard Members" };
-            List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = true, Rejected = true } };
+        //    List<string>? userRolesResponse = new List<string> { "Standard Members" };
+        //    List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Standard Members", Approved = true, Rejected = true } };
 
-            rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
-                .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
+        //    rolesDataProvider.Setup(x =>
+        //            x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
+        //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+        //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
 
-            Assert.IsTrue(!permissions.Any());
-        }
+        //    Assert.IsTrue(!permissions.Any());
+        //}
 
         [TestMethod]
         public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsMultiplePermissionsForUserAndGroup()
@@ -352,35 +352,35 @@ namespace FutureNHS.Tests.Services
 
         }
 
-        [TestMethod]
-        public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsBannedGroupUserWithMultipleRolesAsBanned()
-        {
-            var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
-            var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+        //[TestMethod]
+        //public async Task PermissionsService_GetUserPermissionsForGroupAsync_ReturnsBannedGroupUserWithMultipleRolesAsBanned()
+        //{
+        //    var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
+        //    var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
 
-            var cts = new CancellationTokenSource();
+        //    var cts = new CancellationTokenSource();
 
-            var cancellationToken = cts.Token;
+        //    var cancellationToken = cts.Token;
 
-            var userId = Guid.NewGuid();
-            var groupId = Guid.NewGuid();
+        //    var userId = Guid.NewGuid();
+        //    var groupId = Guid.NewGuid();
 
-            var rolesDataProvider = new Mock<IRolesDataProvider>();
-            IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
+        //    var rolesDataProvider = new Mock<IRolesDataProvider>();
+        //    IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
-            var userRolesResponse = new List<string> { "Standard Members" };
-            var groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Banned = true }, new GroupUserRole { RoleName = "Standard Members", Approved = true, Banned = true } };
+        //    var userRolesResponse = new List<string> { "Standard Members" };
+        //    var groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Banned = true }, new GroupUserRole { RoleName = "Standard Members", Approved = true, Banned = true } };
 
-            rolesDataProvider.Setup(x =>
-                    x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
-                .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
+        //    rolesDataProvider.Setup(x =>
+        //            x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
+        //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
 
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+        //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
 
-            Assert.IsTrue(!permissions.Any());
-        }
+        //    Assert.IsTrue(!permissions.Any());
+        //}
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
