@@ -44,10 +44,10 @@ namespace FutureNHS.Api.Attributes
             var request = executedContext.HttpContext.Request;
             var response = executedContext.HttpContext.Response;
             var result = (executedContext.Result as ObjectResult).Value;
-
             string etag = string.Empty;
-            if (result.GetType().BaseType == typeof(BaseData))
+            if (result.GetType().GetProperty("RowVersion") is not null)
             {
+              
                 etag = Convert.ToBase64String(((BaseData)result).RowVersion);
             }
             else

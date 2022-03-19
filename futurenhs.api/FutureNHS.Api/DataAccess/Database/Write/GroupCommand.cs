@@ -1,8 +1,13 @@
 ﻿using System.Data;
 using Dapper;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models;
+using FutureNHS.Api.DataAccess.Models.Group;
+using FutureNHS.Api.Exceptions;
+using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
@@ -10,12 +15,13 @@ namespace FutureNHS.Api.DataAccess.Database.Write
     { 
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<GroupCommand> _logger;
+        private readonly IOptions<AzureImageBlobStorageConfiguration> _options;
 
-        public GroupCommand(IAzureSqlDbConnectionFactory connectionFactory, ILogger<GroupCommand> logger)
+        public GroupCommand(IAzureSqlDbConnectionFactory connectionFactory, ILogger<GroupCommand> logger, IOptions<AzureImageBlobStorageConfiguration> options)
         {
-            _connectionFactory = connectionFactory;
-            _logger = logger;
-
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task UserJoinGroupAsync(GroupUserDto groupUser,  CancellationToken cancellationToken = default)
@@ -107,6 +113,88 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             {
                 _logger.LogError("Error: User request to leave group failed", queryDefinition);
                 throw new DBConcurrencyException("Error: User request to leave group failed");
+            }
+        }
+
+        public async Task<GroupData> GetGroupAsync(string slug, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT 
+                                [{nameof(GroupData.Id)}]                = g.Id, 
+                                [{nameof(GroupData.Name)}]              = g.Name,
+                                [{nameof(GroupData.StrapLine)}]         = g.Subtitle,
+                                [{nameof(GroupData.ThemeId)}]           = g.ThemeId, 
+                                [{nameof(GroupData.ImageId)}]           = g.ImageId, 
+                                [{nameof(GroupData.IsPublic)}]          = g.PublicGroup, 
+                                [{nameof(GroupData.Slug)}]              = g.Slug, 
+                                [{nameof(GroupData.RowVersion)}]        = g.RowVersion, 
+                                [{nameof(GroupData.Image.Id)}]          = image.Id,  
+                                [{nameof(GroupData.Image.Height)}]      = image.Height, 
+                                [{nameof(GroupData.Image.Width)}]       = image.Width,
+                                [{nameof(GroupData.Image.FileName)}]    = image.FileName,
+                                [{nameof(GroupData.Image.MediaType)}]   = image.MediaType
+				    
+                    FROM        [Group] g
+                    LEFT JOIN   Image image 
+                    ON          image.Id = g.ImageId  
+                    WHERE       g.Slug = @Slug 
+                    AND         g.IsDeleted = 0";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryAsync<GroupData, Image, GroupData>(query,
+                (group, image) =>
+                {
+                    if (image is not null)
+                    {
+                        group = @group with{ Image = new ImageData(image, _options)};
+                    }
+
+                    return group;
+                }, new
+                {
+                    Slug = slug
+                }, splitOn: "id");
+
+            var group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
+
+            return group;
+        }
+
+        public async Task EditGroupAsync(GroupDto groupDto, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                 @" UPDATE       [dbo].[Group]
+                    SET
+                                 [Name]         = @Name,
+                                 [Subtitle]     = @Subtitle,
+                                 [ThemeId]      = @Theme,
+                                 [ImageId]      = @Image
+                    WHERE 
+                                 [Slug]         = @Slug
+                    AND          [RowVersion]   = @RowVersion";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                Slug = groupDto.Slug,
+                Name = groupDto.Name,
+                Subtitle = groupDto.StrapLine,
+                Theme = groupDto.ThemeId,
+                Image = groupDto.ImageId,
+                IsPublic = groupDto.IsPublic,
+                RowVersion = groupDto.RowVersion,
+
+
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.ExecuteAsync(queryDefinition);
+
+            if (result != 1)
+            {
+                _logger.LogError($"Error: Unable to update Group:{1} ", groupDto.Id);
+                throw new DBConcurrencyException("Error: Unable to update group");
             }
         }
 

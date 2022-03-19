@@ -1,30 +1,23 @@
-﻿namespace FutureNHS.Api.DataAccess.DTOs
+﻿using FutureNHS.Api.DataAccess.Models;
+using Newtonsoft.Json;
+
+namespace FutureNHS.Api.DataAccess.DTOs
 {
-    public sealed class GroupDto
+    public record GroupDto : BaseData
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Subtitle { get; set; }
-        public string Introduction { get; set; }
-        public bool IsLocked { get; set; }
-        public bool? ModerateTopics { get; set; }
-        public bool? ModeratePosts { get; set; }
-        public int SortOrder { get; set; }
-        public DateTime DateCreated { get; set; }
-        public string Slug { get; set; }
-        public string PageTitle { get; set; }
-        public string Path { get; set; }
-        public string MetaDescription { get; set; }
-        public string Colour { get; set; }
-        public string Image { get; set; }
-        public Guid  GroupOwner { get; set; }
-        public int Level { get; set; }
-        public string AboutUs { get; set; }
-        public Guid? ImageId { get; set; }
-        public bool PublicGroup { get; set; }
-        public bool HiddenGroup { get; set; }
-        public bool IsDeleted { get; set; }
-        public byte[] RowVersion { get; set; }
+        public Guid Id { get; init; }
+        public string Name { get; init; }
+        public string? StrapLine { get; init; }
+        public Guid? ThemeId { get; init; }
+        [JsonIgnore]
+        public Guid? ImageId { get; init; }
+        public bool IsPublic { get; init; }
+        public string Slug { get; init; }
+        public DateTime CreatedAtUtc { get; init; }
+        public Guid? CreatedBy { get; init; }
+        public DateTime ModifiedAtUtc { get; init; }
+        public Guid? ModifiedBy { get; init; }
+        [JsonIgnore]
+        public bool IsDeleted { get; init; }
     }
 }

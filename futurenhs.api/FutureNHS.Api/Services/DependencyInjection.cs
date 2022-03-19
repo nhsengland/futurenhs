@@ -8,9 +8,12 @@ namespace FutureNHS.Api.Services
         {
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IDiscussionService, DiscussionService>();
-            services.AddScoped<IGroupMembershipService, GroupMembershipService>();
-            services.AddScoped<IFolderService, FolderService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IFolderService, FolderService>();
+            services.AddScoped<IGroupMembershipService, GroupMembershipService>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IGroupImageService, ImageService>();
+            services.AddScoped<IUserImageService, ImageService>();
             services.AddScoped<IPermissionsService, PermissionsService>();
 
             return services;

@@ -19,7 +19,7 @@ namespace FutureNHS.Api.DataAccess.Models
             Width = image.Width;
             FileName = image.FileName;
             MediaType = image.MediaType;
-            SourceUri = $"{_options.Value.PrimaryServiceUrl}/{_options.Value.ContainerName}";
+            SourceUri = $"{_options.Value.PrimaryServiceUrl}";
         }
 
         public Guid Id { get; init; }

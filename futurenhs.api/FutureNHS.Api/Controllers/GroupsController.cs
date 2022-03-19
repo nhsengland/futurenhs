@@ -1,6 +1,8 @@
+using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
+using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -19,13 +21,17 @@ namespace FutureNHS.Api.Controllers
         private readonly IGroupDataProvider _groupDataProvider;
         private readonly IPermissionsService _permissionsService;
         private readonly IGroupMembershipService _groupMembershipService;
+        private readonly IGroupService _groupService;
+        private readonly IEtagService _etagService;
 
-        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService, IGroupMembershipService groupMembershipService)
+        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService, IGroupMembershipService groupMembershipService, IGroupService groupService, IEtagService etagService)
         {
             _logger = logger;
             _groupDataProvider = groupDataProvider;
             _permissionsService = permissionsService;
             _groupMembershipService = groupMembershipService;
+            _groupService = groupService;
+            _etagService = etagService;
         }
 
         [HttpGet]
@@ -72,6 +78,37 @@ namespace FutureNHS.Api.Controllers
             }
 
             return Ok(group);
+        }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/groups/{slug}/edit")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetEditGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
+        {
+            var group = await _groupService.GetGroupAsync(userId, slug, cancellationToken);
+
+            if (group is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(group);
+        }
+
+
+        [HttpPut]
+        [DisableFormValueModelBinding]
+        [Route("users/{userId:guid}/groups/{slug}/edit")]
+        public async Task<IActionResult> EditGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
+        {
+            if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+            {
+                return BadRequest("The data submitted is not in the multiform format");
+            }
+            var rowVersion = _etagService.GetIfMatch();
+            await _groupService.UpdateGroupMultipartDocument(userId, slug, rowVersion, Request.Body, Request.ContentType,cancellationToken);
+
+            return Ok();
         }
 
         [HttpGet]

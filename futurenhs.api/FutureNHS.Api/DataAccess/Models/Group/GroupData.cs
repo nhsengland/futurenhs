@@ -1,0 +1,9 @@
+﻿using FutureNHS.Api.DataAccess.DTOs;
+
+namespace FutureNHS.Api.DataAccess.Models.Group
+{
+    public sealed record GroupData: GroupDto
+    {
+        public ImageData? Image { get; init; }
+    }
+}

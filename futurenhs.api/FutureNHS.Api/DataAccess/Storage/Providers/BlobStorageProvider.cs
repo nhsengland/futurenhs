@@ -78,6 +78,45 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
             }
         }
 
+        public async Task UploadFileAsync(byte[] bytes, string blobName, string contentType, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (_cloudBlobContainer is null)
+                {
+                    throw new InvalidOperationException("A connection to blob storage was not opened");
+                }
+
+                var blob = _cloudBlobContainer.GetBlockBlobReference(blobName);
+
+                blob.Properties.ContentType = contentType;
+                await blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length, cancellationToken);
+            }
+            catch (AuthenticationFailedException ex)
+            {
+                _logger?.LogError(ex, "Unable to authenticate with the Azure Blob Storage service using the default credentials.  Please ensure the user account this application is running under has permissions to access the Blob Storage account we are targeting");
+
+                throw;
+            }
+            catch (RequestFailedException ex)
+            {
+                _logger?.LogError(ex, "Unable to access the storage endpoint as the download request failed: '{StatusCode} {StatusCodeName}'", ex.Status, Enum.Parse(typeof(HttpStatusCode), Convert.ToString(ex.Status, CultureInfo.InvariantCulture)));
+
+                throw;
+            }
+
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Unable to access the storage endpoint as the download request failed:'");
+
+                throw;
+            }
+        }
+
         public async Task DeleteFileAsync(string blobName)
         {
             if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));

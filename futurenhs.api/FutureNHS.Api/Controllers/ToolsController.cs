@@ -21,6 +21,7 @@ namespace FutureNHS.Api.Controllers
 
 
         [HttpPost]
+        [HttpPut]
         [DisableFormValueModelBinding]
         [Route("viewrequestbody")]
         public async Task<IActionResult> ViewRequestBody(CancellationToken cancellationToken)

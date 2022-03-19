@@ -1,84 +1,81 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.Net;
-using System.Runtime.Serialization;
+﻿using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
-using FutureNHS.Api.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using System.Security;
-using System.Text;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using Azure.Storage.Sas;
-using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
+using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
-using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Helpers.Interfaces;
+using FutureNHS.Api.Services.Interfaces;
 using HeyRed.Mime;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
-using Microsoft.Azure.Storage.Blob;
+using System.Data;
+using System.Net;
+using System.Security;
+using System.Text;
 
 namespace FutureNHS.Api.Services
 {
-    public class FileService : IFileService
+    public class GroupService : IGroupService
     {
-        private const string AddFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/add";
-        private const string DownloadFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/download";
-        private const string VerifiedFileStatus = "Verified";
+        private const string GroupEditRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/edit";
+
         private readonly ILogger<DiscussionService> _logger;
-        private readonly IFileCommand _fileCommand;
-        private readonly IFileBlobStorageProvider _blobStorageProvider;
+        private readonly IImageBlobStorageProvider _blobStorageProvider;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
         private readonly IFileTypeValidator _fileTypeValidator;
         private readonly IGroupCommand _groupCommand;
-        private readonly string[] _acceptedFileTypes = new[] { ".pdf", ".ppt", ".pptx", ".doc", ".docx", ".xls", ".xlsx" };
-        private const long MaxFileSizeBytes = 262144000; // 250mb
+        private readonly IGroupImageService _imageService;
+        private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
+        private const long MaxFileSizeBytes = 500000; // 500kb
 
-        public FileService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, IFileBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupCommand groupCommand)
+        public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, IImageBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupImageService imageService, IGroupCommand groupCommand)
         {
             _systemClock = systemClock;
-            _fileCommand = fileCommand;
             _blobStorageProvider = blobStorageProvider;
             _permissionsService = permissionsService;
             _fileTypeValidator = fileTypeValidator;
             _groupCommand = groupCommand;
             _logger = logger;
+            _imageService = imageService;
         }
 
-        private async Task CreateFileAsync(FileDto fileDto, CancellationToken cancellationToken)
+        public async Task<GroupData?> GetGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
         {
-            var now = _systemClock.UtcNow.UtcDateTime;
-
-            var fileStatus = await _fileCommand.GetFileStatus("Verified", cancellationToken);
-
-            fileDto.FileStatus = fileStatus;
-            await _fileCommand.CreateFileAsync(fileDto, cancellationToken);
-        }
-
-        public async Task<string> GetFileDownloadUrl(Guid userId, string slug, Guid fileId, CancellationToken cancellationToken)
-        {
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddFileRole, cancellationToken);
-            if (userCanPerformAction is false)
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupEditRole, cancellationToken);
+            if (userCanPerformAction is not true)
             {
-                _logger.LogError($"Error: DownloadFileAsync - User:{0} does not have access to group:{1}", userId, slug);
+                _logger.LogError($"Error: GetGroupAsync - User:{0} does not have access to edit/delete group:{1}", userId, slug);
                 throw new SecurityException($"Error: User does not have access");
             }
-            
-            var file = await _fileCommand.GetFileAsync(fileId, VerifiedFileStatus, cancellationToken);
 
-            var downloadUri = _blobStorageProvider.GetRelativeDownloadUrl(file.BlobName, file.FileName, SharedAccessBlobPermissions.Read, cancellationToken);
-            return downloadUri;
+            var group = await _groupCommand.GetGroupAsync(slug, cancellationToken);
+
+            return group;
         }
 
-        // TODO Need to figure out how we rollback if cancellation is requested or prevent it?
-            public async Task UploadFileMultipartDocument(Guid userId, string slug, Guid folderId, Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        private async Task EditGroupAsync(Guid userId, string slug, GroupDto groupDto, CancellationToken cancellationToken)
         {
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddFileRole, cancellationToken);
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupEditRole, cancellationToken);
+            if (userCanPerformAction is not true)
+            {
+                _logger.LogError($"Error: EditGroupAsync - User:{0} does not have access to edit group:{1}", userId, slug);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            var now = _systemClock.UtcNow.UtcDateTime;
+
+            await _groupCommand.EditGroupAsync(groupDto, cancellationToken);
+        }
+
+
+        // TODO Need to figure out how we rollback if cancellation is requested or prevent it?
+        public async Task UpdateGroupMultipartDocument(Guid userId, string slug, byte[] rowVersion, Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        {
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupEditRole, cancellationToken);
 
             if (userCanPerformAction is false)
             {
@@ -86,24 +83,34 @@ namespace FutureNHS.Api.Services
                 throw new SecurityException($"Error: User does not have access");
             }
 
-            var file = await this.UploadMultipartContent(requestBody, contentType, cancellationToken);
-
-            file.CreatedBy = userId;
-            file.ParentFolder = folderId;
+            var (group, image) = await UploadGroupImageMultipartContent(userId, slug, requestBody, rowVersion, contentType, cancellationToken);
             try
             {
-                await CreateFileAsync(file, cancellationToken);
+                Guid imageId;
+                if (image != null)
+                {
+                    imageId = await _imageService.CreateImageAsync(image);
+                    group = group with {ImageId = imageId};
+                }
+
+                // TODO GET IMAGE ID
+
+                await EditGroupAsync(userId, slug, group, cancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error: CreateFileAsync - Error adding file to database");
-                await _blobStorageProvider.DeleteFileAsync(file.BlobName);
+                _logger.LogError(ex, $"Error: CreateImageAsync - Error adding image to database");
+                if (image != null)
+                {
+                    await _blobStorageProvider.DeleteFileAsync(image.FileName);
+                    await _imageService.DeleteImageAsync(image.Id);
+                }
             }
         }
 
         /// based on microsoft example https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/mvc/models/file-uploads/samples/
         /// and large file streaming example https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0#upload-large-files-with-streaming
-        private async Task<FileDto> UploadMultipartContent(Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        private async Task<(GroupDto, ImageDto?)> UploadGroupImageMultipartContent(Guid userId,string slug, Stream requestBody, byte[] rowVersion, string? contentType, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -112,6 +119,8 @@ namespace FutureNHS.Api.Services
             {
                 throw new InvalidDataException($"Expected a multipart request, but got {contentType}");
             }
+            var now = _systemClock.UtcNow.UtcDateTime;
+
             var defaultFormOptions = new FormOptions();
             // Create a Collection of KeyValue Pairs.
             var formAccumulator = new KeyValueAccumulator();
@@ -119,7 +128,8 @@ namespace FutureNHS.Api.Services
             var boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(contentType), defaultFormOptions.MultipartBoundaryLengthLimit);
             var reader = new MultipartReader(boundary, requestBody);
             var section = await reader.ReadNextSectionAsync(cancellationToken);
-            var fileDto = new FileDto();
+            ImageDto? imageDto = null;
+            GroupDto groupDto = new GroupDto();
 
             // Loop through each 'Section', starting with the current 'Section'.
             while (section != null)
@@ -143,15 +153,7 @@ namespace FutureNHS.Api.Services
                             // now make it unique
                             var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
 
-
-                            // TODO MimeDetective does not work when stream has already been uploaded - figure out a solution
-                            //if (fileContentTypeMatchesExtension is false)
-                            //{
-                            //    await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
-                            //    _logger.LogError("File extension:{0} does not match the file signature", fileExtension);
-                            //    throw new FormatException("File extension} does not match the file signature");
-                            //}
-
+                            var compressedImage = _imageService.TransformImageForGroupHeader(section.Body);
 
                             if (!_acceptedFileTypes.Contains(fileExtension.ToLower()))
                             {
@@ -160,7 +162,7 @@ namespace FutureNHS.Api.Services
                             }
                             try
                             {
-                                await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName,
+                                await _blobStorageProvider.UploadFileAsync(compressedImage.Image, uniqueFileName,
                                     MimeTypesMap.GetMimeType(encodedFileName), cancellationToken);
                             }
                             catch (Exception ex)
@@ -188,14 +190,17 @@ namespace FutureNHS.Api.Services
                             //    throw new FormatException("File extension} does not match the file signature");
                             //}
 
-                            var now = _systemClock.UtcNow.UtcDateTime;
-
-                            fileDto.FileName = encodedFileName;
-                            fileDto.FileExtension = fileExtension;
-                            fileDto.FileSizeBytes = size;
-                            fileDto.BlobName = uniqueFileName;
-                            fileDto.CreatedAtUTC = now;
-
+                            imageDto = new ImageDto
+                            {
+                                FileSizeBytes = size,
+                                FileName = uniqueFileName,
+                                Height = compressedImage.Height,
+                                Width = compressedImage.Width,
+                                IsDeleted = false,
+                                MediaType = compressedImage.MediaType,
+                                CreatedBy = userId,
+                                CreatedAtUtc = now
+                            };
                         }
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
@@ -214,7 +219,7 @@ namespace FutureNHS.Api.Services
                             formAccumulator.Append(key.Value, value);
                             if (formAccumulator.ValueCount > defaultFormOptions.ValueCountLimit)
                             {
-                                _logger.LogError("FileUpload: Form key count limit {0} exceeded.", defaultFormOptions.ValueCountLimit);
+                                _logger.LogError("GroupEdit: Form key count limit {0} exceeded.", defaultFormOptions.ValueCountLimit);
                                 throw new FormatException($"Form key count limit { defaultFormOptions.ValueCountLimit } exceeded.");
                             }
                         }
@@ -227,30 +232,63 @@ namespace FutureNHS.Api.Services
             if (formAccumulator.HasValues)
             {
                 var formValues = formAccumulator.GetResults();
-                var titleFound = formValues.TryGetValue("title", out var title);
-                if (titleFound is false || string.IsNullOrEmpty(title))
+                
+                // Get values from multipart form
+                var nameFound = formValues.TryGetValue("name", out var name);
+                if (nameFound is false || string.IsNullOrEmpty(name))
                 {
-                    throw new ArgumentNullException($"Title was not provided");
+                    throw new ArgumentNullException($"Name was not provided");
                 }
-                var descriptionFound = formValues.TryGetValue("description", out var description);
-                if (descriptionFound is false || string.IsNullOrEmpty(title))
+                var strapLineFound = formValues.TryGetValue("strapline", out var strapLine);
+                if (strapLineFound is false)
                 {
-                    throw new ArgumentNullException($"Description was not provided");
+                    throw new ArgumentNullException($"Strap Line was not provided");
+                }
+                var themeFound = formValues.TryGetValue("themeid", out var theme);
+                if (themeFound is false)
+                {
+                    throw new ArgumentNullException($"theme was not provided");
+                }
+                
+                formValues.TryGetValue("imageid", out var image);
+
+                // Validation
+                if (name.ToString().Length > 255)
+                {
+                    throw new ArgumentOutOfRangeException($"Title must be less than 256 characters");
+                }
+                if (strapLine.ToString().Length > 255)
+                {
+                    throw new ArgumentOutOfRangeException($"Strap Line be less than 256 characters");
+                }
+                if (Guid.TryParse(theme, out var themeId) is false || themeId == new Guid())
+                {
+                    throw new ArgumentOutOfRangeException($"Incorrect Id provided");
                 }
 
-                if (title.ToString().Length > 200)
+                var imageId = Guid.TryParse(image, out var imageGuid) ? (Guid?)imageGuid : null;
+                if (imageId.HasValue)
                 {
-                    throw new ArgumentOutOfRangeException($"Title must be less than 200 characters");
-                }
-                if (description.ToString().Length > 4000)
-                {
-                    throw new ArgumentOutOfRangeException($"Description must be less than 4000 characters");
+                    if (imageId == new Guid())
+                    {
+                        throw new ArgumentOutOfRangeException($"Incorrect Id provided");
+                    }
                 }
 
-                fileDto.Title = title;
-                fileDto.Description = description;
+                groupDto = new GroupDto
+                {
+                    Slug = slug,
+                    Name = name,
+                    StrapLine = strapLine,
+                    ThemeId = themeId,
+                    ImageId = imageId,
+                    ModifiedBy = userId,
+                    ModifiedAtUtc = now,
+                    RowVersion = rowVersion
+                };
+               
             }
-            return fileDto;
+            return (groupDto, imageDto);
         }
 
 
