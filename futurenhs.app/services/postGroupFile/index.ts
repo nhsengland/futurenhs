@@ -36,9 +36,7 @@ export const postGroupFile = async ({
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
-        customHeaders: {
-            ...headers
-        },
+        headers: headers,
         isMultiPartForm: true,
         body: body
     }), defaultTimeOutMillis);

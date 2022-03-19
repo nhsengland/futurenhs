@@ -30,7 +30,7 @@ export const updateGroupForm: FormConfig = {
         {
             fields: [
                 {
-                    name: 'name',
+                    name: 'Name',
                     inputType: 'text',
                     text: {
                         label: 'Group name',
@@ -51,7 +51,7 @@ export const updateGroupForm: FormConfig = {
                     ]
                 },
                 {
-                    name: 'strapline',
+                    name: 'Strapline',
                     text: {
                         label: 'Strap line (optional)',
                         hint: 'Add a strapline to encapsulate your group, include keywords for search'
@@ -67,7 +67,7 @@ export const updateGroupForm: FormConfig = {
                     ]
                 },
                 {
-                    name: 'logo',
+                    name: 'File',
                     text: {
                         label: 'Logo (optional)',
                         hint: 'Please upload your logo or an icon. If not, we will use the existing image.'
@@ -88,7 +88,11 @@ export const updateGroupForm: FormConfig = {
                     ]
                 },
                 {
-                    name: 'themeId',
+                    name: 'ImageId',
+                    component: 'hidden'
+                },
+                {
+                    name: 'ThemeId',
                     text: {
                         label: 'Choose your theme colour',
                         hint: 'Please choose a colour theme for your group. Please note, all colour combinations are accessible. For more information, see our knowledge hub.'

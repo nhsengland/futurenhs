@@ -38,7 +38,7 @@ export const postGroupFolder = async ({
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
-        customHeaders: headers,
+        headers: headers,
         body: {
             Title: body.get('name'),
             Description: body.get('description')

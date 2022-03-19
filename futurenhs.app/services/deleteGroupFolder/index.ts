@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
 import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
@@ -32,11 +33,11 @@ export const deleteGroupFolder = async ({
     const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders/${folderId}`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'DELETE',
-        customHeaders: {
+        method: requestMethods.DELETE,
+        headers: {
             'csrf-token': csrfToken
         }
-    }), 30000);
+    }), defaultTimeOutMillis);
     
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;

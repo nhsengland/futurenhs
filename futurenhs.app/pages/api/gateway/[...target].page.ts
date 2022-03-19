@@ -10,12 +10,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.SHAREDSECRETS_APIAPPLICATION}`
     };
 
-    const fetchOpts: FetchOptions = setFetchOpts({
-        method: method,
-        customHeaders: headers,
-        body: req.body
-    });
-
+    const fetchOpts: FetchOptions = setFetchOpts({ method, headers, body: req.body });
     const apiResponse: FetchResponse = await fetchJSON(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl, fetchOpts, 30000);
 
     const apiData: any = apiResponse.json;

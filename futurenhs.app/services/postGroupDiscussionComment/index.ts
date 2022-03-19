@@ -39,7 +39,7 @@ export const postGroupDiscussionComment: Service = async ({
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
-        customHeaders: headers,
+        headers: headers,
         body: {
             content: body.get('content')
         }

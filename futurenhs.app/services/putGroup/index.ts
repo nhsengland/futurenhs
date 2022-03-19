@@ -1,5 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
+import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
 import { ServiceError } from '..';
 import { ServiceResponse } from '@appTypes/service';
 import { User } from '@appTypes/user';
@@ -7,7 +8,7 @@ import { User } from '@appTypes/user';
 declare type Options = ({
     groupId: string;
     user: User;
-    csrfToken: string,
+    headers?: any,
     body: FormData;
 });
 
@@ -16,10 +17,10 @@ declare type Dependencies = ({
     fetchJSON: any;
 });
 
-export const putGroupDetails = async ({
+export const putGroup = async ({
     groupId,
     user,
-    csrfToken,
+    headers,
     body
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
 
@@ -28,17 +29,15 @@ export const putGroupDetails = async ({
 
     const { id } = user;
 
-    const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
-    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}`;
+    const apiBase: string = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/update`;
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'PUT',
-        customHeaders: {
-            'csrf-token': csrfToken
-        },
+        method: requestMethods.PUT,
+        headers: headers,
         isMultiPartForm: true,
         body: body
-    }), 30000);
+    }), defaultTimeOutMillis);
     
     const apiMeta: any = apiResponse.meta;
     const apiData: any = apiResponse.json;
@@ -48,7 +47,7 @@ export const putGroupDetails = async ({
     if(!ok){
 
         throw new ServiceError('Error putting group details', {
-            serviceId: services.PUT_GROUP_DETAILS,
+            serviceId: services.PUT_GROUP,
             status: status,
             statusText: statusText,
             body: apiData

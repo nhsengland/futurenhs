@@ -26,11 +26,11 @@ export const withTextContent = (config: HofConfig, dependencies?: {
 
             props.contentText = pageTextContentData.data;
 
-            
             if(props.entityText && props.contentText.subTitle) {
-                props.entityText.title = `${props.entityText.title} - ${props.contentText.subTitle}`
-            }
 
+                //props.entityText.title = `${props.entityText.title} - ${props.contentText.subTitle}`;
+
+            }
 
         } catch (error) {
 

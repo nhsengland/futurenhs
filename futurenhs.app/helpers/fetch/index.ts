@@ -59,31 +59,31 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
  */
  export const setFetchOpts = ({
     method,
-    customHeaders,
+    headers,
     isMultiPartForm,
     body
 }: {
     method: requestMethods,
-    customHeaders?: Headers;
+    headers?: Headers;
     isMultiPartForm?: boolean;
     body?: any;
 }): FetchOptions => {
 
-    const headers: Headers = new Headers({
+    const headersToUse: Headers = new Headers({
         'Accept': 'application/json'
     });
 
     if(!isMultiPartForm){
 
-        headers.set('Content-Type', 'application/json');
+        headersToUse.set('Content-Type', 'application/json');
 
     }
 
-    if(customHeaders){
+    if(headers){
 
-        for(const key in customHeaders){
+        for(const key in headers){
 
-            headers.set(key, customHeaders[key]);
+            headersToUse.set(key, headers[key]);
 
         }
 
@@ -92,7 +92,7 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
     const fetchOpts: FetchOptions = {
         method: method,
         credentials: 'include',
-        headers: headers
+        headers: headersToUse
     };
 
     if(body && method === requestMethods.POST || method === requestMethods.PUT || method === requestMethods.PATCH){

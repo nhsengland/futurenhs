@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+
 import { formTypes } from "@constants/forms";
+import { getStandardServiceHeaders } from '@helpers/fetch';
 import { selectFormErrors, selectFormInitialValues, selectFormDefaultFields } from '@selectors/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-import { putGroupDetails } from '@services/putGroupDetails';
+import { putGroup } from '@services/putGroup';
 import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
@@ -17,16 +20,19 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
     groupId,
     user,
     csrfToken,
+    etag,
     forms,
     contentText,
     services = {
-        putGroupDetails: putGroupDetails
+        putGroup: putGroup
     }
 }) => {
 
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.UPDATE_GROUP));
+    const router = useRouter();
 
-    const initialValues = selectFormInitialValues(forms, formTypes.UPDATE_GROUP);
+    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.UPDATE_GROUP));
+    const [initialValues, setInitialValues] = useState(selectFormInitialValues(forms, formTypes.UPDATE_GROUP));
+
     const fields = selectFormDefaultFields(forms, formTypes.UPDATE_GROUP);
 
     const { mainHeading, secondaryHeading } = contentText ?? {};
@@ -38,10 +44,14 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
 
         return new Promise((resolve) => {
 
-            services.putGroupDetails({ groupId, user, csrfToken, body: formData }).then(() => {
+            const headers = getStandardServiceHeaders({ csrfToken, etag });
+
+            services.putGroup({ groupId, user, headers, body: formData }).then(() => {
 
                 setErrors({});
                 resolve({});
+
+                router.replace(router.asPath);
 
             })
             .catch((error) => {

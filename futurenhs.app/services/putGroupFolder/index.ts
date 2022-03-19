@@ -37,7 +37,7 @@ export const putGroupFolder = async ({
 
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.PUT,
-        customHeaders: headers,
+        headers: headers,
         body: {
             Title: body.get('name'),
             Description: body.get('description')

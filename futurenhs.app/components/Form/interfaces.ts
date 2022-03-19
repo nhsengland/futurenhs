@@ -23,4 +23,5 @@ export interface Props {
     submitButtonClassName?: string;
     cancelButtonClassName?: string;
     shouldAddErrorTitle?: boolean;
+    shouldClearOnSubmitSuccess?: boolean;
 }

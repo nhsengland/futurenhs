@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
-import { getServerSideMultiPartFormData } from '@helpers/util/form';
+import { getStandardServiceHeaders } from '@helpers/fetch';
 import { routeParams } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
 import { formTypes } from '@constants/forms';
@@ -13,10 +13,9 @@ import { withRoutes } from '@hofs/withRoutes';
 import { withTextContent } from '@hofs/withTextContent';
 import { withGroup } from '@hofs/withGroup';
 import { withForms } from '@hofs/withForms';
-import { validate } from '@helpers/validators';
-import { selectFormData, selectCsrfToken, selectParam, selectUser, selectRequestMethod } from '@selectors/context';
-import { selectFormDefaultFields } from '@selectors/forms';
-import { putGroupDetails } from '@services/putGroupDetails';
+import { selectMultiPartFormData, selectCsrfToken, selectParam, selectUser, selectRequestMethod } from '@selectors/context';
+import { getGroup } from '@services/getGroup';
+import { putGroup } from '@services/putGroup';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { updateGroupForm } from '@formConfigs/update-group';
@@ -45,65 +44,64 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     getServerSideProps: async (context: GetServerSidePropsContext) => {
 
                         const csrfToken: string = selectCsrfToken(context);
-                        const formData: any = selectFormData(context);
+                        const formData: any = selectMultiPartFormData(context);
                         const groupId: string = selectParam(context, routeParams.GROUPID);
                         const user: User = selectUser(context);
                         const requestMethod: requestMethods = selectRequestMethod(context);
 
-                        props.forms[formTypes.UPDATE_GROUP].initialValues = {
-                            'name': props.entityText.title,
-                            'strapline': props.entityText.strapLine,
-                            'themeId': props.themeId && themes[props.themeId] ? [props.themeId] : [defaultThemeId]
-                        };
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.INDEX;
 
                         /**
-                         * Handle server-side form post
+                         * Get data from services
                          */
-                        if (formData && requestMethod === requestMethods.POST) {
+                        try {
 
-                            const validationErrors: Record<string, string> = validate(formData, selectFormDefaultFields(props.forms, updateGroupForm.id));
+                            const [group] = await Promise.all([getGroup({ user, groupId, isForEdit: true })]);
+                            const etag = group.headers.get('etag');
 
-                            props.forms[updateGroupForm.id].errors = validationErrors;
-                            props.forms[updateGroupForm.id].initialValues = formData;
+                            props.etag = etag;
+                            props.forms[formTypes.UPDATE_GROUP].initialValues = {
+                                'Name': props.entityText.title,
+                                'Strapline': props.entityText.strapLine,
+                                'ImageId': '',
+                                'ThemeId': props.themeId && themes[props.themeId] ? [props.themeId] : [defaultThemeId]
+                            };
 
-                            if (Object.keys(validationErrors).length === 0) {
+                            /**
+                             * Handle server-side form post
+                             */
+                            if (formData && requestMethod === requestMethods.POST) {
 
-                                try {
+                                const headers = { 
+                                    ...getStandardServiceHeaders({ csrfToken, etag }),
+                                    ...formData.getHeaders()
+                                };
 
-                                    await putGroupDetails({ groupId, user, csrfToken, body: getServerSideMultiPartFormData(formData) as any });
+                                await putGroup({ groupId, user, headers, body: formData });
 
-                                    return {
-                                        props: {},
-                                        redirect: {
-                                            permanent: false,
-                                            destination: props.routes.groupRoot
-                                        }
+                                return {
+                                    redirect: {
+                                        permanent: false,
+                                        destination: props.routes.groupRoot
                                     }
-
-                                } catch (error) {
-
-                                    if (error.data?.status) {
-
-                                        props.forms[updateGroupForm.id].errors = error.data.body || {
-                                            _error: error.data.statusText
-                                        };
-                                        props.forms[updateGroupForm.id].initialValues = formData;
-
-                                    } else {
-
-                                        return handleSSRErrorProps({ props, error });
-
-                                    }
-
                                 }
 
                             }
 
-                        } else {
+                        } catch (error) {
 
+                            if (error.data?.status) {
 
+                                props.forms[updateGroupForm.id].errors = error.data.body || {
+                                    _error: error.data.statusText
+                                };
+
+                            } else {
+
+                                return handleSSRErrorProps({ props, error });
+
+                            }
 
                         }
 

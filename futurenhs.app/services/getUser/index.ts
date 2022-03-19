@@ -1,4 +1,5 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { requestMethods } from '@constants/fetch';
 import { services } from '@constants/services';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
@@ -33,8 +34,8 @@ export const getUser: GetUserService = async ({
 
     const apiUrl: string = process.env.NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL;
     const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({
-        method: 'GET',
-        customHeaders: {
+        method: requestMethods.GET,
+        headers: {
             Cookie: existingCookies
         }
     }), 1000);

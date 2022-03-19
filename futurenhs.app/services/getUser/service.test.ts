@@ -28,7 +28,7 @@ describe('getAuth service', () => {
 
         await expect(mockSetFetchOptions).toBeCalledWith({
             method: 'GET',
-            customHeaders: {
+            headers: {
                 Cookie: 'cookie1=value1; cookie2=value2'
             }
         });

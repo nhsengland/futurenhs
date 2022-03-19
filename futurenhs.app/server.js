@@ -56,7 +56,8 @@ app.use(formData.parse({
     uploadDir: os.tmpdir(),
     autoClean: true
 }));
-//app.use(formData.stream());
+app.use(formData.format());
+app.use(formData.stream());
 app.use(formData.union());
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET));
 

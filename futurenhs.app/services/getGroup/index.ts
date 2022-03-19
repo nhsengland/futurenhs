@@ -1,5 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
+import { requestMethods, defaultTimeOutMillis } from '@constants/fetch';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -9,6 +10,7 @@ import { User } from '@appTypes/user';
 declare type Options = ({
     user: User;
     groupId: string;
+    isForEdit?: boolean;
 });
 
 declare type Dependencies = ({
@@ -20,20 +22,26 @@ export type GetGroupService = (options: Options, dependencies?: Dependencies) =>
 
 export const getGroup = async ({
     user,
-    groupId
+    groupId,
+    isForEdit,
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<Group>> => {
+
+    const serviceResponse: ServiceResponse<Group> = {
+        data: null
+    };
 
     const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
     const id: string = user.id;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}`;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: 'GET' }), 30000);
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/users/${id}/groups/${groupId}${isForEdit ? '/update' : ''}`;
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: requestMethods.GET }), defaultTimeOutMillis);
+
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
 
-    const { ok, status, statusText } = apiMeta;
+    const { headers, ok, status, statusText } = apiMeta;
 
     if(!ok){
 
@@ -46,7 +54,8 @@ export const getGroup = async ({
 
     }
 
-    const data = {
+    serviceResponse.headers = headers;
+    serviceResponse.data = {
         text: {
             title: apiData.name ?? null,
             metaDescription: 'A Future NHS group',
@@ -62,8 +71,6 @@ export const getGroup = async ({
         themeId: apiData.themeId
     };
 
-    return {
-        data: data
-    };
+    return serviceResponse;
 
 }

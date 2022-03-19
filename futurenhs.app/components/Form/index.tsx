@@ -34,7 +34,8 @@ export const Form: (props: Props) => JSX.Element = ({
     bodyClassName,
     submitButtonClassName,
     cancelButtonClassName,
-    shouldAddErrorTitle = true
+    shouldAddErrorTitle = true,
+    shouldClearOnSubmitSuccess
 }) => {
 
     const router = useRouter();
@@ -227,7 +228,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                             /**
                                              * Clear the form if the submission completed without errors
                                              */
-                                            form.restart();
+                                            shouldClearOnSubmitSuccess && form.restart({});
                                             document.title = pageTitle;
 
                                         } else {
@@ -294,8 +295,8 @@ export const Form: (props: Props) => JSX.Element = ({
                                         }}
                                         cancelAction={handleDiscardFormCancel}
                                         confirmAction={handleDiscardFormConfirm}>
-                                        <h3>Entered Data will be lost</h3>
-                                        <p className="u-text-bold">Any entered details will be discarded. Are you sure you wish to proceed?</p>
+                                            <h3>Entered Data will be lost</h3>
+                                            <p className="u-text-bold">Any entered details will be discarded. Are you sure you wish to proceed?</p>
                                     </Dialog>
                                 </>
                             }
