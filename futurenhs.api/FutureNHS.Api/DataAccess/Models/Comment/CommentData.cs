@@ -9,6 +9,7 @@
         public Guid CreatedById { get; init; }
         public string CreatedByName { get; init; }
         public string CreatedBySlug { get; init; }
+        public Guid? InReplyTo { get; init; }
         public int RepliesCount { get; init; }
         public int Likes { get; init; }
         public bool LikedByThisUser { get; init; }

@@ -9,7 +9,6 @@ namespace FutureNHS.Api.DataAccess.DTOs
         public string Name { get; init; }
         public string? StrapLine { get; init; }
         public Guid? ThemeId { get; init; }
-        [JsonIgnore]
         public Guid? ImageId { get; init; }
         public bool IsPublic { get; init; }
         public string Slug { get; init; }
@@ -17,7 +16,6 @@ namespace FutureNHS.Api.DataAccess.DTOs
         public Guid? CreatedBy { get; init; }
         public DateTime ModifiedAtUtc { get; init; }
         public Guid? ModifiedBy { get; init; }
-        [JsonIgnore]
         public bool IsDeleted { get; init; }
     }
 }

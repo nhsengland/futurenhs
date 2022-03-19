@@ -81,9 +81,9 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId:guid}/groups/{slug}/edit")]
+        [Route("users/{userId:guid}/groups/{slug}/update")]
         [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> GetEditGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUpdateGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
         {
             var group = await _groupService.GetGroupAsync(userId, slug, cancellationToken);
 
@@ -98,8 +98,8 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPut]
         [DisableFormValueModelBinding]
-        [Route("users/{userId:guid}/groups/{slug}/edit")]
-        public async Task<IActionResult> EditGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
+        [Route("users/{userId:guid}/groups/{slug}/update")]
+        public async Task<IActionResult> UpdateGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
         {
             if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {

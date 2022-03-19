@@ -139,7 +139,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                 FROM        [Like]  
                                                                                 WHERE       [Like].Comment_Id = comment.Id 
                                                                                 AND         [Like].CreatedBy = @UserId
-                                                                              )
+                                                                              ),
+                                [{nameof(CommentData.InReplyTo)}]           = comment.InReplyTo
 
                     FROM            Comment comment
 					JOIN		    Discussion discussion

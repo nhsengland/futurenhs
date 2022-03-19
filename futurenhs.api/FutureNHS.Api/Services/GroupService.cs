@@ -14,6 +14,7 @@ using System.Data;
 using System.Net;
 using System.Security;
 using System.Text;
+using FutureNHS.Api.Exceptions;
 
 namespace FutureNHS.Api.Services
 {
@@ -56,19 +57,19 @@ namespace FutureNHS.Api.Services
             return group;
         }
 
-        private async Task EditGroupAsync(Guid userId, string slug, GroupDto groupDto, CancellationToken cancellationToken)
+        private async Task UpdateGroupAsync(Guid userId, string slug, GroupDto groupDto, CancellationToken cancellationToken)
         {
 
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupEditRole, cancellationToken);
             if (userCanPerformAction is not true)
             {
-                _logger.LogError($"Error: EditGroupAsync - User:{0} does not have access to edit group:{1}", userId, slug);
+                _logger.LogError($"Error: UpdateGroupAsync - User:{0} does not have access to edit group:{1}", userId, slug);
                 throw new SecurityException($"Error: User does not have access");
             }
 
             var now = _systemClock.UtcNow.UtcDateTime;
 
-            await _groupCommand.EditGroupAsync(groupDto, cancellationToken);
+            await _groupCommand.UpdateGroupAsync(groupDto, cancellationToken);
         }
 
 
@@ -83,29 +84,48 @@ namespace FutureNHS.Api.Services
                 throw new SecurityException($"Error: User does not have access");
             }
 
+            var groupDto = await _groupCommand.GetGroupAsync(slug, cancellationToken);
+            if (!groupDto.RowVersion.SequenceEqual(rowVersion))
+            {
+                _logger.LogError($"Precondition Failed: UpdateGroupAsync - Group:{0} has changed prior to submission ", slug);
+                throw new PreconditionFailedExeption("Precondition Failed: Group has changed prior to submission");
+            }
+
             var (group, image) = await UploadGroupImageMultipartContent(userId, slug, requestBody, rowVersion, contentType, cancellationToken);
             try
             {
-                Guid imageId;
                 if (image != null)
                 {
-                    imageId = await _imageService.CreateImageAsync(image);
+                    var imageId = await _imageService.CreateImageAsync(image);
                     group = group with {ImageId = imageId};
                 }
-
-                // TODO GET IMAGE ID
-
-                await EditGroupAsync(userId, slug, group, cancellationToken);
-            }
-            catch (Exception ex)
+ }
+            catch (DBConcurrencyException ex)
             {
-                _logger.LogError(ex, $"Error: CreateImageAsync - Error adding image to database");
+                _logger.LogError(ex, $"Error: CreateImageAsync - Error adding image to group {0}", slug);
                 if (image != null)
                 {
                     await _blobStorageProvider.DeleteFileAsync(image.FileName);
                     await _imageService.DeleteImageAsync(image.Id);
                 }
             }
+            try
+            {
+                await UpdateGroupAsync(userId, slug, group, cancellationToken);
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, $"Error: UpdateGroupAsync - Error updating group {0}", slug);
+                if (image != null)
+                {
+                    await _blobStorageProvider.DeleteFileAsync(image.FileName);
+                    await _imageService.DeleteImageAsync(image.Id);
+                }
+            }
+
+            //TODO - Delete old image of everything succeeds and the image has been removed or replaced 
+
+
         }
 
         /// based on microsoft example https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/mvc/models/file-uploads/samples/
@@ -119,6 +139,7 @@ namespace FutureNHS.Api.Services
             {
                 throw new InvalidDataException($"Expected a multipart request, but got {contentType}");
             }
+
             var now = _systemClock.UtcNow.UtcDateTime;
 
             var defaultFormOptions = new FormOptions();

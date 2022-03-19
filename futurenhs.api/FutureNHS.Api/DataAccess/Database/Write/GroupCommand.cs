@@ -161,7 +161,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return group;
         }
 
-        public async Task EditGroupAsync(GroupDto groupDto, CancellationToken cancellationToken = default)
+        public async Task UpdateGroupAsync(GroupDto groupDto, CancellationToken cancellationToken = default)
         {
             const string query =
                  @" UPDATE       [dbo].[Group]
