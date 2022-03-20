@@ -194,6 +194,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     Content = item.Content,
                     RepliesCount = item.RepliesCount,
                     LikesCount = item.Likes,
+                    InReplyTo = item.InReplyTo,
                     FirstRegistered = new Models.Shared.Properties
                     {
                         AtUtc = item.CreatedAtUtc,
