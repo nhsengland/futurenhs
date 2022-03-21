@@ -75,3 +75,11 @@ Scenario: FNHS52 - Forum Navigate Back to Discussion Page
     Then the 'General Discussion Validation' header is displayed
     When I click the 'Back to discussions' link
     Then the 'All Discussions' header is displayed
+
+
+Scenario: FNHS62 - Pinned Discussion Validation
+    Then the 'General Discussion Validation' discussion card is displayed
+    | AA                                     |
+    | Created by Auto Admin [PRETTYDATE]     |
+    | Last comment by Auto User [PRETTYDATE] |
+    And the 'General Discussion Validation' discussion card is pinned

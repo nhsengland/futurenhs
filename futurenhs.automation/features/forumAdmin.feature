@@ -50,11 +50,3 @@ Scenario: FNHS61 - Validate new discussion details
     Then the 'Join in the conversation' header is displayed
     And the 'You're signed in auto Admin' textual value is displayed
     And the 'Your comment' label is displayed
-
-
-Scenario: FNHS62 - Pinned Discussion Validation
-    Then the 'General Discussion Validation' discussion card is displayed
-    | AA                                     |
-    | Created by Auto Admin [PRETTYDATE]     |
-    | Last comment by Auto User [PRETTYDATE] |
-    And the 'General Discussion Validation' discussion card is pinned
