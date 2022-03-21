@@ -348,9 +348,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         {responseCount > 0 &&
                             <span className="u-mr-5"><SVGIcon name="icon-comments" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{totalRecordsLabel}: {responseCount}</span>
                         }
-                        {viewCount > 0 &&
+                        {/* {viewCount > 0 &&
                             <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCountLabel}: {viewCount}</>
-                        }
+                        } */}
                     </LayoutColumn>
                 </LayoutColumnContainer>
                 <hr />
