@@ -40,8 +40,8 @@ export const mainNavMenuList = [
         isActive: false,
         isActiveRoot: false,
         meta: {
-            themeId: 11,
-            iconName: 'icon-group'
+            themeId: 14,
+            iconName: 'icon-groups'
         }
     }
 ];

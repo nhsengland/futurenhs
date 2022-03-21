@@ -32,7 +32,6 @@ $card-hero-padding: 10px;
 
         @include respond-to(tablet) {
             margin: $nhsuk-spacing-point-2 $nhsuk-spacing-point-4 $nhsuk-spacing-point-2 $nhsuk-spacing-point-2;
-            //margin: -#{$nhsuk-spacing-point-3} $nhsuk-spacing-point-4 -#{$nhsuk-spacing-point-3} -#{$nhsuk-spacing-point-3};
         }
 
     }
@@ -45,6 +44,10 @@ $card-hero-padding: 10px;
         border-radius: 4px;
         width: 68px;
         height: 68px;
+
+        & > span {
+            border-radius: 4px;
+        }
 
         @include respond-to(tablet) {
             width: 180px;
