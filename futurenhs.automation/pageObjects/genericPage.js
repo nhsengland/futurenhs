@@ -154,7 +154,7 @@ class genericPage extends basePage{
     }
 
     /**
-     * 
+     * Function to validate the image container of a group card exists on a page
      */
     groupImageValidation(){
         var groupImg = $(`//div[@class="c-page-header_image-wrapper"]`);
@@ -162,7 +162,7 @@ class genericPage extends basePage{
     }
    
     /**
-     * 
+     * Function to accept all cookies on the cookie banner popup
      */
     acceptCookies(){
         var cookieBanner = $(`//div[@class="u-py-6 c-cookie-banner"]`);

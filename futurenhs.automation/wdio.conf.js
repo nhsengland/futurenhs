@@ -304,6 +304,7 @@ exports.config = {
                 return pages[0].screenshot({ ...options, fullPage: true });
             });
         });
+        browser.deleteAllCookies();
     },
 
     /**
