@@ -11,7 +11,6 @@ import { putGroup } from '@services/putGroup';
 import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
-import { routes } from '@jestMocks/generic-props';
 
 /**
  * Group create folder template
@@ -22,6 +21,7 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
     csrfToken,
     etag,
     forms,
+    routes,
     contentText,
     services = {
         putGroup: putGroup
@@ -31,7 +31,7 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
     const router = useRouter();
 
     const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.UPDATE_GROUP));
-    const [initialValues, setInitialValues] = useState(selectFormInitialValues(forms, formTypes.UPDATE_GROUP));
+    const [initialValues] = useState(selectFormInitialValues(forms, formTypes.UPDATE_GROUP));
 
     const fields = selectFormDefaultFields(forms, formTypes.UPDATE_GROUP);
 
@@ -51,7 +51,7 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
                 setErrors({});
                 resolve({});
 
-                router.replace(router.asPath);
+                router.replace(routes.groupRoot);
 
             })
             .catch((error) => {

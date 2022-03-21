@@ -39,7 +39,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             editMember } = contentText ?? {};
 
     const shouldRenderMemberEditColumn: Boolean = actions?.includes(userActions.GROUPS_MEMBERS_EDIT);
-    const shouldRenderPendingMembersList: Boolean = actions?.includes(userActions.GROUPS_MEMBERS_PENDING_VIEW);
+    const shouldRenderPendingMembersList: Boolean = false // disabled for the moment for provate beta //actions?.includes(userActions.GROUPS_MEMBERS_PENDING_VIEW);
 
     const pendingMemberColumnList = [
         {

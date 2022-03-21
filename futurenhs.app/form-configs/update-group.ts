@@ -73,19 +73,7 @@ export const updateGroupForm: FormConfig = {
                         hint: 'Please upload your logo or an icon. If not, we will use the existing image.'
                     },
                     component: 'input',
-                    inputType: 'file',
-                    validators: [
-                        {
-                            type: 'maxFileSize',
-                            maxFileSize: 500000,
-                            message: 'The selected file must be smaller than 500Kb'
-                        },
-                        {
-                            type: 'validFileExtensions',
-                            validFileExtensions: ['jpg', 'png'],
-                            message: 'The selected file must be a JPG or PNG'
-                        }
-                    ]
+                    inputType: 'file'
                 },
                 {
                     name: 'ImageId',

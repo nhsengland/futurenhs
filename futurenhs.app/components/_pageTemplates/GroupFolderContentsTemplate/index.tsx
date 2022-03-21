@@ -56,7 +56,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
     const hasAddFileAction: boolean = actions?.includes(userActions.GROUPS_FILES_ADD);
     const hasAddFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_ADD);
     const hasEditFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_EDIT);
-    const hasDeleteFolderAction: boolean = actions?.includes(userActions.GROUPS_FOLDERS_DELETE);
+    const hasDeleteFolderAction: boolean = false; // Temporarily removing for private beta //actions?.includes(userActions.GROUPS_FOLDERS_DELETE);
 
     const folderUpdatePath: string = `${routes.groupFoldersRoot}/${folderId}/update`;
     const folderDeletePath: string = `${routes.groupFoldersRoot}/${folderId}/delete`;
@@ -292,28 +292,34 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                             {(folderId && (hasEditFolderAction || hasDeleteFolderAction)) &&
                                 <LayoutColumn tablet={6} desktop={4} className="tablet:u-text-right">
                                     <p className="u-mb-0">
-                                        <Link href={folderDeletePath}>
-                                            <a className="c-button c-button--outline u-mr-2 u-my-4 u-w-full tablet:u-w-auto tablet:u-my-0 u-drop-shadow" onClick={handleDeleteFolder}>
-                                                {deleteFolder}
-                                            </a>
-                                        </Link>
-                                        <Dialog
-                                            id="dialog-delete-folder"
-                                            isOpen={isCancelDeleteModalOpen}
-                                            text={{
-                                                cancelButton: 'Cancel',
-                                                confirmButton: 'Yes, discard'
-                                            }}
-                                            cancelAction={handleDeleteFolderCancel}
-                                            confirmAction={handleDeleteFolderConfirm}>
-                                                <h3>Folder will be deleted</h3>
-                                                <p className="u-text-bold">Any folder contents will also be discarded. Are you sure you wish to proceed?</p>
-                                        </Dialog>
-                                        <Link href={folderUpdatePath}>
-                                            <a className="c-button c-button--outline u-w-full tablet:u-w-auto u-drop-shadow">
-                                                {updateFolder}
-                                            </a>
-                                        </Link>
+                                        {hasDeleteFolderAction &&
+                                            <>
+                                                <Link href={folderDeletePath}>
+                                                    <a className="c-button c-button--outline u-mr-2 u-my-4 u-w-full tablet:u-w-auto tablet:u-my-0 u-drop-shadow" onClick={handleDeleteFolder}>
+                                                        {deleteFolder}
+                                                    </a>
+                                                </Link>
+                                                <Dialog
+                                                    id="dialog-delete-folder"
+                                                    isOpen={isCancelDeleteModalOpen}
+                                                    text={{
+                                                        cancelButton: 'Cancel',
+                                                        confirmButton: 'Yes, discard'
+                                                    }}
+                                                    cancelAction={handleDeleteFolderCancel}
+                                                    confirmAction={handleDeleteFolderConfirm}>
+                                                        <h3>Folder will be deleted</h3>
+                                                        <p className="u-text-bold">Any folder contents will also be discarded. Are you sure you wish to proceed?</p>
+                                                </Dialog>
+                                            </>
+                                        }
+                                        {hasEditFolderAction &&
+                                            <Link href={folderUpdatePath}>
+                                                <a className="c-button c-button--outline u-w-full tablet:u-w-auto u-drop-shadow">
+                                                    {updateFolder}
+                                                </a>
+                                            </Link>
+                                        }
                                     </p>
                                 </LayoutColumn>
                             }

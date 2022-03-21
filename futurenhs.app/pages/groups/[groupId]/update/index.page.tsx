@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getStandardServiceHeaders } from '@helpers/fetch';
+import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
 import { formTypes } from '@constants/forms';
@@ -62,10 +63,10 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             props.etag = etag;
                             props.forms[formTypes.UPDATE_GROUP].initialValues = {
-                                'Name': props.entityText.title,
-                                'Strapline': props.entityText.strapLine,
-                                'ImageId': '',
-                                'ThemeId': props.themeId && themes[props.themeId] ? [props.themeId] : [defaultThemeId]
+                                'Name': group.data.text.title,
+                                'Strapline': group.data.text.strapLine,
+                                'ImageId': group.data.imageId,
+                                'ThemeId': group.data.themeId && themes[group.data.themeId] ? [group.data.themeId] : [defaultThemeId]
                             };
 
                             /**
@@ -110,7 +111,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         return {
                             notFound: !props.actions.includes(actions.GROUPS_EDIT),
-                            props: props
+                            props: getJsonSafeObject({
+                                object: props
+                            })
                         }
 
                     }

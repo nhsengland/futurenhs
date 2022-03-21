@@ -56,7 +56,8 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
             ['u-justify-between u-w-full tablet:u-w-1/6']: true
         }),
         modifiedBy: classNames({
-            ['u-justify-between u-w-full tablet:u-w-1/4']: true
+            ['u-justify-between u-w-full tablet:u-w-1/4']: true,
+            ['u-hidden tablet:u-block']: !modifiedBy?.text?.userName
         }),
         lastUpdate: classNames({
             ['u-justify-between u-w-full u-w-1/6 tablet:u-w-8 u-items-center']: true

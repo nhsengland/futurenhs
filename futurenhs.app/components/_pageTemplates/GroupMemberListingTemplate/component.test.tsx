@@ -101,46 +101,48 @@ describe('Group member listing template', () => {
 
         render(<GroupMemberListingTemplate {...pendingMembersViewAccess} />);
         
-        expect(screen.getAllByText('Mock pending members heading').length).toBe(1);
-        expect(screen.getAllByText('Mock pending name 1').length).toBe(1);
-        expect(screen.getAllByText('Mock pending name 2').length).toBe(1);
+        // Temporarily removed functionality for private beta
+        // expect(screen.getAllByText('Mock pending members heading').length).toBe(1);
+        // expect(screen.getAllByText('Mock pending name 1').length).toBe(1);
+        // expect(screen.getAllByText('Mock pending name 2').length).toBe(1);
 
     });
 
-    it('conditionally renders fallback content when there are no pending members', async () => {
+    // Temporarily removed functionality for private beta
+    // it('conditionally renders fallback content when there are no pending members', async () => {
 
-        const pendingMembers: Props = Object.assign(props, {
-            actions: [actions.GROUPS_MEMBERS_PENDING_VIEW],
-            pendingMembers: [
-                {
-                    fullName: 'Mock pending name 1',
-                    email: 'mockemail.address1', 
-                    requestDate: 'mockDateString'
-                },
-                {
-                    fullName: 'Mock pending name 2',
-                    email: 'mockemail.address2', 
-                    requestDate: 'mockDateString'
-                }
-            ]
-        });
+    //     const pendingMembers: Props = Object.assign(props, {
+    //         actions: [actions.GROUPS_MEMBERS_PENDING_VIEW],
+    //         pendingMembers: [
+    //             {
+    //                 fullName: 'Mock pending name 1',
+    //                 email: 'mockemail.address1', 
+    //                 requestDate: 'mockDateString'
+    //             },
+    //             {
+    //                 fullName: 'Mock pending name 2',
+    //                 email: 'mockemail.address2', 
+    //                 requestDate: 'mockDateString'
+    //             }
+    //         ]
+    //     });
 
-        render(<GroupMemberListingTemplate {...pendingMembers} />);
+    //     render(<GroupMemberListingTemplate {...pendingMembers} />);
         
-        expect(screen.queryByText('Mock no pending members text')).toBeNull();
+    //     expect(screen.queryByText('Mock no pending members text')).toBeNull();
 
-        cleanup();
+    //     cleanup();
         
-        const noPendingMembers: Props = Object.assign(props, {
-            actions: [actions.GROUPS_MEMBERS_PENDING_VIEW],
-            pendingMembers: []
-        });
+    //     const noPendingMembers: Props = Object.assign(props, {
+    //         actions: [actions.GROUPS_MEMBERS_PENDING_VIEW],
+    //         pendingMembers: []
+    //     });
 
-        render(<GroupMemberListingTemplate {...noPendingMembers} />);
+    //     render(<GroupMemberListingTemplate {...noPendingMembers} />);
         
-        expect(screen.getAllByText('Mock no pending members text').length).toBe(1);
+    //     expect(screen.getAllByText('Mock no pending members text').length).toBe(1);
 
-    });
+    // });
 
     it('conditionally renders members list', () => {
         

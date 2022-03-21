@@ -6,6 +6,7 @@ export interface Group {
     text: GroupsPageTextContent;
     groupId?: string; 
     themeId?: string;
+    imageId?: string;
     image?: Image;
     totalDiscussionCount?: number; 
     totalMemberCount?: number;    
