@@ -3,4 +3,5 @@ import { User } from '@appTypes/user';
 
 export interface Props extends Page {
     user: User;
+    pageTitle?: string;
 }

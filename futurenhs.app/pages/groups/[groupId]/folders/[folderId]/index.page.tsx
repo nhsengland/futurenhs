@@ -60,6 +60,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         props.folder = groupFolder.data;
                         props.folderContents = groupFolderContents.data ?? [];
                         props.pagination = groupFolderContents.pagination;
+                        props.pageTitle = `${props.entityText.title} - ${props.folder.text.name}`;
     
                     } catch (error) {
     

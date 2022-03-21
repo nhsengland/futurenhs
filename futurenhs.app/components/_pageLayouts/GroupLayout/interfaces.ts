@@ -19,4 +19,5 @@ export interface Props {
     entityText?: GroupsPageTextContent;
     image?: Image;
     children?: any;
+    pageTitle?: string;
 }

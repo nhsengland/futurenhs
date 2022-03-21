@@ -112,6 +112,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             props.discussion = groupDiscussion.data;
                             props.discussionCommentsList = groupDiscussionComments.data;
                             props.pagination = groupDiscussionComments.pagination;
+                            props.pageTitle = `${props.entityText.title} - ${props.discussion.text.title}`;
+
 
                         } catch (error) {
 

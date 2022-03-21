@@ -1,7 +1,6 @@
 export interface GenericPageTextContent {
     metaDescription?: string;
     title?: string;
-    subTitle?: string;
     mainHeading?: string;
     bodyHtml?: string;
     intro?: string;
@@ -9,6 +8,7 @@ export interface GenericPageTextContent {
     secondaryHeading?: string;
     noResults?:string;
     noResultsMinTermLength?: string;
+    subTitle?: string;
 }
 
 export interface GroupsPageTextContent extends GenericPageTextContent {

@@ -1,6 +1,6 @@
 import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    subTitle: 'Create discussion',
-    secondaryHeading: 'Create Discussion'
+    secondaryHeading: 'Create Discussion',
+    subTitle: 'Create discussion'
 } as GenericPageTextContent;

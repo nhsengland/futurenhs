@@ -54,6 +54,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FILES;
                         props.folderId = folderId;
+                        props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`;
 
                         /**
                          * Return not found if user does not have folder edit action

@@ -14,4 +14,5 @@ export interface Props {
     searchTerm?: any;
     className?: string; 
     children: any;
+    pageTitle?: string;
 }

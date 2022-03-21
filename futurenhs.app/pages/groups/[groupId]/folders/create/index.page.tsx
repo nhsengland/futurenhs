@@ -54,6 +54,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         props.tabId = groupTabIds.FILES;
                         props.folderId = folderId;
                         props.folder = null;
+                        props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`;
     
                         if (!props.actions?.includes(actionConstants.GROUPS_FOLDERS_ADD)) {
     

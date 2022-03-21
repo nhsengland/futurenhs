@@ -49,6 +49,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const [groupFile] = await Promise.all([getGroupFile({ user, groupId, fileId })]);
     
                         props.file = groupFile.data;
+                        props.pageTitle = `${props.entityText.title} - ${props.file.name}`;
     
                     } catch (error) {
     

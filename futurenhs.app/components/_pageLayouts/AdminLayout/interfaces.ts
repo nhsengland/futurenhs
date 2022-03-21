@@ -13,4 +13,5 @@ export interface Props {
     className?: string;
     contentText?: GenericPageTextContent;
     children?: any;
+    pageTitle?: string;
 }

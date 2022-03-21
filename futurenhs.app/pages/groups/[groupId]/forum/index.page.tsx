@@ -46,6 +46,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                     props.layoutId = layoutIds.GROUP;
                     props.tabId = groupTabIds.FORUM;
+                    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
                 
                     /**
                      * Get data from services

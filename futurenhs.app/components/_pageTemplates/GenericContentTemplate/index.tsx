@@ -10,7 +10,8 @@ import { Props } from './interfaces';
 
 export const GenericContentTemplate: (props: Props) => JSX.Element = ({
     user,
-    contentText
+    contentText,
+    pageTitle
 }) => {
 
     const isAuthenticated: boolean = Boolean(user);
@@ -24,7 +25,7 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
 
         <>
             <Head>
-                <title>{title}</title>
+                <title>{pageTitle ? pageTitle : title}</title>
                 <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>

@@ -59,6 +59,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         props.csrfToken = csrfToken;
                         props.file = groupFile.data;
                         props.preview = groupFileView.data;
+                        props.pageTitle = `${props.entityText.title} - ${props.file.name}`;
     
                     } catch (error) {
     

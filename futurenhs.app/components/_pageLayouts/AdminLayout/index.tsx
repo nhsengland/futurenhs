@@ -9,7 +9,8 @@ export const AdminLayout: (props: Props) => JSX.Element = ({
     contentText,
     user,
     actions,
-    children
+    children,
+    pageTitle
 }) => {
 
     const { metaDescription,
@@ -31,7 +32,7 @@ export const AdminLayout: (props: Props) => JSX.Element = ({
             actions={actions}
             className="u-bg-theme-3">
                 <Head>
-                    <title>{title}</title>
+                    <title>{pageTitle ? pageTitle : title}</title>
                     <meta name="description" content={metaDescription} />
                 </Head>
                 <div className="u-pt-10 tablet:u-px-4">

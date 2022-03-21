@@ -50,6 +50,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             props.member = memberData.data;
                             props.layoutId = layoutIds.GROUP;
                             props.tabId = groupTabIds.MEMBERS;
+                            props.pageTitle = `${props.entityText.title} - ${props.member.firstName ?? ""} ${props.member.lastName ?? ""}`
     
                         } catch (error) {
     

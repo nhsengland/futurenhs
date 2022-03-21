@@ -1,6 +1,6 @@
 import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    subTitle: 'Upload file',
-    secondaryHeading: 'Upload a file'
+    secondaryHeading: 'Upload a file',
+    subTitle: 'Upload file'
 } as GenericPageTextContent

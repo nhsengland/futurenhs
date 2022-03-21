@@ -24,6 +24,7 @@ export interface Page {
     contentText?: GenericPageTextContent;
     user?: User;
     className?: string;
+    pageTitle?: string;
 }
 
 export interface GroupPage extends Page {

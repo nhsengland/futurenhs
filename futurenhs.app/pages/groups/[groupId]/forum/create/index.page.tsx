@@ -50,6 +50,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FORUM;
+                        props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`;
 
                         /**
                          * Return page not found if user doesn't have permissions to create a discussion

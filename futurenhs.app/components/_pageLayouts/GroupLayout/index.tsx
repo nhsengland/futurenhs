@@ -20,6 +20,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     routes,
     children,
     shouldRenderGroupHeader = true,
+    pageTitle,
     ...rest 
 }) => {
 
@@ -44,7 +45,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
             className="u-bg-theme-3"
             {...rest}>
                 <Head>
-                    <title>{title}</title>
+                    <title>{pageTitle ? pageTitle : title}</title>
                     <meta name="description" content={metaDescription} />
                 </Head>
                 <LayoutColumnContainer>

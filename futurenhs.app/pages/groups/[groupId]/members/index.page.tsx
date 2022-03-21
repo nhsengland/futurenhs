@@ -44,6 +44,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                     props.layoutId = layoutIds.GROUP;
                     props.tabId = groupTabIds.MEMBERS;
+                    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
     
                     /**
                      * Get data from services
@@ -58,6 +59,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         props.members = groupMembers.data;
                         props.pagination = groupMembers.pagination;
                         props.pendingMembers = groupPendingMembers.data;
+                        
     
                     } catch (error) {
     
