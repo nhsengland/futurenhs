@@ -1,10 +1,12 @@
 import { Image } from '@appTypes/image';
+import { DiscussionComment } from '@appTypes/discussion';
 
 export interface Props {
     id?: string;
     csrfToken: string;
     initialErrors?: any;
     commentId: string;
+    originComment?: DiscussionComment;
     children?: any;
     image?: Image;
     text: any;

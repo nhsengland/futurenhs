@@ -46,7 +46,7 @@ export const Card: (props: Props) => JSX.Element = ({
 
     return (
 
-        <div id={id} className={generatedClasses.wrapper} onClick={handleClick}>
+        <div id={id} tabIndex={-1} className={generatedClasses.wrapper} onClick={handleClick}>
             {image &&
                 <div className={generatedClasses.hero}>
                     <div className={generatedClasses.heroBody}>

@@ -7,7 +7,6 @@ import { selectFormErrors } from '@selectors/forms';
 import { actions as actionsConstants } from '@constants/actions';
 import { formTypes } from '@constants/forms';
 import { dateTime } from '@helpers/formatters/dateTime';
-import { truncate } from '@helpers/formatters/truncate';
 import { initials } from '@helpers/formatters/initials';
 import { routeParams } from '@constants/routes';
 import { Link } from '@components/Link';
@@ -219,57 +218,89 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Render replies to individual comments
      */
-    const renderReplies = ({ replies, createdBy, text }: Partial<DiscussionComment>): Array<JSX.Element> => {
+    const renderReplies = ({ replies }: Partial<DiscussionComment>): Array<JSX.Element> => {
 
-        const parentCommentUserName: string = createdBy?.text?.userName;
-        const parentCommentTeaserText: string = truncate({
-            value: text?.body,
-            limit: 15
-        });
+        /**
+         * Get the origin comment for the reply
+         */
+        const recursiveCommentMapper = (comments: Array<DiscussionComment>, callBack: (comment: DiscussionComment) => boolean | void): void => {
+
+            comments?.every((comment: DiscussionComment) => {
+        
+                const { replies } = comment;
+
+                if(callBack(comment) === true){
+
+                    return false;
+
+                }
+        
+                replies?.length && recursiveCommentMapper(replies, callBack);
+        
+                return true;
+        
+            });
+        
+        }
 
         return replies?.map(({
             commentId,
+            originCommentId,
             created,
             createdBy,
             text,
             likeCount,
             isLiked }) => {
 
-            const replyingUserInitials: string = initials({ value: createdBy?.text?.userName });
-            const replyingUserName: string = createdBy?.text?.userName;
-            const replyingUserId: string = createdBy?.id;
-            const replyCreatedDate: string = dateTime({ value: created });
-            const source: string = `Reply to ${parentCommentUserName} "${parentCommentTeaserText}"`;
+                const replyingUserInitials: string = initials({ value: createdBy?.text?.userName });
+                const replyingUserName: string = createdBy?.text?.userName;
+                const replyingUserId: string = createdBy?.id;
+                const replyCreatedDate: string = dateTime({ value: created });
 
-            const { body } = text ?? {};
+                const { body } = text ?? {};
 
-            return (
+                let originComment: DiscussionComment = null;
 
-                <li key={commentId} className="c-comment_reply-container u-m-0 u-py-6">
-                    <Comment
-                        csrfToken={csrfToken}
-                        initialErrors={errors}
-                        id={`reply-${commentId}`}
-                        commentId={commentId}
-                        text={{
-                            userName: replyingUserName,
-                            initials: replyingUserInitials,
-                            source: source,
-                            body: body
-                        }}
-                        userProfileLink={`${routes.groupMembersRoot}/${replyingUserId}`}
-                        date={replyCreatedDate}
-                        shouldEnableReplies={shouldRenderCommentAndReplyForms}
-                        replyValidationFailAction={handleValidationFailure}
-                        replySubmitAction={handleCommentReplySubmit}
-                        shouldEnableLikes={shouldRenderCommentAndReplyForms}
-                        likeCount={likeCount}
-                        isLiked={isLiked}
-                        likeAction={handleLike}
-                        className="c-comment--reply u-border-l-theme-8" />
-                </li>
+                recursiveCommentMapper(dynamicDiscussionCommentsList, (comment: DiscussionComment) => {
 
-            )
+                    if(comment.commentId === originCommentId){
+
+                        originComment = comment;
+                        return true;
+
+                    }
+
+                    return false;
+
+                });
+
+                return (
+
+                    <li key={commentId} className="c-comment_reply-container u-m-0 u-py-6">
+                        <Comment
+                            id={`comment-${commentId}`}
+                            commentId={commentId}
+                            csrfToken={csrfToken}
+                            initialErrors={errors}
+                            originComment={originComment}
+                            text={{
+                                userName: replyingUserName,
+                                initials: replyingUserInitials,
+                                body: body
+                            }}
+                            userProfileLink={`${routes.groupMembersRoot}/${replyingUserId}`}
+                            date={replyCreatedDate}
+                            shouldEnableReplies={shouldRenderCommentAndReplyForms}
+                            replyValidationFailAction={handleValidationFailure}
+                            replySubmitAction={handleCommentReplySubmit}
+                            shouldEnableLikes={shouldRenderCommentAndReplyForms}
+                            likeCount={likeCount}
+                            isLiked={isLiked}
+                            likeAction={handleLike}
+                            className="c-comment--reply u-border-l-theme-8" />
+                    </li>
+
+                )
 
         })
     };
@@ -350,7 +381,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 const commentCreatedDate: string = dateTime({ value: created });
                                 const hasReply: boolean = replies?.length > 0;
                                 const hasReplies: boolean = replies?.length > 1;
-                                const repliesComponents: Array<JSX.Element> = renderReplies({ replies, createdBy, text });
+                                const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
                                 const additionalRepliesAccordionId: string = `${commentId}-replies`;
 
                                 const { body } = text ?? {};

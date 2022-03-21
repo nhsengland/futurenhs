@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { scrollToComponentAndSetFocus } from '@helpers/dom';
+import { truncate } from '@helpers/formatters/truncate';
 import { UserMeta } from '@components/UserMeta';
 import { RichText } from '@components/RichText';
 import { Card } from '@components/Card';
@@ -13,6 +15,7 @@ import { Props } from './interfaces';
 export const Comment: (props: Props) => JSX.Element = ({
     id,
     commentId,
+    originComment,
     csrfToken,
     initialErrors,
     image,
@@ -30,10 +33,27 @@ export const Comment: (props: Props) => JSX.Element = ({
     className
 }) => {
 
-    const { userName, initials, body, source } = text;
+    const { userName, initials, body } = text;
+
+    const parentCommentUserName: string = originComment?.createdBy?.text?.userName;
+    const parentCommentTeaserText: string = truncate({
+        value: originComment?.text?.body,
+        limit: 15
+    });
+
+    const handleOriginLinkClick = (event: any): void => {
+
+        event.preventDefault();
+
+        const targetId: string = event.target.href.split('#')[1];
+        const targetElement: HTMLElement = document.getElementById(targetId);
+
+        scrollToComponentAndSetFocus(targetElement, false, 60);
+
+    }
 
     const generatedClasses: any = {
-        wrapper: classNames('c-comment', className),
+        wrapper: classNames('c-comment', 'focus:u-outline-none', className),
         userMeta: classNames('u-text-theme-7')
     };
 
@@ -55,8 +75,10 @@ export const Comment: (props: Props) => JSX.Element = ({
                         <span className="u-block u-text-bold">{date}</span>
                 </UserMeta>
             </header>
-            {source &&
-                <p className="nhsuk-body-s u-mb-3 u-text-theme-6 u-text-bold">{source}</p>
+            {originComment &&
+                <p className="nhsuk-body-s u-mb-5 u-text-theme-6 u-text-bold">
+                    {`In response to ${parentCommentUserName}`} "<a href={`#comment-${originComment.commentId}`} onClick={handleOriginLinkClick}>{parentCommentTeaserText}</a>"
+                </p>
             }
             <RichText bodyHtml={body} wrapperElementType="div" className="u-mb-6" />
             <footer className="u-flex u-flex-col tablet:u-flex-row u-items-start">

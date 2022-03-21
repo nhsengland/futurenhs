@@ -71,7 +71,7 @@ export const getGroupDiscussionCommentReplies = async ({
 
         serviceResponse.data.push({
             commentId: datum.id,
-            replySourceCommentId: datum.inReplyTo,
+            originCommentId: datum.inReplyTo,
             text: {
                 body: datum.content
             },

@@ -17,7 +17,7 @@ export interface Discussion {
 
 export interface DiscussionComment {
     commentId: string;
-    replySourceCommentId?: string;
+    originCommentId?: string;
     createdBy?: Partial<User>;
     createdBy?: Partial<User>;
     created?: string;

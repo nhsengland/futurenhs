@@ -22,7 +22,6 @@ import { useMediaQuery } from '@hooks/useMediaQuery';
 import { Props } from './interfaces';
 
 export const StandardLayout: (props: Props) => JSX.Element = ({
-    routeId,
     shouldRenderSearch = true,
     shouldRenderUserNavigation = true,
     shouldRenderPhaseBanner = true,
