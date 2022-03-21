@@ -13,11 +13,10 @@ class formPage extends basePage{
     cardTypeSelector(cardType, cardText){
         var card = ''
         switch(cardType){
+            case "reply" :
             case "comment" : card = $(`//div[starts-with(@id, "comment-")]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
             case "discussion" : card = $(`//div[starts-with(@id, "discussion-")]/div[h3/a[contains(text(), "${cardText}")]]`);
-            break;
-            case "reply" : card = $(`//div[starts-with(@id, "reply-")]/div[div/p[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
             case "group" : card = $(`//div[starts-with(@id, "group-")]/div[h3/a[starts-with(normalize-space(.), "${cardText}")]]`);
             break;
