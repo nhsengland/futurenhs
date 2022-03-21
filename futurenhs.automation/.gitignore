@@ -11,3 +11,4 @@ visualRegression/actual/*
 visualRegression/diff/*
 axeResults/*.html
 lighthouseReports/*.html
+profiles/
