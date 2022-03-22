@@ -53,7 +53,11 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const shouldRenderGroupEditLink: boolean = actions?.includes(actionsConstants.GROUPS_EDIT);
 
     const activeMenuItemText: string = navMenuList?.find(({ isActive }) => isActive)?.text;
-    const { background, content }: Theme = selectTheme(themes, themeId);
+    const { background, content }: Theme = shouldRenderActionsMenu ? selectTheme(themes, themeId) : {
+        background: 14,
+        content: 1,
+        accent: 1
+    };
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,
