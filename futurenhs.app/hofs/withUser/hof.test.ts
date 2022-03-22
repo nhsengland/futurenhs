@@ -24,7 +24,7 @@ describe('withUser hof', () => {
             req: {}
         }
 
-        const mockGetAuthService: GetUserService = () => new Promise((resolve) => {
+        const mockGetUserService: GetUserService = () => new Promise((resolve) => {
 
             resolve({
                 data: mockUser
@@ -36,7 +36,7 @@ describe('withUser hof', () => {
             props: {},
             getServerSideProps: mockGetServerSideProps
         }, {
-            getAuthService: mockGetAuthService
+            getUserService: mockGetUserService
         });
 
         const serverSideProps = await withOutput(mockContext);
@@ -52,7 +52,7 @@ describe('withUser hof', () => {
             req: {}
         }
 
-        const mockGetAuthService: GetUserService = () => new Promise((resolve) => {
+        const mockGetUserService: GetUserService = () => new Promise((resolve) => {
 
             throw new ServiceError('No auth', {
                 serviceId: services.GET_USER,
@@ -66,7 +66,7 @@ describe('withUser hof', () => {
             props: {},
             getServerSideProps: mockGetServerSideProps
         }, {
-            getAuthService: mockGetAuthService
+            getUserService: mockGetUserService
         });
 
         const serverSideProps = await withOutput(mockContext);

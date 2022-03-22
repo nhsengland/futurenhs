@@ -1,6 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
-import { requestMethods } from '@constants/fetch';
+import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -34,7 +34,8 @@ export const getGroupFile = async ({
     const id: string = user.id;
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/files/${fileId}`;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: requestMethods.GET }), 30000);
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: requestMethods.GET }), defaultTimeOutMillis);
+    
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
 

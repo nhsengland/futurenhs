@@ -30,9 +30,7 @@ export const postGroupDiscussion = async ({
 
     const { id } = user;
 
-    const apiBase: string = process.env.NEXT_PUBLIC_API_BASE_URL;
-    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/discussions`;
-
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions`;
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
         headers: headers,

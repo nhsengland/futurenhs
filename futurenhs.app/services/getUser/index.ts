@@ -18,7 +18,7 @@ export type Dependencies = ({
 export type GetUserService = (options: Options, dependencies?: Dependencies) => Promise<ServiceResponse<User>>;
 
 export const getUser: GetUserService = async ({
-    cookies
+    cookies = {}
 }, dependencies): Promise<ServiceResponse<User>> => {
 
     const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;

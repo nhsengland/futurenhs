@@ -1,14 +1,18 @@
 import { GetServerSideProps } from 'next';
+
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getSiteActions } from '@services/getSiteActions';
 import { getUser } from '@services/getUser';
 import { GetUserService } from '@services/getUser';
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
 
 export const withUser = (config: HofConfig, dependencies?: {
-    getAuthService?: GetUserService
+    getUserService?: GetUserService,
+    getSiteActionsService?: any;
 }): GetServerSideProps => {
 
-    const getAuthService = dependencies?.getAuthService ?? getUser;
+    const getUserService = dependencies?.getUserService ?? getUser;
+    const getSiteActionsService = dependencies?.getSiteActionsService ?? getSiteActions;
 
     const { props, 
             isRequired = true, 
@@ -16,24 +20,18 @@ export const withUser = (config: HofConfig, dependencies?: {
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 
+        props.user = null;
+
         try {
 
-            const { data: user } = await getAuthService({
-                cookies: context.req.cookies
+            const { data: user } = await getUserService({
+                cookies: context.req?.cookies
             });
 
             props.user = user;
             context.req.user = user;
 
-            const { data: actions } = await getSiteActions({ user });
-
-            props.actions = actions;
-
-            return await getServerSideProps(context);
-
         } catch (error) {
-
-            props.user = null;
 
             if(isRequired){
 
@@ -48,9 +46,25 @@ export const withUser = (config: HofConfig, dependencies?: {
 
             }
 
-            return await getServerSideProps(context);
+        }
+
+        if(props.user){
+
+            try {
+
+                const { data: actions } = await getSiteActionsService({ user: props.user });
+    
+                props.actions = actions;
+    
+            } catch (error) {
+    
+                return handleSSRErrorProps({ props, error });
+    
+            }
 
         }
+
+        return await getServerSideProps(context);
 
     }
 

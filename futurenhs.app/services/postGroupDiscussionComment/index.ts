@@ -34,9 +34,7 @@ export const postGroupDiscussionComment: Service = async ({
 
     const { id } = user;
 
-    const apiBase: string = typeof window !== 'undefined' ? process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL : process.env.NEXT_PUBLIC_API_BASE_URL;
-    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments`;
-
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments`;
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
         headers: headers,

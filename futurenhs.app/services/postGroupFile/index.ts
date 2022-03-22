@@ -31,9 +31,7 @@ export const postGroupFile = async ({
 
     const { id } = user;
 
-    const apiBase: string = process.env.NEXT_PUBLIC_API_BASE_URL;
-    const apiUrl: string = `${apiBase}/v1/users/${id}/groups/${groupId}/folders/${folderId}/files`;
-
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}/files`;
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
         headers: headers,

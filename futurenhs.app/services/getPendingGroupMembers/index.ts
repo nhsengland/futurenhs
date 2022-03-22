@@ -1,5 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
+import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
 import { ServiceError } from '..';
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams';
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi';
@@ -43,7 +44,8 @@ export const getPendingGroupMembers: Service = async ({
     });
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/pending?${paginationQueryParams}`;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: 'GET' }), 30000);
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: requestMethods.GET }), defaultTimeOutMillis);
+    
     const apiData: ApiPaginatedResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
 

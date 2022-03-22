@@ -1,5 +1,6 @@
 import { actions } from '@constants/actions';
 import { services } from '@constants/services';
+import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
 import { ServiceError } from '..';
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { FetchResponse } from '@appTypes/fetch';
@@ -27,7 +28,7 @@ export const getSiteActions = async ({
     const { id } = user;
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/actions`;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: 'GET' }), 30000);
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: requestMethods.GET }), defaultTimeOutMillis);
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
     
