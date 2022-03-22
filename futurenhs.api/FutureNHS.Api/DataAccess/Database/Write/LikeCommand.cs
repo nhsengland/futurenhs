@@ -26,13 +26,13 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     BEGIN TRY
 
 	                INSERT INTO  [dbo].[Entity_Like]
-                                 ([Entity_Id]
+                                 ([Comment_Id]
+                                 ,[Entity_Id]
                                  ,[MembershipUser_Id]
                                  ,[CreatedAtUTC])
                     VALUES
-                                 ((SELECT [Entity_Id] 
-                                   FROM [Entity_Comment]
-								   WHERE [Id] = @Id)
+                                 (@Comment_Id
+                                 ,@Entity_Id
                                  ,@MembershipUserId
                                  ,@CreatedAtUTC)
 	
@@ -46,7 +46,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                Id = entityLike.Id,
+                Comment_Id = entityLike.CommentId,
+                Entity_Id = entityLike.EntityId,
                 MembershipUserId = entityLike.MembershipUserId,
                 CreatedAtUTC = entityLike.CreatedAtUTC
             }, cancellationToken: cancellationToken);
@@ -72,12 +73,9 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
 	                DELETE FROM   [dbo].[Entity_Like]
                     WHERE         
-                                  [Entity_Id] = (SELECT [Entity_Id] 
-                                                 FROM [Entity_Comment]
-												 WHERE [Id] = @Id)
-                    AND           [MembershipUser_Id] = @MembershipUserId
+                                  [Comment_Id] = @Comment_Id
+                    AND           [MembershipUser_Id] = @MembershipUser_Id
 					
-	
 	                COMMIT TRAN;
 
                     END TRY
@@ -89,9 +87,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                Id = entityLike.Id,
-                MembershipUserId = entityLike.MembershipUserId,
-                CreatedAtUTC = entityLike.CreatedAtUTC
+                Comment_Id = entityLike.CommentId,
+                MembershipUser_Id = entityLike.MembershipUserId,
             }, cancellationToken: cancellationToken);
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);

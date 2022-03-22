@@ -140,14 +140,14 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPut]
         [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}/like")]
-        public async Task<IActionResult> LikeCommentAsync(Guid membershipUserId, string slug, Guid commentId, CancellationToken cancellationToken)
+        public async Task<IActionResult> LikeCommentAsync(Guid membershipUserId, string slug, Guid commentId, Guid discussionId, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            await _likeService.LikeEntityAsync(membershipUserId, slug, commentId, cancellationToken);
+            await _likeService.LikeEntityAsync(membershipUserId, slug, commentId, discussionId, cancellationToken);
 
             return Ok();
         }

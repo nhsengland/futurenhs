@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Entity_Comment] (
     [Id]                    UNIQUEIDENTIFIER    NOT NULL DEFAULT NEWID(),
-    [Entity_Id]             UNIQUEIDENTIFIER NOT NULL, 
+    [Entity_Id]             UNIQUEIDENTIFIER    NOT NULL, 
     [Content]               NVARCHAR (MAX)      NOT NULL,
     [CreatedBy]             UNIQUEIDENTIFIER    NOT NULL,
     [CreatedAtUTC]          DATETIME2           NOT NULL,
