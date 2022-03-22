@@ -180,6 +180,8 @@ builder.Services.Configure<SharedSecrets>(settings.GetSection("SharedSecrets"));
 builder.Services.Configure<AzureImageBlobStorageConfiguration>(settings.GetSection("AzurePlatform:AzureImageBlobStorage"));
 builder.Services.Configure<AzureFileBlobStorageConfiguration>(settings.GetSection("AzurePlatform:AzureFileBlobStorage"));
 builder.Services.Configure<AzureBlobStorageConnectionStrings>(settings.GetSection("AzureBlobStorage"));
+builder.Services.Configure<FileServerTemplateUrlStrings>(settings.GetSection("FileServer"));
+builder.Services.Configure<ApplicationGateway>(settings.GetSection("AzurePlatform:ApplicationGateway"));
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
 builder.Services.AddScoped<IFileTypeValidator, FileTypeValidator>();

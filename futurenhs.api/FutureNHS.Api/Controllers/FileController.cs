@@ -1,11 +1,14 @@
 using System.Net;
 using FutureNHS.Api.Attributes;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.Extensions;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.Controllers
 {
@@ -14,17 +17,23 @@ namespace FutureNHS.Api.Controllers
     [ApiVersion("1.0")]
     public sealed class FileController : ControllerBase
     {
+        private readonly string _fqdn;
         private readonly ILogger<FileController> _logger;
         private readonly IFileAndFolderDataProvider _fileAndFolderDataProvider;
         private readonly IFileService _fileService;
         private readonly IPermissionsService _permissionsService;
+        private readonly IFileServerService _fileServerService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public FileController(ILogger<FileController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IPermissionsService permissionsService, IFileService fileService)
+        public FileController(IHttpContextAccessor httpContextAccessor, ILogger<FileController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IPermissionsService permissionsService, IFileService fileService, IFileServerService fileServerService, IOptionsSnapshot<ApplicationGateway> gatewayConfig)
         {
             _logger = logger;
             _fileAndFolderDataProvider = fileAndFolderDataProvider;
             _fileService = fileService;
             _permissionsService = permissionsService;
+            _fileServerService = fileServerService;
+            _httpContextAccessor = httpContextAccessor;
+            _fqdn = gatewayConfig.Value.FQDN;
         }
 
         [HttpGet]
@@ -53,6 +62,17 @@ namespace FutureNHS.Api.Controllers
             {
                 return NotFound();
             }
+
+            return Ok(file);
+        }
+
+        [HttpGet]
+        [Route("users/{userId}/groups/{slug}/files/{id:guid}/view")]
+
+        public async Task<IActionResult> GetViewCollaboraUrlAsync(Guid userId, string slug, Guid id, CancellationToken cancellationToken)
+        {
+            var cookies = HttpContext.Request.GetCookieContainer(_fqdn);
+            var file = await _fileServerService.GetCollaboraFileUrl(userId,slug, id, cookies, "view", cancellationToken);
 
             return Ok(file);
         }
