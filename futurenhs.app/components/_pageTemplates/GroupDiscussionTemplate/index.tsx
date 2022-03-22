@@ -452,6 +452,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                             text={{
                                 submitButton: 'Add Comment'
                             }}
+                            shouldClearOnSubmitSuccess={true}
                             validationFailAction={handleValidationFailure}
                             submitAction={handleCommentSubmit} />
                     </>

@@ -97,6 +97,7 @@ export const Reply: (props: Props) => JSX.Element = ({
                             submitButton: 'Reply',
                             cancelButton: 'Discard Reply'
                         }}
+                        shouldClearOnSubmitSuccess={true}
                         validationFailAction={validationFailAction}
                         cancelAction={handleCancel}
                         submitAction={handleSubmit}
