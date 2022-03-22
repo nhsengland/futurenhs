@@ -5,7 +5,7 @@
     [RowVersion]         ROWVERSION NOT NULL, 
     CONSTRAINT [PK_dbo.DiscussionNotification] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.DiscussionNotification_dbo.MembershipUser_MembershipUser_Id] FOREIGN KEY ([MembershipUser_Id]) REFERENCES [dbo].[MembershipUser] ([Id]),
-    CONSTRAINT [FK_dbo.DiscussionNotification_dbo.Discussion_Discussion_Id] FOREIGN KEY ([Discussion_Id]) REFERENCES [dbo].[Discussion] ([Id])
+    CONSTRAINT [FK_dbo.DiscussionNotification_dbo.Discussion_Discussion_Id] FOREIGN KEY ([Discussion_Id]) REFERENCES [dbo].[Discussion] ([Entity_Id])
 );
 
 

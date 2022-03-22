@@ -1,11 +1,11 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.Exceptions;
-using FutureNHS.Api.Services.Interfaces;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
@@ -30,7 +30,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(CommentData.CreatedById)}]         = comment.CreatedBy,
                                 [{nameof(CommentData.RowVersion)}]          = comment.RowVersion
 
-                    FROM            Comment comment	
+                    FROM            Entity_Comment comment	
 					WHERE           comment.Id = @commentId
                     AND             comment.IsDeleted = 0;";
 
@@ -52,8 +52,13 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
         public async Task CreateCommentAsync(CommentDto comment, CancellationToken cancellationToken)
         {
-            const string query =
-                 @" INSERT INTO  [dbo].[Comment]
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            using (var connection = new SqlConnection(dbConnection.ConnectionString))
+            {
+                const string insertComment =
+                @"  
+	                INSERT INTO  [dbo].[Entity_Comment]
                                  ([Content]
                                  ,[CreatedBy]
                                  ,[CreatedAtUTC]
@@ -61,7 +66,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                  ,[ModifiedAtUTC]
                                  ,[FlaggedAsSpam]
                                  ,[InReplyTo]
-                                 ,[Discussion_Id]
+                                 ,[Entity_Id]
                                  ,[ThreadId]
                                  ,[IsDeleted])
                     VALUES
@@ -72,39 +77,50 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                  ,@ModifiedAtUTC
                                  ,@FlaggedAsSpam
                                  ,@InReplyTo
-                                 ,@DiscussionId
+                                 ,@EntityId
                                  ,@ThreadId
-                                 ,@IsDeleted)";
+                                 ,@IsDeleted)
+	              ";
 
-            var queryDefinition = new CommandDefinition(query, new
-            {
-                Content = comment.Content,
-                CreatedBy = comment.CreatedBy,
-                CreatedAtUTC = comment.CreatedAtUTC,
-                ModifiedBy = comment.ModifiedBy,
-                ModifiedAtUTC = comment.ModifiedAtUTC,
-                FlaggedAsSpam = comment.FlaggedAsSpam,
-                InReplyTo = comment.InReplyTo,
-                DiscussionId = comment.DiscussionId,
-                ThreadId = comment.ThreadId,
-                IsDeleted = comment.IsDeleted,
-            }, cancellationToken: cancellationToken);
+                connection.Open();
 
-            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var insertCommentResult = connection.Execute(insertComment, new
+                    {
+                        Content = comment.Content,
+                        CreatedBy = comment.CreatedBy,
+                        CreatedAtUTC = comment.CreatedAtUTC,
+                        ModifiedBy = comment.ModifiedBy,
+                        ModifiedAtUTC = comment.ModifiedAtUTC,
+                        FlaggedAsSpam = comment.FlaggedAsSpam,
+                        InReplyTo = comment.InReplyTo,
+                        EntityId = comment.EntityId,
+                        ThreadId = comment.ThreadId,
+                        IsDeleted = comment.IsDeleted,
+                    }, transaction: transaction);
 
-            var result = await dbConnection.ExecuteAsync(queryDefinition);
+                    if (insertCommentResult != 1)
+                    {
+                        _logger.LogError("Error: User request to create was not successful.", insertComment);
+                        throw new DataException("Error: User request to create was not successful.");
 
-            if (result != 1)
-            {
-                _logger.LogError("Error: User request to add a comment was not successful", queryDefinition);
-                throw new DBConcurrencyException("Error: User request to add a comment was not successful");
+                    }
+
+                    transaction.Commit();
+                }
             }
         }
 
         public async Task UpdateCommentAsync(CommentDto comment, byte[] rowVersion, CancellationToken cancellationToken)
         {
             const string query =
-                 @" UPDATE        [dbo].[Comment]
+
+                @"  
+                    BEGIN TRAN
+                    BEGIN TRY
+
+	                UPDATE        [dbo].[Entity_Comment]
                     SET 
                                   [Content] = @Content
                                  ,[ModifiedBy] = @ModifiedBy
@@ -112,7 +128,16 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     
                     WHERE 
                                  [Id] = @CommentId
-                    AND          [RowVersion] = @RowVersion";
+                    AND          [RowVersion] = @RowVersion
+
+
+                    COMMIT TRAN;
+
+                    END TRY
+                    BEGIN CATCH
+	                    PRINT ERROR_MESSAGE();
+	                    ROLLBACK TRAN;
+                    END CATCH";
 
             var queryDefinition = new CommandDefinition(query, new
             {
@@ -137,7 +162,11 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         public async Task DeleteCommentAsync(CommentDto comment, byte[] rowVersion, CancellationToken cancellationToken = default)
         {
             const string query =
-                 @" UPDATE        [dbo].[Comment]
+                @"  
+                    BEGIN TRAN
+                    BEGIN TRY
+
+	                UPDATE        [dbo].[Entity_Comment]
                     SET                                   
                                   [ModifiedBy] = @ModifiedBy
                                  ,[ModifiedAtUTC] = @ModifiedAtUtc
@@ -145,7 +174,16 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     
                     WHERE 
                                  [Id] = @CommentId
-                    AND          [RowVersion] = @RowVersion";
+                    AND          [RowVersion] = @RowVersion
+
+
+                    COMMIT TRAN;
+
+                    END TRY
+                    BEGIN CATCH
+	                    PRINT ERROR_MESSAGE();
+	                    ROLLBACK TRAN;
+                    END CATCH";
 
             var queryDefinition = new CommandDefinition(query, new
             {
@@ -176,27 +214,26 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                     Id,
                                     InReplyTo
 
-                    FROM            Comment
-                    WHERE           Id = @CommentId
+                    FROM            Entity_Comment
+                    WHERE           Entity_Id = @CommentId
                     UNION ALL
                     SELECT
-                                    comment.Id AS PK,
+                                    comment.Entity_Id AS PK,
                                     comment.InReplyTo AS ParentFK
 
-                    FROM            Comment comment
+                    FROM            Entity_Comment comment
                     INNER JOIN      Comments comments 
-                    ON              Comments.InReplyTo = comment.Id
-                    )
+                    ON              Comments.InReplyTo = comment.Entity_Id)
 
                     SELECT
-                                    Id  
+                                    Entity_Id  
                     FROM            Comments 
                     WHERE           InReplyTo 
                     IS              NULL;";
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                CommentId = commentId
+                Entity_Id = commentId
             }, cancellationToken: cancellationToken);
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);

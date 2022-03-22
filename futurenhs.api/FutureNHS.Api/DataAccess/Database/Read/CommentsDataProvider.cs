@@ -44,31 +44,31 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(CommentData.CreatedByName)}]       = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
 								[{nameof(CommentData.RepliesCount)}]        = ( SELECT      COUNT(*) 
-                                                                                FROM        Comment replies 
+                                                                                FROM        Entity_Comment replies 
                                                                                 WHERE       replies.ThreadId = comment.Id
                                                                               ),
 								[{nameof(CommentData.Likes)}]				= ( SELECT      COUNT(*) 
-                                                                                FROM        [Like] 
-                                                                                WHERE       Comment_Id = comment.Id
-                                                                              ),
+                                                                                FROM        [Entity_Like] 
+                                                                                WHERE       Entity_Id = comment.Id
+                                                                              ),                                                                          
 								[{nameof(CommentData.LikedByThisUser)}]		= ( SELECT      CASE 
-                                                                                WHEN        Id IS NULL 
+                                                                                WHEN        [Entity_Like].Entity_Id IS NULL 
                                                                                 THEN        CAST(0 as bit) 
                                                                                 ELSE        CAST(1 as bit) 
                                                                                 END 
-                                                                                FROM        [Like]  
-                                                                                WHERE       [Like].Comment_Id = comment.Id 
-                                                                                AND         [Like].CreatedBy = @UserId
+                                                                                FROM        [Entity_Like]  
+                                                                                WHERE       [Entity_Like].Entity_Id = comment.Id 
+                                                                                AND         [Entity_Like].MembershipUser_Id = @UserId
                                                                               )
 
-                    FROM            Comment comment
+                    FROM            Entity_Comment comment
 					Join		    Discussion discussion
-					ON			    discussion.Id = comment.Discussion_Id
+					ON			    discussion.Entity_Id = comment.Entity_Id
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
                     ON              CreateUser.Id = comment.CreatedBy		
-					WHERE           comment.Discussion_Id = @DiscussionId 
+					WHERE           comment.Entity_Id = @DiscussionId 
                     AND             comment.ThreadId IS NULL
                     AND             groups.Slug = @Slug
                     ORDER BY        comment.CreatedAtUTC
@@ -78,12 +78,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
                     SELECT          COUNT(*) 
 
-                    FROM            Comment comment		
+                    FROM            Entity_Comment comment		
 					Join		    Discussion discussion
-					ON			    discussion.Id = comment.Discussion_Id
+					ON			    discussion.Entity_Id = comment.Entity_Id
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
-					WHERE           comment.Discussion_Id = @DiscussionId 
+					WHERE           comment.Entity_Id = @DiscussionId 
                     AND             comment.ThreadId IS NULL
                     AND             groups.Slug = @Slug";
 
@@ -128,23 +128,23 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(CommentData.CreatedByName)}]       = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
 								[{nameof(CommentData.Likes)}]				= ( SELECT      COUNT(*) 
-                                                                                FROM        [Like] 
-                                                                                WHERE       Comment_Id = comment.Id
+                                                                                FROM        [Entity_Like] 
+                                                                                WHERE       Entity_Id = comment.Id
                                                                               ),
 								[{nameof(CommentData.LikedByThisUser)}]		= ( SELECT      CASE 
-                                                                                WHEN        Id IS NULL 
+                                                                                WHEN        Entity_Id IS NULL 
                                                                                 THEN        CAST(0 as bit) 
                                                                                 ELSE        CAST(1 as bit) 
                                                                                 END 
-                                                                                FROM        [Like]  
-                                                                                WHERE       [Like].Comment_Id = comment.Id 
-                                                                                AND         [Like].CreatedBy = @UserId
+                                                                                FROM        [Entity_Like]  
+                                                                                WHERE       [Entity_Like].Entity_Id = comment.Id 
+                                                                                AND         [Entity_Like].MembershipUser_Id = @UserId
                                                                               ),
                                 [{nameof(CommentData.InReplyTo)}]           = comment.InReplyTo
 
-                    FROM            Comment comment
+                    FROM            Entity_Comment comment
 					JOIN		    Discussion discussion
-					ON			    discussion.Id = comment.Discussion_Id
+					ON			    discussion.Entity_Id = comment.Entity_Id
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
@@ -158,9 +158,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
                     SELECT          COUNT(*) 
 
-                    FROM            Comment comment
+                    FROM            Entity_Comment comment
 					JOIN		    Discussion discussion
-					ON			    discussion.Id = comment.Discussion_Id
+					ON			    discussion.Entity_Id = comment.Entity_Id
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
 					WHERE           comment.ThreadId = @ThreadId
@@ -182,7 +182,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
 
             return (totalCount, GenerateCommentModelFromData(commentsData));
-        }        
+        }
 
         private IEnumerable<Comment> GenerateCommentModelFromData(IEnumerable<CommentData> commentData)
         {

@@ -1,13 +1,14 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
     public class DiscussionCommand : IDiscussionCommand
-    { 
+    {
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<DiscussionCommand> _logger;
 
@@ -18,11 +19,25 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
         }
 
-        public async Task CreateDiscussionAsync(DiscussionDto discussion,  CancellationToken cancellationToken = default)
+        public async Task CreateDiscussionAsync(DiscussionDto discussion, CancellationToken cancellationToken = default)
         {
-            const string query =
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            using (var connection = new SqlConnection(dbConnection.ConnectionString))
+
+            {
+                const string insertEntity =
+                   @"  
+                    INSERT INTO  [dbo].[Entity]
+                                 ([Id])
+                    VALUES
+                                 (@EntityId)
+                   ";
+
+                const string insertDiscussion =
                  @" INSERT INTO     [dbo].[Discussion]
-                                    ([Title]
+                                    ([Entity_Id]
+                                    ,[Title]
                                     ,[CreatedAtUtc]
                                     ,[CreatedBy]
                                     ,[IsSticky]
@@ -32,7 +47,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                     ,[Category_Id]
                                     ,[Content])
                     VALUES
-                                    (@Title
+                                    (@Id
+                                    ,@Title
                                     ,@CreatedAt
                                     ,@CreatedBy
                                     ,@IsSticky
@@ -42,26 +58,42 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                     ,NULL
                                     ,@Content)";
 
-            var queryDefinition = new CommandDefinition(query, new
-            {
-                Title = discussion.Title,
-                CreatedAt = discussion.CreatedAtUTC,
-                CreatedBy = discussion.CreatedBy,
-                IsSticky = discussion.IsSticky,
-                IsLocked = discussion.IsLocked,
-                Group = discussion.GroupId,
-                Content = discussion.Content
+                connection.Open();
 
-            }, cancellationToken: cancellationToken);
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var insertEntityResult = connection.Execute(insertEntity, new
+                    {
+                        EntityId = discussion.Id,
+                    }, transaction: transaction);
 
-            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+                    var insertDiscussionResult = connection.Execute(insertDiscussion, new
+                    {
+                        Id = discussion.Id,
+                        Title = discussion.Title,
+                        CreatedAt = discussion.CreatedAtUTC,
+                        CreatedBy = discussion.CreatedBy,
+                        IsSticky = discussion.IsSticky,
+                        IsLocked = discussion.IsLocked,
+                        Group = discussion.GroupId,
+                        Content = discussion.Content
+                    }, transaction: transaction);
 
-            var result = await dbConnection.ExecuteAsync(queryDefinition);
+                    if (insertEntityResult != 1)
+                    {
+                        _logger.LogError("Error: User request to create was not successful.", insertEntity);
+                        throw new DataException("Error: User request to create was not successful.");
+                    }
 
-            if (result != 1)
-            {
-                _logger.LogError("Error: Discussion was not added", queryDefinition);
-                throw new DataException("Error: Discussion was not added");
+                    if (insertDiscussionResult != 1)
+                    {
+                        _logger.LogError("Error: User request to create was not successful.", insertDiscussion);
+                        throw new DataException("Error: User request to create was not successful.");
+                    }
+
+                    transaction.Commit();
+                }
+
             }
         }
     }

@@ -25,9 +25,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 throw new ArgumentOutOfRangeException(nameof(limit));
             }
 
-            const string query = 
+            const string query =
                 @$"SELECT
-                                [{nameof(DiscussionData.Id)}]                   = discussion.Id,
+                                [{nameof(DiscussionData.Id)}]                   = discussion.Entity_Id,
                                 [{nameof(DiscussionData.Title)}]                = discussion.Title, 
 	                            [{nameof(DiscussionData.CreatedByThisUser)}]	= ( SELECT      CASE 
                                                                                     WHEN        discussion.CreatedBy = @UserId
@@ -46,7 +46,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
 								[{nameof(DiscussionData.Views)}]				= discussion.Views,
-								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Discussion_Id = discussion.Id )
+								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Entity_Comment WHERE Entity_Id = discussion.Entity_Id )
                     
                     FROM        Discussion discussion
 					JOIN        [Group] groups 
@@ -57,10 +57,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					LEFT JOIN   
                                 (
 					            SELECT TOP 1 *
-					            FROM Comment 
+					            FROM Entity_Comment 
 					            ORDER BY CreatedAtUTC
 					            ) 
-                                latestComment ON latestComment.Discussion_Id = discussion.Id
+                                latestComment ON latestComment.Entity_Id = discussion.Entity_Id
 
                     LEFT JOIN   MembershipUser lastCommentUser 
                     ON          lastCommentUser.Id = latestComment.CreatedBy
@@ -96,13 +96,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             return (totalCount, GenerateDiscussionModelFromData(contents));
         }
-        
+
 
         public async Task<Discussion?> GetDiscussionAsync(Guid? userId, string groupSlug, Guid id, CancellationToken cancellationToken)
         {
             const string query =
                 @$" SELECT
-                                [{nameof(DiscussionData.Id)}]                   = discussion.Id,
+                                [{nameof(DiscussionData.Id)}]                   = discussion.Entity_Id,
                                 [{nameof(DiscussionData.Title)}]                = discussion.Title, 
 								[{nameof(DiscussionData.Description)}]          = discussion.Content,
 	                            [{nameof(DiscussionData.CreatedByThisUser)}]	= ( SELECT      CASE 
@@ -122,7 +122,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
 								[{nameof(DiscussionData.Views)}]				= discussion.Views,
-								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Discussion_Id = discussion.Id)
+								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Entity_Comment WHERE Entity_Id = discussion.Entity_Id)
                     
                     FROM        Discussion discussion
                     JOIN        [Group] groups 
@@ -134,15 +134,15 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					LEFT JOIN   
                                 (
 					            SELECT TOP 1 *
-					            FROM Comment 
+					            FROM Entity_Comment 
 					            ORDER BY CreatedAtUTC
 					            ) 
-                                latestComment ON latestComment.Discussion_Id = discussion.Id
+                                latestComment ON latestComment.Entity_Id = discussion.Entity_Id
 
                     LEFT JOIN   MembershipUser lastCommentUser 
                     ON          lastCommentUser.Id = latestComment.CreatedBy
                     
-                    WHERE       discussion.Id = @Id 
+                    WHERE       discussion.Entity_Id = @Id 
                     AND         groups.Slug = @Slug
                     AND         groups.IsDeleted = 0;";
 
@@ -154,7 +154,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 Id = id,
                 UserId = userId
             });
-            
+
             return GenerateDiscussionModelFromData(reader).FirstOrDefault();
         }
 

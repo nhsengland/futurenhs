@@ -1,6 +1,4 @@
-﻿using FutureNHS.Api.Configuration;
-using FutureNHS.Api.Services.Interfaces;
-using Microsoft.Extensions.Options;
+﻿using FutureNHS.Api.Services.Interfaces;
 
 namespace FutureNHS.Api.Services
 {
@@ -19,6 +17,8 @@ namespace FutureNHS.Api.Services
             services.AddScoped<IPermissionsService, PermissionsService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserImageService, ImageService>();
+            services.AddScoped<ILikeService, LikeService>();
+            services.AddScoped<IFileServerService, FileServerService>();
 
             return services;
         }

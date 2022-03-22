@@ -6,8 +6,8 @@
     [DiscussionId]     UNIQUEIDENTIFIER NOT NULL,
     CONSTRAINT [PK_dbo.Favourite] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Favourite_dbo.MembershipUser_MemberId] FOREIGN KEY ([MemberId]) REFERENCES [dbo].[MembershipUser] ([Id]),
-    CONSTRAINT [FK_dbo.Favourite_dbo.Comment_CommentId] FOREIGN KEY ([CommentId]) REFERENCES [dbo].[Comment] ([Id]),
-    CONSTRAINT [FK_dbo.Favourite_dbo.Discussion_DiscussionId] FOREIGN KEY ([DiscussionId]) REFERENCES [dbo].[Discussion] ([Id])
+    CONSTRAINT [FK_dbo.Favourite_dbo.Entity_Comment_CommentId] FOREIGN KEY ([Id]) REFERENCES [dbo].[Entity] ([Id]),
+    CONSTRAINT [FK_dbo.Favourite_dbo.Discussion_DiscussionId] FOREIGN KEY ([DiscussionId]) REFERENCES [dbo].[Discussion] ([Entity_Id])
 );
 
 

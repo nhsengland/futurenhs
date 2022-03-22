@@ -6,7 +6,6 @@ using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Ganss.XSS;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using Comment = FutureNHS.Api.Models.Comment.Comment;
 
 namespace FutureNHS.Api.Controllers
@@ -20,12 +19,13 @@ namespace FutureNHS.Api.Controllers
         private readonly ICommentsDataProvider _commentsDataProvider;
         private readonly ICommentCommand _commentCommand;
         private readonly ICommentService _commentService;
+        private readonly ILikeService _likeService;
         private readonly IHtmlSanitizer _htmlSanitizer;
         private readonly IEtagService _etagService;
 
-        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider, 
+        public CommentController(ILogger<CommentController> logger, ICommentsDataProvider commentsDataProvider,
             ICommentService commentService, IHtmlSanitizer htmlSanitizer, ICommentCommand commentCommand,
-            IEtagService etagService)
+            IEtagService etagService, ILikeService likeService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _commentsDataProvider = commentsDataProvider ?? throw new ArgumentNullException(nameof(commentsDataProvider));
@@ -33,6 +33,7 @@ namespace FutureNHS.Api.Controllers
             _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
             _commentCommand = commentCommand ?? throw new ArgumentNullException(nameof(commentCommand));
             _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
+            _likeService = likeService ?? throw new ArgumentNullException(nameof(likeService)); ;
         }
 
         [HttpGet]
@@ -71,7 +72,7 @@ namespace FutureNHS.Api.Controllers
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(replies, filter, total, route);
 
-           return Ok(pagedResponse);
+            return Ok(pagedResponse);
         }
 
         [HttpPost]
@@ -133,6 +134,34 @@ namespace FutureNHS.Api.Controllers
 
             var rowVersion = _etagService.GetIfMatch();
             await _commentService.DeleteCommentAsync(membershipUserId, slug, discussionId, commentId, rowVersion, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("users/{membershipUserId:guid}/comments/{commentId:guid}/like")]
+        public async Task<IActionResult> LikeCommentAsync(Guid membershipUserId, Guid commentId, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            await _likeService.LikeEntityAsync(membershipUserId, commentId, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("users/{membershipUserId:guid}/comments/{commentId:guid}/unlike")]
+        public async Task<IActionResult> UnlikeCommentAsync(Guid membershipUserId, Guid commentId, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            await _likeService.UnlikeEntityAsync(membershipUserId, commentId, cancellationToken);
 
             return Ok();
         }

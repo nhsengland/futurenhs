@@ -1,6 +1,4 @@
-﻿using Microsoft.Identity.Client;
-
-namespace FutureNHS.Api.DataAccess.Models.Discussions
+﻿namespace FutureNHS.Api.DataAccess.Models.Discussions
 {
     public record DiscussionData
     {
