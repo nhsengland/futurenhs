@@ -1,10 +1,11 @@
-﻿using FutureNHS.Api.DataAccess.DTOs;
+﻿using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
+using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Folder;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Validation;
 using Microsoft.AspNetCore.Authentication;
 using System.Security;
-using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
-using FutureNHS.Api.Exceptions;
 
 namespace FutureNHS.Api.Services
 {
@@ -19,23 +20,22 @@ namespace FutureNHS.Api.Services
         private readonly IGroupCommand _groupCommand;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
-        private readonly IEtagService _etagService;
 
         public FolderService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, 
-            IFolderCommand folderCommand, IGroupCommand groupCommand, IEtagService etagService)
+            IFolderCommand folderCommand, IGroupCommand groupCommand)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
             _folderCommand = folderCommand ?? throw new ArgumentNullException(nameof(folderCommand));
             _groupCommand = groupCommand ?? throw new ArgumentNullException(nameof(groupCommand));
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
         }
 
         public async Task CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+
 
             var now = _systemClock.UtcNow.UtcDateTime;
 
@@ -68,6 +68,12 @@ namespace FutureNHS.Api.Services
                 IsDeleted = false
             };
 
+            var validator = new FolderValidator(_folderCommand);
+            var validationResult = await validator.ValidateAsync(folderDto, cancellationToken);
+
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
+
             await _folderCommand.CreateFolderAsync(userId, groupId.Value, folderDto, cancellationToken);
         }
 
@@ -92,7 +98,7 @@ namespace FutureNHS.Api.Services
             {
                 _logger.LogError($"Error: CreateChildFolderAsync - User:{0} does not have access to group:{1}", userId, slug);
                 throw new SecurityException($"Error: User does not have access");
-            }
+            }            
 
             var folderDto = new FolderDto()
             {
@@ -106,6 +112,12 @@ namespace FutureNHS.Api.Services
                 GroupId = groupId.Value,
                 IsDeleted = false
             };
+
+            var validator = new FolderValidator(_folderCommand);
+            var validationResult = await validator.ValidateAsync(folderDto, cancellationToken);
+
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
 
             await _folderCommand.CreateFolderAsync(userId, groupId.Value, folderDto, cancellationToken);
         }
@@ -145,8 +157,17 @@ namespace FutureNHS.Api.Services
                 Title = folder.Title,
                 Description = folder.Description,
                 ModifiedBy = userId,
-                ModifiedAtUTC = now
+                ModifiedAtUTC = now,
+                ParentFolder = databaseFolderDto.ParentFolder,
+                GroupId = groupId.Value,
             };
+
+            var validator = new FolderValidator(_folderCommand);
+            var validationResult = await validator.ValidateAsync(folderDto, cancellationToken);
+
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
+
 
             await _folderCommand.UpdateFolderAsync(userId, folderDto, rowVersion, cancellationToken);
         }

@@ -3,7 +3,6 @@ using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.Exceptions;
-using FutureNHS.Api.Services.Interfaces;
 using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
@@ -135,6 +134,34 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 _logger.LogError("Error: UpdateFolderAsync User:{0} request to edit folder:{1} was not successful", userId, folder.Id);
                 throw new DBConcurrencyException("Error: User request to edit folder was not successful");
             }
+        }
+
+        public async Task<bool> IsFolderUniqueAsync(string folderTitle, Guid? parentFolderId, Guid groupId, CancellationToken cancellationToken)
+        {
+            const string query =
+                 @" SELECT        CAST(COUNT(1) AS BIT)
+                    FROM
+                                  Folder f
+                    WHERE
+                                  f.Title = @Title
+                    AND           f.IsDeleted = 0
+                    AND           (
+                                      f.ParentFolder = @ParentGroupId
+                                      OR
+                                      (@ParentGroupId IS NULL AND f.ParentFolder IS NULL)
+                                  ) 
+                    AND           f.Group_Id = @GroupId";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                Title = folderTitle,
+                GroupId = groupId,
+                ParentGroupId = parentFolderId
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            return !await dbConnection.QuerySingleOrDefaultAsync<bool>(queryDefinition);
         }
     }
 }

@@ -55,6 +55,10 @@ namespace FutureNHS.Api.Middleware
                     httpStatusCode = HttpStatusCode.BadRequest;
                     result = JsonSerializer.Serialize(new {error = badHttpRequestException.Message});
                     break;
+                case ValidationException validationException:
+                    httpStatusCode = HttpStatusCode.BadRequest;
+                    result = JsonSerializer.Serialize(new { errors = validationException.Errors });
+                    break;
                 default:
                     result = JsonSerializer.Serialize(new { error = exception.Message });
                     break;
