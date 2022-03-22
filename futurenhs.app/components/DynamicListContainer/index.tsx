@@ -1,6 +1,5 @@
 import { useRef, useEffect } from 'react';
 import classNames from 'classnames';
-import isFocusable from 'ally.js/is/focusable';
 
 import { Props } from './interfaces';
 
@@ -9,7 +8,7 @@ import { Props } from './interfaces';
  */
 export const DynamicListContainer: (props: Props) => JSX.Element = ({
     containerElementType,
-    shouldFocusLatest,
+    shouldEnableLoadMore,
     children,
     className
 }) => {
@@ -20,7 +19,7 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
     const containerElementsAllowList: Array<string> = ['div', 'ul', 'ol', 'tbody'];
     const Container = containerElementType;
 
-    if(!containerElementsAllowList.includes(containerElementType)){
+    if (!containerElementsAllowList.includes(containerElementType)) {
 
         throw new Error('Invalid containerElementType');
 
@@ -30,9 +29,37 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
         wrapper: classNames(className)
     }
 
-    const renderNewItemsAnnouncement = (() => {
+    const renderNewItemsAnnouncement = ((newItemsCount: number, newestChildElement: HTMLElement) => {
 
-        
+        /**
+         * Determine element type for the announcement from the container element type
+         */
+        const childElementTypes: Record<string, string> = {
+            div: 'div',
+            ul: 'li',
+            ol: 'li',
+            tbody: 'tr'
+        };
+        const childElementType: string = childElementTypes[containerElementType];
+
+        /**
+         * Creates announcement element and removes on blur
+         */
+        const newItemsAnnouncement: HTMLElement = document.createElement(childElementType);
+        newItemsAnnouncement.textContent = `${newItemsCount} new items`;
+
+        newItemsAnnouncement.setAttribute('tabIndex', '-1');
+        newItemsAnnouncement.classList.add('u-sr-only')
+        newItemsAnnouncement.addEventListener('blur', (event) => {
+            newItemsAnnouncement?.remove();
+        });
+
+
+        /**
+         * Adds announcement element before the newest item in the list and sets focus
+         */
+        newestChildElement.before(newItemsAnnouncement);
+        newItemsAnnouncement.focus();
 
     });
 
@@ -43,51 +70,46 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
          */
         const updatedChildElementCount: number = (containerRef.current as HTMLElement)?.children?.length ?? 0;
         const hasMoreChildren: boolean = updatedChildElementCount > childElementCount.current && childElementCount.current > 0;
+        const newItemsCount: number = updatedChildElementCount - childElementCount.current;
 
         /**
-         * If focus latest mode enabled and more children were just added
+         * If load more mode enabled and more children were just added
          */
-        if(hasMoreChildren && shouldFocusLatest){
+        if (hasMoreChildren && shouldEnableLoadMore) {
+
 
             /**
              * Get the index of the first of the newest children - which is equal to the length of the previous list of children
              */
             const newestChildElement: HTMLElement = (containerRef.current as any)?.children[childElementCount.current];
 
-            /**
-             * If the child is not natively focusable, make it temporarily so
-             */
-            if(!isFocusable(newestChildElement)){
-
-                newestChildElement?.setAttribute('tabIndex', '-1');
-                newestChildElement?.classList.add('focus:u-outline-none');
-                newestChildElement?.addEventListener('blur', (event) => { 
-                    newestChildElement.removeAttribute('tabIndex'), { 
-                        once: true
-                    }
-                });
-
-            }
-
-            /**
-             * Focus the child
-             */
-            newestChildElement?.focus();
+            renderNewItemsAnnouncement(newItemsCount, newestChildElement);
 
         }
 
         childElementCount.current = updatedChildElementCount;
 
-    }, [children]);
+    }, [children.length]);
 
-    return (
 
-        <>
+
+
+    if (shouldEnableLoadMore) {
+
+        return (
             <Container ref={containerRef} className={generatedClasses.wrapper}>
                 {children}
             </Container>
-        </>
+        )
 
-    );
+    }
+
+    return (
+
+        <Container ref={containerRef} className={generatedClasses.wrapper} aria-live="polite" aria-atomic="true" aria-relevant="additions">
+            {children}
+        </Container>
+
+    )
 
 }

@@ -173,7 +173,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
                         <LayoutColumn desktop={10}>
                             <DynamicListContainer
                                 containerElementType="ul"
-                                shouldFocusLatest={shouldEnableLoadMore}
+                                shouldEnableLoadMore={shouldEnableLoadMore}
                                 className="u-p-0 u-list-none">
                                 {formattedData.map(({ metaHeader, title, body }, index) => {
 
@@ -190,7 +190,7 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
                             </DynamicListContainer>
                             <PaginationWithStatus
                                 id="search-result-list-pagination"
-                                shouldEnableLoadMore={true}
+                                shouldEnableLoadMore={shouldEnableLoadMore}
                                 getPageAction={handleGetPage}
                                 totalRecords={dynamicPagination.totalRecords}
                                 {...dynamicPagination} />

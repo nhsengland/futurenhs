@@ -40,7 +40,7 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                     {columnList.map(({ children, className }, index) => <th key={index} scope="col" className={className}>{children}</th>)}
                 </tr>
             </thead>
-            <DynamicListContainer containerElementType="tbody" shouldFocusLatest={true}>
+            <DynamicListContainer containerElementType="tbody" shouldEnableLoadMore={true}>
                 {rowList.map((row, index) => {
 
                     return (

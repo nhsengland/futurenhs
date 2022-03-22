@@ -88,7 +88,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const { title, body } = discussionText ?? {};
 
     const shouldRenderCommentAndReplyForms: boolean = actions.includes(actionsConstants.GROUPS_COMMENTS_ADD);
-    const shouldEnableLoadMore: boolean = true;
+    const shouldEnableLoadMore: boolean = false;
     const hasDiscussionComments: boolean = dynamicDiscussionCommentsList?.length > 0;
     const creatorUserInitials: string = initials({ value: createdBy?.text?.userName });
     const creatorUserName: string = createdBy?.text?.userName;
@@ -363,7 +363,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     {hasDiscussionComments &&
                         <DynamicListContainer
                             containerElementType="ul"
-                            shouldFocusLatest={shouldEnableLoadMore}
+                            shouldEnableLoadMore={shouldEnableLoadMore}
                             className="u-list-none u-p-0">
                             {dynamicDiscussionCommentsList?.map(({
                                 commentId,
@@ -435,7 +435,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     }
                     <PaginationWithStatus
                         id="discussion-list-pagination"
-                        shouldEnableLoadMore={false}
+                        shouldEnableLoadMore={shouldEnableLoadMore}
                         getPageAction={handleGetPage}
                         {...dynamicPagination}
                         className="u-mb-10" />

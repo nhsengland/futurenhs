@@ -1,6 +1,6 @@
 export interface Props {
     containerElementType: 'div' | 'ul' | 'ol' | 'tbody';
-    shouldFocusLatest?: boolean;
+    shouldEnableLoadMore: boolean;
     children: any;
     className?: string;
 }

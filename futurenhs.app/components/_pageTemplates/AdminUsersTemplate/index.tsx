@@ -153,7 +153,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
 
                         ?   <DynamicListContainer
                                 containerElementType="ul"
-                                shouldFocusLatest={shouldEnableLoadMore}
+                                shouldEnableLoadMore={shouldEnableLoadMore}
                                 className="u-list-none u-p-0">
                                 <DataGrid
                                     columnList={columnList}
