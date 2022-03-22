@@ -62,7 +62,7 @@ namespace FutureNHS.Api.Services
 
         public async Task<string> GetFileDownloadUrl(Guid userId, string slug, Guid fileId, CancellationToken cancellationToken)
         {
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddFileRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, DownloadFileRole, cancellationToken);
             if (userCanPerformAction is false)
             {
                 _logger.LogError($"Error: DownloadFileAsync - User:{0} does not have access to group:{1}", userId, slug);
