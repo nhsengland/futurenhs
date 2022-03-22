@@ -38,6 +38,10 @@ describe('Group file preview template', () => {
                 }
             ]
         },
+        preview: {
+            accessToken: '',
+            wopiClientUrl: ''
+        },
         user: undefined,
         actions: [],
         contentText: null,

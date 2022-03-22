@@ -48,7 +48,7 @@ export const Comment: (props: Props) => JSX.Element = ({
         const targetId: string = event.target.href.split('#')[1];
         const targetElement: HTMLElement = document.getElementById(targetId);
 
-        scrollToComponentAndSetFocus(targetElement, false, 60);
+        scrollToComponentAndSetFocus(targetElement, false, 0);
 
     }
 

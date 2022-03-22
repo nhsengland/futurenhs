@@ -10,6 +10,7 @@ export const enum services {
     GET_GROUP_FOLDER_CONTENTS = 'getGroupFolderContents',
     GET_GROUP_FOLDER = 'getGroupFolder',
     GET_GROUP_FILE = 'getGroupFile',
+    GET_GROUP_FILE_VIEW = 'getGroupFileView',
     GET_GROUP_MEMBERS = 'getGroupMembers',
     GET_PENDING_GROUP_MEMBERS = 'getGroupPendingMembers',
     GET_GROUP_MEMBER = 'getGroupMember',

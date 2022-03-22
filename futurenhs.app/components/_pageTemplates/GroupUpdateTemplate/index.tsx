@@ -87,7 +87,7 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
                                 },
                                 form: {
                                     submitButton: 'Save and close',
-                                    cancelButton: 'Cancel'
+                                    cancelButton: 'Discard changes'
                                 }
                             }}
                             cancelHref={routes.groupRoot}
