@@ -67,30 +67,6 @@ export const getGroupFolderContents = async ({
 
     }
 
-    const fileIds: Array<string> = [];
-    const requests: Array<any> = [];
-
-    apiData.data?.forEach(({ type, id }) => {
-
-        if(type?.toLowerCase() === 'file'){
-
-            fileIds.push(id);
-            requests.push(getGroupFileDownload({ user, groupId, fileId: id }));
-
-        }
-
-    });
-
-    const fileDownloadLinks: Array<ServiceResponse<any>> = await Promise.all(requests);
-
-    fileIds.forEach((fileId: string, index: number) => {
-
-        const file = apiData.data.find(({ id }) => id === fileId);
-
-        file.downloadLink = fileDownloadLinks[index].data;
-
-    });
-
     apiData.data?.forEach((datum) => {
 
         serviceResponse.data.push({
@@ -111,7 +87,6 @@ export const getGroupFolderContents = async ({
             },
             modified: datum.lastUpdated?.atUtc ?? '',
             extension: datum.additionalMetadata?.fileExtension ?? '',
-            downloadLink: datum.downloadLink,
             text: {
                 body: datum.description ?? ''
             }

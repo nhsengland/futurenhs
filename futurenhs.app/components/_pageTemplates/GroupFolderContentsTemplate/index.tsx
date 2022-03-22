@@ -131,8 +131,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
             text,
             modified,
             modifiedBy,
-            createdBy,
-            downloadLink }) => {
+            createdBy }) => {
 
                 const row: DataRow = [];
 
@@ -142,7 +141,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                 const itemPath: string = `${isFolder ? routes.groupFoldersRoot : routes.groupFilesRoot}/${encodeURIComponent(id)}`;
                 const iconLabel: string = extension || 'Folder';
                 const fileDetailPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(id)}/detail`;
-                const fileDownloadPath: string = downloadLink;
+                const fileDownloadPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(id)}/download`;
                 const iconName: string = isFolder ? 'icon-folder' : iconMap[extension];
 
                 const generatedCellClasses = {

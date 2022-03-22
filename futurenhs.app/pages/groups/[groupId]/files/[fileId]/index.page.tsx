@@ -53,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                         const [groupFile, groupFileView] = await Promise.all([
                             getGroupFile({ user, groupId, fileId }),
-                            getGroupFileView({ user, groupId, fileId })
+                            getGroupFileView({ user, groupId, fileId, cookies: context.req?.cookies })
                         ]);
     
                         props.csrfToken = csrfToken;

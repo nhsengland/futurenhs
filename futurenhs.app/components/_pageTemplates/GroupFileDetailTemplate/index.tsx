@@ -22,9 +22,10 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const { createdByLabel } = contentText ?? {};
-    const { path, name, created, createdBy, modified, modifiedBy, downloadLink, text: fileText } = file ?? {};
+    const { id, path, name, created, createdBy, modified, modifiedBy, text: fileText } = file ?? {};
     const { body } = fileText ?? {};
 
+    const fileDownloadPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(id)}/download`;
     const breadCrumbList: BreadCrumbList = [];
 
     if (path?.length > 0) {
@@ -146,7 +147,7 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
                                 headerClassName: generatedHeaderCellClasses.lastUpdate
                             },
                             {
-                                children: <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" /><a href={downloadLink}>Download</a></>,
+                                children: <><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" /><a href={fileDownloadPath}>Download</a></>,
                                 shouldRenderCellHeader: false,
                                 className: generatedCellClasses.actions
                             }

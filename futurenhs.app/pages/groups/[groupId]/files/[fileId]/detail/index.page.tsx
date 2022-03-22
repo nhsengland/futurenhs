@@ -10,7 +10,6 @@ import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
 import { withTextContent } from '@hofs/withTextContent';
 import { getGroupFile } from '@services/getGroupFile';
-import { getGroupFileDownload } from '@services/getGroupFileDownload';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
 
@@ -47,13 +46,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                      */
                     try {
     
-                        const [groupFile, groupFileDownloadLink] = await Promise.all([
-                            getGroupFile({ user, groupId, fileId }),
-                            getGroupFileDownload({ user, groupId, fileId })
-                        ]);
+                        const [groupFile] = await Promise.all([getGroupFile({ user, groupId, fileId })]);
     
                         props.file = groupFile.data;
-                        props.file.downloadLink = groupFileDownloadLink.data;
     
                     } catch (error) {
     

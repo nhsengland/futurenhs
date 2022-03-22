@@ -11,6 +11,7 @@ declare type Options = ({
     user: User;
     groupId: string;
     fileId: string;
+    cookies: any;
 });
 
 declare type Dependencies = ({
@@ -21,8 +22,17 @@ declare type Dependencies = ({
 export const getGroupFileView = async ({
     user,
     groupId,
-    fileId
+    fileId,
+    cookies
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<CollaboraConnectionParams>> => {
+    
+    let existingCookies: string = '';
+
+    Object.keys(cookies).forEach((name, index) => {
+
+        existingCookies += `${name}=${cookies[name]}${index < Object.keys(cookies).length -1 ? '; ' : ''}`
+
+    });
 
     const serviceResponse: ServiceResponse<CollaboraConnectionParams> = {
         data: null
@@ -34,13 +44,12 @@ export const getGroupFileView = async ({
     const id: string = user.id;
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/files/${fileId}/view`;
-    //const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: requestMethods.GET }), defaultTimeOutMillis);
-    const apiResponse: FetchResponse = { // TODO remove once api endpoint is checked in
-        meta: {
-            ok: true
-        } as any,
-        json: {}
-    };
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ 
+        method: requestMethods.GET,
+        headers: {
+            Cookie: existingCookies
+        }
+    }), defaultTimeOutMillis);
     
     const apiData: ApiResponse<any> = apiResponse.json;
     const apiMeta: any = apiResponse.meta;
@@ -58,10 +67,7 @@ export const getGroupFileView = async ({
 
     }
 
-    serviceResponse.data = {
-        accessToken: 'todo',
-        wopiClientUrl: 'todo'
-    };
+    serviceResponse.data = apiData;
 
     return serviceResponse;
 
