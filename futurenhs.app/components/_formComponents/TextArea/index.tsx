@@ -13,8 +13,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     input: {
         name,
         value,
-        onChange,
-        onBlur
+        onChange
     },
     initialError,
     meta: {
@@ -26,6 +25,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     shouldRenderAsRte,
     shouldRenderRemainingCharacterCount,
     validators,
+    height = 200,
     className
 }) => {
 
@@ -46,6 +46,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const shouldRenderError: boolean = Boolean(initialError) || ((Boolean(error) || Boolean(submitError)) && touched);
     const isRequired: boolean = Boolean(validators?.find(({ type }) => type === 'required'));
     const maxLength: boolean = validators?.find(({ type }) => type === 'maxLength')?.maxLength;
+    const elementHeight: string = `${height}px`;
 
     const handleRteInit = (_, editor) => editorRef.current = editor;
     const handleRteChange = (value: any) => onChange(value);
@@ -67,6 +68,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
         label: classNames('nhsuk-label'),
         hint: classNames('nhsuk-hint'),
         error: classNames('nhsuk-error-message'),
+        inputWrapper: classNames('nhsuk-textarea-wrapper'),
         input: classNames('nhsuk-textarea', {
             ['u-invisible']: shouldLoadRte,
             ['nhsuk-textarea--error']: shouldRenderError
@@ -103,36 +105,39 @@ export const TextArea: (props: Props) => JSX.Element = ({
             {shouldRenderError &&
                 <span className={generatedClasses.error}>{error || submitError}</span>
             }
-            {shouldLoadRte
+            <div className={generatedClasses.inputWrapper} style={{ height: elementHeight }}>
+                {shouldLoadRte
             
-                ?   <Editor
-                        tinymceScriptSrc="/js/tinymce/tinymce.min.js"
-                        textareaName={name}
-                        id={name}
-                        value={value}
-                        onInit={handleRteInit}
-                        onEditorChange={handleRteChange}
-                        onFocus={handleRteFocus}
-                        onBlur={handleRteBlur}
-                        init={{
-                            menubar: false,
-                            plugins: ['autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap'],
-                            toolbar: 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
-                            content_style: 'body { font-family: Helvetica, Arial, sans-serif; font-size: 19px }',
-                            iframe_aria_text: "Rich Text Area. To navigate to the formatting toolbar press OPTION-F10 if you are an Apple user or ALT-F10 for all other users. Make sure your screen reader is in Focus or Auto Forms Mode."
-                        }}
-                    />
+                    ?   <Editor
+                            tinymceScriptSrc="/js/tinymce/tinymce.min.js"
+                            textareaName={name}
+                            id={name}
+                            value={value}
+                            onInit={handleRteInit}
+                            onEditorChange={handleRteChange}
+                            onFocus={handleRteFocus}
+                            onBlur={handleRteBlur}
+                            init={{
+                                menubar: false,
+                                plugins: ['autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap'],
+                                toolbar: 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
+                                content_style: 'body { font-family: Helvetica, Arial, sans-serif; font-size: 19px }',
+                                iframe_aria_text: "Rich Text Area. To navigate to the formatting toolbar press OPTION-F10 if you are an Apple user or ALT-F10 for all other users. Make sure your screen reader is in Focus or Auto Forms Mode."
+                            }}
+                        />
 
-                :   <textarea
-                        {...ariaInputProps}
-                        ref={textAreaRef}
-                        id={id}
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        className={generatedClasses.input} />
-            
-            }
+                    :   <textarea
+                            {...ariaInputProps}
+                            ref={textAreaRef}
+                            id={id}
+                            name={name}
+                            value={value}
+                            onChange={onChange}
+                            className={generatedClasses.input}
+                            style={{ height: elementHeight }} />
+                
+                }
+            </div>
             {(shouldRenderRemainingCharacterCount && maxLength) &&
                 <RemainingCharacterCount
                     id={generatedIds.remainingCharacters}

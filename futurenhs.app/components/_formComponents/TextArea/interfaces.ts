@@ -19,5 +19,6 @@ export interface Props {
     shouldRenderAsRte?: boolean;
     shouldRenderRemainingCharacterCount?: boolean;
     validators?: Array<any>;
+    height?: number;
     className?: string;
 }
