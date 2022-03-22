@@ -39,11 +39,11 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
     const shouldRenderCreateDiscussionLink: boolean = actions.includes(actionConstants.GROUPS_DISCUSSIONS_ADD);
 
     const { discussionsHeading,
-        noDiscussions,
-        createDiscussion,
-        createdByLabel,
-        lastCommentLabel,
-        stickyLabel } = contentText ?? {};
+            noDiscussions,
+            createDiscussion,
+            createdByLabel,
+            lastCommentLabel,
+            stickyLabel } = contentText ?? {};
 
     /**
      * Client-side list pagination
@@ -121,9 +121,12 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                     const creatorUserName: string = createdBy.text.userName;
                                     const creatorUserId: string = createdBy.id;
                                     const createdDate: string = dateTime({ value: created });
+                                    const lastCommentUserId: string = modifiedBy?.id;
                                     const lastCommentUserName: string = modifiedBy?.text.userName;
                                     const lastCommentDate: string = dateTime({ value: modified });
                                     const cardLinkHref: string = `${routes.groupForumRoot}/${discussionId}`;
+                                    const hasLastCommentData: boolean = Boolean(lastCommentUserId) && Boolean(lastCommentUserName) && Boolean(lastCommentDate);
+                                    const hasResponses: boolean = responseCount > 0;
 
                                     return (
 
@@ -144,8 +147,8 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                     }}
                                                     className="u-text-theme-7">
                                                     <span className="u-text-bold u-block">{createdByLabel} <Link href={`${routes.groupMembersRoot}/${creatorUserId}`}>{creatorUserName}</Link> {createdDate}</span>
-                                                    {responseCount > 0 &&
-                                                        <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${routes.groupMembersRoot}/${creatorUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
+                                                    {(hasResponses && hasLastCommentData) &&
+                                                        <span className="u-block u-mt-1">{lastCommentLabel} <Link href={`${routes.groupMembersRoot}/${lastCommentUserId}`}>{lastCommentUserName}</Link> {lastCommentDate}</span>
                                                     }
                                                 </UserMeta>
                                                 <div className="c-card_footer u-text-theme-0 u-flex u-justify-between">
