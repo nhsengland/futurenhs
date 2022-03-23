@@ -17,10 +17,10 @@ export const getBreadCrumbList = ({
 
         if(pathElementList?.length){
 
-            breadCrumbElementList.push({
-                element: '',
-                text: 'Home'
-            });
+            // breadCrumbElementList.push({
+            //     element: '',
+            //     text: 'Home'
+            // });
     
             pathElementList.forEach((item, index) => {
     

@@ -24,16 +24,19 @@ export const footerNavMenuList = [
 ];
 
 export const mainNavMenuList = [
-    {
-        url: routes.HOME,
-        text: 'Home',
-        isActive: false,
-        isActiveRoot: false,
-        meta: {
-            themeId: 8,
-            iconName: 'icon-home'
-        }
-    },
+    /**
+     * Temporarily removed while purpose and content is established for this site index route
+     */
+    // {
+    //     url: routes.HOME,
+    //     text: 'Home',
+    //     isActive: false,
+    //     isActiveRoot: false,
+    //     meta: {
+    //         themeId: 8,
+    //         iconName: 'icon-home'
+    //     }
+    // },
     {
         url: routes.GROUPS,
         text: 'Groups',

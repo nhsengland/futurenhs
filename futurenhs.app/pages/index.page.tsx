@@ -24,11 +24,21 @@ export const getServerSideProps: GetServerSideProps = withUser({
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-
                 /**
                  * Return data to page template
                  */
-                return handleSSRSuccessProps({ props });
+                // return handleSSRSuccessProps({ props });
+
+                /**
+                 * Temporarily redirect to the groups index as the default homepage
+                 * while purpose and content is established for this site index route
+                 */
+                return {
+                    redirect: {
+                        permanent: false,
+                        destination: props.routes.groupsRoot
+                    }
+                }
 
             }
         })
