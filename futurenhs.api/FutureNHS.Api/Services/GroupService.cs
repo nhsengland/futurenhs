@@ -15,6 +15,7 @@ using System.Net;
 using System.Security;
 using System.Text;
 using FutureNHS.Api.Exceptions;
+using Ganss.XSS;
 
 namespace FutureNHS.Api.Services
 {
@@ -29,18 +30,24 @@ namespace FutureNHS.Api.Services
         private readonly IFileTypeValidator _fileTypeValidator;
         private readonly IGroupCommand _groupCommand;
         private readonly IGroupImageService _imageService;
+        private readonly IHtmlSanitizer _htmlSanitizer;
+
+
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 500000; // 500kb
 
-        public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, IImageBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupImageService imageService, IGroupCommand groupCommand)
+        public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, 
+            IImageBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupImageService imageService, IGroupCommand groupCommand,
+            IHtmlSanitizer htmlSanitizer)
         {
-            _systemClock = systemClock;
-            _blobStorageProvider = blobStorageProvider;
-            _permissionsService = permissionsService;
-            _fileTypeValidator = fileTypeValidator;
-            _groupCommand = groupCommand;
-            _logger = logger;
-            _imageService = imageService;
+            _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+            _blobStorageProvider = blobStorageProvider ?? throw new ArgumentNullException(nameof(blobStorageProvider));
+            _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
+            _fileTypeValidator = fileTypeValidator ?? throw new ArgumentNullException(nameof(fileTypeValidator));
+            _groupCommand = groupCommand ?? throw new ArgumentNullException(nameof(groupCommand));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
+            _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
         }
 
         public async Task<GroupData?> GetGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
@@ -130,7 +137,7 @@ namespace FutureNHS.Api.Services
 
         /// based on microsoft example https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/mvc/models/file-uploads/samples/
         /// and large file streaming example https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0#upload-large-files-with-streaming
-        private async Task<(GroupDto, ImageDto?)> UploadGroupImageMultipartContent(Guid userId,string slug, Stream requestBody, byte[] rowVersion, string? contentType, CancellationToken cancellationToken)
+        private async Task<(GroupDto, ImageDto?)> UploadGroupImageMultipartContent(Guid userId, string slug, Stream requestBody, byte[] rowVersion, string? contentType, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -299,8 +306,8 @@ namespace FutureNHS.Api.Services
                 groupDto = new GroupDto
                 {
                     Slug = slug,
-                    Name = name,
-                    StrapLine = strapLine,
+                    Name = _htmlSanitizer.Sanitize(name),
+                    StrapLine = _htmlSanitizer.Sanitize(strapLine),
                     ThemeId = themeId,
                     ImageId = imageId,
                     ModifiedBy = userId,
