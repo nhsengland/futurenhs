@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Props } from './interfaces';
 
 /**
