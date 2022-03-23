@@ -246,30 +246,32 @@ builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
 // It requires Realm to be set in the options if SuppressWWWAuthenticateHeader is not set.
 // If an implementation of IApiKeyProvider interface is used as well as options.Events.OnValidateKey delegate is also set then this delegate will be used first.
 
-//builder.Services.AddScoped<IApiKeyRepository>(
-//    sp => {
-//        var config = sp.GetRequiredService<IOptionsSnapshot<SharedSecrets>>().Value;
+builder.Services.AddScoped<IApiKeyRepository>(
+    sp => {
+    var config = sp.GetRequiredService<IOptionsSnapshot<SharedSecrets>>().Value;
 
-//        if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
-//        if (string.IsNullOrWhiteSpace(config.WebApplication)) throw new ApplicationException("The Web Application Key is missing from the Shared secrets configuration section");
-//        if (string.IsNullOrWhiteSpace(config.Owner)) throw new ApplicationException("The Owner is missing from the Shared secrets configuration section");
+    if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
+    if (string.IsNullOrWhiteSpace(config.WebApplication)) throw new ApplicationException("The Web Application Key is missing from the Shared secrets configuration section");
+    if (string.IsNullOrWhiteSpace(config.Owner)) throw new ApplicationException("The Owner is missing from the Shared secrets configuration section");
 
-//        var logger = sp.GetRequiredService<ILogger<IApiKeyRepository>>();
+    var logger = sp.GetRequiredService<ILogger<IApiKeyRepository>>();
 
-//        return new ApiKeyRepository(config.WebApplication, config.Owner, logger);
-//    });
+    return new ApiKeyRepository(config.WebApplication, config.Owner, logger);
+});
+
+builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
 
 
-
-    // The below AddApiKeyInHeaderOrQueryParams without type parameter will require options.Events.OnValidateKey delegete to be set.
-    //.AddApiKeyInHeaderOrQueryParams(options =>
+//The below AddApiKeyInHeaderOrQueryParams without type parameter will require options.Events.OnValidateKey delegete to be set.
+//    .AddApiKeyInHeaderOrQueryParams(options =>
 
 // The below AddApiKeyInHeaderOrQueryParams with type parameter will add the ApiKeyProvider to the dependency container. 
-//.AddApiKeyInAuthorizationHeader<ApiKeyProvider>(options =>
-//{
-//    options.Realm = "FutureNHS";
-//    options.KeyName = "Bearer";
-//});
+.AddApiKeyInAuthorizationHeader<ApiKeyProvider>(options =>
+{
+    options.Realm = "FutureNHS";
+    options.KeyName = "Bearer";
+});
+
 builder.Services.AddAzureClients(clientBuilder =>
 {
     clientBuilder.AddBlobServiceClient(builder.Configuration["AzureImageBlobStorage:blob"], preferMsi: true);
@@ -278,10 +280,10 @@ builder.Services.AddAzureClients(clientBuilder =>
 
 //// By default, authentication is not challenged for every request which is ASP.NET Core's default intended behaviour.
 //// So to challenge authentication for every requests please use below FallbackPolicy option.
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-//});
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+});
 
 var app = builder.Build();
 
