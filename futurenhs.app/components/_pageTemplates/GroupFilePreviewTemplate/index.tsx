@@ -23,7 +23,10 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
     const { accessToken, wopiClientUrl } = preview ?? {};
 
     const breadCrumbList: BreadCrumbList = [];
+    const hasCollaboraData: boolean = Boolean(accessToken) && Boolean(wopiClientUrl);
     const fileDetailPath: string = `${routes.groupFilesRoot}/${fileId}/detail`;
+
+    console.log(accessToken, wopiClientUrl);
 
     if (path?.length > 0) {
 
@@ -65,13 +68,15 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
                 <h2 className="nhsuk-heading-l">{name}</h2>
                 <hr />
                 <AriaLiveRegion>
-                    <CollaboraFilePreview 
-                        csrfToken={csrfToken} 
-                        accessToken={accessToken} 
-                        wopiClientUrl={wopiClientUrl} 
-                        text={{
-                            noScript: 'Enable JavaScript to view this file'
-                        }} />
+                    {hasCollaboraData &&
+                        <CollaboraFilePreview 
+                            csrfToken={csrfToken} 
+                            accessToken={accessToken} 
+                            wopiClientUrl={wopiClientUrl} 
+                            text={{
+                                noScript: 'Enable JavaScript to view this file'
+                            }} />
+                    }
                 </AriaLiveRegion>
                 <p>
                     <Link href={fileDetailPath}><a><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
