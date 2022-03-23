@@ -1,6 +1,7 @@
 import { Link } from '@components/Link';
 import { AriaLiveRegion } from '@components/AriaLiveRegion';
 import { CollaboraFilePreview } from '@components/CollaboraFilePreview';
+import { NoScript } from '@components/NoScript';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BreadCrumb } from '@components/BreadCrumb';
 import { SVGIcon } from '@components/SVGIcon';
@@ -26,7 +27,7 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
     const hasCollaboraData: boolean = Boolean(accessToken) && Boolean(wopiClientUrl);
     const fileDetailPath: string = `${routes.groupFilesRoot}/${fileId}/detail`;
 
-    console.log(accessToken, wopiClientUrl);
+    console.log(preview);
 
     if (path?.length > 0) {
 
@@ -67,15 +68,18 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
                 }
                 <h2 className="nhsuk-heading-l">{name}</h2>
                 <hr />
+                <NoScript 
+                    headingLevel={3} 
+                    text={{
+                        heading: 'Important',
+                        body: 'JavaScript must be enabled in your browser to view this file'
+                    }} />
                 <AriaLiveRegion>
                     {hasCollaboraData &&
                         <CollaboraFilePreview 
                             csrfToken={csrfToken} 
                             accessToken={accessToken} 
-                            wopiClientUrl={wopiClientUrl} 
-                            text={{
-                                noScript: 'Enable JavaScript to view this file'
-                            }} />
+                            wopiClientUrl={wopiClientUrl} />
                     }
                 </AriaLiveRegion>
                 <p>

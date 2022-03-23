@@ -9,14 +9,11 @@ export const CollaboraFilePreview: (props: Props) => JSX.Element = ({
     csrfToken,
     accessToken,
     wopiClientUrl,
-    text,
     className
 }) => {
 
     const initFormRef: any = useRef();
     const iFrameName: string = 'collabora-online-viewer';
-
-    const { noScript } = text ?? {};
 
     const generatedClasses: any = {
         wrapper: classNames(className),
@@ -33,7 +30,6 @@ export const CollaboraFilePreview: (props: Props) => JSX.Element = ({
     return (
 
         <div className={generatedClasses.wrapper}>
-            <noscript><p>{noScript}</p></noscript>
             <form 
                 ref={initFormRef} 
                 name="collabora-init" 
