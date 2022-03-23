@@ -2,7 +2,7 @@
 {
     public class FileServerCollaboraResponse
     {
-        public string WopiClientUrlForFile { get; init; } 
-        public string AccessToken { get; init; }
+        public string WopiClientUrlForFile { get; set; } 
+        public string AccessToken { get; set; }
     }
 }

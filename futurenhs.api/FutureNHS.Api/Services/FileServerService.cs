@@ -160,7 +160,6 @@ namespace FutureNHS.Api.Services
         {
             _logger?.LogDebug("The current user (associated with the incoming request) could not be identified.  {Message}", message);
             throw new HttpRequestException("Error generating url", null, httpStatusCode);
-            return default;
         }
     }
 }
