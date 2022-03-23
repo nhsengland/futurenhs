@@ -173,7 +173,7 @@ builder.Services.Configure<IISServerOptions>(options =>
 {
     options.AllowSynchronousIO = true;
 });
-
+builder.Services.AddHttpClient("fileserver-createurl");
 builder.Services.Configure<Features>(settings.GetSection("FeatureManagement"), binderOptions => binderOptions.BindNonPublicProperties = true);
 builder.Services.Configure<AzurePlatformConfiguration>(settings.GetSection("AzurePlatform"));
 builder.Services.Configure<SharedSecrets>(settings.GetSection("SharedSecrets"));

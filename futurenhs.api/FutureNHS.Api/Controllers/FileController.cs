@@ -71,8 +71,7 @@ namespace FutureNHS.Api.Controllers
 
         public async Task<IActionResult> GetViewCollaboraUrlAsync(Guid userId, string slug, Guid id, CancellationToken cancellationToken)
         {
-            var cookies = HttpContext.Request.GetCookieContainer(_fqdn);
-            var file = await _fileServerService.GetCollaboraFileUrl(userId,slug, id, cookies, "view", cancellationToken);
+            var file = await _fileServerService.GetCollaboraFileUrl(userId,slug, "view", id, HttpContext.Request, cancellationToken);
 
             return Ok(file);
         }
