@@ -138,8 +138,11 @@ namespace FutureNHS.Api.Services
 
                 if (!mediaType?.Contains("application/json") ?? true) return Forbidden(httpResponseMessage.StatusCode, "The file server response is for a media type the File Server does not support");
 
-                await using var utf8JsonStream = await httpContent.ReadAsStreamAsync(cancellationToken);
-
+                //await using var utf8JsonStream = await httpContent.ReadAsStreamAsync(cancellationToken);
+                var utf8String = await httpContent.ReadAsStringAsync(cancellationToken);
+                var x = new FileServerCollaboraResponse();
+                x.WopiClientUrlForFile = utf8String;
+                return x;
                 var fileServerResponse = await JsonSerializer.DeserializeAsync<FileServerCollaboraResponse>(utf8JsonStream, cancellationToken: cancellationToken);
 
                 return fileServerResponse ?? Forbidden(httpResponseMessage.StatusCode, "Unable to convert the json body of the response from the file server into an FileServerCollaboraResponse");
