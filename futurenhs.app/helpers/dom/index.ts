@@ -1,4 +1,19 @@
 /**
+ * Gets a consistently formatted commentId
+ */
+export const getFormattedCommentId: Function = (commentId: string) => {
+
+    if(!commentId){
+
+        throw new Error('Missing commentId')
+
+    }
+
+    return `comment-${commentId}`;
+
+}
+
+/**
  * Lock scroll on page body
  */
 export const lockBodyScroll: Function = (shouldLock: boolean) => {

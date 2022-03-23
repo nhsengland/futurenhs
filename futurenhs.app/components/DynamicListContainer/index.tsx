@@ -91,9 +91,6 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
 
     }, [children.length]);
 
-
-
-
     if (shouldEnableLoadMore) {
 
         return (

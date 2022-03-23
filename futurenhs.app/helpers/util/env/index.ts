@@ -1,11 +1,4 @@
-/**
- * Evaluates whether a property is defined and not null
- */
- export const isDefined = (property: any): boolean => {
-
-    return typeof property !== 'undefined' && property !== null && property !== '';
-
-}
+import { isDefined } from '@helpers/util/data';
 
 /**
  * Gets an environment variable and throws if not available

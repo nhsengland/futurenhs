@@ -1,6 +1,7 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { services } from '@constants/services';
 import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
+import { getCsvStringFromObject } from '@helpers/util/data';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import { ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -25,14 +26,6 @@ export const getGroupFileView = async ({
     fileId,
     cookies
 }: Options, dependencies?: Dependencies): Promise<ServiceResponse<CollaboraConnectionParams>> => {
-    
-    let existingCookies: string = '';
-
-    Object.keys(cookies).forEach((name, index) => {
-
-        existingCookies += `${name}=${cookies[name]}${index < Object.keys(cookies).length -1 ? '; ' : ''}`
-
-    });
 
     const serviceResponse: ServiceResponse<CollaboraConnectionParams> = {
         data: null
@@ -40,6 +33,10 @@ export const getGroupFileView = async ({
 
     const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
+    const cookieHeader: string = getCsvStringFromObject({
+        object: cookies,
+        seperator: '; '
+    });
 
     const id: string = user.id;
 
@@ -47,7 +44,7 @@ export const getGroupFileView = async ({
     const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ 
         method: requestMethods.GET,
         headers: {
-            Cookie: existingCookies
+            Cookie: cookieHeader
         }
     }), defaultTimeOutMillis);
     
@@ -67,8 +64,11 @@ export const getGroupFileView = async ({
 
     }
 
-    serviceResponse.data = apiData;
-
+    serviceResponse.data = {
+        wopiClientUrl: apiData.WopiClientUrlForFile,
+        accessToken: apiData.accessToken
+    };
+    
     return serviceResponse;
 
 }

@@ -1,6 +1,7 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
 import { requestMethods } from '@constants/fetch';
 import { services } from '@constants/services';
+import { getCsvStringFromObject } from '@helpers/util/data';
 import { ServiceError } from '..';
 import { FetchResponse } from '@appTypes/fetch';
 import {ApiResponse, ServiceResponse } from '@appTypes/service';
@@ -23,20 +24,16 @@ export const getUser: GetUserService = async ({
 
     const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
-
-    let existingCookies: string = '';
-
-    Object.keys(cookies).forEach((name, index) => {
-
-        existingCookies += `${name}=${cookies[name]}${index < Object.keys(cookies).length -1 ? '; ' : ''}`
-
+    const cookieHeader: string = getCsvStringFromObject({
+        object: cookies,
+        seperator: '; '
     });
 
     const apiUrl: string = process.env.NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL;
     const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.GET,
         headers: {
-            Cookie: existingCookies
+            Cookie: cookieHeader
         }
     }), 1000);
 

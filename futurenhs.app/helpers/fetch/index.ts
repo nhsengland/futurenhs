@@ -105,6 +105,9 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
 
 };
 
+/**
+ * Generic timer to add timeout functionality to fetch requests 
+ */
 export const timer = (delay: number) => new Promise((resolve) => {
 
     setTimeout(() => {
@@ -113,6 +116,9 @@ export const timer = (delay: number) => new Promise((resolve) => {
 
 });
 
+/**
+ * Returns common headers used in fetch requests by services
+ */
 export const getStandardServiceHeaders = ({
     csrfToken,
     etag

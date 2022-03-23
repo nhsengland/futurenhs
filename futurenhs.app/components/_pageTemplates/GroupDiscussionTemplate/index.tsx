@@ -8,6 +8,7 @@ import { actions as actionsConstants } from '@constants/actions';
 import { formTypes } from '@constants/forms';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { initials } from '@helpers/formatters/initials';
+import { getFormattedCommentId } from '@helpers/dom';
 import { routeParams } from '@constants/routes';
 import { Link } from '@components/Link';
 import { Accordion } from '@components/Accordion';
@@ -85,8 +86,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             modified,
             modifiedBy,
             viewCount } = discussion ?? {};
-    const { title, body } = discussionText ?? {};
+    const { title, body: discussionBody } = discussionText ?? {};
 
+    const formattedDiscussionid: string = getFormattedCommentId(discussionId);
     const shouldRenderCommentAndReplyForms: boolean = actions.includes(actionsConstants.GROUPS_COMMENTS_ADD);
     const shouldEnableLoadMore: boolean = false;
     const hasDiscussionComments: boolean = dynamicDiscussionCommentsList?.length > 0;
@@ -252,6 +254,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             likeCount,
             isLiked }) => {
 
+                const formattedCommentId: string = getFormattedCommentId(commentId);
                 const replyingUserInitials: string = initials({ value: createdBy?.text?.userName });
                 const replyingUserName: string = createdBy?.text?.userName;
                 const replyingUserId: string = createdBy?.id;
@@ -278,7 +281,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 
                     <li key={commentId} className="c-comment_reply-container u-m-0 u-py-6">
                         <Comment
-                            id={`comment-${commentId}`}
+                            id={formattedCommentId}
                             commentId={commentId}
                             csrfToken={csrfToken}
                             initialErrors={errors}
@@ -326,10 +329,15 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     text={{
                         link: "Back to discussions"
                     }} />
-                <h2 className="nhsuk-heading-xl">{title}</h2>
-                {body &&
-                    <RichText bodyHtml={body} wrapperElementType="div" className="u-mb-8" />
-                }
+                <div id={formattedDiscussionid} tabIndex={-1} className="focus:u-outline-none">
+                    <h2 className="nhsuk-heading-xl">{title}</h2>
+                    {discussionBody &&
+                        <RichText 
+                            bodyHtml={discussionBody} 
+                            wrapperElementType="div"
+                            className="u-mb-8" />
+                    }
+                </div>
                 <LayoutColumnContainer>
                     <LayoutColumn tablet={8}>
                         <UserMeta
@@ -375,6 +383,18 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 replies
                             }, index) => {
 
+                                const formattedCommentId: string = getFormattedCommentId(commentId);
+                                const originDiscussion: DiscussionComment = {
+                                    commentId: discussionId,
+                                    createdBy: {
+                                        text: {
+                                            userName: userName
+                                        }
+                                    },
+                                    text: {
+                                        body: discussionBody
+                                    }
+                                };
                                 const commenterUserInitials: string = initials({ value: createdBy?.text?.userName });
                                 const commenterUserName: string = createdBy?.text?.userName;
                                 const commenterUserId: string = createdBy?.id;
@@ -384,20 +404,21 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
                                 const additionalRepliesAccordionId: string = `${commentId}-replies`;
 
-                                const { body } = text ?? {};
+                                const { body: commentBody } = text ?? {};
 
                                 return (
 
                                     <li key={index}>
                                         <Comment
-                                            id={`comment-${commentId}`}
+                                            id={formattedCommentId}
                                             commentId={commentId}
+                                            originComment={originDiscussion}
                                             csrfToken={csrfToken}
                                             initialErrors={errors}
                                             text={{
                                                 userName: commenterUserName,
                                                 initials: commenterUserInitials,
-                                                body: body
+                                                body: commentBody
                                             }}
                                             userProfileLink={`${routes.groupMembersRoot}/${commenterUserId}`}
                                             date={commentCreatedDate}

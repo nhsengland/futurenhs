@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { scrollToComponentAndSetFocus } from '@helpers/dom';
+import { scrollToComponentAndSetFocus, getFormattedCommentId } from '@helpers/dom';
 import { truncate } from '@helpers/formatters/truncate';
 import { UserMeta } from '@components/UserMeta';
 import { RichText } from '@components/RichText';
@@ -40,6 +40,8 @@ export const Comment: (props: Props) => JSX.Element = ({
         value: originComment?.text?.body,
         limit: 15
     });
+    const shouldRenderOriginCommentLink: boolean = Boolean(originComment) && Boolean(parentCommentTeaserText) && Boolean(parentCommentUserName);
+    const originCommentId: string = shouldRenderOriginCommentLink ? `#${getFormattedCommentId(originComment.commentId)}` : '';
 
     const handleOriginLinkClick = (event: any): void => {
 
@@ -75,9 +77,9 @@ export const Comment: (props: Props) => JSX.Element = ({
                         <span className="u-block u-text-bold">{date}</span>
                 </UserMeta>
             </header>
-            {originComment &&
+            {shouldRenderOriginCommentLink &&
                 <p className="nhsuk-body-s u-mb-5 u-text-theme-6 u-text-bold">
-                    {`In response to ${parentCommentUserName}`} "<a href={`#comment-${originComment.commentId}`} onClick={handleOriginLinkClick}>{parentCommentTeaserText}</a>"
+                    {`In response to ${parentCommentUserName}`} "<a href={originCommentId} onClick={handleOriginLinkClick}>{parentCommentTeaserText}</a>"
                 </p>
             }
             <RichText bodyHtml={body} wrapperElementType="div" className="u-mb-6" />
