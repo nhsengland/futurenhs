@@ -53,20 +53,20 @@ export const getGroupFileView = async ({
 
     const { ok, status, statusText } = apiMeta;
 
-    // if(!ok){
+    if(!ok){
 
-    //     throw new ServiceError('Error getting group file view', {
-    //         serviceId: services.GET_GROUP_FILE_VIEW,
-    //         status: status,
-    //         statusText: statusText,
-    //         body: apiData
-    //     });
+        throw new ServiceError('Error getting group file view', {
+            serviceId: services.GET_GROUP_FILE_VIEW,
+            status: status,
+            statusText: statusText,
+            body: apiData
+        });
 
-    // }
+    }
 
     serviceResponse.data = {
         response: apiResponse,
-        wopiClientUrl: apiData.WopiClientUrlForFile,
+        wopiClientUrl: apiData.wopiClientUrlForFile,
         accessToken: apiData.accessToken
     } as any;
     
