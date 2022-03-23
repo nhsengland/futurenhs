@@ -65,10 +65,9 @@ export const getGroupFileView = async ({
     }
 
     serviceResponse.data = {
-        response: apiResponse,
         wopiClientUrl: apiData.wopiClientUrlForFile,
         accessToken: apiData.accessToken
-    } as any;
+    };
     
     return serviceResponse;
 
