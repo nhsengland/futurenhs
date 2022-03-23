@@ -143,9 +143,9 @@ namespace FutureNHS.Api.Services
                 var x = new FileServerCollaboraResponse();
                 x.WopiClientUrlForFile = utf8String;
                 return x;
-                var fileServerResponse = await JsonSerializer.DeserializeAsync<FileServerCollaboraResponse>(utf8JsonStream, cancellationToken: cancellationToken);
+                //var fileServerResponse = await JsonSerializer.DeserializeAsync<FileServerCollaboraResponse>(utf8JsonStream, cancellationToken: cancellationToken);
 
-                return fileServerResponse ?? Forbidden(httpResponseMessage.StatusCode, "Unable to convert the json body of the response from the file server into an FileServerCollaboraResponse");
+                //return fileServerResponse ?? Forbidden(httpResponseMessage.StatusCode, "Unable to convert the json body of the response from the file server into an FileServerCollaboraResponse");
             }
             catch (HttpRequestException ex)
             {
