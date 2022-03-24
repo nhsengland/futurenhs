@@ -268,7 +268,7 @@ builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
 // The below AddApiKeyInHeaderOrQueryParams with type parameter will add the ApiKeyProvider to the dependency container. 
 .AddApiKeyInAuthorizationHeader<ApiKeyProvider>(options =>
 {
-    options.Realm = "FutureNHS";
+    options.SuppressWWWAuthenticateHeader = true;
     options.KeyName = "Bearer";
 });
 
