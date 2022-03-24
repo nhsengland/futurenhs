@@ -4,9 +4,9 @@ const { axeAudit } = require('../helpers/jest/aXe');
 const { lighthouseAudit, getLighthouseResult } = require('../helpers/jest/lighthouse');
 const { getEnvVar } = require('../helpers/util/env');
 
-describe('Group forum page', () => {
+describe('Group files page', () => {
 
-    const url = `${getEnvVar({ name: 'APP_URL' })}/groups/aa/forum`; // TODO - which groups will be available in test env?
+    const url = `${getEnvVar({ name: 'APP_URL'})}/admin/users`;
 
     let browser;
 
@@ -42,12 +42,12 @@ describe('Group forum page', () => {
             page: page
         });
         await page.goto(url);
-
+        
         const { incomplete, violations } = await axeAudit({ page });
 
         expect(incomplete).toHaveLength(0);
         expect(violations).toHaveLength(0);
-        
+
     });
 
     test('Is performant and follows best practices', async () => {

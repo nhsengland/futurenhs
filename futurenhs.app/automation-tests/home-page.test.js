@@ -26,7 +26,7 @@ describe('Home page', () => {
 
         const page = await setUpPage({ browser, url });
         
-        await expect(page.url()).toEqual(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL'}));
+        await expect(page.url().startsWith(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL'}))).toBe(true);
         await logIn({
             page: page
         });

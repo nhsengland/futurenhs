@@ -6,7 +6,7 @@ const { getEnvVar } = require('../helpers/util/env');
 
 describe('Group page', () => {
 
-    const url = `${getEnvVar({ name: 'APP_URL' })}/groups/example-group`; // TODO - which groups will be available in test env?
+    const url = `${getEnvVar({ name: 'APP_URL' })}/groups/aa`; // TODO - which groups will be available in test env?
 
     let browser;
 
@@ -26,11 +26,11 @@ describe('Group page', () => {
 
         const page = await setUpPage({ browser, url });
 
-        await expect(page.url()).toEqual(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL'}));
+        await expect(page.url().startsWith(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL'}))).toBe(true);
         await logIn({
             page: page
         });
-        await expect(page.url()).toEqual(getEnvVar({ name: 'APP_URL'}) + '/');
+        await expect(page.url()).toEqual(url);
 
     });
 

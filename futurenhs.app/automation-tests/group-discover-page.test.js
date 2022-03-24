@@ -4,9 +4,9 @@ const { axeAudit } = require('../helpers/jest/aXe');
 const { lighthouseAudit, getLighthouseResult } = require('../helpers/jest/lighthouse');
 const { getEnvVar } = require('../helpers/util/env');
 
-describe('Group forum page', () => {
+describe('Groups page', () => {
 
-    const url = `${getEnvVar({ name: 'APP_URL' })}/groups/aa/forum`; // TODO - which groups will be available in test env?
+    const url = `${getEnvVar({ name: 'APP_URL' })}/groups/discover`;
 
     let browser;
 
@@ -25,7 +25,7 @@ describe('Group forum page', () => {
     test('Is login protected', async () => {
 
         const page = await setUpPage({ browser, url });
-
+        
         await expect(page.url().startsWith(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL'}))).toBe(true);
         await logIn({
             page: page

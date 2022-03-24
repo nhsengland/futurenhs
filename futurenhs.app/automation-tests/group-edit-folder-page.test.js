@@ -4,9 +4,9 @@ const { axeAudit } = require('../helpers/jest/aXe');
 const { lighthouseAudit, getLighthouseResult } = require('../helpers/jest/lighthouse');
 const { getEnvVar } = require('../helpers/util/env');
 
-describe('Groups page', () => {
+describe('Group files page', () => {
 
-    const url = `${getEnvVar({ name: 'APP_URL' })}/groups/discover`;
+    const url = `${getEnvVar({ name: 'APP_URL'})}/groups/aa/folders/f86d22cf-1b0e-4d24-8120-adc500d224fb/update`;
 
     let browser;
 
@@ -25,12 +25,12 @@ describe('Groups page', () => {
     test('Is login protected', async () => {
 
         const page = await setUpPage({ browser, url });
-        
-        await expect(page.url()).toEqual(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL'}));
+
+        await expect(page.url().startsWith(getEnvVar({ name: 'NEXT_PUBLIC_MVC_FORUM_LOGIN_URL'}))).toBe(true);
         await logIn({
             page: page
         });
-        await expect(page.url()).toEqual(getEnvVar({ name: 'APP_URL'}) + '/');
+        await expect(page.url()).toEqual(url);
 
     });
 
@@ -42,12 +42,12 @@ describe('Groups page', () => {
             page: page
         });
         await page.goto(url);
-
+        
         const { incomplete, violations } = await axeAudit({ page });
 
         expect(incomplete).toHaveLength(0);
         expect(violations).toHaveLength(0);
-        
+
     });
 
     test('Is performant and follows best practices', async () => {

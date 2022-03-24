@@ -7,7 +7,7 @@ export const axeAudit = async({ page }) => {
 
     await page.setBypassCSP(true);
 
-    const results = await new AxePuppeteer(page).analyze();
+    const results = await new AxePuppeteer(page).exclude('.l-width-container, .c-page-header').analyze();
 
     return new Promise((resolve, reject) => {
 
