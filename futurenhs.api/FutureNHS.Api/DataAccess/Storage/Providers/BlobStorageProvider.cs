@@ -39,7 +39,7 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
             _cloudBlobContainer = cloudBlobClient.GetContainerReference(containerName);
         }
 
-        public async Task UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
+        public async Task<string?> UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
         {
             try
             {
@@ -56,6 +56,7 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
 
                 blob.Properties.ContentType = contentType;
                 await blob.UploadFromStreamAsync(stream, cancellationToken);
+                return blob.Properties.ContentMD5;
             }
             catch (AuthenticationFailedException ex)
             {
@@ -78,7 +79,7 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
             }
         }
 
-        public async Task UploadFileAsync(byte[] bytes, string blobName, string contentType, CancellationToken cancellationToken)
+        public async Task<string?> UploadFileAsync(byte[] bytes, string blobName, string contentType, CancellationToken cancellationToken)
         {
             try
             {
@@ -95,6 +96,7 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
 
                 blob.Properties.ContentType = contentType;
                 await blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length, cancellationToken);
+                return blob.Properties.ContentMD5;
             }
             catch (AuthenticationFailedException ex)
             {

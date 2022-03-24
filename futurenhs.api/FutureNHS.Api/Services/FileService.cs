@@ -6,6 +6,7 @@ using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -142,7 +143,7 @@ namespace FutureNHS.Api.Services
 
                             // now make it unique
                             var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
-
+                            string? md5Hash;
 
                             // TODO MimeDetective does not work when stream has already been uploaded - figure out a solution
                             //if (fileContentTypeMatchesExtension is false)
@@ -160,8 +161,7 @@ namespace FutureNHS.Api.Services
                             }
                             try
                             {
-                                await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName,
-                                    MimeTypesMap.GetMimeType(encodedFileName), cancellationToken);
+                                md5Hash = await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName, MimeTypesMap.GetMimeType(encodedFileName), cancellationToken);
                             }
                             catch (Exception ex)
                             {
@@ -195,7 +195,8 @@ namespace FutureNHS.Api.Services
                             fileDto.FileSizeBytes = size;
                             fileDto.BlobName = uniqueFileName;
                             fileDto.CreatedAtUTC = now;
-
+                            if (md5Hash != null) 
+                                fileDto.BlobHash = Convert.FromBase64String(md5Hash);
                         }
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
