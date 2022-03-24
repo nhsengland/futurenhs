@@ -18,15 +18,6 @@ const images = () => {
 
 };
 
-// Copy fonts from src to dist folder
-const fonts = () => {
-
-    return gulp
-        .src(`${getUiPath()}/fonts/**/*`)
-        .pipe(gulp.dest(`${getUiAssetsDistPath()}/fonts`));
-
-};
-
 // Copy tinymce files from node_modules to dist folder
 const tinyMce = () => {
 
@@ -52,8 +43,6 @@ const icons = () => {
     const src = `${getUiPath()}/icons/**/*.svg`;
     const dist = `${getUiAssetsDistPath()}/icons`;
     const templatePath = getRootPath() ? `./${getRootPath()}/svgSymbolsTemplate.svg` : './svgSymbolsTemplate.svg';
-
-    console.log(src, dist, templatePath);
 
     const sprite = gulp.src(src)
         .pipe(svgSprite({
@@ -81,8 +70,7 @@ const icons = () => {
 };
 
 // Build task - runs all the web tasks
-const build = gulp.series(images, icons, fonts, tinyMce, favicon);
-
+const build = gulp.series(images, icons, tinyMce, favicon);
 
 const startSite = (done) => {
 
@@ -149,7 +137,6 @@ const stopSite = (done) => {
 module.exports = {
     images,
     icons,
-    fonts,
     favicon,
     build,
     startSite,
