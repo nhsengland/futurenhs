@@ -15,13 +15,11 @@ namespace FutureNHS.Api.Controllers
     {
         private readonly ILogger<ToolsController> _logger;
         private readonly IPermissionsService _permissionsService;
-        private readonly SharedSecrets _sharedSecrets;
 
-        public ToolsController(ILogger<ToolsController> logger, IPermissionsService permissionsService, IOptionsSnapshot<SharedSecrets> sharedSecrets)
+        public ToolsController(ILogger<ToolsController> logger, IPermissionsService permissionsService)
         {
             _logger = logger;
             _permissionsService = permissionsService;
-            _sharedSecrets = sharedSecrets.Value;
         }
 
 
@@ -53,14 +51,6 @@ namespace FutureNHS.Api.Controllers
             var list = headers.ToList();
 
             return Ok(list);
-        }
-
-        [AllowAnonymous]
-        [Route("viewApiKey")]
-        public async Task<IActionResult> ViewApikey(CancellationToken cancellationToken)
-        {
-
-            return Ok(_sharedSecrets);
         }
     }
 }
