@@ -34,5 +34,19 @@ namespace FutureNHS.Api.Controllers
 
             return Ok(rawRequestBody);
         }
+
+        [HttpGet]
+        [HttpPost]
+        [HttpPut]
+        [HttpDelete]
+        [DisableFormValueModelBinding]
+        [Route("viewrequestheaders")]
+        public async Task<IActionResult> ViewRequestHeaders(CancellationToken cancellationToken)
+        {
+            var headers = Request.Headers;
+            var list = headers.ToList();
+
+            return Ok(list);
+        }
     }
 }
