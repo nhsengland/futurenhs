@@ -1,10 +1,12 @@
 const path = require('path');
+const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa');
+const withBundleAnalyzer = require('@next/bundle-analyzer');
 const swRunTimeCachingConfig = require('./sw.cache.config');
 
 const assetPrefix = '';
 
-module.exports = withPWA({
+const baseConfig = {
     pwa: {
         disable: process.env.NODE_ENV === 'development',
         runtimeCaching: swRunTimeCachingConfig,
@@ -14,7 +16,7 @@ module.exports = withPWA({
 
         config.module.rules.push({
             test: /\.svg$/,
-            use: ["@svgr/webpack"]
+            use: ['@svgr/webpack']
         });
 
         return config;
@@ -30,4 +32,17 @@ module.exports = withPWA({
         path: `${assetPrefix}/_next/image`
     },
     assetPrefix: assetPrefix
-});
+};
+
+module.exports = withPlugins([
+    [withPWA, {
+        pwa: {
+            disable: process.env.NODE_ENV === 'development',
+            runtimeCaching: swRunTimeCachingConfig,
+            buildExcludes: [/middleware-manifest.json$/]
+        }
+    }],
+    [withBundleAnalyzer, {
+        enabled: true
+    }]
+], baseConfig);
