@@ -66,7 +66,7 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
                         shouldLinkCrumbs={false}
                         className="u-text-lead u-mb-10 u-fill-theme-0" />
                 }
-                <h2 className="nhsuk-heading-l">{name}</h2>
+                <h1 className="nhsuk-heading-l">{name}</h1>
                 <hr />
                 <NoScript 
                     headingLevel={3} 
