@@ -1,5 +1,6 @@
 using FutureNHS.Api.Attributes;
 using FutureNHS.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
@@ -35,6 +36,7 @@ namespace FutureNHS.Api.Controllers
             return Ok(rawRequestBody);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [HttpPost]
         [HttpPut]
