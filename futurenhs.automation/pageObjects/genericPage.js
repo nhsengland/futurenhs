@@ -48,8 +48,8 @@ class genericPage extends basePage{
      */
     contentClick(contentType, textValue){
         var element = this._getSelector(contentType, textValue);
-        this.findElement(element);
-        helpers.click(element);
+        var link = this.findElement(element);
+        helpers.click(link);
     }
 
     /**
@@ -126,13 +126,33 @@ class genericPage extends basePage{
      * @returns true OR error page and error log
      */
     checkPhaseBanner(){
-        if(browser.getUrl().includes('/admin') || !browser.getUrl().includes('futurenhs')){
+        if(!browser.getUrl().includes('futurenhs')){
             return true
         } else {
             var banner = $('//div[@class="c-phase-banner"]');
             try {
                 banner.waitForExist({timeout: 5000});
-                expect(banner.getText()).toEqual('ALPHA This is a new service – your feedback will help us to improve it.');
+                expect(banner.getText()).toEqual('BETA This is a new service – your feedback will help us to improve it.');
+                return true
+            } catch (error) {
+                var errorPage = browser.getUrl().toString();
+                return 'URL = ' + errorPage + ' : ' + error
+            }
+        }
+    }
+    
+    /**
+     * Function to check if the support banner is existing on the page
+     * @returns true OR error page and error log
+     */
+    checkSupportBanner(){
+        if(!browser.getUrl().includes('futurenhs')){
+            return true
+        } else {
+            var banner = $('//p[span[text()="Need help?"]]');
+            try {
+                banner.waitForExist({timeout: 5000});
+                expect(banner.getText().replace(/\n/g, ' ')).toEqual('Need help? Visit our support site');
                 return true
             } catch (error) {
                 var errorPage = browser.getUrl().toString();

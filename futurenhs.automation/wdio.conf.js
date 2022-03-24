@@ -12,6 +12,7 @@ global.testCase = "";
 global.environmentSpecificWaitTimes = {};
 global.postedComment = "";
 global.phaseBannerErrors = [];
+global.supportBannerErrors = [];
 var pagesVisited = [];
 global.currentPage = 'data:,'
 var webhookURL = 'https://hooks.slack.com/services/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'
@@ -344,6 +345,12 @@ exports.config = {
             phaseBannerErrors.push(result);
         }
 
+        // Support Banner Passive Test
+        var result = genericPage.checkSupportBanner();
+        if(result != true){
+            supportBannerErrors.push(result)
+        }
+
         // Axe Core Accessibility Page Test
         if(process.env.axe){
             var pageCount = 0
@@ -405,10 +412,12 @@ exports.config = {
      * @param {Array.<String>} specs List of spec file paths that ran
      */
     after: function (result, capabilities, specs) {
+        if(!fs.existsSync("passiveTestErrors")){
+            fs.mkdirSync("passiveTestErrors");
+        }
+
+        // Generate document of phase banner errors
         if(phaseBannerErrors.length > 0) {
-            if(!fs.existsSync("passiveTestErrors")){
-                fs.mkdirSync("passiveTestErrors");
-            }
             const filepath = (`passiveTestErrors/phaseBannerErrors.txt`);
             var fileContents = phaseBannerErrors.join('\n\r');
             fs.writeFile(filepath, fileContents, err => {
@@ -418,7 +427,19 @@ exports.config = {
                 }
             });
         }
-     },
+
+        // Generate document of support banner errors
+        if(supportBannerErrors.length > 0) {
+            const filepath = (`passiveTestErrors/supportBannerErrors.txt`);
+            var fileContents = supportBannerErrors.join('\n\r');
+            fs.writeFile(filepath, fileContents, err => {
+                if (err){
+                    console.err(err);
+                    return
+                }
+            });
+        }
+    },
 
     /**
      * Gets executed right after terminating the webdriver session.
