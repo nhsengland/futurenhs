@@ -20,7 +20,7 @@ namespace FutureNHS.Api.Services.Validation
 
         private async Task<bool> IsFolderUnique(FolderDto folder, CancellationToken cancellationToken)
         {
-            return await _folderCommand.IsFolderUnique(folder.Title, folder.ParentFolder, folder.GroupId, cancellationToken);
+            return await _folderCommand.IsFolderUniqueAsync(folder.Title, folder.ParentFolder, folder.GroupId, cancellationToken);
         }
     }
 }
