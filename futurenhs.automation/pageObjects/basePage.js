@@ -9,13 +9,15 @@ class basePage {
     findElement(path){
         var element
         browser.waitUntil(()=> {
-            element = $$(path).filter(item => {return item.isDisplayed()})
+            element = $$(path).filter(item => {return item.isDisplayed()})[0]
             return element != undefined
         },
         {
             timeout: 5000,
             timeoutMsg: `Cannot find the element with '${path}'`
         });
+        element.waitForEnabled({timeout:5000})
+        return element
     }
 
     /**

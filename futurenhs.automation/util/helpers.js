@@ -30,6 +30,10 @@ class Helpers{
     return element
   }
 
+  /**
+   * generates a random GUID value as a string
+   * @returns - string GUID value
+   */
   randomIDGenerator(){
     var id = ''
     var idValues = 'abcdefghijklmnopqrstuvwxyz0123456789'

@@ -12,7 +12,7 @@ var Url = ''
  */
 var find = function(string){
     var result
-    var regex = `Scenario( Outline)?:[ a-zA-Z]*${string}`
+    var regex = `Scenario( Outline)?: (.*(${string})( - )([ a-zA-Z]*))`
     files.forEach(file => {
         var contents = fs.readFileSync(featureDirectory + file).toString()
         contents.split(/\r?\n/).forEach((line, lineNumber)=>{
