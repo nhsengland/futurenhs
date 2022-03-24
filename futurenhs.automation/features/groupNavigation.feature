@@ -11,29 +11,24 @@ Background:
 Scenario: FNHS09 - My groups validation
     Then the 'All my groups' header is displayed
     And the 'Share ideas, get advice and support from your peers' textual value is displayed
-    And the 'Automation Admin Group' link is displayed
+    And the 'Automation Admin Group' group card is displayed
+    | DO NOT USE - This group is reserved solely for use by our automated test scripts |
+    | Members: 2Discussions: 7                                                         |
 
 @Core 
 Scenario: FNHS10 - Discover new groups validation
     When I click the 'Discover new groups' tab
     Then the 'Discover New Groups' header is displayed
-    And the 'Automation Private Group' link is displayed
-    And the 'Automation Public Group' link is displayed
-    And the 'Automation Visual Regression Group' link is displayed
-
-
-Scenario: FNHS11 - Group Card Validation
-    And the 'Automation Admin Group' group card is displayed
+    And the 'Automation Private Group' group card is displayed
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
-    | Members: 2Discussions: 7                                                          |
-
-
-Scenario: FNHS13 - Group Card (No Discussion) Validation
-    When I click the 'Discover new groups' tab
-    Then the 'Discover New Groups' header is displayed
-    Then the 'Automation Editable Group' group card is displayed
+    | Members: 2Discussions: 0                                                         |
+    And the 'Automation Public Group' group card is displayed
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
-    | Members: 1Discussions: 0                                                         |
+    | Members: 1Discussions: 1                                                         |
+    And the 'Automation Visual Regression Group' group card is displayed
+    | DO NOT USE - This group is reserved solely for use by our automated test scripts |
+    | Members: 2Discussions: 3                                                         |
+
 
 @Core
 Scenario: FNHS14 - Group tabs navigation
@@ -70,7 +65,7 @@ Scenario: FNHS16 - Group forum validation
     | Created by Auto Admin [PRETTYDATE]      |
     | Last comment by Auto Admin [PRETTYDATE] |
     | Comments: 15                            |
-    | Views: 0                                |
+    # | Views: 0                                |
 
 
 Scenario: FNHS17 - Group Members validation
@@ -95,10 +90,10 @@ Scenario: FNHS21 - Group Members, Table Validation
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     And the 'Group Members' table is displayed
-    | Name       | Role             | Date joined  | Last logged in | 
-    | auto Admin | Admin            | [PrettyDate] | [PrettyDate]   | 
-    | auto Test  | Standard Members | [PrettyDate] | [PrettyDate]   | 
-    | auto User  | Standard Members | [PrettyDate] | [PrettyDate]   | 
+    | Name       | Role             | Date joined  | Last logged in |
+    | auto Admin | Admin            | [PrettyDate] | [PrettyDate]   |
+    | auto Test  | Standard Members | [PrettyDate] | [PrettyDate]   |
+    | auto User  | Standard Members | [PrettyDate] | [PrettyDate]   |
 
 
 Scenario: FNHS22 - Group Members, Pending Table Does Not Exist

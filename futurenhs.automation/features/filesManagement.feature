@@ -33,12 +33,14 @@ Examples:
 	| /media/docTest.doc                                                                                          | descriptionTest                               | gEcdosYCBQC7sY9XxOdPKxMWBqfHY3A78F5sROBjv71hfVuj0nl03SXyGPzychj3ffH7vWW7yKYYbZayRWauCThasQDwfVIawmEiI0HFfBETQzSGnaYOQfq3Nh0HXV89M1sYu5fozAJMzvTA20FezL |
 
 
-Scenario: FNHS73 - File page validation
+Scenario: FNHS73 - File detials page validation
 	When I click the 'Automation Test Folder' link
 	Then the 'Automation Test Folder' header is displayed
 	When I click 'View details' on the 'docTest' row of the 'Group Files' table
 	Then the 'docTest' header is displayed
 	And the 'test doc' textual value is displayed
+	And the 'Owner' textual value is displayed
+	And the 'File data' textual value is displayed
 	And the 'docTest' row is displayed on the 'File Details' table
 	And the breadcrumb navigation displays 'Files > Automation Test Folder'
 

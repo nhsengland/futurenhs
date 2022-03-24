@@ -40,7 +40,7 @@ Scenario: FNHS60 - Created discussion card validation
     | Created by Auto Admin [PRETTYDATE]      |
     | Last comment by Auto Admin [PRETTYDATE] |
     | Comments: 0                             |  
-    | Views: 0                                |
+    # | Views: 0                                |
 
 @Core
 Scenario: FNHS61 - Validate new discussion details
@@ -50,3 +50,4 @@ Scenario: FNHS61 - Validate new discussion details
     Then the 'Join in the conversation' header is displayed
     And the 'You're signed in auto Admin' textual value is displayed
     And the 'Your comment' label is displayed
+    And the 'Add Comment' button is displayed

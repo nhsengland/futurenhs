@@ -39,7 +39,9 @@ Scenario: FNHS53 - Post a comment in a discussion
     Then the 'Comment posted by the automation' comment card is displayed
     | AU           |
     | auto User    |
-    | [PRETTYDATE] |
+    | [PRETTYDATE] |    
+    | 0 likes      |
+    | Reply        |
 
 Scenario: FNHS12 - Validate Discussion card comment counter
     Then the 'forumSubmission' discussion card is displayed
@@ -54,6 +56,8 @@ Scenario: FNHS12 - Validate Discussion card comment counter
     | AU           |
     | auto User    |
     | [PRETTYDATE] |
+    | 0 likes      |
+    | Reply        |
     When I click the 'Back to discussions' link
     Then the 'forumSubmission' discussion card is displayed
     | AA                                      |
@@ -83,9 +87,11 @@ Scenario: FNHS55 - Reply to existing comment
     Then the 'Your reply' label is displayed
     And I enter 'This is a reply' into the 'Your reply' text editor
     Then the 'This is a reply' reply card is displayed
-    | AU        |
-    | auto User |
-
+    | AU                                             |
+    | auto User                                      |
+    | In response to auto Admin "This is a comme..." |
+    | 0 likes                                        |
+    | Reply                                          |
 
 Scenario: FNHS56 - Reply to a reply
     When I click the 'forumSubmission Discussion' link
@@ -93,9 +99,14 @@ Scenario: FNHS56 - Reply to a reply
     Then the 'This is a reply' reply card is displayed
     | AU        |
     | auto User |
+    | 0 likes   |
+    | Reply     |
     When I click reply on the 'This is a reply' reply card
     And I enter 'This is another reply' into the 'Your reply' text editor
     And I open the 'Show more replies' accordion
     Then the 'This is another reply' reply card is displayed
-    | AU        |
-    | auto User |
+    | AU                                         |
+    | auto User                                  |
+    | In response to auto User "This is a reply" |
+    | 0 likes                                    |
+    | Reply                                      |

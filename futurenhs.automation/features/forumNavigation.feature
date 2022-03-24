@@ -52,22 +52,30 @@ Scenario: FNHS51 - Show more Replies
     | Reply             |
     | Show more replies |
     And the 'First blank reply' reply card is displayed
-    | AU                                   |
-    | auto User                            |
-    | 0 likes                              |
+    | AU                                        |
+    | auto User                                 |
+    | In response to auto Admin "First Comment" |
+    | 0 likes                                   |
+    | Reply                                     |
     When I open the 'Show more replies' accordion
     And the 'Second blank reply' reply card is displayed
-    | AU                                   |
-    | auto User                            |
-    | 0 likes                              |
+    | AU                                        |
+    | auto User                                 |
+    | In response to auto Admin "First Comment" |
+    | 0 likes                                   |
+    | Reply                                     |
     And the 'Third blank reply' reply card is displayed
-    | AU                                   |
-    | auto User                            |
-    | 0 likes                              |
+    | AU                                        |
+    | auto User                                 |
+    | In response to auto Admin "First Comment" |
+    | 0 likes                                   |
+    | Reply                                     |
     And the 'Fourth blank reply' reply card is displayed
-    | AU                                   |
-    | auto User                            |  
-    | 0 likes                              |
+    | AU                                        |
+    | auto User                                 |  
+    | In response to auto Admin "First Comment" |
+    | 0 likes                                   |
+    | Reply                                     |
 
 @Core
 Scenario: FNHS52 - Forum Navigate Back to Discussion Page

@@ -7,6 +7,10 @@ Background:
 @Core
 Scenario Outline: FNHS00 - User login and log out
     Then the 'Log In' header is displayed
+    And the 'Forgot your password?' link is displayed
+    And the 'Register your interest' header is displayed
+    And the 'Don't have an account?' textual value is displayed
+    And the 'Register your interest' link is displayed
     When I enter '<email>' into the 'Email address' field
     And I enter '<password>' into the 'Password' field
     And I click the 'Log In' button
@@ -16,9 +20,9 @@ Scenario Outline: FNHS00 - User login and log out
     Then I confirm this on the open 'Logout' dialog
     Then the 'Log In' header is displayed
 Examples:
-   | email                | password   | 
-   | autoAdmin@test.co.uk | Tempest070 | 
-   | autoUser@test.co.uk  | Tempest070 | 
+   | email                | password   |
+   | autoAdmin@test.co.uk | Tempest070 |
+   | autoUser@test.co.uk  | Tempest070 |
 
 
 Scenario Outline: FNHS01 - Access pages without authentication
@@ -77,7 +81,7 @@ Examples:
 
 @Core
 Scenario: FNHS05 - Register as an invited user
-    Given I have navigated to '/members/register'
+    Given I have navigated to '/members/register' and accept the cookies
     Then the 'Register for an account' header is displayed
     And the 'Please read before choosing which address to use' textual value is displayed
     And the 'Use your work rather than personal email, where possible.' textual value is displayed
@@ -94,7 +98,7 @@ Scenario: FNHS05 - Register as an invited user
 
 
 Scenario Outline: FNHS06 - User Registration Error Validation
-    Given I have navigated to '/members/register'
+    Given I have navigated to '/members/register' and accept the cookies
     Then the 'Register for an account' header is displayed
     When I enter '<email>' into the 'E-mail address' field
     And I enter '<password>' into the 'Password' field
@@ -115,7 +119,7 @@ Examples:
 
 @Core
 Scenario: FNHS07 - Attempt to register as an uninvited user
-    Given I have navigated to '/members/register'
+    Given I have navigated to '/members/register' and accept the cookies
     Then the 'Register for an account' header is displayed
     And the 'Please read before choosing which address to use' textual value is displayed
     And the 'Use your work rather than personal email, where possible.' textual value is displayed
@@ -142,6 +146,13 @@ Examples:
     | autoAdmin@test.co.uk |             | The Password field is required |
 
 
+Scenario: FNHS11 - Navigate to support site
+    And I have logged in as a 'admin' and accept the cookies
+    Then the 'Need help?' textual value is displayed
+    When I click the 'Visit our support site' link
+    Then the 'FutureNHS Support coming soon' textual value is displayed
+
+
 Scenario: FNHS20 - Admin page validation
     And I have logged in as a 'admin' and accept the cookies
     When I open the 'Menu' accordion
@@ -159,3 +170,17 @@ Examples:
     | user  | visibility |
     | admin | is         |
     | user  | is not     |
+
+    
+Scenario Outline: FNHS111 - Forgot password form validation
+    Then the 'Log In' header is displayed
+    When I click the 'Forgot your password?' link
+    Then the 'Forgot Password' header is displayed
+    When I enter '<input>' into the 'E-mail address' field
+    And I click the 'Reset Password' button
+    Then the '<header>' header is displayed
+    And the '<content>' textual value is displayed
+Examples:
+    | input               | header                      | content                                                            |
+    | autoUser@test.co.uk | Password reset request sent | An email has been sent with details on how to reset your password. |
+    |                     | There is a problem          | Please provide a valid email address                               |

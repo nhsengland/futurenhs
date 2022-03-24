@@ -22,7 +22,7 @@ Scenario: FNHS43 - View Forum of Public Group
     | Comments: 11                           |
     When I click the 'Public Discussion Test' link
     Then the 'A discussion to validate public access/view in read only format' textual value is displayed
-    And the 'Comments: 7' textual value is displayed
+    And the 'Comments: 11' textual value is displayed
     And the 'First Public Comment' comment card is displayed
     | AA                |
     | auto Admin        |
