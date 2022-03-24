@@ -27,6 +27,8 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
     const hasCollaboraData: boolean = Boolean(accessToken) && Boolean(wopiClientUrl);
     const fileDetailPath: string = `${routes.groupFilesRoot}/${fileId}/detail`;
 
+    console.log(preview);
+
     if (path?.length > 0) {
 
         breadCrumbList.push({
