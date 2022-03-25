@@ -5,7 +5,7 @@ const themeColors = {
     ['theme-0']: 'rgba(0, 0, 0, 1)',
     ['theme-1']: '#fff',
     ['theme-2']: 'rgba(247, 249, 250, 1)',
-    ['theme-3']: 'rgba(246, 246, 246, 1)',
+    ['theme-3']: '#f0f4f5',
     ['theme-4']: '#d8dde0',
     ['theme-5']: '#aeb7bd',
     ['theme-6']: '#768692',
