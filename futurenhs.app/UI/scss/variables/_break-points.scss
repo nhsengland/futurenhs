@@ -1,0 +1,19 @@
+﻿@use "sass:math";
+
+@function strip-unit($num) {
+    @return math.div($num, ($num * 0 + 1));
+}
+
+$break-point-large-mobile: 480px;
+$break-point-mobile-max: 767px;
+$break-point-tablet: 768px;
+$break-point-desktop: 960px;
+$break-point-large-desktop: 1446px;
+
+:export {
+    mobileLarge: strip-unit($break-point-large-mobile);
+    mobileMax: strip-unit($break-point-mobile-max);
+    tablet: strip-unit($break-point-tablet);
+    desktop: strip-unit($break-point-desktop);
+    desktopLarge: strip-unit($break-point-large-desktop);
+}

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FutureNHS.Api", "FutureNHS.Api\FutureNHS.Api.csproj", "{7F85723C-E3CD-4E21-ACC9-898793D36BAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FutureNHS.Tests", "FutureNHS.Tests\FutureNHS.Tests.csproj", "{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F85723C-E3CD-4E21-ACC9-898793D36BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F85723C-E3CD-4E21-ACC9-898793D36BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F85723C-E3CD-4E21-ACC9-898793D36BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F85723C-E3CD-4E21-ACC9-898793D36BAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37059024-73B0-4CE1-B452-6D2C0354DD76}
+	EndGlobalSection
+EndGlobal

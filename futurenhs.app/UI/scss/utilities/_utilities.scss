@@ -1,0 +1,49 @@
+@use "sass:map";
+
+@tailwind utilities;
+
+.u-mobile-only {
+    @include respond-to(tablet) {
+        display: none;
+    }
+}
+
+.u-focus-item {
+    @extend %nhsuk-focused-item;
+
+    &:focus {
+        background: none;
+    }
+}
+
+.u-text-lead {
+    @include lead-text;
+}
+
+.u-text-bold {
+    font-weight: $nhsuk-font-bold;
+}
+
+.u-text-normal {
+    font-weight: $nhsuk-font-normal;
+}
+
+.u-text-size-standard {
+    @include standard-text;
+}
+
+.u-drop-shadow {
+    box-shadow: 0 4px 0 0 $color_nhsuk-grey-3;
+}
+
+.u-max-height {
+    height: 100%;
+}
+
+.u-min-w-fit {
+    min-width: fit-content;
+}
+
+.u-clearfix {
+    @include clearfix;
+}

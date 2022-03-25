@@ -1,0 +1,29 @@
+.c-avatar {
+    display: block;
+    position: relative;
+    font-size: $base-font-size;
+
+    &_fallback {
+        display: block;
+        width: 100%;
+        height: auto;
+        background-color: $blue;
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    &_fallback-initials {
+        fill: $white;
+        font-size: 1000%;
+        text-transform: uppercase;
+    }
+
+    &_image {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 50%;
+        z-index: 2;
+    }
+
+}

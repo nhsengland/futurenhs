@@ -1,0 +1,114 @@
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Core.Models.Enums
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.Controllers
+@using MvcForum.Web.ViewModels.Group
+@using MvcForum.Web.ViewModels.Shared
+
+@model GroupViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSideBar.cshtml";
+    ViewBag.Title = Html.Raw(Model.Group.PageTitle ?? Model.Group.Name);
+    ViewBag.MetaDesc = Model.Group.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Group.Description);
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().DiscussionsPerPage, Html));
+
+    var subScribe = string.Empty;
+    var unSubscribe = string.Empty;
+    const string displayNone = "style='display:none;'";
+    if (Model.IsSubscribed)
+    {
+        subScribe = displayNone;
+    }
+    else
+    {
+        unSubscribe = displayNone;
+    }
+    //TempData[Constants.DefaultGroupViewBagName] = Model.Group.Id;
+}
+@section SocialMeta {
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@ViewBag.Title" />
+    <meta name="twitter:description" content="@ViewBag.MetaDesc" />
+}
+@section side
+{
+
+    @if (Model.Tab == Constants.GroupForumTab)
+    {
+        if (Model.IsMember || Model.User.IsAdmin())
+        {
+            @Html.Action("CreateTopicButton", "Topic", new { groupId = Model.Group.Id })
+        }
+
+    }
+    else if (Model.Tab == Constants.GroupMembersTab || Model.Tab == Constants.GroupFilesTab || Model.Tab == Constants.AboutUsTab)
+    {
+
+        @*@Html.Partial("_CommonSideNav")*@
+
+    }
+    else
+    {
+        Html.RenderAction("GetGroupHomeCards", new { slug = Model.Group.Slug });
+    }
+}
+
+@section GroupHeader {
+    @{
+        Html.RenderAction("GroupHeader", "Group", new { slug = Model.Group.Slug });
+    }
+}
+
+@Html.Action("GetGroupBreadcrumb", "Group", new { Group = Model.Group })
+
+
+
+@*
+    <div class="widgetright">
+        @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
+        {
+            <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Group.Id" data-type="Group">
+                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-plus", "c-ui-icon c-ui-icon--large"));}
+                @Html.LanguageString("Notification.Subscribe")
+            </a>
+            <a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Group.Id" data-type="Group">
+                @{Html.RenderPartial("_SVGIcon", new SVGIconViewModel("icon-minus", "c-ui-icon c-ui-icon--large"));}
+                @Html.LanguageString("Notification.UnSubscribe")
+            </a>
+        }
+    </div>
+*@
+
+
+@if (Model.Tab == null)
+{
+    <h3>@Model.Group.Subtitle</h3>
+    <p>@Model.Group.Introduction</p>
+}
+
+@if (Model.Tab == Constants.GroupForumTab)
+{
+    @Html.Action("GetGroupForum", new { groupId = Model.Group.Id })
+}
+
+@if (Model.Tab == Constants.GroupFilesTab)
+{
+    @Html.Action("GetFolder", "Folder", new { slug = Model.Group.Slug, folderId = Model.Folder, groupId = Model.Group.Id, hasError = Model.HasError })
+}
+
+@if (Model.Tab == Constants.GroupMembersTab)
+{
+    @Html.Action("GetGroupMembers", new { groupId = Model.Group.Id })
+}
+
+@if (Model.Tab == Constants.AboutUsTab)
+{
+	@Html.Action("AboutUs", new { groupId = Model.Group.Id })
+}
+
+
+

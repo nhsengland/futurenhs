@@ -1,0 +1,9 @@
+.c-page-body {
+    width: 100%;
+    padding: $nhsuk-spacing-point-6 0;
+
+    @include respond-to(tablet) {
+        padding: $nhsuk-spacing-point-6 $nhsuk-spacing-point-3 $nhsuk-spacing-point-9;
+    }
+
+}

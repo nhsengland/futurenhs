@@ -1,0 +1,34 @@
+﻿@use "sass:math";
+
+$nhsuk-spacing-point-0: 0;
+$nhsuk-spacing-point-1: 4px;
+$nhsuk-spacing-point-2: 8px;
+$nhsuk-spacing-point-3: 16px;
+$nhsuk-spacing-point-4: 24px;
+$nhsuk-spacing-point-5: 32px;
+$nhsuk-spacing-point-6: 40px;
+$nhsuk-spacing-point-7: 48px;
+$nhsuk-spacing-point-8: 56px;
+$nhsuk-spacing-point-9: 64px;
+
+$layout-max-width: 1920px;
+$content-max-width: 1400px;
+
+$mobile-gutter: 16px;
+$button-height: 40px;
+$border-radius: 4px;
+
+$site-header-mobile-height: 75px;
+$site-header-tools-mobile-height: 54px;
+$site-header-tools-menu-mobile-width: 136px;
+$site-header-nav-mobile-height: 48px;
+$site-header-nav-tablet-height: 68px;
+
+$site-logo-mobile-height: 41px;
+$site-logo-mobile-width: 231px;
+
+$hero-banner-block-tablet-height: 450px;
+$hero-banner-block-desktop-height: 650px;
+
+$focus-outline-width: 2px;
+$focus-outline-large-width: 4px;

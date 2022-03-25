@@ -1,0 +1,19 @@
+.c-cookie-banner {
+
+    width: 100%;
+
+    @include respond-to(desktop-large) {
+        width: 66%;
+    }
+
+    &_button {
+
+        width: 100%;
+
+        @include respond-to(tablet) {
+            width: auto;
+        }
+
+    }
+
+}

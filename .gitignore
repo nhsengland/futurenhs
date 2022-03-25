@@ -139,7 +139,7 @@ DocProject/Help/html
 publish/
 
 # Publish Web Output
-*.[Pp]ublish.xml
+# *.[Pp]ublish.xml
 *.azurePubxml
 # TODO: Comment the next line if you want to checkin your web deploy settings
 # but database connection strings (with potential passwords) will be unencrypted
@@ -282,7 +282,18 @@ MVCForum.Website/workbox*.js.map
 .awcache
 .awcache/*
 yarn.lock
-package-lock.json
 *.orig
 
 axeReports/reportResults.json
+
+# next.js app
+/futurenhs.app/node_modules
+/futurenhs.app/test-reports/
+/futurenhs.app/.next/
+/futurenhs.app/public/
+/futurenhs.app/build
+/futurenhs.app/.env.local
+/futurenhs.app/.env.development.local
+/futurenhs.app/.env.test.local
+/futurenhs.app/.env.production.local
+/futurenhs.app/.vercel

@@ -1,0 +1,117 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: $color_nhsuk-black;
+    fill: $color_nhsuk-black;
+    margin: 0 0 $nhsuk-spacing-point-3;
+    font-weight: $nhsuk-font-bold;
+
+    @include respond-to(desktop) {
+        margin: 0 0 $nhsuk-spacing-point-4;
+    }
+}
+
+h1 {
+    line-height: $h1-line-height-mobile;
+    font-size: $h1-font-size-mobile;
+    margin-bottom: $nhsuk-spacing-point-6;
+
+    @include respond-to(desktop) {
+        line-height: $h1-line-height-desktop;
+        font-size: $h1-font-size-desktop;
+        margin-bottom: $nhsuk-spacing-point-7;
+    }
+}
+
+h2 {
+    line-height: $h2-line-height-mobile;
+    font-size: $h2-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h2-line-height-desktop;
+        font-size: $h2-font-size-desktop;
+    }
+}
+
+h3 {
+    line-height: $h3-line-height-mobile;
+    font-size: $h3-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h3-line-height-desktop;
+        font-size: $h3-font-size-desktop;
+    }
+}
+
+h4 {
+    line-height: $h4-line-height-mobile;
+    font-size: $h4-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h4-line-height-desktop;
+        font-size: $h4-font-size-desktop;
+    }
+}
+
+h5 {
+    line-height: $h5-line-height-mobile;
+    font-size: $h5-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h5-line-height-desktop;
+        font-size: $h5-font-size-desktop;
+    }
+}
+
+h6 {
+    line-height: $h6-line-height-mobile;
+    font-size: $h6-font-size-mobile;
+
+    @include respond-to(desktop) {
+        line-height: $h6-line-height-desktop;
+        font-size: $h6-font-size-desktop;
+    }
+}
+
+p {
+    @include standard-text;
+    margin: 0 0 $nhsuk-spacing-point-3;
+}
+
+a {
+    @extend %link-base;
+    text-decoration: underline;
+
+    @include print {
+        &:after {
+            color: $color_nhsuk-black;
+            content: ' (Link: 'attr(href) ')';
+            font-size: 14pt;
+        }
+    }
+}
+
+ul,
+ol {
+    margin: 0 0 $base-font-margin-bottom;
+    padding-left: 20px;
+
+    @include respond-to(desktop) {
+        margin-bottom: $base-font-margin-bottom-desktop;
+    }
+}
+
+li {
+    @include standard-text;
+    margin-bottom: $nhsuk-spacing-point-2;
+}
+
+hr {
+    margin: $nhsuk-spacing-point-3 0;
+    border: 0;
+    height: 2px;
+    background-color: $mid-grey;
+}

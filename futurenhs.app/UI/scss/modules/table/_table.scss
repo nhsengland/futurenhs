@@ -1,0 +1,44 @@
+.c-table {
+    border-spacing: 0;
+    vertical-align: top;
+    width: 100%;
+    table-layout: fixed;
+
+    @include mq($media-type: print) {
+        page-break-inside: avoid;
+    }
+
+    &_caption {
+        @include nhsuk-font($size: 32, $weight: bold);
+        margin: 0 0 $nhsuk-spacing-point-4;
+        text-align: left;
+    }
+
+}
+
+th {
+    @include nhsuk-typography-responsive(19);
+    @include nhsuk-responsive-padding(3, "bottom");
+    @include nhsuk-responsive-padding(4, "left");
+    @include nhsuk-responsive-padding(4, "right");
+    @include nhsuk-responsive-padding(3, "top");
+
+    border-bottom: $nhsuk-border-table-header-width solid $nhsuk-border-color;
+    text-align: left;
+    vertical-align: top;
+    background-color: $white;
+    font-weight: $nhsuk-font-bold;
+}
+
+td {
+    @include nhsuk-typography-responsive(19);
+    @include nhsuk-responsive-padding(4, "bottom");
+    @include nhsuk-responsive-padding(4, "left");
+    @include nhsuk-responsive-padding(4, "right");
+    @include nhsuk-responsive-padding(4, "top");
+
+    border-bottom: $nhsuk-border-table-header-width solid $nhsuk-border-color;
+    text-align: left;
+    vertical-align: top;
+    background-color: $white;
+}

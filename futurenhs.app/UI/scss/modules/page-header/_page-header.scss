@@ -1,0 +1,158 @@
+.c-page-header {
+    width: 100%;
+    padding: $nhsuk-spacing-point-4 0 $nhsuk-spacing-point-3;
+    position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        display: block;
+        top: 0;
+        right: 100%;
+        width: 10000px;
+        height: 100%;
+        background-color: inherit;
+
+        @include respond-to(desktop) {
+            display: none;
+        }
+    }
+
+    &:after {
+        content: '';
+        position: absolute;
+        display: block;
+        top: 0;
+        left: 100%;
+        width: 10000px;
+        height: 100%;
+        background-color: inherit;
+    }
+
+    @include respond-to(desktop) {
+        padding: $nhsuk-spacing-point-6 $nhsuk-spacing-point-3 0;
+    }
+
+    &_hero {
+        margin: 0 $nhsuk-spacing-point-4 0 0;
+    }
+
+    &_hero-body {
+        display: block;
+        position: relative;
+        height: 68px;
+        width: 68px;
+        overflow: hidden;
+        aspect-ratio: 1 / 1; //sass-lint:disable-line no-misspelled-properties
+        background-color: $color_nhsuk-grey-5;
+        border-radius: $nhsuk-spacing-point-1;
+
+        @include respond-to(tablet) {
+            float: left;
+            height: 104px;
+            width: 104px;
+            margin: 0 $nhsuk-spacing-point-5 0 0;
+        }
+
+    }
+
+    &_header {
+        margin-bottom: $nhsuk-spacing-point-6;
+
+        @include respond-to(desktop) {
+            margin-top: $nhsuk-spacing-point-4;
+        }
+
+    }
+
+    &_heading {
+        margin: 0;
+        max-width: 70%;
+        align-self: center;
+
+        @include respond-to(tablet) {
+            max-width: 100%;
+            align-self: flex-start;
+        }
+
+    }
+
+    &_description {
+        @include lead-text;
+        margin: $nhsuk-spacing-point-4 0 0;
+        width: 100%;
+
+        @include respond-to(tablet) {
+            width: auto;
+            margin: $nhsuk-spacing-point-2 0 0;
+        }
+
+    }
+
+    &_nav-trigger {
+        position: relative;
+        border: $nhsuk-spacing-point-1 solid transparent;
+        padding: 14px $nhsuk-spacing-point-3;
+
+        @include respond-to(desktop) {
+            display: none;
+        }
+
+    }
+
+    &_nav-trigger-icon {
+        position: absolute;
+        width: $nhsuk-spacing-point-3;
+        height: $nhsuk-spacing-point-3;
+        top: 50%;
+        right: $nhsuk-spacing-point-3;
+        margin: -#{$nhsuk-spacing-point-2} 0 0;
+    }
+
+    &_nav-content {
+        border-top: 2px solid;
+    }
+
+    &_actions-trigger {
+        @include standard-text;
+        margin: 0;
+        position: relative;
+        border: solid $nhsuk-spacing-point-1;
+        border-radius: $nhsuk-spacing-point-1;
+        padding: 14px $nhsuk-spacing-point-3;
+    }
+
+    &_actions-trigger-icon {
+        position: absolute;
+        width: $nhsuk-spacing-point-3;
+        height: $nhsuk-spacing-point-3;
+        top: 50%;
+        right: $nhsuk-spacing-point-3;
+        margin: -#{$nhsuk-spacing-point-2} 0 0;
+        fill: currentColor;
+    }
+
+    &_actions-content {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        margin: -#{$nhsuk-spacing-point-1} 0 0;
+        padding: 0;
+        color: $nhsuk-text-color;
+        background-color: $white;
+        border-bottom-left-radius: $nhsuk-spacing-point-1;
+        border-bottom-right-radius: $nhsuk-spacing-point-1;
+    }
+
+    &_actions-content-item {
+        @include standard-text;
+        padding: 14px 20px;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+    }
+
+}

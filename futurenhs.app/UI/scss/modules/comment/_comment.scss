@@ -1,0 +1,53 @@
+$card-border-width: 1px;
+$card-border-highlight-width: $nhsuk-spacing-point-1;
+$card-border-color: $color_nhsuk-grey-4;
+$card-border-hover-color: $color_nhsuk-grey-3;
+$card-hero-padding: 10px;
+
+.c-comment {
+    $self: &;
+    margin: 0;
+    border: $card-border-width solid $card-border-color;
+    border-left-width: $card-border-highlight-width;
+    position: relative;
+    width: 100%;
+
+    &--reply {
+        border: none;
+        border-left: $card-border-highlight-width solid $card-border-color;
+    }
+
+    &_replies-list {
+        margin: $nhsuk-spacing-point-4 0 0;
+        border-top: 1px solid $black;
+
+        & > *:last-child {
+            padding-bottom: 0;
+        }
+
+    }
+
+    &_reply-container {
+        border-bottom: 1px solid $black;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+    }
+
+    &_replies-toggle {
+        @extend %clear-button-styles;
+        @extend %link-base;
+        @include small-text;
+        display: inline-block;
+        margin: $nhsuk-spacing-point-3 0 0;
+        text-decoration: underline;
+
+        &:focus {
+            border: none;
+        }
+
+    }
+
+}

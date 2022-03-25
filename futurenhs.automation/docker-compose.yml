@@ -1,0 +1,18 @@
+version: '3'
+services:
+  CDSAutoSoftwareLayer:
+    image: technicaltestimages.azurecr.io/automation/softwarelayer
+    volumes: 
+      - ./features:/usr/wdiowithoutgrid/features
+      - ./stepDefinitions:/usr/wdiowithoutgrid/stepDefinitions
+      - ./pageObjects:/usr/wdiowithoutgrid/pageObjects
+      - ./allureResults:/usr/wdiowithoutgrid/allureResults
+      - ./media:/usr/wdiowithoutgrid/media
+      - ./wdio.conf.js:/usr/wdiowithoutgrid/wdio.conf.js
+      - ./wdio.firefox.conf.js:/usr/wdiowithoutgrid/wdio.firefox.conf.js
+      - ./wdio.msedge.conf.js:/usr/wdiowithoutgrid/wdio.msedge.conf.js
+      - ./customCommands.js:/usr/wdiowithoutgrid/customCommands.js
+      - ./junitResults:/usr/wdiowithoutgrid/junitResults
+      - ./errorScreenshots:/usr/wdiowithoutgrid/errorScreenshots
+      - ./sqlQueries:/usr/wdiowithoutgrid/sqlQueries
+    command: tail -F anything

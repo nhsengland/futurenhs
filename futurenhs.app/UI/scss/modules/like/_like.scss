@@ -1,0 +1,19 @@
+.c-like {
+
+    @include small-text;
+    display: flex;
+    align-items: center;
+    cursor: inherit;
+    text-decoration: none;
+
+    &--enabled {
+        @extend %clear-button-styles;
+        @extend %link-base;
+        text-decoration: underline;
+    }
+
+    &:focus {
+        border: none;
+    }
+
+}

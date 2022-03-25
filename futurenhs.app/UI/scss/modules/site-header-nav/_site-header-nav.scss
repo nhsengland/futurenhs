@@ -1,0 +1,351 @@
+@use "sass:math";
+
+.c-site-header-nav {
+    $self: &;
+    @include clearfix;
+
+    &_content {
+        @include respond-to(desktop) {
+            position: static;
+        }
+    }
+
+    &_desktop-container {
+        @include respond-to(desktop) {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+    }
+
+    &_root-nav {
+        @include clearfix;
+        position: fixed;
+        top: calc(#{$site-header-mobile-height} + 82px);
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: $nhsuk-spacing-point-3;
+        list-style-type: none;
+        background-color: $color_nhsuk-grey-5;
+        z-index: 1;
+
+        &--mobile-full-height {
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        @include respond-to(desktop) {
+            position: static;
+            padding: 0;
+            background: none;
+            display: flex;
+            align-items: center;
+            overflow: visible;
+
+            & > *:first-child { //sass-lint:disable-line no-combinators, no-universal-selectors
+                margin: 0;
+            }
+
+        }
+    }
+
+    &_mobile-trigger {
+        @extend %toggle-button;
+        background-color: transparent;
+        border-color: $color_nhsuk-white;
+        color: $color_nhsuk-white;
+        position: absolute;
+        display: inline-block;
+        padding: 7px $nhsuk-spacing-point-3;
+
+        &:active {
+            top: auto;
+        }
+
+        @include respond-to(desktop) {
+            display: none;
+        }
+
+        &--right {
+            right: $nhsuk-spacing-point-3;
+        }
+    }
+
+    &_header-button {
+        width: 100%;
+
+        @include respond-to(desktop) {
+            margin: 0 10px 5px;
+            width: auto;
+        }
+
+        &--outline {
+            @extend %toggle-button;
+
+            @include respond-to(desktop) {
+                &:link,
+                &:visited {
+                    background-color: transparent;
+                    border-color: $color_nhsuk-white;
+                    color: $color_nhsuk-white;
+                }
+
+                &:hover {
+                    background-color: $color_shade_nhsuk-blue-35;
+                    border-color: $color_shade_nhsuk-blue-50;
+                    color: $color_nhsuk-white;
+                    box-shadow: none;
+                }
+
+                &:focus {
+                    background-color: $nhsuk-focus-color;
+                    color: $nhsuk-focus-text-color;
+                    outline: $nhsuk-focus-width solid transparent;
+                    outline-offset: $nhsuk-focus-width;
+                    border: 2px solid $nhsuk-focus-color;
+                    box-shadow: 0 0 0 2px $nhsuk-focus-color, 0 $nhsuk-focus-width 0 2px $nhsuk-focus-text-color;
+                }
+            }
+        }
+    }
+
+    &_mobile-only {
+        @include respond-to(desktop) {
+            display: none;
+        }
+    }
+
+    &_mobile-trigger-icon {
+        @include inline-icon-half($nhsuk-spacing-point-5);
+        margin: 0 0 -3px $nhsuk-spacing-point-2;
+    }
+
+    &_search-wrapper {
+        @include clearfix;
+        position: fixed;
+        top: $site-header-mobile-height;
+        left: 0;
+        right: 0;
+        margin: 0;
+        background-color: $color_nhsuk-blue;
+
+        @include respond-to(desktop) {
+            position: static;
+            display: inline-block;
+            flex: 1;
+            margin: 0 70px 0 80px;
+        }
+    }
+
+    &_search-item {
+        display: flex;
+        padding: $nhsuk-spacing-point-3;
+        width: 100%;
+
+        @include respond-to(desktop) {
+            padding: 0;
+        }
+    }
+
+    &_search-input {
+        @extend %nhsuk-focused-item;
+        //border: 1px solid $color_nhsuk-grey-3;
+        border-right: 0;
+        border-radius: $nhsuk-border-radius;
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        flex-grow: 2;
+        font-size: inherit;
+        height: 50px;
+        margin: 0;
+        outline: none;
+        padding: 0  $nhsuk-spacing-point-3;
+        width: 100%;
+        z-index: 1;
+
+        // &:focus {
+        //     padding: 0 13px;
+        // }
+
+        &::placeholder {
+            color: $color_nhsuk-grey-1;
+            font-size: $nhsuk-base-font-size;
+        }
+    }
+
+    &_search-button {
+        background-color: $color_nhsuk-grey-5;
+        border: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: $nhsuk-border-radius;
+        border-top-left-radius: 0;
+        border-top-right-radius: $nhsuk-border-radius;
+        display: block;
+        float: right;
+        font-size: inherit;
+        height: 50px;
+        line-height: inherit;
+        outline: none;
+        width: 50px;
+
+        &:hover {
+            background-color: $color_shade_nhsuk-blue-35;
+            border: 1px solid $color_nhsuk-white;
+            cursor: pointer;
+
+            #{$self}_search-button-icon {
+                fill: $color_nhsuk-white;
+            }
+        }
+
+        &:focus {
+            @extend  %nhsuk-focused-button;
+            box-shadow: 0 -2px $nhsuk-focus-color, 0 $nhsuk-focus-width $nhsuk-focus-text-color;
+
+            #{$self}_search-button-icon {
+                fill: $nhsuk-focus-text-color;
+            }
+        }
+
+        &:active {
+            background-color: $color_shade_nhsuk-blue-50;
+            border: 0;
+
+            #{$self}_search-button-icon {
+                fill: $color_nhsuk-white;
+            }
+        }
+    }
+
+    &_search-button-icon {
+        fill: $color_nhsuk-blue;
+        height: 50px;
+        width: $nhsuk-spacing-point-4;
+    }
+
+    &_root-nav-item {
+        @include clearfix;
+        margin: 0;
+
+        @include respond-to(desktop) {
+            float: left;
+            width: 300px;
+            padding: 8px 16px;
+            color: $white;
+
+            &[open] { //sass-lint:disable-line no-attribute-selectors
+                box-shadow: 0 0 20px 0 $black-tint;
+                border-radius: 4px 4px 0 0;
+                background-color: $white;
+                color: $nhsuk-text-color;
+            }
+        }
+
+    }
+
+    &_root-nav-trigger {
+        @include small-heading;
+        font-weight: bold;
+        color: $nhsuk-text-color;
+        display: flex;
+        align-items: center;
+        fill: $color_nhsuk-grey-2;
+        background: transparentize($color_nhsuk-grey-4, .5);
+        padding: 16px 20px;
+        border: 0;
+        border-left: 4px solid $color_nhsuk-grey-2;
+
+        @include respond-to(desktop) {
+            background: none;
+            border: $nhsuk-focus-width solid transparent;
+            padding: 0;
+            color: inherit;
+        }
+    }
+
+    &_root-nav-content-icon {
+        @include inline-icon(30px);
+        margin-right: 20px;
+
+        @include respond-to(desktop) {
+            margin-right: 12px;
+        }
+    }
+
+    &_root-nav-image {
+        height: 38px;
+        width: 38px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 20px;
+        border: 3px solid $color_nhsuk-white;
+        flex-shrink: 0;
+    }
+
+    &_root-nav-icon {
+        @include inline-icon($nhsuk-spacing-point-4);
+        margin-left: auto;
+
+        @include respond-to(desktop) {
+            display: none;
+        }
+    }
+
+    &_sub-nav {
+        z-index: 1;
+
+        @include respond-to(desktop) {
+            position: absolute;
+            z-index: 2;
+            box-shadow: 0 10px 20px 0 $black-tint;
+            background-color: $white;
+            border-radius: 0 0 4px 4px;
+            width: 300px;
+            padding: 8px 16px;
+            margin-left: -16px;
+            margin-top: 8px;
+        }
+
+    }
+
+    &_sub-nav-content {
+        @include clearfix;
+        padding: $nhsuk-spacing-point-4 0 0;
+
+        @include respond-to(desktop) {
+            margin: 0 auto;
+            padding: 0;
+        }
+    }
+
+    &_sub-nav-item {
+        padding: 0 derived-dimension(2);
+
+        @include respond-to(desktop) {
+            padding: 0;
+
+        }
+    }
+
+    &_sub-nav-child {
+        line-height: 24px;
+        font-size: 16px;
+        display: block;
+        font-weight: bold;
+        margin: 0 0 $nhsuk-spacing-point-3;
+        color: $color_nhsuk-blue;
+        padding: derived-dimension(1);
+
+        &:focus {
+            @extend %nhsuk-focused-text;
+        }
+
+        @include respond-to(desktop) {
+            display: block;
+            margin: 0 0 $nhsuk-spacing-point-2;
+        }
+
+    }
+
+}

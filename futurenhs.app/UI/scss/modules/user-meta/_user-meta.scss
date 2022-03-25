@@ -1,0 +1,14 @@
+.c-user-meta {
+    @include small-text;
+    display: flex;
+
+    &_avatar {
+        display: block;
+        margin: 0 $nhsuk-spacing-point-3 0 0;
+    }
+
+    &_body {
+        margin: 0;
+    }
+
+}

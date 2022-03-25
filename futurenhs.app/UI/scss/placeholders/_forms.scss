@@ -1,0 +1,8 @@
+%input-base {
+    border: 1px solid $night-blue;
+
+    &:disabled {
+        border: 1px solid $mid-grey;
+    }
+
+}

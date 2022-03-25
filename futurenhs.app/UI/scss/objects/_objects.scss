@@ -1,0 +1,32 @@
+@for $i from 1 through 5 {
+
+    .o-truncated-text-lines-#{$i} {
+        display: -webkit-box;
+        -webkit-line-clamp: $i;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    @include respond-to(tablet) {
+
+        .tablet\:o-truncated-text-lines-#{$i} {
+            display: -webkit-box;
+            -webkit-line-clamp: $i;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+    }
+
+    @include respond-to(desktop) {
+        
+        .desktop\:o-truncated-text-lines-#{$i} {
+            display: -webkit-box;
+            -webkit-line-clamp: $i;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+    }
+
+}

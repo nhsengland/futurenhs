@@ -1,0 +1,100 @@
+$card-border-width: 1px;
+$card-border-highlight-width: $nhsuk-spacing-point-1;
+$card-border-color: $color_nhsuk-grey-4;
+$card-border-hover-color: $color_nhsuk-grey-3;
+$card-hero-padding: 10px;
+
+.nhsuk-card {
+    overflow: hidden;
+}
+
+.c-card {
+    $self: &;
+    //sass-lint:disable-block nesting-depth force-element-nesting no-combinators no-important
+    @include clearfix;
+    display: flex;
+    flex-wrap: wrap;
+    background: $color_nhsuk-white;
+    border: $card-border-width solid $card-border-color;
+    border-bottom-width: $card-border-highlight-width;
+    position: relative;
+    padding: $nhsuk-spacing-point-4;
+    width: 100%;
+
+    @include respond-to(tablet) {
+        display: block;
+    }
+
+    &_hero {
+        float: left;
+        position: relative;
+        margin: $nhsuk-spacing-point-4 $nhsuk-spacing-point-3 $nhsuk-spacing-point-2 $nhsuk-spacing-point-4;
+
+        @include respond-to(tablet) {
+            margin: $nhsuk-spacing-point-2 $nhsuk-spacing-point-4 $nhsuk-spacing-point-2 $nhsuk-spacing-point-2;
+        }
+
+    }
+
+    &_hero-body {
+        display: block;
+        position: relative;
+        aspect-ratio: 1 / 1; //sass-lint:disable-line no-misspelled-properties
+        border: 1px solid $color_nhsuk-grey-4;
+        border-radius: 4px;
+        width: 68px;
+        height: 68px;
+
+        & > span {
+            border-radius: 4px;
+        }
+
+        @include respond-to(tablet) {
+            width: 180px;
+            height: 180px;
+        }
+
+    }
+
+    &_heading {
+        @include medium-heading;
+        margin-bottom: $nhsuk-spacing-point-2;
+        max-width: 60%;
+        align-self: center;
+    }
+
+    &_body {
+        flex: 1 1 auto;
+        position: relative;
+        width: 100%;
+        margin: $nhsuk-spacing-point-3 0 0;
+        clear: both;
+
+        @include respond-to(tablet) {
+            clear: right;
+        }
+
+    }
+
+    &_content {
+        margin: 0 0 $nhsuk-spacing-point-3;
+        line-height: $large-text-line-height;
+        font-size: $large-text;
+    }
+
+    &_footer-item {
+        @include small-text;
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 48px;
+    }
+
+    &_footer-icon {
+        width: 21px;
+        height: 21px;
+        top: 5px;
+        position: relative;
+        margin-right: 4px;
+    }
+
+}

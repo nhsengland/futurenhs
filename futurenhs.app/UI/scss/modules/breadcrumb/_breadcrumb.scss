@@ -1,0 +1,36 @@
+.c-breadcrumb {
+
+    &_list {
+        margin: 0 0 -#{$nhsuk-spacing-point-2};
+        padding: 0;
+        list-style: none;
+        line-height: inherit;
+        font-size: inherit;
+    }
+
+    &_item {
+        display: inline-block;
+        margin: 0 0 $nhsuk-spacing-point-2;
+        line-height: inherit;
+        font-size: inherit;
+    }
+
+    &_link {
+        display: inline-block;
+        max-width: 300px;
+        vertical-align: middle;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: inherit;
+        font-size: inherit;
+    }
+
+    &_icon {
+        height: .75em;
+        width: .75em;
+        margin: 0 $nhsuk-spacing-point-3;
+        vertical-align: middle;
+    }
+
+}

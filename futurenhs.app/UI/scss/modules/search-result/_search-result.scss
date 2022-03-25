@@ -1,0 +1,8 @@
+.c-search-result {
+    border-bottom: 3px solid;
+
+    &_title,
+    &_header {
+        margin: 0 0 $nhsuk-spacing-point-3;
+    }
+}

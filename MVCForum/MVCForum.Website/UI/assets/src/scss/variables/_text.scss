@@ -1,0 +1,64 @@
+﻿$nhsuk-font: Frutiger W01 !default;
+$nhsuk-font-fallback: Arial, Sans-serif !default;
+$nhsuk-font-family-print: sans-serif !default;
+$nhsuk-font-bold: 600 !default;
+$nhsuk-font-normal: 400 !default;
+$nhsuk-font-light: $nhsuk-font-normal !default;
+$nhsuk-fonts-path: 'https://assets.nhs.uk/fonts/' !default;
+$nhsuk-include-font-face: true !default;
+
+
+// Heading sizes
+$h1-line-height-mobile: 36px;
+$h1-font-size-mobile: 32px;
+$h1-line-height-desktop: 56px;
+$h1-font-size-desktop: 48px;
+
+$h2-line-height-mobile: 32px;
+$h2-font-size-mobile: 24px;
+$h2-line-height-desktop: 40px;
+$h2-font-size-desktop: 32px;
+
+$h3-line-height-mobile: 28px;
+$h3-font-size-mobile: 20px;
+$h3-line-height-desktop: 31px;
+$h3-font-size-desktop: 24px;
+
+$h4-line-height-mobile: 28px;
+$h4-font-size-mobile: 18px;
+$h4-line-height-desktop: 32px;
+$h4-font-size-desktop: 22px;
+
+$h5-line-height-mobile: 24px;
+$h5-font-size-mobile: 16px;
+$h5-line-height-desktop: 28px;
+$h5-font-size-desktop: 19px;
+
+$h6-line-height-mobile: 24px;
+$h6-font-size-mobile: 16px;
+$h6-line-height-desktop: 28px;
+$h6-font-size-desktop: 19px;
+
+$base-font-line-height: 24px;
+$base-font-size: 16px;
+$base-font-margin-bottom: 16px;
+$base-font-line-height-desktop: 28px;
+$base-font-size-desktop: 19px;
+$base-font-margin-bottom-desktop: 24px;
+
+$lead-text-line-height: 28px;
+$lead-text-size: 20px;
+$lead-text-margin-bottom: 24px;
+$lead-text-line-height-desktop: 32px;
+$lead-text-size-desktop: 24px;
+$lead-text-margin-bottom-desktop: 32px;
+
+$small-text-line-height: 24px;
+$small-text-size: 14px;
+$small-text-margin-bottom: 16px;
+$small-text-line-height-desktop: 24px;
+$small-text-size-desktop: 16px;
+$small-text-margin-bottom-desktop: 24px;
+
+$large-text-line-height: 24px;
+$large-text: 16px;

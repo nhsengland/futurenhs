@@ -1,0 +1,42 @@
+.c-profile {
+
+    position: relative;
+
+    @include respond-to(tablet){
+        padding: 0 0 0 250px;
+    }
+
+    &_image {
+        width: 96px;
+        height: 96px;
+        margin: 0 0 $nhsuk-spacing-point-3;
+
+        @include respond-to(tablet){
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 210px;
+            height: 210px;
+        }
+    }
+
+    &_heading {
+        margin: 0 0 $nhsuk-spacing-point-5;
+        line-height: $h1-line-height-desktop;
+        font-size: $h1-font-size-desktop;
+    }
+
+    &_data {
+        @include standard-text;
+    }
+
+    &_data-label {
+        margin: 0 0 $nhsuk-spacing-point-1;
+    }
+
+    &_data-value {
+        @include small-text;
+        margin: 0 0 $nhsuk-spacing-point-3;
+    }
+
+}

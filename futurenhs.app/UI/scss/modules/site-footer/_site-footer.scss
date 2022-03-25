@@ -1,0 +1,39 @@
+.c-site-footer {
+    background-color: transparentize($color_nhsuk-grey-4, .5);
+    border-top: 4px solid $blue;
+
+    &_content {
+        margin: 52px 40px 39px;
+
+        @include respond-to(desktop) {
+            margin: 68px 0 80px;
+        }
+    }
+
+    &_subtitle {
+        @include small-heading;
+        font-weight: $nhsuk-font-bold;
+    }
+
+    &_nav-item {
+        @include respond-to(desktop) {
+            display: inline;
+            margin-right: 45px;
+        }
+    }
+
+    &_nav {
+        background-color: $light-mid-grey;
+        padding: $nhsuk-spacing-point-6 0;
+    }
+
+    &_copyright {
+        @include small-text;
+        font-weight: $nhsuk-font-bold;
+        color: #425462;
+
+        @include respond-to(desktop) {
+            text-align: right;
+        }
+    }
+}

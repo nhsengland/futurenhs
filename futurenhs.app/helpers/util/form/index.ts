@@ -1,0 +1,110 @@
+const FormData = require('form-data');
+
+/**
+ * Converts a form submission object submitted via express-form-data into a basic server-side FormData object
+ * which exposes get methods that reflect those of FormData for use in services to that standard url encoded and multipart form requests
+ * can be handled more generically
+ */
+export interface ServerSideFormData {
+    get: (fieldName: string) => any
+    getAll: () => Record<string, any>;
+};
+
+export const getServerSideFormData = (body: Record<any, any>): ServerSideFormData => {
+
+    class PseudoFormData {
+
+        body;
+
+        constructor(body){
+
+            this.body = body
+
+        }
+
+        public get(fieldName){
+
+            return this.body[fieldName]; 
+
+        }
+
+        public getAll(){
+
+            return this.body;
+
+        }
+
+    }
+
+    return new PseudoFormData(body);
+
+};
+
+/**
+ * Converts a form submission object submitted via express-form-data into a server-side FormData object
+ * for submission to services
+ */
+ export const getServerSideMultiPartFormData = (body: Record<any, any>): any => {
+
+    const formData: any = new FormData();
+
+    for(const fieldName in body){
+
+        formData.append(fieldName, body[fieldName]);
+
+    }
+
+    return formData;
+
+};
+
+/**
+ * Returns relevant aria attributes for a field's current state
+ */
+export const getAriaFieldAttributes = (isRequired: boolean, isError: boolean, describedBy?: Array<string>, labelledBy?: string): any => {
+
+    let ariaProps: any = {};
+
+    if (isRequired) {
+
+        ariaProps['aria-required'] = 'true';
+
+    }
+
+    if (isError) {
+
+        ariaProps['aria-invalid'] = 'true';
+
+    }
+
+    if (describedBy?.length) {
+
+        let ids: string = '';
+
+        describedBy.forEach((id: string) => {
+
+            if (id) {
+
+                ids += `${ids ? ' ' : ''}${id}`
+
+            }
+
+        });
+
+        if (ids) {
+
+            ariaProps['aria-describedby'] = ids;
+
+        }
+
+    }
+
+    if (labelledBy) {
+
+        ariaProps['aria-labelledby'] = labelledBy;
+
+    }
+
+    return ariaProps;
+
+};

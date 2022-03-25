@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": "",
+    "paths": {
+        "@pages/*": ["pages/*"],
+        "@components/*": ["components/*"],
+        "@constants/*": ["constants/*"],
+        "@helpers/*": ["helpers/*"],
+        "@services/*": ["services/*"],
+        "@selectors/*": ["selectors/*"],
+        "@hooks/*": ["hooks/*"],
+        "@hofs/*": ["hofs/*"],
+        "@lib/*": ["lib/*"],
+        "@appTypes/*": ["types/*"],
+        "@formConfigs/*": ["form-configs/*"],
+        "@jestMocks/*": ["jest-mocks/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

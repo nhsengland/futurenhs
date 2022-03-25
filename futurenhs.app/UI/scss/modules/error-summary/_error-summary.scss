@@ -1,0 +1,28 @@
+.c-error-summary {
+    border: $nhsuk-spacing-point-1 solid $red;
+    padding: $nhsuk-spacing-point-3;
+
+    &_list {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+    &_list-item {
+        &:last-child {
+            margin: 0;
+        }
+    }
+
+    &_link {
+        color: $red;
+        font-weight: $nhsuk-font-bold;
+        text-decoration: underline;
+    }
+
+    &_item {
+        color: $red;
+        font-weight: $nhsuk-font-bold;
+    }
+
+}
