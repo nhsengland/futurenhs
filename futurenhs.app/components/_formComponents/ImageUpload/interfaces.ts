@@ -1,9 +1,8 @@
 export interface Props {
     input: {
         name: string;
-        value: any;
+        value: string;
         onChange: any;
-        onBlur;
     };
     meta: {
         error: string;
@@ -16,9 +15,9 @@ export interface Props {
         hint?: string;
         error?: string;
     };
-    shouldRenderAsRte?: boolean;
+    inputType?: 'text' | 'email' | 'password' | 'number' | 'file';
     shouldRenderRemainingCharacterCount?: boolean;
+    relatedFields?: Record<string, string>;
     validators?: Array<any>;
-    minHeight?: number;
     className?: string;
 }

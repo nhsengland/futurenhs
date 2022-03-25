@@ -1,4 +1,5 @@
 import { Input } from './Input';
+import { ImageUpload } from './ImageUpload';
 import { TextArea } from './TextArea';
 import { Hidden } from './Hidden';
 import { MultiChoice } from './MultiChoice';
@@ -8,6 +9,7 @@ import { GroupContainer } from './GroupContainer';
 
 export const formComponents: any = {
     input: Input,
+    imageUpload: ImageUpload,
     textArea: TextArea,
     fieldSet: FieldSet,
     multiChoice: MultiChoice,

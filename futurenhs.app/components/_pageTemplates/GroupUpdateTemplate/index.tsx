@@ -42,6 +42,17 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
 
+        /**
+         * NB - clearing the existing image is currently supported client-side only
+         */
+        const shouldClearGroupImage: boolean = Boolean(formData.get('File-clear'));
+
+        if(shouldClearGroupImage){
+
+            formData.set('ImageId', '');
+
+        }
+
         return new Promise((resolve) => {
 
             const headers = getStandardServiceHeaders({ csrfToken, etag });
@@ -52,6 +63,11 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
                 resolve({});
 
                 router.replace(routes.groupRoot);
+
+                /**
+                 * Full page reload currently necessary to clear image cache of previous group image
+                 */
+                window.location.replace(routes.groupRoot)
 
             })
             .catch((error) => {
