@@ -36,6 +36,7 @@ Object.keys(themeColors).map((colorName) => {
 }
 );
 
+
 module.exports = {
     prefix: 'u-',
     purge: {
@@ -52,7 +53,7 @@ module.exports = {
             "./components/**/*.tsx",
             "./form-configs/**/*.ts"
         ],
-        safelist: [/bg-theme-/, /text-theme-/, /border-theme-/, /fill-theme-/,  /(border-[lrtb])((\-\w+))+/gi]
+        safelist: [/bg-theme-\d{1,2}$/, /text-theme-\d{1,2}$/, /border-theme-\d{1,2}$/, /fill-theme-\d{1,2}$/,  /border-[lrtb]-theme-\d{1,2}-?\w+$/g]
     },
     darkMode: false,
     theme: {
