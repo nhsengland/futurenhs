@@ -179,7 +179,7 @@ namespace MvcForum.Core.Services.Migrations
                         ModeratePosts = false,
                         ModerateTopics = false,
                         Slug = ServiceHelpers.CreateUrl(exampleCatName),
-                        DateCreated = DateTime.UtcNow,
+                        CreatedAtUtc = DateTime.UtcNow,
                         PublicGroup = true
                     };
 

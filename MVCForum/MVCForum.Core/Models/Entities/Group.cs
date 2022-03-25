@@ -24,7 +24,7 @@ namespace MvcForum.Core.Models.Entities
         public bool? ModerateTopics { get; set; }
         public bool? ModeratePosts { get; set; }
         public int SortOrder { get; set; }
-        public DateTime DateCreated { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
         public string Slug { get; set; }
         public string PageTitle { get; set; }
         public string Path { get; set; }
