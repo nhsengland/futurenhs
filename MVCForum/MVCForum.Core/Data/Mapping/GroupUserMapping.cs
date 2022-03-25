@@ -33,8 +33,8 @@
                 .WithMany()
                 .Map(x => x.MapKey("ApprovingMembershipUser_Id"));
 
-            Property(x => x.RequestToJoinDate).IsRequired();
-            Property(x => x.ApprovedToJoinDate).IsOptional();
+            Property(x => x.RequestToJoinDateUTC).IsRequired();
+            Property(x => x.ApprovedToJoinDateUTC).IsOptional();
             Property(x => x.RequestToJoinReason).IsOptional().HasMaxLength(200);
             Property(x => x.LockReason).IsOptional().HasMaxLength(200);
             Property(x => x.BanReason).IsOptional().HasMaxLength(200);

@@ -685,14 +685,14 @@ namespace MvcForum.Core.Services
                 Banned = false,
                 Locked = false,
                 Group = group,
-                RequestToJoinDate = dateTimeUtcNow,
+                RequestToJoinDateUTC = dateTimeUtcNow,
                 Role = await _context.MembershipRole.SingleAsync(x => x.RoleName == Constants.GuestRoleName, cancellationToken),
                 User = await _context.MembershipUser.SingleAsync(x => x.Id == membershipId, cancellationToken)
             };
 
             if (groupUser.Approved)
             {
-                groupUser.ApprovedToJoinDate = dateTimeUtcNow;
+                groupUser.ApprovedToJoinDateUTC = dateTimeUtcNow;
             }
 
             _context.GroupUser.Add(groupUser);
@@ -727,8 +727,8 @@ namespace MvcForum.Core.Services
                 Banned = false,
                 Locked = false,
                 Group = group,
-                RequestToJoinDate = dateTimeUtcNow,
-                ApprovedToJoinDate = dateTimeUtcNow,
+                RequestToJoinDateUTC = dateTimeUtcNow,
+                ApprovedToJoinDateUTC = dateTimeUtcNow,
                 Role = await _context.MembershipRole.SingleAsync(x => x.RoleName == Constants.StandardRoleName, cancellationToken),
                 User = await _context.MembershipUser.SingleAsync(x => x.Id == membershipId, cancellationToken)
             };
@@ -758,10 +758,10 @@ namespace MvcForum.Core.Services
                 groupUser.Banned = false;
                 groupUser.Locked = false;
                 groupUser.Group = group;
-                groupUser.RequestToJoinDate = dateTimeUtcNow;
+                groupUser.RequestToJoinDateUTC = dateTimeUtcNow;
                 groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.AdminRoleName);
                 groupUser.User = _context.MembershipUser.FirstOrDefault(x => x.Id == membershipId);
-                groupUser.ApprovedToJoinDate = dateTimeUtcNow;
+                groupUser.ApprovedToJoinDateUTC = dateTimeUtcNow;
                 groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);                
 
                 if (@group != null && group.GroupUsers == null || !@group.GroupUsers.Any(x =>
@@ -807,7 +807,7 @@ namespace MvcForum.Core.Services
             {
                 groupUser.Approved = true;
                 groupUser.Rejected = false;
-                groupUser.ApprovedToJoinDate = DateTime.UtcNow;
+                groupUser.ApprovedToJoinDateUTC = DateTime.UtcNow;
                 groupUser.Role = _context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.StandardRoleName);
                 groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
             }
@@ -822,7 +822,7 @@ namespace MvcForum.Core.Services
             if (groupUser != null)
             {
                 groupUser.Rejected = true;
-                groupUser.ApprovedToJoinDate = DateTime.UtcNow;
+                groupUser.ApprovedToJoinDateUTC = DateTime.UtcNow;
                 groupUser.ApprovingUser = _context.MembershipUser.FirstOrDefault(x => x.Id == approvingUserId);
             }
 

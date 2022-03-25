@@ -15,14 +15,12 @@
             Property(x => x.Description).IsOptional();
             Property(x => x.Subtitle).IsOptional().HasMaxLength(254);
             Property(X => X.Introduction).IsRequired().HasMaxLength(4000);
-            Property(x => x.DateCreated).IsRequired();
+            Property(x => x.CreatedAtUtc).IsRequired();
             Property(x => x.Slug).IsRequired().HasMaxLength(450)
                 .HasColumnAnnotation(IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("IX_Group_Slug", 1) { IsUnique = true }));
             Property(x => x.SortOrder).IsRequired();
             Property(x => x.IsLocked).IsRequired();
-            Property(x => x.ModerateTopics).IsRequired();
-            Property(x => x.ModeratePosts).IsRequired();
             Property(x => x.PageTitle).IsOptional().HasMaxLength(80);
             Property(x => x.MetaDescription).IsOptional().HasMaxLength(200);
             Property(x => x.Path).IsOptional().HasMaxLength(2500);

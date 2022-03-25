@@ -301,4 +301,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ThemeId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="bf7f6d33-713a-4d10-9378-208e64694183" ChangeDateTime="03/25/2022 11:38:02">
+    <Property Name="ElementName" Value="[dbo].[GroupUser].[RequestToJoinReasonUTC]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[GroupUser]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RequestToJoinReason" />
+  </Operation>
 </Operations>

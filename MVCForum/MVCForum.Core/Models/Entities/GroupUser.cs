@@ -19,8 +19,8 @@
         public bool Banned { get; set; }
         public virtual MembershipRole Role { get; set; }
         public virtual MembershipUser ApprovingUser { get; set; }
-        public DateTime RequestToJoinDate { get; set; }
-        public DateTime? ApprovedToJoinDate { get; set; }
+        public DateTime RequestToJoinDateUTC { get; set; }
+        public DateTime? ApprovedToJoinDateUTC { get; set; }
         public string RequestToJoinReason { get; set; }
         public string LockReason { get; set; }
         public string BanReason { get; set; }

@@ -29,7 +29,7 @@
                 PageTitle = GroupViewModel.PageTitle,
                 MetaDescription = GroupViewModel.MetaDesc,
                 Colour = GroupViewModel.GroupColour,
-                DateCreated = DateTime.UtcNow,
+                CreatedAtUtc = DateTime.UtcNow,
                 PublicGroup = GroupViewModel.Public
         };
 

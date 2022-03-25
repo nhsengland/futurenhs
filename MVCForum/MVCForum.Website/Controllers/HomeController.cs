@@ -309,7 +309,7 @@
                 {
                     Name = Group.Name,
                     Url = Group.NiceUrl,
-                    LastUpdated = topic?.LastPost.DateEdited ?? Group.DateCreated,
+                    LastUpdated = topic?.LastPost.DateEdited ?? Group.CreatedAtUtc,
                     ChangeFrequency = SiteMapChangeFreqency.Monthly
                 };
                 sitemap.Add(sitemapEntry);
