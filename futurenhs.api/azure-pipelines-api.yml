@@ -67,8 +67,8 @@ jobs:
   displayName: 'Build and deploy artifact for FutureNHS Api'
   pool :
     vmImage: 'windows-latest'
-  dependsOn: CheckChangesInPaths
-  condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHS'], 'true') 
+   ##dependsOn: CheckChangesInPaths
+   ##condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHS'], 'true') 
   steps:
    - task: UseDotNet@2
      displayName: 'Set dotnet SDK to v6.0'
