@@ -50,6 +50,7 @@ jobs:
           break
         }
       }
+     }
     name: ChangesInPaths
 
 - job: BuildMVCForum
