@@ -9,7 +9,7 @@ trigger:
 
 jobs:
 - job: CheckChangesInPaths
-  displayName: 'Check commit contains changes for FutureNHS Api'
+  displayName: 'Check commit contains changes for FutureNHS App'
   pool:
     vmImage: 'windows-latest'
   steps: 
@@ -17,7 +17,7 @@ jobs:
      $buildsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds?definitions=$(System.DefinitionId)&resultFilter=succeeded&queryOrder=descending&api-version=6.0-preview"
      $buildsresult = Invoke-RestMethod -Uri $buildsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
-     $buildId = $buildsresult.value[0]
+     $buildId = $buildsresult.value[0].id
      if($buildId -eq $null)
      {
           $matchFound=$true
@@ -25,8 +25,8 @@ jobs:
      }
      else
      {
-      echo "Build to check from: $buildId.id to: $(Build.BuildId)"
-      $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$buildId.id&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
+      echo "Build to check from: $buildId to: $(Build.BuildId)"
+      $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$buildId&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
       $commitsresult = Invoke-RestMethod -Uri $commitsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
      
       foreach($commit in $commitsresult.value)
