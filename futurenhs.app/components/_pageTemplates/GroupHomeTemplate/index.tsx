@@ -6,7 +6,7 @@ import { actions as actionConstants } from '@constants/actions';
 import { themes } from '@constants/themes';
 import { selectTheme } from '@selectors/themes';
 import { RichText } from '@components/RichText';
-import { Link } from '@components/Link';
+import { NoScript } from '@components/NoScript';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { Theme } from '@appTypes/theme';
@@ -21,9 +21,10 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
-    const isGroupAdmin: boolean = actions.includes(actionConstants.GROUPS_EDIT) || actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT);
-    const isInEditMode: boolean = Boolean(router.query.edit);
+    const [isInEditMode, setIsInEditMode] = useState(Boolean(router.query.edit));
+    const [isClient, setIsClient] = useState(false);
 
+    const isGroupAdmin: boolean = actions.includes(actionConstants.GROUPS_EDIT) || actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT);
     const { background, accent }: Theme = selectTheme(themes, themeId);
 
     const generatedClasses: any = {
@@ -35,10 +36,25 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         publishButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0')
     };
 
+    const handleSetToEditMode = (): void => setIsInEditMode(true);
+    const handlePublishUpdate = (): void => setIsInEditMode(false);
+
+    useEffect(() => {
+
+        setIsClient(true);
+
+    }, []);
+
     return (
 
         <LayoutColumn tablet={12} className={generatedClasses.wrapper}>
-            {(isGroupAdmin && !isInEditMode) &&
+            {isGroupAdmin &&
+                <NoScript headingLevel={2} text={{
+                    heading: 'Important',
+                    body: 'JavaScript must be enabled in your browser to manage this page'
+                }} />
+            }
+            {(isClient && isGroupAdmin && !isInEditMode) &&
                 <LayoutColumnContainer>
                     <LayoutColumn tablet={9}>
                         <div className={generatedClasses.adminCallOut}>
@@ -46,17 +62,17 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                         </div>
                     </LayoutColumn>
                     <LayoutColumn tablet={3} className="u-flex u-items-center">
-                        <Link href={`${routes.groupRoot}?edit=true`}><a className={generatedClasses.adminCallOutButton}>Edit page</a></Link>
+                        <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
                     </LayoutColumn>
                 </LayoutColumnContainer>
             }
-            {(isGroupAdmin && isInEditMode) &&
+            {(isClient && isGroupAdmin && isInEditMode) &&
                 <div className={generatedClasses.adminCallOut}>
                     <LayoutColumnContainer className="u-mb-6">
                         <LayoutColumn tablet={6}><h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2></LayoutColumn>
-                        <LayoutColumn tablet={6} className="u-flex u-items-center">
+                        <LayoutColumn tablet={6} className="tablet:u-flex u-items-center">
                             <button className={generatedClasses.previewButton}>Preview page</button>
-                            <button className={generatedClasses.publishButton}>Publish group page</button>
+                            <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
                         </LayoutColumn>
                     </LayoutColumnContainer>
                     <RichText 

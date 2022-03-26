@@ -15,7 +15,8 @@ export const enum routes {
 }
 
 export const enum queryParams {
-    RETURNURL = 'returnUrl'
+    RETURNURL = 'returnUrl',
+    EDIT = 'edit'
 }
 
 export const enum routeParams {

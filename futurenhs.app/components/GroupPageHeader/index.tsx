@@ -36,7 +36,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
-    const [isActionsAccordionOpen, setIsActionsAccordionOpen] = useState(false);
+    const [isActionsAccordionOpen] = useState(false);
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true);
     const [isLeaveGroupModalOpen, setIsLeaveGroupModalOpen] = useState(false);
 
@@ -105,6 +105,16 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                 id: actionsConstants.GROUPS_LEAVE,
                 url: `${routes.groupLeave}?${queryParams.RETURNURL}=${router?.asPath}`,
                 text: 'Leave group'
+            });
+
+        }
+
+        if (actions?.includes(actionsConstants.SITE_ADMIN_GROUPS_EDIT) || actions?.includes(actionsConstants.GROUPS_EDIT)) {
+
+            actionsMenuList.push({
+                id: actionsConstants.GROUPS_MEMBERS_ADD,
+                url: `${routes.groupRoot}?${queryParams.EDIT}=true`,
+                text: 'Page manager'
             });
 
         }
