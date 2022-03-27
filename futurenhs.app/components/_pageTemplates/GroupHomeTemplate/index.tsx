@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
+import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName';
 import { actions as actionConstants } from '@constants/actions';
 import { themes } from '@constants/themes';
 import { selectTheme } from '@selectors/themes';
+import { PageManager } from '@components/PageManager';
 import { RichText } from '@components/RichText';
 import { NoScript } from '@components/NoScript';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -36,8 +38,19 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         publishButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0')
     };
 
-    const handleSetToEditMode = (): void => setIsInEditMode(true);
-    const handlePublishUpdate = (): void => setIsInEditMode(false);
+    const handleSetToEditMode = (): void => {
+        setIsInEditMode(true);
+    }
+
+    const handlePublishUpdate = (): void => {
+        setIsInEditMode(false);
+    }
+
+    useDynamicElementClassName({
+        elementSelector: isInEditMode ? 'main' : null,
+        addClass: 'u-bg-theme-1',
+        removeClass: 'u-bg-theme-3'
+    });
 
     useEffect(() => {
 
@@ -67,20 +80,25 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 </LayoutColumnContainer>
             }
             {(isClient && isGroupAdmin && isInEditMode) &&
-                <div className={generatedClasses.adminCallOut}>
-                    <LayoutColumnContainer className="u-mb-6">
-                        <LayoutColumn tablet={6}><h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2></LayoutColumn>
-                        <LayoutColumn tablet={6} className="tablet:u-flex u-items-center">
-                            <button className={generatedClasses.previewButton}>Preview page</button>
-                            <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-                    <RichText 
-                        wrapperElementType="div" 
-                        bodyHtml="Welcome to your group homepage. You are currently in editing mode. You can save a draft at any time, preview your page, or publish your changes. Once published, you can edit your page in the group actions. For more information and help, see our quick guide.
-For some inspiration, visit our knowledge hub." 
-                        className="u-text-lead u-text-theme-7" />
-                </div>
+                <>
+                    <div className={generatedClasses.adminCallOut}>
+                        <LayoutColumnContainer className="u-mb-6">
+                            <LayoutColumn tablet={6}><h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2></LayoutColumn>
+                            <LayoutColumn tablet={6} className="tablet:u-flex u-items-center">
+                                <button className={generatedClasses.previewButton}>Preview page</button>
+                                <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
+                            </LayoutColumn>
+                        </LayoutColumnContainer>
+                        <RichText
+                            wrapperElementType="div"
+                            bodyHtml="Welcome to your group homepage. You are currently in editing mode. You can save a draft at any time, preview your page, or publish your changes. Once published, you can edit your page in the group actions. For more information and help, see our quick guide.
+            For some inspiration, visit our knowledge hub."
+                            className="u-text-lead u-text-theme-7" />
+                    </div>
+                    <div className="u-mt-14">
+                        <PageManager />
+                    </div>
+                </>
             }
         </LayoutColumn>
 
