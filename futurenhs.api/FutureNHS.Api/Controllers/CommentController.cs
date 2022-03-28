@@ -139,29 +139,29 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPut]
-        [Route("users/{membershipUserId:guid}/comments/{commentId:guid}/like")]
-        public async Task<IActionResult> LikeCommentAsync(Guid membershipUserId, Guid commentId, CancellationToken cancellationToken)
+        [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}/like")]
+        public async Task<IActionResult> LikeCommentAsync(Guid membershipUserId, string slug, Guid commentId, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            await _likeService.LikeEntityAsync(membershipUserId, commentId, cancellationToken);
+            await _likeService.LikeEntityAsync(membershipUserId, slug, commentId, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut]
-        [Route("users/{membershipUserId:guid}/comments/{commentId:guid}/unlike")]
-        public async Task<IActionResult> UnlikeCommentAsync(Guid membershipUserId, Guid commentId, CancellationToken cancellationToken)
+        [Route("users/{membershipUserId:guid}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}/unlike")]
+        public async Task<IActionResult> UnlikeCommentAsync(Guid membershipUserId, string slug, Guid commentId, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            await _likeService.UnlikeEntityAsync(membershipUserId, commentId, cancellationToken);
+            await _likeService.UnlikeEntityAsync(membershipUserId, slug, commentId, cancellationToken);
 
             return Ok();
         }

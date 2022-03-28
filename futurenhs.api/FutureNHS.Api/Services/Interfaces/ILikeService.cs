@@ -2,7 +2,7 @@
 
 public interface ILikeService
 {
-    Task LikeEntityAsync(Guid membershupUserId, Guid Id, CancellationToken cancellationToken);
-    Task UnlikeEntityAsync(Guid membershupUserId, Guid Id, CancellationToken cancellationToken);
+    Task LikeEntityAsync(Guid membershipUserId, string slug, Guid Id, CancellationToken cancellationToken);
+    Task UnlikeEntityAsync(Guid membershipUserId, string slug, Guid Id, CancellationToken cancellationToken);
 }
 
