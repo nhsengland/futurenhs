@@ -44,7 +44,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 	                SELECT		
                                     groups.[Id],
 	                                groups.[Name],
-	                                groups.[Description],
+	                                groups.[Subtitle] AS Description,
 	                                LastUpdatedAtUtc = groups.[CreatedAtUtc],
 	                                GroupId = groups.[Id],
 	                                [Type] = 'group'
@@ -55,16 +55,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     (
                                     groups.[Name] 
                     LIKE		    @Term 
-                    OR			    groups.[Description] 
-                    LIKE		    @Term 
                     OR			    groups.[Subtitle] 
                     LIKE		    @Term 
-                    OR			    groups.[PageTitle] 
-                    LIKE		    @Term 
-                    OR			    groups.[Introduction] 
-                    LIKE		    @Term 
-                    OR			    groups.[AboutUs] 
-                    LIKE		    @Term
+   
                                     )
 	                UNION ALL
 	                SELECT		
@@ -162,16 +155,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     (
                                     groups.[Name] 
                     LIKE		    @Term 
-                    OR			    groups.[Description] 
-                    LIKE		    @Term 
                     OR			    groups.[Subtitle] 
                     LIKE		    @Term 
-                    OR			    groups.[PageTitle] 
-                    LIKE		    @Term 
-                    OR			    groups.[Introduction] 
-                    LIKE		    @Term 
-                    OR			    groups.[AboutUs] 
-                    LIKE		    @Term
                                     )
                     ) 
                     AS              Groups,
