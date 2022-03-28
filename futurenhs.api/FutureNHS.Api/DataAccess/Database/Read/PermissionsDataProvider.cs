@@ -25,6 +25,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/delete");
+                    permissions.Add($"{Schema}/members/{DefaultApiVerison}/list");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/delete");

@@ -20,6 +20,8 @@ namespace FutureNHS.Api.DataAccess
             services.AddScoped<IRolesDataProvider, RolesDataProvider>();
             services.AddScoped<ISearchDataProvider, SearchDataProvider>();
             services.AddScoped<ISystemPageDataProvider, SystemPageDataProvider>();
+            services.AddScoped<IUserAdminDataProvider, UserDataProvider>();
+            services.AddScoped<IUserDataProvider, UserDataProvider>();
 
             // Write
             services.AddScoped<ICommentCommand, CommentCommand>();

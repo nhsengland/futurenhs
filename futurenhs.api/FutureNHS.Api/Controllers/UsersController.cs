@@ -1,3 +1,6 @@
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.Models.Pagination.Filter;
+using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +14,16 @@ namespace FutureNHS.Api.Controllers
     {
         private readonly ILogger<GroupsController> _logger;
         private readonly IPermissionsService _permissionsService;
+        private readonly IUserDataProvider _userDataProvider;
+        private readonly IUserService _userService;
 
-        public UsersController(ILogger<GroupsController> logger, IPermissionsService permissionsService)
+        public UsersController(ILogger<GroupsController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider,IUserService userService)
         {
             _logger = logger;
             _permissionsService = permissionsService;
+            _userDataProvider = userDataProvider;
+            _userService = userService;
+
         }
 
         [HttpGet]
@@ -30,6 +38,31 @@ namespace FutureNHS.Api.Controllers
             }
 
             return Ok(permissions);
+        }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/admin/users")]
+        public async Task<IActionResult> GetMembersAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        {
+            var route = Request.Path.Value;
+
+            var (total, members) = await _userService.GetMembersAsync(userId, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(members, filter, total, route);
+
+            return Ok(pagedResponse);
+        }
+
+        [HttpGet]
+        [Route("users/{id:guid}")]
+        public async Task<IActionResult> GetMemberAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var member = await _userDataProvider.GetMemberAsync(id, cancellationToken);
+
+            if (member is null)
+                return NotFound();
+
+            return Ok(member);
         }
     }
 }
