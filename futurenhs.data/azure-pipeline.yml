@@ -82,9 +82,9 @@ jobs:
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
   - task: SqlAzureDacpacDeployment@1
     inputs:
-      azureSubscription: 'CDS FNHS Dev\Test - DevOps Pipeline Service Principal'
+      azureSubscription: '$(AZURESUBSCRIPTIONNAME)'
       AuthenticationType: 'server'
-      ServerName: 'sql-cdsfnhs-dev-uksouth-primary.database.windows.net'
+      ServerName: '$(DBSERVERNAME)'
       DatabaseName: 'MatthewM_DACPAC_Testing'
       SqlUsername: '$(DATABASEUSERNAME)'
       SqlPassword: '$(DATABASEPASSWORD)'
