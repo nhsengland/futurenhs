@@ -192,7 +192,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                             {shouldRenderGroupJoinLink 
                             
                                 ?   <Link href={`${routes.groupJoin}`}>
-                                        <a className="c-button u-w-full">Join Group</a>
+                                        <a className="c-button u-w-full u-border-2 u-border-theme-1">Join Group</a>
                                     </Link>
 
                                 :   (getActionNavMenuList().length > 0)

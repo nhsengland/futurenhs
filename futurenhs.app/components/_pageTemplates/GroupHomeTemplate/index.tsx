@@ -31,10 +31,10 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames('c-page-body'),
-        adminCallOut: classNames('nhsuk-inset-text u-m-0 u-max-w-full', `u-border-l-theme-${background}`),
+        adminCallOut: classNames('nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full', `u-border-l-theme-${background}`),
         adminCallOutText: classNames('nhsuk-heading-m u-text-bold'),
-        adminCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-mt-4 tablet:u-mt-0'),
-        previewButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-mt-4 tablet:u-mt-0 tablet:u-mr-5'),
+        adminCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0'),
+        previewButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-mt-4 u-drop-shadow tablet:u-mt-0 tablet:u-mr-5'),
         publishButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0')
     };
 

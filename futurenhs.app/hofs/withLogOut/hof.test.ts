@@ -1,4 +1,5 @@
 import { withLogOut } from './index';
+import { authCookie } from '@constants/cookies';
 
 describe('withLogOut hof', () => {
 
@@ -9,7 +10,7 @@ describe('withLogOut hof', () => {
             req: {
                 cookies: {
                     cookie1: {},
-                    cookie2: {}
+                    [authCookie]: '1234abcd'
                 }
             },
             res: {
@@ -24,7 +25,7 @@ describe('withLogOut hof', () => {
         
         await withOutput(mockContext);
 
-        expect(mockContext.res.cookie).toHaveBeenCalledTimes(2);
+        expect(mockContext.res.cookie).toHaveBeenCalledTimes(1);
 
     });
     
