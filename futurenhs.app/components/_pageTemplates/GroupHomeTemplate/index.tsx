@@ -16,7 +16,6 @@ import { Theme } from '@appTypes/theme';
 import { Props } from './interfaces';
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
-    routes,
     actions,
     themeId
 }) => {
@@ -24,10 +23,11 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     const router = useRouter();
 
     const [isInEditMode, setIsInEditMode] = useState(Boolean(router.query.edit));
+    const [isInAddBlockMode, setIsInAddBlockMode] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
     const isGroupAdmin: boolean = actions.includes(actionConstants.GROUPS_EDIT) || actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT);
-    const { background, accent }: Theme = selectTheme(themes, themeId);
+    const { background }: Theme = selectTheme(themes, themeId);
 
     const generatedClasses: any = {
         wrapper: classNames('c-page-body'),
@@ -40,6 +40,14 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
     const handleSetToEditMode = (): void => {
         setIsInEditMode(true);
+    }
+
+    const handleSetToAddBlockMode = (): void => {
+        setIsInAddBlockMode(true);
+    }
+
+    const handleCancelSetToAddBlockMode = (): void => {
+        setIsInAddBlockMode(false);
     }
 
     const handlePublishUpdate = (): void => {
@@ -81,23 +89,35 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
             }
             {(isClient && isGroupAdmin && isInEditMode) &&
                 <>
-                    <div className={generatedClasses.adminCallOut}>
-                        <LayoutColumnContainer className="u-mb-6">
-                            <LayoutColumn tablet={6}><h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2></LayoutColumn>
-                            <LayoutColumn tablet={6} className="tablet:u-flex u-items-center">
-                                <button className={generatedClasses.previewButton}>Preview page</button>
-                                <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
-                            </LayoutColumn>
-                        </LayoutColumnContainer>
-                        <RichText
-                            wrapperElementType="div"
-                            bodyHtml="Welcome to your group homepage. You are currently in editing mode. You can save a draft at any time, preview your page, or publish your changes. Once published, you can edit your page in the group actions. For more information and help, see our quick guide.
+                    {isInAddBlockMode
+
+                        ?   <>
+                                <h2 className="nhsuk-heading-xl u-mb-8">Add content block</h2>
+                                <RichText wrapperElementType="p" bodyHtml="Choose a content block to add to your group homepage" className="u-text-lead u-text-theme-7" />
+                            </>
+
+                        :   <div className={generatedClasses.adminCallOut}>
+                                <LayoutColumnContainer className="u-mb-6">
+                                    <LayoutColumn tablet={6}>
+                                        <h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2>
+                                    </LayoutColumn>
+                                    <LayoutColumn tablet={6} className="tablet:u-flex u-items-center">
+                                        <button className={generatedClasses.previewButton}>Preview page</button>
+                                        <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
+                                    </LayoutColumn>
+                                </LayoutColumnContainer>
+                                <RichText
+                                    wrapperElementType="div"
+                                    bodyHtml="Welcome to your group homepage. You are currently in editing mode. You can save a draft at any time, preview your page, or publish your changes. Once published, you can edit your page in the group actions. For more information and help, see our quick guide.
             For some inspiration, visit our knowledge hub."
-                            className="u-text-lead u-text-theme-7" />
-                    </div>
-                    <div className="u-mt-14">
-                        <PageManager />
-                    </div>
+                                    className="u-text-lead u-text-theme-7" />
+                            </div>
+
+                    }
+                    <PageManager 
+                        addBlockAction={handleSetToAddBlockMode} 
+                        addBlockCancelAction={handleCancelSetToAddBlockMode}
+                        className="u-mt-14" />
                 </>
             }
         </LayoutColumn>
