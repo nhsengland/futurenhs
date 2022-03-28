@@ -1,6 +1,14 @@
-import { GroupPage } from '@appTypes/page';
-import { GroupMember } from '@appTypes/group';
+import { GenericPageTextContent } from '@appTypes/content';
+import { Page } from '@appTypes/page';
 
-export interface Props extends GroupPage {
-    member: GroupMember;
+declare interface ContentText extends GenericPageTextContent {
+    firstNameLabel: string;
+    lastNameLabel: string;
+    pronounsLabel: string;
+    emailLabel: string;
+} 
+
+export interface Props extends Page {
+    siteUser: any;
+    contentText: ContentText;
 }

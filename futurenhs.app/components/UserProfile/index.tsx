@@ -7,7 +7,7 @@ import { Avatar } from '@components/Avatar';
 import { Props } from './interfaces';
 
 export const UserProfile: (props: Props) => JSX.Element = ({
-    member,
+    profile,
     text,
     image,
     children,
@@ -17,7 +17,7 @@ export const UserProfile: (props: Props) => JSX.Element = ({
     const { firstName,
             lastName,
             pronouns,
-            email } = member ?? {};
+            email } = profile ?? {};
 
     const { heading, 
             firstNameLabel, 

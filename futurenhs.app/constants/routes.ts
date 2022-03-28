@@ -25,6 +25,7 @@ export const enum routeParams {
     FILEID = 'fileId',
     MEMBERID = 'memberId',
     DISCUSSIONID = 'discussionId',
+    USERID = 'userId'
 }
 
 export const enum layoutIds {

@@ -74,7 +74,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                         <ErrorSummary />
                     }
                     <UserProfile
-                        member={member}
+                        profile={member}
                         text={{
                             heading: secondaryHeading,
                             firstNameLabel: firstNameLabel,

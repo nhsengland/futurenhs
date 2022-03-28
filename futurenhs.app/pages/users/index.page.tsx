@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { withUser } from '@hofs/withUser';
+import { withRoutes } from '@hofs/withRoutes';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 const NoopTemplate = (props: any) => null;
@@ -11,16 +12,19 @@ const props: Partial<any> = {};
  */
 export const getServerSideProps: GetServerSideProps = withUser({
     props,
-    getServerSideProps: async (context: GetServerSidePropsContext) => {
+    getServerSideProps: withRoutes({
+        props,
+        getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-        return {
-            redirect: {
-                permanent: false,
-                destination: '/'
+            return {
+                redirect: {
+                    permanent: false,
+                    destination: '/'
+                }
             }
-        }  
 
-    }
+        }
+    })
 });
 
 /**
