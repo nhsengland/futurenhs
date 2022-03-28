@@ -31,7 +31,7 @@ namespace FutureNHS.Api.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken)
+        public async Task<Guid> CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
@@ -74,10 +74,10 @@ namespace FutureNHS.Api.Services
             if (validationResult.Errors.Count > 0)
                 throw new ValidationException(validationResult);
 
-            await _folderCommand.CreateFolderAsync(userId, groupId.Value, folderDto, cancellationToken);
+            return await _folderCommand.CreateFolderAsync(userId, groupId.Value, folderDto, cancellationToken);
         }
 
-        public async Task CreateChildFolderAsync(Guid userId, string slug, Guid parentFolderId, Folder folder, CancellationToken cancellationToken)
+        public async Task<Guid> CreateChildFolderAsync(Guid userId, string slug, Guid parentFolderId, Folder folder, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
@@ -119,7 +119,7 @@ namespace FutureNHS.Api.Services
             if (validationResult.Errors.Count > 0)
                 throw new ValidationException(validationResult);
 
-            await _folderCommand.CreateFolderAsync(userId, groupId.Value, folderDto, cancellationToken);
+            return await _folderCommand.CreateFolderAsync(userId, groupId.Value, folderDto, cancellationToken);
         }
 
         public async Task UpdateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, byte[] rowVersion, CancellationToken cancellationToken)

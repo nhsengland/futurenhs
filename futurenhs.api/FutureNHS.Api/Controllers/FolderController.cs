@@ -47,9 +47,9 @@ namespace FutureNHS.Api.Controllers
 
         public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken)
         {
-            await _folderService.CreateFolderAsync(userId, slug, folder, cancellationToken);
+            var folderId = await _folderService.CreateFolderAsync(userId, slug, folder, cancellationToken);
 
-            return Ok();
+            return Ok(folderId);
         }
 
         [HttpPost]
@@ -57,9 +57,9 @@ namespace FutureNHS.Api.Controllers
 
         public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Guid id, Folder folder, CancellationToken cancellationToken)
         {
-            await _folderService.CreateChildFolderAsync(userId, slug, id, folder, cancellationToken);
+            var folderId = await _folderService.CreateChildFolderAsync(userId, slug, id, folder, cancellationToken);
 
-            return Ok();
+            return Ok(folderId);
         }
 
         [HttpPut]
