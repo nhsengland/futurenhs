@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
 import { getStandardServiceHeaders } from '@helpers/fetch';
+import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject';
 import { routeParams } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
@@ -18,8 +19,8 @@ import { selectMultiPartFormData, selectCsrfToken, selectParam, selectUser, sele
 import { getGroup } from '@services/getGroup';
 import { putGroup } from '@services/putGroup';
 import { GetServerSidePropsContext } from '@appTypes/next';
+import { FormErrors } from '@appTypes/form';
 
-import { updateGroupForm } from '@formConfigs/update-group';
 import { GroupUpdateTemplate } from '@components/_pageTemplates/GroupUpdateTemplate';
 import { Props } from '@components/_pageTemplates/GroupUpdateTemplate/interfaces';
 import { User } from '@appTypes/user';
@@ -50,9 +51,22 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const user: User = selectUser(context);
                         const requestMethod: requestMethods = selectRequestMethod(context);
 
+                        const form: any = props.forms[formTypes.UPDATE_GROUP];
+
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.INDEX;
                         props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`;
+
+                        /**
+                         * Return not found if user does not have edit group action
+                         */
+                        if(!props.actions.includes(actions.GROUPS_EDIT)){
+
+                            return {
+                                notFound: true
+                            }
+
+                        }
 
                         /**
                          * Get data from services
@@ -63,7 +77,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             const etag = group.headers.get('etag');
 
                             props.etag = etag;
-                            props.forms[formTypes.UPDATE_GROUP].initialValues = {
+                            
+                            form.initialValues = {
                                 'Name': group.data.text.title,
                                 'Strapline': group.data.text.strapLine,
                                 'ImageId': group.data.imageId,
@@ -91,13 +106,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             }
 
-                        } catch (error) {
+                        } catch (error: any) {
 
-                            if (error.data?.status) {
+                            const validationErrors: FormErrors = getServiceErrorDataValidationErrors(error);
 
-                                props.forms[updateGroupForm.id].errors = error.data.body || {
-                                    _error: error.data.statusText
-                                };
+                            if (validationErrors) {
+
+                                form.errors = validationErrors;
 
                             } else {
 
@@ -111,7 +126,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          * Return data to page template
                          */
                         return {
-                            notFound: !props.actions.includes(actions.GROUPS_EDIT),
                             props: getJsonSafeObject({
                                 object: props
                             })

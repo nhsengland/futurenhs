@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getStandardServiceHeaders } from '@helpers/fetch';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { routeParams } from '@constants/routes';
@@ -16,6 +17,7 @@ import { postGroupFolder } from '@services/postGroupFolder';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
+import { FormErrors } from '@appTypes/form';
 
 import { groupFolderForm } from '@formConfigs/group-folder';
 import { GroupCreateUpdateFolderTemplate } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate';
@@ -49,6 +51,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const csrfToken: string = selectCsrfToken(context);
                         const formData: ServerSideFormData = selectFormData(context);
                         const requestMethod: string = selectRequestMethod(context);
+
+                        const form: any = props.forms[groupFolderForm.id];
     
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FILES;
@@ -88,7 +92,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         if (formData && requestMethod === requestMethods.POST) {
     
-                            props.forms[groupFolderForm.id].initialValues = formData.getAll();
+                            form.initialValues = formData.getAll();
 
                             const headers = getStandardServiceHeaders({ csrfToken });
 
@@ -105,16 +109,16 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                             } catch (error) {
     
-                                if (error.data?.status) {
-    
-                                    props.forms[groupFolderForm.id].errors = error.data.body || {
-                                        _error: error.data.statusText
-                                    };
-    
+                                const validationErrors: FormErrors = getServiceErrorDataValidationErrors(error);
+
+                                if (validationErrors) {
+
+                                    form.errors = validationErrors;
+
                                 } else {
-    
+
                                     return handleSSRErrorProps({ props, error });
-    
+
                                 }
     
                             }

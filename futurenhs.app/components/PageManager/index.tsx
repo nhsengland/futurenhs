@@ -26,7 +26,7 @@ export const PageManager: (props: Props) => JSX.Element = ({
 
         <div className={generatedClasses.block}>
             <button className="c-button c-button-outline u-drop-shadow">
-                <SVGIcon name="icon-burger" className="u-w-9 u-h-8 u-mr-4 u-align-middle" />
+                <SVGIcon name="icon-add-content" className="u-w-9 u-h-8 u-mr-4 u-align-middle" />
                 <span className="u-align-middle">Add content block</span>
             </button>
         </div>

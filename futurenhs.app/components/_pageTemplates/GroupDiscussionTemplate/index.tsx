@@ -5,6 +5,8 @@ import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment
 import { postGroupDiscussionCommentReply } from '@services/postGroupDiscussionCommentReply';
 import { selectFormErrors } from '@selectors/forms';
 import { actions as actionsConstants } from '@constants/actions';
+import { getServiceErrorDataValidationErrors } from '@services/index';
+import { getGenericFormError } from '@helpers/util/form';
 import { formTypes } from '@constants/forms';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { initials } from '@helpers/formatters/initials';
@@ -143,9 +145,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             })
                 .catch((error) => {
 
-                    const errors: FormErrors = {
-                        [error.data.status]: error.data.statusText
-                    };
+                    const errors: FormErrors = getServiceErrorDataValidationErrors(error) || getGenericFormError(error);
 
                     setErrors(errors);
                     resolve(errors);
@@ -176,9 +176,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             })
             .catch((error) => {
 
-                const errors: FormErrors = {
-                    [error.data.status]: error.data.statusText
-                };
+                const errors: FormErrors = getServiceErrorDataValidationErrors(error) || getGenericFormError(error);
 
                 setErrors(errors);
                 resolve(errors);

@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getStandardServiceHeaders } from '@helpers/fetch';
 import { routeParams } from '@constants/routes';
 import { layoutIds, groupTabIds } from '@constants/routes';
@@ -26,6 +27,7 @@ import { GroupDiscussionTemplate } from '@components/_pageTemplates/GroupDiscuss
 import { Props } from '@components/_pageTemplates/GroupDiscussionTemplate/interfaces';
 import { formTypes } from '@constants/forms';
 import { ServerSideFormData } from '@helpers/util/form';
+import { FormErrors } from '@appTypes/form';
 
 const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f';
 const props: Partial<Props> = {};
@@ -55,6 +57,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const requestMethod: requestMethods = selectRequestMethod(context);
                         const csrfToken: string = selectCsrfToken(context);
 
+                        const commentForm: any = props.forms[createDiscussionCommentForm.id];
+                        const replyForm: any = props.forms[createDiscussionCommentReplyForm.id];
+
                         props.discussionId = discussionId;
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FORUM;
@@ -69,13 +74,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                                 if (formId === formTypes.CREATE_DISCUSSION_COMMENT) {
 
-                                    props.forms[createDiscussionCommentForm.id].initialValues = formData.getAll();
+                                    commentForm.initialValues = formData.getAll();
 
                                     await postGroupDiscussionComment({ groupId, discussionId, user, headers, body: formData });
 
                                 } else if (formId === formTypes.CREATE_DISCUSSION_COMMENT_REPLY) {
 
-                                    props.forms[createDiscussionCommentReplyForm.id].initialValues = formData.getAll();
+                                    replyForm.initialValues = formData.getAll();
 
                                     await postGroupDiscussionCommentReply({ groupId, discussionId, commentId, user, headers, body: formData });
 
@@ -83,11 +88,19 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             } catch (error) {
 
-                                if (error.data?.status) {
+                                const validationErrors: FormErrors = getServiceErrorDataValidationErrors(error);
 
-                                    props.forms[formId === formTypes.CREATE_DISCUSSION_COMMENT ? createDiscussionCommentForm.id : createDiscussionCommentReplyForm.id].errors = error.data.body || {
-                                        _error: error.data.statusText
-                                    };
+                                if (validationErrors) {
+
+                                    if(formId === formTypes.CREATE_DISCUSSION_COMMENT) {
+
+                                        commentForm.errors = validationErrors;
+
+                                    } else if(formId === formTypes.CREATE_DISCUSSION_COMMENT_REPLY) {
+
+                                        replyForm.errors = validationErrors;
+
+                                    }
 
                                 } else {
 

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { formTypes } from "@constants/forms";
+import { formTypes } from '@constants/forms';
 import { getStandardServiceHeaders } from '@helpers/fetch';
+import { getServiceErrorDataValidationErrors } from '@services/index';
 import { selectFormErrors, selectFormInitialValues, selectFormDefaultFields } from '@selectors/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
@@ -11,6 +12,7 @@ import { putGroup } from '@services/putGroup';
 import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
+import { getGenericFormError } from '@helpers/util/form';
 
 /**
  * Group create folder template
@@ -72,9 +74,7 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
             })
             .catch((error) => {
 
-                const errors: FormErrors = {
-                    [error.data.status]: error.data.statusText
-                };
+                const errors: FormErrors = getServiceErrorDataValidationErrors(error) || getGenericFormError(error);
 
                 setErrors(errors);
                 resolve(errors);
