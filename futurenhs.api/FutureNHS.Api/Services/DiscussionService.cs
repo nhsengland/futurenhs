@@ -1,7 +1,9 @@
 ﻿using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Discussion;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Validation;
 using Microsoft.AspNetCore.Authentication;
 using System.Security;
 
@@ -65,6 +67,12 @@ namespace FutureNHS.Api.Services
                 IsLocked = false,
                 GroupId = groupId.Value
             };
+
+            var validator = new DiscussionValidator();
+            var validationResult = await validator.ValidateAsync(discussionDto, cancellationToken);
+
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
 
             await _discussionCommand.CreateDiscussionAsync(discussionDto, cancellationToken);
         }
