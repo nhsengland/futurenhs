@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using Microsoft.Azure.Storage.Blob;
+using FutureNHS.Api.Services.Validation;
 
 namespace FutureNHS.Api.Services
 {
@@ -38,7 +39,6 @@ namespace FutureNHS.Api.Services
         private readonly IFileTypeValidator _fileTypeValidator;
         private readonly IGroupCommand _groupCommand;
         private readonly string[] _acceptedFileTypes = new[] { ".pdf", ".ppt", ".pptx", ".doc", ".docx", ".xls", ".xlsx" };
-        private const long MaxFileSizeBytes = 262144000; // 250mb
 
         public FileService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, IFileBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupCommand groupCommand)
         {
@@ -91,6 +91,13 @@ namespace FutureNHS.Api.Services
 
             file.CreatedBy = userId;
             file.ParentFolder = folderId;
+
+            var validator = new FileValidator();
+            var validationResult = await validator.ValidateAsync(file, cancellationToken);
+
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
+
             try
             {
                 await CreateFileAsync(file, cancellationToken);
@@ -125,7 +132,6 @@ namespace FutureNHS.Api.Services
             // Loop through each 'Section', starting with the current 'Section'.
             while (section != null)
             {
-
                 // Check if the current 'Section' has a ContentDispositionHeader.
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
                 if (hasContentDispositionHeader)
@@ -153,7 +159,6 @@ namespace FutureNHS.Api.Services
                             //    throw new FormatException("File extension} does not match the file signature");
                             //}
 
-
                             if (!_acceptedFileTypes.Contains(fileExtension.ToLower()))
                             {
                                 _logger.LogError("file extension:{0} is not an accepted file", fileExtension);
@@ -169,17 +174,6 @@ namespace FutureNHS.Api.Services
                                 throw;
                             }
 
-                            // trick to get the size without reading the stream in memory
-                            var size = section.Body.Position;
-
-                            // check size limit in case somehow a larger file got through. we can't do it until after the upload because we don't want to put the stream in memory
-                            if (MaxFileSizeBytes < size)
-                            {
-                                await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
-                                _logger.LogError("File size:{0} is greater than the max allowed size:{1}", size, MaxFileSizeBytes);
-                                throw new ConstraintException("File size is greater than the max allowed size");
-                            }
-
                             // TODO MimeDetective does not work when stream has already been uploaded - figure out a solution
                             //if (fileContentTypeMatchesExtension is false)
                             //{
@@ -189,6 +183,9 @@ namespace FutureNHS.Api.Services
                             //}
 
                             var now = _systemClock.UtcNow.UtcDateTime;
+
+                            // trick to get the size without reading the stream in memory
+                            var size = section.Body.Position;
 
                             fileDto.FileName = encodedFileName;
                             fileDto.FileExtension = fileExtension;
@@ -229,23 +226,14 @@ namespace FutureNHS.Api.Services
             {
                 var formValues = formAccumulator.GetResults();
                 var titleFound = formValues.TryGetValue("title", out var title);
-                if (titleFound is false || string.IsNullOrEmpty(title))
+                if (titleFound is false)
                 {
                     throw new ArgumentNullException($"Title was not provided");
                 }
                 var descriptionFound = formValues.TryGetValue("description", out var description);
-                if (descriptionFound is false || string.IsNullOrEmpty(title))
+                if (descriptionFound is false)
                 {
                     throw new ArgumentNullException($"Description was not provided");
-                }
-
-                if (title.ToString().Length > 200)
-                {
-                    throw new ArgumentOutOfRangeException($"Title must be less than 200 characters");
-                }
-                if (description.ToString().Length > 4000)
-                {
-                    throw new ArgumentOutOfRangeException($"Description must be less than 4000 characters");
                 }
 
                 fileDto.Title = title;

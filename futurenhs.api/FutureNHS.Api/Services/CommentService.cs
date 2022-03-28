@@ -3,6 +3,7 @@ using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Comment;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Validation;
 using Microsoft.AspNetCore.Authentication;
 using System.Security;
 
@@ -63,6 +64,12 @@ namespace FutureNHS.Api.Services
                 DiscussionId = parentEntityId
             };
 
+            var validator = new CommentValidator();
+            var validationResult = await validator.ValidateAsync(commentDto, cancellationToken);
+
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
+
             return await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
         }
 
@@ -105,6 +112,12 @@ namespace FutureNHS.Api.Services
                 DiscussionId = parentEntityId
             };
 
+            var validator = new CommentValidator();
+            var validationResult = await validator.ValidateAsync(commentDto, cancellationToken);
+
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
+
             return await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
         }
 
@@ -145,6 +158,12 @@ namespace FutureNHS.Api.Services
                 ModifiedBy = userId,
                 ModifiedAtUTC = now,
             };
+
+            var validator = new CommentValidator();
+            var validationResult = await validator.ValidateAsync(commentDto, cancellationToken);
+
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
 
             await _commentCommand.UpdateCommentAsync(commentDto, rowVersion, cancellationToken);
         }
