@@ -6,7 +6,6 @@ import { getStandardServiceHeaders } from '@helpers/fetch';
 import { getGenericFormError } from '@helpers/util/form';
 import { selectFormDefaultFields, selectFormInitialValues, selectFormErrors } from '@selectors/forms';
 import { getServiceErrorDataValidationErrors } from '@services/index';
-import { genericMessages } from '@constants/text';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -48,9 +47,9 @@ export const GroupCreateUpdateFolderTemplate: (props: Props) => JSX.Element = ({
             const serviceToUse = router.asPath.indexOf('/update') > -1 ? putGroupFolder : postGroupFolder;
             const headers = getStandardServiceHeaders({ csrfToken, etag });
 
-            serviceToUse({ groupId, folderId, user, headers, body: formData }).then(() => {
+            serviceToUse({ groupId, folderId, user, headers, body: formData }).then((folderId: any) => {
 
-                router.push(routes.groupFolder || routes.groupFoldersRoot);
+                router.push(folderId ? `${routes.groupFoldersRoot}/${folderId}` : routes.groupFolder || routes.groupFoldersRoot);
 
                 resolve({});
 

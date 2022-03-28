@@ -98,12 +98,12 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             try {
     
-                                await postGroupFolder({ groupId, folderId, user, headers, body: formData });
+                                const newFolderId = await postGroupFolder({ groupId, folderId, user, headers, body: formData });
     
                                 return {
                                     redirect: {
                                         permanent: false,
-                                        destination: props.routes.groupFolder || props.routes.groupFoldersRoot
+                                        destination: newFolderId ? `${props.routes.groupFoldersRoot}/${newFolderId}` : props.routes.groupFolder || props.routes.groupFoldersRoot
                                     }
                                 }
     

@@ -25,7 +25,7 @@ export const postGroupFolder = async ({
     user,
     headers,
     body
-}: Options, dependencies?: Dependencies): Promise<ServiceResponse<null>> => {
+}: Options, dependencies?: Dependencies): Promise<ServiceResponse<string>> => {
 
     const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
@@ -60,6 +60,6 @@ export const postGroupFolder = async ({
 
     }
 
-    return null;
+    return apiData;
 
 }
