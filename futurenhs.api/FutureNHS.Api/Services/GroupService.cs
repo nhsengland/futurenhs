@@ -16,6 +16,7 @@ using System.Security;
 using System.Text;
 using FutureNHS.Api.Exceptions;
 using Ganss.XSS;
+using FutureNHS.Api.Services.Validation;
 
 namespace FutureNHS.Api.Services
 {
@@ -99,6 +100,17 @@ namespace FutureNHS.Api.Services
             }
 
             var (group, image) = await UploadGroupImageMultipartContent(userId, slug, requestBody, rowVersion, contentType, cancellationToken);
+
+            var groupValidator = new GroupValidator();
+            var groupValidationResult = await groupValidator.ValidateAsync(group, cancellationToken);
+            if (groupValidationResult.Errors.Count > 0)
+                throw new ValidationException(groupValidationResult);
+
+            var imageValidator = new ImageValidator();
+            var imageValidationResult = await imageValidator.ValidateAsync(image, cancellationToken);
+            if (imageValidationResult.Errors.Count > 0)
+                throw new ValidationException(imageValidationResult);
+
             try
             {
                 if (image != null)

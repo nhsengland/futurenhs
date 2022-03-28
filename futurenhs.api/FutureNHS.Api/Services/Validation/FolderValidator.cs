@@ -11,6 +11,17 @@ namespace FutureNHS.Api.Services.Validation
         public FolderValidator(IFolderCommand folderCommand)
         {
             _folderCommand = folderCommand ?? throw new ArgumentNullException(nameof(folderCommand));
+            RuleFor(model => model.Title)
+                .NotEmpty()
+                .WithMessage("Enter a folder title");
+
+            RuleFor(model => model.Title)
+                .MaximumLength(200)
+                .WithMessage("Folder title must be 200 characters or fewer");
+
+            RuleFor(model => model.Description)
+                .MaximumLength(4000)
+                .WithMessage("Folder description must be 4000 characters or fewer");
 
             RuleFor(model => model)
                 .MustAsync(IsFolderUnique)
