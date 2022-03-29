@@ -53,8 +53,8 @@ jobs:
   displayName: 'Build and deploy artifact for database'
   pool :
     vmImage: 'windows-latest'
-  dependsOn: CheckChangesInPaths
-  condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHSData'], 'true') 
+  ##dependsOn: CheckChangesInPaths
+  ##condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHSData'], 'true') 
   steps:
   - task: VSBuild@1
     inputs:
