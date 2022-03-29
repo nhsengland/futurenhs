@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 import { Link } from '@components/Link';
@@ -36,7 +36,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
-    const [isActionsAccordionOpen, setIsActionsAccordionOpen] = useState(false);
+    const [isActionsAccordionOpen] = useState(false);
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true);
     const [isLeaveGroupModalOpen, setIsLeaveGroupModalOpen] = useState(false);
 
@@ -105,6 +105,16 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                 id: actionsConstants.GROUPS_LEAVE,
                 url: `${routes.groupLeave}?${queryParams.RETURNURL}=${router?.asPath}`,
                 text: 'Leave group'
+            });
+
+        }
+
+        if (actions?.includes(actionsConstants.SITE_ADMIN_GROUPS_EDIT) || actions?.includes(actionsConstants.GROUPS_EDIT)) {
+
+            actionsMenuList.push({
+                id: actionsConstants.GROUPS_MEMBERS_ADD,
+                url: `${routes.groupRoot}?${queryParams.EDIT}=true`,
+                text: 'Page manager'
             });
 
         }
@@ -182,7 +192,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                             {shouldRenderGroupJoinLink 
                             
                                 ?   <Link href={`${routes.groupJoin}`}>
-                                        <a className="c-button u-w-full">Join Group</a>
+                                        <a className="c-button u-w-full u-border-2 u-border-theme-1">Join Group</a>
                                     </Link>
 
                                 :   (getActionNavMenuList().length > 0)

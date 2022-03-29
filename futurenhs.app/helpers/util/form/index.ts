@@ -1,5 +1,8 @@
 const FormData = require('form-data');
 
+import { genericMessages } from '@constants/text';
+import { FormErrors } from '@appTypes/form';
+
 /**
  * Converts a form submission object submitted via express-form-data into a basic server-side FormData object
  * which exposes get methods that reflect those of FormData for use in services to that standard url encoded and multipart form requests
@@ -108,3 +111,14 @@ export const getAriaFieldAttributes = (isRequired: boolean, isError: boolean, de
     return ariaProps;
 
 };
+
+/**
+ * Returns a generic top level form submission error object
+ */
+export const getGenericFormError = (error: any): FormErrors => {
+
+    return {
+        _error: error.message || genericMessages.UNEXPECTED_ERROR
+    }
+
+}

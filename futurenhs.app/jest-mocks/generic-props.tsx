@@ -1,6 +1,7 @@
 import { Routes } from "@appTypes/routing";
 
 export const routes: Routes = {
+    siteRoot: '/',
     groupRoot: '/:groupId',
     groupUpdate: '/:groupId/update',
     groupJoin: '/:groupId/join',

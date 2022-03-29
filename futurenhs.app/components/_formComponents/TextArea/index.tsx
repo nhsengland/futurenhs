@@ -25,7 +25,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     shouldRenderAsRte,
     shouldRenderRemainingCharacterCount,
     validators,
-    height = 200,
+    minHeight = 200,
     className
 }) => {
 
@@ -46,7 +46,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const shouldRenderError: boolean = Boolean(initialError) || ((Boolean(error) || Boolean(submitError)) && touched);
     const isRequired: boolean = Boolean(validators?.find(({ type }) => type === 'required'));
     const maxLength: boolean = validators?.find(({ type }) => type === 'maxLength')?.maxLength;
-    const elementHeight: string = `${height}px`;
+    const elementMinHeight: string = `${minHeight}px`;
 
     const handleRteInit = (_, editor) => editorRef.current = editor;
     const handleRteChange = (value: any) => onChange(value);
@@ -105,7 +105,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
             {shouldRenderError &&
                 <span className={generatedClasses.error}>{error || submitError}</span>
             }
-            <div className={generatedClasses.inputWrapper} style={{ height: elementHeight }}>
+            <div className={generatedClasses.inputWrapper} style={{ minHeight: elementMinHeight }}>
                 {shouldLoadRte
             
                     ?   <Editor
@@ -134,7 +134,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                             value={value}
                             onChange={onChange}
                             className={generatedClasses.input}
-                            style={{ height: elementHeight }} />
+                            style={{ minHeight: elementMinHeight }} />
                 
                 }
             </div>

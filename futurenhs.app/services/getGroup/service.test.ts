@@ -1,5 +1,4 @@
 import { getGroup } from './index';
-import { User } from '@appTypes/user';
 
 let mockSetFetchOptions: any;
 let mockFetchJSON: any;
@@ -61,7 +60,7 @@ describe('getGroup service', () => {
             },
             image: {
                 src: `/mockSource`,
-                altText: 'TBC',
+                altText: 'Group logo',
                 height: 100,
                 width: 100,
             },

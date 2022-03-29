@@ -16,17 +16,16 @@ namespace FutureNHS.Api.Controllers
         private readonly ILogger<DiscussionController> _logger;
         private readonly IDiscussionDataProvider _discussionDataProvider;
         private readonly IDiscussionService _discussionService;
-
         private readonly IPermissionsService _permissionsService;
         private readonly IHtmlSanitizer _htmlSanitizer;
 
         public DiscussionController(ILogger<DiscussionController> logger, IDiscussionDataProvider discussionDataProvider, IPermissionsService permissionsService, IDiscussionService discussionService, IHtmlSanitizer htmlSanitizer)
         {
-            _logger = logger;
-            _discussionDataProvider = discussionDataProvider;
-            _permissionsService = permissionsService;
-            _discussionService = discussionService;
-            _htmlSanitizer = htmlSanitizer;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
+            _discussionDataProvider = discussionDataProvider ?? throw new ArgumentNullException(nameof(discussionDataProvider)); ;
+            _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService)); ;
+            _discussionService = discussionService ?? throw new ArgumentNullException(nameof(discussionService)); ;
+            _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer)); ;
         }
 
         [HttpGet]
@@ -63,6 +62,8 @@ namespace FutureNHS.Api.Controllers
         [Route("users/{userId:guid}/groups/{slug}/discussions")]
         public async Task<IActionResult> CreateDiscussionAsync(Guid userId, string slug, Discussion discussion, CancellationToken cancellationToken)
         {
+            discussion.Content = _htmlSanitizer.Sanitize(discussion.Content);
+
             await _discussionService.CreateDiscussionAsync(userId, slug, discussion, cancellationToken);
 
             return Ok();

@@ -1,0 +1,7 @@
+<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+    <rect width="30" height="4.61538" rx="2" />
+    <rect y="15" width="11.5385" height="4.61538" rx="2" />
+    <rect y="7.5" width="30" height="4.61538" rx="2" />
+    <rect x="19.6152" y="13.8467" width="4.61538" height="16.1538" rx="2" />
+    <rect x="30" y="19.6152" width="4.61538" height="16.1538" rx="2" transform="rotate(90 30 19.6152)" />
+</svg>

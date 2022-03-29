@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getStandardServiceHeaders } from '@helpers/fetch';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
@@ -16,9 +17,12 @@ import { postGroupFile } from '@services/postGroupFile';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
+
+import { createFileForm } from '@formConfigs/create-file';
 import { GroupCreateFileTemplate } from '@components/_pageTemplates/GroupCreateFileTemplate';
 import { Props } from '@components/_pageTemplates/GroupCreateFileTemplate/interfaces';
 import { withTextContent } from '@hofs/withTextContent';
+import { FormErrors } from '@appTypes/form';
 
 const routeId: string = '2ff0717e-494f-4400-8c33-600c080e27b7';
 const props: Partial<Props> = {};
@@ -47,6 +51,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const csrfToken: string = selectCsrfToken(context);
                         const formData: any = selectMultiPartFormData(context);
                         const requestMethod: requestMethods = selectRequestMethod(context);
+
+                        const form: any = props.forms[createFileForm.id];
     
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FILES;
@@ -95,7 +101,17 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                         } catch (error) {
 
-                            return handleSSRErrorProps({ props, error });
+                            const validationErrors: FormErrors = getServiceErrorDataValidationErrors(error);
+
+                            if (validationErrors) {
+
+                                form.errors = validationErrors;
+
+                            } else {
+
+                                return handleSSRErrorProps({ props, error });
+
+                            }
     
                         }
     

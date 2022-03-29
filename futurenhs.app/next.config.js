@@ -1,7 +1,9 @@
 const path = require('path');
 const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa');
-const withBundleAnalyzer = require('@next/bundle-analyzer');
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  });
 const swRunTimeCachingConfig = require('./sw.cache.config');
 
 const assetPrefix = '';
@@ -42,7 +44,5 @@ module.exports = withPlugins([
             buildExcludes: [/middleware-manifest.json$/]
         }
     }],
-    [withBundleAnalyzer, {
-        enabled: true
-    }]
+    [withBundleAnalyzer]
 ], baseConfig);

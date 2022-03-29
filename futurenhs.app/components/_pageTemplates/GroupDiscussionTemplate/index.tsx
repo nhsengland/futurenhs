@@ -3,8 +3,11 @@ import { useRouter } from 'next/router';
 
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
 import { postGroupDiscussionCommentReply } from '@services/postGroupDiscussionCommentReply';
+import { putGroupDiscussionCommentLike } from '@services/putGroupDiscussionCommentLike';
 import { selectFormErrors } from '@selectors/forms';
 import { actions as actionsConstants } from '@constants/actions';
+import { getServiceErrorDataValidationErrors } from '@services/index';
+import { getGenericFormError } from '@helpers/util/form';
 import { formTypes } from '@constants/forms';
 import { dateTime } from '@helpers/formatters/dateTime';
 import { initials } from '@helpers/formatters/initials';
@@ -50,7 +53,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     services = {
         getGroupDiscussionCommentsWithReplies: getGroupDiscussionCommentsWithReplies,
         postGroupDiscussionComment: postGroupDiscussionComment,
-        postGroupDiscussionCommentReply: postGroupDiscussionCommentReply
+        postGroupDiscussionCommentReply: postGroupDiscussionCommentReply,
+        putGroupDiscussionCommentLike: putGroupDiscussionCommentLike
     }
 }) => {
 
@@ -103,9 +107,17 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle likes on comments
      */
-    const handleLike = useCallback((commentId: string, isLiked: boolean): any => {
+    const handleLike = useCallback(async(commentId: string, isLiked: boolean): Promise<void> => {
 
+        try {
 
+            await services.putGroupDiscussionCommentLike({ user, groupId, discussionId, commentId, shouldLike: isLiked })
+
+        } catch(error){
+
+            console.log(error);
+
+        }
 
     }, []);
 
@@ -143,9 +155,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             })
                 .catch((error) => {
 
-                    const errors: FormErrors = {
-                        [error.data.status]: error.data.statusText
-                    };
+                    const errors: FormErrors = getServiceErrorDataValidationErrors(error) || getGenericFormError(error);
 
                     setErrors(errors);
                     resolve(errors);
@@ -176,9 +186,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             })
             .catch((error) => {
 
-                const errors: FormErrors = {
-                    [error.data.status]: error.data.statusText
-                };
+                const errors: FormErrors = getServiceErrorDataValidationErrors(error) || getGenericFormError(error);
 
                 setErrors(errors);
                 resolve(errors);
@@ -430,22 +438,22 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                             isLiked={isLiked}
                                             likeAction={handleLike}
                                             className="u-border-l-theme-8">
-                                            {hasReply &&
-                                                <ul className="u-list-none c-comment_replies-list u-p-0">
-                                                    {repliesComponents[0]}
-                                                </ul>
-                                            }
-                                            {hasReplies &&
-                                                <Accordion
-                                                    id={additionalRepliesAccordionId}
-                                                    toggleOpenChildren={<span>{fewerRepliesLabel}</span>}
-                                                    toggleClosedChildren={<span>{moreRepliesLabel}</span>}
-                                                    toggleClassName="c-comment_replies-toggle u-text-bold">
-                                                    <ul className="u-list-none u-m-0 u-p-0">
-                                                        {repliesComponents.splice(1)}
+                                                {hasReply &&
+                                                    <ul className="u-list-none c-comment_replies-list u-p-0">
+                                                        {repliesComponents[0]}
                                                     </ul>
-                                                </Accordion>
-                                            }
+                                                }
+                                                {hasReplies &&
+                                                    <Accordion
+                                                        id={additionalRepliesAccordionId}
+                                                        toggleOpenChildren={<span>{fewerRepliesLabel}</span>}
+                                                        toggleClosedChildren={<span>{moreRepliesLabel}</span>}
+                                                        toggleClassName="c-comment_replies-toggle u-text-bold">
+                                                        <ul className="u-list-none u-m-0 u-p-0">
+                                                            {repliesComponents.splice(1)}
+                                                        </ul>
+                                                    </Accordion>
+                                                }
                                         </Comment>
                                     </li>
 

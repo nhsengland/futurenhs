@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getStandardServiceHeaders } from '@helpers/fetch';
 import { layoutIds, groupTabIds } from '@constants/routes';
 import { formTypes } from '@constants/forms';
@@ -17,6 +18,7 @@ import { putGroupFolder } from '@services/putGroupFolder';
 import { getGroupFolder } from '@services/getGroupFolder';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
+import { FormErrors } from '@appTypes/form';
 
 import { groupFolderForm } from '@formConfigs/group-folder';
 import { GroupCreateUpdateFolderTemplate } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate';
@@ -51,6 +53,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const formData: ServerSideFormData = selectFormData(context);
                         const requestMethod: string = selectRequestMethod(context);
 
+                        const form: any = props.forms[formTypes.GROUP_FOLDER];
+
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FILES;
                         props.folderId = folderId;
@@ -79,7 +83,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                                 props.etag = etag;
                                 props.folder = groupFolder.data;
-                                props.forms[formTypes.GROUP_FOLDER].initialValues = {
+                                
+                                form.initialValues = {
                                     'name': props.folder?.text?.name,
                                     'description': props.folder?.text?.body
                                 };
@@ -89,7 +94,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                  */
                                 if (formData && requestMethod === requestMethods.POST) {
 
-                                    props.forms[groupFolderForm.id].initialValues = formData.getAll();
+                                    form.initialValues = formData.getAll();
 
                                     const headers = getStandardServiceHeaders({ csrfToken, etag });
 
@@ -106,11 +111,11 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             } catch (error) {
 
-                                if (error.data?.status) {
+                                const validationErrors: FormErrors = getServiceErrorDataValidationErrors(error);
 
-                                    props.forms[groupFolderForm.id].errors = error.data.body || {
-                                        _error: error.data.statusText
-                                    };
+                                if (validationErrors) {
+
+                                    form.errors = validationErrors;
 
                                 } else {
 

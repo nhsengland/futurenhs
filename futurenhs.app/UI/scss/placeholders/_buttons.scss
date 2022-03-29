@@ -5,6 +5,11 @@
     height: auto;
     width: auto;
     cursor: pointer;
+
+    &:focus {
+        border: 0;
+    }
+
 }
 
 
@@ -244,6 +249,10 @@ $button-shadow-size: 4px;
     cursor: pointer;
     box-shadow: none;
 
+    & svg {
+        fill: $color_nhsuk-blue;
+    }
+
     &:link,
     &:visited,
     &:active,
@@ -261,12 +270,22 @@ $button-shadow-size: 4px;
         border-color: $color_shade_nhsuk-blue-50;
         color: $color_nhsuk-white;
         box-shadow: none;
+
+        & svg {
+            fill: $color_nhsuk-white;
+        }
+
     }
 
     &:focus {
         @extend %nhsuk-focused-button;
         border: 2px solid $nhsuk-focus-color !important; //sass-lint:disable-line no-important
         box-shadow: 0 0 0 2px $nhsuk-focus-color, 0 $nhsuk-focus-width 0 2px $nhsuk-focus-text-color;
+
+        & svg {
+            fill: $nhsuk-focus-text-color;
+        }
+
     }
 
     &:active {
@@ -274,6 +293,10 @@ $button-shadow-size: 4px;
         border-color: $color_shade_nhsuk-blue-35 !important; //sass-lint:disable-line no-important
         color: $color_nhsuk-grey-5;
         top: 0;
+
+        & svg {
+            fill: $color_nhsuk-grey-5;
+        }
 
         &:focus {
             box-shadow: none;

@@ -54,7 +54,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return commentData;
         }
 
-        public async Task CreateFolderAsync(Guid userId, Guid groupId, FolderDto folder, CancellationToken cancellationToken)
+        public async Task<Guid> CreateFolderAsync(Guid userId, Guid groupId, FolderDto folder, CancellationToken cancellationToken)
         {
             const string query =
                  @" INSERT INTO  [dbo].[Folder]
@@ -67,6 +67,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                  ,[ParentFolder]
                                  ,[Group_Id]
                                  ,[IsDeleted])
+                    OUTPUT       INSERTED.[Id]
                     VALUES
                                  (@Title
                                  ,@Description
@@ -93,13 +94,15 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-            var result = await dbConnection.ExecuteAsync(queryDefinition);
+            var result = await dbConnection.ExecuteScalarAsync<Guid?>(queryDefinition);
 
-            if (result != 1)
+            if (result.HasValue is false)
             {
                 _logger.LogError("Error: CreateFolderAsync User:{0} request to add folder to group:{1} was not successful", userId, groupId);
                 throw new DBConcurrencyException("Error: User request to add folder was not successful");
             }
+
+            return result.Value;
         }
 
         public async Task UpdateFolderAsync(Guid userId, FolderDto folder, byte[] rowVersion, CancellationToken cancellationToken)

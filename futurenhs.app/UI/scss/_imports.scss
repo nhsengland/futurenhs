@@ -12,6 +12,7 @@
 @import 'node_modules/nhsuk-frontend/packages/components/checkboxes/_checkboxes';
 @import 'node_modules/nhsuk-frontend/packages/components/card/card';
 @import 'node_modules/nhsuk-frontend/packages/components/warning-callout/warning-callout';
+@import 'node_modules/nhsuk-frontend/packages/components/inset-text/inset-text';
 
 @import 'variables/variables';
 @import 'mixins/mixins';
@@ -53,6 +54,7 @@
 @import 'modules/user-meta/user-meta';
 @import 'modules/theme-tokens/theme-tokens';
 @import 'modules/cookie-banner/cookie-banner';
+@import 'modules/page-manager/page-manager';
 
 @import 'objects/objects';
 @import 'utilities/utilities';

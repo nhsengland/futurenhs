@@ -54,7 +54,7 @@ namespace FutureNHS.Api.Controllers
         [HttpGet]
         [Route("users/{userId}/groups/{slug}/files/{id:guid}/download")]
 
-        public async Task<IActionResult> GetFileDownloadUrlAsync(Guid userId,string slug, Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetFileDownloadUrlAsync(Guid userId, string slug, Guid id, CancellationToken cancellationToken)
         {
             var file = await _fileService.GetFileDownloadUrl(userId, slug,id, cancellationToken);
 

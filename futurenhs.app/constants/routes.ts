@@ -15,7 +15,8 @@ export const enum routes {
 }
 
 export const enum queryParams {
-    RETURNURL = 'returnUrl'
+    RETURNURL = 'returnUrl',
+    EDIT = 'edit'
 }
 
 export const enum routeParams {
@@ -24,6 +25,7 @@ export const enum routeParams {
     FILEID = 'fileId',
     MEMBERID = 'memberId',
     DISCUSSIONID = 'discussionId',
+    USERID = 'userId'
 }
 
 export const enum layoutIds {

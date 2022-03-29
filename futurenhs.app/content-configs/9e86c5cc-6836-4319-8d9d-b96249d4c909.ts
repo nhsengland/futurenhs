@@ -1,9 +1,9 @@
 import { GenericPageTextContent } from '@appTypes/content';
 
 export default {
-    title: 'Admin - Manage users',
-    metaDescription: 'Admin dashboard',
-    mainHeading: 'Admin',
-    secondaryHeading: 'Users',
-    createUser: 'Invite user'
+    secondaryHeading: 'User Profile',
+    firstNameLabel: 'First name',
+    lastNameLabel: 'Last name',
+    pronounsLabel: 'Preferred pronouns',
+    emailLabel: 'Email'
 } as GenericPageTextContent;

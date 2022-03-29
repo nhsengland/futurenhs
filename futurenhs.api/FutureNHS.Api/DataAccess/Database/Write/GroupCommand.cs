@@ -35,7 +35,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,[Banned]
                                 ,[RequestToJoinDateUTC]
                                 ,[ApprovedToJoinDateUTC]
-                                ,[RequestToJoinReasonUTC]
+                                ,[RequestToJoinReason]
                                 ,[LockReason]
                                 ,[BanReason]
                                 ,[ApprovingMembershipUser_Id]

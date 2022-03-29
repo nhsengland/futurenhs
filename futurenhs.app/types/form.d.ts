@@ -26,6 +26,7 @@ export interface FormField {
         validFileExtensions?: Array<string>;
         message: string;
     }>;
+    relatedFields?: Record<string, string>;
     className?: string;
     optionClassName?: string;
 }

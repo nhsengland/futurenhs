@@ -3,3 +3,5 @@ export const enum cookiePreferences {
     ACCEPTED = 'accepted',
     REJECTED = 'rejected'
 }
+
+export const authCookie: string = 'MvcForumAuth';

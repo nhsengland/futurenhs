@@ -1,0 +1,15 @@
+.c-page-manager-block {
+    border: 2px solid $color_nhsuk-grey-2;
+    background-color: $color_nhsuk-grey-5;
+
+    &_header {
+        padding: $nhsuk-spacing-point-4 $nhsuk-spacing-point-5;
+        color: $white;
+        background-color: $color_nhsuk-grey-2;
+    }
+
+    &_body {
+        padding: $nhsuk-spacing-point-6 $nhsuk-spacing-point-5;
+    }
+
+}

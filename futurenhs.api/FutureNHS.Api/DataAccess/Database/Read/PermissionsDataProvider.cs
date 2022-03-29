@@ -25,6 +25,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/delete");
+                    permissions.Add($"{Schema}/members/{DefaultApiVerison}/list");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/delete");
@@ -65,9 +66,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/delete");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/add");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
+
                     break;
                 case "Standard Members":
-                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/download");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/view");
                     break;
@@ -88,7 +90,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             {
                 case "Admin":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
-                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
@@ -106,9 +107,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/delete");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
                     break;
                 case "Standard Members":
-                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
@@ -116,8 +118,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/download");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/view");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
                     break;
                 case "Guest":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
                     break;
                 default:
                     break;
@@ -134,7 +138,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             {
                 case "Admin":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
-                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
@@ -152,9 +155,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/delete");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
                     break;
                 case "Standard Members":
-                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
@@ -162,8 +166,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/download");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/view");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
                     break;
                 case "Guest":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
                     break;
                 default:
                     break;

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { formTypes } from '@constants/forms';
+import { getServiceErrorDataValidationErrors } from '@services/index';
+import { getGenericFormError } from '@helpers/util/form';
 import { selectFormDefaultFields, selectFormInitialValues, selectFormErrors } from '@selectors/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
@@ -51,21 +53,10 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
             })
             .catch((error) => {
 
-                if(error.data){
-
-                    setErrors({
-                        [error.data.status]: error.data.statusText
-                    });
+                const errors: FormErrors = getServiceErrorDataValidationErrors(error) || getGenericFormError(error);
     
-                } else {
-    
-                    setErrors({
-                        ['Error']: error.message
-                    });
-    
-                }
-    
-                resolve({});
+                setErrors(errors);
+                resolve(errors);
 
             });
 

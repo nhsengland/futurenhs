@@ -72,8 +72,10 @@ export const updateGroupForm: FormConfig = {
                         label: 'Logo (optional)',
                         hint: 'Please upload your logo or an icon. If not, we will use the existing image.'
                     },
-                    component: 'input',
-                    inputType: 'file'
+                    component: 'imageUpload',
+                    relatedFields: {
+                        fileId: 'ImageId'
+                    }
                 },
                 {
                     name: 'ImageId',

@@ -2,7 +2,7 @@ import { Image } from '@appTypes/image';
 import { Member } from '@appTypes/member';
 
 export interface Props {
-    member: Member;
+    profile: Member;
     text: {
         heading: string;
         firstNameLabel: string;

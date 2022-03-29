@@ -44,7 +44,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 	                SELECT		
                                     groups.[Id],
 	                                groups.[Name],
-	                                groups.[Description],
+	                                groups.[Subtitle] AS Description,
 	                                LastUpdatedAtUtc = groups.[CreatedAtUtc],
 	                                GroupId = groups.[Id],
 	                                [Type] = 'group'
@@ -55,16 +55,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     (
                                     groups.[Name] 
                     LIKE		    @Term 
-                    OR			    groups.[Description] 
-                    LIKE		    @Term 
                     OR			    groups.[Subtitle] 
                     LIKE		    @Term 
-                    OR			    groups.[PageTitle] 
-                    LIKE		    @Term 
-                    OR			    groups.[Introduction] 
-                    LIKE		    @Term 
-                    OR			    groups.[AboutUs] 
-                    LIKE		    @Term
+   
                                     )
 	                UNION ALL
 	                SELECT		
@@ -98,7 +91,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
 	                FROM	        dbo.[Comment] p
 	                JOIN	        dbo.[Discussion] t 
-                    ON              t.[Id] = p.[Discussion_Id]
+                    ON              t.[Id] = p.[Entity_Id]
 	                WHERE	
                                     (
                                     p.[Content] 
@@ -132,7 +125,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
 	                FROM	        dbo.[Discussion] t
                     JOIN            dbo.[Comment] p
-                    ON              p.[Discussion_Id] = t.[Id]
+                    ON              p.[Entity_Id] = t.[Id]
 	                WHERE	
                                     (
                                     t.[Title] 
@@ -162,16 +155,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     (
                                     groups.[Name] 
                     LIKE		    @Term 
-                    OR			    groups.[Description] 
-                    LIKE		    @Term 
                     OR			    groups.[Subtitle] 
                     LIKE		    @Term 
-                    OR			    groups.[PageTitle] 
-                    LIKE		    @Term 
-                    OR			    groups.[Introduction] 
-                    LIKE		    @Term 
-                    OR			    groups.[AboutUs] 
-                    LIKE		    @Term
                                     )
                     ) 
                     AS              Groups,
@@ -198,7 +183,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 	                SELECT		    COUNT(*) 
 	                FROM	        dbo.[Comment] p
 	                JOIN	        dbo.[Discussion] t 
-                    ON              t.[Id] = p.[Discussion_Id]
+                    ON              t.[Id] = p.[Entity_Id]
 	                WHERE	
                                     (
                                     p.[Content] 
@@ -245,13 +230,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 Limit = Convert.ToInt32(limit),
                 Term = $"%{term}%"
             });
-           
+
             var results = reader.Read<SearchResult, GroupNavProperty, SearchResult>(
                 (result, group) =>
                 {
                     if (group is not null)
                     {
-                        return result with { Group  = group };
+                        return result with { Group = group };
                     }
 
                     return result;
@@ -259,10 +244,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 }, splitOn: $"{nameof(GroupNavProperty.Id)}");
 
             var totalByType = await reader.ReadFirstAsync<SearchResultTotalsByType>();
-            var searchResults = new SearchResults {Results = results, TotalsByType = totalByType};
+            var searchResults = new SearchResults { Results = results, TotalsByType = totalByType };
 
             var totalCount = Convert.ToUInt32(totalByType.Groups + totalByType.Files + totalByType.Folders + totalByType.Discussions + totalByType.Comments);
-          
+
 
             return (totalCount, searchResults);
         }

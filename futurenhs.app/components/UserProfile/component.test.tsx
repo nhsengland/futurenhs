@@ -5,7 +5,7 @@ import { UserProfile } from './index';
 import { Props } from './interfaces';
 
 const testProps: Props = {
-    member: {
+    profile: {
         firstName: 'Mock',
         lastName: 'Mock',
         pronouns: 'Mock',

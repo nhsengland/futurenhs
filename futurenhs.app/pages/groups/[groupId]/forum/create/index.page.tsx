@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps';
+import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getStandardServiceHeaders } from '@helpers/fetch';
 import { routeParams } from '@constants/routes';
 import { requestMethods } from '@constants/fetch';
@@ -15,6 +16,7 @@ import { selectFormData, selectCsrfToken, selectParam, selectUser, selectRequest
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
+import { FormErrors } from '@appTypes/form';
 
 import { createDiscussionForm } from '@formConfigs/create-discussion';
 import { GroupCreateDiscussionTemplate } from '@components/_pageTemplates/GroupCreateDiscussionTemplate';
@@ -48,6 +50,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const formData: ServerSideFormData = selectFormData(context);
                         const requestMethod: requestMethods = selectRequestMethod(context);
 
+                        const form: any = props.forms[createDiscussionForm.id];
+
                         props.layoutId = layoutIds.GROUP;
                         props.tabId = groupTabIds.FORUM;
                         props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`;
@@ -68,7 +72,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         if (formData && requestMethod === requestMethods.POST) {
 
-                            props.forms[createDiscussionForm.id].initialValues = formData;
+                            form.initialValues = formData;
 
                             try {
 
@@ -85,15 +89,17 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             } catch (error) {
 
-                                if (error.data?.status) {
+                                const validationErrors: FormErrors = getServiceErrorDataValidationErrors(error);
 
-                                    props.forms[createDiscussionForm.id].errors = error.data.body || {
-                                        _error: error.data.statusText
-                                    };
+                                if (validationErrors) {
+
+                                    form.errors = validationErrors;
+
+                                } else {
+
+                                    return handleSSRErrorProps({ props, error });
 
                                 }
-
-                                return handleSSRErrorProps({ props, error });
 
                             }
 

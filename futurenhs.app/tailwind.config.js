@@ -5,7 +5,7 @@ const themeColors = {
     ['theme-0']: 'rgba(0, 0, 0, 1)',
     ['theme-1']: '#fff',
     ['theme-2']: 'rgba(247, 249, 250, 1)',
-    ['theme-3']: 'rgba(246, 246, 246, 1)',
+    ['theme-3']: '#f0f4f5',
     ['theme-4']: '#d8dde0',
     ['theme-5']: '#aeb7bd',
     ['theme-6']: '#768692',
@@ -36,6 +36,7 @@ Object.keys(themeColors).map((colorName) => {
 }
 );
 
+
 module.exports = {
     prefix: 'u-',
     purge: {
@@ -52,7 +53,7 @@ module.exports = {
             "./components/**/*.tsx",
             "./form-configs/**/*.ts"
         ],
-        safelist: [/bg-theme-/, /text-theme-/, /border-theme-/, /fill-theme-/,  /(border-[lrtb])((\-\w+))+/gi]
+        safelist: [/bg-theme-\d{1,2}$/, /text-theme-\d{1,2}$/, /border-theme-\d{1,2}$/, /fill-theme-\d{1,2}$/,  /border-[lrtb]-theme-\d{1,2}-?\w+$/g]
     },
     darkMode: false,
     theme: {

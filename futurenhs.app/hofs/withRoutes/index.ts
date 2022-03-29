@@ -23,6 +23,7 @@ export const withRoutes = (config: HofConfig, dependencies?: {}): GetServerSideP
     
             props.routes = getJsonSafeObject({
                 object: {
+                    siteRoot: '/',
                     groupRoot: groupIndexRoute ? groupIndexRoute : null,
                     groupUpdate: groupIndexRoute ? `${groupIndexRoute}/update` : null,
                     groupJoin: groupIndexRoute ? `${groupIndexRoute}/join` : null,

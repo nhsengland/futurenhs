@@ -72,7 +72,6 @@
     <Build Include="dbo\Tables\BannedEmail.sql" />
     <Build Include="dbo\Tables\BannedWord.sql" />
     <Build Include="dbo\Tables\Category.sql" />
-    <Build Include="dbo\Tables\Favourite.sql" />
     <Build Include="dbo\Tables\File.sql" />
     <Build Include="dbo\Tables\FileStatus.sql" />
     <Build Include="dbo\Tables\Folder.sql" />
@@ -92,21 +91,23 @@
     <Build Include="dbo\Tables\Poll.sql" />
     <Build Include="dbo\Tables\PollAnswer.sql" />
     <Build Include="dbo\Tables\PollVote.sql" />
-    <Build Include="dbo\Tables\Comment.sql" />
     <Build Include="dbo\Tables\Section.sql" />
     <Build Include="dbo\Tables\Settings.sql" />
     <Build Include="dbo\Tables\SystemPage.sql" />
     <Build Include="dbo\Tables\Discussion.sql" />
-    <Build Include="dbo\Tables\Discussion_Tag.sql" />
+    <Build Include="dbo\Tables\Entity_Tag.sql" />
     <Build Include="dbo\Tables\DiscussionNotification.sql" />
-    <Build Include="dbo\Tables\DiscussionTag.sql" />
+    <Build Include="dbo\Tables\Tag.sql" />
     <Build Include="dbo\Tables\UploadedFile.sql" />
-    <Build Include="dbo\Tables\Like.sql" />
     <Build Include="dbo\Stored Procedures\sp_msforeachtable.sql" />
     <Build Include="dbo\Stored Procedures\usp_delete_folder.sql" />
     <Build Include="dbo\Tables\Image.sql" />
     <None Include="Data\LocalDevSeedData.sql" />
     <Build Include="dbo\Tables\GroupSite.sql" />
+    <Build Include="dbo\Tables\Entity.sql" />
+    <Build Include="dbo\Tables\Comment.sql" />
+    <Build Include="dbo\Tables\Entity_Like.sql" />
+    <Build Include="dbo\Tables\Entity_Favourite.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " Include="Data\SeedData.sql" />

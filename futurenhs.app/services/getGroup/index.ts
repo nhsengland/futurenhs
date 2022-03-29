@@ -66,7 +66,7 @@ export const getGroup = async ({
             src: `${apiData.image?.source}`,
             height: apiData?.image?.height ?? null,
             width: apiData?.image?.width ?? null,
-            altText: 'TBC'
+            altText: 'Group logo'
         } : null,
         imageId: apiData.imageId,
         themeId: apiData.themeId

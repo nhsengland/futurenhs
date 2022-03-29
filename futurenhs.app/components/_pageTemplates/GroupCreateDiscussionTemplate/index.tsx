@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { getServiceErrorDataValidationErrors } from '@services/index';
+import { getGenericFormError } from '@helpers/util/form';
 import { selectFormDefaultFields, selectFormErrors, selectFormInitialValues } from '@selectors/forms';
 import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
@@ -49,9 +51,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 
         } catch (error) {
 
-            const errors: FormErrors = {
-                [error.data.status]: error.data.statusText
-            };
+            const errors: FormErrors = getServiceErrorDataValidationErrors(error) || getGenericFormError(error);
 
             setErrors(errors);
 
@@ -88,7 +88,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                             submitAction={handleSubmit}
                             cancelHref={routes.groupForumRoot}
                             bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1">
-                            <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                                <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                         </FormWithErrorSummary>
                     </LayoutColumn>
                 </LayoutColumnContainer>

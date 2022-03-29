@@ -4,6 +4,7 @@ using FutureNHS.Api.Models.Folder;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
@@ -18,20 +19,22 @@ namespace FutureNHS.Api.Controllers
         private readonly IFolderService _folderService;
         private readonly IPermissionsService _permissionsService;
         private readonly IEtagService _etagService;
+        private readonly IHtmlSanitizer _htmlSanitizer;
+
 
         public FolderController(ILogger<FolderController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IFolderService folderService,
-            IPermissionsService permissionsService, IEtagService etagService)
+            IPermissionsService permissionsService, IEtagService etagService, IHtmlSanitizer htmlSanitizer)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
             _fileAndFolderDataProvider = fileAndFolderDataProvider ?? throw new ArgumentNullException(nameof(fileAndFolderDataProvider)); ;
             _folderService = folderService ?? throw new ArgumentNullException(nameof(folderService)); ;
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService)); ;
             _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
+            _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
         }
 
         [HttpGet]
         [Route("users/{userId}/groups/{slug}/folders")]
-
         public async Task<IActionResult> GetFolderContentsAsync(string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
@@ -44,31 +47,46 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [Route("users/{userId:guid}/groups/{slug}/folders")]
-
         public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken)
         {
-            await _folderService.CreateFolderAsync(userId, slug, folder, cancellationToken);
+            var sanitisedFolder = new Folder
+            {
+                Title = _htmlSanitizer.Sanitize(folder.Title),
+                Description = _htmlSanitizer.Sanitize(folder.Description)
+            };
 
-            return Ok();
+            var folderId = await _folderService.CreateFolderAsync(userId, slug, sanitisedFolder, cancellationToken);
+
+            return Ok(folderId);
         }
 
         [HttpPost]
         [Route("users/{userId:guid}/groups/{slug}/folders/{id:guid}")]
-
         public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Guid id, Folder folder, CancellationToken cancellationToken)
         {
-            await _folderService.CreateChildFolderAsync(userId, slug, id, folder, cancellationToken);
+            var sanitisedFolder = new Folder
+            {
+                Title = _htmlSanitizer.Sanitize(folder.Title),
+                Description = _htmlSanitizer.Sanitize(folder.Description)
+            };
 
-            return Ok();
+            var folderId = await _folderService.CreateChildFolderAsync(userId, slug, id, sanitisedFolder, cancellationToken);
+
+            return Ok(folderId);
         }
 
         [HttpPut]
         [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}")]
-
         public async Task<IActionResult> UpdateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, CancellationToken cancellationToken)
         {
+            var sanitisedFolder = new Folder
+            {
+                Title = _htmlSanitizer.Sanitize(folder.Title),
+                Description = _htmlSanitizer.Sanitize(folder.Description)
+            };
+
             var rowVersion = _etagService.GetIfMatch();
-            await _folderService.UpdateFolderAsync(userId, slug, folderId, folder, rowVersion, cancellationToken);
+            await _folderService.UpdateFolderAsync(userId, slug, folderId, sanitisedFolder, rowVersion, cancellationToken);
 
             return Ok();
         }
@@ -90,7 +108,6 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("users/{userId}/groups/{slug}/folders/{id:guid}/contents")]
-
         public async Task<IActionResult> GetFolderContentsAsync(Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;

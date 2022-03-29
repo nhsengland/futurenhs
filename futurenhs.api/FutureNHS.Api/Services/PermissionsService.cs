@@ -7,6 +7,7 @@ namespace FutureNHS.Api.Services
     public class PermissionsService : IPermissionsService
     {
         private const string GuestRole = "Guest";
+        private const string AdminRole = "Admin";
         private const string Approved = "approved";
         private const string Banned = "banned";
         private const string Locked = "locked";
@@ -41,6 +42,10 @@ namespace FutureNHS.Api.Services
             var permissions = new List<string>();
 
             permissions.AddRange(await GetSiteUserPermissionsForGroupRoles(userRoles));
+
+            if(userRoles.Any(x=> x == AdminRole))
+                return permissions.Distinct();
+
             permissions.AddRange(await GetUserPermissionsForGroupRoles(groupUserRoles, groupId));
             
             return permissions.Distinct();
@@ -63,6 +68,10 @@ namespace FutureNHS.Api.Services
             var permissions = new List<string>();
 
             permissions.AddRange(await GetSiteUserPermissionsForGroupRoles(userRoles));
+
+            if (userRoles.Any(x => x == AdminRole))
+                return permissions.Distinct();
+
             permissions.AddRange(await GetUserPermissionsForGroupRoles(groupUserRoles, slug));
 
             return permissions.Distinct();
@@ -84,6 +93,13 @@ namespace FutureNHS.Api.Services
             var permissions = await GetSitePermissionsForRoles(userRoles.ToList());
 
             return permissions.Distinct();
+        }
+
+        public async Task<bool> UserCanPerformActionAsync(Guid userId, string action, CancellationToken cancellationToken)
+        {
+            var roles = await GetUserPermissionsAsync(userId, cancellationToken);
+
+            return roles != null && roles.Any(x => x == action);
         }
 
         public async Task<bool> UserCanPerformActionAsync(Guid userId,Guid groupId, string action, CancellationToken cancellationToken)
