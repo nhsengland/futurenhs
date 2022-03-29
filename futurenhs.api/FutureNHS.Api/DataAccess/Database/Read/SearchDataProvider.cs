@@ -30,7 +30,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             }
 
             const string query =
-                @$" SELECT    
+                @$"SELECT    
                                     [{nameof(SearchResult.Type)}] = results.[Type],
 		                            [{nameof(SearchResult.Id)}] = results.[Id],
 		                            [{nameof(SearchResult.Name)}] = results.[Name],
@@ -82,7 +82,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     )
 	                UNION ALL
 	                SELECT	    
-                                    p.[Id],
+                                    p.[Entity_Id],
                                     t.[Title],
                                     p.[Content],
                                     ISNULL(p.[ModifiedAtUtc], p.[CreatedAtUtc]),
@@ -91,7 +91,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
 	                FROM	        dbo.[Comment] p
 	                JOIN	        dbo.[Discussion] t 
-                    ON              t.[Id] = p.[Entity_Id]
+                    ON              p.[Parent_EntityId] = t.[Entity_Id]
 	                WHERE	
                                     (
                                     p.[Content] 
@@ -116,21 +116,19 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     LIKE @Term
                                     )
 	                UNION ALL
-	                SELECT	        t.[Id],
+	                SELECT	        t.[Entity_Id],
                                     t.[Title],
-                                    p.[Content],
+                                    t.[Content],
                                     t.[CreatedAtUtc],
                                     t.[Group_Id],
                                     'discussion'
 
 	                FROM	        dbo.[Discussion] t
-                    JOIN            dbo.[Comment] p
-                    ON              p.[Entity_Id] = t.[Id]
 	                WHERE	
                                     (
                                     t.[Title] 
                     LIKE            @Term
-                                    OR p.[Content] 
+                                    OR t.[Content] 
                                     LIKE @Term
                                     )
 					) results
@@ -181,9 +179,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     
 					(
 	                SELECT		    COUNT(*) 
-	                FROM	        dbo.[Comment] p
-	                JOIN	        dbo.[Discussion] t 
-                    ON              t.[Id] = p.[Entity_Id]
+	                FROM	        dbo.[Discussion] t 
+					JOIN			dbo.[Comment] p
+                    ON              p.[Parent_EntityId] = t.[Entity_Id]
 	                WHERE	
                                     (
                                     p.[Content] 
@@ -217,6 +215,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     (
                                     t.[Title] 
                     LIKE            @Term
+                    OR              t.[Content] 
+                                    LIKE @Term
                                     ) 
 									
 					) 
