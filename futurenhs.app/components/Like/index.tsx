@@ -51,10 +51,11 @@ export const Like: (props: Props) => JSX.Element = ({
     
             likeTimeOut.current = window.setTimeout(() => {
 
-                //setisProcessing(true);
-                likeAction?.(targetId, !hasLiked);
+                const actionToSet: boolean = !hasLiked;
+
+                likeAction?.(targetId, actionToSet);
     
-            }, 2000);
+            }, 1000);
 
         }
 
