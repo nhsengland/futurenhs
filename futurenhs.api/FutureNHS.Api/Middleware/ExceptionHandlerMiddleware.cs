@@ -1,4 +1,5 @@
-﻿using FutureNHS.Api.Exceptions;
+﻿using System.Data;
+using FutureNHS.Api.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -58,6 +59,10 @@ namespace FutureNHS.Api.Middleware
                 case ValidationException validationException:
                     httpStatusCode = HttpStatusCode.BadRequest;
                     result = JsonSerializer.Serialize(new { errors = validationException.Errors });
+                    break;
+                case DBConcurrencyException dbConcurrencyException:
+                    httpStatusCode = HttpStatusCode.Conflict;
+                    result = JsonSerializer.Serialize(new { errors = dbConcurrencyException.Message });
                     break;
                 default:
                     result = JsonSerializer.Serialize(new { error = exception.Message });
