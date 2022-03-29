@@ -82,7 +82,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     )
 	                UNION ALL
 	                SELECT	    
-                                    p.[Entity_Id],
+                                    t.[Entity_Id],
                                     t.[Title],
                                     p.[Content],
                                     ISNULL(p.[ModifiedAtUtc], p.[CreatedAtUtc]),
