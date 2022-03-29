@@ -24,7 +24,11 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
     className
 }) => {
 
+    const fileIdInput: any = useRef(null);
+    const initialFileIdValue: any = useRef(null);
+
     const [shouldRenderClearFileInput, setShouldRenderClearFileInput] = useState(false);
+    const [shouldDisableClearFileInput, setShouldDisableClearFileInput] = useState(false);
 
     const { label, hint } = text ?? {};
 
@@ -55,11 +59,21 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
         shouldRenderError ? generatedIds.errorLabel : null
     ]);
 
+    const handleClearFile = (event: any) => {
+
+        event.preventDefault();
+
+        fileIdInput.current.value = '';
+        setShouldRenderClearFileInput(false);
+
+    }
+
     useEffect(() => {
 
-        const fileIdValue: string = (document.getElementById(relatedFields?.fileId) as any)?.value;
+        fileIdInput.current = document.getElementsByName(relatedFields?.fileId)[0];
+        initialFileIdValue.current = fileIdInput.current.value;
 
-        if(fileIdValue){
+        if(initialFileIdValue.current){
 
             setShouldRenderClearFileInput(true);
 
@@ -94,12 +108,10 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
                 onChange={onChange}
                 className={generatedClasses.input} />
             {shouldRenderClearFileInput &&
-                <div className="nhsuk-checkboxes">
-                    <div className="nhsuk-checkboxes__item">
-                        <input className="nhsuk-checkboxes__input" id={generatedIds.clearFile} name={generatedIds.clearFile} type="checkbox" value="true" />
-                        <label className="nhsuk-label nhsuk-checkboxes__label" htmlFor={generatedIds.clearFile}>Clear existing image</label>
-                    </div>
-                </div>
+                <button 
+                    onClick={handleClearFile} 
+                    className="o-link-button"
+                    disabled={shouldDisableClearFileInput}>Clear existing image</button>
             }
         </div>
 

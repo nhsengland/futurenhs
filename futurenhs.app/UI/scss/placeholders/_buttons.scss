@@ -5,6 +5,11 @@
     height: auto;
     width: auto;
     cursor: pointer;
+
+    &:focus {
+        border: 0;
+    }
+
 }
 
 

@@ -84,7 +84,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 'ImageId': group.data.imageId,
                                 'ThemeId': group.data.themeId && themes[group.data.themeId] ? [group.data.themeId] : [defaultThemeId]
                             };
-
+                            
                             /**
                              * Handle server-side form post
                              */
