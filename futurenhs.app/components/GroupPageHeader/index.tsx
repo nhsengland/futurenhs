@@ -4,6 +4,8 @@ import classNames from 'classnames';
 
 import { Link } from '@components/Link';
 import { themes } from '@constants/themes';
+import { cacheNames } from '@constants/caches';
+import { clearClientCaches } from '@helpers/util/data';
 import { selectTheme } from '@selectors/themes';
 import { queryParams } from '@constants/routes';
 import { actions as actionsConstants } from '@constants/actions';
@@ -147,18 +149,32 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const handleLeaveGroupCancel = () => setIsLeaveGroupModalOpen(false);
     const handleLeaveGroupConfirm = () => {
         
-        router.push(`${routes.groupLeave}?${queryParams.RETURNURL}=${router?.asPath}`);
-        setIsLeaveGroupModalOpen(false);
+        clearClientCaches([cacheNames.NEXT_DATA]).then(() => {
+
+            router.push(`${routes.groupLeave}?${queryParams.RETURNURL}=${router?.asPath}`);
+            setIsLeaveGroupModalOpen(false);
+
+        });
         
     };
 
+    const handleJoinGroup = (event: any) => {
+        
+        event.preventDefault();
+
+        clearClientCaches([cacheNames.NEXT_DATA]).then(() => {
+
+            router.push(routes.groupJoin);
+
+        });
+        
+    };
 
     useEffect(() => {
 
         setIsMenuAccordionOpen(isDesktop);
 
     }, [isDesktop]);
-
 
     return (
 
@@ -191,9 +207,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         <LayoutColumn tablet={4} desktop={3} className={generatedClasses.actionsWrapper}>
                             {shouldRenderGroupJoinLink 
                             
-                                ?   <Link href={`${routes.groupJoin}`}>
-                                        <a className="c-button u-w-full u-border-2 u-border-theme-1">Join Group</a>
-                                    </Link>
+                                ?   <a href={routes.groupJoin} onClick={handleJoinGroup} className="c-button u-w-full u-border-2 u-border-theme-1">Join Group</a>
 
                                 :   (getActionNavMenuList().length > 0)
     

@@ -1,4 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { cacheNames } from '@constants/caches';
+import { clearClientCaches } from '@helpers/util/data';
 import { services } from '@constants/services';
 import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
 import { ServiceError } from '..';
@@ -52,6 +54,8 @@ export const putGroup = async ({
         });
 
     }
+
+    await clearClientCaches([cacheNames.NEXT_DATA]);
 
     return null;
 

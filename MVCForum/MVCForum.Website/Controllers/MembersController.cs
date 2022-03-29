@@ -707,7 +707,7 @@
                     }
 
                     // If not just go to home page
-                    return RedirectToAction("Index", "Home", new { area = string.Empty });
+                    return Redirect(_configurationProvider.ApplicationGatewayFqdn);
                 }
 
                 // Add the error if we get here

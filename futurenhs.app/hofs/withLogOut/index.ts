@@ -1,6 +1,8 @@
 import { GetServerSideProps } from 'next';
 
 import { authCookie } from '@constants/cookies';
+import { cacheNames } from '@constants/caches';
+import { clearClientCaches } from '@helpers/util/data';
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
 
 export const withLogOut = (config: HofConfig, dependencies?: {}): GetServerSideProps => {
@@ -21,6 +23,8 @@ export const withLogOut = (config: HofConfig, dependencies?: {}): GetServerSideP
             }
     
         }
+
+        await clearClientCaches([cacheNames.NEXT_DATA]);
 
         return await getServerSideProps(context);
 

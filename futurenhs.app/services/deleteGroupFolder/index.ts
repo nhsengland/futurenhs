@@ -1,4 +1,6 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
+import { cacheNames } from '@constants/caches';
+import { clearClientCaches } from '@helpers/util/data';
 import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
 import { services } from '@constants/services';
 import { ServiceError } from '..';
@@ -52,6 +54,8 @@ export const deleteGroupFolder = async ({
         });
 
     }
+
+    await clearClientCaches([cacheNames.NEXT_DATA]);
 
     return null;
 

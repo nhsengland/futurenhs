@@ -1,5 +1,7 @@
 export interface Routes {
     siteRoot: string,
+    groupsRoot: string;
+    groupsDiscover: string;
     groupRoot: string;
     groupJoin: string;
     groupLeave: string;

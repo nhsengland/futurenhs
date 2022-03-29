@@ -29,3 +29,39 @@
     return string;
 
 };
+
+/**
+ * Clears client service worker cache
+ * Useful when non-GET requests will affect a subsequent GET request
+ */
+export const clearClientCaches = async (cacheNames: Array<string>): Promise<void> => {
+
+    return new Promise((resolve) => {
+
+        if(typeof window !== 'undefined' && window.caches){
+
+            window.caches.keys().then((names) => {
+                
+                for (let name of names) {
+
+                    if(cacheNames.includes(name)){
+                        
+                        caches.delete(name);
+
+                    }
+
+                }
+
+                resolve();
+
+            });
+    
+        } else {
+
+            resolve();
+
+        }
+
+    });
+
+};
