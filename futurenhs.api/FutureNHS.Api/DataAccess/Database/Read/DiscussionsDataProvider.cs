@@ -39,14 +39,14 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(DiscussionData.CreatedById)}]          = discussion.CreatedBy,
                                 [{nameof(DiscussionData.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
                                 [{nameof(DiscussionData.CreatedBySlug)}]        = createdByUser.Slug,
-                                [{nameof(DiscussionData.LastComment)}]			= latestComment.Id,
+                                [{nameof(DiscussionData.LastComment)}]			= latestComment.Entity_Id,
                                 [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(latestComment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(DiscussionData.LastCommenterId)}]      = latestComment.CreatedBy,
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
 								[{nameof(DiscussionData.Views)}]				= discussion.Views,
-								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Entity_Comment WHERE Entity_Id = discussion.Entity_Id )
+								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Parent_EntityId = discussion.Entity_Id )
                     
                     FROM        Discussion discussion
 					JOIN        [Group] groups 
@@ -57,10 +57,11 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					LEFT JOIN   
                                 (
 					            SELECT TOP 1 *
-					            FROM Entity_Comment 
+					            FROM Comment 
+                                WHERE ThreadId IS NULL
 					            ORDER BY CreatedAtUTC
 					            ) 
-                                latestComment ON latestComment.Entity_Id = discussion.Entity_Id
+                                latestComment ON latestComment.Parent_EntityId = discussion.Entity_Id
 
                     LEFT JOIN   MembershipUser lastCommentUser 
                     ON          lastCommentUser.Id = latestComment.CreatedBy
@@ -115,14 +116,14 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(DiscussionData.CreatedById)}]          = discussion.CreatedBy,
                                 [{nameof(DiscussionData.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
                                 [{nameof(DiscussionData.CreatedBySlug)}]        = createdByUser.Slug,
-                                [{nameof(DiscussionData.LastComment)}]			= latestComment.Id,
+                                [{nameof(DiscussionData.LastComment)}]			= latestComment.Entity_Id,
                                 [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(latestComment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(DiscussionData.LastCommenterId)}]      = latestComment.CreatedBy,
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
 								[{nameof(DiscussionData.Views)}]				= discussion.Views,
-								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Entity_Comment WHERE Entity_Id = discussion.Entity_Id)
+								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Parent_EntityId = discussion.Entity_Id)
                     
                     FROM        Discussion discussion
                     JOIN        [Group] groups 
@@ -134,10 +135,11 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					LEFT JOIN   
                                 (
 					            SELECT TOP 1 *
-					            FROM Entity_Comment 
+					            FROM Comment 
+                                WHERE ThreadId IS NULL
 					            ORDER BY CreatedAtUTC
 					            ) 
-                                latestComment ON latestComment.Entity_Id = discussion.Entity_Id
+                                latestComment ON latestComment.Parent_EntityId = discussion.Entity_Id
 
                     LEFT JOIN   MembershipUser lastCommentUser 
                     ON          lastCommentUser.Id = latestComment.CreatedBy

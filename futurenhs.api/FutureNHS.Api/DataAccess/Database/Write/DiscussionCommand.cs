@@ -23,19 +23,18 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         {
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-            using (var connection = new SqlConnection(dbConnection.ConnectionString))
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
 
-            {
-                const string insertEntity =
-                   @"  
+            const string insertEntity =
+                @"  
                     INSERT INTO  [dbo].[Entity]
                                  ([Id])
                     VALUES
                                  (@EntityId)
                    ";
 
-                const string insertDiscussion =
-                 @" INSERT INTO     [dbo].[Discussion]
+            const string insertDiscussion =
+                @" INSERT INTO     [dbo].[Discussion]
                                     ([Entity_Id]
                                     ,[Title]
                                     ,[CreatedAtUtc]
@@ -58,43 +57,40 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                     ,NULL
                                     ,@Content)";
 
-                connection.Open();
+            await connection.OpenAsync(cancellationToken);
 
-                using (var transaction = connection.BeginTransaction())
-                {
-                    var insertEntityResult = connection.Execute(insertEntity, new
-                    {
-                        EntityId = discussion.Id,
-                    }, transaction: transaction);
+            var transaction = await connection.BeginTransactionAsync(cancellationToken);
 
-                    var insertDiscussionResult = connection.Execute(insertDiscussion, new
-                    {
-                        Id = discussion.Id,
-                        Title = discussion.Title,
-                        CreatedAt = discussion.CreatedAtUTC,
-                        CreatedBy = discussion.CreatedBy,
-                        IsSticky = discussion.IsSticky,
-                        IsLocked = discussion.IsLocked,
-                        Group = discussion.GroupId,
-                        Content = discussion.Content
-                    }, transaction: transaction);
+            var insertEntityResult = await connection.ExecuteAsync(insertEntity, new
+            {
+                EntityId = discussion.Id,
+            }, transaction: transaction);
 
-                    if (insertEntityResult != 1)
-                    {
-                        _logger.LogError("Error: User request to create was not successful.", insertEntity);
-                        throw new DataException("Error: User request to create was not successful.");
-                    }
+            var insertDiscussionResult = await connection.ExecuteAsync(insertDiscussion, new
+            {
+                Id = discussion.Id,
+                Title = discussion.Title,
+                CreatedAt = discussion.CreatedAtUTC,
+                CreatedBy = discussion.CreatedBy,
+                IsSticky = discussion.IsSticky,
+                IsLocked = discussion.IsLocked,
+                Group = discussion.GroupId,
+                Content = discussion.Content
+            }, transaction: transaction);
 
-                    if (insertDiscussionResult != 1)
-                    {
-                        _logger.LogError("Error: User request to create was not successful.", insertDiscussion);
-                        throw new DataException("Error: User request to create was not successful.");
-                    }
-
-                    transaction.Commit();
-                }
-
+            if (insertEntityResult != 1)
+            {
+                _logger.LogError("Error: User request to create was not successful.", insertEntity);
+                throw new DataException("Error: User request to create was not successful.");
             }
+
+            if (insertDiscussionResult != 1)
+            {
+                _logger.LogError("Error: User request to create was not successful.", insertDiscussion);
+                throw new DataException("Error: User request to create was not successful.");
+            }
+
+            await transaction.CommitAsync(cancellationToken);
         }
     }
 }

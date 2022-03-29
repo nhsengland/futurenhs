@@ -22,31 +22,17 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             const string query =
 
                 @"  
-                    BEGIN TRAN
-                    BEGIN TRY
-
 	                INSERT INTO  [dbo].[Entity_Like]
-                                 ([Comment_Id]
-                                 ,[Entity_Id]
+                                 ([Entity_Id]
                                  ,[MembershipUser_Id]
                                  ,[CreatedAtUTC])
                     VALUES
-                                 (@Comment_Id
-                                 ,@Entity_Id
+                                 (@Entity_Id
                                  ,@MembershipUserId
-                                 ,@CreatedAtUTC)
-	
-	                COMMIT TRAN;
-
-                    END TRY
-                    BEGIN CATCH
-	                    PRINT ERROR_MESSAGE();
-	                    ROLLBACK TRAN;
-                    END CATCH";
+                                 ,@CreatedAtUTC)";
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                Comment_Id = entityLike.CommentId,
                 Entity_Id = entityLike.EntityId,
                 MembershipUserId = entityLike.MembershipUserId,
                 CreatedAtUTC = entityLike.CreatedAtUTC
@@ -68,26 +54,14 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             const string query =
 
                 @"  
-                    BEGIN TRAN
-                    BEGIN TRY
-
 	                DELETE FROM   [dbo].[Entity_Like]
                     WHERE         
-                                  [Comment_Id] = @Comment_Id
-                    AND           [MembershipUser_Id] = @MembershipUser_Id
-					
-	                COMMIT TRAN;
-
-                    END TRY
-                    BEGIN CATCH
-	                    PRINT ERROR_MESSAGE();
-	                    ROLLBACK TRAN;
-                    END CATCH
-                ";
+                                  [Entity_Id] = @Entity_Id
+                    AND           [MembershipUser_Id] = @MembershipUser_Id";
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                Comment_Id = entityLike.CommentId,
+                Entity_Id = entityLike.EntityId,
                 MembershipUser_Id = entityLike.MembershipUserId,
             }, cancellationToken: cancellationToken);
 

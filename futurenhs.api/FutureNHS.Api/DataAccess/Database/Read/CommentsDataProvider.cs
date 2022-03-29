@@ -26,7 +26,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             const string query =
                 @$"SELECT
-                                [{nameof(CommentData.Id)}]                  = comment.Id,
+                                [{nameof(CommentData.Id)}]                  = comment.Entity_Id,
                                 [{nameof(CommentData.Content)}]             = ( SELECT      CASE 
 																				WHEN        comment.IsDeleted = 0
 																				THEN        comment.Content
@@ -44,12 +44,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(CommentData.CreatedByName)}]       = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
 								[{nameof(CommentData.RepliesCount)}]        = ( SELECT      COUNT(*) 
-                                                                                FROM        Entity_Comment replies 
-                                                                                WHERE       replies.ThreadId = comment.Id
+                                                                                FROM        Comment replies 
+                                                                                WHERE       replies.ThreadId = comment.Entity_Id
                                                                               ),
 								[{nameof(CommentData.Likes)}]				= ( SELECT      COUNT(*) 
                                                                                 FROM        [Entity_Like] 
-                                                                                WHERE       Entity_Id = comment.Id
+                                                                                WHERE       Entity_Id = comment.Entity_Id
                                                                               ),                                                                          
 								[{nameof(CommentData.LikedByThisUser)}]		= ( SELECT      CASE 
                                                                                 WHEN        [Entity_Like].Entity_Id IS NULL 
@@ -57,18 +57,18 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                 ELSE        CAST(1 as bit) 
                                                                                 END 
                                                                                 FROM        [Entity_Like]  
-                                                                                WHERE       [Entity_Like].Entity_Id = comment.Id 
+                                                                                WHERE       [Entity_Like].Entity_Id = comment.Entity_Id 
                                                                                 AND         [Entity_Like].MembershipUser_Id = @UserId
                                                                               )
 
-                    FROM            Entity_Comment comment
+                    FROM            Comment comment
 					Join		    Discussion discussion
-					ON			    discussion.Entity_Id = comment.Entity_Id
+					ON			    discussion.Entity_Id = comment.Parent_EntityId
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
                     ON              CreateUser.Id = comment.CreatedBy		
-					WHERE           comment.Entity_Id = @DiscussionId 
+					WHERE           comment.Parent_EntityId = @DiscussionId 
                     AND             comment.ThreadId IS NULL
                     AND             groups.Slug = @Slug
                     ORDER BY        comment.CreatedAtUTC
@@ -78,12 +78,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
                     SELECT          COUNT(*) 
 
-                    FROM            Entity_Comment comment		
+                    FROM            Comment comment		
 					Join		    Discussion discussion
-					ON			    discussion.Entity_Id = comment.Entity_Id
+					ON			    discussion.Entity_Id = comment.Parent_EntityId
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
-					WHERE           comment.Entity_Id = @DiscussionId 
+					WHERE           comment.Parent_EntityId = @DiscussionId 
                     AND             comment.ThreadId IS NULL
                     AND             groups.Slug = @Slug";
 
@@ -110,7 +110,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         {
             const string query =
                 @$"SELECT
-                                [{nameof(CommentData.Id)}]                  = comment.Id,
+                                [{nameof(CommentData.Id)}]                  = comment.Entity_Id,
                                 [{nameof(CommentData.Content)}]             = ( SELECT      CASE 
 																				WHEN        comment.IsDeleted = 0
 																				THEN        comment.Content
@@ -129,7 +129,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
 								[{nameof(CommentData.Likes)}]				= ( SELECT      COUNT(*) 
                                                                                 FROM        [Entity_Like] 
-                                                                                WHERE       Entity_Id = comment.Id
+                                                                                WHERE       Entity_Id = comment.Entity_Id
                                                                               ),
 								[{nameof(CommentData.LikedByThisUser)}]		= ( SELECT      CASE 
                                                                                 WHEN        Entity_Id IS NULL 
@@ -137,14 +137,14 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                 ELSE        CAST(1 as bit) 
                                                                                 END 
                                                                                 FROM        [Entity_Like]  
-                                                                                WHERE       [Entity_Like].Entity_Id = comment.Id 
+                                                                                WHERE       [Entity_Like].Entity_Id = comment.Entity_Id 
                                                                                 AND         [Entity_Like].MembershipUser_Id = @UserId
                                                                               ),
                                 [{nameof(CommentData.InReplyTo)}]           = comment.InReplyTo
 
-                    FROM            Entity_Comment comment
+                    FROM            Comment comment
 					JOIN		    Discussion discussion
-					ON			    discussion.Entity_Id = comment.Entity_Id
+					ON			    discussion.Entity_Id = comment.Parent_EntityId
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
@@ -158,9 +158,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
                     SELECT          COUNT(*) 
 
-                    FROM            Entity_Comment comment
+                    FROM            Comment comment
 					JOIN		    Discussion discussion
-					ON			    discussion.Entity_Id = comment.Entity_Id
+					ON			    discussion.Entity_Id = comment.Parent_EntityId
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
 					WHERE           comment.ThreadId = @ThreadId

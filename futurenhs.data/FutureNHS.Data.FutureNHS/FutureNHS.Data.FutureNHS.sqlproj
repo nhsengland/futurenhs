@@ -72,7 +72,6 @@
     <Build Include="dbo\Tables\BannedEmail.sql" />
     <Build Include="dbo\Tables\BannedWord.sql" />
     <Build Include="dbo\Tables\Category.sql" />
-    <Build Include="dbo\Tables\Favourite.sql" />
     <Build Include="dbo\Tables\File.sql" />
     <Build Include="dbo\Tables\FileStatus.sql" />
     <Build Include="dbo\Tables\Folder.sql" />
@@ -106,8 +105,9 @@
     <None Include="Data\LocalDevSeedData.sql" />
     <Build Include="dbo\Tables\GroupSite.sql" />
     <Build Include="dbo\Tables\Entity.sql" />
-    <Build Include="dbo\Tables\Entity_Comment.sql" />
+    <Build Include="dbo\Tables\Comment.sql" />
     <Build Include="dbo\Tables\Entity_Like.sql" />
+    <Build Include="dbo\Tables\Entity_Favourite.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " Include="Data\SeedData.sql" />

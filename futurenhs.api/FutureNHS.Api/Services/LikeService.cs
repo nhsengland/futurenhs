@@ -24,10 +24,9 @@ namespace FutureNHS.Api.Services
             _permissionsService = permissionsService;
         }
 
-        public async Task LikeEntityAsync(Guid membershipUserId, string slug, Guid commentId, Guid entityId, CancellationToken cancellationToken)
+        public async Task LikeEntityAsync(Guid membershipUserId, string slug, Guid entityId, CancellationToken cancellationToken)
         {
             if (Guid.Empty == membershipUserId) throw new ArgumentOutOfRangeException(nameof(membershipUserId));
-            if (Guid.Empty == commentId) throw new ArgumentOutOfRangeException(nameof(commentId));
             if (Guid.Empty == entityId) throw new ArgumentOutOfRangeException(nameof(entityId));
 
             var now = _systemClock.UtcNow.UtcDateTime;
@@ -41,7 +40,6 @@ namespace FutureNHS.Api.Services
 
             var entityLikeDto = new EntityLikeDto()
             {
-                CommentId = commentId,
                 EntityId = entityId,
                 CreatedAtUTC = now,
                 MembershipUserId = membershipUserId,
@@ -50,10 +48,10 @@ namespace FutureNHS.Api.Services
             await _likeCommand.CreateLikedEntityAsync(entityLikeDto, cancellationToken);
         }
 
-        public async Task UnlikeEntityAsync(Guid membershipUserId, string slug, Guid commentId, CancellationToken cancellationToken)
+        public async Task UnlikeEntityAsync(Guid membershipUserId, string slug, Guid entityId, CancellationToken cancellationToken)
         {
             if (Guid.Empty == membershipUserId) throw new ArgumentOutOfRangeException(nameof(membershipUserId));
-            if (Guid.Empty == commentId) throw new ArgumentOutOfRangeException(nameof(commentId));
+            if (Guid.Empty == entityId) throw new ArgumentOutOfRangeException(nameof(entityId));
 
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(membershipUserId, slug, LikeRole, cancellationToken);
             if (userCanPerformAction is not true)
@@ -64,7 +62,7 @@ namespace FutureNHS.Api.Services
 
             var entityLikeDto = new EntityLikeDto()
             {
-                CommentId = commentId,
+                EntityId = entityId,
                 MembershipUserId = membershipUserId,
             };
 

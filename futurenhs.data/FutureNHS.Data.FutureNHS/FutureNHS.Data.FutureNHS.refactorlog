@@ -308,4 +308,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="RequestToJoinReason" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="06aa3db6-2c97-462a-92eb-3b92aea39614" ChangeDateTime="03/29/2022 05:35:41">
+    <Property Name="ElementName" Value="[dbo].[Entity_Like].[Comment_Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Entity_Like]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Entity_Id" />
+  </Operation>
 </Operations>

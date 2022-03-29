@@ -24,17 +24,17 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         {
             const string query =
                 @$"SELECT
-                                [{nameof(CommentData.Id)}]                  = comment.Id,
+                                [{nameof(CommentData.Id)}]                  = comment.Entity_Id,
                                 [{nameof(CommentData.Content)}]             = comment.Content,          
                                 [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(comment.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(CommentData.CreatedById)}]         = comment.CreatedBy,
                                 [{nameof(CommentData.RowVersion)}]          = comment.RowVersion
 
-                    FROM            Entity_Comment comment	
-					WHERE           comment.Id = @commentId
+                    FROM            Comment comment	
+					WHERE           comment.Entity_Id = @commentId
                     AND             comment.IsDeleted = 0;";
 
-            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
             var commentData = await dbConnection.QuerySingleAsync<CommentData>(query, new
             {
@@ -54,62 +54,75 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         {
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-            using (var connection = new SqlConnection(dbConnection.ConnectionString))
-            {
-                const string insertComment =
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
+
+            const string insertEntity =
                 @"  
-	                INSERT INTO  [dbo].[Entity_Comment]
-                                 ([Content]
+                    INSERT INTO  [dbo].[Entity]
+                                 ([Id])
+                    VALUES
+                                 (@EntityId)
+                   ";
+
+            const string insertComment =
+                @"  
+	                INSERT INTO  [dbo].[Comment]
+                                 ([Entity_Id]
+                                 ,[Content]
                                  ,[CreatedBy]
                                  ,[CreatedAtUTC]
                                  ,[ModifiedBy]
                                  ,[ModifiedAtUTC]
                                  ,[FlaggedAsSpam]
                                  ,[InReplyTo]
-                                 ,[Entity_Id]
                                  ,[ThreadId]
-                                 ,[IsDeleted])
+                                 ,[IsDeleted]
+                                 ,[Parent_EntityId])
                     VALUES
-                                 (@Content
+                                 (@EntityId
+                                 ,@Content
                                  ,@CreatedBy
                                  ,@CreatedAtUTC
                                  ,@ModifiedBy
                                  ,@ModifiedAtUTC
                                  ,@FlaggedAsSpam
-                                 ,@InReplyTo
-                                 ,@EntityId
+                                 ,@InReplyTo                                 
                                  ,@ThreadId
-                                 ,@IsDeleted)
-	              ";
+                                 ,@IsDeleted
+                                 ,@ParentEntityId)";
 
-                connection.Open();
+            await connection.OpenAsync(cancellationToken);
 
-                using (var transaction = connection.BeginTransaction())
-                {
-                    var insertCommentResult = connection.Execute(insertComment, new
-                    {
-                        Content = comment.Content,
-                        CreatedBy = comment.CreatedBy,
-                        CreatedAtUTC = comment.CreatedAtUTC,
-                        ModifiedBy = comment.ModifiedBy,
-                        ModifiedAtUTC = comment.ModifiedAtUTC,
-                        FlaggedAsSpam = comment.FlaggedAsSpam,
-                        InReplyTo = comment.InReplyTo,
-                        EntityId = comment.EntityId,
-                        ThreadId = comment.ThreadId,
-                        IsDeleted = comment.IsDeleted,
-                    }, transaction: transaction);
+            await using var transaction = connection.BeginTransaction();
 
-                    if (insertCommentResult != 1)
-                    {
-                        _logger.LogError("Error: User request to create was not successful.", insertComment);
-                        throw new DataException("Error: User request to create was not successful.");
+            var insertEntityResult = await connection.ExecuteAsync(insertEntity, new
+            {
+                EntityId = comment.EntityId,
+            }, transaction: transaction);
 
-                    }
+            var insertCommentResult = await connection.ExecuteAsync(insertComment, new
+            {
+                EntityId = comment.EntityId,
+                Content = comment.Content,
+                CreatedBy = comment.CreatedBy,
+                CreatedAtUTC = comment.CreatedAtUTC,
+                ModifiedBy = comment.ModifiedBy,
+                ModifiedAtUTC = comment.ModifiedAtUTC,
+                FlaggedAsSpam = comment.FlaggedAsSpam,
+                InReplyTo = comment.InReplyTo,
+                ThreadId = comment.ThreadId,
+                IsDeleted = comment.IsDeleted,
+                ParentEntityId = comment.DiscussionId
+            }, transaction: transaction);
 
-                    transaction.Commit();
-                }
+            if (insertCommentResult != 1)
+            {
+                _logger.LogError("Error: User request to create was not successful.", insertComment);
+                throw new DataException("Error: User request to create was not successful.");
+
             }
+
+            await transaction.CommitAsync(cancellationToken);
         }
 
         public async Task UpdateCommentAsync(CommentDto comment, byte[] rowVersion, CancellationToken cancellationToken)
@@ -117,31 +130,19 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             const string query =
 
                 @"  
-                    BEGIN TRAN
-                    BEGIN TRY
-
-	                UPDATE        [dbo].[Entity_Comment]
+	                UPDATE        [dbo].[Comment]
                     SET 
                                   [Content] = @Content
                                  ,[ModifiedBy] = @ModifiedBy
                                  ,[ModifiedAtUTC] = @ModifiedAtUtc
                     
                     WHERE 
-                                 [Id] = @CommentId
-                    AND          [RowVersion] = @RowVersion
-
-
-                    COMMIT TRAN;
-
-                    END TRY
-                    BEGIN CATCH
-	                    PRINT ERROR_MESSAGE();
-	                    ROLLBACK TRAN;
-                    END CATCH";
+                                 [Entity_Id] = @CommentId
+                    AND          [RowVersion] = @RowVersion";
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                CommentId = comment.Id,
+                CommentId = comment.EntityId,
                 Content = comment.Content,
                 ModifiedBy = comment.ModifiedBy,
                 ModifiedAtUTC = comment.ModifiedAtUTC,
@@ -163,31 +164,19 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         {
             const string query =
                 @"  
-                    BEGIN TRAN
-                    BEGIN TRY
-
-	                UPDATE        [dbo].[Entity_Comment]
+	                UPDATE        [dbo].[Comment]
                     SET                                   
                                   [ModifiedBy] = @ModifiedBy
                                  ,[ModifiedAtUTC] = @ModifiedAtUtc
                                  ,[IsDeleted] = 1
                     
                     WHERE 
-                                 [Id] = @CommentId
-                    AND          [RowVersion] = @RowVersion
-
-
-                    COMMIT TRAN;
-
-                    END TRY
-                    BEGIN CATCH
-	                    PRINT ERROR_MESSAGE();
-	                    ROLLBACK TRAN;
-                    END CATCH";
+                                 [Entity_Id] = @CommentId
+                    AND          [RowVersion] = @RowVersion";
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                CommentId = comment.Id,
+                CommentId = comment.EntityId,
                 ModifiedBy = comment.ModifiedBy,
                 ModifiedAtUTC = comment.ModifiedAtUTC,
                 RowVersion = rowVersion
@@ -211,17 +200,17 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 @" WITH            Comments AS 
                     (
                     SELECT      
-                                    Id,
+                                    Entity_Id,
                                     InReplyTo
 
-                    FROM            Entity_Comment
-                    WHERE           Entity_Id = @CommentId
+                    FROM            Comment
+                    WHERE           Entity_Id = @Entity_Id
                     UNION ALL
                     SELECT
                                     comment.Entity_Id AS PK,
                                     comment.InReplyTo AS ParentFK
 
-                    FROM            Entity_Comment comment
+                    FROM            Comment comment
                     INNER JOIN      Comments comments 
                     ON              Comments.InReplyTo = comment.Entity_Id)
 
@@ -236,7 +225,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 Entity_Id = commentId
             }, cancellationToken: cancellationToken);
 
-            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
             var result = await dbConnection.QueryFirstOrDefaultAsync<Guid?>(queryDefinition);
 

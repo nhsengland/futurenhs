@@ -147,7 +147,7 @@ namespace FutureNHS.Api.Controllers
                 return BadRequest();
             }
 
-            await _likeService.LikeEntityAsync(membershipUserId, slug, commentId, discussionId, cancellationToken);
+            await _likeService.LikeEntityAsync(membershipUserId, slug, commentId, cancellationToken);
 
             return Ok();
         }

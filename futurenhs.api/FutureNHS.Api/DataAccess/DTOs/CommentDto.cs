@@ -2,7 +2,6 @@
 {
     public sealed record CommentDto
     {
-        public Guid Id { get; set; }
         public Guid EntityId { get; set; }
         public string Content { get; init; }
         public Guid CreatedBy { get; init; }

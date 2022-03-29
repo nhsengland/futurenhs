@@ -32,7 +32,7 @@ namespace FutureNHS.Api.Services
             _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
         }
 
-        public async Task CreateCommentAsync(Guid userId, string slug, Guid entityId, Comment comment, CancellationToken cancellationToken)
+        public async Task CreateCommentAsync(Guid userId, string slug, Guid parentEntityId, Comment comment, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
@@ -46,6 +46,7 @@ namespace FutureNHS.Api.Services
                 _logger.LogError($"Error: CreateCommentAsync - User:{0} does not have access to group:{1}", userId, slug);
                 throw new SecurityException($"Error: User does not have access");
             }
+            var entityId = Guid.NewGuid();
 
             var commentDto = new CommentDto()
             {
@@ -58,13 +59,14 @@ namespace FutureNHS.Api.Services
                 FlaggedAsSpam = false,
                 InReplyTo = null,
                 ThreadId = null,
-                IsDeleted = false
+                IsDeleted = false,
+                DiscussionId = parentEntityId
             };
 
             await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
         }
 
-        public async Task CreateCommentReplyAsync(Guid userId, string slug, Guid entityId, Guid replyingToComment, Comment comment, CancellationToken cancellationToken)
+        public async Task CreateCommentReplyAsync(Guid userId, string slug, Guid parentEntityId, Guid replyingToComment, Comment comment, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
@@ -83,13 +85,15 @@ namespace FutureNHS.Api.Services
 
             if (!threadId.HasValue)
             {
-                _logger.LogError($"Error: CreateCommentReplyAsync - Cannot find the original comment when replying to comment:{0} in discussion: {1}", replyingToComment, entityId);
+                _logger.LogError($"Error: CreateCommentReplyAsync - Cannot find the original comment when replying to comment:{0} in discussion: {1}", replyingToComment, parentEntityId);
                 throw new SecurityException($"Error: User does not have access");
             }
+            var entityId = Guid.NewGuid();
 
             var commentDto = new CommentDto()
             {
                 EntityId = entityId,
+                Content = comment.Content,
                 CreatedAtUTC = now,
                 CreatedBy = userId,
                 ModifiedBy = null,
@@ -97,18 +101,19 @@ namespace FutureNHS.Api.Services
                 FlaggedAsSpam = false,
                 InReplyTo = replyingToComment,
                 ThreadId = threadId,
-                IsDeleted = false
+                IsDeleted = false,
+                DiscussionId = parentEntityId
             };
 
 
             await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
         }
 
-        public async Task UpdateCommentAsync(Guid userId, string slug, Guid entityId, Guid commentId, Comment comment, byte[] rowVersion, CancellationToken cancellationToken)
+        public async Task UpdateCommentAsync(Guid userId, string slug, Guid parentEntityId, Guid commentId, Comment comment, byte[] rowVersion, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
-            if (Guid.Empty == entityId) throw new ArgumentOutOfRangeException(nameof(entityId));
+            if (Guid.Empty == parentEntityId) throw new ArgumentOutOfRangeException(nameof(parentEntityId));
             if (Guid.Empty == commentId) throw new ArgumentOutOfRangeException(nameof(commentId));
 
             var now = _systemClock.UtcNow.UtcDateTime;
@@ -136,7 +141,7 @@ namespace FutureNHS.Api.Services
 
             var commentDto = new CommentDto()
             {
-                Id = databaseCommentDto.Id,
+                EntityId = databaseCommentDto.Id,
                 Content = comment.Content,
                 ModifiedBy = userId,
                 ModifiedAtUTC = now,
@@ -145,11 +150,11 @@ namespace FutureNHS.Api.Services
             await _commentCommand.UpdateCommentAsync(commentDto, rowVersion, cancellationToken);
         }
 
-        public async Task DeleteCommentAsync(Guid userId, string slug, Guid entityId, Guid commentId, byte[] rowVersion, CancellationToken cancellationToken)
+        public async Task DeleteCommentAsync(Guid userId, string slug, Guid parentEntityId, Guid commentId, byte[] rowVersion, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
-            if (Guid.Empty == entityId) throw new ArgumentOutOfRangeException(nameof(entityId));
+            if (Guid.Empty == parentEntityId) throw new ArgumentOutOfRangeException(nameof(parentEntityId));
             if (Guid.Empty == commentId) throw new ArgumentOutOfRangeException(nameof(commentId));
 
             var now = _systemClock.UtcNow.UtcDateTime;
@@ -177,7 +182,7 @@ namespace FutureNHS.Api.Services
 
             var commentDto = new CommentDto()
             {
-                Id = databaseCommentDto.Id,
+                EntityId = databaseCommentDto.Id,
                 ModifiedBy = userId,
                 ModifiedAtUTC = now,
             };
