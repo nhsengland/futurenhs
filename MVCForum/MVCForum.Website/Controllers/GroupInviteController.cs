@@ -75,7 +75,7 @@
             var inviteMailAddress = new MailAddress(model.EmailAddress);
 
             //check if a user is already in the group
-            if (await _inviteService.MemberExistsInGroupAsync(model.GroupId, inviteMailAddress, cancellationToken))
+            if (await _inviteService.MemberExistsInGroupAsync(model.GroupId.Value, inviteMailAddress, cancellationToken))
             {
                 ModelState.AddModelError(nameof(model.EmailAddress), "A user with that email address is already a member of this group");
                 return View(model);
@@ -89,7 +89,7 @@
             }
 
             //check if a user already has an invite for this group
-            if (await _inviteService.InviteExistsForGroupAsync(model.GroupId, inviteMailAddress, cancellationToken))
+            if (await _inviteService.InviteExistsForGroupAsync(model.GroupId.Value, inviteMailAddress, cancellationToken))
             {
                 ModelState.AddModelError(nameof(model.EmailAddress), "This email address has already been invited to this group");
                 return View(model);

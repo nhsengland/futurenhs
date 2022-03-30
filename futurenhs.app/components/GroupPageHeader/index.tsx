@@ -95,7 +95,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 
             actionsMenuList.push({
                 id: actionsConstants.GROUPS_EDIT,
-                url: `${routes.groupUpdate}`,
+                url: routes.groupUpdate,
                 text: 'Edit group information'
             });
 
@@ -105,7 +105,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 
             actionsMenuList.push({
                 id: actionsConstants.GROUPS_LEAVE,
-                url: `${routes.groupLeave}?${queryParams.RETURNURL}=${router?.asPath}`,
+                url: routes.groupLeave,
                 text: 'Leave group'
             });
 
@@ -151,7 +151,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
         
         clearClientCaches([cacheNames.NEXT_DATA]).then(() => {
 
-            router.push(`${routes.groupLeave}?${queryParams.RETURNURL}=${router?.asPath}`);
+            router.push(routes.groupLeave);
             setIsLeaveGroupModalOpen(false);
 
         });

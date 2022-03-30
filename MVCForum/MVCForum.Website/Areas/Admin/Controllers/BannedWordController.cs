@@ -64,7 +64,7 @@
                     var bannedWord = new BannedWord
                     {
                         Word = addBannedEmailViewModel.Word,
-                        DateAdded = DateTime.UtcNow,
+                        CreatedAtUTC = DateTime.UtcNow,
                         IsStopWord = addBannedEmailViewModel.IsStopWord
                     };
 

@@ -3,7 +3,7 @@
 
 }
     <div class="subGroupholder">
-        @*<h4>@Html.Raw(string.Concat(Html.LanguageString("Group.SubGroupsHeading"), " ", Model.ParentGroup.Name))</h4>*@
+        @*<h4>@Html.Raw(string.Concat(Html.LanguageString("Group.SubGroupsHeading"), " ", Model.Parent_GroupId.Name))</h4>*@
         <ul class="clearfix">
             @foreach (var Group in Model.AllPermissionSets.Keys)
             {

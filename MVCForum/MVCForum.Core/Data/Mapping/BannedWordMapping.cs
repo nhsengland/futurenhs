@@ -10,7 +10,7 @@
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
             Property(x => x.Word).IsRequired().HasMaxLength(75);
-            Property(x => x.DateAdded).IsRequired();
+            Property(x => x.CreatedAtUTC).IsRequired();
             Property(x => x.IsStopWord).IsOptional();
         }
     }

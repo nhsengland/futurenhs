@@ -50,7 +50,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return commentData;
         }
 
-        public async Task CreateCommentAsync(CommentDto comment, CancellationToken cancellationToken)
+        public async Task<Guid> CreateCommentAsync(CommentDto comment, CancellationToken cancellationToken)
         {
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
@@ -117,12 +117,13 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             if (insertCommentResult != 1)
             {
-                _logger.LogError("Error: User request to create was not successful.", insertComment);
-                throw new DataException("Error: User request to create was not successful.");
-
+                _logger.LogError("Error: User request to create a comment was not successful.", insertComment);
+                throw new DataException("Error: User request to create a comment was not successful.");
             }
 
             await transaction.CommitAsync(cancellationToken);
+
+            return comment.EntityId;
         }
 
         public async Task UpdateCommentAsync(CommentDto comment, byte[] rowVersion, CancellationToken cancellationToken)

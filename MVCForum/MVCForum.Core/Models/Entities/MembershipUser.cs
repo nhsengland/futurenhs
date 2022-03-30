@@ -50,7 +50,7 @@ namespace MvcForum.Core.Models.Entities
         public bool? IsExternalAccount { get; set; }
         public DateTime? LoginIdExpiresUTC { get; set; }
 
-        public bool? HasAgreedToTermsAndConditions { get; set; }
+        public bool HasAgreedToTermsAndConditions { get; set; }
 
         public bool IsTrustedUser { get; set; }
 

@@ -27,13 +27,16 @@ namespace FutureNHS.Api.DataAccess
             // Write
             services.AddScoped<ICommentCommand, CommentCommand>();
             services.AddScoped<IDiscussionCommand, DiscussionCommand>();
+            services.AddScoped<IEntityCommand, EntityCommand>();
             services.AddScoped<IGroupCommand, GroupCommand>();
             services.AddScoped<IFileCommand, FileCommand>();
             services.AddScoped<IFolderCommand, FolderCommand>();
             services.AddScoped<IImageCommand, ImageCommand>();
-            services.AddScoped<IRolesCommand, RolesCommand>();
             services.AddScoped<ILikeCommand, LikeCommand>();
-            services.AddScoped<IEntityCommand, EntityCommand>();
+            services.AddScoped<IRolesCommand, RolesCommand>();
+            services.AddScoped<IUserCommand, UserCommand>();
+
+
 
             return services;
         }

@@ -23,8 +23,8 @@
                 Subtitle = GroupViewModel.Subtitle,
                 Introduction = GroupViewModel.Introduction,
                 IsLocked = GroupViewModel.IsLocked,
-                ModeratePosts = GroupViewModel.ModeratePosts,
-                ModerateTopics = GroupViewModel.ModerateTopics,
+                ModerateComments = GroupViewModel.ModeratePosts,
+                ModerateDiscussions = GroupViewModel.ModerateTopics,
                 SortOrder = GroupViewModel.SortOrder,
                 PageTitle = GroupViewModel.PageTitle,
                 MetaDescription = GroupViewModel.MetaDesc,
@@ -48,8 +48,8 @@
             Group.Subtitle = GroupViewModel.Subtitle;
             Group.Introduction = GroupViewModel.Introduction;
             Group.IsLocked = GroupViewModel.IsLocked;
-            Group.ModeratePosts = GroupViewModel.ModeratePosts;
-            Group.ModerateTopics = GroupViewModel.ModerateTopics;
+            Group.ModerateComments = GroupViewModel.ModeratePosts;
+            Group.ModerateDiscussions = GroupViewModel.ModerateTopics;
             Group.Name = GroupViewModel.Name;
             Group.SortOrder = GroupViewModel.SortOrder;
             Group.PageTitle = GroupViewModel.PageTitle;
@@ -76,15 +76,15 @@
                 Subtitle = Group.Subtitle,
                 Introduction = Group.Introduction,
                 IsLocked = Group.IsLocked,
-                ModeratePosts = Group.ModeratePosts == true,
-                ModerateTopics = Group.ModerateTopics == true,
+                ModeratePosts = Group.ModerateComments == true,
+                ModerateTopics = Group.ModerateDiscussions == true,
                 SortOrder = Group.SortOrder,
                 Id = Group.Id,
                 PageTitle = Group.PageTitle,
                 MetaDesc = Group.MetaDescription,
                 Image = Group.Image,
                 GroupColour = Group.Colour,
-                ParentGroup = Group.ParentGroup?.Id ?? Guid.Empty,
+                ParentGroup = Group.Parent_GroupId?.Id ?? Guid.Empty,
                 Section = Group.Section?.Id ?? Guid.Empty,
                 AllGroups = allGroupSelectListItems,
                 AllSections = sections,

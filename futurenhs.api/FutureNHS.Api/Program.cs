@@ -11,6 +11,8 @@ using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Helpers.Interfaces;
 using FutureNHS.Api.Middleware;
+using FutureNHS.Api.Providers;
+using FutureNHS.Api.Providers.Interfaces;
 using FutureNHS.Api.Services;
 using Ganss.XSS;
 using Microsoft.ApplicationInsights.DependencyCollector;
@@ -182,6 +184,7 @@ builder.Services.Configure<AzureFileBlobStorageConfiguration>(settings.GetSectio
 builder.Services.Configure<AzureBlobStorageConnectionStrings>(settings.GetSection("AzureBlobStorage"));
 builder.Services.Configure<FileServerTemplateUrlStrings>(settings.GetSection("FileServer"));
 builder.Services.Configure<ApplicationGateway>(settings.GetSection("AzurePlatform:ApplicationGateway"));
+builder.Services.Configure<GovNotifyConfiguration>(settings.GetSection("GovNotify"));
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
 builder.Services.AddScoped<IFileTypeValidator, FileTypeValidator>();
@@ -225,6 +228,19 @@ builder.Services.AddScoped<IImageBlobStorageProvider>(
 
         return new BlobStorageProvider(sp.GetRequiredService<ISystemClock>(), connection.ImagePrimaryConnectionString, config.ContainerName, config.PrimaryServiceUrl, logger, sp.GetRequiredService<IMemoryCache>());
     });
+
+builder.Services.AddScoped<INotificationProvider>(
+    sp => {
+        var config = sp.GetRequiredService<IOptionsSnapshot<GovNotifyConfiguration>>().Value;
+
+        if (config is null) throw new ApplicationException("Unable to load the GovNotify configuration");
+        if (string.IsNullOrWhiteSpace(config.ApiKey)) throw new ApplicationException("The ApiKey is missing from the gov notify configuration section");
+
+        var logger = sp.GetRequiredService<ILogger<GovNotifyProvider>>();
+
+        return new GovNotifyProvider(config.ApiKey, logger);
+    });
+
 builder.Services.AddScoped<IEtagService, EtagService>();
 
 builder.Services.AddSwaggerGen();

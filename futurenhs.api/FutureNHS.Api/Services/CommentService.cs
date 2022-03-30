@@ -32,7 +32,7 @@ namespace FutureNHS.Api.Services
             _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
         }
 
-        public async Task CreateCommentAsync(Guid userId, string slug, Guid parentEntityId, Comment comment, CancellationToken cancellationToken)
+        public async Task<Guid> CreateCommentAsync(Guid userId, string slug, Guid parentEntityId, Comment comment, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
@@ -63,10 +63,10 @@ namespace FutureNHS.Api.Services
                 DiscussionId = parentEntityId
             };
 
-            await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
+            return await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
         }
 
-        public async Task CreateCommentReplyAsync(Guid userId, string slug, Guid parentEntityId, Guid replyingToComment, Comment comment, CancellationToken cancellationToken)
+        public async Task<Guid> CreateCommentReplyAsync(Guid userId, string slug, Guid parentEntityId, Guid replyingToComment, Comment comment, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
@@ -105,8 +105,7 @@ namespace FutureNHS.Api.Services
                 DiscussionId = parentEntityId
             };
 
-
-            await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
+            return await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
         }
 
         public async Task UpdateCommentAsync(Guid userId, string slug, Guid parentEntityId, Guid commentId, Comment comment, byte[] rowVersion, CancellationToken cancellationToken)

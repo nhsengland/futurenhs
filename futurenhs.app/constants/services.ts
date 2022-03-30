@@ -18,6 +18,7 @@ export const enum services {
     GET_SEARCH_RESULTS = 'getSearchResults',
     GET_SITE_ACTIONS = 'getSiteActions',
     GET_SITE_USER = 'getSiteUser',
+    GET_SITE_USERS = 'getSiteUsers',
     GET_USER = 'getUser',
     POST_GROUP_DISCUSSION = 'postGroupDiscussion',
     POST_GROUP_DISCUSSION_COMMENT = 'postGroupDiscussionComment',

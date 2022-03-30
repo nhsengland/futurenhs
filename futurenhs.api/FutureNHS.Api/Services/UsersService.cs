@@ -1,34 +1,50 @@
-﻿using System.Security;
+﻿using System.Net.Mail;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Models.User;
+using FutureNHS.Api.Services.Interfaces;
+using System.Security;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
-using FutureNHS.Api.DataAccess.Models.User;
-using FutureNHS.Api.Models.Discussion;
-using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.Services
 {
     public class UserService : IUserService
     {
-        private const string listMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
+        private const string ListMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
+        private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
 
         private readonly ILogger<UserService> _logger;
         private readonly IUserAdminDataProvider _userAdminDataProvider;
         private readonly IPermissionsService _permissionsService;
+        private readonly ISystemClock _systemClock;
+        private readonly IUserCommand _userCommand;
+        private readonly IEmailService _emailService;
 
-        public UserService(ILogger<UserService> logger, IPermissionsService permissionsService, IUserAdminDataProvider userAdminDataProvider)
+        // Notification template Ids
+        private readonly string _registrationEmailId;
+
+        public UserService(ILogger<UserService> logger, ISystemClock systemClock, IPermissionsService permissionsService, IUserAdminDataProvider userAdminDataProvider, IUserCommand userCommand, IEmailService emailService, IOptionsSnapshot<GovNotifyConfiguration> notifyConfig)
         {
             _permissionsService = permissionsService;
             _userAdminDataProvider = userAdminDataProvider;
+            _systemClock = systemClock;
             _logger = logger;
+            _userCommand = userCommand;
+            _emailService = emailService;
+
+            // Notification template Ids
+            _registrationEmailId = notifyConfig.Value.RegistrationEmailTemplateId;
         }
 
         public async Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
 
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, listMembersRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ListMembersRole, cancellationToken);
 
             if (!userCanPerformAction)
             {
@@ -39,6 +55,50 @@ namespace FutureNHS.Api.Services
             
 
             return await _userAdminDataProvider.GetMembersAsync(offset, limit, sort, cancellationToken);
+        }
+
+        public async Task InviteMemberToGroupAndPlatformAsync(Guid userId, Guid? groupId, string email, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AddMembersRole, cancellationToken);
+
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: InviteMemberToGroupAndPlatformAsync - User:{0} does not have access to perform admin actions", userId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentNullException($"Email was not provided");
+            }
+
+            if (email.Length > 254)
+            {
+                throw new ArgumentOutOfRangeException($"Email must be less than 254 characters");
+            }
+
+            MailAddress emailAddress;
+            try
+            {
+                emailAddress = new MailAddress(email);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentOutOfRangeException($"Email is not in a valid format");
+            }
+
+            
+            var userInvite = new GroupInviteDto
+            {
+                EmailAddress = emailAddress.Address.ToLowerInvariant(),
+                GroupId = groupId,
+                CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
+
+            };
+
+            await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
+            _emailService.SendEmail(emailAddress, _registrationEmailId);
         }
     }
 }

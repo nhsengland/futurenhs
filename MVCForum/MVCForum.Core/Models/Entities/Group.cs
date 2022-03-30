@@ -9,7 +9,7 @@ namespace MvcForum.Core.Models.Entities
     using Interfaces;
     using Utilities;
 
-    public partial class Group : ExtendedDataEntity, IBaseEntity
+    public partial class Group : IBaseEntity
     {
         public Group()
         {
@@ -21,8 +21,8 @@ namespace MvcForum.Core.Models.Entities
         public string Subtitle { get; set; }
         public string Introduction { get; set; }
         public bool IsLocked { get; set; }
-        public bool? ModerateTopics { get; set; }
-        public bool? ModeratePosts { get; set; }
+        public bool? ModerateDiscussions { get; set; }
+        public bool? ModerateComments { get; set; }
         public int SortOrder { get; set; }
         public DateTime CreatedAtUtc { get; set; }
         public string Slug { get; set; }
@@ -31,7 +31,7 @@ namespace MvcForum.Core.Models.Entities
         public string MetaDescription { get; set; }
         public string Colour { get; set; }
         public string Image { get; set; }
-        public virtual Group ParentGroup { get; set; }
+        public virtual Group Parent_GroupId { get; set; }
         public virtual Section Section { get; set; }
         public virtual IList<GroupUser> GroupUsers { get; set; }
         public virtual IList<Topic> Topics { get; set; }

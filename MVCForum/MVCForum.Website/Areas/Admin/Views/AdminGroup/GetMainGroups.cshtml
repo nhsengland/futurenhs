@@ -1,7 +1,7 @@
 ﻿@using MvcForum.Core.Models.Entities
 @model MvcForum.Web.ViewModels.Admin.ListGroupsViewModel
 @{
-    var mainGroups = Model.Groups.Where(x => x.ParentGroup == null).ToList();
+    var mainGroups = Model.Groups.Where(x => x.Parent_GroupId == null).ToList();
 }
 
 <div class="panel">
@@ -30,7 +30,7 @@
 
 @helper GetSubGroups(Group cat)
 {
-    var subGroups = Model.Groups.Where(x => x.ParentGroup != null && x.ParentGroup.Id == cat.Id).ToList();
+    var subGroups = Model.Groups.Where(x => x.Parent_GroupId != null && x.Parent_GroupId.Id == cat.Id).ToList();
     if (subGroups.Any())
     {
         <ul>

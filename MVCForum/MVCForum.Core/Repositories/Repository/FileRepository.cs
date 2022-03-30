@@ -139,7 +139,7 @@
                       JOIN membershiprole mr ON gu.membershiprole_id = mr.id
                       JOIN membershipusersinroles mur ON mur.useridentifier = gu.membershipuser_id
                       JOIN [group] g ON gu.group_id = g.id
-					  JOIN Folder fo on fo.ParentGroup = g.Id
+					  JOIN Folder fo on fo.Parent_GroupId = g.Id
 					  JOIN [File] fi on fi.ParentFolder = fo.Id
                     WHERE
                       fi.Id = @FileId
@@ -153,7 +153,7 @@
                     FROM
                       [File] fi					  
 					  JOIN Folder fo on fo.Id = fi.ParentFolder
-                      JOIN [group] g ON g.Id = fo.ParentGroup
+                      JOIN [group] g ON g.Id = fo.Parent_GroupId
                     WHERE
                       fi.Id = @FileId;
 

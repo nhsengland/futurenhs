@@ -14,7 +14,7 @@
         public Guid Id { get; set; }
         public string EmailAddress { get; set; }
         public bool IsDeleted { get; set; }
-        public Guid GroupId { get; set; }
+        public Guid? GroupId { get; set; }
         
     }
 }

@@ -30,7 +30,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
     const [dynamicUsersList, setUsersList] = useState(usersList);
     const [dynamicPagination, setPagination] = useState(pagination);
 
-    const { secondaryHeading, noUsers, createUser } = contentText ?? {};
+    const { secondaryHeading, noUsers, inviteUser } = contentText ?? {};
 
     const hasUsers: boolean = true;
     const shouldEnableLoadMore: boolean = true;
@@ -118,7 +118,12 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                 headerClassName: generatedHeaderCellClasses.lastLoginDate
             },
             {
-                children: <Link href={`/users/${id}`}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
+                children: <Link href={{
+                    pathname: `/users/${id}`,
+                    query: { 
+                        edit: 'true' 
+                    }
+                } as any}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit user</a></Link>,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden'
             }
@@ -136,10 +141,8 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize
     }) => {
 
-        // TODO
-
-        //setUsersList([...dynamicUsersList, ...additionalUsers]);
-        //setPagination(pagination);
+        // setUsersList([...dynamicUsersList, ...additionalUsers]);
+        // setPagination(pagination);
 
     };
 
@@ -147,7 +150,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
 
         <>
             <LayoutColumnContainer className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
-                <LayoutColumn tablet={9} className="c-page-body">
+                <LayoutColumn tablet={9} desktop={10} className="c-page-body">
                     <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                     {hasUsers
 
@@ -173,9 +176,9 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                         {...dynamicPagination} />
                 </LayoutColumn>
                 {shouldRenderCreateUserLink &&
-                    <LayoutColumn tablet={3} className="c-page-body">
+                    <LayoutColumn tablet={3} desktop={2} className="c-page-body">
                         <Link href={`${router.asPath}/create`}>
-                            <a className="c-button u-w-full">{createUser}</a>
+                            <a className="c-button u-w-full">{inviteUser}</a>
                         </Link>
                     </LayoutColumn>
                 }

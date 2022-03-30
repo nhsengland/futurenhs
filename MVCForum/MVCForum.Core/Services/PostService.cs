@@ -569,7 +569,7 @@ namespace MvcForum.Core.Services
                 Topic = topic,
                 DateCreated = DateTime.UtcNow,
                 DateEdited = DateTime.UtcNow,
-                Pending = topic.Group.ModeratePosts == true
+                Pending = topic.Group.ModerateComments == true
             };
 
             return SanitizePost(newPost);

@@ -64,6 +64,10 @@ namespace FutureNHS.Api.Middleware
                     httpStatusCode = HttpStatusCode.Conflict;
                     result = JsonSerializer.Serialize(new { errors = dbConcurrencyException.Message });
                     break;
+                case DependencyFailedException dependencyFailedException:
+                    httpStatusCode = HttpStatusCode.FailedDependency;
+                    result = JsonSerializer.Serialize(new { error = dependencyFailedException.Message });
+                    break;
                 default:
                     result = JsonSerializer.Serialize(new { error = exception.Message });
                     break;

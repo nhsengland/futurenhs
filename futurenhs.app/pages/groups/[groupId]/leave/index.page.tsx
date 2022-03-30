@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next';
 
 import { actions as actionConstants} from '@constants/actions';
-import { routeParams, queryParams, layoutIds, groupTabIds } from '@constants/routes';
-import { selectParam, selectCsrfToken, selectQuery } from '@selectors/context';
+import { routeParams, layoutIds, groupTabIds } from '@constants/routes';
+import { selectParam, selectCsrfToken } from '@selectors/context';
 import { withUser } from '@hofs/withUser';
 import { withRoutes } from '@hofs/withRoutes';
 import { withGroup } from '@hofs/withGroup';
@@ -28,7 +28,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                 const csrfToken: string = selectCsrfToken(context);
                 const groupId: string = selectParam(context, routeParams.GROUPID);
-                const returnUrl: string = selectQuery(context, queryParams.RETURNURL);
     
                 props.layoutId = layoutIds.GROUP;
                 props.tabId = groupTabIds.INDEX;
@@ -57,7 +56,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     return {
                         redirect: {
                             permanent: false,
-                            destination: returnUrl ?? props.routes.groupRoot
+                            destination: props.routes.groupRoot
                         }
                     }
     

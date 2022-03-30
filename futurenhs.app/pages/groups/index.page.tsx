@@ -9,10 +9,11 @@ import { getGroups } from '@services/getGroups';
 import { selectUser, selectPagination } from '@selectors/context';
 import { GetServerSidePropsContext } from '@appTypes/next';
 import { User } from '@appTypes/user';
+import { Pagination } from '@appTypes/pagination';
 
 import { GroupListingTemplate } from '@components/_pageTemplates/GroupListingTemplate';
 import { Props } from '@components/_pageTemplates/GroupListingTemplate/interfaces';
-import { Pagination } from '@appTypes/pagination';
+
 
 const routeId: string = '3c745d1d-9742-459a-a2bb-7af14c2f291c';
 const props: Partial<Props> = {};

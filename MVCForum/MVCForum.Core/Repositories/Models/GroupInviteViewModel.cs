@@ -20,8 +20,7 @@
         [Required]
         public string Slug { get; set; }
 
-        [Required]
-        public Guid GroupId { get; set; }
+        public Guid? GroupId { get; set; }
 
         public bool IsDeleted { get; set; }
 

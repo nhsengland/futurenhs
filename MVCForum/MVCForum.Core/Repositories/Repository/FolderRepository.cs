@@ -37,7 +37,7 @@
                       ) AS FileCount
                     FROM
                       Folder folders
-                      JOIN [Group] groups ON groups.Id = folders.ParentGroup
+                      JOIN [Group] groups ON groups.Id = folders.Parent_GroupId
                     WHERE
                       groups.Slug = @GroupSlug
                       AND folders.ParentFolder IS NULL
@@ -49,7 +49,7 @@
                       COUNT(*)
                     FROM
                       Folder folders
-                      JOIN [Group] groups ON groups.Id = folders.ParentGroup
+                      JOIN [Group] groups ON groups.Id = folders.Parent_GroupId
                     WHERE
                       groups.Slug = @GroupSlug
                       AND folders.ParentFolder IS NULL
@@ -206,7 +206,7 @@
                             OR
                             (@ParentFolderId IS NULL AND f.ParentFolder IS NULL)
                           ) 
-                      AND f.ParentGroup = @ParentGroupId;
+                      AND f.Parent_GroupId = @ParentGroupId;
                 ";
 
             var commandDefinition = new CommandDefinition(query, new
@@ -277,7 +277,7 @@
                       JOIN membershiprole mr ON gu.membershiprole_id = mr.id
                       JOIN membershipusersinroles mur ON mur.useridentifier = gu.membershipuser_id
                       JOIN [group] g ON gu.group_id = g.id
-					  JOIN Folder fo on fo.ParentGroup = g.Id
+					  JOIN Folder fo on fo.Parent_GroupId = g.Id
                     WHERE
                       g.Slug = @GroupSlug
                       AND gu.membershipuser_id = @UserId
@@ -354,7 +354,7 @@
                       JOIN membershiprole mr ON gu.membershiprole_id = mr.id
                       JOIN membershipusersinroles mur ON mur.useridentifier = gu.membershipuser_id
                       JOIN [group] g ON gu.group_id = g.id
-					  JOIN Folder fo on fo.ParentGroup = g.Id
+					  JOIN Folder fo on fo.Parent_GroupId = g.Id
                     WHERE
                       fo.Id = @FolderId
                       AND gu.membershipuser_id = @UserId

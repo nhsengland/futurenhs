@@ -883,22 +883,10 @@
         /// <returns></returns>
         public virtual PartialViewResult SideAdminPanel(bool isDropDown)
         {
-            var moderateCount = 0;
-            var settings = SettingsService.GetSettings();
-            var loggedOnUsersRole = LoggedOnReadOnlyUser.GetRole(RoleService);
-            if (LoggedOnReadOnlyUser != null)
-            {
-                var allowedGroups = _groupService.GetAllowedGroups(loggedOnUsersRole, LoggedOnReadOnlyUser?.Id);
-                var pendingTopics = _topicService.GetPendingTopics(allowedGroups, loggedOnUsersRole);
-                var pendingPosts = _postService.GetPendingPosts(allowedGroups, loggedOnUsersRole);
-                moderateCount = pendingTopics.Count + pendingPosts.Count;
-            }
-
-            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null;
             var viewModel = new ViewAdminSidePanelViewModel
             {
                 CurrentUser = LoggedOnReadOnlyUser,
-                ModerateCount = moderateCount,
+                ModerateCount = 0,
                 IsDropDown = isDropDown
             };
 

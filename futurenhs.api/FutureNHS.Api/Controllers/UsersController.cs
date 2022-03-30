@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
@@ -51,6 +52,16 @@ namespace FutureNHS.Api.Controllers
             var pagedResponse = PaginationHelper.CreatePagedResponse(members, filter, total, route);
 
             return Ok(pagedResponse);
+        }
+
+        [HttpPost]
+        [Route("users/{userId:guid}/admin/groups/{groupId:guid}/invite/{email}")]
+        [Route("users/{userId:guid}/admin/invite/{email}")]
+        public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid userId, Guid? groupId, string email, CancellationToken cancellationToken)
+        {
+            await _userService.InviteMemberToGroupAndPlatformAsync(userId, groupId, email, cancellationToken);
+
+            return Ok();
         }
 
         [HttpGet]

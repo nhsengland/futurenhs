@@ -241,10 +241,10 @@
                 var all = _groupService.GetAll(LoggedOnReadOnlyUser?.Id);
 
                 // Get all the Groups
-                var mainGroups = all.Where(x => x.ParentGroup == null).ToList();
+                var mainGroups = all.Where(x => x.Parent_GroupId == null).ToList();
 
                 // Get the sub Groups
-                var subGroups = all.Where(x => x.ParentGroup != null).ToList();
+                var subGroups = all.Where(x => x.Parent_GroupId != null).ToList();
 
                 // loop through the main Groups and get all it's sub Groups
                 foreach (var mainGroup in mainGroups)
@@ -311,7 +311,7 @@
         {
             foreach (var cat in allSubGroups)
             {
-                if (cat.ParentGroup.Id == parent.Id)
+                if (cat.Parent_GroupId.Id == parent.Id)
                 {
                     subCats.Add(cat);
                     GetAllGroupSubGroups(cat, allSubGroups, subCats);

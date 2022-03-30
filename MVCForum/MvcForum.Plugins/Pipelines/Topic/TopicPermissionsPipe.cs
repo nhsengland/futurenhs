@@ -89,7 +89,7 @@ namespace MvcForum.Plugins.Pipelines.Topic
                         }
 
                         // Check for moderation on Group
-                        if (input.EntityToProcess.Group.ModerateTopics == true)
+                        if (input.EntityToProcess.Group.ModerateDiscussions == true)
                         {
                             input.EntityToProcess.Pending = true;
                             input.ExtendedData.Add(Constants.ExtendedDataKeys.Moderate, true);

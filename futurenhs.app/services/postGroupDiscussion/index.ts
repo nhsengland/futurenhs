@@ -1,6 +1,4 @@
 import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
-import { cacheNames } from '@constants/caches';
-import { clearClientCaches } from '@helpers/util/data';
 import { requestMethods, defaultTimeOutMillis } from '@constants/fetch';
 import { services } from '@constants/services';
 import { ServiceError } from '..';
@@ -57,8 +55,6 @@ export const postGroupDiscussion = async ({
         });
 
     }
-
-    await clearClientCaches([cacheNames.NEXT_DATA]);
 
     return null;
 

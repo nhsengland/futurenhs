@@ -223,7 +223,7 @@
             /// <summary>
             /// Parent Group
             /// </summary>
-            public const string ParentGroup = "ParentGroup";
+            public const string ParentGroup = "Parent_GroupId";
 
             /// <summary>
             /// Section 

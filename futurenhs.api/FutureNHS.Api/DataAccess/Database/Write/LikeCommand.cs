@@ -58,8 +58,6 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 _logger.LogError(ex, "Error: User request to create was not successful.");
                 throw new DBConcurrencyException("Error: User request was not successful.");
             }
-
-
         }
 
         public async Task DeleteLikedEntityAsync(EntityLikeDto entityLike, CancellationToken cancellationToken)

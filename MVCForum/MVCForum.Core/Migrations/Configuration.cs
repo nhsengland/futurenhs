@@ -176,8 +176,8 @@ namespace MvcForum.Core.Services.Migrations
                     {
                         Name = exampleCatName,
                         Introduction = "A group introduction.",
-                        ModeratePosts = false,
-                        ModerateTopics = false,
+                        ModerateComments = false,
+                        ModerateDiscussions = false,
                         Slug = ServiceHelpers.CreateUrl(exampleCatName),
                         CreatedAtUtc = DateTime.UtcNow,
                         PublicGroup = true

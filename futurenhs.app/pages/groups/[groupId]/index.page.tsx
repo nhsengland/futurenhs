@@ -5,6 +5,7 @@ import { layoutIds, groupTabIds } from '@constants/routes';
 import { withUser } from '@hofs/withUser';
 import { withGroup } from '@hofs/withGroup';
 import { withRoutes } from '@hofs/withRoutes';
+import { withTextContent } from '@hofs/withTextContent';
 import { GetServerSidePropsContext } from '@appTypes/next';
 
 import { GroupHomeTemplate } from '@components/_pageTemplates/GroupHomeTemplate';
@@ -23,17 +24,21 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: withGroup({
             props,
             routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
+            getServerSideProps: withTextContent({
+                props,
+                routeId,
+                getServerSideProps: async (context: GetServerSidePropsContext) => {
     
-                props.layoutId = layoutIds.GROUP;
-                props.tabId = groupTabIds.INDEX;
-    
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props });
-    
-            }
+                    props.layoutId = layoutIds.GROUP;
+                    props.tabId = groupTabIds.INDEX;
+        
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props });
+        
+                }
+            })
         })
     })
 });

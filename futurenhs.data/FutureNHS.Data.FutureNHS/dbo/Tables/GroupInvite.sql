@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[GroupInvite] (
     [Id]           UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
-    [EmailAddress] NVARCHAR (254)   NOT NULL,
-    [GroupId]      UNIQUEIDENTIFIER NOT NULL,
+    [EmailAddress] NVARCHAR (254)   NOT NULL UNIQUE,
+    [GroupId]      UNIQUEIDENTIFIER NULL,
     [CreatedAtUTC] DATETIME2         NOT NULL,
     [ExpiresAtUTC] DATETIME2         NULL,
     [IsDeleted]    BIT  DEFAULT ((0)) NOT NULL, 

@@ -11,7 +11,7 @@
             Property(x => x.Id).IsRequired();
             Property(x => x.EmailAddress).IsRequired().HasMaxLength(254);
             Property(x => x.IsDeleted).IsRequired();
-            Property(x => x.GroupId).IsRequired();
+            Property(x => x.GroupId).IsOptional();
         }
     }
 }

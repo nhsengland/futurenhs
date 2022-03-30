@@ -132,31 +132,15 @@
 
                 foreach (var invite in await _groupInviteService.GetInvitesForGroupAsync(inviteMailAddress, CancellationToken.None))
                 {
-                    if (await _groupService.JoinGroupApproveAsync(invite.GroupId, input.EntityToProcess.Id, CancellationToken.None))
+                    if (invite.GroupId.HasValue)
                     {
-                        await _groupInviteService.DeleteInviteAsync(invite.Id, CancellationToken.None);
+                        if (await _groupService.JoinGroupApproveAsync(invite.GroupId.Value, input.EntityToProcess.Id,
+                                CancellationToken.None))
+                        {
+                            await _groupInviteService.DeleteInviteAsync(invite.Id, CancellationToken.None);
+                        }
                     }
                 }
-
-                if (settings.EmailAdminOnNewMemberSignUp)
-                {
-                    var sb = new StringBuilder();
-                    sb.Append(
-                        $"<p>{string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl)}</p>");
-                    sb.Append($"<p>{input.EntityToProcess.UserName} - {input.EntityToProcess.Email}</p>");
-                    var email = new Email
-                    {
-                        EmailTo = settings.AdminEmailAddress,
-                        NameTo = _localizationService.GetResourceString("Members.Admin"),
-                        Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
-                    };
-                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                    _emailService.SendMail(email);
-                }
-
-                // Only send the email if the admin is not manually authorising emails or it's pointless
-                _emailService.SendEmailConfirmationEmail(input.EntityToProcess, manuallyAuthoriseMembers,
-                    memberEmailAuthorisationNeeded);
 
                 // Now add a memberjoined activity
                 _activityService.MemberJoined(input.EntityToProcess);

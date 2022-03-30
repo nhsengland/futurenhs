@@ -29,9 +29,9 @@
             Property(x => x.AboutUs).IsOptional().HasMaxLength(4000);
             Property(x => x.ImageId).IsOptional();
 
-            HasOptional(x => x.ParentGroup)
+            HasOptional(x => x.Parent_GroupId)
                 .WithMany()
-                .Map(x => x.MapKey("Group_Id"));
+                .Map(x => x.MapKey("Parent_GroupId"));
 
             HasOptional(x => x.Section)
                 .WithMany(x => x.Groups)

@@ -86,7 +86,7 @@ namespace MvcForum.Plugins.Pipelines.Group
                     {
                         // Set the parent Group
                         var parentGroup = _groupService.Get(parentGroupGuid.Value);
-                        input.EntityToProcess.ParentGroup = parentGroup;
+                        input.EntityToProcess.Parent_GroupId = parentGroup;
 
                         // Append the path from the parent Group
                         _groupService.SortPath(input.EntityToProcess, parentGroup);
@@ -94,8 +94,8 @@ namespace MvcForum.Plugins.Pipelines.Group
                     else
                     {
                         // Must access property (trigger lazy-loading) before we can set it to null (Entity Framework bug!!!)
-                        var triggerEfLoad = input.EntityToProcess.ParentGroup;
-                        input.EntityToProcess.ParentGroup = null;
+                        var triggerEfLoad = input.EntityToProcess.Parent_GroupId;
+                        input.EntityToProcess.Parent_GroupId = null;
 
                         // Also clear the path
                         input.EntityToProcess.Path = null;
@@ -117,7 +117,7 @@ namespace MvcForum.Plugins.Pipelines.Group
                     if (parentGroupGuid != null)
                     {
                         var parentGroup = await context.Group.FirstOrDefaultAsync(x => x.Id == parentGroupGuid.Value);
-                        input.EntityToProcess.ParentGroup = parentGroup;
+                        input.EntityToProcess.Parent_GroupId = parentGroup;
                         _groupService.SortPath(input.EntityToProcess, parentGroup);
                     }
 

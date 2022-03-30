@@ -3,9 +3,9 @@ import { GenericPageTextContent } from '@appTypes/content';
 import { Member } from '@appTypes/member';
 
 declare interface ContentText extends GenericPageTextContent {
-    usersHeading: string;
+    mainHeading: string;
     noUsers: string;
-    createUser: string;
+    inviteUser: string;
 }
 
 export interface Props extends Page {

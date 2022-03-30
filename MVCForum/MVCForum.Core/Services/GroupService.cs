@@ -97,12 +97,12 @@ namespace MvcForum.Core.Services
             {
                 var orderedGroups = new List<Group>();
                 var allCats = _context.Group
-                    .Include(x => x.ParentGroup)
+                    .Include(x => x.Parent_GroupId)
                     .AsNoTracking()
                     .OrderBy(x => x.SortOrder)
                     .ToList();
 
-                foreach (var parentGroup in allCats.Where(x => x.ParentGroup == null).OrderBy(x => x.SortOrder))
+                foreach (var parentGroup in allCats.Where(x => x.Parent_GroupId == null).OrderBy(x => x.SortOrder))
                 {
                     // Add the main Group
                     parentGroup.Level = 1;
@@ -137,7 +137,7 @@ namespace MvcForum.Core.Services
         {
 
             var catsToReturn = new List<Group>();
-            var cats = allGroups.Where(x => x.ParentGroup != null && x.ParentGroup.Id == Group.Id)
+            var cats = allGroups.Where(x => x.Parent_GroupId != null && x.Parent_GroupId.Id == Group.Id)
                 .OrderBy(x => x.SortOrder);
             foreach (var cat in cats)
             {
@@ -169,7 +169,7 @@ namespace MvcForum.Core.Services
         public IEnumerable<Group> GetAllSubGroups(Guid parentId, Guid? membershipId)
         {
             return _context.Group.AsNoTracking()
-                .Where(x => x.ParentGroup.Id == parentId)
+                .Where(x => x.Parent_GroupId.Id == parentId)
                 .OrderBy(x => x.SortOrder);
         }
 
@@ -180,8 +180,8 @@ namespace MvcForum.Core.Services
         public IEnumerable<Group> GetAllMainGroups(Guid? membershipId)
         {
             return _context.Group.AsNoTracking()
-                .Include(x => x.ParentGroup)
-                .Where(cat => cat.ParentGroup == null)
+                .Include(x => x.Parent_GroupId)
+                .Where(cat => cat.Parent_GroupId == null)
                 .OrderBy(x => x.SortOrder)
                 .ToList();
         }
@@ -190,9 +190,9 @@ namespace MvcForum.Core.Services
         public IEnumerable<GroupSummary> GetAllMainGroupsInSummary(Guid? membershipId)
         {
             return _context.Group.AsNoTracking()
-                .Include(group => group.ParentGroup)
+                .Include(group => group.Parent_GroupId)
                 .Include(group => group.Section)
-                .Where(group => group.ParentGroup == null)
+                .Where(group => group.Parent_GroupId == null)
                 .OrderBy(group => group.SortOrder)
                 .Select(group => new GroupSummary
                 {
@@ -207,9 +207,9 @@ namespace MvcForum.Core.Services
         public ILookup<Guid, GroupSummary> GetAllMainGroupsInSummaryGroupedBySection(Guid? membershipId)
         {
             return _context.GroupUser.AsNoTracking()
-                .Include(groupUser => groupUser.Group.ParentGroup)
+                .Include(groupUser => groupUser.Group.Parent_GroupId)
                 .Include(groupUser => groupUser.Group.Section)
-                .Where(groupUser => groupUser.Group.ParentGroup == null && groupUser.Group.Section != null)
+                .Where(groupUser => groupUser.Group.Parent_GroupId == null && groupUser.Group.Section != null)
                 .OrderBy(groupUser => groupUser.Group.SortOrder)
                 .Select(groupUser => new GroupSummary
                 {
@@ -229,8 +229,8 @@ namespace MvcForum.Core.Services
                 .Select(groupUser => new GroupSummary
                 {
                     Group = groupUser.Group,
-                    DiscussionCount = groupUser.Group.Topics.Count,
-                    MemberCount = groupUser.Group.GroupUsers.Count(g => g.Approved == true)
+                    DiscussionCount = 0,
+                    MemberCount = 0
                 })
                 .ToList();
         }
@@ -243,8 +243,8 @@ namespace MvcForum.Core.Services
                 .Select(group => new GroupSummary
                 {
                     Group = group,
-                    DiscussionCount = group.Topics.Count,
-                    MemberCount = group.GroupUsers.Count(g => g.Approved == true)
+                    DiscussionCount = 0,
+                    MemberCount = 0
                 })
                 .ToList();
         }
@@ -432,7 +432,7 @@ namespace MvcForum.Core.Services
                 Groups =
                     _context.Group.AsNoTracking()
                         .Include(x => x.Topics.Select(l => l.LastPost.User))
-                        .Include(x => x.ParentGroup)
+                        .Include(x => x.Parent_GroupId)
                         .Where(x => ids.Contains(x.Id))
                         .ToList();
             }
@@ -460,7 +460,7 @@ namespace MvcForum.Core.Services
                          {
                              Group = Group,
                              SubGroups = from cats in _context.Group
-                                         where cats.ParentGroup.Id == Group.Id
+                                         where cats.Parent_GroupId.Id == Group.Id
                                          select cats
                          }).FirstOrDefault();
 

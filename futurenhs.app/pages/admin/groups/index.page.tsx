@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
             routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
 
-                props.layoutId = layoutIds.ADMIN
+                props.layoutId = layoutIds.ADMIN;
     
                 /**
                  * Return data to page template

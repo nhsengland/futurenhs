@@ -1,4 +1,6 @@
 import { requestMethods } from '@constants/fetch';
+import { cacheNames } from '@constants/caches';
+import { clearClientCaches } from '@helpers/util/data';
 import { FetchOptions, FetchResponse } from '@appTypes/fetch';
 
 /**
@@ -27,6 +29,20 @@ export const fetchJSON = (url: string, options: FetchOptions, timeOut: number): 
 
             const meta = response.clone();
 
+            /**
+             * Clear Next js page cache in service worker if any non-GET requests are made which would affect the cached GET data
+             * TODO: this is the safest approach in terms of ensuring all necessary caches are cleared, but might be optimised in future 
+             * so that less cache is unnecessarily destroyed
+             */
+            if(meta.ok && options.method !== requestMethods.GET){
+
+                clearClientCaches([cacheNames.NEXT_DATA]);
+
+            }
+
+            /**
+             * Return meta and JSON
+             */
             return response
                 .text()
                 .then((text) => {

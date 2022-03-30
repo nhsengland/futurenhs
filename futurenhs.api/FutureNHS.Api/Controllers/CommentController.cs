@@ -86,9 +86,9 @@ namespace FutureNHS.Api.Controllers
 
             comment.Content = _htmlSanitizer.Sanitize(comment.Content);
 
-            await _commentService.CreateCommentAsync(membershipUserId, slug, discussionId, comment, cancellationToken);
+            var commentId = await _commentService.CreateCommentAsync(membershipUserId, slug, discussionId, comment, cancellationToken);
 
-            return Ok();
+            return Ok(commentId);
         }
 
         [HttpPost]
@@ -102,9 +102,9 @@ namespace FutureNHS.Api.Controllers
 
             comment.Content = _htmlSanitizer.Sanitize(comment.Content);
 
-            await _commentService.CreateCommentReplyAsync(membershipUserId, slug, discussionId, commentId, comment, cancellationToken);
+            var childCommentId = await _commentService.CreateCommentReplyAsync(membershipUserId, slug, discussionId, commentId, comment, cancellationToken);
 
-            return Ok();
+            return Ok(childCommentId);
         }
 
         [HttpPut]
