@@ -70,7 +70,7 @@ export default {
             <li>monitor use of the site to identify security threats</li>
             <li>monitor the performance of the site to identify inefficiencies and JavaScript errors</li>
         </ul>
-        <p>We may share this information with [enter organisations or individuals].</p>
+        
         <p>Under the General Data Protection Regulation (GDPR), the lawful bases we rely on for processing this information are:</p>
         <ul>
             <li>Your consent. You can remove your consent at any time. You can do this by <a href="/contact-us">contacting us</a></li>
