@@ -263,7 +263,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                     })}
                                                     <li role="none" className="u-margin-top-spacing-4 desktop:u-hidden">
                                                         <span className="u-text-bold">Need help? </span>
-                                                        <a target="_blank" rel="noopener" href="https://futurenhstest.service-now.com/csm/?id=futurenhs_test">Visit our support site</a>
+                                                        <a target="_blank" rel="noopener" href="http://support.future.nhs.uk">Visit our support site</a>
                                                     </li>
                                                 </ul>
                                             </nav>
