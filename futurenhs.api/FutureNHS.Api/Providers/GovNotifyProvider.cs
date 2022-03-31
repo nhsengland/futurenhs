@@ -4,6 +4,7 @@ using FutureNHS.Api.Providers.Interfaces;
 using Notify.Client;
 using Notify.Exceptions;
 using Notify.Interfaces;
+using Newtonsoft.Json;
 
 namespace FutureNHS.Api.Providers
 {
@@ -16,8 +17,14 @@ namespace FutureNHS.Api.Providers
             if(string.IsNullOrEmpty(apiKey)) throw new ArgumentNullException(nameof(apiKey));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            _notificationClient = new NotificationClient(apiKey);
-
+            try
+            {
+                _notificationClient = new NotificationClient(apiKey);
+            }
+            catch
+            {
+                //do nothing
+            }
         }
 
         public void SendEmail(MailAddress emailAddress, string templateId, Dictionary<string,dynamic>? parameters = null, string? clientReference = null, string? replyToId = null)
