@@ -137,7 +137,7 @@ GroupTabs.Forum,Forum
 GroupTabs.Files,Files
 GroupTabs.Members,Members
 GroupTabs.AboutUs,About us
-Header.Phasebanner.FeedbackLink,http://www.google.co.uk
+Header.Phasebanner.FeedbackLink,https://forms.office.com/r/0ENi61JEu8
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
 Language.Change,Change Language
@@ -160,7 +160,7 @@ LogOn.LogOff,Log Off
 LogOn.LogOn,Log In
 LogOn.Button.Text,Log In
 LogOn.Error.UnableToLogIn.Text, Unable to log in. Please check your details.
-LogOn.Introduction.Text, Log in text TBC
+LogOn.Introduction.Text, Collaborate, connect, share and learn
 LogOn.ForgotPassword.Text, Forgot your password?
 LogOn.RegisterInterest.Link, mailto:support@futurenhs.zendesk.com?subject=Register Interest
 LogOn.Title.Text,Log In

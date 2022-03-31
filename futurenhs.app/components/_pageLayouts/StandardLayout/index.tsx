@@ -40,14 +40,14 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 
     const currentPathName: string = router?.pathname;
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || '';
-    const breadCrumbDescriptionHtml: string = "<span class=\"u-text-bold\">Need help?</span> <a target=\"_blank\" rel=\"noopener\" href=\"https://futurenhstest.service-now.com/csm/?id=futurenhs_test\">Visit our support site</a>"
+    const breadCrumbDescriptionHtml: string = "<span class=\"u-text-bold\">Need help?</span> <a target=\"_blank\" rel=\"noopener\" href=\"http://support.future.nhs.uk\">Visit our support site</a>"
 
     footerNavMenuList.forEach((menuItem) => menuItem.isActive = menuItem.url === currentPathName);
-    mainNavMenuList.forEach((menuItem) => { 
-        
-        menuItem.isActiveRoot = menuItem.url === '/' ? currentPathName === '/' :  currentPathName?.startsWith(menuItem.url); 
-        menuItem.isActive = menuItem.url === currentPathName 
-    
+    mainNavMenuList.forEach((menuItem) => {
+
+        menuItem.isActiveRoot = menuItem.url === '/' ? currentPathName === '/' :  currentPathName?.startsWith(menuItem.url);
+        menuItem.isActive = menuItem.url === currentPathName
+
     });
 
     const currentRoutePathElements: Array<string> = router?.asPath?.split('/').filter((item) => item);
@@ -121,7 +121,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                             <ErrorBoundary boundaryId="phase-banner">
                                 <PhaseBanner text={{
                                     tag: 'beta',
-                                    body: 'This is a new service – your <a href="http://www.google.co.uk">feedback</a> will help us to improve it.'
+                                    body: 'This is a new service – your <a href="https://forms.office.com/r/0ENi61Jeu8">feedback</a> will help us to improve it.'
                                 }} />
                             </ErrorBoundary>
                         </LayoutWidthContainer>
