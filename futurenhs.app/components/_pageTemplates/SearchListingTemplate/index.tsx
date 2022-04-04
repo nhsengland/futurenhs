@@ -160,7 +160,6 @@ export const SearchListingTemplate: (props: Props) => JSX.Element = ({
 
         <>
             <Head>
-                <title>{title}</title>
                 <meta name="description" content={metaDescription} />
             </Head>
             <div className="u-px-4 u-py-10">

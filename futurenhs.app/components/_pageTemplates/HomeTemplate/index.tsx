@@ -21,7 +21,6 @@ export const HomeTemplate: (props: Props) => JSX.Element = ({
 
         <>
             <Head>
-                <title>{title}</title>
                 <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>

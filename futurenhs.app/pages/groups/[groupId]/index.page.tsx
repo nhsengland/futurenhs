@@ -31,6 +31,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
     
                     props.layoutId = layoutIds.GROUP;
                     props.tabId = groupTabIds.INDEX;
+                    props.pageTitle = props.entityText.title;
         
                     /**
                      * Return data to page template
