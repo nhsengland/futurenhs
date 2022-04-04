@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FutureNHS.Tests", "FutureNH
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GovukNotify", "GovNotifyUk\notifications-net-client\src\GovukNotify\GovukNotify.csproj", "{C733E23E-2DEC-476A-A39F-F63D6EBB598A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GovukNotify.Tests", "GovNotifyUk\notifications-net-client\src\GovukNotify.Tests\GovukNotify.Tests.csproj", "{8A5677A5-39DE-4DD0-8DFD-456C904D895C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C733E23E-2DEC-476A-A39F-F63D6EBB598A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C733E23E-2DEC-476A-A39F-F63D6EBB598A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C733E23E-2DEC-476A-A39F-F63D6EBB598A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A5677A5-39DE-4DD0-8DFD-456C904D895C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A5677A5-39DE-4DD0-8DFD-456C904D895C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A5677A5-39DE-4DD0-8DFD-456C904D895C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A5677A5-39DE-4DD0-8DFD-456C904D895C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
