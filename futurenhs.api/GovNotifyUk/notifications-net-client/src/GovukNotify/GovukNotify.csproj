@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp6.0</TargetFrameworks>
     <Version>4.0.1</Version>
     <Authors>GOV.UK Notify</Authors>
     <Description>GOV.UK .NET Notify Client</Description>
