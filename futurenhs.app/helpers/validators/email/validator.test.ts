@@ -31,4 +31,14 @@ describe('Email validator', () => {
 
     });
 
+    it('Should throw an error when invalid value is passed', () => {
+
+        console.error = jest.fn();
+
+        const validator: Function = email(null);
+
+        expect(validator('test')).toBe('An unexpected error occured');
+
+    });
+
 });

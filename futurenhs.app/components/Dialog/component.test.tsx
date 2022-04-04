@@ -8,7 +8,7 @@ describe('Dialog', () => {
     
     const props: Props = {
         id: 'Mock id',
-        appElement: document.getElementById('__next'),
+        appElement: document.body,
         text: {
             confirmButton: 'Confirm',
             cancelButton: 'Cancel'

@@ -16,6 +16,14 @@ let matchMedia;
 global.matchMedia = (query: string): any => { };
 global.scrollTo = () => { };
 global.React = React;
+global.console = {
+    ...console,
+    log: jest.fn(),
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+};
 
 Enzyme.configure({
     adapter: new Adapter()
