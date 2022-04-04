@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FutureNHS.Api", "FutureNHS.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FutureNHS.Tests", "FutureNHS.Tests\FutureNHS.Tests.csproj", "{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GovukNotify", "GovNotifyUk\notifications-net-client\src\GovukNotify\GovukNotify.csproj", "{C733E23E-2DEC-476A-A39F-F63D6EBB598A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GovUkNotifyClient", "GovUkNotifyClient\GovUkNotifyClient.csproj", "{3A854A91-EB17-461E-AB1E-D44D9DBF7D73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GovukNotify.Tests", "GovNotifyUk\notifications-net-client\src\GovukNotify.Tests\GovukNotify.Tests.csproj", "{8A5677A5-39DE-4DD0-8DFD-456C904D895C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GovUkNotifyClient.Tests", "GovUkNotifyClient.Tests\GovUkNotifyClient.Tests.csproj", "{48494248-9584-4EB6-8AD0-76089E88859D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,14 @@ Global
 		{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ECDAFC9-B65F-4CBA-A032-4DFFE483D7DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C733E23E-2DEC-476A-A39F-F63D6EBB598A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C733E23E-2DEC-476A-A39F-F63D6EBB598A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C733E23E-2DEC-476A-A39F-F63D6EBB598A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C733E23E-2DEC-476A-A39F-F63D6EBB598A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A5677A5-39DE-4DD0-8DFD-456C904D895C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A5677A5-39DE-4DD0-8DFD-456C904D895C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A5677A5-39DE-4DD0-8DFD-456C904D895C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A5677A5-39DE-4DD0-8DFD-456C904D895C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A854A91-EB17-461E-AB1E-D44D9DBF7D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A854A91-EB17-461E-AB1E-D44D9DBF7D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A854A91-EB17-461E-AB1E-D44D9DBF7D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A854A91-EB17-461E-AB1E-D44D9DBF7D73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48494248-9584-4EB6-8AD0-76089E88859D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48494248-9584-4EB6-8AD0-76089E88859D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48494248-9584-4EB6-8AD0-76089E88859D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48494248-9584-4EB6-8AD0-76089E88859D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
