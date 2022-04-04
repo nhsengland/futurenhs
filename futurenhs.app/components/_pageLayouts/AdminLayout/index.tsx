@@ -32,7 +32,6 @@ export const AdminLayout: (props: Props) => JSX.Element = ({
             actions={actions}
             className="u-bg-theme-3">
                 <Head>
-                    <title>{pageTitle ? pageTitle : title}</title>
                     <meta name="description" content={metaDescription} />
                 </Head>
                 <div className="u-pt-10 tablet:u-px-4">
