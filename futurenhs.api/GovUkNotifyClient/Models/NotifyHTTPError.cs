@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Notify.Models
 {
     public class NotifyHTTPError
     {
         #pragma warning disable 169
-        [JsonProperty("error")]
+        [JsonPropertyName("error")]
         private string error;
 
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         private string message;
     }
 }

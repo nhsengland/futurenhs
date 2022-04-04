@@ -1,12 +1,12 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Notify.Models.Responses
 {
     public class Link
     {
-        [JsonProperty("current")]
+        [JsonPropertyName("current")]
         public string current;
-        [JsonProperty("next")]
+        [JsonPropertyName("next")]
         public string next;
     }
 }

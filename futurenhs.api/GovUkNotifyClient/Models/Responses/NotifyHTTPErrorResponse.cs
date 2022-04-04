@@ -1,15 +1,16 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Notify.Models.Responses
 {
     public class NotifyHTTPErrorResponse
     {
         #pragma warning disable 169, 649
-        [JsonProperty("status_code")]
+        [JsonPropertyName("status_code")]
         private string statusCode;
 
-        [JsonProperty("errors")]
+        [JsonPropertyName("errors")]
         private List<NotifyHTTPError> errors;
 
         public string getStatusCode()
@@ -19,7 +20,7 @@ namespace Notify.Models.Responses
 
         public string getErrorsAsJson()
         {
-            return JsonConvert.SerializeObject(errors, Formatting.Indented);
+            return JsonSerializer.Serialize(errors, new JsonSerializerOptions());
         }
     }
 }

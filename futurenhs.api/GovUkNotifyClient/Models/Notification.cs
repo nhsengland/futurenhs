@@ -1,41 +1,41 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Notify.Models
 {
     public class Notification
     {
         public string id;
-        [JsonProperty("completed_at")]
+        [JsonPropertyName("completed_at")]
         public string completedAt;
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public string createdAt;
-        [JsonProperty("email_address")]
+        [JsonPropertyName("email_address")]
         public string emailAddress;
         public string body;
         public string subject;
-        [JsonProperty("line_1")]
+        [JsonPropertyName("line_1")]
         public string line1;
-        [JsonProperty("line_2")]
+        [JsonPropertyName("line_2")]
         public string line2;
-        [JsonProperty("line_3")]
+        [JsonPropertyName("line_3")]
         public string line3;
-        [JsonProperty("line_4")]
+        [JsonPropertyName("line_4")]
         public string line4;
-        [JsonProperty("line_5")]
+        [JsonPropertyName("line_5")]
         public string line5;
-        [JsonProperty("line_6")]
+        [JsonPropertyName("line_6")]
         public string line6;
-        [JsonProperty("phone_number")]
+        [JsonPropertyName("phone_number")]
         public string phoneNumber;
         public string postcode;
         public string postage;
         public string reference;
-        [JsonProperty("sent_at")]
+        [JsonPropertyName("sent_at")]
         public string sentAt;
         public string status;
         public Template template;
         public string type;
-        [JsonProperty("created_by_name")]
+        [JsonPropertyName("created_by_name")]
         public string createdByName;
 
 

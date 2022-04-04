@@ -1,17 +1,13 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 using Notify.Exceptions;
 using Notify.Interfaces;
 using Notify.Models;
 using Notify.Models.Responses;
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Notify.Client
 {
@@ -28,6 +24,7 @@ namespace Notify.Client
         public string GET_ALL_TEMPLATES_URL = "v2/templates";
         public string TYPE_PARAM = "?type=";
         public string VERSION_PARAM = "/version/";
+        public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions();
 
         public NotificationClient(string apiKey) : base(new HttpClientWrapper(new HttpClient()), apiKey)
         {
@@ -50,10 +47,10 @@ namespace Notify.Client
 
             try
             {
-                var notification = JsonConvert.DeserializeObject<Notification>(response);
+                var notification = JsonSerializer.Deserialize<Notification>(response);
                 return notification;
             }
-            catch (JsonReaderException)
+            catch (JsonException)
             {
                 throw new NotifyClientException("Could not create Notification object from response: {0}", response);
             }
@@ -103,7 +100,7 @@ namespace Notify.Client
             var finalUrl = GET_ALL_NOTIFICATIONS_URL + ToQueryString(query);
             var response = await GET(finalUrl).ConfigureAwait(false);
 
-            var notifications = JsonConvert.DeserializeObject<NotificationList>(response);
+            var notifications = JsonSerializer.Deserialize<NotificationList>(response);
             return notifications;
         }
 
@@ -117,7 +114,7 @@ namespace Notify.Client
 
             var response = await GET(finalUrl).ConfigureAwait(false);
 
-            var templateList = JsonConvert.DeserializeObject<TemplateList>(response);
+            var templateList = JsonSerializer.Deserialize<TemplateList>(response);
 
             return templateList;
         }
@@ -132,7 +129,7 @@ namespace Notify.Client
 
             var response = await this.GET(finalUrl).ConfigureAwait(false);
 
-            var receivedTexts = JsonConvert.DeserializeObject<ReceivedTextListResponse>(response);
+            var receivedTexts = JsonSerializer.Deserialize<ReceivedTextListResponse>(response);
 
             return receivedTexts;
         }
@@ -142,16 +139,16 @@ namespace Notify.Client
             string smsSenderId = null)
         {
             var o = CreateRequestParams(templateId, personalisation, clientReference);
-            o.AddFirst(new JProperty("phone_number", mobileNumber));
+            o.Add("phone_number", mobileNumber);
 
             if (smsSenderId != null)
             {
-                o.Add(new JProperty("sms_sender_id", smsSenderId));
+                o.Add("sms_sender_id", smsSenderId);
             }
 
-            var response = await POST(SEND_SMS_NOTIFICATION_URL, o.ToString(Formatting.None)).ConfigureAwait(false);
+            var response = await POST(SEND_SMS_NOTIFICATION_URL, o.ToJsonString(_jsonOptions)).ConfigureAwait(false);
 
-            return JsonConvert.DeserializeObject<SmsNotificationResponse>(response);
+            return JsonSerializer.Deserialize<SmsNotificationResponse>(response);
         }
 
         public async Task<EmailNotificationResponse> SendEmailAsync(string emailAddress, string templateId,
@@ -159,16 +156,16 @@ namespace Notify.Client
             string emailReplyToId = null)
         {
             var o = CreateRequestParams(templateId, personalisation, clientReference);
-            o.AddFirst(new JProperty("email_address", emailAddress));
+            o.Add("email_address", emailAddress);
 
             if (emailReplyToId != null)
             {
-                o.Add(new JProperty("email_reply_to_id", emailReplyToId));
+                o.Add("email_reply_to_id", emailReplyToId);
             }
 
-            var response = await POST(SEND_EMAIL_NOTIFICATION_URL, o.ToString(Formatting.None)).ConfigureAwait(false);
+            var response = await POST(SEND_EMAIL_NOTIFICATION_URL, o.ToJsonString(_jsonOptions)).ConfigureAwait(false);
 
-            return JsonConvert.DeserializeObject<EmailNotificationResponse>(response);
+            return JsonSerializer.Deserialize<EmailNotificationResponse>(response);
         }
 
         public async Task<LetterNotificationResponse> SendLetterAsync(string templateId, Dictionary<string, dynamic> personalisation,
@@ -176,14 +173,15 @@ namespace Notify.Client
         {
             var o = CreateRequestParams(templateId, personalisation, clientReference);
 
-            var response = await this.POST(SEND_LETTER_NOTIFICATION_URL, o.ToString(Formatting.None)).ConfigureAwait(false);
+            var response = await this.POST(SEND_LETTER_NOTIFICATION_URL, o.ToJsonString(_jsonOptions)).ConfigureAwait(false);
 
-            return JsonConvert.DeserializeObject<LetterNotificationResponse>(response);
+            return JsonSerializer.Deserialize<LetterNotificationResponse>(response);
         }
 
         public async Task<LetterNotificationResponse> SendPrecompiledLetterAsync(string clientReference, byte[] pdfContents, string postage = null)
         {
-            var requestParams = new JObject
+
+            var requestParams = new JsonObject
             {
                 {"reference", clientReference},
                 {"content", System.Convert.ToBase64String(pdfContents)}
@@ -191,12 +189,12 @@ namespace Notify.Client
 
             if (postage != null)
             {
-                requestParams.Add(new JProperty("postage", postage));
+                requestParams.Add("postage", postage);
             }
 
-            var response = await this.POST(SEND_LETTER_NOTIFICATION_URL, requestParams.ToString(Formatting.None)).ConfigureAwait(false);
+            var response = await this.POST(SEND_LETTER_NOTIFICATION_URL, requestParams.ToJsonString(new JsonSerializerOptions())).ConfigureAwait(false);
 
-            return JsonConvert.DeserializeObject<LetterNotificationResponse>(response);
+            return JsonSerializer.Deserialize<LetterNotificationResponse>(response);
         }
 
         public async Task<TemplateResponse> GetTemplateByIdAsync(string templateId)
@@ -219,19 +217,26 @@ namespace Notify.Client
         {
             var url = string.Format("{0}{1}/preview", GET_TEMPLATE_URL, templateId);
 
-            var o = new JObject
+            var personalisationJson = new JsonObject();
+
+            foreach (var (key, value) in personalisation)
             {
-                {"personalisation", JObject.FromObject(personalisation)}
+                personalisationJson.Add(key, value);
+            }
+
+            var o = new JsonObject
+            {
+                {"personalisation", personalisationJson}
             };
 
-            var response = await this.POST(url, o.ToString(Formatting.None)).ConfigureAwait(false);
+            var response = await this.POST(url, o.ToJsonString(_jsonOptions)).ConfigureAwait(false);
 
             try
             {
-                var template = JsonConvert.DeserializeObject<TemplatePreviewResponse>(response);
+                var template = JsonSerializer.Deserialize<TemplatePreviewResponse>(response);
                 return template;
             }
-            catch (JsonReaderException)
+            catch (JsonException)
             {
                 throw new NotifyClientException("Could not create Template object from response: {0}", response);
             }
@@ -245,12 +250,12 @@ namespace Notify.Client
             return response;
         }
 
-        public static JObject PrepareUpload(byte[] documentContents, bool isCsv = false)
+        public static JsonObject PrepareUpload(byte[] documentContents, bool isCsv = false)
         {
             if (documentContents.Length > 2 * 1024 * 1024) {
                 throw new System.ArgumentException("File is larger than 2MB");
             }
-            return new JObject
+            return new JsonObject
             {
                 {"file", System.Convert.ToBase64String(documentContents)},
                 {"is_csv", isCsv}
@@ -263,26 +268,29 @@ namespace Notify.Client
 
             try
             {
-                var template = JsonConvert.DeserializeObject<TemplateResponse>(response);
+                var template = JsonSerializer.Deserialize<TemplateResponse>(response);
                 return template;
             }
-            catch (JsonReaderException)
+            catch (JsonException)
             {
                 throw new NotifyClientException("Could not create Template object from response: {0}", response);
             }
         }
 
-        private static JObject CreateRequestParams(string templateId, Dictionary<string, dynamic> personalisation = null,
+        private static JsonObject CreateRequestParams(string templateId, Dictionary<string, dynamic> personalisation = null,
             string clientReference = null)
         {
-            var personalisationJson = new JObject();
+            var personalisationJson = new JsonObject();
 
             if (personalisation != null)
             {
-                personalisationJson = JObject.FromObject(personalisation);
+                foreach (var (key, value) in personalisation)
+                {
+                    personalisationJson.Add(key, value);
+                }
             }
 
-            var o = new JObject
+            var o = new JsonObject
             {
                 {"template_id", templateId},
                 {"personalisation", personalisationJson}
