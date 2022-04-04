@@ -10,4 +10,24 @@ describe('Capitalise formatter', () => {
 
     });
 
+    it('Should return non-string values verbatim', () => {
+
+        expect(capitalise({
+            value: 12
+        })).toBe(12);
+
+        expect(capitalise({
+            value: null
+        })).toBe(null);
+
+        expect(capitalise({
+            value: {}
+        })).toStrictEqual({});
+
+        expect(capitalise({
+            value: ["Random"]
+        })).toStrictEqual(["Random"]);
+
+    });
+
 });
