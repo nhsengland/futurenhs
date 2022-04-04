@@ -37,8 +37,8 @@ export const putGroupFolder = async ({
         method: requestMethods.PUT,
         headers: headers,
         body: {
-            Title: body.get('name'),
-            Description: body.get('description')
+            Title: body.get('Title'),
+            Description: body.get('Description')
         }
     }), defaultTimeOutMillis);
     

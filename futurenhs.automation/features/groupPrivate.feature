@@ -1,12 +1,11 @@
 @Pending
-# Tests may be irrelevant now with changes to group permissions being opened up.
+## PRIVATE GROUPS FEATURE IS DEPRECATED IN PRIVATEBETA, AWAITING FURTHER WORK ON PERMISSIONS
 Feature: groupPrivate
     User journeys covering functionality and permissions when working with a private group
 
 Background: 
     Given I have navigated to '/'
-    Given I have logged in as a 'admin' and accept the cookies
-    When I click the 'Groups' nav icon
+    Given I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
 
 

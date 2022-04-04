@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import classNames from 'classnames';
+import isFocusable from 'ally.js/is/focusable';
 
 import { Props } from './interfaces';
 
@@ -10,7 +11,8 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
     containerElementType,
     shouldEnableLoadMore,
     children,
-    className
+    className,
+    nestedChildId
 }) => {
 
     const containerRef = useRef();
@@ -29,7 +31,15 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
         wrapper: classNames(className)
     }
 
-    const renderNewItemsAnnouncement = ((newItemsCount: number, newestChildElement: HTMLElement) => {
+
+    const makeFocusable = (element: HTMLElement) => {
+
+        element.setAttribute('tabIndex', '-1');
+
+    }
+
+
+    const renderNewItemsAnnouncement = (newItemsCount: number, newestChildElement: HTMLElement) => {
 
         /**
          * Determine element type for the announcement from the container element type
@@ -43,13 +53,14 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
         const childElementType: string = childElementTypes[containerElementType];
 
         /**
-         * Creates announcement element and removes on blur
+         * Creates announcement element, makes focusable and removes on blur
          */
         const newItemsAnnouncement: HTMLElement = document.createElement(childElementType);
         newItemsAnnouncement.textContent = `${newItemsCount} new items`;
 
-        newItemsAnnouncement.setAttribute('tabIndex', '-1');
-        newItemsAnnouncement.classList.add('u-sr-only')
+        newItemsAnnouncement.classList.add('u-sr-only');
+  
+        makeFocusable(newItemsAnnouncement);
         newItemsAnnouncement.addEventListener('blur', (event) => {
             newItemsAnnouncement?.remove();
         });
@@ -61,7 +72,7 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
         newestChildElement.before(newItemsAnnouncement);
         newItemsAnnouncement.focus();
 
-    });
+    };
 
     useEffect(() => {
 
@@ -73,23 +84,55 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
         const newItemsCount: number = updatedChildElementCount - childElementCount.current;
 
         /**
+         * Get the index of the first of the newest children - which is equal to the length of the previous list of children
+         */
+        const newestChildElement: HTMLElement = (containerRef.current as any)?.children[childElementCount.current];
+
+        /**
          * If load more mode enabled and more children were just added
          */
         if (hasMoreChildren && shouldEnableLoadMore) {
-
-
-            /**
-             * Get the index of the first of the newest children - which is equal to the length of the previous list of children
-             */
-            const newestChildElement: HTMLElement = (containerRef.current as any)?.children[childElementCount.current];
 
             renderNewItemsAnnouncement(newItemsCount, newestChildElement);
 
         }
 
+        if (hasMoreChildren && !shouldEnableLoadMore) {
+
+                makeFocusable(newestChildElement);
+                newestChildElement.focus();
+
+        }
+
         childElementCount.current = updatedChildElementCount;
 
+
     }, [children.length]);
+
+
+
+    useEffect(() => {
+
+        /**
+         * If load more mode is not enabled and a nested child was added
+         */
+        if (!shouldEnableLoadMore && nestedChildId) {
+
+        /**
+         * Timeout to ensure element is visible before attempting to focus. E.g if child is inside an accordion that needs to open first
+         */
+            setTimeout(() => {
+
+                const newestNestedChildElement: HTMLElement = document.getElementById(nestedChildId);
+                makeFocusable(newestNestedChildElement);
+                newestNestedChildElement.focus();
+
+            }, 0)
+
+        }
+
+    }, [nestedChildId])
+
 
     if (shouldEnableLoadMore) {
 

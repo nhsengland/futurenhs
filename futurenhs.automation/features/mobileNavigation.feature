@@ -6,12 +6,12 @@ Background: Log in
     And I ensure the browser is in mobile emulation
     Then the 'Log In' header is displayed
     And the 'Register your interest' header is displayed
-	And I have logged in as an 'admin' and accept the cookies
+	And I have logged in as an 'group admin' and accept the cookies
     When I open the 'Menu' accordion
 
 @Core 
 Scenario: FNHS:M01 - Menu Validation
-    Then the 'Auto Admin' textual value is displayed
+    Then the 'Auto GroupAdmin' textual value is displayed
     And the 'Groups' link is displayed
     And the 'Need help?' textual value is displayed
     And the 'Visit our support site' link is displayed
@@ -33,7 +33,7 @@ Scenario: FNHS:M03 - Mobile Table validation
     Then the 'Automation Admin Group' header is displayed
     When I select 'Members' from the group menu accordion
     Then the 'Group Members' mobile table is displayed
-    | Name | auto Admin |
+    | Name | Auto GroupAdmin |
     | Role | Admin |
     | Date joined | [PrettyDate] |
     | Last logged in | [PrettyDate] |

@@ -3,8 +3,7 @@ Feature: forumAdmin
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'admin' and accept the cookies
-    Given I click the 'Groups' nav icon
+    And I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed 

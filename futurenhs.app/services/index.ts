@@ -38,7 +38,7 @@ export const getServiceErrorDataValidationErrors = (error: ServiceError): FormEr
         /**
          * Field level errors
          */
-        if(error.data?.body?.errors && Object.keys(error.data.body.errors.length)){
+        if(error.data?.body?.errors && Object.keys(error.data.body.errors).length){
 
             return error.data.body.errors;
     

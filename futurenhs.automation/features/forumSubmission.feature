@@ -4,7 +4,6 @@ Feature: Forum Submission
 Background:
     Given I have navigated to '/'
     And I have logged in as a 'user' and accept the cookies
-    When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed 
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed 

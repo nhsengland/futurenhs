@@ -6,24 +6,22 @@ Background:
 
 
 Scenario: FNHS78 - View my profile page
-	And I have logged in as an 'admin' and accept the cookies
-	And I click the 'Groups' nav icon
-    Then the 'My Groups' header is displayed
-    When I open the 'Auto Admin' accordion
+	And I have logged in as an 'group admin' and accept the cookies
+	Then the 'My Groups' header is displayed
+    When I open the 'Atuo GroupAdmin' accordion
     And I click the 'My profile' link
     Then the 'My profile' header is displayed
-    And the 'AA' textual value is displayed
+    And the 'AG' textual value is displayed
     And the profile values are displayed
-    | First name | auto |
-    | Last name | Admin |
-    | Email | autoAdmin@test.co.uk |
+    | First name | Auto                 |
+    | Last name  | GroupAdmin           |
+    | Email      | autoAdmin@test.co.uk |
     And the 'Edit my profile' link is displayed
 
 
 Scenario: FNHS79 - Edit my profile avatar upload
 	And I have logged in as an 'edituser' and accept the cookies
-	And I click the 'Groups' nav icon
-    Then the 'My Groups' header is displayed
+	Then the 'My Groups' header is displayed
     When I open the 'Menu' accordion
     And I click the 'My profile' link
     Then the 'My profile' header is displayed
@@ -39,7 +37,7 @@ Scenario: FNHS79 - Edit my profile avatar upload
 @Pending
 Scenario Outline: FNHS80 - Edit my profile
 	And I have logged in as an 'edituser' and accept the cookies
-	And I click the 'Groups' nav icon   
+  
     Then the 'My Groups' header is displayed
     When I open the 'menu' accordion
     And I click the 'My profile' link
@@ -55,19 +53,18 @@ Scenario Outline: FNHS80 - Edit my profile
     And the profile values are displayed
     | <label> | <input> |
 Examples:
-    | input   | label              |
-    | him     | Preferred pronouns |
+    | input                                                                                                                                                                                                                                                           | label              |
+    | him                                                                                                                                                                                                                                                             | Preferred pronouns |
     | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | Last name          |
-    | Name    | Last name          |
+    | Name                                                                                                                                                                                                                                                            | Last name          |
     | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | Preferred pronouns |
     | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DW | First name         |
-    | New     | First name         |
+    | New                                                                                                                                                                                                                                                             | First name         |
 
 
 Scenario Outline: FNHS81 - Edit my profile error validation
 	And I have logged in as an 'user' and accept the cookies
-	And I click the 'Groups' nav icon
-    Then the 'My Groups' header is displayed
+	Then the 'My Groups' header is displayed
     When I open the 'Menu' accordion
     And I click the 'My profile' link
     Then the 'My profile' header is displayed
@@ -80,17 +77,16 @@ Scenario Outline: FNHS81 - Edit my profile error validation
     And I click the 'Save Changes' button
     Then the '<error message>' textual value is displayed
 Examples:
-    | firstname | lastname | pronoun | error message               |
-    |           | lastname | him     | Please provide a first name | 
-    | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DWa | lastname | him | The first name must not be greater than 255 characters. | 
-    | firstname | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DWa | him | The last name must not be greater than 255 characters. | 
-    | firstname | lastname| j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DWa | The Pronouns must not be greater than 255 characters. |  
+    | firstname                                                                                                                                                                                                                                                        | lastname                                                                                                                                                                                                                                                         | pronoun                                                                                                                                                                                                                                                          | error message                                           |
+    |                                                                                                                                                                                                                                                                  | lastname                                                                                                                                                                                                                                                         | him                                                                                                                                                                                                                                                              | Please provide a first name                             |
+    | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DWa | lastname                                                                                                                                                                                                                                                         | him                                                                                                                                                                                                                                                              | The first name must not be greater than 255 characters. |
+    | firstname                                                                                                                                                                                                                                                        | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DWa | him                                                                                                                                                                                                                                                              | The last name must not be greater than 255 characters.  |
+    | firstname                                                                                                                                                                                                                                                        | lastname                                                                                                                                                                                                                                                         | j13mQJ8nNZp0EDhELJXtBD3j1mwxRMzcMtK9MOWDteeyq2l8SJlwHQxzI9bpyu43gcvqfQKJUL0AGsY1WaNPKVSkaUBDnLlfM9Y24GowcMwtJO0hP3ct6E6PIe4BzaF8KquF9TedIHFNWKpC7Xv7EJqdUfkttTjpYfTIwiUOjTkneJzRJvLQKaSFWQr2vGTTsuldO8HZn33GcaJNexqYBOUjbkoysw62zBPVK2Zec3H4AmyLsisY1rm2sr6h3DWa | The Pronouns must not be greater than 255 characters.   |
 
 
 Scenario: FNHS82 - Edit my profile w/o accepting T&Cs
 	And I have logged in as an 'user' and accept the cookies
-	And I click the 'Groups' nav icon
-    Then the 'My Groups' header is displayed
+	Then the 'My Groups' header is displayed
     When I open the 'Menu' accordion
     And I click the 'My profile' link
     Then the 'My profile' header is displayed

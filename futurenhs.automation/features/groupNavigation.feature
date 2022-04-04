@@ -4,7 +4,6 @@ Feature: Groups
 Background:
     Given I have navigated to '/'
     And I have logged in as a 'user' and accept the cookies
-    When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
 
 
@@ -90,12 +89,13 @@ Scenario: FNHS21 - Group Members, Table Validation
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     And the 'Group Members' table is displayed
-    | Name       | Role             | Date joined  | Last logged in |
-    | auto Admin | Admin            | [PrettyDate] | [PrettyDate]   |
-    | auto Test  | Standard Members | [PrettyDate] | [PrettyDate]   |
-    | auto User  | Standard Members | [PrettyDate] | [PrettyDate]   |
+    | Name            | Role             | Date joined  | Last logged in |
+    | Auto GroupAdmin | Admin            | [PrettyDate] | [PrettyDate]   |
+    # | auto Test  | Standard Members | [PrettyDate] | [PrettyDate]   |
+    | auto User       | Standard Members | [PrettyDate] | [PrettyDate]   |
 
-
+@Pending
+## PENDING MEMBERS NOT A FEATURE IN PRIVATEBETA
 Scenario: FNHS22 - Group Members, Pending Table Does Not Exist
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed

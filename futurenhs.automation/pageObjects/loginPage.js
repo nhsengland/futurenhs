@@ -8,6 +8,11 @@ const userTypes = {
         password: "Tempest070",
         fullName: "Auto Admin"
     },
+    groupadmin:{
+        username: "autoGroupAdmin@test.co.uk",
+        password: "Tempest070",
+        fullName: "Auto GroupAdmin"
+    },
     user:{
         username: "autoUser@test.co.uk",
         password: "Tempest070",
@@ -31,7 +36,7 @@ class loginPage extends basePage{
      * @param {string} desiredUser - user wanted to access the system, uses the name to find the login details in the "userTypes" object
      */
     loginUser(desiredUser){
-        var user = userTypes[desiredUser]
+        var user = userTypes[desiredUser.replace(/ /g, '')]
         var username = user.username
         var password = user.password
         helpers.waitForLoaded('//h1[text()[normalize-space() = "Log In"]]')

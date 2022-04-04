@@ -146,7 +146,7 @@ export const MultiChoice: Function = ({
                         wrapperElementType="span" />
                 }
                 {shouldRenderErrors &&
-                    <span className={generatedClasses.error}>{error || submitError}</span>
+                    <span className={generatedClasses.error}>{error || submitError || initialError}</span>
                 }
                 {renderInputs(options)}
             </fieldset>

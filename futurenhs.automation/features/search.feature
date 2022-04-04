@@ -6,7 +6,6 @@ Feature: Search
 Background:     
     Given I have navigated to '/'
     And I have logged in as a 'user' and accept the cookies
-    Given I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
 
 Scenario Outline: FNHS97 - Search is available validation

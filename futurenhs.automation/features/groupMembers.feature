@@ -3,11 +3,10 @@ Feature: groupMembers
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'admin' and accept the cookies
-    When I click the 'Groups' nav icon
+    And I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
 
-@Core
+@Core @Pending
 Scenario: FNHS26 - Accept group member request
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
@@ -17,7 +16,7 @@ Scenario: FNHS26 - Accept group member request
     Then the 'Auto User2' link is displayed
     And the 'Auto User2' row is displayed on the 'Group Members' table
 
-@Core
+@Core @Pending
 Scenario: FNHS27 - Reject group member request
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
@@ -26,7 +25,7 @@ Scenario: FNHS27 - Reject group member request
     When I click 'Reject' on the 'Auto User3' row of the 'Pending members' table
     Then the 'Pending members' table is not displayed
 
-@Core
+@Core @Pending
 Scenario: FNHS28 - Add Registered User
     When I click the 'Automation Public Group' link
     Then the 'Automation Public Group' header is displayed
@@ -36,7 +35,7 @@ Scenario: FNHS28 - Add Registered User
     And I click the 'Add new member' option
     Then the 'The email address belongs to a member of this group.' link is not displayed
 
-
+@Pending
 Scenario Outline: FNHS29 - Add Registered User Error Validation
     When I click the 'Automation Public Group' link
     Then the 'Automation Public Group' header is displayed

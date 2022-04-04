@@ -43,7 +43,6 @@ exports.config = {
         fullRegression: [
             './features/**/userAccess.feature',
             './features/**/groupNavigation.feature',
-            './features/**/groupCreate.feature',
             './features/**/groupMembers.feature',
             './features/**/groupManage.feature',
             './features/**/groupPublic.feature',
@@ -53,6 +52,7 @@ exports.config = {
             './features/**/foldersManagement.feature',
             './features/**/filesManagement.feature',
             './features/**/search.feature',
+            './features/**/platformAdmin.feature',
             './features/**/memberProfile.feature',
             './features/**/cookies.feature',
             './features/**/systemPages.feature',

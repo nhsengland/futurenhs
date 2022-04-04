@@ -3,5 +3,6 @@ export interface Props {
     shouldEnableLoadMore: boolean;
     children: any;
     className?: string;
+    nestedChildId?: string;
 }
 

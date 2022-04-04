@@ -4,7 +4,6 @@ Feature: groupPublic
 Background: 
     Given I have navigated to '/'
     Given I have logged in as a 'user' and accept the cookies
-    When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
 
 

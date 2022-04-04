@@ -33,9 +33,10 @@ const baseConfig = {
         domains: [
             'localhost', 
             '127.0.0.1', 
-            'collaborate-dev.future.nhs.uk', 
-            'collaborate-uat.future.nhs.uk', 
-            'collaborate.future.nhs.uk'
+            'sacdsfnhsdevuksouthpub.blob.core.windows.net', 
+            'futurenhs.cds.co.uk', 
+            'timblobtest.blob.core.windows.net',
+            'collaborate-dev.future.nhs.uk'
         ],
         path: `${assetPrefix}/_next/image`
     },

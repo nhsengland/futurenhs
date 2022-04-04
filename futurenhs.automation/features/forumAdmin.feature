@@ -3,8 +3,7 @@ Feature: forumAdmin
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'admin' and accept the cookies
-    When I click the 'Groups' nav icon
+    And I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
@@ -48,6 +47,6 @@ Scenario: FNHS61 - Validate new discussion details
     Then the 'autoTestDiscussion' header is displayed
     And the 'A brief description about the discussion' textual value is displayed
     Then the 'Join in the conversation' header is displayed
-    And the 'You're signed in auto Admin' textual value is displayed
+    And the 'You're signed in Auto GroupAdmin' textual value is displayed
     And the 'Your comment' label is displayed
     And the 'Add Comment' button is displayed

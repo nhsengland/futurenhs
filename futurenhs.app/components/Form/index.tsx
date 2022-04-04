@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
@@ -8,7 +8,7 @@ import { formComponents } from '@components/_formComponents';
 import { Dialog } from '@components/Dialog';
 import { validate } from '@helpers/validators';
 import { requestMethods } from '@constants/fetch';
-import { FormField } from '@appTypes/form';
+import { FormField, FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -40,18 +40,15 @@ export const Form: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
+    const submission = useRef(null);
+    const formInstance = useRef(null);
+
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
-    const [pageTitle, setPageTitle] = useState(null);
 
     const { submitButton, cancelButton } = text ?? {};
 
     const shouldRenderCancelButton: boolean = Boolean(cancelButton) && (Boolean(cancelHref) || Boolean(cancelAction));
-    const noop = useCallback(() => { }, []);
-
-    useEffect(() => {
-        setPageTitle(document.title);
-    }, [])
 
     /**
      * Create unique field instances from the supplied fields template
@@ -130,19 +127,68 @@ export const Form: (props: Props) => JSX.Element = ({
 
     }, [fields]);
 
+    /**
+     * Handle generic form life-cycle events
+     */
     const handleChange = (props: any): void => changeAction?.(props);
     const handleValidate = (submission: any): Record<string, string> => validate(submission, fields);
     const handleValidationFailure = (errors: any) => {
 
         validationFailAction?.(errors);
+        setPageTitle(errors);
 
-        if (shouldAddErrorTitle) {
+    };
 
-            document.title = `Error: ${pageTitle}`;
-            
+    /**
+     * Applies the error pattern to the page title
+     */
+    const setPageTitle = (errors: FormErrors): void => {
+
+        const basePageTitle: string = document.title.replace('Error: ', '');
+
+        if (shouldAddErrorTitle && errors && Object.keys(errors).length > 0) {
+
+            document.title = `Error: ${basePageTitle}`;
+
+        } else {
+
+            document.title = basePageTitle;
+
         }
 
-    }; 
+    }
+
+    /**
+     * Handle a form submission and return an object of external errors if any occur
+     * NB *ignore* the submission data sent as an arg to this handler and use the submission saved in the ref
+     * as only this supports multi-part form data
+     */
+    const handleSubmit = (_): Promise<FormErrors> => {
+
+        setIsProcessing(true);
+
+        return submitAction?.(submission.current)?.then((errors: FormErrors) => {
+
+            setIsProcessing(false);
+
+            if (!errors || Object.keys(errors).length === 0) {
+
+                /**
+                * Clear the form if the submission completed without errors
+                */
+                shouldClearOnSubmitSuccess && formInstance.current.restart();
+    
+            } else {
+    
+                handleValidationFailure(errors);
+    
+            }
+            
+            return errors;
+        
+        });
+
+    }
 
     /**
      * Render
@@ -151,7 +197,7 @@ export const Form: (props: Props) => JSX.Element = ({
 
         <FinalForm
             initialValues={initialValues}
-            onSubmit={noop}
+            onSubmit={handleSubmit}
             validate={handleValidate}
             render={({
                 form,
@@ -160,30 +206,40 @@ export const Form: (props: Props) => JSX.Element = ({
                 hasValidationErrors,
             }) => {
 
+                /**
+                 * Handles opening a modal to confirm cancellation of a submission
+                 */
                 const handleCancel = (event: any): any => {
 
                     event.preventDefault();
-            
+
                     setIsCancelModalOpen(true);
-            
+
                 };
-            
+
+                /**
+                 * Handles discarding the submission cancellation
+                 */
                 const handleDiscardFormCancel = (): void => setIsCancelModalOpen(false);
-                const handleDiscardFormConfirm = (): Promise<boolean> => { 
+
+                /**
+                 * Handles the submission cancellation
+                 */
+                const handleDiscardFormConfirm = (): Promise<boolean> => {
 
                     form.restart();
-            
-                    if(cancelHref){
-            
-                        return router.push(cancelHref); 
-            
-                    } else if(cancelAction){
-            
+
+                    if (cancelHref) {
+
+                        return router.push(cancelHref);
+
+                    } else if (cancelAction) {
+
                         setIsCancelModalOpen(false);
                         cancelAction();
-            
+
                     }
-                        
+
                 };
 
                 return (
@@ -199,47 +255,25 @@ export const Form: (props: Props) => JSX.Element = ({
                             if (!isProcessing) {
 
                                 /**
-                                 * Run final-form's submit handler to ensure internal state and field validation state is correctly updated
-                                 * NOTE: This is *not* being used to actually handle the submission because it's not set up to support multi-part forms correctly
-                                 */
-                                handleSubmit();
-
-                                /**
                                  * Handle client-side validation failure in forms
                                  */
                                 if (hasValidationErrors) {
 
                                     handleValidationFailure(errors);
 
+                                }
+
+                                /**
+                                 * We need to handle multi-part forms using a FormData object to support file uploads
+                                 * react-final-form only natively handles submissions as JSON in handleSubmit, so the FormData is cached in a ref before calling handleSubmit
+                                 */
+                                submission.current = new FormData(event.target);
+                                formInstance.current = form;
+
                                 /**
                                  * Submit and then reset the form on success
                                  */
-                                } else {
-
-                                    const formData: FormData = new FormData(event.target);
-
-                                    setIsProcessing(true);
-                                    submitAction?.(formData)?.then((errors: Record<string, string>) => {
-
-                                        setIsProcessing(false);
-
-                                        if (!errors || Object.keys(errors).length === 0) {
-
-                                            /**
-                                             * Clear the form if the submission completed without errors
-                                             */
-                                            shouldClearOnSubmitSuccess && form.restart({});
-                                            document.title = pageTitle;
-
-                                        } else {
-
-                                            handleValidationFailure(errors);
-
-                                        }
-
-                                    });
-
-                                }
+                                handleSubmit();
 
                             }
 
@@ -295,8 +329,8 @@ export const Form: (props: Props) => JSX.Element = ({
                                         }}
                                         cancelAction={handleDiscardFormCancel}
                                         confirmAction={handleDiscardFormConfirm}>
-                                            <h3>Entered Data will be lost</h3>
-                                            <p className="u-text-bold">Any entered details will be discarded. Are you sure you wish to proceed?</p>
+                                        <h3>Entered Data will be lost</h3>
+                                        <p className="u-text-bold">Any entered details will be discarded. Are you sure you wish to proceed?</p>
                                     </Dialog>
                                 </>
                             }

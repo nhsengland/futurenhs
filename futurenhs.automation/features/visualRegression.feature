@@ -9,7 +9,6 @@ Scenario: FNHS:V01 - High Level Page Regression
     Then the 'Log In' header is displayed
     And the 'loginPage' page image is taken and compared to the baseline image
     And I have logged in as an 'visreguser' and accept the cookies
-    When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     And the 'myGroups' page image is taken and compared to the baseline image
     When I click the 'Automation Visual Regression Group' link
@@ -48,7 +47,6 @@ Scenario: FNHS:V03 - Group Forum validation
     Given I have navigated to '/'
     Then the 'Log In' header is displayed
     And I have logged in as an 'visreguser'and accept the cookies
-    When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I click the 'Automation Visual Regression Group' link
     Then the 'Automation Visual Regression Group' header is displayed
@@ -63,7 +61,6 @@ Scenario: FNHS:V04 - Group Files validation
     Given I have navigated to '/'
     Then the 'Log In' header is displayed
     And I have logged in as an 'visreguser'and accept the cookies
-    When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I click the 'Automation Visual Regression Group' link
     Then the 'Automation Visual Regression Group' header is displayed
@@ -81,7 +78,6 @@ Scenario: FNHS:V05 - Group Member Profile validation
     Given I have navigated to '/'
     Then the 'Log In' header is displayed
     And I have logged in as an 'visreguser'and accept the cookies
-    When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I click the 'Automation Visual Regression Group' link
     Then the 'Automation Visual Regression Group' header is displayed
@@ -96,7 +92,6 @@ Scenario: FNHS:V06 - Group Actions form pages validation
     Given I have navigated to '/'
     Then the 'Log In' header is displayed
     And I have logged in as an 'visreguser'and accept the cookies
-    When I click the 'Groups' nav icon
     Then the 'My Groups' header is displayed
     When I click the 'Automation Visual Regression Group' link
     Then the 'Automation Visual Regression Group' header is displayed

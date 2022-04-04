@@ -7,7 +7,7 @@ export const groupFolderForm: FormConfig = {
         {
             fields: [
                 {
-                    name: 'name',
+                    name: 'Title',
                     inputType: 'text',
                     text: {
                         label: 'Enter a folder title'
@@ -27,7 +27,7 @@ export const groupFolderForm: FormConfig = {
                     ]
                 },
                 {
-                    name: 'description',
+                    name: 'Description',
                     text: {
                         label: 'Enter a folder description (optional)'
                     },

@@ -32,8 +32,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     breadCrumbList,
     searchTerm,
     className,
-    children,
-    pageTitle
+    children
 }) => {
 
     const router = useRouter();

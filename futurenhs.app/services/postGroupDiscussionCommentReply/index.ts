@@ -61,6 +61,6 @@ export const postGroupDiscussionCommentReply: Service = async ({
 
     }
 
-    return null;
+    return apiData;
 
 }

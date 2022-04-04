@@ -1,11 +1,9 @@
 import classNames from 'classnames';
 
-import { Image } from '@components/Image';
 import { RichText } from '@components/RichText';
 import { getAriaFieldAttributes } from '@helpers/util/form';
 
 import { Props } from './interfaces';
-import { truncate } from '@helpers/formatters/truncate';
 
 export const CheckBox: (props: Props) => JSX.Element = ({
     input: {
@@ -64,7 +62,7 @@ export const CheckBox: (props: Props) => JSX.Element = ({
                     wrapperElementType="span" />
             }
             {shouldRenderError &&
-                <span className={generatedClasses.error}>{error || submitError}</span>
+                <span className={generatedClasses.error}>{error || submitError || initialError}</span>
             } 
             <div className={generatedClasses.inputWrapper}>
                 <input

@@ -14,7 +14,7 @@ Scenario Outline: FNHS00 - User login and log out
     When I enter '<email>' into the 'Email address' field
     And I enter '<password>' into the 'Password' field
     And I click the 'Log In' button
-    Then the 'TODO: dashboard' header is displayed
+    Then the 'My Groups' header is displayed
     When I open the 'Menu' accordion
     And I click the 'Log Off' link
     Then I confirm this on the open 'Logout' dialog
@@ -33,19 +33,16 @@ Examples:
     | /terms-and-conditions | Terms and Conditions |
     | /privacy-policy       | Privacy Policy       |
     | /cookies              | Cookies              |
-    #### Accessibility has been removed for Private Beta until further notice ####
-    # | /accessibility-statement | Accessibility |
-    | /contact-us              | Contact Us    |
+    | /contact-us           | Contact Us           |
 
 @Core
 Scenario: FNHS02 - Unauthenticated page redirect
     Given I have navigated to '/groups/aa/'
     Then the 'Log In' header is displayed
 
-@Core
+@Core @Pending
 Scenario: FNHS03 - Invite User Form
-    And I have logged in as a 'admin' and accept the cookies
-    When I click the 'Groups' nav icon
+    And I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
@@ -56,10 +53,9 @@ Scenario: FNHS03 - Invite User Form
     And I click the 'Send invite' option
     Then the 'The membership invitation has been sent' textual value is displayed
 
-
+@Pending
 Scenario Outline: FNHS04 - Invite User Error Validation
-    Given I have logged in as a 'admin' and accept the cookies
-    When I click the 'Groups' nav icon
+    Given I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
@@ -79,7 +75,7 @@ Examples:
     | autoEditUser@test.co.uk | autoEditUser@test.co.uk | A user with that email address is already registered on the platform - you may add them to your group |
     | autoAdmin@test.co.uk    | autoAdmin@test.co.uk    | A user with that email address is already a member of this group                                      |
 
-@Core
+@Core @Pending
 Scenario: FNHS05 - Register as an invited user
     Given I have navigated to '/members/register' and accept the cookies
     Then the 'Register for an account' header is displayed
@@ -96,7 +92,7 @@ Scenario: FNHS05 - Register as an invited user
     Then the 'My Groups' header is displayed
     And the 'Automation Admin Group' link is displayed
 
-
+@Pending
 Scenario Outline: FNHS06 - User Registration Error Validation
     Given I have navigated to '/members/register' and accept the cookies
     Then the 'Register for an account' header is displayed
@@ -117,7 +113,7 @@ Examples:
     | auto@test.co.uk    | Password101 | password111    | auto      | test    | Your passwords do not match                                                             |
     | auto@test.co.uk    | Password101 | Password101    |           | test    | Please provide your first name                                                          |
 
-@Core
+@Core @Pending
 Scenario: FNHS07 - Attempt to register as an uninvited user
     Given I have navigated to '/members/register' and accept the cookies
     Then the 'Register for an account' header is displayed
@@ -147,29 +143,10 @@ Examples:
 
 
 Scenario: FNHS11 - Navigate to support site
-    And I have logged in as a 'admin' and accept the cookies
+    And I have logged in as a 'user' and accept the cookies
     Then the 'Need help?' textual value is displayed
     When I click the 'Visit our support site' link
     Then the 'FutureNHS Support coming soon' textual value is displayed
-
-
-Scenario: FNHS20 - Admin page validation
-    And I have logged in as a 'admin' and accept the cookies
-    When I open the 'Menu' accordion
-    And I click the 'Admin' link
-    Then the 'Admin' header is displayed
-    And the 'Manage users' link is displayed
-    And the 'Manage groups' link is displayed
-
-
-Scenario Outline: FNHS57 - Admin page permission 
-    And I have logged in as a '<user>' and accept the cookies
-    When I open the 'Menu' accordion
-    Then the 'Admin' link <visibility> displayed
-Examples:
-    | user  | visibility |
-    | admin | is         |
-    | user  | is not     |
 
     
 Scenario Outline: FNHS111 - Forgot password form validation

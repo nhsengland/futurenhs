@@ -103,7 +103,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                     wrapperElementType="span" />
             }
             {shouldRenderError &&
-                <span className={generatedClasses.error}>{error || submitError}</span>
+                <span className={generatedClasses.error}>{error || submitError || initialError}</span>
             }
             <div className={generatedClasses.inputWrapper} style={{ minHeight: elementMinHeight }}>
                 {shouldLoadRte

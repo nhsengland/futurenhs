@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
@@ -64,6 +64,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const [errors, setErrors] = useState(Object.assign({}, selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT), selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT_REPLY)));
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(discussionCommentsList);
     const [dynamicPagination, setPagination] = useState(pagination);
+    const [newReplyId, setNewReplyId] = useState(null);
 
     const backLinkHref: string = getRouteToParam({
         router: router,
@@ -176,10 +177,12 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             const commentId: any = formData.get('_instance-id');
             const headers: any = getStandardServiceHeaders({ csrfToken });
 
-            services.postGroupDiscussionCommentReply({ groupId, discussionId, user, commentId, headers, body: formData }).then(() => {
-
+            services.postGroupDiscussionCommentReply({ groupId, discussionId, user, commentId, headers, body: formData }).then((newReplyId) => {
+                
                 setErrors({});
-                handleGetPage(dynamicPagination as any);
+                handleGetPage(dynamicPagination as any).then(() => {
+                    setNewReplyId(newReplyId);
+                });
 
                 resolve({});
 
@@ -380,7 +383,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         <DynamicListContainer
                             containerElementType="ul"
                             shouldEnableLoadMore={shouldEnableLoadMore}
-                            className="u-list-none u-p-0">
+                            className="u-list-none u-p-0"
+                            nestedChildId={newReplyId && `comment-${newReplyId}`}>
                             {dynamicDiscussionCommentsList?.map(({
                                 commentId,
                                 created,
@@ -411,6 +415,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 const hasReplies: boolean = replies?.length > 1;
                                 const repliesComponents: Array<JSX.Element> = renderReplies({ replies });
                                 const additionalRepliesAccordionId: string = `${commentId}-replies`;
+                                const hasNewReply: boolean = repliesComponents?.some((reply) => reply.key === newReplyId);
 
                                 const { body: commentBody } = text ?? {};
 
@@ -446,6 +451,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                 {hasReplies &&
                                                     <Accordion
                                                         id={additionalRepliesAccordionId}
+                                                        isOpen={hasNewReply}
                                                         toggleOpenChildren={<span>{fewerRepliesLabel}</span>}
                                                         toggleClosedChildren={<span>{moreRepliesLabel}</span>}
                                                         toggleClassName="c-comment_replies-toggle u-text-bold">

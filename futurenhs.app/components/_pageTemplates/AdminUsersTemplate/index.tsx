@@ -12,6 +12,7 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { DynamicListContainer } from '@components/DynamicListContainer';
 import { DataGrid } from '@components/DataGrid';
+import { getSiteUsers } from '@services/getSiteUsers';
 
 import { Props } from './interfaces';
 
@@ -22,7 +23,8 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
     contentText,
     actions,
     pagination,
-    usersList
+    usersList,
+    user
 }) => {
 
     const router = useRouter();
@@ -68,7 +70,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
 
         const generatedCellClasses = {
             name: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/4']: true
+                ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']: true
             }),
             role: classNames({
                 ['u-justify-between u-w-full tablet:u-w-1/4']: true
@@ -141,8 +143,16 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize
     }) => {
 
-        // setUsersList([...dynamicUsersList, ...additionalUsers]);
-        // setPagination(pagination);
+        const { data: additionalUsers, pagination } = await getSiteUsers({
+            user: user,
+            pagination: {
+                pageNumber: requestedPageNumber,
+                pageSize: requestedPageSize
+            }
+        });
+
+        setUsersList([...dynamicUsersList, ...additionalUsers]);
+        setPagination(pagination);
 
     };
 

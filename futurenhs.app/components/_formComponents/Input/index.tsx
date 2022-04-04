@@ -73,7 +73,7 @@ export const Input: (props: Props) => JSX.Element = ({
                     wrapperElementType="span" />
             }
             {shouldRenderError &&
-                <span className={generatedClasses.error}>{error || submitError}</span>
+                <span className={generatedClasses.error}>{error || submitError || initialError}</span>
             } 
             <input
                 {...ariaInputProps}
