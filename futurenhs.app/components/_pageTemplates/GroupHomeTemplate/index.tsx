@@ -13,7 +13,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     contentText
 }) => {
 
-    const { mainHeading, bodyHtml } = contentText ?? {};
+    const { bodyHtml } = contentText ?? {};
 
     const { background }: Theme = selectTheme(themes, themeId);
 
@@ -29,7 +29,6 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <LayoutColumn tablet={12} className={generatedClasses.wrapper}>
-            <h2 className="nhsuk-heading-l">{mainHeading}</h2>
             <RichText wrapperElementType="div" bodyHtml={bodyHtml} className="u-text-lead u-text-theme-7" />
         </LayoutColumn>
 
