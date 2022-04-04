@@ -1,19 +1,19 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Notify.Models.Responses
 {
     public class ReceivedTextResponse
     {
         public string id;
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public string createdAt;
-        [JsonProperty("notify_number")]
+        [JsonPropertyName("notify_number")]
         public string notifyNumber;
-        [JsonProperty("user_number")]
+        [JsonPropertyName("user_number")]
         public string userNumber;
-        [JsonProperty("service_id")]
+        [JsonPropertyName("service_id")]
         public string serviceId;
         public string content;
 

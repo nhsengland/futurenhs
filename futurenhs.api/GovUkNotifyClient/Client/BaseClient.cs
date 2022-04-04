@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿
 using Notify.Authentication;
 using Notify.Exceptions;
 using Notify.Interfaces;
@@ -7,6 +7,7 @@ using System;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Notify.Client
@@ -119,7 +120,7 @@ namespace Notify.Client
         {
             try
             {
-                var errorResponse = JsonConvert.DeserializeObject<NotifyHTTPErrorResponse>(errorResponseContent);
+                var errorResponse = JsonSerializer.Deserialize<NotifyHTTPErrorResponse>(errorResponseContent);
                 throw new NotifyClientException("Status code {0}. The following errors occured {1}", errorResponse.getStatusCode(), errorResponse.getErrorsAsJson());
             }
             catch (Exception ex)

@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Notify.Models.Responses;
 
 namespace Notify.Models
 {
     public class NotificationList
     {
-        [JsonProperty("notifications")]
+        [JsonPropertyName("notifications")]
         public List<Notification> notifications;
-        [JsonProperty("links")]
+        [JsonPropertyName("links")]
         public Link links;
     }
 }

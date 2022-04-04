@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿
+using System.Text.Json.Serialization;
 
 namespace Notify.Models.Responses
 {
@@ -30,7 +31,7 @@ namespace Notify.Models.Responses
 
     public class EmailResponseContent
     {
-        [JsonProperty("from_email")]
+        [JsonPropertyName("from_email")]
         public string fromEmail;
         public string body;
         public string subject;

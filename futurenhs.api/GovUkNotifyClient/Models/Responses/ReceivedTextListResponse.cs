@@ -1,13 +1,13 @@
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Notify.Models.Responses
 {
     public class ReceivedTextListResponse
     {
-        [JsonProperty("received_text_messages")]
+        [JsonPropertyName("received_text_messages")]
         public List<ReceivedTextResponse> receivedTexts;
-        [JsonProperty("links")]
+        [JsonPropertyName("links")]
         public Link links;
     }
 }
