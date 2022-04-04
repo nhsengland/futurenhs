@@ -21,8 +21,6 @@ export const dateTime = ({
 
         } catch(error){
 
-            console.error(error);
-
             return value;
 
         }
