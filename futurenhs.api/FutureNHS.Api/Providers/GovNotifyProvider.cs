@@ -1,37 +1,29 @@
-﻿using System.Net.Mail;
-using FutureNHS.Api.Exceptions;
+﻿using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Providers.Interfaces;
 using Notify.Client;
 using Notify.Exceptions;
-using Notify.Interfaces;
-using Newtonsoft.Json;
+using System.Net.Mail;
 
 namespace FutureNHS.Api.Providers
 {
     public class GovNotifyProvider : INotificationProvider
     {
         private readonly ILogger<GovNotifyProvider> _logger;
-        private readonly INotificationClient _notificationClient;
+        private readonly string _apiKey;
+
         public GovNotifyProvider(string apiKey, ILogger<GovNotifyProvider> logger)
         {
             if(string.IsNullOrEmpty(apiKey)) throw new ArgumentNullException(nameof(apiKey));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            try
-            {
-                _notificationClient = new NotificationClient(apiKey);
-            }
-            catch
-            {
-                //do nothing
-            }
+            _apiKey = apiKey;
         }
 
-        public void SendEmail(MailAddress emailAddress, string templateId, Dictionary<string,dynamic>? parameters = null, string? clientReference = null, string? replyToId = null)
+        public async Task SendEmailAsync(MailAddress emailAddress, string templateId, Dictionary<string,dynamic>? parameters = null, string? clientReference = null, string? replyToId = null)
         {
             try
             {
-                var result = _notificationClient.SendEmail(emailAddress.Address, templateId, parameters, clientReference, replyToId);
+                var notificationClient = new NotificationClient(_apiKey);
+                var result = await notificationClient.SendEmailAsync(emailAddress.Address, templateId, parameters, clientReference, replyToId);
             }
             catch (NotifyClientException ex)
             {
