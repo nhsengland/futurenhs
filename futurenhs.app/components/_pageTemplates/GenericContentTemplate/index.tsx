@@ -25,7 +25,6 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
 
         <>
             <Head>
-                <title>{pageTitle ? pageTitle : title}</title>
                 <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>
