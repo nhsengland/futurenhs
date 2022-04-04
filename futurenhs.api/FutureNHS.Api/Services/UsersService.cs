@@ -16,7 +16,7 @@ namespace FutureNHS.Api.Services
     {
         private const string ListMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
         private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
-
+        private readonly string _fqdn;
         private readonly ILogger<UserService> _logger;
         private readonly IUserAdminDataProvider _userAdminDataProvider;
         private readonly IPermissionsService _permissionsService;
@@ -27,7 +27,7 @@ namespace FutureNHS.Api.Services
         // Notification template Ids
         private readonly string _registrationEmailId;
 
-        public UserService(ILogger<UserService> logger, ISystemClock systemClock, IPermissionsService permissionsService, IUserAdminDataProvider userAdminDataProvider, IUserCommand userCommand, IEmailService emailService, IOptionsSnapshot<GovNotifyConfiguration> notifyConfig)
+        public UserService(ILogger<UserService> logger, ISystemClock systemClock, IPermissionsService permissionsService, IUserAdminDataProvider userAdminDataProvider, IUserCommand userCommand, IEmailService emailService, IOptionsSnapshot<GovNotifyConfiguration> notifyConfig, IOptionsSnapshot<ApplicationGateway> gatewayConfig)
         {
             _permissionsService = permissionsService;
             _userAdminDataProvider = userAdminDataProvider;
@@ -35,6 +35,7 @@ namespace FutureNHS.Api.Services
             _logger = logger;
             _userCommand = userCommand;
             _emailService = emailService;
+            _fqdn = gatewayConfig.Value.FQDN;
 
             // Notification template Ids
             _registrationEmailId = notifyConfig.Value.RegistrationEmailTemplateId;
@@ -97,8 +98,21 @@ namespace FutureNHS.Api.Services
 
             };
 
+            var registrationLink = CreateRegistrationLink();
+
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"registration_link", registrationLink}
+            };
+
             await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
-            _emailService.SendEmail(emailAddress, _registrationEmailId);
+            await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
+        }
+
+        private string CreateRegistrationLink()
+        {
+            var registrationLink = $"{_fqdn}/members/register";
+            return registrationLink;
         }
     }
 }

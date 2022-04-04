@@ -4,6 +4,6 @@ namespace FutureNHS.Api.Services.Interfaces
 {
     public interface IEmailService
     {
-        void SendEmail(MailAddress emailAddress, string templateId);
+        Task SendEmailAsync(MailAddress emailAddress, string templateId, Dictionary<string, dynamic>? parameters = null);
     }
 }

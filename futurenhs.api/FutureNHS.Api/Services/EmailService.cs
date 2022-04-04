@@ -15,9 +15,9 @@ namespace FutureNHS.Api.Services
             _notificationProvider = notificationProvider ?? throw new ArgumentNullException(nameof(_notificationProvider));
         }
 
-        public void SendEmail(MailAddress emailAddress, string templateId)
+        public async Task SendEmailAsync(MailAddress emailAddress, string templateId, Dictionary<string, dynamic>? parameters = null)
         {
-            _notificationProvider.SendEmail(emailAddress, templateId);
+            await _notificationProvider.SendEmailAsync(emailAddress, templateId, parameters);
         }
 
     }
