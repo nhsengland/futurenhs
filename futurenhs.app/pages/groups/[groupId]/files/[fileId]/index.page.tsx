@@ -62,6 +62,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         props.pageTitle = `${props.entityText.title} - ${props.file.name}`;
     
                     } catch (error) {
+
+                        console.log(error);
     
                         return handleSSRErrorProps({ props, error });
     
