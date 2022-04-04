@@ -35,8 +35,8 @@ export const postGroupDiscussion = async ({
         method: requestMethods.POST,
         headers: headers,
         body: {
-            Title: body.get('title'),
-            Content: body.get('content')
+            Title: body.get('Title'),
+            Content: body.get('Content')
         }
     }), defaultTimeOutMillis);
 
