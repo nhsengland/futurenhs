@@ -65,15 +65,13 @@ const watchApp = (done) => {
  * PLATFORM TASKS
  */
 
-const activate = series(activateDb, activateMvcForum, activateApi, activateContentApi, activateApp);
+const activate = series(activateDb, buildAutomationDb, activateMvcForum, activateApi, activateContentApi, activateApp);
 
-const activateNoApp = series(activateDb, activateMvcForum, activateApi, activateContentApi);
+const activateNoApp = series(activateDb, buildAutomationDb, activateMvcForum, activateApi, activateContentApi);
 
-const activateNoApi = series(activateDb, activateMvcForum, activateApp, activateContentApi);
+const activateNoApi = series(activateDb, buildAutomationDb, activateMvcForum, activateApp, activateContentApi);
 
-const activateNoUmbraco = series(activateDb, activateMvcForum, activateApi, activateApp);
-
-const activateAutomation = series(buildAutomationDb, activateMvcForum, activateApi, activateApp);
+const activateNoUmbraco = series(activateDb, buildAutomationDb, activateMvcForum, activateApi, activateApp);
 
 const deactivate = series(mvcforum.stopSite, api.stopSite, contentApi.stopSite, app.stopSite);
 
@@ -82,7 +80,6 @@ module.exports = {
     activateNoApp,
     activateNoApi,
 	activateNoUmbraco,
-    activateAutomation,
     activateApi,
 	activateContentApi,
     activateMvcForum,
