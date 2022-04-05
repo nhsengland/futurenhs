@@ -11,8 +11,8 @@ using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
-    public class GroupCommand :IGroupCommand
-    { 
+    public class GroupCommand : IGroupCommand
+    {
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<GroupCommand> _logger;
         private readonly IOptions<AzureImageBlobStorageConfiguration> _options;
@@ -24,7 +24,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task UserJoinGroupAsync(GroupUserDto groupUser,  CancellationToken cancellationToken = default)
+        public async Task UserJoinGroupAsync(GroupUserDto groupUser, CancellationToken cancellationToken = default)
         {
             const string query =
                  @" INSERT INTO  [dbo].[GroupUser]
@@ -219,5 +219,67 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return id;
         }
 
+        public async Task CreateGroupSiteAsync(GroupSiteDto groupSite, CancellationToken cancellationToken)
+        {
+            const string query =
+                 @" INSERT INTO  [dbo].[GroupSite]
+                                 ([Id]
+                                 ,[GroupId]
+                                 ,[ContentRootId]
+                                 ,[CreatedBy]
+                                 ,[CreatedAtUTC]
+                                 ,[ModifiedBy])
+                    VALUES
+                                 (NEWID()
+                                 ,@GroupId
+                                 ,@ContentRootId
+                                 ,@CreatedBy
+                                 ,@CreatedAtUTC
+                                 ,@ModifiedBy)";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                GroupId = groupSite.GroupId,
+                ContentRootId = groupSite.ContentRootId,
+                CreatedBy = groupSite.CreatedBy,
+                CreatedAtUTC = groupSite.CreatedAtUTC,
+                ModifiedBy = groupSite.ModifiedBy,
+                ModifiedAtUTC = groupSite.ModifiedAtUTC,
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.ExecuteAsync(queryDefinition);
+
+            if (result != 1)
+            {
+                _logger.LogError("Error: User request to create a group site was not successful", queryDefinition);
+                throw new DBConcurrencyException("Error: User request to create a group site was not successful");
+            }
+        }
+
+        public async Task DeleteGroupSiteAsync(Guid contentId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == contentId) throw new ArgumentOutOfRangeException(nameof(contentId));
+
+            const string query =
+                 @" DELETE FROM     [dbo].[GroupSite]
+                    WHERE           ContentRootId = @ContentId;";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                ContentRootId = contentId,
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.ExecuteAsync(queryDefinition);
+
+            if (result != 1)
+            {
+                _logger.LogError("Error: User request to delete group site failed", queryDefinition);
+                throw new DBConcurrencyException("Error: User request to delete group site failed");
+            }
+        }
     }
 }

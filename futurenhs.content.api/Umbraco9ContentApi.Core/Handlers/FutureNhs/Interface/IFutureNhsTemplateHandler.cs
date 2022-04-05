@@ -1,5 +1,6 @@
 ﻿namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
 {
+    using Umbraco9ContentApi.Core.Models.Response;
     using UmbracoContentApi.Core.Models;
 
     public interface IFutureNhsTemplateHandler
@@ -9,12 +10,12 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Specified template.</returns>
-        Task<ContentModel> GetTemplateAsync(Guid id);
+        Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid id);
 
         /// <summary>
         /// Gets all templates.
         /// </summary>
         /// <returns>All templates.</returns>
-        Task<IEnumerable<ContentModel>> GetAllTemplatesAsync();
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllTemplatesAsync();
     }
 }

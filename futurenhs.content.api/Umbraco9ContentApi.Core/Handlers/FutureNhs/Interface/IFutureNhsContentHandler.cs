@@ -1,6 +1,6 @@
 ﻿namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
 {
-    using Umbraco.Cms.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Response;
     using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
 
     public interface IFutureNhsContentHandler
@@ -11,8 +11,8 @@
         /// <param name="pageName">Name of the page.</param>
         /// <param name="pageParentId">The page parent identifier.</param>
         /// <param name="publish">if set to <c>true</c> [publish].</param>
-        /// <returns>Created content.</returns>
-        Task<IContent> CreateContentAsync(string pageName, string? pageParentId = null, bool publish = false);
+        /// <returns>Created content identifier.</returns>
+        Task<ApiResponse<string>> CreateContentAsync(string pageName, string? pageParentId = null, bool publish = false);
 
         /// <summary>
         /// Updates the content of the page.
@@ -22,33 +22,33 @@
         /// <param name="description">The description.</param>
         /// <param name="pageContent">The content.</param>
         /// <returns>True or false.</returns>
-        Task<bool> UpdateContentAsync(Guid id, string title, string description, string pageContent);
+        Task<ApiResponse<string>> UpdateContentAsync(Guid id, string? title, string? description, string? pageContent);
 
         /// <summary>
         /// Publishes the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>True or false.</returns>
-        Task<bool> PublishContentAsync(Guid id);
+        Task<ApiResponse<string>> PublishContentAsync(Guid id);
 
         /// <summary>
         /// Deletes the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>True or false.</returns>
-        Task<bool> DeleteContentAsync(Guid id);
+        Task<ApiResponse<string>> DeleteContentAsync(Guid id);
 
         /// <summary>
         /// Gets the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>Specified content.</returns>
-        Task<ContentModel> GetContentAsync(Guid id);
+        Task<ApiResponse<ContentModel>> GetContentAsync(Guid id);
 
         /// <summary>
         /// Gets all content.
         /// </summary>
         /// <returns>All content.</returns>
-        Task<IEnumerable<ContentModel>> GetAllContentAsync();
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllContentAsync();
     }
 }

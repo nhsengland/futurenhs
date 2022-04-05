@@ -15,7 +15,7 @@
     /// Registers custom services on startup. 
     /// </summary>
     /// <seealso cref="IComposer" />
-    public sealed class FutureNhsServiceComposer : IComposer
+    public sealed class FutureNhsServicesComposer : IComposer
     {
         public void Compose(IUmbracoBuilder builder)
         {
@@ -31,6 +31,7 @@
 
             // Converters
             builder.Converters().Replace<MultinodeTreepickerConverter, BlockPickerConverter>();
+            builder.Converters().Replace<TextAreaConverter, JsonContentConverter>();
         }
     }
 }

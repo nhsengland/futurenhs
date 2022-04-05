@@ -1,5 +1,7 @@
 ﻿namespace Umbraco9ContentApi.Test.Handler
 {
+    using Core.Handlers.FutureNhs;
+    using Core.Services.FutureNhs.Interface;
     using Microsoft.Extensions.Configuration;
     using Moq;
     using NUnit.Framework;
@@ -8,8 +10,6 @@
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
-    using Core.Handlers.FutureNhs;
-    using Core.Services.FutureNhs.Interface;
 
     /// <summary>
     /// Futrue Nhs Content Handler Tests.
@@ -57,23 +57,7 @@
 
             // Assert
             Assert.IsNotNull(contentResult);
-            Assert.AreEqual(contentResult.Key, contentId);
-        }
-
-        /// <summary>
-        /// Creates the content no page name fail.
-        /// </summary>
-        [Test]
-        public async Task CreateContent_NoPageName_Fail()
-        {
-            // Arrange
-            var contentHandler = GetHandler(null);
-
-            // Act
-            var contentResult = await contentHandler.CreateContentAsync(string.Empty);
-
-            // Assert
-            Assert.IsNull(contentResult);
+            Assert.AreEqual(contentResult.Payload, contentId.ToString());
         }
 
         #endregion
@@ -90,14 +74,11 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
             var newPageName = "Update Title";
             var newDescription = "Update Description";
             var newPageContent = "{blocks:{testBlock}}";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
-
-            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
                 .Setup(x => x.GetAsync(It.IsAny<Guid>()))
@@ -109,11 +90,14 @@
             _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
+            var contentHandler = GetHandler(null);
+
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, newDescription, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
-            Assert.IsTrue(contentResult);
+            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.IsTrue(contentResult.Succeeded);
         }
 
         /// <summary>
@@ -124,12 +108,9 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
             var newPageName = "Update Title";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
-
-            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
                 .Setup(x => x.GetAsync(It.IsAny<Guid>()))
@@ -141,11 +122,14 @@
             _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
+            var contentHandler = GetHandler(null);
+
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, string.Empty);
 
             // Assert
-            Assert.IsTrue(contentResult);
+            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.IsTrue(contentResult.Succeeded);
         }
 
         /// <summary>
@@ -156,12 +140,10 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newDescription = "Update Description";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
-
-            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
                 .Setup(x => x.GetAsync(It.IsAny<Guid>()))
@@ -173,11 +155,14 @@
             _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
+            var contentHandler = GetHandler(null);
+
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, newDescription, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, string.Empty);
 
             // Assert
-            Assert.IsTrue(contentResult);
+            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.IsTrue(contentResult.Succeeded);
         }
 
         /// <summary>
@@ -188,12 +173,9 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
             var newPageContent = "{blocks:{testBlock}}";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
-
-            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
                 .Setup(x => x.GetAsync(It.IsAny<Guid>()))
@@ -205,11 +187,13 @@
             _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
-            // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, string.Empty, newPageContent);
+            var contentHandler = GetHandler(null);
 
-            // Assert
-            Assert.IsTrue(contentResult);
+            // Act
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
+
+            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.IsTrue(contentResult.Succeeded);
         }
 
         /// <summary>
@@ -220,14 +204,11 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
             var newPageName = "Update Title";
             var newDescription = "Update Description";
             var newPageContent = "{blocks:{testBlock}}";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
-
-            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
                 .Setup(x => x.GetAsync(It.IsAny<Guid>()))
@@ -236,14 +217,16 @@
             _mockFutureNhsContentService
                 .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
-                .ReturnsAsync(true);
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
+    .ReturnsAsync(true);
+
+            var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, newDescription, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
-            // Assert
-            Assert.IsTrue(contentResult);
+            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.IsTrue(contentResult.Succeeded);
         }
 
         /// <summary>
@@ -254,12 +237,10 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newPageName = "Update Title";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
-
-            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
                 .Setup(x => x.GetAsync(It.IsAny<Guid>()))
@@ -268,14 +249,18 @@
             _mockFutureNhsContentService
                 .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
-                .ReturnsAsync(true);
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
+    .ReturnsAsync(true);
+
+            var contentHandler = GetHandler(null);
+
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, string.Empty);
 
             // Assert
-            Assert.IsTrue(contentResult);
+            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.IsTrue(contentResult.Succeeded);
         }
 
         /// <summary>
@@ -286,7 +271,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newDescription = "Update Description";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
@@ -300,14 +285,15 @@
             _mockFutureNhsContentService
                 .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
-                .ReturnsAsync(true);
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
+    .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, newDescription, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, string.Empty);
 
             // Assert
-            Assert.IsTrue(contentResult);
+            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.IsTrue(contentResult.Succeeded);
         }
 
         /// <summary>
@@ -318,12 +304,9 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
             var newPageContent = "{blocks:{testBlock}}";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
-
-            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
                 .Setup(x => x.GetAsync(It.IsAny<Guid>()))
@@ -332,35 +315,22 @@
             _mockFutureNhsContentService
                 .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
-                .ReturnsAsync(true);
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
+    .ReturnsAsync(true);
+
+            var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, string.Empty, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
-            Assert.IsTrue(contentResult);
+            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.IsTrue(contentResult.Succeeded);
         }
 
         #endregion
 
         #region Update Content Fail Tests
-
-        /// <summary>
-        /// Updates the content no information provided fail.
-        /// </summary>
-        [Test]
-        public async Task UpdateContent_NoInformationProvided_Fail()
-        {
-            // Arrange
-            var contentHandler = GetHandler(null);
-
-            // Act
-            var contentResult = await contentHandler.UpdateContentAsync(Guid.NewGuid(), string.Empty, string.Empty, string.Empty);
-
-            // Assert
-            Assert.IsFalse(contentResult);
-        }
 
         /// <summary>
         /// Updates the content all information provided published failure.
@@ -370,7 +340,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newPageName = "Update Title";
             var newDescription = "Update Description";
             var newPageContent = "{blocks:{testBlock}}";
@@ -390,10 +360,10 @@
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, newDescription, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
-            Assert.IsFalse(contentResult);
+            Assert.IsFalse(contentResult.Payload == "false");
         }
 
         /// <summary>
@@ -404,7 +374,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newPageName = "Update Title";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
@@ -422,10 +392,10 @@
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, string.Empty);
 
             // Assert
-            Assert.IsFalse(contentResult);
+            Assert.IsFalse(contentResult.Payload == "false");
         }
 
         /// <summary>
@@ -436,7 +406,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newDescription = "Update Description";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
@@ -454,10 +424,10 @@
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, newDescription, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, string.Empty);
 
             // Assert
-            Assert.IsFalse(contentResult);
+            Assert.IsFalse(contentResult.Payload == "false");
         }
 
         /// <summary>
@@ -468,7 +438,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newPageContent = "{blocks:{testBlock}}";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
@@ -486,10 +456,10 @@
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, string.Empty, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
-            Assert.IsFalse(contentResult);
+            Assert.IsFalse(contentResult.Payload == "false");
         }
 
         /// <summary>
@@ -500,7 +470,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newPageName = "Update Title";
             var newDescription = "Update Description";
             var newPageContent = "{blocks:{testBlock}}";
@@ -516,14 +486,14 @@
             _mockFutureNhsContentService
                 .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
-                .ReturnsAsync(false);
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
+     .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, newDescription, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
-            Assert.IsFalse(contentResult);
+            Assert.IsFalse(contentResult.Payload == "false");
         }
 
         /// <summary>
@@ -534,7 +504,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newPageName = "Update Title";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
@@ -548,14 +518,14 @@
             _mockFutureNhsContentService
                 .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
-                .ReturnsAsync(false);
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
+    .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, newPageName, string.Empty, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, string.Empty);
 
             // Assert
-            Assert.IsFalse(contentResult);
+            Assert.IsFalse(contentResult.Payload == "false");
         }
 
         /// <summary>
@@ -566,7 +536,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newDescription = "Update Description";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
@@ -580,14 +550,14 @@
             _mockFutureNhsContentService
                 .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
-                .ReturnsAsync(false);
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
+    .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, newDescription, string.Empty);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, string.Empty);
 
             // Assert
-            Assert.IsFalse(contentResult);
+            Assert.IsFalse(contentResult.Payload == "false");
         }
 
         /// <summary>
@@ -598,7 +568,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var parentId = new Guid("519C62B9-6624-4CD8-9E8C-14432AC4F6DC");
+
             var newPageContent = "{blocks:{testBlock}}";
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
@@ -612,14 +582,14 @@
             _mockFutureNhsContentService
                 .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveAsync(It.IsAny<IContent>()))
-                .ReturnsAsync(false);
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
+    .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(parentId, string.Empty, string.Empty, newPageContent);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
-            Assert.IsFalse(contentResult);
+            Assert.IsFalse(contentResult.Payload == "false");
         }
 
         #endregion

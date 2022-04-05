@@ -33,7 +33,7 @@
         /// <remarks></remarks>
         [HttpGet("{contentId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> GetAsync(Guid contentId)
+        public async Task<ActionResult> GetContentAsync(Guid contentId)
         {
             var content = await _futureNhsContentHandler.GetContentAsync(contentId);
 
@@ -52,42 +52,48 @@
         /// <remarks></remarks>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
-        public async Task<ActionResult> GetAllAsync()
+        public async Task<ActionResult> GetAllContentAsync()
         {
-            var content = await _futureNhsContentHandler.GetAllContentAsync();
+            var response = await _futureNhsContentHandler.GetAllContentAsync();
 
-            if (content is null || !content.Any())
+            if (response.Succeeded && !response.Payload.Any())
             {
-                return NotFound();
+                return NotFound("No blocks found.");
             }
 
-            return Ok(content);
+            if (response.Succeeded)
+            {
+                return Ok(response);
+            }
+
+            return Problem(response.Message);
         }
 
         /// <summary>
-        /// Creates the content.
+        /// Creates the content asynchronous.
         /// </summary>
-        /// <param name="pageName">Name of the page.</param>
-        /// <param name="pageParentId">The page parent identifier.</param>
-        /// <param name="publish">if set to <c>true</c> [publish].</param>
-        /// <returns>Created page identifier.</returns>
+        /// <param name="createRequest">The create request.</param>
+        /// <returns>The created content.</returns>
         /// <remarks></remarks>
-        [HttpPost("{pageName}/create")]
-        public async Task<ActionResult> CreateAsync(string pageName, string? pageParentId = null, [FromBody()] bool publish = false)
+        [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        public async Task<ActionResult> CreateContentAsync([FromBody] GeneralWebPageCreateRequest createRequest)
         {
-            if (string.IsNullOrWhiteSpace(pageName))
+            if (string.IsNullOrWhiteSpace(createRequest.Name))
             {
                 return BadRequest("Page name not provided, please provide a page name.");
             }
 
-            var result = await _futureNhsContentHandler.CreateContentAsync(pageName, pageParentId, publish);
+            var response = await _futureNhsContentHandler.CreateContentAsync(
+                createRequest.Name,
+                createRequest.ParentId);
 
-            if (result is not null)
+            if (response.Succeeded)
             {
-                return Ok(result.Key);
+                return Ok(response);
             }
 
-            return Problem("Error creating the page, content was null.");
+            return Problem(response.Message);
         }
 
         /// <summary>
@@ -97,46 +103,44 @@
         /// <returns>The content identifier.</returns>
         /// <remarks></remarks>
         [HttpPost("{contentId:guid}/publish")]
-        public async Task<ActionResult> PublishAsync(Guid contentId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        public async Task<ActionResult> PublishContentAsync(Guid contentId)
         {
-            var result = await _futureNhsContentHandler.PublishContentAsync(contentId);
+            var response = await _futureNhsContentHandler.PublishContentAsync(contentId);
 
-            if (result)
+            if (response.Succeeded)
             {
-                return Ok("Successfully published: " + contentId);
+                return Ok(response);
             }
 
             return Problem("Publish unsuccessful: " + contentId);
         }
 
         /// <summary>
-        /// Updates the specified request.
+        /// Updates the specified content.
         /// </summary>                                                                                                                                                                                                                                                           
         /// <param name="contentId">The content identifier.</param>
-        /// <param name="request">The update request.</param>
+        /// <param name="updateRequest">The update request.</param>
         /// <returns>The content identifier.</returns>
         /// <remarks></remarks>
-        /// <response code="200">Succees.</response>
-        /// <response code="400">Bad request.</response>
-        /// <response code="404">Not found.</response>
-        /// <response code="500">Error.</response>
-        [HttpPost("{contentId:guid}/update")]
-        public async Task<IActionResult> UpdateAsync(Guid contentId, GeneralWebPageUpdateRequest request)
+        [HttpPut("{contentId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        public async Task<IActionResult> UpdateContentAsync(Guid contentId, GeneralWebPageUpdateRequest updateRequest)
         {
-            if (string.IsNullOrWhiteSpace(request.Title) && string.IsNullOrWhiteSpace(request.Description) && string.IsNullOrWhiteSpace(request.PageContent))
+            if (string.IsNullOrWhiteSpace(updateRequest.Title) && string.IsNullOrWhiteSpace(updateRequest.Description) && string.IsNullOrWhiteSpace(updateRequest.PageContent))
             {
                 return BadRequest("No update provided, please check you are sending an update.");
             }
 
-            var result = await _futureNhsContentHandler.UpdateContentAsync(
+            var response = await _futureNhsContentHandler.UpdateContentAsync(
                     contentId,
-                    request.Title,
-                    request.Description,
-                    request.PageContent);
+                    updateRequest.Title,
+                    updateRequest.Description,
+                    updateRequest.PageContent);
 
-            if (result)
+            if (response.Succeeded)
             {
-                return Ok("Update successful: " + contentId);
+                return Ok(response);
             }
 
             return Problem("Update unsuccessful: " + contentId);
@@ -148,13 +152,13 @@
         /// <param name="contentId">The content identifier.</param>
         /// <returns>The content identifier.</returns>
         [HttpDelete("{contentId:guid}")]
-        public async Task<ActionResult> DeleteAsync(Guid contentId)
+        public async Task<ActionResult> DeleteContentAsync(Guid contentId)
         {
-            var result = await _futureNhsContentHandler.DeleteContentAsync(contentId);
+            var response = await _futureNhsContentHandler.DeleteContentAsync(contentId);
 
-            if (result)
+            if (response.Succeeded)
             {
-                return Ok("Successfully deleted: " + contentId);
+                return Ok(response);
             }
 
             return Problem("Deletion unsuccessful: " + contentId);

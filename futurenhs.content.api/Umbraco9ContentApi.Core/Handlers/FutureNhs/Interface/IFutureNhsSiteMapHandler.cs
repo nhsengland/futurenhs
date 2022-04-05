@@ -1,4 +1,5 @@
 ﻿using Umbraco9ContentApi.Core.Models;
+using Umbraco9ContentApi.Core.Models.Response;
 
 namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
 {
@@ -8,10 +9,10 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
     public interface IFutureNhsSiteMapHandler
     {
         /// <summary>
-        /// Gets the group site map items.
+        /// Gets the sitemap group items asynchronous.
         /// </summary>
         /// <param name="pageId">The page identifier.</param>
-        /// <returns>Group sitemap items.</returns>
-        Task<IEnumerable<SitemapGroupItemViewModel>> GetGroupSitemapItemsAsync(Guid pageId);
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<SitemapGroupItemModel>>> GetSitemapGroupItemsAsync(Guid pageId);
     }
 }

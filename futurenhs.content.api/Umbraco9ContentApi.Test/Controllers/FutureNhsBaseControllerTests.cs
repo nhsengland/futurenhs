@@ -1,15 +1,16 @@
 ﻿namespace Umbraco9ContentApi.Test.Controller
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
     using Core.Controllers.Base;
     using Core.Handlers.FutureNhs.Interface;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Umbraco9ContentApi.Core.Models.Response;
     using UmbracoContentApi.Core.Models;
     using Assert = Xunit.Assert;
 
@@ -41,20 +42,19 @@
             // Arrange
             var controller = GetController();
             var contentId = new Guid("A90E7522-18B4-444F-A736-0422A85C0D52");
-            var content = GetTestModel();
-            _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(content);
+            _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(GetContent_Found(contentId));
 
             // Act
             var result = await controller.Get(contentId);
             var itemResult = result as OkObjectResult;
+            var modelItem = itemResult.Value as ApiResponse<ContentModel>;
 
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            var contentModel = Assert.IsType<ContentModel>(itemResult.Value);
-            Assert.NotNull(contentModel.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(contentModel.Fields.FirstOrDefault());
+            Assert.NotNull(modelItem.Payload.Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Payload.Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -85,25 +85,26 @@
         #region Delete Tests
 
         /// <summary>
-        /// Deletes the item success.
+        /// Delete the content success.
         /// </summary>
         [Test]
         public async Task DeleteItem_Success()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(true);
             var controller = GetController();
-            var contentId = new Guid("A90E7522-18B4-444F-A736-0422A85C0D52");
+            var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
+            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(AlterContent_Success(contentId));
 
             // Act
             var result = await controller.Delete(contentId);
             var itemResult = result as OkObjectResult;
-
+            var modelItem = itemResult.Value as ApiResponse<string>;
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.Equal($"Successfully deleted: {contentId}", itemResult.Value);
+            Assert.True(modelItem.Succeeded);
+            Assert.Equal(modelItem.Payload, contentId.ToString());
         }
 
         /// <summary>
@@ -113,7 +114,7 @@
         public async Task DeleteItem_Failure()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(false);
+            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(AlterContent_Failure());
             var controller = GetController();
             var contentId = new Guid("6087DBA7-E10D-430D-B4F7-FC9408F893C0");
 
@@ -145,22 +146,54 @@
         }
 
         /// <summary>
-        /// Gets the test model.
+        /// Alters the content success.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        /// <returns></returns>
+        private ApiResponse<string> AlterContent_Success(Guid contentId)
+        {
+            var mock = new Mock<ApiResponse<string>>();
+            mock.Setup(x => x.Succeeded).Returns(true);
+            mock.Setup(x => x.Payload).Returns(contentId.ToString());
+            return mock.Object;
+        }
+
+        /// <summary>
+        /// Alters the content failure.
         /// </summary>
         /// <returns></returns>
-        private ContentModel GetTestModel()
+        private ApiResponse<string> AlterContent_Failure()
+        {
+            var mock = new Mock<ApiResponse<string>>();
+            mock.Setup(x => x.Succeeded).Returns(false);
+            return mock.Object;
+        }
+
+        /// <summary>
+        /// Gets the content found.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        /// <returns></returns>
+        private ApiResponse<ContentModel> GetContent_Found(Guid contentId)
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
-            
+
             var model = new ContentModel()
             {
+                System = new SystemModel
+                {
+                    Id = contentId,
+                },
                 Fields = mockDictionary
             };
 
-            return model;
+            var apiResponse = new Mock<ApiResponse<ContentModel>>();
+            apiResponse.Setup(x => x.Payload).Returns(model);
+
+            return apiResponse.Object;
         }
 
         #endregion

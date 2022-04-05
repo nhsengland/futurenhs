@@ -1,14 +1,15 @@
 ﻿namespace Umbraco9ContentApi.Test.Controller
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
     using Core.Controllers;
     using Core.Handlers.FutureNhs.Interface;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Umbraco9ContentApi.Core.Models.Response;
     using UmbracoContentApi.Core.Models;
     using Assert = Xunit.Assert;
 
@@ -40,22 +41,20 @@
         public async Task GetAllBlocks_SuccessAsync()
         {
             // Arrange
-            var contentList = GetTestBlocks();
-            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync()).ReturnsAsync(contentList);
+            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync()).ReturnsAsync(GetBlocks_Found);
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllAsync();
+            var result = await controller.GetAllBlocksAsync();
             var itemResult = result as OkObjectResult;
+            var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModel>>;
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.NotNull(itemResult.StatusCode);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            var returnedList = Assert.IsType<List<ContentModel>>(itemResult.Value);
-            var contentModel = Assert.IsType<ContentModel>(returnedList.FirstOrDefault());
-            Assert.NotNull(contentModel.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(contentModel.Fields.FirstOrDefault());
+            Assert.NotNull(payloadResult.Payload.FirstOrDefault().Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Payload.FirstOrDefault().Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -67,11 +66,11 @@
         public async Task GetAllBlocks_NotFoundAsync()
         {
             // Arrange
-            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync()).ReturnsAsync(new List<ContentModel>());
+            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync()).ReturnsAsync(GetTestBlocks_NotFound());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllAsync();
+            var result = await controller.GetAllBlocksAsync();
             var itemResult = result as NotFoundObjectResult;
 
 
@@ -99,27 +98,41 @@
         }
 
         /// <summary>
-        /// Gets the test blocks.
+        /// Gets the test blocks found.
         /// </summary>
         /// <returns></returns>
-        private List<ContentModel> GetTestBlocks()
+        private ApiResponse<IEnumerable<ContentModel>> GetBlocks_Found()
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
 
-            var list = new List<ContentModel>()
+            var model = new List<ContentModel>()
             {
-                new ContentModel()
-                {
-                    Fields = mockDictionary
-                }
+                new ContentModel() {Fields = mockDictionary}
             };
 
-            return list;
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Succeeded).Returns(true);
+
+            return apiResponse.Object;
         }
 
+
+        /// <summary>
+        /// Gets the test blocks not found.
+        /// </summary>
+        /// <returns></returns>
+        private ApiResponse<IEnumerable<ContentModel>> GetTestBlocks_NotFound()
+        {
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            apiResponse.Setup(x => x.Payload).Returns(new List<ContentModel>());
+            apiResponse.Setup(x => x.Succeeded).Returns(true);
+
+            return apiResponse.Object;
+        }
         #endregion
     }
 }

@@ -29,8 +29,7 @@
         /// <inheritdoc />
         public async Task<IEnumerable<IPublishedContent>> GetPublishedChildrenAsync(Guid id)
         {
-            var children = _publishedContent.Content(id).Children;
-            return children is not null && children.Any() ? children : new List<IPublishedContent>();
+            return _publishedContent.Content(id).Children ?? null;
         }
 
         /// <inheritdoc />
@@ -80,9 +79,9 @@
         }
 
         /// <inheritdoc />
-        public async Task<bool> PublishAsync(Guid id)
+        public async Task<bool> PublishAsync(Guid contentId)
         {
-            var content = _contentService.GetById(id);
+            var content = _contentService.GetById(contentId);
             var result = _contentService.SaveAndPublish(content);
             return true ? result.Success : false;
         }

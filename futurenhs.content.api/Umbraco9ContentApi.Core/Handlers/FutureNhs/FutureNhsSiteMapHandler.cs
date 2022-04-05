@@ -2,6 +2,7 @@
 using Umbraco.Extensions;
 using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
 using Umbraco9ContentApi.Core.Models;
+using Umbraco9ContentApi.Core.Models.Response;
 using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
 
 namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
@@ -14,6 +15,7 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
     {
         private readonly IFutureNhsContentService _futureNhsContentService;
         private readonly IFutureNhsSiteMapService _futureNhsSiteMapService;
+        private List<string>? errorList = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FutureNhsSiteMapHandler"/> class.
@@ -27,29 +29,29 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<SitemapGroupItemViewModel>> GetGroupSitemapItemsAsync(Guid pageId)
+        public async Task<ApiResponse<IEnumerable<SitemapGroupItemModel>>> GetSitemapGroupItemsAsync(Guid pageId)
         {
+            ApiResponse<IEnumerable<SitemapGroupItemModel>> response = new ApiResponse<IEnumerable<SitemapGroupItemModel>>();
+
             // Get published page
             var page = await _futureNhsContentService.GetPublishedAsync(pageId);
 
             // If it doesn't exist, return as empty.
             if (page is null)
             {
-                return Enumerable.Empty<SitemapGroupItemViewModel>();
+                errorList.Add("Couldn't retrieve page.");
+                return response.Failure(errorList, "Failed.");
             }
-            else
+
+            // if page is root node, generate tree from this page.
+            if (_futureNhsSiteMapService.IsRoot(page))
             {
-                // if page is root node, generate tree from this page.
-                if (_futureNhsSiteMapService.IsRoot(page))
-                {
-                    return PopulateGroupSiteMapItemViewModel(page);
-                }
-                // else, find root and generate from that page.
-                else
-                {
-                    return PopulateGroupSiteMapItemViewModel(_futureNhsSiteMapService.GetRoot(page));
-                }
+                return response.Success(PopulateGroupSiteMapItemViewModel(page), "Success.");
             }
+
+            // else, find root and generate from that page.
+            return response.Success(PopulateGroupSiteMapItemViewModel(_futureNhsSiteMapService.GetRoot(page)), "Success.");
+
         }
 
         /// <summary>
@@ -57,14 +59,14 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
         /// </summary>
         /// <param name="root">The root.</param>
         /// <returns>GroupSiteMapItemViewModel.</returns>
-        private IEnumerable<SitemapGroupItemViewModel> PopulateGroupSiteMapItemViewModel(IPublishedContent root)
+        private IEnumerable<SitemapGroupItemModel> PopulateGroupSiteMapItemViewModel(IPublishedContent root)
         {
-            var list = new List<SitemapGroupItemViewModel>();
+            var list = new List<SitemapGroupItemModel>();
             var descendants = root.Descendants().Where(x => x.IsPublished());
 
             foreach (var item in descendants)
             {
-                yield return new SitemapGroupItemViewModel()
+                yield return new SitemapGroupItemModel()
                 {
                     Name = item.Name,
                     Title = item.Value("title", fallback: Fallback.ToDefaultValue, defaultValue: "No title."),

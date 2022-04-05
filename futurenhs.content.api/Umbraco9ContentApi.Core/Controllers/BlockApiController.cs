@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Umbraco.Cms.Web.Common.Controllers;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
+    using Umbraco9ContentApi.Core.Models.Response;
     using UmbracoContentApi.Core.Models;
 
     /// <summary>
@@ -34,7 +35,7 @@
         /// <remarks></remarks>
         [HttpGet("{blockId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> GetAsync(Guid blockId)
+        public async Task<ActionResult> GetBlockAsync(Guid blockId)
         {
             var content = await _futureNhsContentHandler.GetContentAsync(blockId);
 
@@ -52,17 +53,22 @@
         /// <returns>All blocks.</returns>
         /// <remarks></remarks>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
-        public async Task<ActionResult> GetAllAsync()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
+        public async Task<ActionResult> GetAllBlocksAsync()
         {
-            var blocks = await _futureNhsBlockHandler.GetAllBlocksAsync();
+            var response = await _futureNhsBlockHandler.GetAllBlocksAsync();
 
-            if (blocks is not null && blocks.Any())
+            if (response.Succeeded && !response.Payload.Any())
             {
-                return Ok(blocks);
+                return NotFound("No blocks found.");
             }
 
-            return NotFound("No blocks found.");
+            if (response.Succeeded)
+            {
+                return Ok(response);
+            }
+
+            return Problem(response.Message);
         }
 
         /// <summary>
@@ -72,16 +78,16 @@
         /// <returns>The block identifier.</returns>
         /// <remarks></remarks>
         [HttpDelete("{blockId:guid}")]
-        public async Task<ActionResult> DeleteAsync(Guid blockId)
+        public async Task<ActionResult> DeleteBlockAsync(Guid blockId)
         {
-            var result = await _futureNhsContentHandler.DeleteContentAsync(blockId);
+            var response = await _futureNhsContentHandler.DeleteContentAsync(blockId);
 
-            if (result)
+            if (response.Succeeded)
             {
-                return Ok("Successfully deleted: " + blockId);
+                return Ok(response);
             }
 
-            return Problem("Deletion unsuccessful: " + blockId);
+            return Problem(response.Message);
         }
     }
 }
