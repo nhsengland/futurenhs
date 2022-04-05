@@ -43,9 +43,14 @@ Scenario: FNHS73 - File detials page validation
 	And the 'docTest' row is displayed on the 'File Details' table
 	And the breadcrumb navigation displays 'Files > Automation Test Folder'
 
-@Pending
+@NotInLocal
 Scenario: FNHS19 - File preview page validation
-#Collabora iframe page validation
+	When I click the 'Automation Test Folder' link
+	Then the 'Automation Test Folder' header is displayed
+	When I click 'docTest' on the 'docTest' row of the 'Group Files' table
+	Then the 'docTest' header is displayed
+	And the collabora file preview is displayed
+	And the 'View details' link is displayed
 
 
 Scenario Outline: FNHS74 - Upload a file, file error validation
@@ -67,6 +72,7 @@ Examples:
 	| /media/docTest.doc                                                                                               | VSmnfp7PvnPRhfiZWCk5GdSjT2nD3TKlxBE2AbyObV1Yza | Description                                                                                                                                             | Enter 45 or fewer characters                             				 |
 	| /media/docTest.doc                                                                                               | Title                                          | gEcdosYCBQC7sY9XxOdPKxMWBqfHY3A78F5sROBjv71hfVuj0nl03SXsyGPzychj3ffH7vWW7yKYYbZayRWauCThasQDwfVIawmEiI0HFfBETQzSGnaYOQfq3Nh0HXV89M1sYu5fozAJMzvTA20FezL | Enter 150 or fewer characters                      						 |
 
+
 Scenario Outline: FNHS75 - Upload a file, form error validation
 	When I click the 'Empty Folder' link
 	Then the 'Empty Folder' header is displayed
@@ -81,6 +87,7 @@ Scenario Outline: FNHS75 - Upload a file, form error validation
 Examples:
 	| File to upload     | File name | File description | error message        |
 	| /media/docTest.doc |           | Description      | Enter the file title |
+
 
 Scenario: FNHS76 - Upload without a file error validation
 	When I click the 'Empty Folder' link
@@ -104,7 +111,8 @@ Examples:
 	| docTest  | docTest.doc |
 	| pdfTest  | pdfTest.pdf |
 
-
+@Pending
+# FEATURE NOT IN PRIVATE BETA
 Scenario: FNHS88 - Edit File Page Validation
 	When I click the 'Automation Test Folder' link
 	Then the 'Automation Test Folder' header is displayed
@@ -115,7 +123,8 @@ Scenario: FNHS88 - Edit File Page Validation
 	And the 'Enter file title' field contains 'docTest'
 	And the 'Enter file description' text area contains 'test doc file for upload'
 
-
+@Pending
+# FEATURE NOT IN PRIVATE BETA
 Scenario: FNHS89 - Edit File
 	When I click the 'Automation Test Folder' link
 	Then the 'Automation Test Folder' header is displayed
@@ -129,7 +138,8 @@ Scenario: FNHS89 - Edit File
 	Then the 'Doc Test' header is displayed
 	And the 'New File Description' textual value is displayed
 
-
+@Pending
+# FEATURE NOT IN PRIVATE BETA
 Scenario Outline: FNHS90 - Edit File error validation
 	When I click the 'Automation Test Folder' link
 	Then the 'Automation Test Folder' header is displayed
