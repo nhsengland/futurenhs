@@ -33,7 +33,7 @@ Then(/^the search bar is available$/, function(){
 });
 
 Then(/^there are '([^"]*)' search results displayed$/, function(amount){
-  search.searchResultsCardCount(amount)
+  search.searchResultsValidation(amount)
 });
 
 //// Generic Content Steps

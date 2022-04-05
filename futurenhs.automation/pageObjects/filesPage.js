@@ -81,14 +81,22 @@ class filesPage extends basePage{
      * @param {*} mobile - returns a string of "mobile", used as truthy condition to check for mobile speciifc elements.
      */
     filePreviewExists(mobile){
-        var newFrame = $(`iframe[name="collabora_host_frame"]`);
-        newFrame.waitForExist();
-        browser.switchToFrame(newFrame);
-        var document = $(`//div[@id="document-container"]`)
-        helpers.waitForLoaded(document);
+        var collaboraFrame = $(`//iframe[@id="collabora-online-viewer"]`);
+        collaboraFrame.waitForExist();
+        browser.switchToFrame(collaboraFrame);
+        var navMenu = $(`//nav/ul[@id="main-menu"]`);
+        var documentContainer = $(`//div[@id="document-container"]`);
+        helpers.waitForLoaded(navMenu);
+        helpers.waitForLoaded(documentContainer);
         if(mobile){
-            expect(document.getAttribute('class')).toEqual('readonly portrait mobile drawing-doctype parts-preview-document slide-normal-mode');
+            expect(documentContainer.getAttribute('class')).toEqual('readonly text-doctype slide-normal-mode');
         }
+        var documentFrame = documentContainer.$(`//div/iframe[1]`);
+        documentFrame.waitForExist();
+        browser.switchToFrame(documentFrame);
+        var document = $(`//html/body`);
+        helpers.waitForLoaded(document);  
+        browser.switchToParentFrame();
         browser.switchToParentFrame();
     }
 }
