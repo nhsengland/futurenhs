@@ -33,6 +33,7 @@ const baseConfig = {
         domains: [
             'localhost', 
             '127.0.0.1', 
+            'timblobtest.blob.core.windows.net',
             'collaborate-dev.future.nhs.uk',
             'collaborate-uat.future.nhs.uk',
             'collaborate.future.nhs.uk'
