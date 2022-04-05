@@ -31,12 +31,22 @@ jobs:
       packageType: 'sdk'
       version: '6.x'
       
+   - task: NuGetToolInstaller@1
+     inputs:
+      versionSpec: 
+      checkLatest: true
+
+   - task: NuGetCommand@2
+     inputs:
+      command: 'restore'
+      restoreSolution: '$(Build.SourcesDirectory)/$(working-dir)/*.sln'
+      feedsToUse: 'select'
+
    - task: VSBuild@1
      displayName: 'Build dotnet'
      inputs:
       solution: '$(Build.SourcesDirectory)/$(working-dir)/*.sln'
       vsVersion: '17.0'
-      restoreNugetPackages: true
       msbuildArchitecture: 'x64'
       configuration: 'Release'
 
