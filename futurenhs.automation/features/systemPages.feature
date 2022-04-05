@@ -1,3 +1,5 @@
+@Pending
+# FEATURE DEPRECATED FOR PRICVATEBETA, UNSURE IF FEATURE DEPRECATED ENTIRELY
 Feature: siteAdmin
     Tests covering functionality available to a user with site administrator privelages
 
@@ -6,7 +8,7 @@ Background:
     And I have logged in as a 'admin' and accept the cookies
 
 @Pending
-## NEED TO ADD CONTENT VALIDATION
+## TEST COVERED THROUGH VISUAL REGRESSION/USERACCESS
 Scenario: FNHS13 - System Pages Validation
     Given I have navigated to '<URL>'
     Then the '<Header>' header is displayed
