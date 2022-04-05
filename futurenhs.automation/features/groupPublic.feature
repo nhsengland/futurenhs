@@ -48,8 +48,15 @@ Scenario: FNHS44 - View Files and Folders of Public Group
     And the 'Add Folder' link is not displayed
     And the 'Edit Folder' link is not displayed
     And the 'Delete Folder' link is not displayed
-    When I click 'docTest' on the 'docTest' row of the 'Group Files' table
+    And the 'Group Files' table is displayed
+    | Type | Name    | Description | Modified                                      | Actions                     |
+    |      | docTest | test doc    | 10 Jan 2022\nBy auto Admin\nAuthor auto Admin | Download file\nView details |
+    When I click 'View details' on the 'docTest' row of the 'Group Files' table
     Then the 'docTest' header is displayed  
+    And the 'test doc' textual value is displayed
+    And the 'File Details' table is displayed
+    | Name    | Modified by | Last update | Actions  |
+    | docTest | auto Admin  | 10 Jan 2022 | Download |
     And the 'Download' link is displayed
 
 @Core 
