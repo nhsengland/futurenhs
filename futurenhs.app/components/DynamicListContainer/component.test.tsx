@@ -21,5 +21,15 @@ describe('Dynamic List Container', () => {
         expect(screen.getByText('mock content'));
 
     });
+
+    it('throws an error if passed an invalid container element type', () => {
+
+        const propsCopy: Props = Object.assign({}, testProps, {
+            containerElementType: 'p'
+        })
+
+        expect(() => render(<DynamicListContainer {...propsCopy}/>)).toThrowError();
+
+    })
     
 });
