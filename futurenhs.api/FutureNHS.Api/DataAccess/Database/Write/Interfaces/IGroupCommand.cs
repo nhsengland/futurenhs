@@ -10,4 +10,6 @@ public interface IGroupCommand
     Task<Guid?> GetGroupIdForSlugAsync(string slug, CancellationToken cancellationToken = default);
     Task<GroupData> GetGroupAsync(string slug, CancellationToken cancellationToken = default);
     Task UpdateGroupAsync(GroupDto groupDto, CancellationToken cancellationToken = default);
+    Task CreateGroupSiteAsync(GroupSiteDto groupContentDto, CancellationToken cancellationToken);
+    Task DeleteGroupSiteAsync(Guid contentId, CancellationToken cancellationToken);
 }

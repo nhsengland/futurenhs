@@ -324,5 +324,29 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             return member;
         }
+
+        public async Task<GroupSite> GetGroupSiteDataAsync(Guid groupId, CancellationToken cancellationToken)
+        {
+            const string query =
+                    @$"SELECT 
+                                [{nameof(GroupSite.Id)}],
+                                [{nameof(GroupSite.GroupId)}],
+                                [{nameof(GroupSite.ContentRootId)}]
+
+                    FROM [GroupSite]
+                    WHERE GroupId = @GroupId;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryMultipleAsync(query, new
+            {
+                GroupId = groupId
+            });
+
+            var groupSiteData = await reader.ReadFirstAsync<GroupSite>();
+
+            return groupSiteData;
+        }
     }
+
 }

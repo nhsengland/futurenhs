@@ -3,8 +3,8 @@
     using Interface;
     using Microsoft.Extensions.Configuration;
     using Services.FutureNhs.Interface;
-    using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Web.Common.PublishedModels;
+    using Umbraco9ContentApi.Core.Models.Response;
     using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
 
     /// <summary>
@@ -15,6 +15,7 @@
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
+        private List<string>? errorList = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FutureNhsContentHandler" /> class.
@@ -28,46 +29,38 @@
         }
 
         /// <inheritdoc />
-        public async Task<IContent?> CreateContentAsync(string pageName, string? pageParentId = null, bool publish = false)
+        public async Task<ApiResponse<string>> CreateContentAsync(string pageName, string? parentId = null, bool publish = false)
         {
-            if (string.IsNullOrWhiteSpace(pageName))
-            {
-                return null;
-            }
-
+            ApiResponse<string> response = new ApiResponse<string>();
             Guid pageParentGuid;
-
             var pageFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
 
             // If a parent page id is supplied and is a valid guid, set that page as the page parent. Else use the pages folder.
-            Guid parent = pageParentId is not null && Guid.TryParse(pageParentId, out pageParentGuid)
+            Guid parent = parentId is not null && Guid.TryParse(parentId, out pageParentGuid)
                 ? pageParentGuid
                 : pageFolderGuid;
 
             var pageDocumentTypeAlias = GeneralWebPage.ModelTypeAlias;
 
-            // if publish is true, also publish the created page.
-            if (publish)
+            var result = _futureNhsContentService.CreateAsync(parent, pageName, pageDocumentTypeAlias).Result;
+
+            if (result is null)
             {
-                var createResult = await _futureNhsContentService.CreateAsync(parent, pageName, pageDocumentTypeAlias);
-
-                if (createResult is not null)
-                {
-                    await PublishContentAsync(createResult.Key);
-                }
-
-                return createResult;
+                errorList.Add("Content creation failed.");
+                return response.Failure(errorList, "Failed.");
             }
 
-            return await _futureNhsContentService.CreateAsync(parent, pageName, pageDocumentTypeAlias);
+            return response.Success(result.Key.ToString(), "Success.");
         }
 
         /// <inheritdoc />
-        public async Task<bool> UpdateContentAsync(Guid id, string title, string description, string pageContent)
+        public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, string pageContent)
         {
+            ApiResponse<string> response = new ApiResponse<string>();
             if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && string.IsNullOrWhiteSpace(pageContent))
             {
-                return false;
+                errorList.Add("No payload provided.");
+                return response.Failure(errorList, "Failed.");
             }
 
             var pageTemplateContent = await _futureNhsContentService.GetAsync(id);
@@ -88,52 +81,84 @@
                 pageTemplateContent.SetValue("pageContent", pageContent);
             }
 
-            var pagePublishedContent = await _futureNhsContentService.GetPublishedAsync(id);
+            var result = await _futureNhsContentService.SaveAndPublishAsync(pageTemplateContent);
 
-            if (pagePublishedContent is not null && pagePublishedContent.IsPublished())
+            if (result)
             {
-                var result = await _futureNhsContentService.SaveAndPublishAsync(pageTemplateContent);
-                return result;
+                return response.Success(id.ToString(), "Success.");
             }
-            else
-            {
-                var result = await _futureNhsContentService.SaveAsync(pageTemplateContent);
-                return result;
-            }
+
+            errorList.Add("Error occured.");
+            return response.Failure(errorList, "Failed.");
+
         }
 
         /// <inheritdoc />
-        public async Task<bool> PublishContentAsync(Guid id)
+        public async Task<ApiResponse<string>> PublishContentAsync(Guid contentId)
         {
-            return await _futureNhsContentService.PublishAsync(id);
+            ApiResponse<string> response = new ApiResponse<string>();
+            var result = await _futureNhsContentService.PublishAsync(contentId);
+
+            if (result)
+            {
+                return response.Success(result.ToString(), "Success.");
+            }
+
+            errorList.Add("Publish failed.");
+            return response.Failure(errorList, "Failed.");
         }
 
         /// <inheritdoc />
-        public async Task<ContentModel> GetContentAsync(Guid id)
+        public async Task<ApiResponse<ContentModel>> GetContentAsync(Guid id)
         {
+            ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
             var content = await _futureNhsContentService.GetPublishedAsync(id);
-            return await _futureNhsContentService.ResolveAsync(content);
+            var result = await _futureNhsContentService.ResolveAsync(content);
+
+            if (result is not null)
+            {
+                return response.Success(result, "Success.");
+            }
+
+            errorList.Add("Couldn't retrieve content.");
+            return response.Failure(errorList, "Failed.");
+
         }
 
         /// <inheritdoc />
-        public async Task<bool> DeleteContentAsync(Guid id)
+        public async Task<ApiResponse<string>> DeleteContentAsync(Guid id)
         {
-            return await _futureNhsContentService.DeleteAsync(id);
+            ApiResponse<string> response = new ApiResponse<string>();
+            var result = await _futureNhsContentService.DeleteAsync(id);
+
+            if (result)
+            {
+                return response.Success(id.ToString(), "Success.");
+            }
+
+            errorList.Add("Couldn't delete content.");
+            return response.Failure(errorList, "Failed.");
         }
 
+
+
         /// <inheritdoc />
-        public async Task<IEnumerable<ContentModel>> GetAllContentAsync()
+        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllContentAsync()
         {
+            ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
             var contentModels = new List<ContentModel>();
             var pagesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
-            var pages = await _futureNhsContentService.GetPublishedChildrenAsync(pagesFolderGuid);
+            var publishedContent = await _futureNhsContentService.GetPublishedChildrenAsync(pagesFolderGuid);
 
-            foreach (var page in pages)
+            if (publishedContent is not null && publishedContent.Any())
             {
-                contentModels.Add(await _futureNhsContentService.ResolveAsync(page));
+                foreach (var content in publishedContent)
+                {
+                    contentModels.Add(await _futureNhsContentService.ResolveAsync(content));
+                }
             }
 
-            return contentModels;
+            return response.Success(contentModels, "Success.");
         }
     }
 }

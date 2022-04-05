@@ -58,9 +58,9 @@
         /// <summary>
         /// Publishes the content.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>PPublish result.</returns>
-        Task<bool> PublishAsync(Guid id);
+        /// <param name="contentId">The content identifier.</param>
+        /// <returns>Publish result.</returns>
+        Task<bool> PublishAsync(Guid contentId);
 
         /// <summary>
         /// Gets the  specified template's blocks.

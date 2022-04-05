@@ -1,6 +1,7 @@
 ﻿namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
 {
-    using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
+    using Umbraco9ContentApi.Core.Models.Response;
+    using UmbracoContentApi.Core.Models;
 
     public interface IFutureNhsBlockHandler
     {
@@ -8,6 +9,6 @@
         /// Gets all blocks.
         /// </summary>
         /// <returns>All blocks.</returns>
-        Task<IEnumerable<ContentModel>> GetAllBlocksAsync();
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync();
     }
 }

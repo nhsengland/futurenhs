@@ -1,6 +1,5 @@
 using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Models.Pagination.Filter;
@@ -44,11 +43,11 @@ namespace FutureNHS.Api.Controllers
 
             uint total;
             IEnumerable<GroupSummary> groups;
-            
+
             if (isMember)
             {
                 var (totalGroups, groupSummaries) = await _groupDataProvider.GetGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
-                
+
                 total = totalGroups;
                 groups = groupSummaries;
 
@@ -56,7 +55,7 @@ namespace FutureNHS.Api.Controllers
             else
             {
                 var (totalGroups, groupSummaries) = await _groupDataProvider.DiscoverGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
-                
+
                 total = totalGroups;
                 groups = groupSummaries;
             }
@@ -68,12 +67,12 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("users/{userId:guid}/groups/{slug}")]
-        public async Task<IActionResult> GetGroupAsync(string slug,Guid userId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
         {
             var group = await _groupDataProvider.GetGroupAsync(slug, userId, cancellationToken);
 
             if (group is null)
-            { 
+            {
                 return NotFound();
             }
 
@@ -164,7 +163,7 @@ namespace FutureNHS.Api.Controllers
         {
             var member = await _groupDataProvider.GetGroupMemberAsync(slug, Id, cancellationToken);
 
-            if(member is null)
+            if (member is null)
                 return NotFound();
 
             return Ok(member);
@@ -174,8 +173,8 @@ namespace FutureNHS.Api.Controllers
         [Route("users/{userId:guid}/groups/{slug}/members/join")]
         public async Task<IActionResult> UserJoinGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
         {
-            await _groupMembershipService.UserJoinGroupAsync(userId,slug, cancellationToken);
-            
+            await _groupMembershipService.UserJoinGroupAsync(userId, slug, cancellationToken);
+
             return Ok();
         }
 
@@ -186,6 +185,18 @@ namespace FutureNHS.Api.Controllers
             await _groupMembershipService.UserLeaveGroupAsync(userId, slug, cancellationToken);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("groups/{groupId:guid}/site")]
+        public async Task<IActionResult> GetGroupSiteAsync(Guid groupId, CancellationToken cancellationToken)
+        {
+            var groupSiteData = await _groupDataProvider.GetGroupSiteDataAsync(groupId, cancellationToken);
+
+            if (groupSiteData is null)
+                return NotFound();
+
+            return Ok(groupSiteData);
         }
     }
 }

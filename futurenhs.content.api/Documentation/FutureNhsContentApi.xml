@@ -4,13 +4,13 @@
         <name>Umbraco9ContentApi.Core</name>
     </assembly>
     <members>
-        <member name="T:Umbraco9ContentApi.Core.Composers.FutureNhsServiceComposer">
+        <member name="T:Umbraco9ContentApi.Core.Composers.FutureNhsServicesComposer">
             <summary>
             Registers custom services on startup. 
             </summary>
             <seealso cref="T:Umbraco.Cms.Core.Composing.IComposer" />
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Composers.uSyncServiceComposer">
+        <member name="T:Umbraco9ContentApi.Core.Composers.uSyncServicesComposer">
             <summary>
             Registers custom services on startup. 
             </summary>
@@ -33,7 +33,7 @@
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
             <param name="futureNhsBlockHandler">The future Nhs block handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetBlockAsync(System.Guid)">
             <summary>
             Gets the specified block.
             </summary>
@@ -41,14 +41,14 @@
             <returns>The specified block.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetAllAsync">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetAllBlocksAsync">
             <summary>
             Gets all blocks.
             </summary>
             <returns>All blocks.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.DeleteAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.DeleteBlockAsync(System.Guid)">
             <summary>
             Deletes the specified block.
             </summary>
@@ -67,7 +67,7 @@
             </summary>
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetContentAsync(System.Guid)">
             <summary>
             Gets the specified content.
             </summary>
@@ -75,24 +75,22 @@
             <returns>The specified content.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetAllAsync">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetAllContentAsync">
             <summary>
             Gets all content.
             </summary>
             <returns>All content.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.CreateAsync(System.String,System.String,System.Boolean)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.CreateContentAsync(Umbraco9ContentApi.Core.Models.Request.GeneralWebPageCreateRequest)">
             <summary>
-            Creates the content.
+            Creates the content asynchronous.
             </summary>
-            <param name="pageName">Name of the page.</param>
-            <param name="pageParentId">The page parent identifier.</param>
-            <param name="publish">if set to <c>true</c> [publish].</param>
-            <returns>Created page identifier.</returns>
+            <param name="createRequest">The create request.</param>
+            <returns>The created content.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.PublishAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.PublishContentAsync(System.Guid)">
             <summary>
             Publishes the specified content.
             </summary>
@@ -100,20 +98,16 @@
             <returns>The content identifier.</returns>
             <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.UpdateAsync(System.Guid,Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.UpdateContentAsync(System.Guid,Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest)">
             <summary>
-            Updates the specified request.
+            Updates the specified content.
             </summary>                                                                                                                                                                                                                                                           
             <param name="contentId">The content identifier.</param>
-            <param name="request">The update request.</param>
+            <param name="updateRequest">The update request.</param>
             <returns>The content identifier.</returns>
             <remarks></remarks>
-            <response code="200">Succees.</response>
-            <response code="400">Bad request.</response>
-            <response code="404">Not found.</response>
-            <response code="500">Error.</response>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.DeleteAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.DeleteContentAsync(System.Guid)">
             <summary>
             Deletes the specified content.
             </summary>
@@ -151,7 +145,13 @@
             </summary>
             <seealso cref="T:Umbraco.Cms.Web.Common.Controllers.UmbracoApiController" />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapApiController.GetAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapApiController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.SitemapApiController"/> class.
+            </summary>
+            <param name="futureNhsSiteMapHandler">The future NHS site map handler.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapApiController.GetSiteMapAsync(System.Guid)">
             <summary>
             Gets the specified page identifier.
             </summary>
@@ -170,27 +170,25 @@
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
             <param name="futureNhsTemplateHandler">The future Nhs template handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetTemplateAsync(System.Guid)">
             <summary>
-            Gets the specified template identifier.
+            Gets the template asynchronous.
             </summary>
             <param name="templateId">The template identifier.</param>
-            <returns>The specified template.</returns>
-            <remarks></remarks>
+            <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetAllAsync">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetAllTemplatesAsync">
             <summary>
-            Gets all templates.
+            Gets all templates asynchronous.
             </summary>
-            <returns>All templates.</returns>
-            <remarks></remarks>
+            <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.Delete(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.DeleteTemplateAsync(System.Guid)">
             <summary>
-            Deletes the specified template.
+            Deletes the template asynchronous.
             </summary>
             <param name="templateId">The template identifier.</param>
-            <returns>The template identifier.</returns>
+            <returns></returns>
         </member>
         <member name="T:Umbraco9ContentApi.Core.Controllers.uSyncApiController">
             <summary>
@@ -240,9 +238,10 @@
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.#ctor(Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler"/> class.
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler"/> class.
             </summary>
             <param name="futureNhsContentService">The future NHS content service.</param>
+            <param name="config">The configuration.</param>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetAllBlocksAsync">
             <inheritdoc />
@@ -291,7 +290,7 @@
             <param name="futureNhsContentService">The future NHS content service.</param>
             <param name="futureNhsSiteMapService">The future NHS site map service.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.GetGroupSitemapItemsAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.GetSitemapGroupItemsAsync(System.Guid)">
             <inheritdoc />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.PopulateGroupSiteMapItemViewModel(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
@@ -309,9 +308,10 @@
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.#ctor(Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler"/> class.
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler"/> class.
             </summary>
             <param name="futureNhsContentService">The future NHS content service.</param>
+            <param name="config">The configuration.</param>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetTemplateAsync(System.Guid)">
             <inheritdoc />
@@ -332,7 +332,7 @@
             <param name="pageName">Name of the page.</param>
             <param name="pageParentId">The page parent identifier.</param>
             <param name="publish">if set to <c>true</c> [publish].</param>
-            <returns>Created content.</returns>
+            <returns>Created content identifier.</returns>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.UpdateContentAsync(System.Guid,System.String,System.String,System.String)">
             <summary>
@@ -376,12 +376,12 @@
             FutureNhsSitemapHandler interface.
             </summary>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler.GetGroupSitemapItemsAsync(System.Guid)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler.GetSitemapGroupItemsAsync(System.Guid)">
             <summary>
-            Gets the group site map items.
+            Gets the sitemap group items asynchronous.
             </summary>
             <param name="pageId">The page identifier.</param>
-            <returns>Group sitemap items.</returns>
+            <returns></returns>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetTemplateAsync(System.Guid)">
             <summary>
@@ -421,6 +421,27 @@
         <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler.RunImportAsync">
             <inheritdoc />
         </member>
+        <member name="T:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageCreateRequest">
+            <summary>
+            The request used to create the content for a web page.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageCreateRequest.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageCreateRequest.ParentId">
+            <summary>
+            Gets or sets the parent identifier.
+            </summary>
+            <value>
+            The parent identifier.
+            </value>
+        </member>
         <member name="T:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest">
             <summary>
             The request used to update the content for a web page.
@@ -450,42 +471,42 @@
             The content.
             </value>
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel">
+        <member name="T:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel">
             <summary>
-            The SitemapGroupItemViewModel for front end website structure.
+            The SitemapGroupItemModel for front end website structure.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Name">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Name">
             <summary>
             Gets or sets the name.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Title">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Title">
             <summary>
             Gets or sets the title.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.ParentId">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.ParentId">
             <summary>
             Gets or sets the parent identifier.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Id">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Id">
             <summary>
             Gets or sets the identifier.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Url">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Url">
             <summary>
             Gets or sets the URL.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Date">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Date">
             <summary>
             Gets or sets the date.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemViewModel.Level">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Level">
             <summary>
             Gets or sets the level.
             </summary>
@@ -582,8 +603,8 @@
             <summary>
             Publishes the content.
             </summary>
-            <param name="id">The identifier.</param>
-            <returns>PPublish result.</returns>
+            <param name="contentId">The content identifier.</param>
+            <returns>Publish result.</returns>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetTemplateBlocksAsync(System.Guid)">
             <summary>
