@@ -34,7 +34,7 @@ namespace FutureNHS.Api.Services
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(membershipUserId, slug, LikeRole, cancellationToken);
             if (userCanPerformAction is not true)
             {
-                _logger.LogError($"Error: LikeEntityAsync - User:{0} does not have access to edit/delete group:{1}", membershipUserId, slug);
+                _logger.LogError($"Error: LikeEntityAsync - User:{0} does not have access to like entity:{1}", membershipUserId, entityId);
                 throw new SecurityException($"Error: User does not have access");
             }
 
