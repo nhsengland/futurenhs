@@ -21,8 +21,8 @@ export const groupFolderForm: FormConfig = {
                         },
                         {
                             type: 'maxLength',
-                            maxLength: 1000,
-                            message: 'Enter 1000 or fewer characters'
+                            maxLength: 200,
+                            message: 'Enter 200 or fewer characters'
                         }
                     ]
                 },
