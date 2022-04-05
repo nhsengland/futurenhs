@@ -191,16 +191,19 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             },
             {
                 children: `${capitalise({ value: role })}`,
+                shouldRenderCellHeader: true,
                 className: generatedCellClasses.role,
                 headerClassName: generatedHeaderCellClasses.role
             },
             {
                 children: `${dateTime({ value: joinDate })}`,
+                shouldRenderCellHeader: true,
                 className: generatedCellClasses.joinDate,
                 headerClassName: generatedHeaderCellClasses.joinDate
             },
             {
                 children: `${dateTime({ value: lastLogInDate })}`,
+                shouldRenderCellHeader: true,
                 className: generatedCellClasses.lastLoginDate,
                 headerClassName: generatedHeaderCellClasses.lastLoginDate
             }
