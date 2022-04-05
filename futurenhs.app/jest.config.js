@@ -1,10 +1,16 @@
 const { jsWithTs: preset } = require('ts-jest/presets');
 const { pathsToModuleNameMapper } = require('ts-jest/utils');
 const { compilerOptions } = require('./tsconfig');
-const { loadEnvConfig } = require('@next/env');
-const projectDir = process.cwd();
 
-loadEnvConfig(projectDir);
+
+/*
+* Mock URLs to accommodate msw
+*/
+process.env.APP_URL = "http://mock-url:5000";
+process.env.NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL = "http://mock-url:8888/auth/userinfo";
+process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL = "http://mock-url:8888/members/logon";
+process.env.NEXT_PUBLIC_API_BASE_URL = 'http://mock-url:9999/api';
+process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL = 'http://mock-url:5000/gateway/api';
 
 module.exports = {
     transform: {
