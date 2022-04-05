@@ -23,11 +23,42 @@ class search extends basePage{
 
     /**
      * 
+     * @param {*} expectedAmount 
+     */
+    searchResultsValidation(expectedAmount){
+        expect(this.searchResultsHeaderValidation(expectedAmount)).toEqual(true);
+        if(expectedAmount != 0){
+            expect(this.searchResultsCardCount(expectedAmount)).toEqual(true);
+        }
+    }
+
+    /**
+     * 
+     * @param {*} expectedAmount 
+     * @returns 
+     */
+    searchResultsHeaderValidation(expectedAmount){
+        var searchResultsHeader = $(`//h1[contains(text(), "- ${expectedAmount} results found")]`);
+        var result = false
+        if(searchResultsHeader.isDisplayed()){
+            result = true
+        };
+        return result
+    }
+
+    /**
+     * 
+     * @param {*} expectedAmount 
+     * @returns 
      */
     searchResultsCardCount(expectedAmount){
-        var searchResults = $(`//ul[li[@class="c-search-result u-border-b-theme-8 u-mb-6 u-flex u-flex-col u-break-words"]]`);
+        var searchResults = $(`//ul[li[contains(@class, "c-search-result")]]`);
         var resultsFoundCount = searchResults.$$(`li`);
-        expect(resultsFoundCount.length).toEqual(parseInt(expectedAmount));
+        var result = false
+        if(resultsFoundCount.length == expectedAmount){
+            result = true
+        };
+        return result
     }
 }
 module.exports = new search();
