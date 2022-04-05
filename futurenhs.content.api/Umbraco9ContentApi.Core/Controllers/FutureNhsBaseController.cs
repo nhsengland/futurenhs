@@ -40,11 +40,11 @@ namespace Umbraco9ContentApi.Core.Controllers.Base
         [HttpDelete("{id:guid}")]
         public virtual async Task<ActionResult> Delete(Guid id)
         {
-            var result = await _futureNhsContentHandler.DeleteContentAsync(id);
+            var response = await _futureNhsContentHandler.DeleteContentAsync(id);
 
-            if (result)
+            if (response.Succeeded)
             {
-                return Ok("Successfully deleted: " + id);
+                return Ok(response);
             }
 
             return Problem("Deletion unsuccessful: " + id);

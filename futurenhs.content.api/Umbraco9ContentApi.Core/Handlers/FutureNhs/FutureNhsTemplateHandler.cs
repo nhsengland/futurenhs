@@ -5,6 +5,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Umbraco9ContentApi.Core.Models.Response;
     using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
     using UmbracoContentApi.Core.Models;
 
@@ -17,11 +18,13 @@
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
+        private List<string>? errorList = null;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IFutureNhsTemplateHandler"/> class.
+        /// Initializes a new instance of the <see cref="FutureNhsTemplateHandler"/> class.
         /// </summary>
         /// <param name="futureNhsContentService">The future NHS content service.</param>
+        /// <param name="config">The configuration.</param>
         public FutureNhsTemplateHandler(IFutureNhsContentService futureNhsContentService, IConfiguration config)
         {
             _futureNhsContentService = futureNhsContentService;
@@ -29,25 +32,38 @@
         }
 
         /// <inheritdoc />
-        public async Task<ContentModel> GetTemplateAsync(Guid id)
+        public async Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid id)
         {
+            ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
             var template = await _futureNhsContentService.GetPublishedAsync(id);
-            return await _futureNhsContentService.ResolveAsync(template);
+            var result = await _futureNhsContentService.ResolveAsync(template);
+
+            if (result is null)
+            {
+                errorList.Add("Couldn't retrieve template.");
+                return response.Failure(errorList, "Failed.");
+            }
+
+            return response.Success(result, "Success.");
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<ContentModel>> GetAllTemplatesAsync()
+        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllTemplatesAsync()
         {
+            ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
             var contentModels = new List<ContentModel>();
             var templatesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Templates");
-            var templates = await _futureNhsContentService.GetPublishedChildrenAsync(templatesFolderGuid);
+            var publishedTemplates = await _futureNhsContentService.GetPublishedChildrenAsync(templatesFolderGuid);
 
-            foreach (var template in templates)
+            if (publishedTemplates is not null && publishedTemplates.Any())
             {
-                contentModels.Add(await _futureNhsContentService.ResolveAsync(template));
+                foreach (var templates in publishedTemplates)
+                {
+                    contentModels.Add(await _futureNhsContentService.ResolveAsync(templates));
+                }
             }
 
-            return contentModels;
+            return response.Success(contentModels, "Success.");
         }
     }
 }

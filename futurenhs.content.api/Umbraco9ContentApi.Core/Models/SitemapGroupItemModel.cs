@@ -1,9 +1,9 @@
 ﻿namespace Umbraco9ContentApi.Core.Models
 {
     /// <summary>
-    /// The SitemapGroupItemViewModel for front end website structure.
+    /// The SitemapGroupItemModel for front end website structure.
     /// </summary>
-    public class SitemapGroupItemViewModel
+    public class SitemapGroupItemModel
     {
         /// <summary>
         /// Gets or sets the name.

@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Umbraco9ContentApi.Test.Controller
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
     using Core.Controllers;
     using Core.Handlers.FutureNhs.Interface;
     using Core.Models.Request;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
-    using Umbraco.Cms.Core.Models;
-    using UmbracoContentApi.Core.Converters;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Umbraco9ContentApi.Core.Models.Response;
+    using UmbracoContentApi.Core.Models;
     using Assert = Xunit.Assert;
     using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
 
@@ -41,25 +37,23 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Gets the Content success.
         /// </summary>
         [Test]
-        public async Task GetContent_Success()
+        public async Task GetContent_SuccessAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            var content = GetTestModel();
-            _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(content);
+            _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(GetContent_Found(contentId));
 
             // Act
-            var result = await controller.GetAsync(contentId);
+            var result = await controller.GetContentAsync(contentId);
             var itemResult = result as OkObjectResult;
-
+            var modelItem = itemResult.Value as ApiResponse<ContentModel>;
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            var contentModel = Assert.IsType<ContentModel>(itemResult.Value);
-            Assert.NotNull(contentModel.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(contentModel.Fields.FirstOrDefault());
+            Assert.NotNull(modelItem.Payload.Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Payload.Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -68,7 +62,7 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Gets the Content failure.
         /// </summary>
         [Test]
-        public async Task GetContent_Failure()
+        public async Task GetContent_FailureAsync()
         {
             // Arrange
             _mockFutureNhsContentHandler.Setup(x => x.GetContentAsync(It.IsAny<Guid>())).ReturnsAsync(() => null);
@@ -76,7 +70,7 @@ namespace Umbraco9ContentApi.Test.Controller
             var contentId = new Guid("8E87CC7B-26BD-4543-906D-53652F5B6F02");
 
             // Act
-            var result = await controller.GetAsync(contentId);
+            var result = await controller.GetContentAsync(contentId);
             var itemResult = result as NotFoundResult;
 
             // Assert
@@ -92,25 +86,23 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Gets all content success.
         /// </summary>
         [Test]
-        public async Task GetAllContent_Success()
+        public async Task GetAllContent_SuccessAsync()
         {
             // Arrange
-            var contentList = GetTestBlocks();
-            _mockFutureNhsContentHandler.Setup(x => x.GetAllContentAsync()).ReturnsAsync(contentList);
+            _mockFutureNhsContentHandler.Setup(x => x.GetAllContentAsync()).ReturnsAsync(GetContents_Found());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllAsync();
+            var result = await controller.GetAllContentAsync();
             var itemResult = result as OkObjectResult;
+            var modelItem = itemResult.Value as ApiResponse<IEnumerable<ContentModel>>;
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.NotNull(itemResult.StatusCode);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            var returnedList = Assert.IsType<List<ContentModel>>(itemResult.Value);
-            var contentModel = Assert.IsType<ContentModel>(returnedList.FirstOrDefault());
-            Assert.NotNull(contentModel.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(contentModel.Fields.FirstOrDefault());
+            Assert.NotNull(modelItem.Payload.FirstOrDefault().Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Payload.FirstOrDefault().Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -119,15 +111,15 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Gets all content not found.
         /// </summary>
         [Test]
-        public async Task GetAllContent_NotFound()
+        public async Task GetAllContent_NotFoundAsync()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.GetAllContentAsync()).ReturnsAsync(new List<ContentModel>());
+            _mockFutureNhsContentHandler.Setup(x => x.GetAllContentAsync()).ReturnsAsync(GetContents_NotFound());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllAsync();
-            var itemResult = result as NotFoundResult;
+            var result = await controller.GetAllContentAsync();
+            var itemResult = result as NotFoundObjectResult;
 
 
             // Assert
@@ -143,42 +135,46 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Creates the content success.
         /// </summary>
         [Test]
-        public async Task CreateContent_Success()
+        public async Task CreateContent_SuccessAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            var content = GetMockContentItem(contentId);
-            var pageName = "New Page";
+            var createRequest = new GeneralWebPageCreateRequest()
+            {
+                Name = "New Page",
+            };
             _mockFutureNhsContentHandler.Setup(
-                x => x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(content.Object);
+                x => x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<bool>())).ReturnsAsync(AlterContent_Response(contentId));
 
             // Act
-            var result = await controller.CreateAsync(pageName);
+            var result = await controller.CreateContentAsync(createRequest);
             var itemResult = result as OkObjectResult;
+            var modelResult = itemResult.Value as ApiResponse<string>;
 
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.Equal(content.Object.Key, itemResult.Value);
+            Assert.Equal(contentId.ToString(), modelResult.Payload);
         }
 
         /// <summary>
         /// Creates the name of the content failure no page.
         /// </summary>
         [Test]
-        public async Task CreateContent_FailureNoPageName()
+        public async Task CreateContent_FailureNoPageNameAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            var content = GetMockContentItem(contentId);
+            var mockCreateResult = new Mock<ApiResponse<string>>();
+            mockCreateResult.Setup(x => x.Payload).Returns(contentId.ToString());
             _mockFutureNhsContentHandler.Setup(
-                x => x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(content.Object);
+                x => x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(mockCreateResult.Object);
 
             // Act
-            var result = await controller.CreateAsync(string.Empty);
+            var result = await controller.CreateContentAsync(new GeneralWebPageCreateRequest());
             var itemResult = result as BadRequestObjectResult;
 
 
@@ -192,18 +188,17 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Creates the content failure content create fail.
         /// </summary>
         [Test]
-        public async Task CreateContent_FailureContentCreateFail()
+        public async Task CreateContent_FailureContentCreateFailAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            var content = GetMockContentItem(contentId);
-            var pageName = "New Page";
-            _mockFutureNhsContentHandler.Setup(x => 
-                x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(() => null);
+            var content = GetContent_Found(contentId);
+            _mockFutureNhsContentHandler.Setup(x =>
+                x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(() => GetContent_Failure());
 
             // Act
-            var result = await controller.CreateAsync(pageName);
+            var result = await controller.CreateContentAsync(new GeneralWebPageCreateRequest() { Name = "New Page" });
             var itemResult = result as ObjectResult;
 
             // Assert
@@ -221,36 +216,37 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Publishes the content success.
         /// </summary>
         [Test]
-        public async Task PublishContent_Success()
+        public async Task PublishContent_SuccessAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsContentHandler.Setup(x => x.PublishContentAsync(It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockFutureNhsContentHandler.Setup(x => x.PublishContentAsync(It.IsAny<Guid>())).ReturnsAsync(AlterContent_Response(contentId));
 
             // Act
-            var result = await controller.PublishAsync(contentId);
-            var itemResult = result as OkObjectResult;
+            var result = await controller.PublishContentAsync(contentId);
+            var itemResult = result as ObjectResult;
+            var modelItem = itemResult.Value as ApiResponse<string>;
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.Equal($"Successfully published: {contentId}", itemResult.Value);
+            Assert.Equal(contentId.ToString(), modelItem.Payload);
         }
 
         /// <summary>
         /// Publishes the content failure.
         /// </summary>
         [Test]
-        public async Task PublishContent_Failure()
+        public async Task PublishContent_FailureAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsContentHandler.Setup(x => x.PublishContentAsync(It.IsAny<Guid>())).ReturnsAsync(false);
+            _mockFutureNhsContentHandler.Setup(x => x.PublishContentAsync(It.IsAny<Guid>())).ReturnsAsync(GetContent_Failure());
 
             // Act
-            var result = await controller.PublishAsync(contentId);
+            var result = await controller.PublishContentAsync(contentId);
             var itemResult = result as ObjectResult;
 
             // Assert
@@ -268,40 +264,41 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Updates the content success.
         /// </summary>
         [Test]
-        public async Task UpdateContent_Success()
+        public async Task UpdateContent_SuccessAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
             var updateRequest = GetUpdateRequest("Test Title", "Test Description", "Test Content");
             _mockFutureNhsContentHandler.Setup(x => x.UpdateContentAsync(
-                It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
+                It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(AlterContent_Response(contentId));
 
             // Act
-            var result = await controller.UpdateAsync(contentId, updateRequest);
+            var result = await controller.UpdateContentAsync(contentId, updateRequest);
             var itemResult = result as OkObjectResult;
+            var modelItem = itemResult.Value as ApiResponse<string>;
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.Equal($"Update successful: {contentId}", itemResult.Value);
+            Assert.Equal(contentId.ToString(), modelItem.Payload);
         }
 
         /// <summary>
         /// Publishes the content failure.
         /// </summary>
         [Test]
-        public async Task UpdateContent_Failure()
+        public async Task UpdateContent_FailureAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
             var updateRequest = GetUpdateRequest("Test Title", "Test Description", "Test Content");
             _mockFutureNhsContentHandler.Setup(x => x.UpdateContentAsync(
-                It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
+                It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(GetContent_Failure());
 
             // Act
-            var result = await controller.UpdateAsync(contentId, updateRequest);
+            var result = await controller.UpdateContentAsync(contentId, updateRequest);
             var itemResult = result as ObjectResult;
 
             // Assert
@@ -312,7 +309,7 @@ namespace Umbraco9ContentApi.Test.Controller
         }
 
         [Test]
-        public async Task UpdateContent_BadRequest()
+        public async Task UpdateContent_BadRequestAsync()
         {
             // Arrange
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
@@ -320,7 +317,7 @@ namespace Umbraco9ContentApi.Test.Controller
             var updateRequest = GetUpdateRequest(null, null, null);
 
             // Act
-            var result = await controller.UpdateAsync(contentId, updateRequest);
+            var result = await controller.UpdateContentAsync(contentId, updateRequest);
             var itemResult = result as BadRequestObjectResult;
 
             // Assert
@@ -337,36 +334,38 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Delete the content success.
         /// </summary>
         [Test]
-        public async Task DeleteContent_Success()
+        public async Task DeleteContent_SuccessAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(AlterContent_Response(contentId));
 
             // Act
-            var result = await controller.DeleteAsync(contentId);
+            var result = await controller.DeleteContentAsync(contentId);
             var itemResult = result as OkObjectResult;
+            var modelItem = itemResult.Value as ApiResponse<string>;
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.Equal($"Successfully deleted: {contentId}", itemResult.Value);
+            Assert.True(modelItem.Succeeded);
+            Assert.Equal(modelItem.Payload, contentId.ToString());
         }
 
         /// <summary>
         /// Publishes the content failure.
         /// </summary>
         [Test]
-        public async Task DeleteContent_Failure()
+        public async Task DeleteContent_FailureAsync()
         {
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(false);
+            _mockFutureNhsContentHandler.Setup(x => x.DeleteContentAsync(It.IsAny<Guid>())).ReturnsAsync(GetContent_Failure());
 
             // Act
-            var result = await controller.DeleteAsync(contentId);
+            var result = await controller.DeleteContentAsync(contentId);
             var itemResult = result as ObjectResult;
 
             // Assert
@@ -375,6 +374,7 @@ namespace Umbraco9ContentApi.Test.Controller
             var problemDetails = Assert.IsType<ProblemDetails>(itemResult.Value);
             Assert.Equal($"Deletion unsuccessful: {contentId}", problemDetails.Detail);
         }
+
 
         #endregion
 
@@ -393,10 +393,24 @@ namespace Umbraco9ContentApi.Test.Controller
         }
 
         /// <summary>
-        /// Gets the test model.
+        /// Alters the content response.
         /// </summary>
+        /// <param name="contentId">The content identifier.</param>
         /// <returns></returns>
-        private ContentModel GetTestModel()
+        private ApiResponse<string> AlterContent_Response(Guid contentId)
+        {
+            var mock = new Mock<ApiResponse<string>>();
+            mock.Setup(x => x.Succeeded).Returns(true);
+            mock.Setup(x => x.Payload).Returns(contentId.ToString());
+            return mock.Object;
+        }
+
+        /// <summary>
+        /// Gets the content found.
+        /// </summary>
+        /// <param name="contentId">The content identifier.</param>
+        /// <returns></returns>
+        private ApiResponse<ContentModel> GetContent_Found(Guid contentId)
         {
             var mockDictionary = new Dictionary<string, object>()
             {
@@ -405,48 +419,73 @@ namespace Umbraco9ContentApi.Test.Controller
 
             var model = new ContentModel()
             {
+                System = new SystemModel
+                {
+                    Id = contentId,
+                },
                 Fields = mockDictionary
             };
 
-            return model;
+            var apiResponse = new Mock<ApiResponse<ContentModel>>();
+            apiResponse.Setup(x => x.Payload).Returns(model);
+
+            return apiResponse.Object;
         }
 
         /// <summary>
-        /// Gets the test blocks.
+        /// Gets the content failure.
         /// </summary>
         /// <returns></returns>
-        private List<ContentModel> GetTestBlocks()
+        private ApiResponse<string> GetContent_Failure()
+        {
+            var mock = new Mock<ApiResponse<string>>();
+            mock.Setup(x => x.Succeeded).Returns(false);
+            mock.Setup(x => x.Message).Returns("Error creating the page, content was null.");
+            return mock.Object;
+        }
+
+        /// <summary>
+        /// Gets the test contents found.
+        /// </summary>
+        /// <returns></returns>
+        private ApiResponse<IEnumerable<ContentModel>> GetContents_Found()
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
 
-            var list = new List<ContentModel>()
+            var model = new List<ContentModel>()
             {
-                new ContentModel()
-                {
-                    Fields = mockDictionary
-                }
+                new ContentModel() {Fields = mockDictionary}
             };
 
-            return list;
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Succeeded).Returns(true);
+
+            return apiResponse.Object;
         }
 
         /// <summary>
-        /// Gets the mock content item.
+        /// Gets the test contents not found.
         /// </summary>
         /// <returns></returns>
-        private Mock<IContent> GetMockContentItem(Guid contentId)
+        private ApiResponse<IEnumerable<ContentModel>> GetContents_NotFound()
         {
-            var mockContent = new Mock<IContent>();
-            mockContent.Setup(x => x.Key).Returns(contentId);
-            return mockContent;
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            apiResponse.Setup(x => x.Payload).Returns(new List<ContentModel>());
+            apiResponse.Setup(x => x.Succeeded).Returns(true);
+
+            return apiResponse.Object;
         }
 
         /// <summary>
         /// Gets the update request.
         /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="description">The description.</param>
+        /// <param name="pageContent">Content of the page.</param>
         /// <returns></returns>
         private GeneralWebPageUpdateRequest GetUpdateRequest(string? title, string? description, string? pageContent)
         {

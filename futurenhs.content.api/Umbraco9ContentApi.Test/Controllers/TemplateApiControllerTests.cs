@@ -1,16 +1,16 @@
 ﻿namespace Umbraco9ContentApi.Test.Controller
 {
+    using Core.Controllers;
+    using Core.Handlers.FutureNhs.Interface;
+    using Microsoft.AspNetCore.Mvc;
+    using Moq;
+    using NUnit.Framework;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
-    using Core.Controllers;
-    using Core.Handlers.FutureNhs.Interface;
-    using Core.Services.FutureNhs.Interface;
-    using Microsoft.AspNetCore.Mvc;
-    using Moq;
-    using NUnit.Framework;
+    using Umbraco9ContentApi.Core.Models.Response;
     using UmbracoContentApi.Core.Models;
     using Assert = Xunit.Assert;
 
@@ -42,22 +42,21 @@
         public async Task GetAllTemplates_Success()
         {
             // Arrange
-            var contentList = GetTestBlocks();
+            var contentList = GetTestTemplates_Found();
             _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplatesAsync()).ReturnsAsync(contentList);
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllAsync();
+            var result = await controller.GetAllTemplatesAsync();
             var itemResult = result as OkObjectResult;
+            var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModel>>;
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.NotNull(itemResult.StatusCode);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            var returnedList = Assert.IsType<List<ContentModel>>(itemResult.Value);
-            var contentModel = Assert.IsType<ContentModel>(returnedList.FirstOrDefault());
-            Assert.NotNull(contentModel.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(contentModel.Fields.FirstOrDefault());
+            Assert.NotNull(payloadResult.Payload.FirstOrDefault().Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Payload.FirstOrDefault().Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -69,17 +68,18 @@
         public async Task GetAllTemplates_NotFound()
         {
             // Arrange
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplatesAsync()).ReturnsAsync(new List<ContentModel>());
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplatesAsync()).ReturnsAsync(GetTestTemplates_NotFound());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllAsync();
-            var itemResult = result as NotFoundResult;
+            var result = await controller.GetAllTemplatesAsync();
+            var itemResult = result as NotFoundObjectResult;
 
 
             // Assert
             Assert.NotNull(itemResult);
-            Assert.Equal((int)HttpStatusCode.NotFound, itemResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.NotFound, itemResult.StatusCode.Value);
+            Assert.Equal("No templates found.", itemResult.Value);
         }
 
         #endregion
@@ -95,20 +95,19 @@
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            var content = GetTestModel();
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplateAsync(It.IsAny<Guid>())).ReturnsAsync(content);
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplateAsync(It.IsAny<Guid>())).ReturnsAsync(GetTemplate_Found(contentId));
 
             // Act
-            var result = await controller.GetAsync(contentId);
+            var result = await controller.GetTemplateAsync(contentId);
             var itemResult = result as OkObjectResult;
+            var payloadResult = itemResult.Value as ApiResponse<ContentModel>;
 
 
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            var contentModel = Assert.IsType<ContentModel>(itemResult.Value);
-            Assert.NotNull(contentModel.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(contentModel.Fields.FirstOrDefault());
+            Assert.NotNull(payloadResult.Payload.Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Payload.Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -125,9 +124,9 @@
             var contentId = new Guid("8E87CC7B-26BD-4543-906D-53652F5B6F02");
 
             // Act
-            var result = await controller.GetAsync(contentId);
+            var result = await controller.GetTemplateAsync(contentId);
             var itemResult = result as NotFoundResult;
-            
+
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.NotFound, itemResult.StatusCode);
@@ -154,7 +153,7 @@
         /// Gets the test model.
         /// </summary>
         /// <returns></returns>
-        private ContentModel GetTestModel()
+        private ApiResponse<ContentModel> GetTemplate_Found(Guid contentId)
         {
             var mockDictionary = new Dictionary<string, object>()
             {
@@ -163,32 +162,54 @@
 
             var model = new ContentModel()
             {
+                System = new SystemModel
+                {
+                    Id = contentId,
+                },
                 Fields = mockDictionary
             };
 
-            return model;
+            var apiResponse = new Mock<ApiResponse<ContentModel>>();
+            apiResponse.Setup(x => x.Payload).Returns(model);
+
+            return apiResponse.Object;
         }
 
-        /// <summary>
-        /// Gets the test blocks.
+        // <summary>
+        /// Gets the test model.
         /// </summary>
         /// <returns></returns>
-        private List<ContentModel> GetTestBlocks()
+        private ApiResponse<IEnumerable<ContentModel>> GetTestTemplates_Found()
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
 
-            var list = new List<ContentModel>()
+            var model = new List<ContentModel>()
             {
-                new ContentModel()
-                {
-                    Fields = mockDictionary
-                }
+                new ContentModel() {Fields = mockDictionary}
             };
 
-            return list;
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Succeeded).Returns(true);
+
+            return apiResponse.Object;
+        }
+
+        private ApiResponse<IEnumerable<ContentModel>> GetTestTemplates_NotFound()
+        {
+            var model = new List<ContentModel>()
+            {
+
+            };
+
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Succeeded).Returns(true);
+
+            return apiResponse.Object;
         }
 
         #endregion

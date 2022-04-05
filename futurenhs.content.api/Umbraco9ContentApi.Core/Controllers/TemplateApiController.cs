@@ -27,14 +27,13 @@
         }
 
         /// <summary>
-        /// Gets the specified template identifier.
+        /// Gets the template asynchronous.
         /// </summary>
         /// <param name="templateId">The template identifier.</param>
-        /// <returns>The specified template.</returns>
-        /// <remarks></remarks>
+        /// <returns></returns>
         [HttpGet("{templateId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> GetAsync(Guid templateId)
+        public async Task<ActionResult> GetTemplateAsync(Guid templateId)
         {
             var template = await _futureNhsTemplateHandler.GetTemplateAsync(templateId);
 
@@ -47,37 +46,41 @@
         }
 
         /// <summary>
-        /// Gets all templates.
+        /// Gets all templates asynchronous.
         /// </summary>
-        /// <returns>All templates.</returns>
-        /// <remarks></remarks>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
-        public async Task<ActionResult> GetAllAsync()
+        public async Task<ActionResult> GetAllTemplatesAsync()
         {
-            var templates = await _futureNhsTemplateHandler.GetAllTemplatesAsync();
+            var response = await _futureNhsTemplateHandler.GetAllTemplatesAsync();
 
-            if (templates is null | !templates.Any())
+            if (response.Succeeded && !response.Payload.Any())
             {
-                return NotFound();
+                return NotFound("No templates found.");
             }
 
-            return Ok(templates);
+            if (response.Succeeded)
+            {
+                return Ok(response);
+            }
+
+            return Problem(response.Message);
         }
 
         /// <summary>
-        /// Deletes the specified template.
+        /// Deletes the template asynchronous.
         /// </summary>
         /// <param name="templateId">The template identifier.</param>
-        /// <returns>The template identifier.</returns>
+        /// <returns></returns>
         [HttpDelete("{templateId:guid}")]
-        public async Task<ActionResult> Delete(Guid templateId)
+        public async Task<ActionResult> DeleteTemplateAsync(Guid templateId)
         {
-            var result = await _futureNhsContentHandler.DeleteContentAsync(templateId);
+            var response = await _futureNhsContentHandler.DeleteContentAsync(templateId);
 
-            if (result)
+            if (response.Succeeded)
             {
-                return Ok("Successfully deleted: " + templateId);
+                return Ok(response);
             }
 
             return Problem("Deletion unsuccessful: " + templateId);

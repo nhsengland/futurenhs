@@ -15,6 +15,10 @@ namespace Umbraco9ContentApi.Core.Controllers
     {
         IFutureNhsSiteMapHandler _futureNhsSiteMapHandler;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SitemapApiController"/> class.
+        /// </summary>
+        /// <param name="futureNhsSiteMapHandler">The future NHS site map handler.</param>
         public SitemapApiController(IFutureNhsSiteMapHandler futureNhsSiteMapHandler)
         {
             _futureNhsSiteMapHandler = futureNhsSiteMapHandler;
@@ -26,17 +30,17 @@ namespace Umbraco9ContentApi.Core.Controllers
         /// <param name="pageId">The page identifier.</param>
         /// <returns></returns>
         [HttpGet("{pageId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SitemapGroupItemViewModel>))]
-        public async Task<ActionResult> GetAsync(Guid pageId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SitemapGroupItemModel>))]
+        public async Task<ActionResult> GetSiteMapAsync(Guid pageId)
         {
-            var siteMapItems = await _futureNhsSiteMapHandler.GetGroupSitemapItemsAsync(pageId);
+            var response = await _futureNhsSiteMapHandler.GetSitemapGroupItemsAsync(pageId);
 
-            if (siteMapItems is null || !siteMapItems.Any())
+            if (response.Succeeded)
             {
-                return NotFound();
+                return Ok(response);
             }
 
-            return Ok(siteMapItems);
+            return Problem(response.Message);
         }
     }
 }

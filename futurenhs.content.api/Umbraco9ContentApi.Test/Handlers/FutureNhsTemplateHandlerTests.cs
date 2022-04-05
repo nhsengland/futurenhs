@@ -1,14 +1,13 @@
 ﻿namespace Umbraco9ContentApi.Test.Handler
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Core.Handlers.FutureNhs;
     using Core.Services.FutureNhs.Interface;
     using Microsoft.Extensions.Configuration;
     using Moq;
     using NUnit.Framework;
-    using Umbraco.Cms.Core.Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using UmbracoContentApi.Core.Models;
     using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
@@ -84,10 +83,10 @@
 
             // Assert
             Assert.NotNull(contentResult);
-            Assert.IsNotEmpty(contentResult);
+            Assert.IsNotEmpty(contentResult.Payload);
         }
         #endregion
-        
+
         #region Setup
 
         /// <summary>
