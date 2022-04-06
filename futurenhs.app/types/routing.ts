@@ -1,5 +1,10 @@
 export interface Routes {
-    siteRoot: string,
+    siteRoot: string;
+    adminRoot: string;
+    adminUsersRoot: string;
+    adminUsersInvite: string;
+    adminGroupsRoot: string;
+    adminGroupsCreate: string;
     groupsRoot: string;
     groupsDiscover: string;
     groupRoot: string;
