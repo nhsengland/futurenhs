@@ -23,11 +23,10 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
     contentText,
     actions,
     pagination,
+    routes,
     usersList,
     user
 }) => {
-
-    const router = useRouter();
 
     const [dynamicUsersList, setUsersList] = useState(usersList);
     const [dynamicPagination, setPagination] = useState(pagination);
@@ -100,7 +99,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: <Link href={`/users/${id}`}>{fullName || role}</Link>,
+                children: <Link href={`/users/${id}`}>{fullName}</Link>,
                 className: generatedCellClasses.name,
                 headerClassName: generatedHeaderCellClasses.name
             },
@@ -162,8 +161,15 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
     return (
 
         <>
-            <LayoutColumnContainer className="u-w-full u-flex u-flex-col-reverse tablet:u-flex-row">
-                <LayoutColumn tablet={9} desktop={10} className="c-page-body">
+            <LayoutColumnContainer className="u-w-full u-flex u-flex-col tablet:u-flex-row-reverse">
+                {shouldRenderCreateUserLink &&
+                    <LayoutColumn tablet={3} className="c-page-body">
+                        <Link href={routes.adminUsersInvite}>
+                            <a className="c-button u-w-full">{inviteUser}</a>
+                        </Link>
+                    </LayoutColumn>
+                }
+                <LayoutColumn tablet={9} className="c-page-body">
                     <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                     {hasUsers
 
@@ -188,13 +194,6 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                         getPageAction={handleGetPage}
                         {...dynamicPagination} />
                 </LayoutColumn>
-                {shouldRenderCreateUserLink &&
-                    <LayoutColumn tablet={3} desktop={2} className="c-page-body">
-                        <Link href={`${router.asPath}/create`}>
-                            <a className="c-button u-w-full">{inviteUser}</a>
-                        </Link>
-                    </LayoutColumn>
-                }
             </LayoutColumnContainer>
         </>
 

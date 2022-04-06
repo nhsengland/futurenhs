@@ -24,7 +24,8 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     children,
     className,
     bodyClassName,
-    submitButtonClassName
+    submitButtonClassName,
+    shouldClearOnSubmitSuccess
 }) => {
 
     const errorSummaryRef: any = useRef();
@@ -90,6 +91,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 className={generatedClasses.form}
                 bodyClassName={bodyClassName}
                 submitButtonClassName={submitButtonClassName}
+                shouldClearOnSubmitSuccess={shouldClearOnSubmitSuccess}
                 cancelHref={cancelHref}
                 cancelAction={cancelAction}
                 validationFailAction={handleValidationFailure}

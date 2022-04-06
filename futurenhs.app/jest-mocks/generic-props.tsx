@@ -2,6 +2,11 @@ import { Routes } from "@appTypes/routing";
 
 export const routes: Routes = {
     siteRoot: '/',
+    adminRoot: '/admin',
+    adminUsersRoot: '/admin/users',
+    adminUsersInvite: '/admin/users/invite',
+    adminGroupsRoot: '/admin/groups',
+    adminGroupsCreate: '/admin/users/create',
     groupsRoot: '/groups',
     groupsDiscover: '/groups/discover',
     groupRoot: '/:groupId',

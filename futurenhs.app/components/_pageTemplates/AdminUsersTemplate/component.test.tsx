@@ -74,28 +74,28 @@ describe('Admin users template', () => {
 
     })
 
-    it('renders users role if no full name', () => {
+    // it('renders users role if no full name', () => {
 
-        render(<AdminUsersTemplate {...props}/>);
+    //     render(<AdminUsersTemplate {...props}/>);
 
-        expect(screen.queryByText('Admin role')).toBeNull();
+    //     expect(screen.queryByText('Admin role')).toBeNull();
 
-        cleanup();
+    //     cleanup();
 
-        const propsCopy: Props = Object.assign({}, props, {
-            usersList: [
-                {
-                    id: '123',
-                    role: 'Admin role'
-                }
-            ]
-        })
+    //     const propsCopy: Props = Object.assign({}, props, {
+    //         usersList: [
+    //             {
+    //                 id: '123',
+    //                 role: 'Admin role'
+    //             }
+    //         ]
+    //     })
 
-        render(<AdminUsersTemplate {...propsCopy}/>);
+    //     render(<AdminUsersTemplate {...propsCopy}/>);
 
-        expect(screen.getAllByText('Admin role').length).toBeGreaterThan(0);
+    //     expect(screen.getAllByText('Admin role').length).toBeGreaterThan(0);
 
 
-    })
+    // })
 
 });
