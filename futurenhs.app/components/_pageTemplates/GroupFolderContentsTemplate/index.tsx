@@ -206,10 +206,10 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     row.push({
                         children: isFolder ? '' : <>
                             {fileDownloadPath &&
-                                <Link href={fileDownloadPath}><a className="u-block tablet:u-mb-4 u-align-top"><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
+                                <Link href={fileDownloadPath}><a className="u-block tablet:u-mb-4 u-align-top" aria-label={`Download ${name}`}><SVGIcon name="icon-download" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />Download file</a></Link>
                             }
                             {fileDetailPath &&
-                                <Link href={fileDetailPath}><a className="u-block u-align-top"><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
+                                <Link href={fileDetailPath}><a className="u-block u-align-top" aria-label={`View details of ${name}`}><SVGIcon name="icon-view" className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8" />View details</a></Link>
                             }
                         </>,
                         shouldRenderCellHeader: true,
