@@ -31,6 +31,7 @@ export const SiteUserTemplate: (props: Props) => JSX.Element = ({
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={11}>
                     <UserProfile
+                        headingLevel={1}
                         profile={siteUser}
                         text={{
                             heading: secondaryHeading,

@@ -13,5 +13,6 @@ export interface Props {
     image?: Image;
     children?: any;
     className?: string;
+    headingLevel?: number;
 }
 

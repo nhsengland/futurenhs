@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import { initials } from '@helpers/formatters/initials';
 import { Avatar } from '@components/Avatar';
+import { Heading } from '@components/Heading';
 
 import { Props } from './interfaces';
 
@@ -11,7 +12,8 @@ export const UserProfile: (props: Props) => JSX.Element = ({
     text,
     image,
     children,
-    className
+    className,
+    headingLevel = 2
 }) => {
 
     const { firstName,
@@ -39,7 +41,7 @@ export const UserProfile: (props: Props) => JSX.Element = ({
     return (
 
         <div className={generatedClasses.wrapper}>
-            <h2 className={generatedClasses.heading}>{heading}</h2>
+            <Heading level={headingLevel} className={generatedClasses.heading}>{heading}</Heading>
             <Avatar image={image} initials={userInitials} className={generatedClasses.image} />
             <dl className={generatedClasses.data}>
                 {firstName &&
