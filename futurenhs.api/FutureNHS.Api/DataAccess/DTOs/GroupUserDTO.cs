@@ -10,7 +10,9 @@ namespace FutureNHS.Api.DataAccess.DTOs
         public bool Locked { get; set; }
         public bool Banned { get; set; }
         public DateTime? RequestToJoinDateUTC { get; set; }
+        public string RequestToJoinDateUTCAsString { get; set; }
         public DateTime? ApprovedDateUTC { get; set; }
+        public string ApprovedDateUTCAsString { get; set; }
         public string RequestToJoinReason { get; set; }
         public string LockReason { get; set; }
         public string BanReason { get; set; }

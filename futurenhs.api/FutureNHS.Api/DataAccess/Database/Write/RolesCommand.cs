@@ -17,23 +17,45 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
         }
 
-        public async Task<RoleDto> GetRoleAsync(string name, CancellationToken cancellationToken = default)
+        public async Task<RoleDto> GetRoleAsync(string roleName, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentOutOfRangeException(nameof(name));
+            if (string.IsNullOrEmpty(roleName)) throw new ArgumentNullException(nameof(roleName));
 
             const string query =
                 @$" SELECT
-                                [{nameof(RoleDto.Id)}]                   = Id,
-                                [{nameof(RoleDto.Name)}]                 = RoleName 
+                                [{nameof(RoleDto.Id)}]     = Id,
+                                [{nameof(RoleDto.Name)}]   = RoleName 
           
                     FROM        MembershipRole   
-                    WHERE       RoleName = @RoleName ";
+                    WHERE       RoleName = @RoleName;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
             var role = await dbConnection.QuerySingleAsync<RoleDto>(query, new
             {
-                RoleName = name,
+                RoleName = roleName,
+            });
+
+            return role;
+        }
+
+        public async Task<RoleDto> GetRoleAsync(Guid roleId, CancellationToken cancellationToken = default)
+        {
+            if (Guid.Empty == roleId) throw new ArgumentOutOfRangeException(nameof(roleId));
+
+            const string query =
+                @$" SELECT
+                                [{nameof(RoleDto.Id)}]     = Id,
+                                [{nameof(RoleDto.Name)}]   = RoleName 
+          
+                    FROM        MembershipRole   
+                    WHERE       Id = @RoleId;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var role = await dbConnection.QuerySingleAsync<RoleDto>(query, new
+            {
+                RoleId = roleId,
             });
 
             return role;

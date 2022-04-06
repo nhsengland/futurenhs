@@ -64,6 +64,34 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             }
         }
 
+        public async Task<UserDto> GetUserAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(UserDto.Id)}]                  = membershipUser.Id,
+                                [{nameof(UserDto.UserName)}]            = membershipUser.UserName, 
+                                [{nameof(UserDto.Email)}]               = membershipUser.Email,
+                                [{nameof(UserDto.CreatedAtUtc)}]        = FORMAT(membershipUser.CreatedAtUTC, 'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(UserDto.ModifiedAtUtc)}]       = FORMAT(membershipUser.ModifiedAtUTC, 'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(UserDto.LastLoginDateUtc)}]    = FORMAT(membershipUser.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(UserDto.Slug)}]                = membershipUser.Slug,
+                                [{nameof(UserDto.FirstName)}]           = membershipUser.FirstName,
+                                [{nameof(UserDto.Surname)}]             = membershipUser.Surname,
+                                [{nameof(UserDto.Initials)}]            = membershipUser.Initials
+
+                    FROM        [MembershipUser] membershipUser
+                    WHERE       membershipUser.Id = @UserId;";
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                UserId = userId
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleOrDefaultAsync<UserDto>(commandDefinition);
+        }
+
         public async Task<(uint totalCount, IEnumerable<MemberSearchDetails>)> SearchUsers(string term, uint offset, uint limit, string sort, CancellationToken cancellationToken)
         {
             const string query =

@@ -147,7 +147,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 {
                     if (image is not null)
                     {
-                        group = @group with{ Image = new ImageData(image, _options)};
+                        group = @group with { Image = new ImageData(image, _options) };
                     }
 
                     return group;
@@ -280,6 +280,99 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 _logger.LogError("Error: User request to delete group site failed", queryDefinition);
                 throw new DBConcurrencyException("Error: User request to delete group site failed");
             }
+        }
+
+        public async Task<GroupUserDto> GetGroupUserAsync(Guid groupUserId, Guid groupId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(GroupUserDto.Id)}]                            = groupUser.Id,
+                                [{nameof(GroupUserDto.Approved)}]                      = groupUser.Approved, 
+                                [{nameof(GroupUserDto.Rejected)}]                      = groupUser.Rejected,
+                                [{nameof(GroupUserDto.Locked)}]                        = groupUser.Locked,
+                                [{nameof(GroupUserDto.Banned)}]                        = groupUser.Banned, 
+                                [{nameof(GroupUserDto.RequestToJoinDateUTCAsString)}]  = FORMAT(groupUser.RequestToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'), 
+                                [{nameof(GroupUserDto.ApprovedDateUTCAsString)}]       = FORMAT(groupUser.ApprovedToJoinDateUTC, 'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupUserDto.RequestToJoinReason)}]           = groupUser.RequestToJoinReason,
+                                [{nameof(GroupUserDto.LockReason)}]                    = groupUser.LockReason,
+                                [{nameof(GroupUserDto.ApprovingMembershipUser)}]       = groupUser.ApprovingMembershipUser_Id,
+                                [{nameof(GroupUserDto.MembershipRole)}]                = groupUser.MembershipRole_Id,
+                                [{nameof(GroupUserDto.MembershipUser)}]                = groupUser.MembershipUser_Id,
+                                [{nameof(GroupUserDto.Group)}]                         = groupUser.Group_Id,
+                                [{nameof(GroupUserDto.RowVersion)}]                    = groupUser.RowVersion
+                                
+
+                    FROM        [GroupUser] groupUser
+                    WHERE       groupUser.Id = @GroupUserId
+                    AND         groupUser.Group_Id = @GroupId;";
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                GroupUserId = groupUserId,
+                GroupId = groupId
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleOrDefaultAsync<GroupUserDto>(commandDefinition);
+        }
+
+        public async Task<IEnumerable<GroupRoleDto>> GetAllGroupRolesAsync(CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(GroupRoleDto.Id)}]     = Id,
+                                [{nameof(GroupRoleDto.Name)}]   = RoleName 
+          
+                    FROM        [MembershipRole];";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var queryDefinition = new CommandDefinition(query, cancellationToken: cancellationToken);
+
+            return await dbConnection.QueryAsync<GroupRoleDto>(queryDefinition);
+        }
+
+        public async Task UpdateUserGroupRolesAsync(Guid groupUserId, Guid groupRoleId, byte[] rowVersion, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @" UPDATE       [dbo].[GroupUser]
+                   SET
+                                [MembershipRole_Id]         = @groupRoleId
+                   WHERE 
+                                [Id]                        = @groupUserId
+                   AND          [RowVersion]                = @RowVersion";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                GroupUserId = groupUserId,
+                GroupRoleId = groupRoleId,
+                RowVersion = rowVersion
+            }, cancellationToken: cancellationToken);
+
+            await dbConnection.ExecuteAsync(commandDefinition);
+        }
+
+        public async Task DeleteUserFromGroupAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @" DELETE       
+                   FROM         [dbo].[GroupUser]
+                        
+                   WHERE        [Id]                  = @groupUserId
+                   AND          [RowVersion]          = @RowVersion";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                GroupUserId = groupUserId,
+                RowVersion = rowVersion
+            }, cancellationToken: cancellationToken);
+
+            await dbConnection.ExecuteAsync(commandDefinition);
         }
     }
 }

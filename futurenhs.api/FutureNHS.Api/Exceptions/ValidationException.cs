@@ -21,11 +21,11 @@ namespace FutureNHS.Api.Exceptions
             Errors = errors;
         }
 
-        public ValidationException(KeyValuePair<string, string> error)
+        public ValidationException(string parameter, string errorMessage)
         {
             Errors = new Dictionary<string, string>();
 
-            Errors.Add(error.Key, error.Value);
+            Errors.Add(parameter, errorMessage);
         }
     }
 }
