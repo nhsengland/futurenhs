@@ -85,8 +85,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 props.folder = groupFolder.data;
                                 
                                 form.initialValues = {
-                                    'name': props.folder?.text?.name,
-                                    'description': props.folder?.text?.body
+                                    'Title': props.folder?.text?.name,
+                                    'Description': props.folder?.text?.body
                                 };
 
                                 /**
