@@ -35,7 +35,8 @@ const baseConfig = {
             '127.0.0.1', 
             'collaborate-dev.future.nhs.uk',
             'collaborate-uat.future.nhs.uk',
-            'collaborate.future.nhs.uk'
+            'collaborate.future.nhs.uk',
+            'timblobtest.blob.core.windows.net'
         ],
         path: `${assetPrefix}/_next/image`
     },
