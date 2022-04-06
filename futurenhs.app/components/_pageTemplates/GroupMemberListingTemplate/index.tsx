@@ -217,7 +217,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                     query: { 
                         edit: 'true' 
                     }
-                } as any}><a><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />{editMember}</a></Link>,
+                } as any}><a aria-label={`Edit member ${fullName || role}`}><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0"/>{editMember}</a></Link>,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden'
             });
