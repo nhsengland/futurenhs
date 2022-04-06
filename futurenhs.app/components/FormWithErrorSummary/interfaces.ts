@@ -25,5 +25,6 @@ export interface Props {
     className?: string;
     bodyClassName?: string;
     submitButtonClassName?: string;
+    shouldClearOnSubmitSuccess?: boolean;
     children?: any;
 }
