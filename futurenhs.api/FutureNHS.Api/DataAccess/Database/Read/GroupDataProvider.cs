@@ -259,6 +259,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                 @$" SELECT
                                 [{nameof(GroupMember.Id)}]                   = member.Id,
+                                [{nameof(GroupMember.GroupUserId)}]          = groupUser.Id,
                                 [{nameof(GroupMember.Slug)}]                 = member.Slug, 
                                 [{nameof(GroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
                                 [{nameof(GroupMember.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),

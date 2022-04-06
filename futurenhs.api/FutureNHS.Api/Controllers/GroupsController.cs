@@ -23,7 +23,8 @@ namespace FutureNHS.Api.Controllers
         private readonly IGroupService _groupService;
         private readonly IEtagService _etagService;
 
-        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider, IPermissionsService permissionsService, IGroupMembershipService groupMembershipService, IGroupService groupService, IEtagService etagService)
+        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService, 
+            IGroupMembershipService groupMembershipService, IGroupService groupService, IEtagService etagService)
         {
             _logger = logger;
             _groupDataProvider = groupDataProvider;
@@ -111,7 +112,6 @@ namespace FutureNHS.Api.Controllers
             return Ok(group);
         }
 
-
         [HttpPut]
         [DisableFormValueModelBinding]
         [Route("users/{userId:guid}/groups/{slug}/update")]
@@ -184,6 +184,55 @@ namespace FutureNHS.Api.Controllers
                 return NotFound();
 
             return Ok(member);
+        }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/groups/{slug}/members/{groupUserId:guid}/update")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetMemberInGroupForUpdateAsync(Guid userId, string slug, Guid groupUserId, CancellationToken cancellationToken)
+        {
+            var groupMember = await _groupMembershipService.GetGroupMembershipUserAsync(userId, groupUserId, slug, cancellationToken);
+
+            if (groupMember is null)
+                return NotFound();
+
+            return Ok(groupMember);
+        }
+
+        [HttpPut]
+        [Route("users/{userId:guid}/groups/{slug}/members/{groupUserId:guid}/roles/update")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> UpdateMemberInGroupAsync(Guid userId, string slug, Guid groupUserId, [FromBody] Guid groupRoleId, CancellationToken cancellationToken)
+        {
+            var rowVersion = _etagService.GetIfMatch();
+
+            await _groupMembershipService.UpdateGroupMembershipUserRoleAsync(userId, slug, groupUserId, groupRoleId, rowVersion, cancellationToken);
+                        
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/groups/{slug}/roles")]
+        public async Task<IActionResult> GetMembershipRolesForGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        {
+            var groupMember = await _groupMembershipService.GetMembershipRolesForGroupAsync(userId, slug, cancellationToken);
+
+            if (groupMember is null)
+                return NotFound();
+
+            return Ok(groupMember);
+        }
+
+        [HttpDelete]
+        [Route("users/{userId:guid}/groups/{slug}/members/{groupUserId:guid}/delete")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> DeleteMembershipUserFromGroup(Guid userId, string slug, Guid groupUserId, CancellationToken cancellationToken)
+        {
+            var rowVersion = _etagService.GetIfMatch();
+
+            await _groupMembershipService.DeleteGroupMembershipUserAsync(userId, slug, groupUserId, rowVersion, cancellationToken);
+
+            return Ok();
         }
 
         [HttpPost]

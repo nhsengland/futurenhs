@@ -315,7 +315,7 @@ namespace FutureNHS.Api.Services
 
                 if (Guid.TryParse(theme, out var themeId) is false || themeId == new Guid())
                 {
-                    throw new ValidationException(new KeyValuePair<string, string>(nameof(GroupDto.ThemeId), "Enter the theme"));
+                    throw new ValidationException(nameof(GroupDto.ThemeId), "Enter the theme");
                 }
 
                 var imageId = Guid.TryParse(image, out var imageGuid) ? (Guid?)imageGuid : null;
