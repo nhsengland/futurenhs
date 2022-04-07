@@ -112,7 +112,7 @@ Scenario: FNHS:V07 - Mobile View validation
     Then the 'Log In' header is displayed
     And the 'mobile-loginPage' page image is taken and compared to the baseline image
     Given I have logged in as a 'visreguser'
-    When I open the 'Menu' accordion
+    When I open the 'Mobile Menu' accordion
     Then the 'Vis Reg' textual value is displayed
     And the 'mobile-menu' page image is taken and compared to the baseline image
     When I click the 'Groups' link
