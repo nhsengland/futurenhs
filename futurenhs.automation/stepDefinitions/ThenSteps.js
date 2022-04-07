@@ -24,16 +24,16 @@ Then(/^the breadcrumb navigation displays '([^"]*)'$/, function(breadcrumb){
   genericPage.breadcrumbValidation(breadcrumb);
 });
 
-Then(/^the group image is displayed$/, function(){
-  genericPage.groupImageValidation();
-});
-
 Then(/^the search bar is available$/, function(){
   search.searchBarValidation();
 });
 
 Then(/^there are '([^"]*)' search results displayed$/, function(amount){
   search.searchResultsValidation(amount)
+});
+
+Then(/^the '([^"]*)' new tab is open$/, function(tabMatcher){
+  genericPage.newTabValidation(tabMatcher);
 });
 
 //// Generic Content Steps
@@ -43,7 +43,7 @@ Then(/^the '([^"]*)' (header|textual value|link|button|option|label) is displaye
 });
 
 Then(/^the '([^"]*)' (header|textual value|link|button|option) is not displayed$/, function (textValue, contentType) {
-  genericPage.contentNotExisting(contentType, textValue);
+  genericPage.contentNotDisplayed(contentType, textValue);
 });
 
 //// ForumPage Steps
@@ -97,6 +97,11 @@ Then(/^I download the '([^"]*)' and check the file for '([^"]*)'$/, function(fil
 Then(/^the collabora file( mobile)? preview is displayed$/, function(mobile){
   filesPage.filePreviewExists(mobile);
 })
+
+Then(/^the image file '([^"]*)' is uploaded and ready$/, function(filePath){
+  var fileName = filePath.replace(/(\/[a-z]*\/)/g, '').replace(/(.[a-z]*$)/g, '')
+  filesPage.imageUploadValidation(fileName)
+});
 
 //// Table Steps
 
