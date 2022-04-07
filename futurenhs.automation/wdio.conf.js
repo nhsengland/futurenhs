@@ -15,7 +15,7 @@ global.phaseBannerErrors = [];
 global.supportBannerErrors = [];
 var pagesVisited = [];
 global.currentPage = 'data:,'
-var webhookURL = 'https://hooks.slack.com/services/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'
+// var webhookURL = 'WEBHOOKURL'
 exports.config = {
     //
     // ====================
@@ -42,6 +42,7 @@ exports.config = {
     suites: {
         fullRegression: [
             './features/**/userAccess.feature',
+            './features/**/search.feature',
             './features/**/groupNavigation.feature',
             './features/**/groupMembers.feature',
             './features/**/groupManage.feature',
@@ -51,7 +52,6 @@ exports.config = {
             './features/**/forumAdmin.feature',
             './features/**/foldersManagement.feature',
             './features/**/filesManagement.feature',
-            './features/**/search.feature',
             './features/**/platformAdmin.feature',
             './features/**/memberProfile.feature',
             './features/**/cookies.feature',
@@ -460,7 +460,7 @@ exports.config = {
      */
     onComplete: function(exitCode, config, capabilities, results) {
         fs.rmdirSync(downloadDir, {recursive: true})
-        new slackService(webhookURL).sendPostMessage(results, config.baseUrl)
+        // new slackService(webhookURL).sendPostMessage(results, config.baseUrl)
      },
 
     /**
