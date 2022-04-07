@@ -99,5 +99,15 @@ class filesPage extends basePage{
         browser.switchToParentFrame();
         browser.switchToParentFrame();
     }
+    
+    /**
+     * 
+     * @param {*} fileName 
+     */
+    imageUploadValidation(fileName){
+        var fileUpload = $(`//input[@type="file"]`);
+        var originalValue = fileUpload.getValue();
+        expect(originalValue.includes(fileName)).toEqual(true)
+    }
 }
 module.exports = new filesPage();

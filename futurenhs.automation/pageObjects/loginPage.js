@@ -26,7 +26,7 @@ const userTypes = {
     edituser:{
         username: "autoEditUser@test.co.uk",
         password: "Tempest101",
-        fullName: "Autoedit User"
+        fullName: "AutoEdit User"
     }
 };
 
