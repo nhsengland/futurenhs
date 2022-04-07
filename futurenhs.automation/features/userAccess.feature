@@ -15,7 +15,7 @@ Scenario Outline: FNHS00 - User login and log out
     And I enter '<password>' into the 'Password' field
     And I click the 'Log In' button
     Then the 'My Groups' header is displayed
-    When I open the 'Menu' accordion
+    When I open the 'User Menu' accordion
     And I click the 'Log Off' link
     Then I confirm this on the open 'Logout' dialog
     Then the 'Log In' header is displayed
@@ -146,8 +146,8 @@ Scenario: FNHS11 - Navigate to support site
     And I have logged in as a 'user' and accept the cookies
     Then the 'Need help?' textual value is displayed
     When I click the 'Visit our support site' link
-    Then the 'FutureNHS Support coming soon' textual value is displayed
-
+    Then the 'FutureNHS Support coming soon' new tab is open
+    
     
 Scenario Outline: FNHS111 - Forgot password form validation
     Then the 'Log In' header is displayed

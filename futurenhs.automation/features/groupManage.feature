@@ -75,9 +75,9 @@ Scenario Outline: FNHS35 - Edit group information change logo
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
     When I upload the '<image>' file
-    And I click the 'Save and close' button
+    Then the image file '<image>' is uploaded and ready
+    When I click the 'Save and close' button
     Then the 'Automation Edited Group' header is displayed
-    And the group image is displayed
 Examples:
     | image                 |
     | /media/test.png       |
