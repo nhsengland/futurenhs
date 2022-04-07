@@ -1,3 +1,7 @@
+BEGIN TRANSACTION 
+
+	ALTER TABLE [dbo].[Comment] NOCHECK CONSTRAINT all
+
 DECLARE @autoAdmin AS uniqueidentifier;
 SELECT @autoAdmin = id FROM [dbo].[MembershipUser] WHERE Email = 'autoAdmin@test.co.uk'
 DECLARE @groupAdmin AS uniqueidentifier;
@@ -73,7 +77,7 @@ UPDATE [dbo].[Group] SET Name = 'Automation Editable Group',
 						 Subtitle = 'DO NOT USE - This group is reserved solely for use by our automated test scripts', 
 		 				 PublicGroup = 0, 
 		 				 Introduction = 'Introduction ',
-						 Image = NULL,
+						 ImageId = NULL,
 		 				 AboutUs = NULL
 					WHERE Id = @editgroup
 
@@ -100,3 +104,16 @@ UPDATE [dbo].[Folder] SET IsDeleted = 0 WHERE Id = @deletefolder
 DECLARE @editfolder AS uniqueidentifier
 SELECT @editfolder = id FROM [dbo].[Folder] WHERE Title = 'EditedFolder'
 UPDATE [dbo].[Folder] SET Title = 'EditableFolder' WHERE Id = @editfolder
+
+	ALTER TABLE [dbo].[MembershipUser] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[Folder] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[File] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[Discussion] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[Comment] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[MembershipUsersInRoles] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[GroupUser] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[Group] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[Entity] CHECK CONSTRAINT all
+	ALTER TABLE [dbo].[GroupPermissionForRole] CHECK CONSTRAINT all
+
+ROLLBACK TRANSACTION
