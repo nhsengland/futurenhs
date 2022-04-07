@@ -107,17 +107,20 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
             {
                 children: `${capitalise({ value: role })}`,
                 className: generatedCellClasses.role,
-                headerClassName: generatedHeaderCellClasses.role
+                headerClassName: generatedHeaderCellClasses.role,
+                shouldRenderCellHeader: true
             },
             {
                 children: `${dateTime({ value: joinDate })}`,
                 className: generatedCellClasses.joinDate,
-                headerClassName: generatedHeaderCellClasses.joinDate
+                headerClassName: generatedHeaderCellClasses.joinDate,
+                shouldRenderCellHeader: true
             },
             {
                 children: `${dateTime({ value: lastLogInDate })}`,
                 className: generatedCellClasses.lastLoginDate,
-                headerClassName: generatedHeaderCellClasses.lastLoginDate
+                headerClassName: generatedHeaderCellClasses.lastLoginDate,
+                shouldRenderCellHeader: true
             },
             {
                 children: <Link href={{
