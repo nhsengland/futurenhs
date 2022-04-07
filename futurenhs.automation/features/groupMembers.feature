@@ -6,7 +6,7 @@ Background:
     And I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
 
-@Core @Pending
+@Pending
 Scenario: FNHS26 - Accept group member request
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
@@ -16,7 +16,7 @@ Scenario: FNHS26 - Accept group member request
     Then the 'Auto User2' link is displayed
     And the 'Auto User2' row is displayed on the 'Group Members' table
 
-@Core @Pending
+@Pending
 Scenario: FNHS27 - Reject group member request
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
@@ -25,7 +25,7 @@ Scenario: FNHS27 - Reject group member request
     When I click 'Reject' on the 'Auto User3' row of the 'Pending members' table
     Then the 'Pending members' table is not displayed
 
-@Core @Pending
+@Pending
 Scenario: FNHS28 - Add Registered User
     When I click the 'Automation Public Group' link
     Then the 'Automation Public Group' header is displayed

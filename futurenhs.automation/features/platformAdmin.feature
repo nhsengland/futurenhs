@@ -3,12 +3,11 @@ Feature: Group Create
 
 Background:
     Given I have navigated to '/'
-    And I have logged in as a 'admin' and accept the cookies
 
     
 Scenario: FNHS20 - Admin page validation
     And I have logged in as a 'admin' and accept the cookies
-    When I open the 'Menu' accordion
+    When I open the 'User Menu' accordion
     And I click the 'Admin' link
     Then the 'Admin' header is displayed
     And the 'Manage users' link is displayed
@@ -17,7 +16,7 @@ Scenario: FNHS20 - Admin page validation
 
 Scenario Outline: FNHS57 - Admin page permission 
     And I have logged in as a '<user>' and accept the cookies
-    When I open the 'Menu' accordion
+    When I open the 'User Menu' accordion
     Then the 'Admin' link <visibility> displayed
 Examples:
     | user  | visibility |
@@ -27,7 +26,8 @@ Examples:
 @Pending
 #REFACTOR FOR PRIVATE BETA
 Scenario: FNHS23 - Create a group 
-    When I open the 'Menu' accordion
+    And I have logged in as a 'admin' and accept the cookies
+    When I open the 'User Menu' accordion
     When I click the 'Admin' link
     Then the 'MvcForum' link is displayed
     When I click the 'Groups' link
@@ -45,7 +45,8 @@ Scenario: FNHS23 - Create a group
 @Pending
 #REFACTOR FOR PRIVATE BETA
 Scenario Outline: FNHS24 - Create a group error validation
-    When I open the 'Menu' accordion
+    And I have logged in as a 'admin' and accept the cookies
+    When I open the 'User Menu' accordion
     When I click the 'Admin' link
     Then the 'MvcForum' link is displayed
     When I click the 'Groups' link
@@ -68,6 +69,7 @@ Examples:
 
 @Pending
 Scenario: FNHS25 - Created Group Homepage Validation
+    And I have logged in as a 'admin' and accept the cookies
     Then the 'My Groups' header is displayed
     When I click the 'Group Creation Test' link
     Then the 'Group Creation Test' header is displayed

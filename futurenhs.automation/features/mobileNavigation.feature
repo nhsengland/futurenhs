@@ -7,7 +7,7 @@ Background: Log in
     Then the 'Log In' header is displayed
     And the 'Register your interest' header is displayed
 	And I have logged in as an 'group admin' and accept the cookies
-    When I open the 'Menu' accordion
+    When I open the 'Mobile Menu' accordion
 
 @Core 
 Scenario: FNHS:M01 - Menu Validation
@@ -15,31 +15,33 @@ Scenario: FNHS:M01 - Menu Validation
     And the 'Groups' link is displayed
     And the 'Need help?' textual value is displayed
     And the 'Visit our support site' link is displayed
+    When I open the 'user menu' accordion
+    Then the 'My profile' link is displayed
+    And the 'Log Off' link is displayed
 
 @Core 
-Scenario: FNHS:M02 - Mobile Group Navigation
+Scenario: FNHS:M02 - All Groups Validation
     When I click the 'Groups' link
     Then the 'My Groups' header is displayed
+    Then the 'All my groups' header is displayed
     When I select 'Discover new groups' from the group pages accordion
     Then the 'Discover New Groups' header is displayed
-    When I select 'My groups' from the group pages accordion
-    Then the 'All my groups' header is displayed
 
 @Core
-Scenario: FNHS:M03 - Mobile Table validation
+Scenario: FNHS:M03 - Group Members Table Validation
     When I click the 'Groups' link
     Then the 'My Groups' header is displayed
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
     When I select 'Members' from the group menu accordion
     Then the 'Group Members' mobile table is displayed
-    | Name | Auto GroupAdmin |
-    | Role | Admin |
-    | Date joined | [PrettyDate] |
-    | Last logged in | [PrettyDate] |
-    | Edit | |
-    | Name | auto User |
-    | Role | Standard Members |
-    | Date joined | [PrettyDate] |
-    | Last logged in | [PrettyDate] |
-    | Edit | |
+    | Auto GroupAdmin |                  |
+    | Role            | Admin            |
+    | Date joined     | [PrettyDate]     |
+    | Last logged in  | [PrettyDate]     |
+    | Edit            |                  |
+    | auto User       |                  |
+    | Role            | Standard Members |
+    | Date joined     | [PrettyDate]     |
+    | Last logged in  | [PrettyDate]     |
+    | Edit            |                  |

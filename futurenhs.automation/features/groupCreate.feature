@@ -8,7 +8,7 @@ Background:
     And I have logged in as a 'admin' and accept the cookies
 
 Scenario: FNHS23 - Create a group 
-    When I open the 'Menu' accordion
+    When I open the 'User Menu' accordion
     When I click the 'Admin' link
     Then the 'MvcForum' link is displayed
     When I click the 'Groups' link
@@ -25,7 +25,7 @@ Scenario: FNHS23 - Create a group
 
 
 Scenario Outline: FNHS24 - Create a group error validation
-    When I open the 'Menu' accordion
+    When I open the 'User Menu' accordion
     When I click the 'Admin' link
     Then the 'MvcForum' link is displayed
     When I click the 'Groups' link

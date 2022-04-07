@@ -102,7 +102,6 @@ Scenario: FNHS56 - Reply to a reply
     | Reply     |
     When I click reply on the 'This is a reply' reply card
     And I enter 'This is another reply' into the 'Your reply' text editor
-    And I open the 'Show more replies' accordion
     Then the 'This is another reply' reply card is displayed
     | AU                                         |
     | auto User                                  |

@@ -51,7 +51,7 @@ Scenario: FNHS40 - Pending Approval: View group members
     When I click the 'Members' tab
     And the 'You must be a member of this group to access this content' textual value is displayed
     
-@Core 
+
 Scenario: FNHS41 - Join a private group 
     Given I log off and log in as an 'user'    
     When I click the 'Discover new groups' tab
@@ -61,7 +61,7 @@ Scenario: FNHS41 - Join a private group
     When I click the 'Join Group' link
     Then the 'Pending Approval' textual value is displayed
 
-@Core 
+
 Scenario: FNHS42 - Add member awaiting approval
     When I click the 'Automation Private Group' link
     Then the 'Automation Private Group' header is displayed

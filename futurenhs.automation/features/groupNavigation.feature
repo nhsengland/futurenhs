@@ -6,7 +6,7 @@ Background:
     And I have logged in as a 'user' and accept the cookies
     Then the 'My Groups' header is displayed
 
-
+@Core
 Scenario: FNHS09 - My groups validation
     Then the 'All my groups' header is displayed
     And the 'Share ideas, get advice and support from your peers' textual value is displayed
@@ -51,6 +51,7 @@ Scenario: FNHS15 -  Group home validation
     When I click the 'Automation Admin Group' link
     Then the 'Automation Admin Group' header is displayed
     And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
+    # And the PAGE BUILDER ADMIN TEST IS NOT DISPLAYED
 
 
 Scenario: FNHS16 - Group forum validation
