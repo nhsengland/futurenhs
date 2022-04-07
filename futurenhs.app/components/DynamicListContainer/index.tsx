@@ -100,6 +100,7 @@ export const DynamicListContainer: (props: Props) => JSX.Element = ({
         if (hasMoreChildren && !shouldEnableLoadMore) {
 
                 makeFocusable(newestChildElement);
+                newestChildElement.classList.add('focus:u-outline-none');
                 newestChildElement.focus();
 
         }
