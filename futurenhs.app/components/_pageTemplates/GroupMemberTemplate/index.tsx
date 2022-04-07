@@ -1,17 +1,17 @@
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { selectFormErrors } from '@selectors/forms';
 import { formTypes } from '@constants/forms';
 import { actions as actionsConstants } from '@constants/actions';
-import { routeParams } from '@constants/routes';
-import { selectFormDefaultFields } from '@selectors/forms';
+import { selectFormDefaultFields, selectFormInitialValues } from '@selectors/forms';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BackLink } from '@components/BackLink';
 import { UserProfile } from '@components/UserProfile';
 import { Form } from '@components/Form';
 import { ErrorSummary } from '@components/ErrorSummary';
-import { Accordion } from '@components/Accordion';
-import { getRouteToParam } from '@helpers/routing/getRouteToParam';
+import { Dialog } from '@components/Dialog';
 import { FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
@@ -20,15 +20,22 @@ import { Props } from './interfaces';
  * Group member template
  */
 export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
+    csrfToken,
     contentText,
     member,
     forms,
     actions,
+    routes
 }) => {
 
     const router = useRouter();
+    const errorSummaryRef: any = useRef();
+    const [isDeleteUserConfirmationModalOpen, setIsDeleteUserConfirmationModalOpen] = useState(false);
 
     const fields = selectFormDefaultFields(forms, formTypes.UPDATE_GROUP_MEMBER);
+    const initialValues = selectFormInitialValues(forms, formTypes.UPDATE_GROUP_MEMBER);
+
+    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT));
 
     const { secondaryHeading,
             firstNameLabel,
@@ -36,27 +43,60 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             pronounsLabel,
             emailLabel } = contentText ?? {};
 
-    const toggleEditLabel: string = 'Edit member';
+    const shouldRenderUpdateForm: boolean = actions.includes(actionsConstants.GROUPS_MEMBERS_EDIT) && Boolean(router.query.edit);
+    const shouldRenderDeleteForm: boolean = actions.includes(actionsConstants.GROUPS_MEMBERS_DELETE) && Boolean(router.query.edit);
 
-    const backLinkHref: string = getRouteToParam({
-        router: router,
-        paramName: routeParams.MEMBERID
-    });
+    /**
+     * Handle client-side validation failure in forms
+     */
+    const handleValidationFailure = (errors: FormErrors): void => {
 
-    const shouldRenderUpdateForm: boolean = actions.includes(actionsConstants.GROUPS_MEMBERS_EDIT);
-    const shouldRenderAccordionOpen: boolean = Boolean(router.query.edit);
+        setErrors(errors);
+        errorSummaryRef?.current?.focus?.();
+
+    };
 
     /**
      * Handle client-side update submission
      */
-     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
+    const handleUpdateMemberSubmit = async (formData: FormData): Promise<FormErrors> => {
 
         return new Promise((resolve) => {
 
-            // TODO
+            // TODO - pending API
             resolve({});
 
         });
+
+    };
+
+    /**
+     * Handle client-side delete submission
+     */
+    const handleDeleteMemberSubmit = async (): Promise<FormErrors> => {
+
+        return new Promise((resolve) => {
+
+            setIsDeleteUserConfirmationModalOpen(true);
+
+            // TODO - pending API
+            resolve({});
+
+        });
+
+    };
+
+    /**
+     * Handle client-side delete submission cancellation
+     */
+    const handleDeleteMemberSubmitCancel = (): void => setIsDeleteUserConfirmationModalOpen(false);
+
+    /**
+     * Handle client-side delete submission cancellation
+     */
+    const handleDeleteMemberSubmitConfirm = (): any => {
+
+        setIsDeleteUserConfirmationModalOpen(false);
 
     };
 
@@ -64,15 +104,21 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
 
         <LayoutColumn className="c-page-body">
             <BackLink
-                href={backLinkHref}
+                href={routes.groupMembersRoot}
                 text={{
                     link: "Back"
                 }} />
+            {shouldRenderUpdateForm &&
+                <ErrorSummary
+                    ref={errorSummaryRef}
+                    errors={errors}
+                    text={{
+                        body: 'There is a problem'
+                    }} 
+                    className="u-mb-10" />
+            }
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={11}>
-                    {shouldRenderUpdateForm &&
-                        <ErrorSummary />
-                    }
                     <UserProfile
                         profile={member}
                         text={{
@@ -82,26 +128,48 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                             pronounsLabel: pronounsLabel,
                             emailLabel: emailLabel
                         }}
-                        className="tablet:u-justify-center tablet:u-mt-16" />
-                    {shouldRenderUpdateForm &&
-                        <Accordion 
-                            id="member-update-accordion"
-                            isOpen={shouldRenderAccordionOpen}
-                            toggleOpenChildren={toggleEditLabel}
-                            toggleClosedChildren={toggleEditLabel}>
+                        className="tablet:u-justify-center tablet:u-mt-16">
+                            {shouldRenderUpdateForm &&
                                 <Form
-                                    csrfToken=""
-                                    formId=""
+                                    csrfToken={csrfToken}
+                                    formId={formTypes.UPDATE_GROUP_MEMBER}
                                     fields={fields}
-                                    initialErrors={{}}
+                                    initialValues={initialValues}
+                                    initialErrors={errors}
                                     text={{
                                         submitButton: 'Save Changes'
                                     }}
-                                    submitAction={handleSubmit} />
-                        </Accordion>
-                    }
+                                    submitAction={handleUpdateMemberSubmit}
+                                    validationFailAction={handleValidationFailure}
+                                    className="u-mt-14" />
+                            }
+                            {shouldRenderDeleteForm &&
+                                <Form
+                                    csrfToken={csrfToken}
+                                    formId={formTypes.DELETE_GROUP_MEMBER}
+                                    fields={[]}
+                                    text={{
+                                        submitButton: 'Remove from group'
+                                    }}
+                                    submitAction={handleDeleteMemberSubmit}
+                                    className="u-mt-14"
+                                    submitButtonClassName="c-button-outline" />
+                            }
+                    </UserProfile>
                 </LayoutColumn>
             </LayoutColumnContainer>
+            <Dialog
+                id="dialog-delete-group-member"
+                isOpen={isDeleteUserConfirmationModalOpen}
+                text={{
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Yes, remove'
+                }}
+                cancelAction={handleDeleteMemberSubmitCancel}
+                confirmAction={handleDeleteMemberSubmitConfirm}>
+                <h3>Remove member</h3>
+                <p className="u-text-bold">This member will be removed from the group. Are you sure you wish to proceed?</p>
+            </Dialog>
         </LayoutColumn>
 
     )

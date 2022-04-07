@@ -14,11 +14,11 @@ export const updateGroupMemberForm: FormConfig = {
                     },
                     options: [
                         {
-                            value: 'admin',
+                            value: 'Admin',
                             label: 'Admin'
                         },
                         {
-                            value: 'member',
+                            value: 'Standard Members',
                             label: 'Member'
                         }
                     ],
@@ -26,7 +26,7 @@ export const updateGroupMemberForm: FormConfig = {
                     validators: [
                         {
                             type: 'required',
-                            message: 'Select whether the group should include a forum page'
+                            message: 'Select a member role'
                         }
                     ]
                 }
