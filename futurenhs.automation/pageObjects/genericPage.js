@@ -12,7 +12,7 @@ class genericPage extends basePage{
        switch(contentType){
             case 'header' : return `//h1[contains(normalize-space(.), "${textValue}")]|//h2[contains(normalize-space(.), "${textValue}")]|//h3[contains(normalize-space(.), "${textValue}")]|//h4[contains(normalize-space(.), "${textValue}")]|//h5[contains(normalize-space(.), "${textValue}")]`
             case 'textual value' : return `//*[contains(normalize-space(.), "${textValue}")]`
-            case 'link' : return `//a[contains(normalize-space(.), "${textValue}")]`
+            case 'link' : return `//a[normalize-space(text()) =  "${textValue}"]`
             case 'button' : return `//button[contains(normalize-space(.), "${textValue}")]`
             case 'option' : return `//input[@value = "${textValue}"]`
             case "tab" : return `//a[@class="c-tabbed-nav_link"]/span[contains(normalize-space(.), "${textValue}")]`
@@ -36,9 +36,9 @@ class genericPage extends basePage{
      * @param {string} contentType - desried content type to validate
      * @param {string} textValue - textual value used within the selector to find desired element from the html
      */
-    contentNotExisting(contentType, textValue){
+    contentNotDisplayed(contentType, textValue){
         var content = helpers._resolveElement(this._getSelector(contentType,textValue));
-        content.waitForExist({timeout: 5000, reverse: true});
+        content.waitForDisplayed({timeout: 5000, reverse: true});
     }
 
     /**
@@ -61,7 +61,8 @@ class genericPage extends basePage{
         var desiredAccordion = accordionName.toLowerCase().replace(/ /g, '');
         const accordion = {
             actions : $(`//div[@id="group-actions"]/..`),
-            menu : $(`//div[@id="user-accordion"]/..`),
+            mobilemenu : $(`//div[@id="header-accordion"]/../summary`),
+            usermenu : $(`//div[@id="user-accordion"]/..`),
             grouppages : $(`//div[@id="my-groups-menu"]/..`),
             groupmenu : $(`//div[@id="group-menu"]/..`),
             showmorereplies : $(`//summary[span[text()="Show more replies"]]`),
@@ -77,7 +78,7 @@ class genericPage extends basePage{
     openAccordion(textValue){
         var desiredAccordion = this.findAccordion(textValue)
         helpers.click(desiredAccordion);
-        if(textValue === 'Show more replies'){
+        if(textValue === 'Show more replies' || textValue === 'Mobile Menu'){
             expect(desiredAccordion.$('..').getProperty('open')).toEqual(true);
         } else {
             expect(desiredAccordion.getProperty('open')).toEqual(true);
@@ -91,7 +92,7 @@ class genericPage extends basePage{
     selectAccordionItem(linkValue, accordionName){        
         var chosenAccordion = this.findAccordion(accordionName)
         helpers.click(chosenAccordion);
-        var accordionOptions = chosenAccordion.$$('./div/ul/li')
+        var accordionOptions = chosenAccordion.$$('//ul/li')
         accordionOptions.forEach(elem => {
             if(elem.getText() === linkValue){
                 helpers.click(elem)
@@ -172,14 +173,6 @@ class genericPage extends basePage{
         var breadcrumbText = foundBreadcrumb.getText().replace(/\.{3,}\n([^\n]*)/g, '...').replace(/\n/g, '');
         expect(breadcrumbText).toEqual(expectedBreadcrumb);
     }
-
-    /**
-     * Function to validate the image container of a group card exists on a page
-     */
-    groupImageValidation(){
-        var groupImg = $(`//div[@class="c-page-header_image-wrapper"]`);
-        expect(groupImg.isExisting()).toEqual(true);
-    }
    
     /**
      * Function to accept all cookies on the cookie banner popup
@@ -191,5 +184,14 @@ class genericPage extends basePage{
             helpers.click(acceptCookiesBtn);
         }
     }    
+
+    /**
+     * 
+     * @param {*} matcher 
+     */
+    newTabValidation(matcher){
+        browser.switchWindow('https://futurenhstest.service-now.com/');
+        this.contentValidation('textual value', matcher);
+    }
 }
 module.exports = new genericPage();
