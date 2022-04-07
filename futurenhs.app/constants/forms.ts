@@ -5,5 +5,6 @@ export const enum formTypes {
     GROUP_FOLDER = '2d800110-13a0-48e1-9a0b-00896822bfad',
     CREATE_FILE = '0070cfef-c977-4abf-9a4c-29ba96011158',
     UPDATE_GROUP = '8aa16d76-0946-4338-be6f-c6591e4bd605',
-    UPDATE_GROUP_MEMBER = '993532eb-bdad-40f3-804c-c419ccad1ac4'
+    UPDATE_GROUP_MEMBER = '993532eb-bdad-40f3-804c-c419ccad1ac4',
+    DELETE_GROUP_MEMBER = '79abe925-5f99-4052-a96f-febebc044df7'
 }; 
