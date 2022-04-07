@@ -23,7 +23,7 @@ namespace FutureNHS.Api.Controllers
         private readonly IGroupService _groupService;
         private readonly IEtagService _etagService;
 
-        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService, IGroupMembershipService groupMembershipService, IGroupService groupService, IEtagService etagService)
+        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider, IPermissionsService permissionsService, IGroupMembershipService groupMembershipService, IGroupService groupService, IEtagService etagService)
         {
             _logger = logger;
             _groupDataProvider = groupDataProvider;
@@ -33,9 +33,22 @@ namespace FutureNHS.Api.Controllers
             _etagService = etagService;
         }
 
+        [HttpPost]
+        [DisableFormValueModelBinding]
+        [Route("users/{userId:guid}/groups")]
+        public async Task<IActionResult> CreateGroupAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+            {
+                return BadRequest("The data submitted is not in the multiform format");
+            }
+
+            await _groupService.CreateGroupAsync(userId, Request.Body, Request.ContentType, cancellationToken);
+            return Ok();
+        }
+
         [HttpGet]
         [Route("users/{userId:guid}/groups")]
-
         public async Task<IActionResult> GetGroupsForUserAsync(Guid userId, [FromQuery] PaginationFilter filter, [FromQuery] bool isMember = true, CancellationToken cancellationToken = default)
         {
             var route = Request.Path.Value;
@@ -105,7 +118,7 @@ namespace FutureNHS.Api.Controllers
                 return BadRequest("The data submitted is not in the multiform format");
             }
             var rowVersion = _etagService.GetIfMatch();
-            await _groupService.UpdateGroupMultipartDocument(userId, slug, rowVersion, Request.Body, Request.ContentType,cancellationToken);
+            await _groupService.UpdateGroupMultipartDocument(userId, slug, rowVersion, Request.Body, Request.ContentType, cancellationToken);
 
             return Ok();
         }

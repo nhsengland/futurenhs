@@ -90,6 +90,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             {
                 case "Admin":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");
@@ -138,6 +139,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             {
                 case "Admin":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/discussions/comments/add");

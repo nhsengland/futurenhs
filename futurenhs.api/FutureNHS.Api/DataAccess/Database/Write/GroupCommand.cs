@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
@@ -7,7 +6,9 @@ using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Exceptions;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
@@ -147,7 +148,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 {
                     if (image is not null)
                     {
-                        group = @group with{ Image = new ImageData(image, _options)};
+                        group = @group with { Image = new ImageData(image, _options) };
                     }
 
                     return group;
@@ -280,6 +281,79 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 _logger.LogError("Error: User request to delete group site failed", queryDefinition);
                 throw new DBConcurrencyException("Error: User request to delete group site failed");
             }
+        }
+
+        public async Task CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken)
+        {
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
+
+            const string insertGroup =
+                 @"INSERT [dbo].[Group]
+                                ([Name]
+                                ,[CreatedAtUtc]
+                                ,[GroupOwner]
+                                ,[Subtitle]
+                                ,[CreatedBy]
+                                ,[Image])
+   
+                    VALUES
+                                (@Name
+                                ,@CreatedAtUtc
+                                ,@GroupOwner
+                                ,@Subtitle
+                                ,@CreatedBy
+                                ,@ImageId)";
+
+            await connection.OpenAsync(cancellationToken);
+
+            await using var transaction = connection.BeginTransaction();
+
+            var insertGroupResult = await connection.ExecuteAsync(insertGroup, new
+            {
+                Name = groupDto.Name,
+                CreatedAtUtc = groupDto.CreatedAtUtc,
+                GroupOwner = groupDto.GroupOwnerId,
+                Subtitle = groupDto.StrapLine,
+                CreatedBy = userId,
+                ImageId = groupDto.ImageId,
+            }, transaction: transaction);
+
+            foreach (var grouUser in groupDto.GroupAdminUsers)
+            {
+                const string insertGroupAdministrators =
+                   @" INSERT [dbo].[GroupUsersInRoles]
+                               ([GroupUser_Id]
+                                ,[GroupRole_Id])
+
+                        VALUES 
+                                (@GroupUserId,
+                                (SELECT [Id]
+                                 FROM   [dbo].[GroupUserRoles]
+                                 WHERE  [RoleName] = 'Admin'))";
+
+                var insertGroupUserInRoles = await connection.ExecuteAsync(insertGroupAdministrators, new
+                {
+                    GroupUserId = grouUser,
+                }, transaction: transaction);
+
+                if (insertGroupUserInRoles != 1)
+                {
+                    _logger.LogError("Error: User request to create a group user in roles was not successful.", insertGroupUserInRoles);
+                    throw new DataException("Error: User request to create a group user in roles was not successful.");
+                }
+            }
+
+            if (insertGroupResult != 1)
+            {
+                _logger.LogError("Error: User request to create a group was not successful.", insertGroup);
+                throw new DataException("Error: User request to create a group was not successful.");
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+
+            return;
         }
     }
 }

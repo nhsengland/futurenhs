@@ -2,9 +2,12 @@
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
+using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Helpers.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Validation;
+using Ganss.XSS;
 using HeyRed.Mime;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Features;
@@ -14,15 +17,13 @@ using System.Data;
 using System.Net;
 using System.Security;
 using System.Text;
-using FutureNHS.Api.Exceptions;
-using Ganss.XSS;
-using FutureNHS.Api.Services.Validation;
 
 namespace FutureNHS.Api.Services
 {
     public class GroupService : IGroupService
     {
         private const string GroupEditRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/edit";
+        private const string AddGroupRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/add";
 
         private readonly ILogger<DiscussionService> _logger;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
@@ -37,7 +38,7 @@ namespace FutureNHS.Api.Services
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 500000; // 500kb
 
-        public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, 
+        public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand,
             IImageBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupImageService imageService, IGroupCommand groupCommand,
             IHtmlSanitizer htmlSanitizer)
         {
@@ -63,6 +64,58 @@ namespace FutureNHS.Api.Services
             var group = await _groupCommand.GetGroupAsync(slug, cancellationToken);
 
             return group;
+        }
+
+        public async Task CreateGroupAsync(Guid userId, Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        {
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AddGroupRole, cancellationToken);
+            if (userCanPerformAction is not true)
+            {
+                _logger.LogError($"Error: AddGroupRole - User:{0} does not have access to add group:{1}", userId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            var (group, image) = await UploadGroupImageMultipartContent(userId, null, requestBody, null, contentType, cancellationToken);
+
+            // Validation           
+            if (image is not null)
+            {
+                var imageValidator = new ImageValidator();
+                var imageValidationResult = await imageValidator.ValidateAsync(image, cancellationToken);
+                if (imageValidationResult.Errors.Count > 0)
+                    throw new ValidationException(imageValidationResult);
+                try
+                {
+                    var imageId = await _imageService.CreateImageAsync(image);
+                    group = group with { ImageId = imageId };
+                }
+                catch (DBConcurrencyException ex)
+                {
+                    _logger.LogError(ex, $"Error: CreateImageAsync - Error creating image {0}", null);
+                    if (image != null)
+                    {
+                        await _blobStorageProvider.DeleteFileAsync(image.FileName);
+                        await _imageService.DeleteImageAsync(image.Id);
+                    }
+                    throw new DBConcurrencyException("Error: User request to create an image was not successful");
+                }
+            }
+            if (group is not null)
+            {
+                var groupValidator = new GroupValidator();
+                var groupValidationResult = await groupValidator.ValidateAsync(group, cancellationToken);
+                if (groupValidationResult.Errors.Count > 0)
+                    throw new ValidationException(groupValidationResult);
+                try
+                {
+                    await _groupCommand.CreateGroupAsync(userId, group, cancellationToken);
+                }
+                catch (DBConcurrencyException ex)
+                {
+                    _logger.LogError(ex, $"Error: CreateGroupAsync - Error creating group {0}", null);
+                    throw new DBConcurrencyException("Error: User request to create a group was not successful");
+                }
+            }
         }
 
         private async Task UpdateGroupAsync(Guid userId, string slug, GroupDto groupDto, CancellationToken cancellationToken)
@@ -119,7 +172,7 @@ namespace FutureNHS.Api.Services
                 if (image is not null)
                 {
                     var imageId = await _imageService.CreateImageAsync(image);
-                    group = group with {ImageId = imageId};
+                    group = group with { ImageId = imageId };
                 }
             }
             catch (DBConcurrencyException ex)
@@ -146,7 +199,6 @@ namespace FutureNHS.Api.Services
             }
 
             //TODO - Delete old image of everything succeeds and the image has been removed or replaced 
-
 
         }
 
@@ -275,7 +327,7 @@ namespace FutureNHS.Api.Services
             if (formAccumulator.HasValues)
             {
                 var formValues = formAccumulator.GetResults();
-                
+
                 // Get values from multipart form
                 var nameFound = formValues.TryGetValue("name", out var name);
                 if (nameFound is false)
@@ -290,10 +342,12 @@ namespace FutureNHS.Api.Services
                 var themeFound = formValues.TryGetValue("themeid", out var theme);
                 if (themeFound is false)
                 {
-                    throw new ArgumentNullException($"theme was not provided");
+                    throw new ArgumentNullException($"Theme was not provided");
                 }
-                
+
                 formValues.TryGetValue("imageid", out var image);
+                formValues.TryGetValue("groupOwnerId", out var groupOwner);
+                formValues.TryGetValue("groupAdminId", out var groupAdmin);
 
                 if (Guid.TryParse(theme, out var themeId) is false || themeId == new Guid())
                 {
@@ -309,6 +363,31 @@ namespace FutureNHS.Api.Services
                     }
                 }
 
+                var groupOwnerId = Guid.TryParse(groupOwner, out var groupOwnerGuid) ? (Guid?)groupOwnerGuid : null;
+                if (groupOwnerId.HasValue)
+                {
+                    if (groupOwnerId == new Guid())
+                    {
+                        throw new ArgumentOutOfRangeException($"Incorrect Id provided");
+                    }
+                }
+
+                var groupAdminGuids = new List<Guid?>();
+                foreach (var user in groupAdmin)
+                {
+                    var groupUserId = Guid.TryParse(user, out var groupUserGuid) ? (Guid?)groupUserGuid : null;
+
+                    if (groupUserId.HasValue)
+                    {
+                        if (groupUserId == new Guid())
+                        {
+                            throw new ArgumentOutOfRangeException($"Incorrect Id provided");
+                        }
+
+                        groupAdminGuids.Add(groupUserId);
+                    }
+                }
+
                 groupDto = new GroupDto
                 {
                     Slug = slug,
@@ -316,15 +395,17 @@ namespace FutureNHS.Api.Services
                     StrapLine = _htmlSanitizer.Sanitize(strapLine),
                     ThemeId = themeId,
                     ImageId = imageId,
+                    GroupOwnerId = groupOwnerId,
+                    GroupAdminUsers = groupAdminGuids,
                     ModifiedBy = userId,
                     ModifiedAtUtc = now,
+                    CreatedAtUtc = now,
                     RowVersion = rowVersion
                 };
-               
             }
+
             return (groupDto, imageDto);
         }
-
 
         private static Encoding? GetEncoding(MultipartSection section)
         {
@@ -337,6 +418,5 @@ namespace FutureNHS.Api.Services
             }
             return mediaType.Encoding;
         }
-
     }
 }

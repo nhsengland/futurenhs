@@ -42,7 +42,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
 				FROM [Group] g
                 JOIN GroupUser groupUser ON groupUser.Group_Id = g.Id
-                LEFT JOIN Image image ON image.Id = g.ImageId 
+                LEFT JOIN Image image ON image.Id = g.ImageId
                 WHERE g.IsDeleted = 0 AND groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1
                 ORDER BY g.Name
                 OFFSET @Offset ROWS
@@ -95,7 +95,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
 				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id) AS DiscussionCount,
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
-				FROM [Group] g    
+				FROM [Group] g                
                 LEFT JOIN Image image ON image.Id = g.ImageId  
                 WHERE g.IsDeleted = 0
 				AND NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)
@@ -138,7 +138,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS StrapLine, g.PublicGroup AS IsPublic,( SELECT      CASE 
+                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS StrapLine, g.PublicGroup AS IsPublic, groupUser.MembershipUser_Id AS OwnerId, membershipUser.FirstName AS OwnerFirstName, membershipUser.Surname AS OwnerSurname,( SELECT CASE 
                                                                                     WHEN        groupUser.MembershipUser_Id = @UserId
                                                                                     AND         groupUser.Approved = 1
                                                                                     AND         groupUser.Rejected = 0
@@ -152,6 +152,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 				FROM [Group] g
                 LEFT JOIN Image image ON image.Id = g.ImageId  
                 LEFT JOIN GroupUser groupUser ON GroupUser.Group_Id = g.Id  
+                LEFT JOIN MembershipUser membershipUser ON membershipUser.Id = g.GroupOwner
                 WHERE g.Slug = @Slug AND g.IsDeleted = 0";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
@@ -187,21 +188,23 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             }
 
             const string query =
-                @$" SELECT
+                @$"SELECT
                                 [{nameof(GroupMember.Id)}]                   = member.Id,
                                 [{nameof(GroupMember.Slug)}]                 = member.Slug, 
                                 [{nameof(GroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
                                 [{nameof(GroupMember.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMember.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMember.Role)}]                 = memberRoles.RoleName
+                                [{nameof(GroupMember.Role)}]                 = groupUserRoles.RoleName
 
                     FROM        GroupUser groupUser
                     JOIN        [Group] groups 
                     ON          groups.Id = groupUser.Group_Id
                     JOIN        MembershipUser member 
                     ON          member.Id = groupUser.MembershipUser_Id
-                    JOIN        MembershipRole memberRoles 
-                    ON          memberRoles.Id = groupUser.MembershipRole_Id 
+					JOIN        GroupUsersInRoles groupUsersInRoles
+                    ON          groupUsersInRoles.GroupUser_Id = groupUser.Id 
+                    JOIN        GroupUserRoles groupUserRoles 
+                    ON          groupUserRoles.Id = groupUsersInRoles.GroupRole_Id 
                     WHERE       groups.Slug = @Slug
                     AND         groupUser.Approved = 1
                     ORDER BY    RoleName asc, Name asc
@@ -304,15 +307,17 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
                                 [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName
+                                [{nameof(GroupMemberDetails.Role)}]                 = groupUserRoles.RoleName
 
                     FROM        GroupUser groupUser
                     JOIN        [Group] groups 
                     ON          groups.Id = groupUser.Group_Id
                     JOIN        MembershipUser member 
                     ON          member.Id = groupUser.MembershipUser_Id
-                    JOIN        MembershipRole memberRoles 
-                    ON          memberRoles.Id = groupUser.MembershipRole_Id 
+                    JOIN        GroupUsersInRoles groupUsersInRoles
+                    ON          groupUsersInRoles.GroupUser_Id = groupUser.Id 
+                    JOIN        GroupUserRoles groupUserRoles 
+                    ON          groupUserRoles.Id = groupUsersInRoles.GroupRole_Id
                     WHERE       groups.Slug = @Slug
                     AND         member.Id = @UserId
                     AND         groupUser.Approved = 1;";

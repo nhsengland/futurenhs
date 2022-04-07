@@ -18,6 +18,10 @@ namespace FutureNHS.Api.Services.Validation
             RuleFor(model => model.StrapLine)
                 .MaximumLength(1000)
                 .WithMessage("Enter 1000 or fewer characters");
+
+            RuleFor(model => model.GroupOwnerId)
+                .NotNull()
+                .WithMessage("No Group Owner provided");
         }
     }
 }
