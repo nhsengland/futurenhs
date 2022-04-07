@@ -77,7 +77,7 @@ describe('groups page', () => {
         const serverSideProps = await getServerSideProps({ req: { cookies: "fake-cookie-101" } } as any);
 
         expect(serverSideProps).toHaveProperty('props.contentText');
-        expect(serverSideProps["notFound"]).toBe(false);
+        expect(serverSideProps["notFound"]).toBeFalsy();
 
     });
 

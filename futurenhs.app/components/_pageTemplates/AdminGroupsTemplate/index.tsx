@@ -12,6 +12,7 @@ import { DynamicListContainer } from '@components/DynamicListContainer';
 import { DataGrid } from '@components/DataGrid';
 
 import { Props } from './interfaces';
+import { getGroups } from '@services/getGroups';
 
 /**
  * Admin groups dashboard template
@@ -20,7 +21,8 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
     contentText,
     actions,
     pagination,
-    groupsList
+    groupsList,
+    user
 }) => {
 
     const router = useRouter();
@@ -37,19 +39,19 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
     const columnList = [
         {
             children: 'Name',
-            className: ''
+            className: '',
         },
         {
             children: 'Members',
-            className: ''
+            className: 'tablet:u-text-center',
         },
         {
-            children: 'Discussions',
-            className: ''
+            children: 'Owner',
+            className: '',
         },
         {
             children: `Actions`,
-            className: 'tablet:u-text-right'
+            className: 'tablet:u-text-right',
         }
     ];
 
@@ -66,13 +68,13 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
             name: classNames({
                 ['u-justify-between u-w-full tablet:u-w-1/4']: true
             }),
-            role: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/4']: true
+            members: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/4 tablet:u-text-center']: true
             }),
-            joinDate: classNames({
+            owner: classNames({
                 ['u-justify-between u-w-full tablet:u-w-1/6']: true,
             }),
-            lastLoginDate: classNames({
+            actions: classNames({
                 ['u-justify-between u-w-full tablet:u-w-1/6']: true,
             })
         };
@@ -81,13 +83,13 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
             name: classNames({
                 ['u-text-bold']: true
             }),
-            role: classNames({
+            members: classNames({
                 ['u-text-bold']: true
             }),
-            joinDate: classNames({
+            owner: classNames({
                 ['u-text-bold']: true
             }),
-            lastLoginDate: classNames({
+            actions: classNames({
                 ['u-text-bold']: true
             })
         };
@@ -99,19 +101,21 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
                 headerClassName: generatedHeaderCellClasses.name
             },
             {
-                children: totalDiscussionCount,
-                className: generatedCellClasses.role,
-                headerClassName: generatedHeaderCellClasses.role
+                children: <Link href={`/groups/${groupId}/members`}><a aria-label={`Go to ${mainHeading} members list`}>{totalMemberCount}</a></Link>,
+                className: generatedCellClasses.members,
+                headerClassName: generatedHeaderCellClasses.members,
+                shouldRenderCellHeader: true
             },
             {
-                children: totalMemberCount,
-                className: generatedCellClasses.joinDate,
-                headerClassName: generatedHeaderCellClasses.joinDate
+                children: '',
+                className: generatedCellClasses.owner,
+                headerClassName: generatedHeaderCellClasses.owner,
+                shouldRenderCellHeader: true
             },
             {
-                children: <><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</>,
+                children: <Link href={`/groups/${groupId}/update`}><a aria-label={`Edit group ${mainHeading}`}><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit group</a></Link>,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
-                headerClassName: 'u-hidden'
+                headerClassName: 'u-hidden',
             }
         ];
 
@@ -127,10 +131,16 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize
     }) => {
 
-        // TODO
+        const { data: additionalGroups, pagination } = await getGroups({
+            user: user,
+            pagination: {
+                pageNumber: requestedPageNumber,
+                pageSize: requestedPageSize
+            }
+        });
 
-        //setUsersList([...dynamicUsersList, ...additionalUsers]);
-        //setPagination(pagination);
+        setGroupsList([...dynamicGroupsList, ...additionalGroups]);
+        setPagination(pagination);
 
     };
 
@@ -142,19 +152,19 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
                     <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                     {hasUsers
 
-                        ?   <DynamicListContainer
-                                containerElementType="ul"
-                                shouldEnableLoadMore={shouldEnableLoadMore}
-                                className="u-list-none u-p-0">
-                                <DataGrid
-                                    columnList={columnList}
-                                    rowList={rowList}
-                                    text={{
-                                        caption: 'Site users'
-                                    }} />
-                            </DynamicListContainer>
+                        ? <DynamicListContainer
+                            containerElementType="ul"
+                            shouldEnableLoadMore={shouldEnableLoadMore}
+                            className="u-list-none u-p-0">
+                            <DataGrid
+                                columnList={columnList}
+                                rowList={rowList}
+                                text={{
+                                    caption: 'Site users'
+                                }} />
+                        </DynamicListContainer>
 
-                        :   <p>{noGroups}</p>
+                        : <p>{noGroups}</p>
 
                     }
                     <PaginationWithStatus
