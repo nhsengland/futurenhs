@@ -28,6 +28,17 @@ class formPage extends basePage{
     }
     
     /**
+     * 
+     * @param {*} cardType 
+     * @param {*} cardLink 
+     */
+    cardLinkClick(cardLink, cardType){        
+        var cardFound = this.cardTypeSelector(cardType, cardLink);
+        var link = cardFound.$(`//a[contains(normalize-space(.), "${cardLink}")]`);
+        helpers.click(link);
+    }
+
+    /**
      * Step used to validate the content of a FNHS Forum card - Checks all values expected exist on specific card.
      * @param {string} cardText - The main body of the card, and used to locate the exact card expected
      * @param {string} cardType - Defines which xPath is required to dependant on Discussion/Content/Reply card
@@ -95,10 +106,12 @@ class formPage extends basePage{
      */
     cardLikeClick(clickAction, cardText, cardType) {
         var cardFound = this.cardTypeSelector(cardType, cardText);
+        cardFound.waitForExist();
         var likeButton = cardFound.$(`./footer/button`);
         if(clickAction === 'like') {
                 expect(likeButton.getAttribute('aria-label')).toBe('like'); 
                 helpers.click(likeButton);
+                browser.pause(1500);
                 browser.waitUntil(
                     () => (likeButton.getAttribute('aria-label')) === 'Remove like',
                     {
@@ -109,6 +122,7 @@ class formPage extends basePage{
         } else {
             expect(likeButton.getAttribute('aria-label')).toBe('Remove like'); 
             helpers.click(likeButton);
+            browser.pause(1500);
             browser.waitUntil(
                 () => (likeButton.getAttribute('aria-label')) === 'like',
                 {
@@ -116,7 +130,7 @@ class formPage extends basePage{
                     timeoutMsg: 'Expected the like to have been removed'
                 }
             );
-        }
+        }        
     }
 
     /**

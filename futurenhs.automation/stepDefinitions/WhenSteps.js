@@ -60,6 +60,10 @@ const search = require('../pageObjects/search');
     forumPage.cardLikeClick(action, cardText, cardType);
   });
 
+  When(/^I select the '([^"]*)' the (search result|group|discussion|comment|reply) card$/, function (cardText, cardType) {
+    forumPage.cardLinkClick(cardText, cardType);
+  });
+  
   When(/^I click reply on the '([^"]*)' (comment|reply) card$/, function(cardText, cardType) {
     forumPage.replyToPostClick(cardText, cardType);
   });
