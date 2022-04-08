@@ -5,14 +5,14 @@ Background:
     Given I have navigated to '/'
     And I have logged in as a 'user' and accept the cookies
     Then the 'My Groups' header is displayed 
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed 
     When I click the 'Forum' tab
     Then the 'All Discussions' header is displayed
 
 @Core
 Scenario Outline: FNHS48 - Like/Unlike a comment
-    When I click the 'General Discussion Validation' link
+    When I select the 'General Discussion Validation' discussion card
     Then the 'General Discussion Validation' header is displayed 
     And the 'Comment for Like test' comment card is displayed
     | AA                 |
@@ -32,7 +32,7 @@ Examples:
 
 @Core
 Scenario: FNHS53 - Post a comment in a discussion
-    When I click the 'forumSubmission Discussion' link
+    When I select the 'forumSubmission Discussion' discussion card
     Then the 'forumSubmission Discussion' header is displayed
     When I enter 'Comment posted by the automation' into the 'Your comment' text editor
     Then the 'Comment posted by the automation' comment card is displayed
@@ -48,7 +48,7 @@ Scenario: FNHS12 - Validate Discussion card comment counter
     | Created by Auto Admin [PRETTYDATE]      |
     | Last comment by Auto Admin [PRETTYDATE] |
     | Comments: 2                             |
-    When I click the 'forumSubmission Discussion' link
+    When I select the 'forumSubmission Discussion' discussion card
     Then the 'forumSubmission Discussion' header is displayed
     When I enter 'Comment posted by the automation' into the 'Your comment' text editor
     Then the 'Comment posted by the automation' comment card is displayed
@@ -67,7 +67,7 @@ Scenario: FNHS12 - Validate Discussion card comment counter
 
 # ERROR VALIDATION 100000 character limit
 Scenario: FNHS54 - Post a comment error validation
-    When I click the 'forumSubmission Discussion' link
+    When I select the 'forumSubmission Discussion' discussion card
     Then the 'forumSubmission Discussion' header is displayed 
     And I click the 'Add Comment' button
     Then the 'Enter your comment' error message is displayed
@@ -75,7 +75,7 @@ Scenario: FNHS54 - Post a comment error validation
 
 @Core
 Scenario: FNHS55 - Reply to existing comment
-    When I click the 'forumSubmission Discussion' link
+    When I select the 'forumSubmission Discussion' discussion card
     Then the 'forumSubmission Discussion' header is displayed 
     Then the 'This is a comment to reply to' comment card is displayed
     | AA         |
@@ -93,7 +93,7 @@ Scenario: FNHS55 - Reply to existing comment
     | Reply                                          |
 
 Scenario: FNHS56 - Reply to a reply
-    When I click the 'forumSubmission Discussion' link
+    When I select the 'forumSubmission Discussion' discussion card
     Then the 'forumSubmission Discussion' header is displayed 
     Then the 'This is a reply' reply card is displayed
     | AU        |

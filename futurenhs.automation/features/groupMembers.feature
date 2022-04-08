@@ -8,7 +8,7 @@ Background:
 
 @Pending
 Scenario: FNHS26 - Accept group member request
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     Then the 'Pending members' table exists
@@ -18,7 +18,7 @@ Scenario: FNHS26 - Accept group member request
 
 @Pending
 Scenario: FNHS27 - Reject group member request
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     Then the 'Pending members' table exists
@@ -27,7 +27,7 @@ Scenario: FNHS27 - Reject group member request
 
 @Pending
 Scenario: FNHS28 - Add Registered User
-    When I click the 'Automation Public Group' link
+    When I select the 'Automation Public Group' group card
     Then the 'Automation Public Group' header is displayed
     When I select 'Add new member' from the group pages accordion
     Then the 'Invite member' header is displayed
@@ -37,7 +37,7 @@ Scenario: FNHS28 - Add Registered User
 
 @Pending
 Scenario Outline: FNHS29 - Add Registered User Error Validation
-    When I click the 'Automation Public Group' link
+    When I select the 'Automation Public Group' group card
     Then the 'Automation Public Group' header is displayed
     When I select 'Add new member' from the group pages accordion
     Then the 'Invite member' header is displayed
@@ -53,7 +53,7 @@ Examples:
 
 
 Scenario: FNHS30 - View group member profile page
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     Then the 'Group members' table exists
@@ -70,7 +70,7 @@ Scenario: FNHS30 - View group member profile page
 
 
 Scenario Outline: FNHS93 - Change members role
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     Then the 'Group members' table exists
@@ -87,7 +87,7 @@ Examples:
 
 @Pending
 Scenario: FNHS94 - Remove member from a group
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     Then the 'Group members' table exists

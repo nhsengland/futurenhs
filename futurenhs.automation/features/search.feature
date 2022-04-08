@@ -1,8 +1,6 @@
 Feature: Search
     Feature covering search functionality of FNHS
 
-# Lots of questions unanswered, unable to script journeys without further clarification on process. 
-
 Background:     
     Given I have navigated to '/'
     And I have logged in as a 'user' and accept the cookies
@@ -43,8 +41,7 @@ Scenario: FNHS99 - Search for a Group by Group Title
     And the 'Automation Admin Group' search result card is displayed
     | Group                                                                            |
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
-    # When I click the 'Automation Admin Group' link
-    When I select the 'Automation Admin Group' the search result card
+    When I select the 'Automation Admin Group' search result card
     Then the 'Automation Admin Group' header is displayed
 
 
@@ -60,8 +57,7 @@ Scenario: FNHS101 - Search for a Group Where Not a Member
     And the 'Digital Primary Care' search result card is displayed
     | Group                                                                                         |
     | Support colleagues to share experiences, learning and resources on the digital transformation |
-    # When I click the 'Digital Primary Care' link
-    When I select the 'Digital Primary Care' the search result card
+    When I select the 'Digital Primary Care' search result card
     Then the 'Digital Primary Care' header is displayed
 
 Scenario: FNHS102 - Search for a Discussion by the Title
@@ -70,8 +66,7 @@ Scenario: FNHS102 - Search for a Discussion by the Title
     And the 'General Discussion Validation' search result card is displayed
     | Discussion on Automation Admin Group group forum | 
     | Discussion for general feature validation        |
-    # When I click the 'General Discussion Validation' link
-    When I select the 'General Discussion Validation' the search result card
+    When I select the 'General Discussion Validation' search result card
     Then the 'General Discussion Validation' header is displayed
 
 
@@ -81,8 +76,7 @@ Scenario: FNHS103 - Search for a Comment by Comment Text
     And the 'Comment on discussion: General Discussion Validation' search result card is displayed
     | Discussion on Automation Admin Group group forum |
     | Comment for Like test                            |
-    # When I click the 'Comment on discussion: General Discussion Validation' link
-    When I select the 'Comment on discussion: General Discussion Validation' the search result card
+    When I select the 'Comment on discussion: General Discussion Validation' search result card
     Then the 'Comment for Like test' comment card is displayed
     | AA         |
     | auto Admin |
@@ -96,8 +90,7 @@ Scenario: FNHS104 - Search for a File by File Name
     And the 'DocTest' search result card is displayed
     | File on Automation Public Group group |
     | Test doc                              |
-    # When I click the 'DocTest' link
-    When I select the 'DocTest' the search result card
+    When I select the 'DocTest' search result card
     Then the 'docTest' header is displayed
 
 
@@ -110,8 +103,7 @@ Scenario: FNHS105 - Search for a File by File Description
     And the 'Test doc' search result card is displayed
     | File on Automation Visual Regression Group group |
     | Test doc                                         |
-    # When I click the 'Test doc' link
-    When I select the 'Test doc' the search result card
+    When I select the 'Test doc' search result card
     Then the 'test doc' header is displayed
 
 
@@ -120,8 +112,7 @@ Scenario: FNHS106 - Search for a Folder by Folder Name
     And there are '1' search results displayed
     And the 'Automation Test Folder' search result card is displayed
     | Folder on Automation Admin Group group | 
-    # When I click the 'Automation Test Folder' link
-    When I select the 'Automation Test Folder' the search result card
+    When I select the 'Automation Test Folder' search result card
     Then the 'Automation Test Folder' header is displayed
     And the 'Group Files' table is displayed
     | Type | Name | Description | Modified | Actions |
@@ -136,8 +127,7 @@ Scenario: FNHS107 - Search for a File by Folder Description
     And the 'Empty Folder' search result card is displayed
     | Folder on Automation Admin Group group |
     | Empty Folder for testing               |
-    # When I click the 'Empty Folder' link
-    When I select the 'Empty Folder' the search result card
+    When I select the 'Empty Folder' search result card
     Then the 'Empty Folder' header is displayed
 
 
@@ -148,8 +138,7 @@ Scenario: FNHS108 - Search for a Group By the Strapline
     And the 'Automation Admin Group' search result card is displayed
     | Group                                                                            |
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
-    # When I click the 'Automation Admin Group' link
-    When I select the 'Automation Admin Group' the search result card
+    When I select the 'Automation Admin Group' search result card
     Then the 'Automation Admin Group' header is displayed
     And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
 

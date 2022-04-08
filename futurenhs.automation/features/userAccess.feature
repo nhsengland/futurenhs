@@ -44,7 +44,7 @@ Scenario: FNHS02 - Unauthenticated page redirect
 Scenario: FNHS03 - Invite User Form
     And I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I select 'Invite new user' from the actions accordion
     Then the 'Invite new member to join this group' header is displayed
@@ -57,7 +57,7 @@ Scenario: FNHS03 - Invite User Form
 Scenario Outline: FNHS04 - Invite User Error Validation
     Given I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I select 'Invite new user' from the actions accordion
     Then the 'Invite new member to join this group' header is displayed

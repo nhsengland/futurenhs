@@ -5,7 +5,7 @@ Background:
     Given I have navigated to '/'
     And I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Forum' tab
     Then the 'All Discussions' header is displayed
