@@ -16,9 +16,9 @@
 
                 @if (!ViewData.ModelState.IsValid)
                 {
-                    <p class="c-info-message c-info-message--error">
-                        @Html.LanguageString("LogOn.Error.UnableToLogIn.Text")
-                    </p>
+                <p class="c-info-message c-info-message--error">
+                    Unable to log in. Please check your details
+                </p>
                 }
 
 
@@ -27,7 +27,7 @@
                 </h1>
 
                 <p>
-                    @Html.LanguageString("LogOn.Introduction.Text")
+                    Collaborate, connect, share and learn
                 </p>
 
 
@@ -56,7 +56,7 @@
 
                 <p class="u-padded-bottom">
                     <a href="@Url.Action("ForgotPassword")">
-                        @Html.LanguageString("LogOn.ForgotPassword.Text")
+                        Forgot your password?
                     </a>
                 </p>
 
@@ -65,7 +65,7 @@
                 </h2>
 
                 <p class="u-padded-bottom">
-                    Don't have an account? <a href="@Html.LanguageString("LogOn.RegisterInterest.Link")">Register your interest</a>
+                    Don't have an account? <a href="mailto:support@futurenhs.zendesk.com?subject=Register Interest">Register your interest</a>
                 </p>
 
             </div>
