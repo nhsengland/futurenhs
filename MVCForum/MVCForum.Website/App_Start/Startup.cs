@@ -86,8 +86,7 @@ namespace MvcForum.Web
             var localizationService = unityContainer.Resolve<ILocalizationService>();
             var cacheService = unityContainer.Resolve<ICacheService>();
             ((IObjectContextAdapter)mvcForumContext).ObjectContext.Refresh(RefreshMode.StoreWins, mvcForumContext.LocaleStringResource);
-            UpdateLanguages(mvcForumContext, localizationService);
-        
+
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -125,43 +124,6 @@ namespace MvcForum.Web
             var userStore = new UserStore<IdentityUser>(context.Get<MvcForumContext>());
             var owinManager = new UserManager<IdentityUser>(userStore);
             return owinManager;
-        }
-        private void UpdateLanguages(IMvcForumContext context, ILocalizationService localizationService)
-        {
-            var report = new CsvReport();
-            try
-            {
-                // Now add the default language strings
-                var file = HostingEnvironment.MapPath(@"~/Installer/en-GB.csv");
-                var commaSeparator = new[] {','};
-
-                // Unpack the data
-                var allLines = new List<string>();
-                if (file != null)
-                {
-
-                    using (var streamReader = new StreamReader(file, Encoding.UTF8, true))
-                    {
-                        while (streamReader.Peek() >= 0)
-                        {
-                            allLines.Add(streamReader.ReadLine());
-                        }
-                    }
-                }
-
-                // Read the CSV file and generate a language
-                report = localizationService.FromCsv("en-GB", allLines);
-                context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                context.RollBack();
-                report.Errors.Add(new CsvErrorWarning
-                {
-                    ErrorWarningType = CsvErrorWarningType.GeneralError,
-                    Message = $"Unable to import language: {ex.Message}"
-                });
-            }
         }
     }
 }
