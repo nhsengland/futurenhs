@@ -27,12 +27,15 @@ export const postSiteUserInvite = async ({
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
 
     const { id } = user;
-    const email: FormDataEntryValue = body.get('Email');
+    const emailAddress: FormDataEntryValue = body.get('Email');
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/invite/${email}`;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/invite`;
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
-        headers: headers
+        headers: headers,
+        body: {
+            emailAddress: emailAddress
+        }
     }), defaultTimeOutMillis);
     
     const apiMeta: any = apiResponse.meta;
