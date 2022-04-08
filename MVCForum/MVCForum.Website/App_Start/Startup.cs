@@ -99,7 +99,7 @@ namespace MvcForum.Web
             // Find the plugin, pipeline and badge assemblies
             var assemblies = assemblyProvider.GetAssemblies(ForumConfiguration.Instance.PluginSearchLocations).ToList();
             ImplementationManager.SetAssemblies(assemblies);
-
+            // Lets see if PR triggers are working!
             var theme = "Default";
             var settings = mvcForumContext.Setting.FirstOrDefault();
             if (settings != null)
