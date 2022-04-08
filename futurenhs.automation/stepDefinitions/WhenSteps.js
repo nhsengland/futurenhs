@@ -60,7 +60,7 @@ const search = require('../pageObjects/search');
     forumPage.cardLikeClick(action, cardText, cardType);
   });
 
-  When(/^I select the '([^"]*)' the (search result|group|discussion|comment|reply) card$/, function (cardText, cardType) {
+  When(/^I select the '([^"]*)' (search result|group|discussion|comment|reply) card$/, function (cardText, cardType) {
     forumPage.cardLinkClick(cardText, cardType);
   });
   

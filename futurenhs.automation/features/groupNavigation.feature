@@ -31,7 +31,7 @@ Scenario: FNHS10 - Discover new groups validation
 
 @Core
 Scenario: FNHS14 - Group tabs navigation
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I open the 'Actions' accordion
     Then the 'Leave group' link is displayed
@@ -48,14 +48,14 @@ Scenario: FNHS14 - Group tabs navigation
 
 # WILL NEED MORE WORK WHEN PAGE BUILDER IS DEVELOPED
 Scenario: FNHS15 -  Group home validation
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
     # And the PAGE BUILDER ADMIN TEST IS NOT DISPLAYED
 
 
 Scenario: FNHS16 - Group forum validation
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Forum' tab
     Then the 'All Discussions' header is displayed
@@ -69,14 +69,14 @@ Scenario: FNHS16 - Group forum validation
 
 
 Scenario: FNHS17 - Group Members validation
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     And the 'Group Members' table exists
 
 @Pending
 Scenario: FNHS18 - Group about us validation
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'About Us' tab
     Then the 'About Us' header is displayed
@@ -86,7 +86,7 @@ Scenario: FNHS18 - Group about us validation
 
 
 Scenario: FNHS21 - Group Members, Table Validation
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     And the 'Group Members' table is displayed
@@ -98,7 +98,7 @@ Scenario: FNHS21 - Group Members, Table Validation
 @Pending
 ## PENDING MEMBERS NOT A FEATURE IN PRIVATEBETA
 Scenario: FNHS22 - Group Members, Pending Table Does Not Exist
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     And the 'Pending members' table is not displayed

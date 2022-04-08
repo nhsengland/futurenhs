@@ -31,7 +31,7 @@ Scenario: FNHS:M02 - All Groups Validation
 Scenario: FNHS:M03 - Group Members Table Validation
     When I click the 'Groups' link
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I select 'Members' from the group menu accordion
     Then the 'Group Members' mobile table is displayed
