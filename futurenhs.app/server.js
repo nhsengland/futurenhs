@@ -56,7 +56,7 @@ let server = undefined;
  */
 app.use('/api/gateway/*', proxy(() => process.env.NEXT_PUBLIC_API_BASE_URL.replace('/api', ''), {
     memoizeHost: false,
-    limit: '10mb',
+    limit: '250mb',
     proxyReqPathResolver: (req) => '/api' + req.originalUrl.split(`gateway`)[1],
     proxyReqOptDecorator: (proxyReqOpts) => {
 
