@@ -2,6 +2,7 @@ using System.Net.Mail;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
+using FutureNHS.Api.Models.UserInvite;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,11 +56,13 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("users/{userId:guid}/admin/groups/{groupId:guid}/invite/{email}")]
-        [Route("users/{userId:guid}/admin/invite/{email}")]
-        public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid userId, Guid? groupId, string email, CancellationToken cancellationToken)
+        [Route("users/{userId:guid}/admin/invite")]
+        public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid userId, UserInvite userInvite, CancellationToken cancellationToken)
         {
-            await _userService.InviteMemberToGroupAndPlatformAsync(userId, groupId, email, cancellationToken);
+            if(string.IsNullOrEmpty(userInvite.EmailAddress))
+                throw new ArgumentNullException(nameof(userInvite.EmailAddress));
+
+            await _userService.InviteMemberToGroupAndPlatformAsync(userId, userInvite.GroupId, userInvite.EmailAddress, cancellationToken);
 
             return Ok();
         }
