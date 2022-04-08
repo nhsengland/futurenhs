@@ -11,7 +11,7 @@ Scenario: FNHS:V01 - High Level Page Regression
     And I have logged in as an 'visreguser' and accept the cookies
     Then the 'My Groups' header is displayed
     And the 'myGroups' page image is taken and compared to the baseline image
-    When I click the 'Automation Visual Regression Group' link
+    When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
     And the 'groupHome' page image is taken and compared to the baseline image
     When I click the 'Forum' tab
@@ -48,7 +48,7 @@ Scenario: FNHS:V03 - Group Forum validation
     Then the 'Log In' header is displayed
     And I have logged in as an 'visreguser'and accept the cookies
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Visual Regression Group' link
+    When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
     When I click the 'Forum' tab
     Then the 'All Discussions' header is displayed
@@ -62,7 +62,7 @@ Scenario: FNHS:V04 - Group Files validation
     Then the 'Log In' header is displayed
     And I have logged in as an 'visreguser'and accept the cookies
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Visual Regression Group' link
+    When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
     When I click the 'Files' tab
     Then the 'Files' header is displayed
@@ -79,7 +79,7 @@ Scenario: FNHS:V05 - Group Member Profile validation
     Then the 'Log In' header is displayed
     And I have logged in as an 'visreguser'and accept the cookies
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Visual Regression Group' link
+    When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
     When I click the 'Members' tab
     Then the 'Group Members' table exists
@@ -93,7 +93,7 @@ Scenario: FNHS:V06 - Group Actions form pages validation
     Then the 'Log In' header is displayed
     And I have logged in as an 'visreguser'and accept the cookies
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Visual Regression Group' link
+    When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
     When I select 'Add new member' from the group pages accordion
     Then the 'Invite member' header is displayed
@@ -118,7 +118,7 @@ Scenario: FNHS:V07 - Mobile View validation
     When I click the 'Groups' link
     Then the 'My Groups' header is displayed
     And the 'mobile-myGroups' page image is taken and compared to the baseline image
-    When I click the 'Automation Visual Regression Group' link
+    When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
     And the 'mobile-groupHome' page image is taken and compared to the baseline image
     When I select 'Members' from the group menu accordion

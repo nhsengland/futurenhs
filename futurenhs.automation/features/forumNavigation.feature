@@ -6,7 +6,7 @@ Background:
     Given I have navigated to '/'
     And I have logged in as a 'user' and accept the cookies
     Then the 'My Groups' header is displayed
-    When I click the 'Automation Admin Group' link
+    When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Forum' tab
     Then the 'All Discussions' header is displayed
@@ -23,7 +23,7 @@ Scenario: FNHS49 - Load more discussions validation
 
 
 Scenario: FNHS50 - Navigate to next page of a discussion
-    When I click the 'General Discussion Validation' link
+    When I select the 'General Discussion Validation' discussion card
     Then the 'General Discussion Validation' header is displayed 
     And the 'First Comment' comment card is displayed
     | AA         |
@@ -42,7 +42,7 @@ Scenario: FNHS50 - Navigate to next page of a discussion
 
 @Core
 Scenario: FNHS51 - Show more Replies
-    When I click the 'General Discussion Validation' link
+    When I select the 'General Discussion Validation' discussion card
     Then the 'General Discussion Validation' header is displayed 
     And the 'First Comment' comment card is displayed
     | AA                |
@@ -78,7 +78,7 @@ Scenario: FNHS51 - Show more Replies
 
 @Core
 Scenario: FNHS52 - Forum Navigate Back to Discussion Page
-    When I click the 'General Discussion Validation' link
+    When I select the 'General Discussion Validation' discussion card
     Then the 'General Discussion Validation' header is displayed
     When I click the 'Back to discussions' link
     Then the 'All Discussions' header is displayed

@@ -5,7 +5,7 @@ Background:
 	Given I have navigated to '/'
 	And I have logged in as an 'group admin' and accept the cookies
 	Then the 'My Groups' header is displayed
-	When I click the 'Automation Admin Group' link
+	When I select the 'Automation Admin Group' group card
 	Then the 'Automation Admin Group' header is displayed
 	When I click the 'Files' tab
 	Then the 'Files' header is displayed
@@ -165,16 +165,22 @@ Examples:
 Scenario: FNHS91 - Files Page Breadcrumb Validation
 	When I click the 'Automation Test Folder' link
 	Then the 'Automation Test Folder' header is displayed
+	And the breadcrumb navigation displays 'Files'
 	When I click the 'Folder 1' link
 	Then the 'Folder 1' header is displayed
+	And the breadcrumb navigation displays 'Files > Automation Test Folder'
 	When I click the 'Folder 2' link
 	Then the 'Folder 2' header is displayed
+	And the breadcrumb navigation displays 'Files > Automation Test Folder > Folder 1'
 	When I click the 'Folder 3' link
 	Then the 'Folder 3' header is displayed
+	And the breadcrumb navigation displays 'Files > Automation Test Folder > Folder 1 > Folder 2'
 	When I click the 'Folder 4' link
 	Then the 'Folder 4' header is displayed
+	And the breadcrumb navigation displays 'Files > Automation Test Folder > Folder 1 > Folder 2 > Folder 3'
 	When I click the 'Folder 5' link
 	Then the 'Folder 5' header is displayed
 	And the breadcrumb navigation displays 'Files > ... > Folder 2 > Folder 3 > Folder 4'
-	When I click the '...' link
-	Then the 'Folder 1' header is displayed
+	When I click the 'Folder 2' link
+	Then the 'Folder 2' header is displayed
+	And the breadcrumb navigation displays 'Files > Automation Test Folder > Folder 1'

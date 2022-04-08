@@ -19,9 +19,10 @@ Scenario Outline: FNHS57 - Admin page permission
     When I open the 'User Menu' accordion
     Then the 'Admin' link <visibility> displayed
 Examples:
-    | user  | visibility |
-    | admin | is         |
-    | user  | is not     |
+    | user        | visibility |
+    | admin       | is         |
+    | group admin | is not     | 
+    | user        | is not     |
 
 @Pending
 #REFACTOR FOR PRIVATE BETA

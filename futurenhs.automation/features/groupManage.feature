@@ -8,7 +8,7 @@ Background:
  
 
 Scenario: FNHS31 - Edit Group Information Page Validation
-    When I click the 'Automation Editable Group' link
+    When I select the 'Automation Editable Group' group card
     Then the 'Automation Editable Group' header is displayed
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
@@ -21,7 +21,7 @@ Scenario: FNHS31 - Edit Group Information Page Validation
 @Pending
 # PRIVATE GROUPS DON'T EXIST IN PRIVATEBETA/VNEXT
 Scenario Outline: FNHS32 - Make a Group Public/Private
-    When I click the 'Automation Editable Group' link
+    When I select the 'Automation Editable Group' group card
     Then the 'Automation Editable Group' header is displayed
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
@@ -40,7 +40,7 @@ Examples:
 
 
 Scenario: FNHS33 - Edit Group Information
-    When I click the 'Automation Editable Group' link
+    When I select the 'Automation Editable Group' group card
     Then the 'Automation Editable Group' header is displayed
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
