@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getGenericFormError } from '@helpers/util/form';
-import { selectFormDefaultFields, selectFormErrors, selectFormInitialValues } from '@selectors/forms';
+import { selectForm } from '@selectors/forms';
 import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { postSiteUserInvite } from '@services/postSiteUserInvite';
-import { FormErrors } from '@appTypes/form';
+import { FormConfig, FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -26,10 +26,8 @@ export const AdminUsersInviteTemplate: (props: Props) => JSX.Element = ({
     }
 }) => {
 
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.INVITE_USER));
-
-    const fields = selectFormDefaultFields(forms, formTypes.INVITE_USER);
-    const initialValues = selectFormInitialValues(forms, formTypes.INVITE_USER);
+    const formConfig: FormConfig = selectForm(forms, formTypes.INVITE_USER);
+    const [errors, setErrors] = useState(formConfig.errors);
 
     const { secondaryHeading } = contentText ?? {};
 
@@ -67,9 +65,7 @@ export const AdminUsersInviteTemplate: (props: Props) => JSX.Element = ({
                     <LayoutColumn tablet={8}>
                         <FormWithErrorSummary
                             csrfToken={csrfToken}
-                            formId={formTypes.CREATE_DISCUSSION}
-                            fields={fields}
-                            initialValues={initialValues}
+                            formConfig={formConfig}
                             errors={errors}
                             text={{
                                 errorSummary: {

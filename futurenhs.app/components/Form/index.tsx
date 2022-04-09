@@ -19,11 +19,8 @@ export const Form: (props: Props) => JSX.Element = ({
     action,
     method = requestMethods.POST,
     csrfToken,
-    formId,
+    formConfig,
     instanceId,
-    initialValues = {},
-    initialErrors = {},
-    fields: fieldsTemplate,
     changeAction,
     cancelAction,
     submitAction,
@@ -45,6 +42,11 @@ export const Form: (props: Props) => JSX.Element = ({
 
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+
+    const formId: string = formConfig?.id;
+    const fieldsTemplate: Array<FormField> = formConfig?.steps[0]?.fields;
+    const initialErrors: FormErrors = formConfig?.errors ?? {};
+    const initialValues: Record<string, any> = formConfig?.initialValues ?? {};
 
     const { submitButton, cancelButton } = text ?? {};
 
@@ -70,7 +72,7 @@ export const Form: (props: Props) => JSX.Element = ({
         templatedFields.forEach(field => {
 
             field.name = instanceId ? field.name + '-' + instanceId : field.name;
-            field.initialError = initialErrors[field.name] || null;
+            field.initialError = initialErrors?.[field.name] || null;
 
         });
 

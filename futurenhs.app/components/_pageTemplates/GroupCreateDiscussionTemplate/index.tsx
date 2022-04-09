@@ -3,13 +3,13 @@ import { useRouter } from 'next/router';
 
 import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getGenericFormError } from '@helpers/util/form';
-import { selectFormDefaultFields, selectFormErrors, selectFormInitialValues } from '@selectors/forms';
+import { selectForm } from '@selectors/forms';
 import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { postGroupDiscussion } from '@services/postGroupDiscussion';
-import { FormErrors } from '@appTypes/form';
+import { FormErrors, FormConfig } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -29,10 +29,9 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_DISCUSSION));
 
-    const fields = selectFormDefaultFields(forms, formTypes.CREATE_DISCUSSION);
-    const initialValues = selectFormInitialValues(forms, formTypes.CREATE_DISCUSSION);
+    const formConfig: FormConfig = selectForm(forms, formTypes.CREATE_DISCUSSION);
+    const [errors, setErrors] = useState(formConfig?.errors);
 
     const { secondaryHeading } = contentText ?? {};
 
@@ -72,9 +71,7 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                     <LayoutColumn tablet={8}>
                         <FormWithErrorSummary
                             csrfToken={csrfToken}
-                            formId={formTypes.CREATE_DISCUSSION}
-                            fields={fields}
-                            initialValues={initialValues}
+                            formConfig={formConfig}
                             errors={errors}
                             text={{
                                 errorSummary: {

@@ -12,10 +12,8 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     action,
     method = requestMethods.POST,
     csrfToken,
-    formId,
+    formConfig,
     instanceId,
-    initialValues = {},
-    fields,
     errors,
     submitAction,
     cancelAction,
@@ -81,12 +79,9 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
             <Form 
                 action={action}
                 method={method}
-                initialValues={initialValues}
-                initialErrors={errors}
                 csrfToken={csrfToken}
-                formId={formId}
+                formConfig={formConfig}
                 instanceId={instanceId}
-                fields={fields}
                 text={formText}
                 className={generatedClasses.form}
                 bodyClassName={bodyClassName}

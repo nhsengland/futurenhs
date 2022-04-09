@@ -4,14 +4,14 @@ import { useRouter } from 'next/router';
 import { formTypes } from '@constants/forms';
 import { getStandardServiceHeaders } from '@helpers/fetch';
 import { getGenericFormError } from '@helpers/util/form';
-import { selectFormDefaultFields, selectFormInitialValues, selectFormErrors } from '@selectors/forms';
+import { selectForm } from '@selectors/forms';
 import { getServiceErrorDataValidationErrors } from '@services/index';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { postGroupFolder } from '@services/postGroupFolder';
 import { putGroupFolder } from '@services/putGroupFolder';
-import { FormErrors } from '@appTypes/form';
+import { FormErrors, FormConfig } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -31,10 +31,9 @@ export const GroupCreateUpdateFolderTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.GROUP_FOLDER));
 
-    const initialValues = selectFormInitialValues(forms, formTypes.GROUP_FOLDER);
-    const fields = selectFormDefaultFields(forms, formTypes.GROUP_FOLDER);
+    const formConfig: FormConfig = selectForm(forms, formTypes.GROUP_FOLDER);
+    const [errors, setErrors] = useState(formConfig?.errors);
 
     const { text } = folder ?? {};
     const { name } = text ?? {};
@@ -75,10 +74,8 @@ export const GroupCreateUpdateFolderTemplate: (props: Props) => JSX.Element = ({
                     <LayoutColumn tablet={8}>
                         <FormWithErrorSummary
                             csrfToken={csrfToken}
-                            formId={formTypes.GROUP_FOLDER}
-                            fields={fields}
+                            formConfig={formConfig}
                             errors={errors}
-                            initialValues={initialValues}
                             text={{
                                 errorSummary: {
                                     body: 'There is a problem'
