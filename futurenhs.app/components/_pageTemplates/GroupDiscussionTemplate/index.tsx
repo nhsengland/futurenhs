@@ -398,7 +398,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                     commentId: discussionId,
                                     createdBy: {
                                         text: {
-                                            userName: userName
+                                            userName: creatorUserName
                                         }
                                     },
                                     text: {
