@@ -49,7 +49,7 @@ export const putGroupFolder = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error putting updates to group folder', {
+        throw new ServiceError('An unexpected error occurred when attempting to update the group folder', {
             serviceId: services.PUT_GROUP_FOLDER,
             status: status,
             statusText: statusText,

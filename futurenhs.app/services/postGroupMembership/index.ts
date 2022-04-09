@@ -46,7 +46,7 @@ export const postGroupMembership = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting group membership', {
+        throw new ServiceError('An unexpected error occurred when attempting to add the user to the group', {
             serviceId: services.POST_GROUP_MEMBERSHIP,
             status: status,
             statusText: statusText,

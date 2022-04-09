@@ -44,7 +44,7 @@ export const getUser: GetUserService = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting user', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the user', {
             serviceId: services.GET_USER,
             status: status,
             statusText: statusText,

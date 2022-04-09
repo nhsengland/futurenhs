@@ -44,7 +44,7 @@ export const deleteGroupFolder = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error deleting group folder', {
+        throw new ServiceError('An unexpected error occurred when attempting to remove the folder', {
             serviceId: services.DELETE_GROUP_FOLDER,
             status: status,
             statusText: statusText,

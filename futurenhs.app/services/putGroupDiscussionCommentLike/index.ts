@@ -42,7 +42,7 @@ export const putGroupDiscussionCommentLike = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error putting group discussion comment like', {
+        throw new ServiceError('An unexpected error occurred when attempting to update the like status', {
             serviceId: services.PUT_GROUP_DISCUSSION_COMMENT_LIKE,
             status: status,
             statusText: statusText,

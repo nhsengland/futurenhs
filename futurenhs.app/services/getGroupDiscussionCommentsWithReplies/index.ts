@@ -59,7 +59,7 @@ export const getGroupDiscussionCommentsWithReplies = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting group discussion comments with replies', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the group discussion comments with replies', {
             serviceId: services.GET_GROUP_DISCUSSION_COMMENTS_WITH_REPLIES,
             status: status,
             statusText: statusText,

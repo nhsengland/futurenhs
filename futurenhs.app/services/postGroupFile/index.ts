@@ -46,7 +46,7 @@ export const postGroupFile = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting new group file', {
+        throw new ServiceError('An unexpected error occurred when attempting to post the group file', {
             serviceId: services.POST_GROUP_FILE,
             status: status,
             statusText: statusText,

@@ -45,7 +45,7 @@ export const postSiteUserInvite = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting new site user invite', {
+        throw new ServiceError('An unexpected error occurred when attempting to invite a user', {
             serviceId: services.POST_SITE_USER_INVITE,
             status: status,
             statusText: statusText,

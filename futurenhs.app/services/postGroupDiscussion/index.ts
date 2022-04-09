@@ -47,7 +47,7 @@ export const postGroupDiscussion = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting new group discussion', {
+        throw new ServiceError('An unexpected error occurred when attempting to post the group discussion', {
             serviceId: services.POST_GROUP_DISCUSSION,
             status: status,
             statusText: statusText,
