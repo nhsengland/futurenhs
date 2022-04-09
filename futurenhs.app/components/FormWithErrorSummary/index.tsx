@@ -52,7 +52,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
 
     };
 
-    const { errorSummary: errorSummaryText, form: formText } = text ?? {};
+    const { form: formText } = text ?? {};
 
     const generatedClasses: any = {
         form: classNames('c-form', className)
@@ -73,7 +73,6 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
             <ErrorSummary
                 ref={errorSummaryRef}
                 errors={validationErrors}
-                text={errorSummaryText} 
                 className="u-mb-6"/>
                     {children}
             <Form 

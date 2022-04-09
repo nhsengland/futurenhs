@@ -6,7 +6,7 @@ export interface Props {
     formConfig: FormConfig;
     errors: FormErrors;
     text: {
-        errorSummary: {
+        errorSummary?: {
             body: string;
         },
         form: {
