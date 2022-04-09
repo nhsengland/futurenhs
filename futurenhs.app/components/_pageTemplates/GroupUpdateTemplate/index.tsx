@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import { formTypes } from '@constants/forms';
 import { getStandardServiceHeaders } from '@helpers/fetch';
 import { getServiceErrorDataValidationErrors } from '@services/index';
-import { selectFormErrors, selectFormInitialValues, selectFormDefaultFields } from '@selectors/forms';
+import { selectForm } from '@selectors/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { putGroup } from '@services/putGroup';
-import { FormErrors } from '@appTypes/form';
+import { FormErrors, FormConfig } from '@appTypes/form';
 
 import { Props } from './interfaces';
 import { getGenericFormError } from '@helpers/util/form';
@@ -32,10 +32,8 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
 
     const router = useRouter();
 
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.UPDATE_GROUP));
-    const [initialValues] = useState(selectFormInitialValues(forms, formTypes.UPDATE_GROUP));
-
-    const fields = selectFormDefaultFields(forms, formTypes.UPDATE_GROUP);
+    const formConfig: FormConfig = selectForm(forms, formTypes.UPDATE_GROUP);
+    const [errors, setErrors] = useState(formConfig?.errors);
 
     const { mainHeading, secondaryHeading } = contentText ?? {};
     
@@ -82,10 +80,8 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
                     <LayoutColumn tablet={8}>
                         <FormWithErrorSummary
                             csrfToken={csrfToken}
-                            formId={formTypes.UPDATE_GROUP}
-                            fields={fields}
+                            formConfig={formConfig}
                             errors={errors}
-                            initialValues={initialValues}
                             text={{
                                 errorSummary: {
                                     body: 'There was a problem'

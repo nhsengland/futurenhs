@@ -4,13 +4,13 @@ import { useRouter } from 'next/router';
 import { formTypes } from '@constants/forms';
 import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getGenericFormError } from '@helpers/util/form';
-import { selectFormDefaultFields, selectFormInitialValues, selectFormErrors } from '@selectors/forms';
+import { selectForm } from '@selectors/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { RichText } from '@components/RichText';
 import { postGroupFile } from '@services/postGroupFile';
-import { FormErrors } from '@appTypes/form';
+import { FormErrors, FormConfig } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -29,11 +29,9 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
 }) => {
 
     const router = useRouter();
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_FILE));
 
-    const initialValues = selectFormInitialValues(forms, formTypes.CREATE_FILE);
-    const fields = selectFormDefaultFields(forms, formTypes.CREATE_FILE);
-
+    const formConfig: FormConfig = selectForm(forms, formTypes.CREATE_FILE);
+    const [errors, setErrors] = useState(formConfig?.errors);
 
     const { text } = folder ?? {};
     const { name } = text ?? {};
@@ -72,10 +70,8 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
                     <LayoutColumn tablet={8}>
                         <FormWithErrorSummary
                             csrfToken={csrfToken}
-                            formId={formTypes.CREATE_FILE}
-                            fields={fields}
+                            formConfig={formConfig}
                             errors={errors}
-                            initialValues={initialValues}
                             text={{
                                 errorSummary: {
                                     body: 'There is a problem'

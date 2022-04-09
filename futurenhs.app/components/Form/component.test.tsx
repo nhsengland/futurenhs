@@ -6,16 +6,22 @@ import { Props } from './interfaces';
 
 const testProps: Props = {
     csrfToken: 'mockToken',
-    formId: 'mockId',
-    fields: [
-        {
-            name: 'mockFieldName',
-            component: 'input',
-            text: {
-                label: 'mockLabel'
+    formConfig: {
+        id: 'mockId',
+        steps: [
+            {
+                fields: [
+                    {
+                        name: 'mockFieldName',
+                        component: 'input',
+                        text: {
+                            label: 'mockLabel'
+                        }
+                    }
+                ]
             }
-        }
-    ],
+        ]
+    },
     text: {
         submitButton: 'Submit'
     },

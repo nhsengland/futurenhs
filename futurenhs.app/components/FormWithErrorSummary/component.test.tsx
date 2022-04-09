@@ -6,19 +6,25 @@ import { Props } from './interfaces';
 
 const testProps: Props = {
     csrfToken: 'mockToken',
-    formId: 'mockId',
+    formConfig: {
+        id: 'mockId',
+        steps: [
+            {
+                fields: [
+                    {
+                        name: 'mockFieldName',
+                        component: 'input',
+                        text: {
+                            label: 'mockLabel'
+                        }
+                    }
+                ]
+            }
+        ]
+    },
     errors: {
         error1: 'Mock error'
     },
-    fields: [
-        {
-            name: 'mockFieldName',
-            component: 'input',
-            text: {
-                label: 'mockLabel'
-            }
-        }
-    ],
     text: {
         errorSummary: {
             body: 'An error occurred'
@@ -30,7 +36,7 @@ const testProps: Props = {
     submitAction: jest.fn()
 };
 
-describe('Form', () => {
+describe('Form with error summary', () => {
 
     it('renders fields', () => {
 
