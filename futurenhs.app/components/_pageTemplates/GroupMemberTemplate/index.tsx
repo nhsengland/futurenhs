@@ -111,9 +111,6 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                 <ErrorSummary
                     ref={errorSummaryRef}
                     errors={errors}
-                    text={{
-                        body: 'There is a problem'
-                    }} 
                     className="u-mb-10" />
             }
             <LayoutColumnContainer justify="centre">

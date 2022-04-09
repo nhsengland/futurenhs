@@ -753,5 +753,14 @@
         <member name="M:Umbraco9ContentApi.Core.Services.uSyncContentTypesService.ImportAsync">
             <inheritdoc />
         </member>
+        <member name="M:UmbracoContentApi.Core.Converters.JsonContentConverter.IsValidJson(System.String)">
+            <summary>
+            Determines whether [is valid json] [the specified string input].
+            </summary>
+            <param name="strInput">The string input.</param>
+            <returns>
+              <c>true</c> if [is valid json] [the specified string input]; otherwise, <c>false</c>.
+            </returns>
+        </member>
     </members>
 </doc>

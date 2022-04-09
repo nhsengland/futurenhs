@@ -77,9 +77,6 @@ export const GroupCreateUpdateFolderTemplate: (props: Props) => JSX.Element = ({
                             formConfig={formConfig}
                             errors={errors}
                             text={{
-                                errorSummary: {
-                                    body: 'There is a problem'
-                                },
                                 form: {
                                     submitButton: 'Save and continue',
                                     cancelButton: 'Discard'

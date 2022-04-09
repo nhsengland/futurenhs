@@ -5,6 +5,7 @@ import { scrollToComponentAndSetFocus } from '@helpers/dom';
 import { RichText } from '@components/RichText';
 
 import { Props } from './interfaces';
+import { genericMessages } from '@constants/text';
 
 /**
  * Renders a form submission validation error summary
@@ -15,7 +16,7 @@ export const ErrorSummary = React.forwardRef(({
     className
 }: Props, ref) => {
 
-    const { body } = text ?? {};
+    const body = text?.body || genericMessages.PROBLEM;
 
     const generatedClasses: any = {
         wrapper: classNames('c-error-summary', className),
