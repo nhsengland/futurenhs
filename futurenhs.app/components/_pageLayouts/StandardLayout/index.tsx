@@ -121,7 +121,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                             <ErrorBoundary boundaryId="phase-banner">
                                 <PhaseBanner text={{
                                     tag: 'beta',
-                                    body: 'This is a new service – your <a href="https://forms.office.com/r/0ENi61Jeu8">feedback</a> will help us to improve it.'
+                                    body: 'This is a new service – your <a href="https://forms.office.com/r/0ENi61JEu8">feedback</a> will help us to improve it.'
                                 }} />
                             </ErrorBoundary>
                         </LayoutWidthContainer>
