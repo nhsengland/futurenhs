@@ -57,7 +57,7 @@ export const getSearchResults = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting search results', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the search results', {
             serviceId: services.GET_SEARCH_RESULTS,
             status: status,
             statusText: statusText,

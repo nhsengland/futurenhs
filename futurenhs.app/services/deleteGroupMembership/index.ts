@@ -46,7 +46,7 @@ export const deleteGroupMembership = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error deleting group membership', {
+        throw new ServiceError('An unexpected error occurred when attempting to remove the member', {
             serviceId: services.DELETE_GROUP_MEMBERSHIP,
             status: status,
             statusText: statusText,

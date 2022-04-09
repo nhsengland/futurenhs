@@ -55,12 +55,12 @@ export const getGroupFileView = async ({
 
     if(!ok){
 
-        // throw new ServiceError('Error getting group file view', {
-        //     serviceId: services.GET_GROUP_FILE_VIEW,
-        //     status: status,
-        //     statusText: statusText,
-        //     body: apiData
-        // });
+        throw new ServiceError('An unexpected error occurred when attempting to get the group file preview', {
+            serviceId: services.GET_GROUP_FILE_VIEW,
+            status: status,
+            statusText: statusText,
+            body: apiData
+        });
 
     }
 

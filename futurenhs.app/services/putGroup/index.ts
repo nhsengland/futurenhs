@@ -44,7 +44,7 @@ export const putGroup = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error putting group details', {
+        throw new ServiceError('An unexpected error occurred when attempting to update the group', {
             serviceId: services.PUT_GROUP,
             status: status,
             statusText: statusText,

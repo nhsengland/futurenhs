@@ -43,7 +43,7 @@ export const getGroupMember = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting group member', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the group member', {
             serviceId: services.GET_GROUP_MEMBER,
             status: status,
             statusText: statusText,

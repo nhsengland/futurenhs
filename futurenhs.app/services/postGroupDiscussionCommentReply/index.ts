@@ -52,7 +52,7 @@ export const postGroupDiscussionCommentReply: Service = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting new group discussion comment reply', {
+        throw new ServiceError('An unexpected error occurred when attempting to post the group discussion comment reply', {
             serviceId: services.POST_GROUP_DISCUSSION_COMMENT_REPLY,
             status: status,
             statusText: statusText,

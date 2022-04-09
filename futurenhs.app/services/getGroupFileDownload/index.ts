@@ -42,7 +42,7 @@ export const getGroupFileDownload = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting group file download link', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the group file download', {
             serviceId: services.GET_GROUP_FILE,
             status: status,
             statusText: statusText,

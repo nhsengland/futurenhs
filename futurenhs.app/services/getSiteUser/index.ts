@@ -37,8 +37,8 @@ export const getSiteUser = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting site user', {
-            serviceId: services.GET_GROUP_MEMBER,
+        throw new ServiceError('An unexpected error occurred when attempting to get the site user', {
+            serviceId: services.GET_SITE_USER,
             status: status,
             statusText: statusText,
             body: apiData
