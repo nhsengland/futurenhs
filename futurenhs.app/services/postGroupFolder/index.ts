@@ -51,7 +51,7 @@ export const postGroupFolder = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting new group folder', {
+        throw new ServiceError('An unexpected error occurred when attempting to post the group folder', {
             serviceId: services.POST_GROUP_FOLDER,
             status: status,
             statusText: statusText,

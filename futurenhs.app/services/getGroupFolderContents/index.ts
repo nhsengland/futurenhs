@@ -58,7 +58,7 @@ export const getGroupFolderContents = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting group folder contents', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the group folder contents', {
             serviceId: services.GET_GROUP_FOLDER_CONTENTS,
             status: status,
             statusText: statusText,

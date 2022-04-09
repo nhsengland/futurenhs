@@ -44,7 +44,7 @@ export const getGroupDiscussion = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting group discussion', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the group discussion', {
             serviceId: services.GET_GROUP_DISCUSSION,
             status: status,
             statusText: statusText,

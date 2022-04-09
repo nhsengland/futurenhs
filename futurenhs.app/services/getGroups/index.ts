@@ -54,7 +54,7 @@ export const getGroups: Service = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting groups', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the groups', {
             serviceId: services.GET_GROUPS,
             status: status,
             statusText: statusText,

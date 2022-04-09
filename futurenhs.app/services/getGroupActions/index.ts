@@ -39,7 +39,7 @@ export const getGroupActions = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting group actions', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the actions for the group', {
             serviceId: services.GET_GROUP_ACTIONS,
             status: status,
             statusText: statusText,

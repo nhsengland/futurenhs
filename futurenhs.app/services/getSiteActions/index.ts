@@ -36,7 +36,7 @@ export const getSiteActions = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting site actions', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the site actions', {
             serviceId: services.GET_SITE_ACTIONS,
             status: status,
             statusText: statusText,

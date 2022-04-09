@@ -53,7 +53,7 @@ export const getPendingGroupMembers: Service = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error getting pending group members', {
+        throw new ServiceError('An unexpected error occurred when attempting to get the pending group members', {
             serviceId: services.GET_PENDING_GROUP_MEMBERS,
             status: status,
             statusText: statusText,
