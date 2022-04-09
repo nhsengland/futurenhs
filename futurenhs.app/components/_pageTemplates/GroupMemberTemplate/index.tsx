@@ -1,10 +1,9 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { selectFormErrors } from '@selectors/forms';
 import { formTypes } from '@constants/forms';
 import { actions as actionsConstants } from '@constants/actions';
-import { selectFormDefaultFields, selectFormInitialValues } from '@selectors/forms';
+import { selectForm } from '@selectors/forms';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { BackLink } from '@components/BackLink';
@@ -12,7 +11,7 @@ import { UserProfile } from '@components/UserProfile';
 import { Form } from '@components/Form';
 import { ErrorSummary } from '@components/ErrorSummary';
 import { Dialog } from '@components/Dialog';
-import { FormErrors } from '@appTypes/form';
+import { FormErrors, FormConfig } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
@@ -32,10 +31,10 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
     const errorSummaryRef: any = useRef();
     const [isDeleteUserConfirmationModalOpen, setIsDeleteUserConfirmationModalOpen] = useState(false);
 
-    const fields = selectFormDefaultFields(forms, formTypes.UPDATE_GROUP_MEMBER);
-    const initialValues = selectFormInitialValues(forms, formTypes.UPDATE_GROUP_MEMBER);
+    const updateFormConfig: FormConfig = selectForm(forms, formTypes.UPDATE_GROUP_MEMBER);
+    const deleteFormConfig: FormConfig = selectForm(forms, formTypes.DELETE_GROUP_MEMBER);
 
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT));
+    const [errors, setErrors] = useState(updateFormConfig.errors);
 
     const { secondaryHeading,
             firstNameLabel,
@@ -132,10 +131,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                             {shouldRenderUpdateForm &&
                                 <Form
                                     csrfToken={csrfToken}
-                                    formId={formTypes.UPDATE_GROUP_MEMBER}
-                                    fields={fields}
-                                    initialValues={initialValues}
-                                    initialErrors={errors}
+                                    formConfig={updateFormConfig}
                                     text={{
                                         submitButton: 'Save Changes'
                                     }}
@@ -146,8 +142,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                             {shouldRenderDeleteForm &&
                                 <Form
                                     csrfToken={csrfToken}
-                                    formId={formTypes.DELETE_GROUP_MEMBER}
-                                    fields={[]}
+                                    formConfig={deleteFormConfig}
                                     text={{
                                         submitButton: 'Remove from group'
                                     }}

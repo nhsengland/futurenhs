@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment';
 import { postGroupDiscussionCommentReply } from '@services/postGroupDiscussionCommentReply';
 import { putGroupDiscussionCommentLike } from '@services/putGroupDiscussionCommentLike';
-import { selectFormErrors } from '@selectors/forms';
+import { selectForm, selectFormErrors } from '@selectors/forms';
 import { actions as actionsConstants } from '@constants/actions';
 import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getGenericFormError } from '@helpers/util/form';
@@ -29,7 +29,7 @@ import { BackLink } from '@components/BackLink';
 import { UserMeta } from '@components/UserMeta';
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies';
 import { getRouteToParam } from '@helpers/routing/getRouteToParam';
-import { FormErrors } from '@appTypes/form';
+import { FormErrors, FormConfig } from '@appTypes/form';
 import { DiscussionComment } from '@appTypes/discussion';
 
 import { Props } from './interfaces';
@@ -61,6 +61,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const router = useRouter();
     const errorSummaryRef: any = useRef();
 
+    const commentFormConfig: FormConfig = selectForm(forms, formTypes.CREATE_DISCUSSION_COMMENT);
     const [errors, setErrors] = useState(Object.assign({}, selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT), selectFormErrors(forms, formTypes.CREATE_DISCUSSION_COMMENT_REPLY)));
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(discussionCommentsList);
     const [dynamicPagination, setPagination] = useState(pagination);
@@ -481,9 +482,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         <p className="u-text-bold">{signedInLabel} <Link href={`${routes.groupMembersRoot}/${id}`}><a>{userName}</a></Link></p>
                         <Form
                             csrfToken={csrfToken}
-                            formId={formTypes.CREATE_DISCUSSION_COMMENT}
-                            fields={createCommentfields}
-                            initialErrors={errors}
+                            formConfig={commentFormConfig}
                             text={{
                                 submitButton: 'Add Comment'
                             }}

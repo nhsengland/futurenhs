@@ -1,12 +1,9 @@
-import { FormField } from '@appTypes/form';
+import { FormConfig } from '@appTypes/form';
 
 export interface Props {
     csrfToken: string;
-    initialValues?: Record<string, any>;
-    initialErrors?: Record<string, string>;
-    formId: string;
+    formConfig: FormConfig;
     instanceId?: string;
-    fields: Array<FormField>;
     text: {
         submitButton: string;
         cancelButton?: string;

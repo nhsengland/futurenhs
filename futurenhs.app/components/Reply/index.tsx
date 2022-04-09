@@ -5,16 +5,15 @@ import { formTypes } from '@constants/forms';
 import { Form } from '@components/Form';
 import { Accordion } from '@components/Accordion';
 import { SVGIcon } from '@components/SVGIcon';
-import { selectFormDefaultFields } from '@selectors/forms';
+import { selectForm } from '@selectors/forms';
 import forms from '@formConfigs/index';
-import { FormErrors } from '@appTypes/form';
+import { FormConfig, FormErrors } from '@appTypes/form';
 
 import { Props } from './interfaces';
 
 export const Reply: (props: Props) => JSX.Element = ({
     targetId,
     csrfToken,
-    initialErrors,
     text,
     validationFailAction,
     submitAction,
@@ -23,7 +22,7 @@ export const Reply: (props: Props) => JSX.Element = ({
 
     const wrapperRef = useRef();
 
-    const fields = selectFormDefaultFields(forms, formTypes.CREATE_DISCUSSION_COMMENT_REPLY);
+    const formConfig: FormConfig = selectForm(forms, formTypes.CREATE_DISCUSSION_COMMENT_REPLY);
 
     const [isReplyAccordionOpen, setIsReplyAccordionOpen] = useState(false);
     const [shouldRenderCancelButton, setShouldRenderCancelButton] = useState(false);
@@ -88,11 +87,9 @@ export const Reply: (props: Props) => JSX.Element = ({
                 toggleClassName={generatedClasses.toggle}
                 contentClassName={generatedClasses.content}>
                     <Form
-                        formId={formTypes.CREATE_DISCUSSION_COMMENT_REPLY}
                         instanceId={targetId}
                         csrfToken={csrfToken}
-                        fields={fields}
-                        initialErrors={initialErrors}
+                        formConfig={formConfig}
                         text={{
                             submitButton: 'Reply',
                             cancelButton: 'Discard Reply'
