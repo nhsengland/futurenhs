@@ -83,9 +83,6 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
                             formConfig={formConfig}
                             errors={errors}
                             text={{
-                                errorSummary: {
-                                    body: 'There was a problem'
-                                },
                                 form: {
                                     submitButton: 'Save and close',
                                     cancelButton: 'Discard changes'

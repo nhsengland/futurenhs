@@ -74,9 +74,6 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
                             formConfig={formConfig}
                             errors={errors}
                             text={{
-                                errorSummary: {
-                                    body: 'There is a problem'
-                                },
                                 form: {
                                     submitButton: 'Create Discussion',
                                     cancelButton: 'Discard Discussion'
