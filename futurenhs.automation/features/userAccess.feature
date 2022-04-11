@@ -146,7 +146,7 @@ Scenario: FNHS11 - Navigate to support site
     And I have logged in as a 'user' and accept the cookies
     Then the 'Need help?' textual value is displayed
     When I click the 'Visit our support site' link
-    Then the 'FutureNHS Support' new tab is open
+    Then the 'https://support-futurenhs.zendesk.com/hc/en-gb' new tab is open and 'FutureNHS Support' is displayed
     
     
 Scenario Outline: FNHS111 - Forgot password form validation
