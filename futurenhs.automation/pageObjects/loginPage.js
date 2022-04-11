@@ -52,7 +52,7 @@ class loginPage extends basePage{
     logoutUser(){
         helpers.click('//summary[@class="c-site-header-nav_root-nav-trigger"]');
         helpers.click('//a[@href="/members/logoff?Length=7"]');
-        genericPage.openDialogSelect('confirm', 'logout');
+        genericPage.selectDialogButton('confirm', 'logout');
         genericPage.contentValidation('header', 'Log In');
         genericPage.contentValidation('button', 'Log In');
     }
@@ -63,7 +63,7 @@ class loginPage extends basePage{
      switchUser(desiredUser){
         helpers.click('//summary[@class="c-accordion_toggle c-site-header-nav_root-nav-trigger"]');
         helpers.click('//a[@href="/log-out"]');
-        genericPage.openDialogSelect('confirm', 'logout');
+        genericPage.selectDialogButton('confirm', 'logout');
         this.loginUser(desiredUser)
     }
 }

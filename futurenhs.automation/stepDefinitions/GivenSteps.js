@@ -1,7 +1,6 @@
 var {Given} = require('@cucumber/cucumber');
 const loginPage = require('../pageObjects/loginPage');
 const genericPage = require('../pageObjects/genericPage');
-const adminPage = require('../pageObjects/adminPage');
 
 Given(/^I have navigated to '([^"]*)'( and accept the cookies)?$/, function (url, cookies) {
   browser.maximizeWindow();  
@@ -30,10 +29,6 @@ Given(/^I ensure the browser is in mobile emulation$/, function () {
   if(browser.capabilities.browserName != 'msedge'){
     browser.emulateDevice('iPhone X');
   }
-});
-
-Given(/^I create '([^"]*)' system page$/, function (pageName) {
-  adminPage.createSystemPages(pageName);
 });
 
 Given(/^I pause the page for '([^"]*)' ms$/, function (seconds) {
