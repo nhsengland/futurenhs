@@ -1,13 +1,14 @@
-import { services } from '@constants/services'
-import { FormErrors } from '@appTypes/form'
-export * as services from './'
+import { services as serviceConstants } from '@constants/services';
+import { FormErrors } from '@appTypes/form';
 
 declare interface ServiceErrorData {
-    status: number
-    statusText: string
-    serviceId: services
-    body?: any
+    status: number;
+    statusText: string;
+    serviceId: serviceConstants;
+    body?: any;
 }
+
+export * as services from './';
 
 export class ServiceError extends Error {
     data: ServiceErrorData = {
@@ -50,5 +51,5 @@ export const getServiceErrorDataValidationErrors = (
         }
     }
 
-    return null
+    return null;
 }
