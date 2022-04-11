@@ -22,9 +22,9 @@ class contentCard extends basePage{/**
    }
    
    /**
-     * 
-     * @param {*} cardType 
-     * @param {*} cardLink 
+     * Function to click the main content link on a card
+     * @param {*} cardType - type of card used for the type selector
+     * @param {*} cardLink - textual value of the desired link 
      */
     cardLinkClick(cardLink, cardType){     
         var cardFound = this.cardTypeSelector(cardType, cardLink);

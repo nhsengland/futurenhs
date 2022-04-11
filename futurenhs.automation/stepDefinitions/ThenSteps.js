@@ -29,8 +29,8 @@ Then(/^there are '([^"]*)' search results displayed$/, function(amount){
   search.searchResultsValidation(amount)
 });
 
-Then(/^the '([^"]*)' new tab is open$/, function(tabMatcher){
-  genericPage.newTabValidation(tabMatcher);
+Then(/^the '([^"]*)' new tab is open and '([^"]*)' is displayed$/, function(url, tabMatcher){
+  genericPage.newTabValidation(url, tabMatcher);
 });
 
 Then(/^the '([^"]*)' (reply|discussion|comment|group|post|search result) card is displayed$/, function (cardTitle, cardType, table) {
