@@ -7,6 +7,7 @@ import { createGroupForm } from './create-group';
 import { updateGroupForm } from './update-group';
 import { updateGroupMemberForm } from './update-group-member';
 import { inviteUserForm } from './invite-user';
+import { updateSiteMemberForm } from './update-site-user';
 import { formTypes } from '@constants/forms';
 
 export default {
@@ -19,4 +20,5 @@ export default {
     [formTypes.UPDATE_GROUP]: updateGroupForm,
     [formTypes.UPDATE_GROUP_MEMBER]: updateGroupMemberForm,
     [formTypes.INVITE_USER]: inviteUserForm,
+    [formTypes.UPDATE_SITE_USER]: updateSiteMemberForm
 }
