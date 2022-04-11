@@ -64,6 +64,7 @@ export const getSiteUser = async (
         role: apiData.role ?? '',
         joinDate: apiData.dateJoinedUtc ?? '',
         lastLogInDate: apiData.lastLoginUtc ?? '',
+        image: apiData.profileImage
     }
 
     return serviceResponse

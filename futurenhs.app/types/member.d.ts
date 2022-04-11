@@ -1,3 +1,4 @@
+import { Image } from './image';
 
 export interface Member {
     id?: string;
@@ -10,4 +11,5 @@ export interface Member {
     requestDate?: string;
     joinDate?: string;
     lastLogInDate?: string;
+    image?: Image;
 }

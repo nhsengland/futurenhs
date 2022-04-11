@@ -2,6 +2,7 @@ import { Routes } from "@appTypes/routing";
 
 export const routes: Routes = {
     siteRoot: '/',
+    usersRoot: '/users',
     adminRoot: '/admin',
     adminUsersRoot: '/admin/users',
     adminUsersInvite: '/admin/users/invite',

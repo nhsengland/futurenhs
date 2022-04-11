@@ -24,6 +24,7 @@ export const withRoutes = (
             props.routes = getJsonSafeObject({
                 object: {
                     siteRoot: '/',
+                    usersRoot: '/users',
                     adminRoot: '/admin',
                     adminUsersRoot: '/admin/users',
                     adminUsersInvite: '/admin/users/invite',
