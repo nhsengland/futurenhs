@@ -2,6 +2,7 @@ var {Then} = require('@cucumber/cucumber');
 const filesPage = require('../pageObjects/filesPage');
 const formPage = require('../pageObjects/formPage');
 const forumPage = require('../pageObjects/forumPage');
+const contentCard = require('../pageObjects/contentCard');
 const genericPage = require('../pageObjects/genericPage');
 const search = require('../pageObjects/search');
 const tablePOM = require('../pageObjects/table');
@@ -17,11 +18,7 @@ Then(/^the current URL is '([^"]*)'$/, function (expectedUrl) {
 });
 
 Then(/^I (confirm|cancel) this on the open '([^"]*)' dialog$/, function (actionType, dialogName){
-  genericPage.openDialogSelect(actionType, dialogName);
-});
-
-Then(/^the breadcrumb navigation displays '([^"]*)'$/, function(breadcrumb){
-  genericPage.breadcrumbValidation(breadcrumb);
+  genericPage.selectDialogButton(actionType, dialogName);
 });
 
 Then(/^the search bar is available$/, function(){
@@ -36,6 +33,11 @@ Then(/^the '([^"]*)' new tab is open$/, function(tabMatcher){
   genericPage.newTabValidation(tabMatcher);
 });
 
+Then(/^the '([^"]*)' (reply|discussion|comment|group|post|search result) card is displayed$/, function (cardTitle, cardType, table) {
+  var cardValues = table.raw().flat();
+  contentCard.cardValidation(cardTitle, cardType, cardValues);
+});
+
 //// Generic Content Steps
 
 Then(/^the '([^"]*)' (header|textual value|link|button|option|label) is displayed$/, function (textValue, contentType) {
@@ -48,13 +50,8 @@ Then(/^the '([^"]*)' (header|textual value|link|button|option) is not displayed$
 
 //// ForumPage Steps
 
-Then(/^the '([^"]*)' (reply|discussion|comment|group|post|search result) card is displayed$/, function (cardTitle, cardType, table) {
-  var cardContent = table.raw().flat();
-  forumPage.cardValidation(cardTitle, cardType, cardContent);
-});
-
 Then(/^(there are|there are more) (discussion|comment|reply) cards displayed$/, function(compareArg, cardType){
-  forumPage.cardCountComparison(compareArg, cardType);
+  forumPage.discussionCountComparator(compareArg, cardType);
 });
 
 Then(/^the card count is displayed as '([^"]*)'$/, function(textVal){
@@ -89,6 +86,10 @@ Then(/^the profile values are displayed$/, function (table){
 Then(/^I download the '([^"]*)' file and compare against the uploaded version$/, function(fileName){
   filesPage.hashCompare(fileName);
 })
+
+Then(/^the breadcrumb navigation displays '([^"]*)'$/, function(breadcrumb){
+  filesPage.breadcrumbValidation(breadcrumb);
+});
 
 Then(/^I download the '([^"]*)' and check the file for '([^"]*)'$/, function(fileType, fileContent) {
   filesPage.pdfDownloadCheck(file, fileContent);

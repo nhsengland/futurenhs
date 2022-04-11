@@ -5,6 +5,7 @@ const forumPage = require('../pageObjects/forumPage');
 const tablePOM = require('../pageObjects/table');
 const filesPage = require('../pageObjects/filesPage');
 const search = require('../pageObjects/search');
+const contentCard = require('../pageObjects/contentCard');
 
   
   When(/^I click the '([^"]*)' (button|link|option|tab|nav icon)$/, function (textValue, contentType) {
@@ -57,11 +58,11 @@ const search = require('../pageObjects/search');
   // ForumPage Steps
 
   When(/^I (like|unlike) the '([^"]*)' (comment|reply) card$/, function (action, cardText, cardType) {
-    forumPage.cardLikeClick(action, cardText, cardType);
+    forumPage.commentLikeClick(action, cardText, cardType);
   });
 
   When(/^I select the '([^"]*)' (search result|group|discussion|comment|reply) card$/, function (cardText, cardType) {
-    forumPage.cardLinkClick(cardText, cardType);
+    contentCard.cardLinkClick(cardText, cardType);
   });
   
   When(/^I click reply on the '([^"]*)' (comment|reply) card$/, function(cardText, cardType) {

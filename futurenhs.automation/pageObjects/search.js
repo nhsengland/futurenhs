@@ -4,6 +4,7 @@ const basePage = require('./basePage');
 class search extends basePage{
     /**
      * 
+     * @param {*} inputVal 
      */
     search(inputVal){
         this.searchBarValidation
@@ -12,8 +13,8 @@ class search extends basePage{
         helpers.click(searchInput.parentElement().$(`button`));
     }
     /**
-         * 
-         */
+     * 
+     */
     searchBarValidation(){
         var searchItem = $(`//div[@class="c-site-header-nav_search-item"]`);
         helpers.waitForLoaded(searchItem);
