@@ -42,7 +42,7 @@ describe('get search results', () => {
         }
         catch (err) {
 
-            expect(err.message).toBe("Error getting search results");
+            expect(err.message).toBe("An unexpected error occurred when attempting to get the search results");
 
         }
 
