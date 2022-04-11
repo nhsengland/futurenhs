@@ -15,6 +15,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     formConfig,
     instanceId,
     errors,
+    context = {},
     submitAction,
     cancelAction,
     cancelHref,
@@ -75,6 +76,7 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 method={method}
                 csrfToken={csrfToken}
                 formConfig={formConfig}
+                context={context}
                 instanceId={instanceId}
                 text={formText}
                 className={generatedClasses.form}

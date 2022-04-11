@@ -40,11 +40,11 @@ export const createDiscussionForm: FormConfig = {
                         {
                             type: 'maxLength',
                             maxLength: 100000,
-                            message: 'Enter 100,000 or fewer characters',
-                        },
-                    ],
-                },
-            ],
-        },
-    ],
-}
+                            message: 'Enter 100,000 or fewer characters'
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};

@@ -1,10 +1,11 @@
 import { FormConfig, FormErrors } from '@appTypes/form'
 
 export interface Props {
-    csrfToken: string
-    instanceId?: string
-    formConfig: FormConfig
-    errors: FormErrors
+    csrfToken: string;
+    instanceId?: string;
+    formConfig: FormConfig;
+    errors: FormErrors;
+    context?: Record<string, any>;
     text: {
         errorSummary?: {
             body: string

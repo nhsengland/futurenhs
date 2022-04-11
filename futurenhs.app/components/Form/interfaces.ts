@@ -1,9 +1,10 @@
 import { FormConfig } from '@appTypes/form'
 
 export interface Props {
-    csrfToken: string
-    formConfig: FormConfig
-    instanceId?: string
+    csrfToken: string;
+    formConfig: FormConfig;
+    context?: Record<string, any>;
+    instanceId?: string;
     text: {
         submitButton: string
         cancelButton?: string
