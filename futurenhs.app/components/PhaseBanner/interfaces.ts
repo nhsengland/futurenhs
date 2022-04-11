@@ -1,8 +1,7 @@
 export interface Props {
     text: {
-        tag: string;
-        body: string;
-    };
-    className?: string;
+        tag: string
+        body: string
+    }
+    className?: string
 }
-

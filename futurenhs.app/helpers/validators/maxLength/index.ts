@@ -1,30 +1,20 @@
 export const maxLength = (validationMethodData): Function => {
-
     return (value: any): string => {
+        try {
+            const message: string = validationMethodData.message
+            const maxLength: number = validationMethodData.maxLength
 
-    	try {
+            if (value && typeof value === 'string' && value.length) {
+                const inputValueLength: number = value.trim().length
 
-		    const message: string = validationMethodData.message;
-            const maxLength: number = validationMethodData.maxLength;
+                return inputValueLength > maxLength ? message : undefined
+            }
 
-	        if (value && typeof value === 'string' && value.length) {
+            return undefined
+        } catch (error) {
+            console.error(error)
 
-            	const inputValueLength: number = value.trim().length;
-
-            	return inputValueLength > maxLength ? message : undefined;
-
-        	}
-
-            return undefined;
-
-    	} catch(error) {
-
-            console.error(error);
-
-            return 'An unexpected error occured';
-
-    	}
-
-    };
-
-};
+            return 'An unexpected error occured'
+        }
+    }
+}

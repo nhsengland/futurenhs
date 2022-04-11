@@ -2,7 +2,7 @@ export const enum iconNames {
     CROSS_CIRCLE = 'icon-cross-circle',
     PLUS_CIRCLE = 'icon-plus-circle',
     CHEVRON_UP = 'icon-chevron-up',
-    CHEVRON_DOWN = 'icon-chevron-down'
+    CHEVRON_DOWN = 'icon-chevron-down',
 }
 
 export const defaultGroupLogos = {
@@ -10,14 +10,14 @@ export const defaultGroupLogos = {
         src: '/images/group-logo.svg',
         height: 100,
         width: 100,
-        altText: 'Group logo'
+        altText: 'Group logo',
     },
     large: {
         src: '/images/group-logo.svg',
         height: 180,
         width: 180,
-        altText: 'Group logo'
-    }
+        altText: 'Group logo',
+    },
 }
 
 export const iconMap = {
@@ -28,5 +28,5 @@ export const iconMap = {
     ['.ppt']: 'icon-ppt',
     ['.pptx']: 'icon-ppt',
     ['.pdf']: 'icon-pdf',
-    ['.txt']: 'icon-document'
-};
+    ['.txt']: 'icon-document',
+}

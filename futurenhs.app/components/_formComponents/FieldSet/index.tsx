@@ -1,39 +1,34 @@
-import classNames from 'classnames';
+import classNames from 'classnames'
 
-import { RichText } from '@components/RichText';
+import { RichText } from '@components/RichText'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 export const FieldSet: (props: Props) => JSX.Element = ({
-    input: {
-        name
-    },
+    input: { name },
     text,
     children,
-    className
+    className,
 }) => {
-
-    const { legend, hint } = text ?? {};
+    const { legend, hint } = text ?? {}
 
     const generatedClasses: any = {
         wrapper: classNames('nhsuk-fieldset', className),
         legend: classNames('nhsuk-fieldset__legend'),
-        hint: classNames('c-hint')
-    };
+        hint: classNames('c-hint'),
+    }
 
     return (
-
         <fieldset id={name} className={generatedClasses.wrapper}>
             <legend className={generatedClasses.legend}>{legend}</legend>
-            {hint &&
+            {hint && (
                 <RichText
                     className={generatedClasses.hint}
                     bodyHtml={hint}
-                    wrapperElementType="span" />
-            }
+                    wrapperElementType="span"
+                />
+            )}
             {children}
         </fieldset>
-
     )
-
 }

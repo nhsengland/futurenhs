@@ -1,26 +1,22 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react'
 
-import { TabbedNav } from './index';
+import { TabbedNav } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
     text: {
-        ariaLabel: 'mockLabel'    
+        ariaLabel: 'mockLabel',
     },
-    navMenuList: []
-};
+    navMenuList: [],
+}
 
 describe('TabbedNav', () => {
-
     it('renders description Html', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<TabbedNav {...props} />)
 
-        render(<TabbedNav {...props} />);
-
-        expect(screen.getByLabelText('mockLabel'));
-
-    });
-    
-});
+        expect(screen.getByLabelText('mockLabel'))
+    })
+})

@@ -1,3 +1,3 @@
-import { Page } from '@appTypes/page';
+import { Page } from '@appTypes/page'
 
 export interface Props extends Page {}

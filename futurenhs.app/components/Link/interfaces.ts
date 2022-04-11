@@ -1,5 +1,4 @@
 export interface Props {
-    href: string;
-    children: any;
+    href: string
+    children: any
 }
-

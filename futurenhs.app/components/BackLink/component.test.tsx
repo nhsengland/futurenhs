@@ -1,26 +1,22 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react'
 
-import { BackLink } from './index';
+import { BackLink } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
     text: {
-        link: 'mockContent'    
+        link: 'mockContent',
     },
-    href: ''
-};
+    href: '',
+}
 
 describe('BackLink', () => {
-
     it('renders link text', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<BackLink {...props} />)
 
-        render(<BackLink {...props} />);
-
-        expect(screen.getByText('mockContent'));
-
-    });
-    
-});
+        expect(screen.getByText('mockContent'))
+    })
+})

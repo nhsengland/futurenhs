@@ -1,24 +1,20 @@
-import Head from 'next/head';
+import Head from 'next/head'
 
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
-import { PageBody } from '@components/PageBody';
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
+import { LayoutColumn } from '@components/LayoutColumn'
+import { PageBody } from '@components/PageBody'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 /**
  * Home page template
  */
 export const HomeTemplate: (props: Props) => JSX.Element = ({
-    contentText
+    contentText,
 }) => {
-
-    const { title,
-            metaDescription,
-            mainHeading } = contentText ?? {};
+    const { title, metaDescription, mainHeading } = contentText ?? {}
 
     return (
-
         <>
             <Head>
                 <meta name="description" content={metaDescription} />
@@ -31,7 +27,5 @@ export const HomeTemplate: (props: Props) => JSX.Element = ({
                 </LayoutColumn>
             </LayoutColumnContainer>
         </>
-
     )
-
 }

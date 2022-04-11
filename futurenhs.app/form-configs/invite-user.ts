@@ -1,5 +1,5 @@
-import { formTypes } from '@constants/forms';
-import { FormConfig } from '@appTypes/form';
+import { formTypes } from '@constants/forms'
+import { FormConfig } from '@appTypes/form'
 
 export const inviteUserForm: FormConfig = {
     id: formTypes.INVITE_USER,
@@ -10,21 +10,21 @@ export const inviteUserForm: FormConfig = {
                     name: 'Email',
                     inputType: 'email',
                     text: {
-                        label: 'Email address'
+                        label: 'Email address',
                     },
                     component: 'input',
                     validators: [
                         {
                             type: 'required',
-                            message: 'Enter an email address'
+                            message: 'Enter an email address',
                         },
                         {
                             type: 'email',
-                            message: 'Enter a valid email address'
-                        }
-                    ]
-                }          
-            ]
-        }
-    ]
-};
+                            message: 'Enter a valid email address',
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+}

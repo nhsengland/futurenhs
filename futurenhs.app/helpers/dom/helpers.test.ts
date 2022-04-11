@@ -1,19 +1,19 @@
-import { lockBodyScroll } from './index';
+import { lockBodyScroll } from './index'
 
 describe('Dom helpers', () => {
-
     it('lockBodyScroll ', () => {
+        expect(document.body.classList.contains('u-overflow-hidden')).toBe(
+            false
+        )
 
-        expect(document.body.classList.contains('u-overflow-hidden')).toBe(false);
+        lockBodyScroll(true)
 
-        lockBodyScroll(true);
+        expect(document.body.classList.contains('u-overflow-hidden')).toBe(true)
 
-        expect(document.body.classList.contains('u-overflow-hidden')).toBe(true);
+        lockBodyScroll(false)
 
-        lockBodyScroll(false);
-
-        expect(document.body.classList.contains('u-overflow-hidden')).toBe(false);
-
-    });
-    
-});
+        expect(document.body.classList.contains('u-overflow-hidden')).toBe(
+            false
+        )
+    })
+})

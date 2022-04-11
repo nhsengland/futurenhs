@@ -1,11 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from '@testing-library/react'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
-import { Image } from './index';
+import { Image } from './index'
 
 describe('Image', () => {
-
     const props: Props = {
         src: '/images/logo.svg',
         height: 100,
@@ -13,16 +12,13 @@ describe('Image', () => {
         alt: 'Mock alt text',
         fallBack: {
             src: '/images/logo.svg',
-            alt: 'Mock fallback alt text'
-        }
+            alt: 'Mock fallback alt text',
+        },
     }
 
     it('renders image', () => {
+        render(<Image {...props} />)
 
-        render(<Image {...props} />);
-
-        expect(screen.getAllByAltText('Mock alt text').length).toBe(1);
-
-    });
-
-});
+        expect(screen.getAllByAltText('Mock alt text').length).toBe(1)
+    })
+})

@@ -1,15 +1,15 @@
-import { BreadCrumbList } from '@appTypes/routing';
+import { BreadCrumbList } from '@appTypes/routing'
 
 export interface Props {
-    breadCrumbList: BreadCrumbList;
+    breadCrumbList: BreadCrumbList
     text: {
-        ariaLabel: string;
-        truncation?: string;
-    };
-    seperatorIconName?: string;
-    truncationMinPathLength?: number;
-    truncationStartIndex?: number;
-    truncationEndIndex?: number;
-    shouldLinkCrumbs?: boolean;
-    className?: string;
+        ariaLabel: string
+        truncation?: string
+    }
+    seperatorIconName?: string
+    truncationMinPathLength?: number
+    truncationStartIndex?: number
+    truncationEndIndex?: number
+    shouldLinkCrumbs?: boolean
+    className?: string
 }

@@ -1,120 +1,119 @@
-import { useRef, useState, useEffect } from 'react';
-import classNames from 'classnames';
+import { useRef, useState, useEffect } from 'react'
+import classNames from 'classnames'
 
-import { RichText } from '@components/RichText';
-import { getAriaFieldAttributes } from '@helpers/util/form';
+import { RichText } from '@components/RichText'
+import { getAriaFieldAttributes } from '@helpers/util/form'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 export const ImageUpload: (props: Props) => JSX.Element = ({
-    input: {
-        name,
-        value,
-        onChange
-    },
+    input: { name, value, onChange },
     initialError,
-    meta: {
-        touched,
-        error,
-        submitError
-    },
+    meta: { touched, error, submitError },
     text,
     relatedFields,
     validators,
-    className
+    className,
 }) => {
+    const fileIdInput: any = useRef(null)
+    const initialFileIdValue: any = useRef(null)
 
-    const fileIdInput: any = useRef(null);
-    const initialFileIdValue: any = useRef(null);
+    const [shouldRenderClearFileInput, setShouldRenderClearFileInput] =
+        useState(false)
+    const [shouldDisableClearFileInput, setShouldDisableClearFileInput] =
+        useState(false)
 
-    const [shouldRenderClearFileInput, setShouldRenderClearFileInput] = useState(false);
-    const [shouldDisableClearFileInput, setShouldDisableClearFileInput] = useState(false);
+    const { label, hint } = text ?? {}
 
-    const { label, hint } = text ?? {};
-
-    const id: string = name;
-    const shouldRenderError: boolean = Boolean(initialError) || ((Boolean(error) || Boolean(submitError)) && touched);
-    const isRequired: boolean = Boolean(validators?.find(({ type }) => type === 'required'));
+    const id: string = name
+    const shouldRenderError: boolean =
+        Boolean(initialError) ||
+        ((Boolean(error) || Boolean(submitError)) && touched)
+    const isRequired: boolean = Boolean(
+        validators?.find(({ type }) => type === 'required')
+    )
 
     const generatedIds: any = {
         hint: `${name}-hint`,
         errorLabel: `${name}-error`,
-        clearFile: `${name}-clear`
-    };
+        clearFile: `${name}-clear`,
+    }
 
     const generatedClasses: any = {
         wrapper: classNames('nhsuk-form-group', className, {
-            ['nhsuk-form-group--error']: shouldRenderError
+            ['nhsuk-form-group--error']: shouldRenderError,
         }),
         label: classNames('nhsuk-label'),
         hint: classNames('nhsuk-hint'),
         error: classNames('nhsuk-error-message'),
         input: classNames('nhsuk-input nhsuk-u-width-full u-border-0 u-p-0', {
-            ['nhsuk-input--error']: shouldRenderError
-        })
-    };
+            ['nhsuk-input--error']: shouldRenderError,
+        }),
+    }
 
-    const ariaInputProps: any = getAriaFieldAttributes(isRequired, shouldRenderError, [
-        Boolean(hint) ? generatedIds.hint : null,
-        shouldRenderError ? generatedIds.errorLabel : null
-    ]);
+    const ariaInputProps: any = getAriaFieldAttributes(
+        isRequired,
+        shouldRenderError,
+        [
+            Boolean(hint) ? generatedIds.hint : null,
+            shouldRenderError ? generatedIds.errorLabel : null,
+        ]
+    )
 
     const handleClearFile = (event: any) => {
+        event.preventDefault()
 
-        event.preventDefault();
-
-        fileIdInput.current.value = '';
-        setShouldRenderClearFileInput(false);
-
+        fileIdInput.current.value = ''
+        setShouldRenderClearFileInput(false)
     }
 
     useEffect(() => {
+        fileIdInput.current = document.getElementsByName(
+            relatedFields?.fileId
+        )[0]
+        initialFileIdValue.current = fileIdInput.current.value
 
-        fileIdInput.current = document.getElementsByName(relatedFields?.fileId)[0];
-        initialFileIdValue.current = fileIdInput.current.value;
-
-        if(initialFileIdValue.current){
-
-            setShouldRenderClearFileInput(true);
-
+        if (initialFileIdValue.current) {
+            setShouldRenderClearFileInput(true)
         }
-
-    }, []);
+    }, [])
 
     return (
-
         <div className={generatedClasses.wrapper}>
-            <label 
-                htmlFor={id} 
-                className={generatedClasses.label}>
-                    {label}
+            <label htmlFor={id} className={generatedClasses.label}>
+                {label}
             </label>
-            {hint &&
+            {hint && (
                 <RichText
                     id={generatedIds.hintId}
                     className={generatedClasses.hint}
                     bodyHtml={hint}
-                    wrapperElementType="span" />
-            }
-            {shouldRenderError &&
-                <span className={generatedClasses.error}>{error || submitError || initialError}</span>
-            } 
+                    wrapperElementType="span"
+                />
+            )}
+            {shouldRenderError && (
+                <span className={generatedClasses.error}>
+                    {error || submitError || initialError}
+                </span>
+            )}
             <input
                 {...ariaInputProps}
-                id={id} 
-                name={name} 
-                type="file" 
-                value={value} 
+                id={id}
+                name={name}
+                type="file"
+                value={value}
                 onChange={onChange}
-                className={generatedClasses.input} />
-            {shouldRenderClearFileInput &&
-                <button 
-                    onClick={handleClearFile} 
+                className={generatedClasses.input}
+            />
+            {shouldRenderClearFileInput && (
+                <button
+                    onClick={handleClearFile}
                     className="o-link-button"
-                    disabled={shouldDisableClearFileInput}>Clear existing image</button>
-            }
+                    disabled={shouldDisableClearFileInput}
+                >
+                    Clear existing image
+                </button>
+            )}
         </div>
-
     )
-
 }

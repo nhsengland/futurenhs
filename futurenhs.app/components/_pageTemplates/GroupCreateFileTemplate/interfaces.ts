@@ -1,7 +1,7 @@
-import { Folder } from '@appTypes/file';
-import { GroupPage } from '@appTypes/page';
+import { Folder } from '@appTypes/file'
+import { GroupPage } from '@appTypes/page'
 
 export interface Props extends GroupPage {
-    folderId: string;
-    folder?: Folder;
+    folderId: string
+    folder?: Folder
 }

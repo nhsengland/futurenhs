@@ -1,9 +1,8 @@
 export interface Props {
-    ref?: any;
+    ref?: any
     text?: {
-        body: string;
-    };
-    errors?: Record<string, string>;
-    className?: string;
+        body: string
+    }
+    errors?: Record<string, string>
+    className?: string
 }
-

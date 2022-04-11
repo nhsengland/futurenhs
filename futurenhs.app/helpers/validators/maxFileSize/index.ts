@@ -1,40 +1,31 @@
 export const maxFileSize = (validationMethodData: any): Function => {
-
     return (files: any): string => {
+        try {
+            const message: string = validationMethodData.message
+            const maxFileSize: number = validationMethodData.maxFileSize
 
-    	try {
+            let valid: boolean = true
 
-		    const message: string = validationMethodData.message;
-    		const maxFileSize: number = validationMethodData.maxFileSize;
+            if (
+                files &&
+                files === Object(files) &&
+                files.length &&
+                maxFileSize
+            ) {
+                for (let i = 0; i < files.length; i++) {
+                    const file: any = files[i]
+                    const { size } = file
 
-            let valid: boolean = true;
-
-	        if (files && files === Object(files) && files.length && maxFileSize) {
-
-                for(let i = 0; i < files.length; i++){
-
-                    const file: any = files[i];
-                    const { size } = file;
-
-                    if(size && size > maxFileSize){
-
-                        valid = false;
-                        break;
-
+                    if (size && size > maxFileSize) {
+                        valid = false
+                        break
                     }
-
                 }
+            }
 
-        	}
-
-	        return valid ? undefined : message;
-
-    	} catch(error) {
-
-            return 'An unexpected error occured';
-
-    	}
-
-    };
-
-};
+            return valid ? undefined : message
+        } catch (error) {
+            return 'An unexpected error occured'
+        }
+    }
+}

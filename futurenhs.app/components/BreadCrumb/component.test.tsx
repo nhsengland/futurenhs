@@ -1,26 +1,22 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react'
 
-import { BreadCrumb } from './index';
+import { BreadCrumb } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
     text: {
-        ariaLabel: 'mockContent'    
+        ariaLabel: 'mockContent',
     },
-    breadCrumbList: []
-};
+    breadCrumbList: [],
+}
 
 describe('BreadCrumb', () => {
-
     it('renders aria label', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<BreadCrumb {...props} />)
 
-        render(<BreadCrumb {...props} />);
-
-        expect(screen.getByLabelText('mockContent'));
-
-    });
-    
-});
+        expect(screen.getByLabelText('mockContent'))
+    })
+})

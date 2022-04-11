@@ -1,4 +1,4 @@
-import { GroupsPageTextContent } from '@appTypes/content';
+import { GroupsPageTextContent } from '@appTypes/content'
 
 export default {
     createdByLabel: 'Created by',
@@ -8,5 +8,5 @@ export default {
     moreRepliesLabel: 'Show more replies',
     fewerRepliesLabel: 'Show fewer replies',
     secondaryHeading: 'Join in the conversation',
-    signedInLabel: 'You\'re signed in'
-} as GroupsPageTextContent;
+    signedInLabel: "You're signed in",
+} as GroupsPageTextContent

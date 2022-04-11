@@ -1,11 +1,11 @@
 export interface Props {
     input: {
-        name: string;
-    };
+        name: string
+    }
     text: {
-        legend: string;
-        hint?: string;
-    };
-    children?: any;
-    className?: string;
+        legend: string
+        hint?: string
+    }
+    children?: any
+    className?: string
 }

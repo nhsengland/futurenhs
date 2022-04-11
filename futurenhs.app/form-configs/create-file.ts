@@ -1,5 +1,5 @@
-import { formTypes } from "@constants/forms";
-import { FormConfig } from '@appTypes/form';
+import { formTypes } from '@constants/forms'
+import { FormConfig } from '@appTypes/form'
 
 export const createFileForm: FormConfig = {
     id: formTypes.CREATE_FILE,
@@ -9,21 +9,22 @@ export const createFileForm: FormConfig = {
                 {
                     name: 'File',
                     text: {
-                        label: 'File'
+                        label: 'File',
                     },
                     component: 'input',
                     inputType: 'file',
                     validators: [
                         {
                             type: 'required',
-                            message: 'Add a file'
-                        }
-                    ]
+                            message: 'Add a file',
+                        },
+                    ],
                 },
                 {
                     name: 'FieldWrapper',
                     component: 'groupContainer',
-                    className: 'u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1',
+                    className:
+                        'u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1',
                     fields: [
                         {
                             name: 'Title',
@@ -36,19 +37,19 @@ export const createFileForm: FormConfig = {
                             validators: [
                                 {
                                     type: 'required',
-                                    message: 'Enter the file title'
+                                    message: 'Enter the file title',
                                 },
                                 {
                                     type: 'maxLength',
                                     maxLength: 45,
-                                    message: 'Enter 45 or fewer characters'
-                                }
-                            ]
+                                    message: 'Enter 45 or fewer characters',
+                                },
+                            ],
                         },
                         {
                             name: 'Description',
                             text: {
-                                label: 'Enter a file description (optional)'
+                                label: 'Enter a file description (optional)',
                             },
                             component: 'textArea',
                             shouldRenderRemainingCharacterCount: true,
@@ -56,13 +57,13 @@ export const createFileForm: FormConfig = {
                                 {
                                     type: 'maxLength',
                                     maxLength: 150,
-                                    message: 'Enter 150 or fewer characters'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-};
+                                    message: 'Enter 150 or fewer characters',
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+}

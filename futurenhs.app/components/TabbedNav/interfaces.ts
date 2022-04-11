@@ -1,10 +1,10 @@
 export interface Props {
     text: {
-        ariaLabel: string;
+        ariaLabel: string
     }
     navMenuList?: Array<{
-        url: string;
-        text: string;
-        isActive?: boolean;
-    }>;
+        url: string
+        text: string
+        isActive?: boolean
+    }>
 }

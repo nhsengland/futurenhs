@@ -1,7 +1,7 @@
-import { GenericPageTextContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
-    title: 'Logged Out', 
+    title: 'Logged Out',
     metaDescription: 'Log Out',
-    mainHeading: 'Logged Out'
-} as GenericPageTextContent;
+    mainHeading: 'Logged Out',
+} as GenericPageTextContent

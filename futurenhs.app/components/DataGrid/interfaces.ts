@@ -1,19 +1,19 @@
 ﻿export type DataCell = {
-    children: any;
-    className?: string;
-    headerClassName?: string;
-    shouldRenderCellHeader?: boolean;
-};
+    children: any
+    className?: string
+    headerClassName?: string
+    shouldRenderCellHeader?: boolean
+}
 
-export type DataRow = Array<DataCell>;
+export type DataRow = Array<DataCell>
 
 export interface Props {
-    columnList: DataRow;
+    columnList: DataRow
     rowList: Array<DataRow>
     text: {
-        caption: string;
-    };
-    shouldRenderCaption?: boolean;
-    id?: string;
-    className?: string;
+        caption: string
+    }
+    shouldRenderCaption?: boolean
+    id?: string
+    className?: string
 }

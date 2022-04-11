@@ -1,5 +1,5 @@
-import { formTypes } from '@constants/forms';
-import { FormConfig } from '@appTypes/form';
+import { formTypes } from '@constants/forms'
+import { FormConfig } from '@appTypes/form'
 
 export const createDiscussionForm: FormConfig = {
     id: formTypes.CREATE_DISCUSSION,
@@ -10,41 +10,41 @@ export const createDiscussionForm: FormConfig = {
                     name: 'Title',
                     inputType: 'text',
                     text: {
-                        label: 'Title'
+                        label: 'Title',
                     },
                     component: 'input',
                     validators: [
                         {
                             type: 'required',
-                            message: 'Enter the discussion title'
+                            message: 'Enter the discussion title',
                         },
                         {
                             type: 'maxLength',
                             maxLength: 100,
-                            message: 'Enter 100 or fewer characters'
-                        }
-                    ]
+                            message: 'Enter 100 or fewer characters',
+                        },
+                    ],
                 },
                 {
                     name: 'Content',
                     text: {
-                        label: 'Comment'
+                        label: 'Comment',
                     },
                     component: 'textArea',
                     shouldRenderAsRte: true,
                     validators: [
                         {
                             type: 'required',
-                            message: 'Enter the discussion comment'
+                            message: 'Enter the discussion comment',
                         },
                         {
                             type: 'maxLength',
                             maxLength: 100000,
-                            message: 'Enter 100,000 or fewer characters'
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-};
+                            message: 'Enter 100,000 or fewer characters',
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+}
