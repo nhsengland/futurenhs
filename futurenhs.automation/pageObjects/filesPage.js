@@ -113,8 +113,8 @@ class filesPage extends basePage{
     }
     
     /**
-     * 
-     * @param {*} fileName 
+     * validates a file selected for upload, is uploaded and existing on the form function
+     * @param {*} fileName - name of the file to find
      */
     imageUploadValidation(fileName){
         var fileUpload = $(`//input[@type="file"]`);
