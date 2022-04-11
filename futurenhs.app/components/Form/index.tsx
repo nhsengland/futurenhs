@@ -20,6 +20,7 @@ export const Form: (props: Props) => JSX.Element = ({
     method = requestMethods.POST,
     csrfToken,
     formConfig,
+    context = {},
     instanceId,
     changeAction,
     cancelAction,
@@ -122,6 +123,7 @@ export const Form: (props: Props) => JSX.Element = ({
                             inputType={inputType}
                             text={text}
                             component={formComponents[component]}
+                            context={context}
                             className={className}
                             {...rest}
                         >

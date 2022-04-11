@@ -145,7 +145,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                                             name="icon-edit"
                                             className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0"
                                         />
-                                        Edit user
+                                        Edit
                                     </a>
                                 </Link>
                             ),
@@ -199,6 +199,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                             className="u-list-none u-p-0"
                         >
                             <DataGrid
+                                id="admin-table-users"
                                 columnList={columnList}
                                 rowList={rowList}
                                 text={{

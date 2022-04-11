@@ -1,3 +1,7 @@
+import { ServiceResponse } from "@appTypes/service";
+import { services as serviceId } from "@constants/services";
+import { Option } from "@appTypes/option";
+
 declare type Component = any;
 declare type InputType = string;
 declare type ValidatorType = string;
@@ -27,6 +31,8 @@ export interface FormField {
         message: string;
     }>;
     relatedFields?: Record<string, string>;
+    services?: Record<string, (config: Record<string, any>, dependencies: Record<string, any>) => ServiceResponse<Array<Option>>>;
+    serviceId?: serviceId;
     className?: string;
     optionClassName?: string;
 }
