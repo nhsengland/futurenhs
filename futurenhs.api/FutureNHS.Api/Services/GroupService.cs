@@ -106,23 +106,26 @@ namespace FutureNHS.Api.Services
             if (groupValidationResult.Errors.Count > 0)
                 throw new ValidationException(groupValidationResult);
 
-            var imageValidator = new ImageValidator();
-            var imageValidationResult = await imageValidator.ValidateAsync(image, cancellationToken);
-            if (imageValidationResult.Errors.Count > 0)
-                throw new ValidationException(imageValidationResult);
+            if (image is not null)
+            {
+                var imageValidator = new ImageValidator();
+                var imageValidationResult = await imageValidator.ValidateAsync(image, cancellationToken);
+                if (imageValidationResult.Errors.Count > 0)
+                    throw new ValidationException(imageValidationResult);
+            }
 
             try
             {
-                if (image != null)
+                if (image is not null)
                 {
                     var imageId = await _imageService.CreateImageAsync(image);
                     group = group with {ImageId = imageId};
                 }
- }
+            }
             catch (DBConcurrencyException ex)
             {
                 _logger.LogError(ex, $"Error: CreateImageAsync - Error adding image to group {0}", slug);
-                if (image != null)
+                if (image is not null)
                 {
                     await _blobStorageProvider.DeleteFileAsync(image.FileName);
                     await _imageService.DeleteImageAsync(image.Id);
@@ -135,7 +138,7 @@ namespace FutureNHS.Api.Services
             catch (DBConcurrencyException ex)
             {
                 _logger.LogError(ex, $"Error: UpdateGroupAsync - Error updating group {0}", slug);
-                if (image != null)
+                if (image is not null)
                 {
                     await _blobStorageProvider.DeleteFileAsync(image.FileName);
                     await _imageService.DeleteImageAsync(image.Id);
