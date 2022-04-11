@@ -136,11 +136,7 @@ class table extends basePage{
             }
         }
         var tablePath = this.getTable(tableName);
-        if(linkText === 'Edit') {
-            var link = tablePath.$(`./tbody/tr[${tableRow}]/td/a[@class="btn-mvc"]`);
-        } else {
-            var link = tablePath.$(`./tbody/tr[${tableRow}]/td//a[contains(normalize-space(.), "${linkText}")]`);
-        }
+        var link = tablePath.$(`./tbody/tr[${tableRow}]/td//a[contains(normalize-space(.), "${linkText}")]`);
         helpers.waitForLoaded(link)
         helpers.click(link);
     }
