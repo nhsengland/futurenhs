@@ -1,46 +1,40 @@
-import useSWR from 'swr';
+import useSWR from 'swr'
 
 export const useService = ({
     key,
     options,
-    service
+    service,
 }): {
-    data?: any;
-    errors?: Array<string>;
-    isProcessing?: boolean;
+    data?: any
+    errors?: Array<string>
+    isProcessing?: boolean
 } => {
-
     try {
+        const { data } = useSWR(
+            key,
+            service().then(({ data, errors }) => {
+                if (errors?.length) {
+                    throw new Error(errors[0])
+                }
 
-        const { data } = useSWR(key, service().then(({ data, errors }) => {
-
-            if(errors?.length){ 
-                
-                throw new Error(errors[0]);
-            
-            }
-    
-            return data;
-    
-        }), options);
+                return data
+            }),
+            options
+        )
 
         return {
             data: data,
             errors: null,
-            isProcessing: !data
+            isProcessing: !data,
         }
-
-    } catch(error){
-
+    } catch (error) {
         return {
             data: null,
             errors: [error],
-            isProcessing: false
+            isProcessing: false,
         }
-
     }
-
-};
+}
 
 // WIP
 // const { data, error } = useSWR(pagination.pageNumber.toString(), () => getGroupDiscussionComments({
@@ -58,7 +52,7 @@ export const useService = ({
 
 //     return data;
 
-// }), 
+// }),
 // {
 //     refreshInterval: 10000,
 //     fallbackData: discussionComments,

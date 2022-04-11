@@ -1,3 +1,3 @@
 export interface Props {
-    assetPath?: string;
+    assetPath?: string
 }

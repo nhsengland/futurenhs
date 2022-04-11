@@ -1,11 +1,11 @@
-import { Input } from './Input';
-import { ImageUpload } from './ImageUpload';
-import { TextArea } from './TextArea';
-import { Hidden } from './Hidden';
-import { MultiChoice } from './MultiChoice';
-import { CheckBox } from './CheckBox';
-import { FieldSet } from './FieldSet';
-import { GroupContainer } from './GroupContainer';
+import { Input } from './Input'
+import { ImageUpload } from './ImageUpload'
+import { TextArea } from './TextArea'
+import { Hidden } from './Hidden'
+import { MultiChoice } from './MultiChoice'
+import { CheckBox } from './CheckBox'
+import { FieldSet } from './FieldSet'
+import { GroupContainer } from './GroupContainer'
 
 export const formComponents: any = {
     input: Input,
@@ -15,5 +15,5 @@ export const formComponents: any = {
     multiChoice: MultiChoice,
     checkBox: CheckBox,
     hidden: Hidden,
-    groupContainer: GroupContainer
-};
+    groupContainer: GroupContainer,
+}

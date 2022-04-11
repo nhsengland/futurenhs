@@ -1,16 +1,16 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps } from 'next'
 
-import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps';
-import { withUser } from '@hofs/withUser';
-import { withRoutes } from '@hofs/withRoutes';
-import { withTextContent } from '@hofs/withTextContent';
-import { GetServerSidePropsContext } from '@appTypes/next';
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
+import { withUser } from '@hofs/withUser'
+import { withRoutes } from '@hofs/withRoutes'
+import { withTextContent } from '@hofs/withTextContent'
+import { GetServerSidePropsContext } from '@appTypes/next'
 
-import { HomeTemplate } from '@components/_pageTemplates/HomeTemplate';
-import { Props } from '@components/_pageTemplates/HomeTemplate/interfaces';
+import { HomeTemplate } from '@components/_pageTemplates/HomeTemplate'
+import { Props } from '@components/_pageTemplates/HomeTemplate/interfaces'
 
-const routeId: string = '749bd865-27b8-4af6-960b-3f0458f8e92f';
-const props: Partial<Props> = {};
+const routeId: string = '749bd865-27b8-4af6-960b-3f0458f8e92f'
+const props: Partial<Props> = {}
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -23,7 +23,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
             props,
             routeId: routeId,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
-
                 /**
                  * Return data to page template
                  */
@@ -36,16 +35,15 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 return {
                     redirect: {
                         permanent: false,
-                        destination: props.routes.groupsRoot
-                    }
+                        destination: props.routes.groupsRoot,
+                    },
                 }
-
-            }
-        })
-    })
-});
+            },
+        }),
+    }),
+})
 
 /**
  * Export page template
  */
-export default HomeTemplate;
+export default HomeTemplate

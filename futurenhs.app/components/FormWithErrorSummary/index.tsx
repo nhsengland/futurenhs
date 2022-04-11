@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import classNames from 'classnames';
+import { useEffect, useRef, useState } from 'react'
+import classNames from 'classnames'
 
-import { ErrorSummary } from '@components/ErrorSummary';
-import { Form } from '@components/Form';
-import { requestMethods } from '@constants/fetch';
-import { FormErrors } from '@appTypes/form';
+import { ErrorSummary } from '@components/ErrorSummary'
+import { Form } from '@components/Form'
+import { requestMethods } from '@constants/fetch'
+import { FormErrors } from '@appTypes/form'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     action,
@@ -23,59 +23,54 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
     className,
     bodyClassName,
     submitButtonClassName,
-    shouldClearOnSubmitSuccess
+    shouldClearOnSubmitSuccess,
 }) => {
-
-    const errorSummaryRef: any = useRef();
-    const [validationErrors, setValidationErrors] = useState(errors ? errors : {});
+    const errorSummaryRef: any = useRef()
+    const [validationErrors, setValidationErrors] = useState(
+        errors ? errors : {}
+    )
 
     /**
      * Handle client-side validation failure in forms
      */
     const handleValidationFailure = (errors: FormErrors): void => {
+        setValidationErrors(errors)
 
-        setValidationErrors(errors);
-
-        window.scrollTo(0, 0);
-        errorSummaryRef?.current?.focus?.();
-
-    };
+        window.scrollTo(0, 0)
+        errorSummaryRef?.current?.focus?.()
+    }
 
     /**
      * Handle client-side submit
      */
     const handleSubmit = (formData: FormData): Promise<FormErrors> => {
+        setValidationErrors({})
 
-        setValidationErrors({});
-        
-        return submitAction?.(formData);
+        return submitAction?.(formData)
+    }
 
-    };
-
-    const { form: formText } = text ?? {};
+    const { form: formText } = text ?? {}
 
     const generatedClasses: any = {
-        form: classNames('c-form', className)
-    };
+        form: classNames('c-form', className),
+    }
 
     /**
      * Render any errors that happen externally
      */
     useEffect(() => {
-
-        setValidationErrors(errors);
-
-    }, [errors]);
+        setValidationErrors(errors)
+    }, [errors])
 
     return (
-
         <>
             <ErrorSummary
                 ref={errorSummaryRef}
                 errors={validationErrors}
-                className="u-mb-6"/>
-                    {children}
-            <Form 
+                className="u-mb-6"
+            />
+            {children}
+            <Form
                 action={action}
                 method={method}
                 csrfToken={csrfToken}
@@ -89,9 +84,8 @@ export const FormWithErrorSummary: (props: Props) => JSX.Element = ({
                 cancelHref={cancelHref}
                 cancelAction={cancelAction}
                 validationFailAction={handleValidationFailure}
-                submitAction={handleSubmit} />
+                submitAction={handleSubmit}
+            />
         </>
-        
     )
-
 }

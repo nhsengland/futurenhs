@@ -1,19 +1,18 @@
-import * as React from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
-import * as nextRouter from 'next/router';
-import { actions as actionConstants } from '@constants/actions';
+import * as React from 'react'
+import { cleanup, render, screen } from '@testing-library/react'
+import * as nextRouter from 'next/router'
+import { actions as actionConstants } from '@constants/actions'
 
-import { AdminUsersTemplate } from './index';
-import { routes } from '@jestMocks/generic-props';
+import { AdminUsersTemplate } from './index'
+import { routes } from '@jestMocks/generic-props'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 describe('Admin users template', () => {
-
-    (nextRouter as any).useRouter = jest.fn();
-    (nextRouter as any).useRouter.mockImplementation(() => ({
+    ;(nextRouter as any).useRouter = jest.fn()
+    ;(nextRouter as any).useRouter.mockImplementation(() => ({
         asPath: '/admin/users',
-    }));
+    }))
 
     const props: Props = {
         id: 'mockId',
@@ -22,56 +21,48 @@ describe('Admin users template', () => {
             mainHeading: 'Mock main heading',
             secondaryHeading: 'Mock secondary heading',
             noUsers: 'No users',
-            inviteUser: 'Invite user'
+            inviteUser: 'Invite user',
         },
         usersList: [],
-        actions: []
+        actions: [],
     }
 
     it('renders correctly', () => {
-        
-        render(<AdminUsersTemplate {...props}/>);
+        render(<AdminUsersTemplate {...props} />)
 
-        expect(screen.getAllByText('Mock secondary heading').length).toBe(1);
-
-    });
+        expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
+    })
 
     it('renders list of users if there are platform users', () => {
-
         const propsCopy: Props = Object.assign({}, props, {
             usersList: [
                 {
                     id: '123',
                     fullName: 'Test User',
-                    role: 'Admin role'
-                }
-            ]
+                    role: 'Admin role',
+                },
+            ],
         })
 
+        render(<AdminUsersTemplate {...propsCopy} />)
 
-        render(<AdminUsersTemplate {...propsCopy}/>)
-
-        expect(screen.getAllByText('Test User').length).toBe(1);
+        expect(screen.getAllByText('Test User').length).toBe(1)
     })
 
     it('conditionally renders create user link', () => {
+        render(<AdminUsersTemplate {...props} />)
 
-        render(<AdminUsersTemplate {...props}/>);
+        expect(screen.queryByText('Invite user')).toBeNull()
 
-        expect(screen.queryByText('Invite user')).toBeNull();
-
-        cleanup();
+        cleanup()
 
         const propsCopy: Props = Object.assign({}, props, {
-            actions: [
-                actionConstants.SITE_ADMIN_MEMBERS_ADD
-            ]
+            actions: [actionConstants.SITE_ADMIN_MEMBERS_ADD],
         })
 
-        render(<AdminUsersTemplate {...propsCopy}/>);
+        render(<AdminUsersTemplate {...propsCopy} />)
 
-        expect(screen.getAllByText('Invite user').length).toBe(1);
-
+        expect(screen.getAllByText('Invite user').length).toBe(1)
     })
 
     // it('renders users role if no full name', () => {
@@ -95,7 +86,5 @@ describe('Admin users template', () => {
 
     //     expect(screen.getAllByText('Admin role').length).toBeGreaterThan(0);
 
-
     // })
-
-});
+})

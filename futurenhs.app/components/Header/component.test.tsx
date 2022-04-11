@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react'
 
-import { Header } from './index';
+import { Header } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
     text: {
@@ -12,53 +12,45 @@ const testProps: Props = {
         logOutHeading: 'Log out',
         logOutBody: 'Do you want to log out?',
         logOutCancel: 'Cancel',
-        logOutConfirm: 'Yes, log out'
+        logOutConfirm: 'Yes, log out',
     },
     user: {
         id: '12345',
         text: {
-            userName: 'Mock Name'
+            userName: 'Mock Name',
         },
         image: {
             source: '/img.jpg',
-            altText: 'Image of Mock Name'
-        }
+            altText: 'Image of Mock Name',
+        },
     },
     navMenuList: [],
     shouldRenderSearch: true,
-    shouldRenderNavigation: true
-};
+    shouldRenderNavigation: true,
+}
 
 describe('Header', () => {
-
     it('Renders a search input', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<Header {...props} />)
 
-        render(<Header {...props} />);
-
-        expect(screen.getByRole('searchbox'));
-
-    });
+        expect(screen.getByRole('searchbox'))
+    })
 
     it('Renders a user nav', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<Header {...props} />)
 
-        render(<Header {...props} />);
-
-        expect(screen.getByRole('navigation'));
-
-    });
+        expect(screen.getByRole('navigation'))
+    })
 
     it('Renders content', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<Header {...props} />)
 
-        render(<Header {...props} />);
-
-        expect(screen.getByText('Log out'));
-
-    });
-    
-});
+        expect(screen.getByText('Log out'))
+    })
+})

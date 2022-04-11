@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react'
 
-import { Form } from './index';
+import { Form } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
     csrfToken: 'mockToken',
@@ -15,39 +15,33 @@ const testProps: Props = {
                         name: 'mockFieldName',
                         component: 'input',
                         text: {
-                            label: 'mockLabel'
-                        }
-                    }
-                ]
-            }
-        ]
+                            label: 'mockLabel',
+                        },
+                    },
+                ],
+            },
+        ],
     },
     text: {
-        submitButton: 'Submit'
+        submitButton: 'Submit',
     },
-    submitAction: jest.fn()
-};
+    submitAction: jest.fn(),
+}
 
 describe('Form', () => {
-
     it('renders fields', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<Form {...props} />)
 
-        render(<Form {...props} />);
-
-        expect(screen.getByLabelText('mockLabel'));
-
-    });
+        expect(screen.getByLabelText('mockLabel'))
+    })
 
     it('renders submit button text', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<Form {...props} />)
 
-        render(<Form {...props} />);
-
-        expect(screen.getByText('Submit'));
-
-    });
-    
-});
+        expect(screen.getByText('Submit'))
+    })
+})

@@ -3,7 +3,7 @@ export const enum requestMethods {
     POST = 'POST',
     PUT = 'PUT',
     PATCH = 'PATCH',
-    DELETE = 'DELETE'
-};
+    DELETE = 'DELETE',
+}
 
-export const defaultTimeOutMillis: number = 30000;
+export const defaultTimeOutMillis: number = 30000

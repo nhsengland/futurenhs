@@ -1,5 +1,3 @@
-import { GroupPage } from '@appTypes/page';
+import { GroupPage } from '@appTypes/page'
 
-export interface Props extends GroupPage {
-    
-}
+export interface Props extends GroupPage {}

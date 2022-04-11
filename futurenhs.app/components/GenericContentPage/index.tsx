@@ -1,34 +1,29 @@
-import Head from 'next/head';
+import Head from 'next/head'
 
-import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
+import { StandardLayout } from '@components/_pageLayouts/StandardLayout'
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 export const GenericContentPage: (props: Props) => JSX.Element = ({
     isAuthenticated,
-    text
+    text,
 }) => {
-
-    const { metaDescription, 
-            title, 
-            mainHeading } = text ?? {};
+    const { metaDescription, title, mainHeading } = text ?? {}
 
     return (
-
-        <StandardLayout 
+        <StandardLayout
             shouldRenderSearch={isAuthenticated}
             shouldRenderUserNavigation={isAuthenticated}
-            shouldRenderMainNav={isAuthenticated}>
-                <Head>
-                    <title>{title}</title>
-                    <meta name="description" content={metaDescription} />
-                </Head>
-                <LayoutColumnContainer className="u-py-10">
-                    <h1>{mainHeading}</h1>
-                </LayoutColumnContainer>
+            shouldRenderMainNav={isAuthenticated}
+        >
+            <Head>
+                <title>{title}</title>
+                <meta name="description" content={metaDescription} />
+            </Head>
+            <LayoutColumnContainer className="u-py-10">
+                <h1>{mainHeading}</h1>
+            </LayoutColumnContainer>
         </StandardLayout>
-
     )
-
 }

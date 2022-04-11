@@ -1,23 +1,19 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react'
 
-import { AriaLiveRegion } from './index';
+import { AriaLiveRegion } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
-    children: <p>mock content</p>
-};
+    children: <p>mock content</p>,
+}
 
 describe('Aria live region', () => {
-
     it('renders children', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<AriaLiveRegion {...props} />)
 
-        render(<AriaLiveRegion {...props} />);
-
-        expect(screen.getByText('mock content'));
-
-    });
-    
-});
+        expect(screen.getByText('mock content'))
+    })
+})

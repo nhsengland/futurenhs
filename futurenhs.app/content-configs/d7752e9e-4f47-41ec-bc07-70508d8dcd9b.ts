@@ -1,4 +1,4 @@
-import { GenericPageTextContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
     discussionsHeading: 'All Discussions',
@@ -7,5 +7,5 @@ export default {
     createdByLabel: 'Created by',
     lastCommentLabel: 'Last comment by',
     stickyLabel: 'Sticky:',
-    subTitle: 'Forum'
-} as GenericPageTextContent;
+    subTitle: 'Forum',
+} as GenericPageTextContent

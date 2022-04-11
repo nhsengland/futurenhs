@@ -1,45 +1,38 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps } from 'next'
 
-import formConfigs from '@formConfigs/index';
-import { selectCsrfToken } from '@selectors/context';
-import { GetServerSidePropsContext, HofConfig } from '@appTypes/next';
-import { FormConfig } from '@appTypes/form';
+import formConfigs from '@formConfigs/index'
+import { selectCsrfToken } from '@selectors/context'
+import { GetServerSidePropsContext, HofConfig } from '@appTypes/next'
+import { FormConfig } from '@appTypes/form'
 
-export const withForms = (config: HofConfig, dependencies?: {}): GetServerSideProps => {
-
-    const { props, getServerSideProps } = config;
+export const withForms = (
+    config: HofConfig,
+    dependencies?: {}
+): GetServerSideProps => {
+    const { props, getServerSideProps } = config
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
+        const csrfToken: string = selectCsrfToken(context)
 
-        const csrfToken: string = selectCsrfToken(context);
-
-        const clonedFormConfigs: Record<string, FormConfig> = {};
+        const clonedFormConfigs: Record<string, FormConfig> = {}
 
         try {
-
             /**
              * Ensure the imports are not inadvertently mutated later
              */
             Object.keys(formConfigs).forEach((key) => {
-
                 clonedFormConfigs[key] = {
                     id: formConfigs[key]?.id,
-                    steps: formConfigs[key]?.steps
-                };
+                    steps: formConfigs[key]?.steps,
+                }
+            })
 
-            });
+            props.csrfToken = csrfToken
+            props.forms = clonedFormConfigs
 
-            props.csrfToken = csrfToken;
-            props.forms = clonedFormConfigs;
-
-            return await getServerSideProps(context);
-
-        } catch(error){
-
-            console.log(error);
-
+            return await getServerSideProps(context)
+        } catch (error) {
+            console.log(error)
         }
-
     }
-
 }

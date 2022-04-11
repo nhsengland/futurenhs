@@ -1,5 +1,5 @@
 export interface Props {
-    addBlockAction?: any;
-    addBlockCancelAction?: any;
-    className?: string;
+    addBlockAction?: any
+    addBlockCancelAction?: any
+    className?: string
 }

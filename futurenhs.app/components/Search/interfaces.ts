@@ -1,14 +1,13 @@
-import { requestMethods } from '@constants/fetch';
+import { requestMethods } from '@constants/fetch'
 
 export interface Props {
-    value?: any;
-    method: requestMethods;
-    action: string;
-    id: string;
+    value?: any
+    method: requestMethods
+    action: string
+    id: string
     text: {
-        label: string;
-        placeholder: string;
-    };
-    className?: string;
+        label: string
+        placeholder: string
+    }
+    className?: string
 }
-

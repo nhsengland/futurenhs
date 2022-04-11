@@ -1,7 +1,7 @@
-import { Page } from '@appTypes/page';
-import { User } from '@appTypes/user';
+import { Page } from '@appTypes/page'
+import { User } from '@appTypes/user'
 
 export interface Props extends Page {
-    user: User;
-    pageTitle?: string;
+    user: User
+    pageTitle?: string
 }

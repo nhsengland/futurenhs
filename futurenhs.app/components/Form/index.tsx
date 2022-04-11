@@ -1,16 +1,16 @@
-import { useState, useCallback, useRef } from 'react';
-import { useRouter } from 'next/router';
-import { Form as FinalForm, Field, FormSpy } from 'react-final-form';
-import classNames from 'classnames';
+import { useState, useCallback, useRef } from 'react'
+import { useRouter } from 'next/router'
+import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
+import classNames from 'classnames'
 
-import { Link } from '@components/Link';
-import { formComponents } from '@components/_formComponents';
-import { Dialog } from '@components/Dialog';
-import { validate } from '@helpers/validators';
-import { requestMethods } from '@constants/fetch';
-import { FormField, FormErrors } from '@appTypes/form';
+import { Link } from '@components/Link'
+import { formComponents } from '@components/_formComponents'
+import { Dialog } from '@components/Dialog'
+import { validate } from '@helpers/validators'
+import { requestMethods } from '@constants/fetch'
+import { FormField, FormErrors } from '@appTypes/form'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 /**
  * Generic form handler
@@ -32,132 +32,130 @@ export const Form: (props: Props) => JSX.Element = ({
     submitButtonClassName,
     cancelButtonClassName,
     shouldAddErrorTitle = true,
-    shouldClearOnSubmitSuccess
+    shouldClearOnSubmitSuccess,
 }) => {
+    const router = useRouter()
 
-    const router = useRouter();
+    const submission = useRef(null)
+    const formInstance = useRef(null)
 
-    const submission = useRef(null);
-    const formInstance = useRef(null);
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
+    const [isProcessing, setIsProcessing] = useState(false)
 
-    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const formId: string = formConfig?.id
+    const fieldsTemplate: Array<FormField> = formConfig?.steps[0]?.fields
+    const initialErrors: FormErrors = formConfig?.errors ?? {}
+    const initialValues: Record<string, any> = formConfig?.initialValues ?? {}
 
-    const formId: string = formConfig?.id;
-    const fieldsTemplate: Array<FormField> = formConfig?.steps[0]?.fields;
-    const initialErrors: FormErrors = formConfig?.errors ?? {};
-    const initialValues: Record<string, any> = formConfig?.initialValues ?? {};
+    const { submitButton, cancelButton } = text ?? {}
 
-    const { submitButton, cancelButton } = text ?? {};
-
-    const shouldRenderCancelButton: boolean = Boolean(cancelButton) && (Boolean(cancelHref) || Boolean(cancelAction));
+    const shouldRenderCancelButton: boolean =
+        Boolean(cancelButton) && (Boolean(cancelHref) || Boolean(cancelAction))
 
     /**
      * Create unique field instances from the supplied fields template
      */
     const [fields] = useState(() => {
-
-        let templatedFields: Array<FormField>;
+        let templatedFields: Array<FormField>
 
         try {
-
-            templatedFields = JSON.parse(JSON.stringify(fieldsTemplate));
-
+            templatedFields = JSON.parse(JSON.stringify(fieldsTemplate))
         } catch (error) {
-
-            templatedFields = [];
-
+            templatedFields = []
         }
 
-        templatedFields.forEach(field => {
+        templatedFields.forEach((field) => {
+            field.name = instanceId ? field.name + '-' + instanceId : field.name
+            field.initialError = initialErrors?.[field.name] || null
+        })
 
-            field.name = instanceId ? field.name + '-' + instanceId : field.name;
-            field.initialError = initialErrors?.[field.name] || null;
-
-        });
-
-        return templatedFields;
-
-    });
+        return templatedFields
+    })
 
     const generatedClasses: any = {
         wrapper: classNames('c-form', className),
         body: classNames('c-form_body', bodyClassName),
         buttonContainer: classNames('tablet:u-flex', 'u-justify-between'),
-        submitButton: classNames('c-form_submit-button', 'c-button', 'u-w-full', 'tablet:u-w-auto', 'u-mb-4', submitButtonClassName),
-        cancelButton: classNames('c-form_cancel-button', 'c-button', 'c-button-outline', 'u-w-full', 'u-mb-4', 'tablet:u-w-auto', cancelButtonClassName)
-    };
+        submitButton: classNames(
+            'c-form_submit-button',
+            'c-button',
+            'u-w-full',
+            'tablet:u-w-auto',
+            'u-mb-4',
+            submitButtonClassName
+        ),
+        cancelButton: classNames(
+            'c-form_cancel-button',
+            'c-button',
+            'c-button-outline',
+            'u-w-full',
+            'u-mb-4',
+            'tablet:u-w-auto',
+            cancelButtonClassName
+        ),
+    }
 
     /**
      * Recursively render field components from field config
      */
-    const renderFields = useCallback((fields?: Array<FormField>): Array<JSX.Element> => {
+    const renderFields = useCallback(
+        (fields?: Array<FormField>): Array<JSX.Element> => {
+            if (!fields) {
+                return null
+            }
 
-        if (!fields) {
-
-            return null;
-
-        }
-
-        return fields?.map(({
-            name,
-            inputType,
-            text,
-            component,
-            fields,
-            className,
-            ...rest
-        }) => {
-
-            return (
-
-                <Field
-                    key={name}
-                    instanceId={instanceId}
-                    name={name}
-                    inputType={inputType}
-                    text={text}
-                    component={formComponents[component]}
-                    className={className}
-                    {...rest}>
-                        {renderFields(fields)}
-                </Field>
-
+            return fields?.map(
+                ({
+                    name,
+                    inputType,
+                    text,
+                    component,
+                    fields,
+                    className,
+                    ...rest
+                }) => {
+                    return (
+                        <Field
+                            key={name}
+                            instanceId={instanceId}
+                            name={name}
+                            inputType={inputType}
+                            text={text}
+                            component={formComponents[component]}
+                            className={className}
+                            {...rest}
+                        >
+                            {renderFields(fields)}
+                        </Field>
+                    )
+                }
             )
-
-        });
-
-    }, [fields]);
+        },
+        [fields]
+    )
 
     /**
      * Handle generic form life-cycle events
      */
-    const handleChange = (props: any): void => changeAction?.(props);
-    const handleValidate = (submission: any): Record<string, string> => validate(submission, fields);
+    const handleChange = (props: any): void => changeAction?.(props)
+    const handleValidate = (submission: any): Record<string, string> =>
+        validate(submission, fields)
     const handleValidationFailure = (errors: any) => {
-
-        validationFailAction?.(errors);
-        setPageTitle(errors);
-
-    };
+        validationFailAction?.(errors)
+        setPageTitle(errors)
+    }
 
     /**
      * Applies the error pattern to the page title
      */
     const setPageTitle = (errors: FormErrors): void => {
-
-        const basePageTitle: string = document.title.replace('Error: ', '');
+        const basePageTitle: string = document.title.replace('Error: ', '')
 
         if (shouldAddErrorTitle && errors && Object.keys(errors).length > 0) {
-
-            document.title = `Error: ${basePageTitle}`;
-
+            document.title = `Error: ${basePageTitle}`
         } else {
-
-            document.title = basePageTitle;
-
+            document.title = basePageTitle
         }
-
     }
 
     /**
@@ -166,181 +164,174 @@ export const Form: (props: Props) => JSX.Element = ({
      * as only this supports multi-part form data
      */
     const handleSubmit = (_): Promise<FormErrors> => {
+        setIsProcessing(true)
 
-        setIsProcessing(true);
+        return submitAction?.(submission.current)?.then(
+            (errors: FormErrors) => {
+                setIsProcessing(false)
 
-        return submitAction?.(submission.current)?.then((errors: FormErrors) => {
+                if (!errors || Object.keys(errors).length === 0) {
+                    /**
+                     * Clear the form if the submission completed without errors
+                     */
+                    shouldClearOnSubmitSuccess && formInstance.current.restart()
+                } else {
+                    handleValidationFailure(errors)
+                }
 
-            setIsProcessing(false);
-
-            if (!errors || Object.keys(errors).length === 0) {
-
-                /**
-                * Clear the form if the submission completed without errors
-                */
-                shouldClearOnSubmitSuccess && formInstance.current.restart();
-    
-            } else {
-    
-                handleValidationFailure(errors);
-    
+                return errors
             }
-            
-            return errors;
-        
-        });
-
+        )
     }
 
     /**
      * Render
      */
     return (
-
         <FinalForm
             initialValues={initialValues}
             onSubmit={handleSubmit}
             validate={handleValidate}
-            render={({
-                form,
-                errors,
-                handleSubmit,
-                hasValidationErrors,
-            }) => {
-
+            render={({ form, errors, handleSubmit, hasValidationErrors }) => {
                 /**
                  * Handles opening a modal to confirm cancellation of a submission
                  */
                 const handleCancel = (event: any): any => {
+                    event.preventDefault()
 
-                    event.preventDefault();
-
-                    setIsCancelModalOpen(true);
-
-                };
+                    setIsCancelModalOpen(true)
+                }
 
                 /**
                  * Handles discarding the submission cancellation
                  */
-                const handleDiscardFormCancel = (): void => setIsCancelModalOpen(false);
+                const handleDiscardFormCancel = (): void =>
+                    setIsCancelModalOpen(false)
 
                 /**
                  * Handles the submission cancellation
                  */
                 const handleDiscardFormConfirm = (): Promise<boolean> => {
-
-                    form.restart();
+                    form.restart()
 
                     if (cancelHref) {
-
-                        return router.push(cancelHref);
-
+                        return router.push(cancelHref)
                     } else if (cancelAction) {
-
-                        setIsCancelModalOpen(false);
-                        cancelAction();
-
+                        setIsCancelModalOpen(false)
+                        cancelAction()
                     }
-
-                };
+                }
 
                 return (
-
                     <form
                         action={action}
                         method={method}
                         encType="multipart/form-data"
                         noValidate={true}
                         onSubmit={async (event: any) => {
-
-                            event.preventDefault();
+                            event.preventDefault()
 
                             if (!isProcessing) {
-
                                 /**
                                  * Handle client-side validation failure in forms
                                  */
                                 if (hasValidationErrors) {
-
-                                    handleValidationFailure(errors);
-
+                                    handleValidationFailure(errors)
                                 }
 
                                 /**
                                  * We need to handle multi-part forms using a FormData object to support file uploads
                                  * react-final-form only natively handles submissions as JSON in handleSubmit, so the FormData is cached in a ref before calling handleSubmit
                                  */
-                                submission.current = new FormData(event.target);
-                                formInstance.current = form;
+                                submission.current = new FormData(event.target)
+                                formInstance.current = form
 
                                 /**
                                  * Submit and then reset the form on success
                                  */
-                                handleSubmit();
-
+                                handleSubmit()
                             }
-
                         }}
-                        className={generatedClasses.wrapper}>
+                        className={generatedClasses.wrapper}
+                    >
                         <Field
                             key="_csrf"
                             id={`_csrf${instanceId ?? ''}`}
                             name="_csrf"
                             component={formComponents.hidden}
                             initialValue={csrfToken}
-                            defaultValue={csrfToken} />
+                            defaultValue={csrfToken}
+                        />
                         <Field
                             key="_form-id"
                             id={`_form-id${instanceId ?? ''}`}
                             name="_form-id"
                             component={formComponents.hidden}
                             initialValue={formId}
-                            defaultValue={formId} />
-                        {instanceId &&
+                            defaultValue={formId}
+                        />
+                        {instanceId && (
                             <Field
                                 key="_instance-id"
                                 id={`_instance-id${instanceId}`}
                                 name="_instance-id"
                                 component={formComponents.hidden}
                                 initialValue={instanceId}
-                                defaultValue={instanceId} />
-                        }
+                                defaultValue={instanceId}
+                            />
+                        )}
                         <div className={generatedClasses.body}>
                             {renderFields(fields)}
                         </div>
                         <div className={generatedClasses.buttonContainer}>
-                            {shouldRenderCancelButton &&
+                            {shouldRenderCancelButton && (
                                 <>
-                                    {cancelHref &&
+                                    {cancelHref && (
                                         <Link href={cancelHref}>
-                                            <a className={generatedClasses.cancelButton} onClick={handleCancel}>
+                                            <a
+                                                className={
+                                                    generatedClasses.cancelButton
+                                                }
+                                                onClick={handleCancel}
+                                            >
                                                 {cancelButton}
                                             </a>
                                         </Link>
-                                    }
-                                    {cancelAction &&
-                                        <button className={generatedClasses.cancelButton} onClick={handleCancel}>
+                                    )}
+                                    {cancelAction && (
+                                        <button
+                                            className={
+                                                generatedClasses.cancelButton
+                                            }
+                                            onClick={handleCancel}
+                                        >
                                             {cancelButton}
                                         </button>
-                                    }
+                                    )}
                                     <Dialog
                                         id="dialog-discard-discussion"
                                         isOpen={isCancelModalOpen}
                                         text={{
                                             cancelButton: 'Cancel',
-                                            confirmButton: 'Yes, discard'
+                                            confirmButton: 'Yes, discard',
                                         }}
                                         cancelAction={handleDiscardFormCancel}
-                                        confirmAction={handleDiscardFormConfirm}>
+                                        confirmAction={handleDiscardFormConfirm}
+                                    >
                                         <h3>Entered Data will be lost</h3>
-                                        <p className="u-text-bold">Any entered details will be discarded. Are you sure you wish to proceed?</p>
+                                        <p className="u-text-bold">
+                                            Any entered details will be
+                                            discarded. Are you sure you wish to
+                                            proceed?
+                                        </p>
                                     </Dialog>
                                 </>
-                            }
+                            )}
                             <button
                                 disabled={isProcessing}
                                 type="submit"
-                                className={generatedClasses.submitButton}>
+                                className={generatedClasses.submitButton}
+                            >
                                 {submitButton}
                             </button>
                         </div>
@@ -351,16 +342,13 @@ export const Form: (props: Props) => JSX.Element = ({
                                 submitErrors: true,
                                 submitFailed: true,
                                 submitSucceeded: true,
-                                modifiedSinceLastSubmit: true
+                                modifiedSinceLastSubmit: true,
                             }}
                             onChange={handleChange}
                         />
                     </form>
-
                 )
             }}
         />
     )
-
-
 }

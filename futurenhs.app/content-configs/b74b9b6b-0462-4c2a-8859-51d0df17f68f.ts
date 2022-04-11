@@ -1,6 +1,6 @@
-import { GroupsPageTextContent } from '@appTypes/content';
+import { GroupsPageTextContent } from '@appTypes/content'
 
 export default {
     previewLabel: 'File preview',
-    createdByLabel: 'Owner'
-} as GroupsPageTextContent;
+    createdByLabel: 'Owner',
+} as GroupsPageTextContent

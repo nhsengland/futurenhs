@@ -1,12 +1,12 @@
 export interface Props {
-    boundaryId: string;
+    boundaryId: string
     text?: {
-        error?: string;
-    };
-    children?: any;
-    className?: string;
+        error?: string
+    }
+    children?: any
+    className?: string
 }
 
 export interface State {
-    hasError: boolean;
+    hasError: boolean
 }

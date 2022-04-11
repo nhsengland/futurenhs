@@ -1,13 +1,9 @@
-import Head from 'next/head';
+import Head from 'next/head'
 
 import { Props } from './interfaces'
 
-const DocumentHead: (props: Props) => JSX.Element = ({
-    assetPath = ''
-}) => {
-
+const DocumentHead: (props: Props) => JSX.Element = ({ assetPath = '' }) => {
     return (
-
         <Head>
             <link
                 rel="apple-touch-icon"
@@ -32,16 +28,24 @@ const DocumentHead: (props: Props) => JSX.Element = ({
                 href={`${assetPath}/favicon/safari-pinned-tab.svg`}
                 color="#000000"
             />
-            <link rel="shortcut icon" href={`${assetPath}/favicon/favicon.ico`} />
+            <link
+                rel="shortcut icon"
+                href={`${assetPath}/favicon/favicon.ico`}
+            />
             <meta name="msapplication-TileColor" content="#000000" />
-            <meta name="msapplication-config" content={`${assetPath}/favicon/browserconfig.xml`} />
+            <meta
+                name="msapplication-config"
+                content={`${assetPath}/favicon/browserconfig.xml`}
+            />
             <meta name="theme-color" content="#000" />
-            <link rel="alternate" type="application/rss+xml" href={`${assetPath}/favicon/feed.xml`} />
+            <link
+                rel="alternate"
+                type="application/rss+xml"
+                href={`${assetPath}/favicon/feed.xml`}
+            />
             <meta name="description" content={``} />
         </Head>
-
     )
-
 }
 
-export default DocumentHead;
+export default DocumentHead

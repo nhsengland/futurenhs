@@ -1,7 +1,7 @@
-const FormData = require('form-data');
+const FormData = require('form-data')
 
-import { genericMessages } from '@constants/text';
-import { FormErrors } from '@appTypes/form';
+import { genericMessages } from '@constants/text'
+import { FormErrors } from '@appTypes/form'
 
 /**
  * Converts a form submission object submitted via express-form-data into a basic server-side FormData object
@@ -10,115 +10,90 @@ import { FormErrors } from '@appTypes/form';
  */
 export interface ServerSideFormData {
     get: (fieldName: string) => any
-    getAll: () => Record<string, any>;
-};
+    getAll: () => Record<string, any>
+}
 
-export const getServerSideFormData = (body: Record<any, any>): ServerSideFormData => {
-
+export const getServerSideFormData = (
+    body: Record<any, any>
+): ServerSideFormData => {
     class PseudoFormData {
+        body
 
-        body;
-
-        constructor(body){
-
+        constructor(body) {
             this.body = body
-
         }
 
-        public get(fieldName){
-
-            return this.body[fieldName]; 
-
+        public get(fieldName) {
+            return this.body[fieldName]
         }
 
-        public getAll(){
-
-            return this.body;
-
+        public getAll() {
+            return this.body
         }
-
     }
 
-    return new PseudoFormData(body);
-
-};
+    return new PseudoFormData(body)
+}
 
 /**
  * Converts a form submission object submitted via express-form-data into a server-side FormData object
  * for submission to services
  */
- export const getServerSideMultiPartFormData = (body: Record<any, any>): any => {
+export const getServerSideMultiPartFormData = (body: Record<any, any>): any => {
+    const formData: any = new FormData()
 
-    const formData: any = new FormData();
-
-    for(const fieldName in body){
-
-        formData.append(fieldName, body[fieldName]);
-
+    for (const fieldName in body) {
+        formData.append(fieldName, body[fieldName])
     }
 
-    return formData;
-
-};
+    return formData
+}
 
 /**
  * Returns relevant aria attributes for a field's current state
  */
-export const getAriaFieldAttributes = (isRequired: boolean, isError: boolean, describedBy?: Array<string>, labelledBy?: string): any => {
-
-    let ariaProps: any = {};
+export const getAriaFieldAttributes = (
+    isRequired: boolean,
+    isError: boolean,
+    describedBy?: Array<string>,
+    labelledBy?: string
+): any => {
+    let ariaProps: any = {}
 
     if (isRequired) {
-
-        ariaProps['aria-required'] = 'true';
-
+        ariaProps['aria-required'] = 'true'
     }
 
     if (isError) {
-
-        ariaProps['aria-invalid'] = 'true';
-
+        ariaProps['aria-invalid'] = 'true'
     }
 
     if (describedBy?.length) {
-
-        let ids: string = '';
+        let ids: string = ''
 
         describedBy.forEach((id: string) => {
-
             if (id) {
-
                 ids += `${ids ? ' ' : ''}${id}`
-
             }
-
-        });
+        })
 
         if (ids) {
-
-            ariaProps['aria-describedby'] = ids;
-
+            ariaProps['aria-describedby'] = ids
         }
-
     }
 
     if (labelledBy) {
-
-        ariaProps['aria-labelledby'] = labelledBy;
-
+        ariaProps['aria-labelledby'] = labelledBy
     }
 
-    return ariaProps;
-
-};
+    return ariaProps
+}
 
 /**
  * Returns a generic top level form submission error object
  */
 export const getGenericFormError = (error: any): FormErrors => {
-
     return {
-        _error: error.message || genericMessages.UNEXPECTED_ERROR
+        _error: error.message || genericMessages.UNEXPECTED_ERROR,
     }
-
 }

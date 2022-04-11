@@ -1,4 +1,4 @@
-import { GenericPageTextContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
     title: 'Contact Us',
@@ -21,5 +21,5 @@ export default {
         <p>Find out how to make a <a href="https://www.england.nhs.uk/contact-us/foi/" rel="noreferrer nofollow">freedom of information request</a> and what’s involved.</p> 
         <h3>How can we improve your FutureNHS experience?</h3> 
         <p>We want you to share your thoughts about how we can make the platform even better. Whether it’s about functionality or design, communications or the support desk; we would love to hear from you so we can develop this collaborative tool even more and continue and improve email <a href="mailto:support@futurenhs.zendesk.com" rel="noreferrer nofollow">support@futurenhs.zendesk.com</a>.</p> 
-    `
-} as GenericPageTextContent;
+    `,
+} as GenericPageTextContent

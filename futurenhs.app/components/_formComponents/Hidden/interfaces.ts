@@ -1,7 +1,7 @@
 export interface Props {
-    id: string;
+    id: string
     input: {
-        name: string;
-        value: string | number;
-    };
+        name: string
+        value: string | number
+    }
 }

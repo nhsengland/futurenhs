@@ -1,4 +1,4 @@
-import { GenericPageTextContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
     title: 'User profile',
@@ -6,5 +6,5 @@ export default {
     firstNameLabel: 'First name',
     lastNameLabel: 'Last name',
     pronounsLabel: 'Preferred pronouns',
-    emailLabel: 'Email'
-} as GenericPageTextContent;
+    emailLabel: 'Email',
+} as GenericPageTextContent

@@ -1,4 +1,4 @@
-import { GenericPageTextContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
     title: 'Privacy Policy',
@@ -102,5 +102,5 @@ export default {
         <p>Helpline number: 0303 123 1113</p>
         <p>ICO website: <a href="https://www.ico.org.uk" rel="noreferrer nofollow">https://www.ico.org.uk</a></p>
 
-    `
-} as GenericPageTextContent;
+    `,
+} as GenericPageTextContent

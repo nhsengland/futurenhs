@@ -1,4 +1,4 @@
-import { GenericPageTextContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
     title: 'Future NHS | My groups',
@@ -6,5 +6,5 @@ export default {
     mainHeading: 'My Groups',
     intro: 'Connect, share and learn.',
     navMenuTitle: 'Group Menu',
-    secondaryHeading: 'Collaborate without boundaries'
-} as GenericPageTextContent;
+    secondaryHeading: 'Collaborate without boundaries',
+} as GenericPageTextContent

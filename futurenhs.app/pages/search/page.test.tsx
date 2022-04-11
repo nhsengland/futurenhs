@@ -1,44 +1,43 @@
-import { getServerSideProps } from './index.page';
+import { getServerSideProps } from './index.page'
 
-import { mswServer } from './../../jest-mocks/msw-server';
-import { handlers } from './../../jest-mocks/handlers';
+import { mswServer } from './../../jest-mocks/msw-server'
+import { handlers } from './../../jest-mocks/handlers'
 
 const mockLocales = {
     locales: undefined,
     locale: undefined,
-    defaultLocale: undefined
-};
+    defaultLocale: undefined,
+}
 
 const mockUser = {
     id: 'b19e1529-cea6-40f8-989a-ad36011e9e89',
     text: {
-        userName: 'Mock User'
+        userName: 'Mock User',
     },
-    image: null
-};
+    image: null,
+}
 
 const mockQuery = {
-    term: 'default Mock Term'
-};
+    term: 'default Mock Term',
+}
 
 const mockContext = {
     req: {
         query: mockQuery,
         user: mockUser,
         cookies: {
-            t: '23052395784310953345930'
-        }
+            t: '23052395784310953345930',
+        },
     },
     resolvedUrl: '/search?term=' + mockQuery.term,
-    ...mockLocales
-};
+    ...mockLocales,
+}
 
-beforeAll(() => mswServer.listen());
-afterEach(() => mswServer.resetHandlers());
-afterAll(() => mswServer.close());
+beforeAll(() => mswServer.listen())
+afterEach(() => mswServer.resetHandlers())
+afterAll(() => mswServer.close())
 
 describe('Search results', () => {
-
     // describe('user is authenticated', () => {
 
     //     let mockContextCopy;
@@ -137,43 +136,36 @@ describe('Search results', () => {
     // })
 
     describe('user is not authenticated', () => {
-
-        let mockContextCopy = JSON.parse(JSON.stringify(mockContext));
+        let mockContextCopy = JSON.parse(JSON.stringify(mockContext))
 
         beforeEach(() => {
-            mswServer.use(handlers.getAuthHandler({ status: 403 }));
+            mswServer.use(handlers.getAuthHandler({ status: 403 }))
         })
 
         afterEach(() => {
-            mockContextCopy = JSON.parse(JSON.stringify(mockContext));
+            mockContextCopy = JSON.parse(JSON.stringify(mockContext))
         })
 
         it('should be redirected to login', async () => {
+            const serverSideProps = await getServerSideProps(mockContextCopy)
 
-            const serverSideProps = await getServerSideProps(mockContextCopy);
-
-            expect(serverSideProps).toHaveProperty('redirect');
-            expect(serverSideProps).toHaveProperty('redirect.destination');
+            expect(serverSideProps).toHaveProperty('redirect')
+            expect(serverSideProps).toHaveProperty('redirect.destination')
         })
 
         it('term less than 3 characters, should be redirected', async () => {
+            mockContextCopy.req.query.term = 'tr'
 
-            mockContextCopy.req.query.term = 'tr';
+            const serverSideProps = await getServerSideProps(mockContextCopy)
 
-            const serverSideProps = await getServerSideProps(mockContextCopy);
-
-            expect(serverSideProps).toHaveProperty('redirect');
-
+            expect(serverSideProps).toHaveProperty('redirect')
         })
 
         it('passes empty context, should redirect', async () => {
-            const serverSideProps = await getServerSideProps({ req: {} } as any);
+            const serverSideProps = await getServerSideProps({ req: {} } as any)
 
-            expect(serverSideProps).toHaveProperty("redirect");
-            expect(serverSideProps).not.toHaveProperty("props");
+            expect(serverSideProps).toHaveProperty('redirect')
+            expect(serverSideProps).not.toHaveProperty('props')
         })
-
     })
-
-
-});
+})

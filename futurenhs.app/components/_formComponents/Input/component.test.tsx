@@ -1,35 +1,31 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react'
 
-import { Input } from './index';
+import { Input } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
     input: {
         name: 'mockName',
         value: 'mockValue',
-        onChange: jest.fn()
+        onChange: jest.fn(),
     },
     meta: {
         error: '',
         submitError: '',
-        touched: false
+        touched: false,
     },
     text: {
-        label: 'mockLabel'
-    }
-};
+        label: 'mockLabel',
+    },
+}
 
 describe('Input', () => {
-
     it('renders a label', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<Input {...props} />)
 
-        render(<Input {...props} />);
-
-        expect(screen.getByText('mockLabel'));
-
-    });
-    
-});
+        expect(screen.getByText('mockLabel'))
+    })
+})

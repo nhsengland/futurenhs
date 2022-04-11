@@ -1,12 +1,12 @@
 export const enum actions {
     SITE_MEMBERS_ADD = 'https://schema.collaborate.future.nhs.uk/members/v1/add',
-    SITE_ADMIN_VIEW = "https://schema.collaborate.future.nhs.uk/admin/v1/view",
-    SITE_ADMIN_MEMBERS_ADD = "https://schema.collaborate.future.nhs.uk/members/v1/add",
-    SITE_ADMIN_MEMBERS_EDIT = "https://schema.collaborate.future.nhs.uk/members/v1/edit",
-    SITE_ADMIN_MEMBERS_DELETE = "https://schema.collaborate.future.nhs.uk/members/v1/delete",
-    SITE_ADMIN_GROUPS_ADD = "https://schema.collaborate.future.nhs.uk/groups/v1/add",
-    SITE_ADMIN_GROUPS_EDIT = "https://schema.collaborate.future.nhs.uk/groups/v1/edit",
-    SITE_ADMIN_GROUPS_DELETE = "https://schema.collaborate.future.nhs.uk/groups/v1/delete",
+    SITE_ADMIN_VIEW = 'https://schema.collaborate.future.nhs.uk/admin/v1/view',
+    SITE_ADMIN_MEMBERS_ADD = 'https://schema.collaborate.future.nhs.uk/members/v1/add',
+    SITE_ADMIN_MEMBERS_EDIT = 'https://schema.collaborate.future.nhs.uk/members/v1/edit',
+    SITE_ADMIN_MEMBERS_DELETE = 'https://schema.collaborate.future.nhs.uk/members/v1/delete',
+    SITE_ADMIN_GROUPS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/add',
+    SITE_ADMIN_GROUPS_EDIT = 'https://schema.collaborate.future.nhs.uk/groups/v1/edit',
+    SITE_ADMIN_GROUPS_DELETE = 'https://schema.collaborate.future.nhs.uk/groups/v1/delete',
     GROUPS_JOIN = 'https://schema.collaborate.future.nhs.uk/groups/v1/join',
     GROUPS_LEAVE = 'https://schema.collaborate.future.nhs.uk/groups/v1/leave',
     GROUPS_EDIT = 'https://schema.collaborate.future.nhs.uk/groups/v1/edit',
@@ -22,4 +22,4 @@ export const enum actions {
     GROUPS_MEMBERS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/add',
     GROUPS_MEMBERS_EDIT = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/edit',
     GROUPS_MEMBERS_DELETE = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/delete',
-};
+}

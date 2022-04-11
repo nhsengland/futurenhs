@@ -11,12 +11,12 @@ export const enum routes {
     COOKIES = '/cookies',
     PRIVACY_POLICY = '/privacy-policy',
     TERMS_AND_CONDITIONS = '/terms-and-conditions',
-    API_LOGIN = '/api/log-in'
+    API_LOGIN = '/api/log-in',
 }
 
 export const enum queryParams {
     RETURNURL = 'returnUrl',
-    EDIT = 'edit'
+    EDIT = 'edit',
 }
 
 export const enum routeParams {
@@ -25,18 +25,18 @@ export const enum routeParams {
     FILEID = 'fileId',
     MEMBERID = 'memberId',
     DISCUSSIONID = 'discussionId',
-    USERID = 'userId'
+    USERID = 'userId',
 }
 
 export const enum layoutIds {
     BASE = 'base',
     GROUP = 'group',
-    ADMIN = 'admin'
+    ADMIN = 'admin',
 }
 
 export const enum groupTabIds {
     INDEX = 'index',
     FORUM = 'forum',
     FILES = 'files',
-    MEMBERS = 'members'
+    MEMBERS = 'members',
 }

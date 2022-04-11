@@ -1,8 +1,8 @@
 export interface Props {
-    headingLevel: number;
+    headingLevel: number
     text: {
-        heading: string;
-        body: string;
-    };
-    className?: string;
+        heading: string
+        body: string
+    }
+    className?: string
 }

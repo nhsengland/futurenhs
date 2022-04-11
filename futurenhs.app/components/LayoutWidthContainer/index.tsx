@@ -1,7 +1,7 @@
-import React from 'react';
-import classNames from 'classnames';
+import React from 'react'
+import classNames from 'classnames'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 /**
  * Layout width container
@@ -9,19 +9,15 @@ import { Props } from './interfaces';
 export const LayoutWidthContainer: (props: Props) => JSX.Element = ({
     children,
     className,
-    role 
+    role,
 }) => {
-
     const generatedClasses: any = {
-        container: classNames('l-width-container', className)
-    };
+        container: classNames('l-width-container', className),
+    }
 
     return (
-
         <div role={role} className={generatedClasses.container}>
             {children}
         </div>
-
-    );
-
+    )
 }

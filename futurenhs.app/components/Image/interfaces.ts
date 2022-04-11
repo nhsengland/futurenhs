@@ -1,11 +1,10 @@
 export interface Props {
-    src: string;
-    alt: string;
-    height: number;
-    width: number;
+    src: string
+    alt: string
+    height: number
+    width: number
     fallBack?: {
-        src: string;
-        alt: string;
-    };
+        src: string
+        alt: string
+    }
 }
-
