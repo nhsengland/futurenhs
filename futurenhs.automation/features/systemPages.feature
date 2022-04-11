@@ -65,7 +65,7 @@ Scenario: FNHS85 - Validate Created System Page
 
 @Pending
 Scenario: FNHS86 - Edit a System Page  
-    Given I create 'Editable System Page' system page
+    # Given I create 'Editable System Page' system page
     When I select 'Admin' from the menu accordion
     Then the 'MvcForum' link is displayed
     When I click the 'System Pages' link
@@ -79,7 +79,7 @@ Scenario: FNHS86 - Edit a System Page
 
 @Pending
 Scenario: FNHS87 - Delete a System Page
-    Given I create 'Deletable System Page' system page
+    # Given I create 'Deletable System Page' system page
     When I select 'Admin' from the menu accordion
     Then the 'MvcForum' link is displayed
     When I click the 'System Pages' link

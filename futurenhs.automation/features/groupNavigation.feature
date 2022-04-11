@@ -8,8 +8,8 @@ Background:
 
 @Core
 Scenario: FNHS09 - My groups validation
-    Then the 'All my groups' header is displayed
-    And the 'Share ideas, get advice and support from your peers' textual value is displayed
+    Then the 'Collaborate without boundaries' header is displayed
+    And the 'Connect, share and learn.' textual value is displayed
     And the 'Automation Admin Group' group card is displayed
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
     | Members: 2Discussions: 7                                                         |
@@ -17,7 +17,7 @@ Scenario: FNHS09 - My groups validation
 @Core 
 Scenario: FNHS10 - Discover new groups validation
     When I click the 'Discover new groups' tab
-    Then the 'Discover New Groups' header is displayed
+    Then the 'Discover new Groups' header is displayed
     And the 'Automation Private Group' group card is displayed
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
     | Members: 2Discussions: 0                                                         |

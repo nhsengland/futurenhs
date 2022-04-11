@@ -1,7 +1,7 @@
 Feature: mobileNavigation
     Tests covering unique mobile manu navigation functionality available to a user access the site via mobile web app
 
-Background: Log in
+Background: Log In
     Given I have navigated to '/'
     And I ensure the browser is in mobile emulation
     Then the 'Log In' header is displayed
@@ -23,9 +23,9 @@ Scenario: FNHS:M01 - Menu Validation
 Scenario: FNHS:M02 - All Groups Validation
     When I click the 'Groups' link
     Then the 'My Groups' header is displayed
-    Then the 'All my groups' header is displayed
+    Then the 'Collaborate without boundaries' header is displayed
     When I select 'Discover new groups' from the group pages accordion
-    Then the 'Discover New Groups' header is displayed
+    Then the 'Discover new Groups' header is displayed
 
 @Core
 Scenario: FNHS:M03 - Group Members Table Validation
