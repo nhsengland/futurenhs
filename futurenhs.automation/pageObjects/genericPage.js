@@ -57,7 +57,7 @@ class genericPage extends basePage{
      * @param {*} accordionName - Name/Tag for each known accordion
      * @returns xpath selector of the accordion that matched the accordionName param
      */
-    findAccordion(accordionName){
+    getAccordion(accordionName){
         var desiredAccordion = accordionName.toLowerCase().replace(/ /g, '');
         const accordion = {
             actions : $(`//div[@id="group-actions"]/..`),
@@ -76,7 +76,7 @@ class genericPage extends basePage{
      * @param {string} detailsName - Text value used to locate the element we want to click
      */
     openAccordion(textValue){
-        var desiredAccordion = this.findAccordion(textValue)
+        var desiredAccordion = this.getAccordion(textValue)
         helpers.click(desiredAccordion);
         if(textValue === 'Show more replies' || textValue === 'Mobile Menu'){
             expect(desiredAccordion.$('..').getProperty('open')).toEqual(true);
@@ -90,7 +90,7 @@ class genericPage extends basePage{
      * @param {string} linkValue - textual value of the desired link used as the selector
      */
     selectAccordionItem(linkValue, accordionName){        
-        var chosenAccordion = this.findAccordion(accordionName)
+        var chosenAccordion = this.getAccordion(accordionName)
         helpers.click(chosenAccordion);
         var accordionOptions = chosenAccordion.$$('//ul/li')
         accordionOptions.forEach(elem => {
@@ -102,11 +102,11 @@ class genericPage extends basePage{
     }
 
     /**
-     * Generic control to validate a dialog box is open and then using the action Type from the step to select the "confirm" or cancel option within the dialog
+     * Generic control to validate a dialog box is open and then to select the "confirm" or cancel button within the dialog
      * @param {string} actionType - Confirm or Cancel action, used to determine interaction type
      * @param {string} dialogName - used to determine selector of specific element from an array object
      */
-    openDialogSelect(actionType, dialogName){
+    selectDialogButton(actionType, dialogName){
         var desiredDialog = dialogName.toLowerCase().replace(' ', '');
         var dialogs = {
             logout:$('//div[@id="dialog-logout"]'),
@@ -161,18 +161,6 @@ class genericPage extends basePage{
             }
         }
     }
-
-    /**
-     * Text compare validation of the displayed breadcrumbs in the browser
-     * @param {string} expectedBreadcrumb - string variable of the expected textual value
-     */
-    breadcrumbValidation(expectedBreadcrumb){
-        var firstBreadcrumb = expectedBreadcrumb.split(' > ')[0]
-        var expectedBreadcrumb = expectedBreadcrumb.replace(/ > /g, '');
-        var foundBreadcrumb = $(`//ol[@class="c-breadcrumb_list"][*[contains(normalize-space(.), "${firstBreadcrumb}")]]`);
-        var breadcrumbText = foundBreadcrumb.getText().replace(/\.{3,}\n([^\n]*)/g, '...').replace(/\n/g, '');
-        expect(breadcrumbText).toEqual(expectedBreadcrumb);
-    }
    
     /**
      * Function to accept all cookies on the cookie banner popup
@@ -190,7 +178,7 @@ class genericPage extends basePage{
      * @param {*} matcher 
      */
     newTabValidation(matcher){
-        browser.switchWindow('https://futurenhstest.service-now.com/');
+        browser.switchWindow('https://support-futurenhs.zendesk.com/hc/en-gb');
         this.contentValidation('textual value', matcher);
     }
 }
