@@ -1,55 +1,55 @@
-import { validate } from './index';
+import { validate } from './index'
 
 describe('Validate helpers', () => {
-
     it('validates a correct submission', () => {
-
-        const passResponse = validate({
-            mockField: 'value'
-        }, [
+        const passResponse = validate(
             {
-                name: 'mockField',
-                component: 'textInput',
-                text: {
-                    label: 'mockLabelText'
+                mockField: 'value',
+            },
+            [
+                {
+                    name: 'mockField',
+                    component: 'textInput',
+                    text: {
+                        label: 'mockLabelText',
+                    },
+                    validators: [
+                        {
+                            type: 'required',
+                            message: 'mockMessage',
+                        },
+                    ],
                 },
-                validators: [
-                    {
-                        type: 'required',
-                        message: 'mockMessage'
-                    }
-                ]
-            }
-        ]);
+            ]
+        )
 
-        expect(passResponse).toStrictEqual({});
-
-    });
+        expect(passResponse).toStrictEqual({})
+    })
 
     it('errors on an incorrect submission', () => {
-
-        const errorResponse = validate({
-            mockField: ''
-        }, [
+        const errorResponse = validate(
             {
-                name: 'mockField',
-                component: 'textInput',
-                text: {
-                    label: 'mockLabelText'
+                mockField: '',
+            },
+            [
+                {
+                    name: 'mockField',
+                    component: 'textInput',
+                    text: {
+                        label: 'mockLabelText',
+                    },
+                    validators: [
+                        {
+                            type: 'required',
+                            message: 'mockMessage',
+                        },
+                    ],
                 },
-                validators: [
-                    {
-                        type: 'required',
-                        message: 'mockMessage'
-                    }
-                ]
-            }
-        ]);
+            ]
+        )
 
         expect(errorResponse).toStrictEqual({
-            mockField: 'mockMessage'
-        });
-
-    });
-    
-});
+            mockField: 'mockMessage',
+        })
+    })
+})

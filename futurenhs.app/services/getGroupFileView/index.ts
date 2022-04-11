@@ -1,79 +1,84 @@
-import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
-import { services } from '@constants/services';
-import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
-import { getCsvStringFromObject } from '@helpers/util/data';
-import { ServiceError } from '..';
-import { FetchResponse } from '@appTypes/fetch';
-import { ApiResponse, ServiceResponse } from '@appTypes/service';
-import { User } from '@appTypes/user';
-import { CollaboraConnectionParams } from '@appTypes/collabora';
+import {
+    setFetchOpts as setFetchOptionsHelper,
+    fetchJSON as fetchJSONHelper,
+} from '@helpers/fetch'
+import { services } from '@constants/services'
+import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
+import { getCsvStringFromObject } from '@helpers/util/data'
+import { ServiceError } from '..'
+import { FetchResponse } from '@appTypes/fetch'
+import { ApiResponse, ServiceResponse } from '@appTypes/service'
+import { User } from '@appTypes/user'
+import { CollaboraConnectionParams } from '@appTypes/collabora'
 
-declare type Options = ({
-    user: User;
-    groupId: string;
-    fileId: string;
-    cookies: any;
-});
+declare type Options = {
+    user: User
+    groupId: string
+    fileId: string
+    cookies: any
+}
 
-declare type Dependencies = ({
-    setFetchOptions: any;
-    fetchJSON: any;
-});
+declare type Dependencies = {
+    setFetchOptions: any
+    fetchJSON: any
+}
 
-export const getGroupFileView = async ({
-    user,
-    groupId,
-    fileId,
-    cookies
-}: Options, dependencies?: Dependencies): Promise<ServiceResponse<CollaboraConnectionParams>> => {
-
+export const getGroupFileView = async (
+    { user, groupId, fileId, cookies }: Options,
+    dependencies?: Dependencies
+): Promise<ServiceResponse<CollaboraConnectionParams>> => {
     const serviceResponse: ServiceResponse<CollaboraConnectionParams> = {
-        data: null
-    };
+        data: null,
+    }
 
-    const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
-    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
+    const setFetchOptions =
+        dependencies?.setFetchOptions ?? setFetchOptionsHelper
+    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
     const cookieHeader: string = getCsvStringFromObject({
         object: cookies,
-        seperator: '; '
-    });
+        seperator: '; ',
+    })
 
-    const id: string = user.id;
+    const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/files/${fileId}/view`;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ 
-        method: requestMethods.GET,
-        headers: {
-            Cookie: cookieHeader
-        }
-    }), defaultTimeOutMillis);
-    
-    const apiData: ApiResponse<any> = apiResponse.json;
-    const apiMeta: any = apiResponse.meta;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/files/${fileId}/view`
+    const apiResponse: FetchResponse = await fetchJSON(
+        apiUrl,
+        setFetchOptions({
+            method: requestMethods.GET,
+            headers: {
+                Cookie: cookieHeader,
+            },
+        }),
+        defaultTimeOutMillis
+    )
 
-    const { ok, status, statusText } = apiMeta;
+    const apiData: ApiResponse<any> = apiResponse.json
+    const apiMeta: any = apiResponse.meta
 
-    if(!ok){
+    const { ok, status, statusText } = apiMeta
 
-        throw new ServiceError('An unexpected error occurred when attempting to get the group file preview', {
-            serviceId: services.GET_GROUP_FILE_VIEW,
-            status: status,
-            statusText: statusText,
-            body: apiData
-        });
-
+    if (!ok) {
+        throw new ServiceError(
+            'An unexpected error occurred when attempting to get the group file preview',
+            {
+                serviceId: services.GET_GROUP_FILE_VIEW,
+                status: status,
+                statusText: statusText,
+                body: apiData,
+            }
+        )
     }
 
     serviceResponse.data = {
         data: {
             status: apiMeta.status,
             statusText: apiMeta.statusText,
-            data: apiData
+            data: apiData,
         },
         wopiClientUrl: apiData.wopiClientUrlForFile,
-        accessToken: apiData.accessToken
-    } as any;
-    
-    return serviceResponse;
+        accessToken: apiData.accessToken,
+    } as any
 
+    return serviceResponse
 }

@@ -1,4 +1,4 @@
-import { GenericPageTextContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
     metaDescription: 'The terms and conditions for using Future NHS',
@@ -102,5 +102,5 @@ export default {
         <p>Please check these terms and conditions regularly. We can update them at any time without notice.</p>
         <p>You’ll agree to any changes if you continue to use FutureNHS after the terms and conditions have been updated.</p>
         <p>Where significant changes to the sites terms and conditions are made that impact site members we will ask you to reconfirm acceptance of the terms and conditions in order to continue using the service.</p>
-    `
-} as GenericPageTextContent;
+    `,
+} as GenericPageTextContent

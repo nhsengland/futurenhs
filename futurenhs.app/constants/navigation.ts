@@ -1,27 +1,27 @@
-import { routes } from '@constants/routes';
+import { routes } from '@constants/routes'
 
 export const footerNavMenuList = [
     {
         url: routes.CONTACT_US,
         text: 'Contact us',
-        isActive: false
+        isActive: false,
     },
     {
         url: routes.COOKIES,
         text: 'Cookies',
-        isActive: false
+        isActive: false,
     },
     {
         url: routes.PRIVACY_POLICY,
         text: 'Privacy policy',
-        isActive: false
+        isActive: false,
     },
     {
         url: routes.TERMS_AND_CONDITIONS,
         text: 'Terms and conditions',
-        isActive: false
-    }
-];
+        isActive: false,
+    },
+]
 
 export const mainNavMenuList = [
     /**
@@ -44,7 +44,7 @@ export const mainNavMenuList = [
         isActiveRoot: false,
         meta: {
             themeId: 14,
-            iconName: 'icon-groups'
-        }
-    }
-];
+            iconName: 'icon-groups',
+        },
+    },
+]

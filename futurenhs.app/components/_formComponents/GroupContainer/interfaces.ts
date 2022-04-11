@@ -1,4 +1,4 @@
 export interface Props {
-    children?: any;
-    className?: string;
+    children?: any
+    className?: string
 }

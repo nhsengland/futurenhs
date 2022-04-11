@@ -1,9 +1,9 @@
-import { GroupsPageTextContent } from '@appTypes/content';
+import { GroupsPageTextContent } from '@appTypes/content'
 
 export default {
     secondaryHeading: 'Member Profile',
     firstNameLabel: 'First name',
     lastNameLabel: 'Last name',
     pronounsLabel: 'Preferred pronouns',
-    emailLabel: 'Email'
-} as GroupsPageTextContent;
+    emailLabel: 'Email',
+} as GroupsPageTextContent

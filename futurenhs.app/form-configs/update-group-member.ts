@@ -1,5 +1,5 @@
-import { formTypes } from "@constants/forms";
-import { FormConfig } from '@appTypes/form';
+import { formTypes } from '@constants/forms'
+import { FormConfig } from '@appTypes/form'
 
 export const updateGroupMemberForm: FormConfig = {
     id: formTypes.UPDATE_GROUP,
@@ -10,27 +10,27 @@ export const updateGroupMemberForm: FormConfig = {
                     name: 'member-role',
                     inputType: 'multiChoice',
                     text: {
-                        label: 'Member role'
+                        label: 'Member role',
                     },
                     options: [
                         {
                             value: 'Admin',
-                            label: 'Admin'
+                            label: 'Admin',
                         },
                         {
                             value: 'Standard Members',
-                            label: 'Member'
-                        }
+                            label: 'Member',
+                        },
                     ],
                     component: 'multiChoice',
                     validators: [
                         {
                             type: 'required',
-                            message: 'Select a member role'
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-};
+                            message: 'Select a member role',
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+}

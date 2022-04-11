@@ -1,55 +1,62 @@
-import { setFetchOpts as setFetchOptionsHelper, fetchJSON as fetchJSONHelper } from '@helpers/fetch';
-import { services } from '@constants/services';
-import { defaultTimeOutMillis, requestMethods } from '@constants/fetch';
-import { ServiceError } from '..';
-import { FetchResponse } from '@appTypes/fetch';
-import { ApiResponse, ServiceResponse } from '@appTypes/service';
-import { User } from '@appTypes/user';
-import { GroupMember } from '@appTypes/group';
+import {
+    setFetchOpts as setFetchOptionsHelper,
+    fetchJSON as fetchJSONHelper,
+} from '@helpers/fetch'
+import { services } from '@constants/services'
+import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
+import { ServiceError } from '..'
+import { FetchResponse } from '@appTypes/fetch'
+import { ApiResponse, ServiceResponse } from '@appTypes/service'
+import { User } from '@appTypes/user'
+import { GroupMember } from '@appTypes/group'
 
-declare type Options = ({
-    user: User;
-    groupId: string;
-    memberId: string;
-});
+declare type Options = {
+    user: User
+    groupId: string
+    memberId: string
+}
 
-declare type Dependencies = ({
-    setFetchOptions: any;
-    fetchJSON: any;
-});
+declare type Dependencies = {
+    setFetchOptions: any
+    fetchJSON: any
+}
 
-export const getGroupMember = async ({
-    user,
-    groupId,
-    memberId
-}: Options, dependencies?: Dependencies): Promise<ServiceResponse<GroupMember>> => {
-
+export const getGroupMember = async (
+    { user, groupId, memberId }: Options,
+    dependencies?: Dependencies
+): Promise<ServiceResponse<GroupMember>> => {
     const serviceResponse: ServiceResponse<GroupMember> = {
-        data: null
-    };
+        data: null,
+    }
 
-    const setFetchOptions = dependencies?.setFetchOptions ?? setFetchOptionsHelper;
-    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper;
+    const setFetchOptions =
+        dependencies?.setFetchOptions ?? setFetchOptionsHelper
+    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const id: string = user.id;
+    const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/${memberId}`;
-    const apiResponse: FetchResponse = await fetchJSON(apiUrl, setFetchOptions({ method: requestMethods.GET }), defaultTimeOutMillis);
-    
-    const apiData: ApiResponse<any> = apiResponse.json;
-    const apiMeta: any = apiResponse.meta;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/${memberId}`
+    const apiResponse: FetchResponse = await fetchJSON(
+        apiUrl,
+        setFetchOptions({ method: requestMethods.GET }),
+        defaultTimeOutMillis
+    )
 
-    const { ok, status, statusText } = apiMeta;
+    const apiData: ApiResponse<any> = apiResponse.json
+    const apiMeta: any = apiResponse.meta
 
-    if(!ok){
+    const { ok, status, statusText } = apiMeta
 
-        throw new ServiceError('An unexpected error occurred when attempting to get the group member', {
-            serviceId: services.GET_GROUP_MEMBER,
-            status: status,
-            statusText: statusText,
-            body: apiData
-        });
-
+    if (!ok) {
+        throw new ServiceError(
+            'An unexpected error occurred when attempting to get the group member',
+            {
+                serviceId: services.GET_GROUP_MEMBER,
+                status: status,
+                statusText: statusText,
+                body: apiData,
+            }
+        )
     }
 
     serviceResponse.data = {
@@ -60,9 +67,8 @@ export const getGroupMember = async ({
         pronouns: apiData.pronouns ?? '',
         role: apiData.role ?? '',
         joinDate: apiData.dateJoinedUtc ?? '',
-        lastLogInDate: apiData.lastLoginUtc ?? ''
-    };
+        lastLogInDate: apiData.lastLoginUtc ?? '',
+    }
 
-    return serviceResponse;
-
+    return serviceResponse
 }

@@ -1,24 +1,16 @@
-import classNames from 'classnames';
+import classNames from 'classnames'
 
-import { RichText } from '@components/RichText';
+import { RichText } from '@components/RichText'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 export const GroupContainer: (props: Props) => JSX.Element = ({
     children,
-    className
+    className,
 }) => {
-
     const generatedClasses: any = {
-        wrapper: classNames(className)
-    };
+        wrapper: classNames(className),
+    }
 
-    return (
-
-        <div className={generatedClasses.wrapper}>
-            {children}
-        </div>
-
-    )
-
+    return <div className={generatedClasses.wrapper}>{children}</div>
 }

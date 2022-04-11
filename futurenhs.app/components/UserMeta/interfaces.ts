@@ -1,11 +1,10 @@
-import { Image } from "@appTypes/image";
+import { Image } from '@appTypes/image'
 
 export interface Props {
-    image: Image;
+    image: Image
     text: {
-        initials: string;
+        initials: string
     }
-    children: any;
-    className?: string;
+    children: any
+    className?: string
 }
-

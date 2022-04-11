@@ -1,48 +1,38 @@
-import { BreadCrumbList } from '@appTypes/routing';
+import { BreadCrumbList } from '@appTypes/routing'
 
 declare interface Config {
-    pathElementList: Array<string>;
-    shouldIncludeAllParams?: boolean;
+    pathElementList: Array<string>
+    shouldIncludeAllParams?: boolean
 }
 
 export const getBreadCrumbList = ({
     pathElementList,
-    shouldIncludeAllParams
+    shouldIncludeAllParams,
 }: Config): BreadCrumbList => {
-
-    const breadCrumbElementList: BreadCrumbList = [];
-    const lastIndex: number = shouldIncludeAllParams ? pathElementList?.length : pathElementList?.length -1
+    const breadCrumbElementList: BreadCrumbList = []
+    const lastIndex: number = shouldIncludeAllParams
+        ? pathElementList?.length
+        : pathElementList?.length - 1
 
     try {
-
-        if(pathElementList?.length){
-
+        if (pathElementList?.length) {
             // breadCrumbElementList.push({
             //     element: '',
             //     text: 'Home'
             // });
-    
+
             pathElementList.forEach((item, index) => {
-    
-                if(index < lastIndex){
-        
+                if (index < lastIndex) {
                     breadCrumbElementList.push({
                         element: item,
-                        text: item.replace('-', ' ')
-                    });
-        
+                        text: item.replace('-', ' '),
+                    })
                 }
-        
-            });
-    
+            })
         }
-    
-        return breadCrumbElementList;
 
-    } catch(error){
-
-        return [];
-
+        return breadCrumbElementList
+    } catch (error) {
+        return []
     }
-
-};
+}

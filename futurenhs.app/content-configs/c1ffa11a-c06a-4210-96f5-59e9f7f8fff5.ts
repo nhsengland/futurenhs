@@ -1,4 +1,4 @@
-import { GenericPageTextContent } from '@appTypes/content';
+import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
     title: 'Cookies',
@@ -215,6 +215,5 @@ export default {
         </table>
 
         
-    `
-} as GenericPageTextContent;
-
+    `,
+} as GenericPageTextContent

@@ -1,7 +1,7 @@
-import React from 'react';
-import classNames from 'classnames';
+import React from 'react'
+import classNames from 'classnames'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 /**
  * Layout column container
@@ -10,9 +10,8 @@ export const LayoutColumnContainer: (props: Props) => JSX.Element = ({
     direction = 'row',
     justify = 'left',
     children,
-    className
+    className,
 }) => {
-
     const generatedClasses: any = {
         container: classNames('l-col-container', className, {
             ['u-flex-column']: direction === 'column',
@@ -21,16 +20,9 @@ export const LayoutColumnContainer: (props: Props) => JSX.Element = ({
             ['u-flex-row-reverse']: direction === 'row-reverse',
             ['u-justify-start']: justify === 'left',
             ['u-justify-center']: justify === 'centre',
-            ['u-justify-end']: justify === 'right'
-        })
-    };
+            ['u-justify-end']: justify === 'right',
+        }),
+    }
 
-    return (
-
-        <div className={generatedClasses.container}>
-            {children}
-        </div>
-
-    );
-
+    return <div className={generatedClasses.container}>{children}</div>
 }

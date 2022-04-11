@@ -1,27 +1,23 @@
-import { render } from '@testing-library/react';
+import { render } from '@testing-library/react'
 
-import { Hidden } from './index';
+import { Hidden } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
     id: 'mockId',
     input: {
         name: 'mockName',
-        value: 'mockValue'
-    }
-};
+        value: 'mockValue',
+    },
+}
 
 describe('Hidden Input', () => {
-
     it('renders', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<Hidden {...props} />)
 
-        render(<Hidden {...props} />);
-
-        expect(document.getElementById('mockName'));
-
-    });
-    
-});
+        expect(document.getElementById('mockName'))
+    })
+})

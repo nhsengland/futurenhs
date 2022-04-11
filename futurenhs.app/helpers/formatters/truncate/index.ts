@@ -1,26 +1,15 @@
-
-export const truncate = ({
-    value,
-    limit,
-    suffix = '...'
-}): string => {
-
+export const truncate = ({ value, limit, suffix = '...' }): string => {
     if (value?.length && typeof value === 'string') {
-
-        let truncated: string = value.replace(/(<([^>]+)>)/gi, "");
+        let truncated: string = value.replace(/(<([^>]+)>)/gi, '')
 
         if (truncated.length > limit) {
+            truncated = truncated.substring(0, limit)
 
-            truncated = truncated.substring(0, limit);
-
-            return truncated + suffix;
-
+            return truncated + suffix
         }
 
-        return truncated;
-
+        return truncated
     }
 
-    return value;
-
-};
+    return value
+}

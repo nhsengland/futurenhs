@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react'
 
-import { FormWithErrorSummary } from './index';
+import { FormWithErrorSummary } from './index'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 const testProps: Props = {
     csrfToken: 'mockToken',
@@ -15,47 +15,41 @@ const testProps: Props = {
                         name: 'mockFieldName',
                         component: 'input',
                         text: {
-                            label: 'mockLabel'
-                        }
-                    }
-                ]
-            }
-        ]
+                            label: 'mockLabel',
+                        },
+                    },
+                ],
+            },
+        ],
     },
     errors: {
-        error1: 'Mock error'
+        error1: 'Mock error',
     },
     text: {
         errorSummary: {
-            body: 'An error occurred'
+            body: 'An error occurred',
         },
         form: {
-            submitButton: 'Submit'
-        }
+            submitButton: 'Submit',
+        },
     },
-    submitAction: jest.fn()
-};
+    submitAction: jest.fn(),
+}
 
 describe('Form with error summary', () => {
-
     it('renders fields', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<FormWithErrorSummary {...props} />)
 
-        render(<FormWithErrorSummary {...props} />);
-
-        expect(screen.getByLabelText('mockLabel'));
-
-    });
+        expect(screen.getByLabelText('mockLabel'))
+    })
 
     it('renders submit button text', () => {
+        const props = Object.assign({}, testProps)
 
-        const props = Object.assign({}, testProps);
+        render(<FormWithErrorSummary {...props} />)
 
-        render(<FormWithErrorSummary {...props} />);
-
-        expect(screen.getByText('Submit'));
-
-    });
-    
-});
+        expect(screen.getByText('Submit'))
+    })
+})

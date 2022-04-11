@@ -1,7 +1,7 @@
-import { Page } from '@appTypes/page';
-import { SearchResult } from '@appTypes/search';
+import { Page } from '@appTypes/page'
+import { SearchResult } from '@appTypes/search'
 
 export interface Props extends Page {
-    term: string | Array<string>;
-    resultsList: Array<SearchResult>;
+    term: string | Array<string>
+    resultsList: Array<SearchResult>
 }

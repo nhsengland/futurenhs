@@ -1,19 +1,19 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import * as nextRouter from 'next/router';
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import * as nextRouter from 'next/router'
 
-import { GroupHomeTemplate } from './index';
-import { routes } from '@jestMocks/generic-props';
+import { GroupHomeTemplate } from './index'
+import { routes } from '@jestMocks/generic-props'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
-(nextRouter as any).useRouter = jest.fn();
-(nextRouter as any).useRouter.mockImplementation(() => ({ 
+;(nextRouter as any).useRouter = jest.fn()
+;(nextRouter as any).useRouter.mockImplementation(() => ({
     asPath: '/groups/group',
     query: {
-        groupId: 'group'
-    } 
-}));
+        groupId: 'group',
+    },
+}))
 
 const props: Props = {
     id: 'mockId',
@@ -23,24 +23,20 @@ const props: Props = {
     contentText: {},
     user: undefined,
     entityText: {
-        mainHeading: "Mock heading"
+        mainHeading: 'Mock heading',
     },
     image: {
-        src: "https://www.google.com",
+        src: 'https://www.google.com',
         height: 100,
         width: 100,
-        altText: "Mock alt text"
-    }
+        altText: 'Mock alt text',
+    },
 }
 
 describe('Group home template', () => {
-    
     it('renders correctly', () => {
-        
-        render(<GroupHomeTemplate {...props}/>);
+        render(<GroupHomeTemplate {...props} />)
 
         //TODO: template WIP
-
-    });
-
-});
+    })
+})

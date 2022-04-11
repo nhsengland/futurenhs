@@ -32,4 +32,4 @@ export const enum services {
     PUT_GROUP_DISCUSSION_COMMENT_LIKE = 'putGroupDiscussionCommentLike',
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
-};
+}

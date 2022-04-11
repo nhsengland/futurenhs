@@ -7,5 +7,5 @@ export const enum formTypes {
     UPDATE_GROUP = '8aa16d76-0946-4338-be6f-c6591e4bd605',
     UPDATE_GROUP_MEMBER = '993532eb-bdad-40f3-804c-c419ccad1ac4',
     DELETE_GROUP_MEMBER = '79abe925-5f99-4052-a96f-febebc044df7',
-    INVITE_USER = '8beea5e8-9300-4f3a-87de-1385a280b897'
-}; 
+    INVITE_USER = '8beea5e8-9300-4f3a-87de-1385a280b897',
+}

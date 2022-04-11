@@ -1,6 +1,6 @@
-import { CollaboraConnectionParams } from '@appTypes/collabora';
+import { CollaboraConnectionParams } from '@appTypes/collabora'
 
 export interface Props extends CollaboraConnectionParams {
-    csrfToken: string;
-    className?: string;
+    csrfToken: string
+    className?: string
 }

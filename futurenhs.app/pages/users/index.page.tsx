@@ -1,11 +1,11 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps } from 'next'
 
-import { withUser } from '@hofs/withUser';
-import { withRoutes } from '@hofs/withRoutes';
-import { GetServerSidePropsContext } from '@appTypes/next';
+import { withUser } from '@hofs/withUser'
+import { withRoutes } from '@hofs/withRoutes'
+import { GetServerSidePropsContext } from '@appTypes/next'
 
-const NoopTemplate = (props: any) => null;
-const props: Partial<any> = {};
+const NoopTemplate = (props: any) => null
+const props: Partial<any> = {}
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -15,19 +15,17 @@ export const getServerSideProps: GetServerSideProps = withUser({
     getServerSideProps: withRoutes({
         props,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
-
             return {
                 redirect: {
                     permanent: false,
-                    destination: '/'
-                }
+                    destination: '/',
+                },
             }
-
-        }
-    })
-});
+        },
+    }),
+})
 
 /**
  * Export page template
  */
-export default NoopTemplate;
+export default NoopTemplate

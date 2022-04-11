@@ -3,5 +3,5 @@ export const enum cacheNames {
     NEXT_DATA = 'next-data',
     NEXT_IMAGE = 'next-image',
     CROSS_ORIGIN = 'cross-origin',
-    START_URL = 'start-url'
-};
+    START_URL = 'start-url',
+}

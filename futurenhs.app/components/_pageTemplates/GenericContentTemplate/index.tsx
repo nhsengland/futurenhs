@@ -1,28 +1,23 @@
-import classNames from 'classnames';
-import Head from 'next/head';
+import classNames from 'classnames'
+import Head from 'next/head'
 
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
-import { PageBody } from '@components/PageBody';
-import { RichText } from '@components/RichText';
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
+import { LayoutColumn } from '@components/LayoutColumn'
+import { PageBody } from '@components/PageBody'
+import { RichText } from '@components/RichText'
 
-import { Props } from './interfaces';
+import { Props } from './interfaces'
 
 export const GenericContentTemplate: (props: Props) => JSX.Element = ({
     user,
     contentText,
-    pageTitle
+    pageTitle,
 }) => {
+    const isAuthenticated: boolean = Boolean(user)
 
-    const isAuthenticated: boolean = Boolean(user);
-
-    const { metaDescription,
-            title,
-            mainHeading,
-            bodyHtml } = contentText ?? {};
+    const { metaDescription, title, mainHeading, bodyHtml } = contentText ?? {}
 
     return (
-
         <>
             <Head>
                 <meta name="description" content={metaDescription} />
@@ -36,7 +31,5 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
                 </LayoutColumn>
             </LayoutColumnContainer>
         </>
-
     )
-
 }
