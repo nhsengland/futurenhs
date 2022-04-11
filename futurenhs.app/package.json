@@ -8,6 +8,7 @@
     "start:prod": "node node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production node server.js",
     "start": "npm run start:prod",
     "lint": "next lint",
+    "prettier": "prettier --write pages components helpers hofs hooks selectors services constants content-configs form-configs",
     "test-js": "jest"
   },
   "dependencies": {
@@ -89,6 +90,7 @@
     "postcss": "^8.3.9",
     "postcss-preset-env": "^6.7.0",
     "postcss-pxtorem": "^6.0.0",
+    "prettier": "^2.6.2",
     "puppeteer": "^10.4.0",
     "rimraf": "^3.0.2",
     "sass": "^1.42.1",
