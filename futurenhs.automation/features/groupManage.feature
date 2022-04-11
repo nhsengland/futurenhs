@@ -52,7 +52,7 @@ Scenario: FNHS33 - Edit Group Information
 
 
 Scenario Outline: FNHS34 - Edit Group Information error validation
-    When I click the 'Automation Edited Group' link
+    When I select the 'Automation Edited Group' group card
     Then the 'Automation Edited Group' header is displayed
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
@@ -70,7 +70,7 @@ Examples:
 
 
 Scenario Outline: FNHS35 - Edit group information change logo
-    When I click the 'Automation Edited Group' link
+    When I select the 'Automation Edited Group' group card
     Then the 'Automation Edited Group' header is displayed
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
@@ -86,7 +86,7 @@ Examples:
 
 
 Scenario Outline: FNHS36 - Edit group information change logo error validation
-    When I click the 'Automation Edited Group' link
+    When I select the 'Automation Edited Group' group card
     Then the 'Automation Edited Group' header is displayed
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed    

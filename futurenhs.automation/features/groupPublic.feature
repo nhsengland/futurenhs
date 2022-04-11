@@ -42,7 +42,7 @@ Scenario: FNHS44 - View Files and Folders of Public Group
     When I click the 'Files' tab
     Then the 'Files' header is displayed
     And the 'Add Folder' link is not displayed
-    When I select the 'Public Empty Folder' group card   
+    When I click the 'Public Empty Folder' link  
     Then the 'Public Empty Folder' header is displayed
     And the 'Upload a file' link is not displayed
     And the 'Add Folder' link is not displayed
