@@ -9,7 +9,7 @@ namespace FutureNHS.Api.Services.Validation
         {
             RuleFor(model => model.Content)
                 .NotEmpty()
-                .WithMessage("Enter a comment");
+                .WithMessage("Enter your comment");
         }
     }
 }

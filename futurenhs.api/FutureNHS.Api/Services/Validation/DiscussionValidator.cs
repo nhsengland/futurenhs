@@ -9,15 +9,19 @@ namespace FutureNHS.Api.Services.Validation
         {
             RuleFor(model => model.Title)
                 .NotEmpty()
-                .WithMessage("Enter a discussion title");
+                .WithMessage("Enter the discussion title");
 
             RuleFor(model => model.Title)
-                .MaximumLength(200)
-                .WithMessage("Discussion title must be 200 characters or fewer");
+                .MaximumLength(100)
+                .WithMessage("Enter 100 or fewer characters");
 
             RuleFor(model => model.Content)
                 .NotEmpty()
                 .WithMessage("Enter the discussion comment");
+
+            RuleFor(model => model.Content)
+                .MaximumLength(100000)
+                .WithMessage("Enter 100,000 or fewer characters");
         }
     }
 }

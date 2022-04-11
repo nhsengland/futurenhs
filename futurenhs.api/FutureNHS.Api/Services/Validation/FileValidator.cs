@@ -9,15 +9,15 @@ namespace FutureNHS.Api.Services.Validation
         {
             RuleFor(model => model.Title)
                 .NotEmpty()
-                .WithMessage("Enter a file title");
+                .WithMessage("Enter the file title");
 
             RuleFor(model => model.Title)
                 .MaximumLength(45)
-                .WithMessage("The file title must be 45 characters or fewer");
+                .WithMessage("Enter 45 or fewer characters");
 
             RuleFor(model => model.Description)
                 .MaximumLength(150)
-                .WithMessage("The file description must be 150 characters or fewer");
+                .WithMessage("Enter 150 or fewer characters");
 
             RuleFor(model => model.FileSizeBytes)
                 .LessThanOrEqualTo(262144000)
