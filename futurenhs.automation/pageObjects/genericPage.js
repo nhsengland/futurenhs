@@ -174,11 +174,12 @@ class genericPage extends basePage{
     }    
 
     /**
-     * 
-     * @param {*} matcher 
+     * function to switch to a new known tab, and do basic validation of content on the page
+     * @param {*} url - expected url of new tab
+     * @param {*} matcher - string value of expected content on the new tab
      */
-    newTabValidation(matcher){
-        browser.switchWindow('https://support-futurenhs.zendesk.com/hc/en-gb');
+    newTabValidation(url, matcher){
+        browser.switchWindow(url);
         this.contentValidation('textual value', matcher);
     }
 }

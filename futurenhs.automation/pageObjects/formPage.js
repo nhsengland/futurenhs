@@ -99,8 +99,9 @@ class formPage extends basePage{
     }
 
     /**
-     * 
-     * @param {*} label 
+     * function to select desired a radio button by finding the legend label, then the button label within
+     * @param {*} legendLabel - label of the main control containing all radio buttons
+     * @param {*} buttonLabel - label of the desired radio button
      */
     radioButtonSelect(legendLabel, buttonLabel){
         var radioLegend = $(`//legend[text()="${legendLabel}"]`).parentElement();
@@ -109,8 +110,8 @@ class formPage extends basePage{
     }
     
     /**
-     * 
-     * @param {*} label 
+     * function find and select a desired checkbox on a page by it's label
+     * @param {*} label - textual value of the checkbox to select
      */
     checkboxSelect(label){
         try{

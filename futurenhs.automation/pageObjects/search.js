@@ -3,8 +3,8 @@ const basePage = require('./basePage');
 
 class search extends basePage{
     /**
-     * 
-     * @param {*} inputVal 
+     * base function to peform search on the FNHS app
+     * @param {*} inputVal - input text string for the search field
      */
     search(inputVal){
         this.searchBarValidation
@@ -13,7 +13,7 @@ class search extends basePage{
         helpers.click(searchInput.parentElement().$(`button`));
     }
     /**
-     * 
+     * basic validation that the search bar and it's content exists on a page
      */
     searchBarValidation(){
         var searchItem = $(`//div[@class="c-site-header-nav_search-item"]`);
@@ -23,8 +23,8 @@ class search extends basePage{
     }
 
     /**
-     * 
-     * @param {*} expectedAmount 
+     * function containing two validation steps of results header and results cards, based on an expected amount, expects true
+     * @param {*} expectedAmount - expected amount of results on the page
      */
     searchResultsValidation(expectedAmount){
         expect(this.searchResultsHeaderValidation(expectedAmount)).toEqual(true);
@@ -34,9 +34,9 @@ class search extends basePage{
     }
 
     /**
-     * 
-     * @param {*} expectedAmount 
-     * @returns 
+     * function to validate the search results header is displayed showing the expected amount of results
+     * @param {*} expectedAmount - the expected number to exist within the header
+     * @returns true or false
      */
     searchResultsHeaderValidation(expectedAmount){
         var searchResultsHeader = $(`//h1[contains(text(), "- ${expectedAmount} results found")]`);
@@ -48,9 +48,9 @@ class search extends basePage{
     }
 
     /**
-     * 
-     * @param {*} expectedAmount 
-     * @returns 
+     * function to validate the number of results found on the page against an expected amount
+     * @param {*} expectedAmount - the expected number of results cards on the page
+     * @returns true or false
      */
     searchResultsCardCount(expectedAmount){
         var searchResults = $(`//ul[li[contains(@class, "c-search-result")]]`);
