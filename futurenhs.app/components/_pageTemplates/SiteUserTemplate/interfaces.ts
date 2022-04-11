@@ -6,6 +6,8 @@ declare interface ContentText extends GenericPageTextContent {
     lastNameLabel: string
     pronounsLabel: string
     emailLabel: string
+    editHeading?: string
+    editButtonLabel?: string
 }
 
 export interface Props extends Page {

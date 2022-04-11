@@ -7,4 +7,6 @@ export default {
     lastNameLabel: 'Last name',
     pronounsLabel: 'Preferred pronouns',
     emailLabel: 'Email',
+    editHeading: 'Edit profile',
+    editButtonLabel: 'Edit profile'
 } as GenericPageTextContent

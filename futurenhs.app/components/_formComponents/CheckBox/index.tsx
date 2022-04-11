@@ -76,7 +76,7 @@ export const CheckBox: (props: Props) => JSX.Element = ({
                     className={generatedClasses.input}
                 />
                 <label htmlFor={id} className={generatedClasses.label}>
-                    {label}
+                    <RichText bodyHtml={label}/>
                 </label>
             </div>
         </div>
