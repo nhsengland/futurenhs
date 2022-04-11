@@ -101,6 +101,18 @@ class filesPage extends basePage{
     }
     
     /**
+     * Text compare validation of the displayed breadcrumbs in the browser
+     * @param {string} expectedBreadcrumb - string variable of the expected textual value
+     */
+    breadcrumbValidation(expectedBreadcrumb){
+        var firstBreadcrumb = expectedBreadcrumb.split(' > ')[0]
+        var expectedBreadcrumb = expectedBreadcrumb.replace(/ > /g, '');
+        var foundBreadcrumb = $(`//ol[@class="c-breadcrumb_list"][*[contains(normalize-space(.), "${firstBreadcrumb}")]]`);
+        var breadcrumbText = foundBreadcrumb.getText().replace(/\.{3,}\n([^\n]*)/g, '...').replace(/\n/g, '');
+        expect(breadcrumbText).toEqual(expectedBreadcrumb);
+    }
+    
+    /**
      * 
      * @param {*} fileName 
      */
