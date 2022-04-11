@@ -139,7 +139,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             }
         }
 
-        public async Task<bool> IsFolderUniqueAsync(string folderTitle, Guid? parentFolderId, Guid groupId, CancellationToken cancellationToken)
+        public async Task<bool> IsFolderUniqueAsync(string folderTitle, Guid? folderId, Guid? parentFolderId, Guid groupId, CancellationToken cancellationToken)
         {
             const string query =
                  @" SELECT        CAST(COUNT(1) AS BIT)
@@ -149,17 +149,19 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                   f.Title = @Title
                     AND           f.IsDeleted = 0
                     AND           (
-                                      f.ParentFolder = @ParentGroupId
+                                      f.ParentFolder = @ParentFolderId
                                       OR
-                                      (@ParentGroupId IS NULL AND f.ParentFolder IS NULL)
+                                      (@ParentFolderId IS NULL AND f.ParentFolder IS NULL)
                                   ) 
-                    AND           f.Group_Id = @GroupId";
+                    AND           f.Group_Id = @GroupId
+                    AND           f.Id != @FolderId";
 
             var queryDefinition = new CommandDefinition(query, new
             {
                 Title = folderTitle,
                 GroupId = groupId,
-                ParentGroupId = parentFolderId
+                ParentFolderId = parentFolderId,
+                FolderId = folderId
             }, cancellationToken: cancellationToken);
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);

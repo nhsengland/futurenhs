@@ -9,15 +9,15 @@ namespace FutureNHS.Api.Services.Validation
         {
             RuleFor(model => model.Name)
                 .NotEmpty()
-                .WithMessage("Enter a group name");
+                .WithMessage("Enter the group name");
 
             RuleFor(model => model.Name)
                 .MaximumLength(255)
-                .WithMessage("Group name must be 200 characters or fewer");
+                .WithMessage("Enter 255 or fewer characters");
 
             RuleFor(model => model.StrapLine)
                 .MaximumLength(1000)
-                .WithMessage("Strap line must be 1000 characters or fewer");
+                .WithMessage("Enter 1000 or fewer characters");
         }
     }
 }
