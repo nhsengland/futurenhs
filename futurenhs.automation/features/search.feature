@@ -6,27 +6,28 @@ Background:
     And I have logged in as a 'user' and accept the cookies
     Then the 'My Groups' header is displayed
 
+@Core
 Scenario Outline: FNHS97 - Search is available validation
     Given I have navigated to '<url>'
     Then the search bar is available
 Examples:
-    | url                                                    |
-    | groups/                                                |
-    | groups/aa/                                             |
-    | groups/aa/members                                      |
-    | groups/aa/members/7db6f2c4-6bf3-4178-967f-ad3a0092a580 |
-    | groups/aa/folders                                      |
-    | groups/aa/folders/create                               |
-    | groups/aa/folders/f86d22cf-1b0e-4d24-8120-adc500d224fb |
-    | groups/aa/files/54249d0f-3544-4b76-b6fb-ae0001022c09   |
-    | groups/aa/forum                                        |
-    | groups/aa/forum/create                                 |
-    | groups/aa/forum/3fbc0d4e-c2a7-46a0-99e9-ad7f010eb4ad   |
-    | groups/discover                                        |
-    | /terms-and-conditions                                  |
-    | /privacy-policy                                        |
+    | url                                                         |
+    | groups/                                                     |
+    | groups/aa/                                                  |
+    | groups/aa/members                                           |
+    | groups/aa/members/7db6f2c4-6bf3-4178-967f-ad3a0092a580      |
+    | groups/aa/folders                                           |
+    | groups/aa/folders/create                                    |
+    | groups/aa/folders/f86d22cf-1b0e-4d24-8120-adc500d224fb      |
+    | groups/aa/files/54249d0f-3544-4b76-b6fb-ae0001022c09/detail |
+    | groups/aa/forum                                             |
+    | groups/aa/forum/create                                      |
+    | groups/aa/forum/3fbc0d4e-c2a7-46a0-99e9-ad7f010eb4ad        |
+    | groups/discover                                             |
+    | /terms-and-conditions                                       |
+    | /privacy-policy                                             |
 
-
+@Core
 Scenario: FNHS98 - Search results display validation
     When I search for 'Automation'
     And there are '8' search results displayed
@@ -34,7 +35,7 @@ Scenario: FNHS98 - Search results display validation
     | Group                                                                            |
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
 
-
+@Core
 Scenario: FNHS99 - Search for a Group by Group Title
     When I search for 'Automation Admin'
     And there are '1' search results displayed
@@ -60,6 +61,7 @@ Scenario: FNHS101 - Search for a Group Where Not a Member
     When I select the 'Digital Primary Care' search result card
     Then the 'Digital Primary Care' header is displayed
 
+
 Scenario: FNHS102 - Search for a Discussion by the Title
     When I search for 'General Discussion Validation'
     And there are '1' search results displayed
@@ -83,22 +85,22 @@ Scenario: FNHS103 - Search for a Comment by Comment Text
     | 0 likes    |
     | Reply      |
 
-
+@NotInLocal
 Scenario: FNHS104 - Search for a File by File Name
     When I search for 'docTest'
     And there are '2' search results displayed
     And the 'DocTest' search result card is displayed
-    | File on Automation Public Group group |
-    | Test doc                              |
+    | File on Automation Admin Group group |
+    | Test doc                             |
     When I select the 'DocTest' search result card
     Then the 'docTest' header is displayed
 
-
+@NotInLocal
 Scenario: FNHS105 - Search for a File by File Description
     When I search for 'Test doc'
     And there are '3' search results displayed
     And the 'DocTest' search result card is displayed
-    | File on Automation Public Group group |
+    | File on Automation Admin Group group |
     | Test doc                             |
     And the 'Test doc' search result card is displayed
     | File on Automation Visual Regression Group group |

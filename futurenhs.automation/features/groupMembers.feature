@@ -64,9 +64,6 @@ Scenario: FNHS30 - View group member profile page
     | First name | auto |
     | Last name | User |
     | Email | autoUser@test.co.uk |
-    # And the 'Last online' label is displayed
-    # And the 'Joined' label is displayed
-    # And the 'Member' checkbox is selected
 
 
 Scenario Outline: FNHS93 - Change members role
@@ -74,9 +71,13 @@ Scenario Outline: FNHS93 - Change members role
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     Then the 'Group members' table exists
-    When I click 'auto User' on the 'auto User' row of the 'Group Members' table
+    When I click 'Edit' on the 'auto User' row of the 'Group Members' table
     Then the 'Member Profile' header is displayed
-    When I open the 'Edit member' accordion
+    And the profile values are displayed
+    | First name | auto |
+    | Last name | User |
+    | Email | autoUser@test.co.uk |
+    And the 'Remove from group' button is displayed
     When I select the '<new role>' radio button for 'Member role'
     When I click the 'Save Changes' button
     Then I confirm this on the open '' dialog
@@ -85,14 +86,18 @@ Examples:
     | Member       | Admin    |
     | Admin        | Member   |
 
-@Pending
+#USER ADDED DURING ACCEPT/REJECT JOURNEYS NO LONGER BEING ADDED, MISSING USER TO REMOVE NEW DATA REQUIREMENT
 Scenario: FNHS94 - Remove member from a group
     When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
     Then the 'Group members' table exists
-    When I click 'Auto User2' on the 'Auto User2' row of the 'Group Members' table
+    When I click 'Edit' on the 'auto User' row of the 'Group Members' table
     Then the 'Member Profile' header is displayed
-    When I click the 'Remove from group' button
+    And the profile values are displayed
+    | First name | auto |
+    | Last name | User |
+    | Email | autoUser@test.co.uk |
+    And the 'Remove from group' button is displayed
     Then I confirm this on the open '' dialog
-    And the 'Group administrators' table exists
+    And the 'Group Members' table exists

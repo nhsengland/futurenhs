@@ -17,15 +17,15 @@ Scenario: FNHS37 - Members Table Validation
     | Name       | Email                | Request date | Accept | Reject |
     | Auto User3 | autoUser3@test.co.uk | [PrettyDate] | Accept | Reject |
     And the 'Group Members' table is displayed
-    | Name       | Role             | Date joined  | Last logged in | Edit |
-    | auto Admin | Admin            | [PrettyDate] | [PrettyDate]   | Edit |
-    | Auto User2 | Standard Members | [PrettyDate] | [PrettyDate]   | Edit |
+    | Name       | Role             | Date joined  | Last logged in | Actions |
+    | auto Admin | Admin            | [PrettyDate] | [PrettyDate]   | Edit    |
+    | Auto User2 | Standard Members | [PrettyDate] | [PrettyDate]   | Edit    |
     
 
 Scenario: FNHS38 - Pending Approval: Group Home validation
     Given I log off and log in as an 'user'
     When I click the 'Discover new groups' tab
-    Then the 'Discover New Groups' header is displayed
+    Then the 'Discover new Groups' header is displayed
     When I select the 'AutoPendingGroup' group card
     Then the 'AutoPendingGroup' header is displayed
     When the 'Pending Approval' link is displayed
@@ -35,7 +35,7 @@ Scenario: FNHS38 - Pending Approval: Group Home validation
 Scenario: FNHS39 - Pending Approval: View group forum
     Given I log off and log in as an 'user'
     When I click the 'Discover new groups' tab
-    Then the 'Discover New Groups' header is displayed
+    Then the 'Discover new Groups' header is displayed
     When I select the 'AutoPendingGroup' group card
     Then the 'AutoPendingGroup' header is displayed
     When I click the 'Forum' tab
@@ -45,7 +45,7 @@ Scenario: FNHS39 - Pending Approval: View group forum
 Scenario: FNHS40 - Pending Approval: View group members
     Given I log off and log in as an 'user'
     When I click the 'Discover new groups' tab
-    Then the 'Discover New Groups' header is displayed
+    Then the 'Discover new Groups' header is displayed
     When I select the 'AutoPendingGroup' group card
     Then the 'AutoPendingGroup' header is displayed
     When I click the 'Members' tab
