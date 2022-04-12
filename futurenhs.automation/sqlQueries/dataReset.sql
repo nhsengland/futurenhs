@@ -27,6 +27,11 @@ SELECT @testDiscussion = Entity_Id FROM [dbo].[Discussion] WHERE Title = 'autoTe
 DELETE [dbo].[Comment] WHERE Parent_EntityId = @testDiscussion;
 DELETE [dbo].[Discussion] WHERE Entity_Id = @testDiscussion AND CreatedBy = @groupAdmin
 
+DECLARE @test100CharDiscussion AS uniqueidentifier;
+SELECT @test100CharDiscussion = Entity_Id FROM [dbo].[Discussion] WHERE Title = 'sWjuuYFV2o14Mk7RxWGAmpqO25feI8YkR5QhmiB1gTRTFzxg4xqylWDmit9scXIiQQyAYFwVYFbwxObPEBeTvLFPeWsb4GJI6tg3';
+DELETE [dbo].[Comment] WHERE Parent_EntityId = @test100CharDiscussion;
+DELETE [dbo].[Discussion] WHERE Entity_Id = @test100CharDiscussion AND CreatedBy = @groupAdmin
+
 -- Delete Folder generated as part of filesManagement.feature
 DECLARE @adminGroup AS uniqueidentifier;
 SELECT @adminGroup = Id FROM [dbo].[Group] WHERE Name = 'Automation Admin Group'
