@@ -11,26 +11,34 @@ Background:
     Then the 'All Discussions' header is displayed
 
 @Core
-Scenario: FNHS58 - Create a new discussion
+Scenario Outline: FNHS58 - Create a new discussion
     When I click the 'New Discussion' link
     Then the 'Create Discussion' header is displayed
-    When I enter 'autoTestDiscussion' into the 'Title' field
-    And I enter 'A brief description about the discussion' into the 'Comment' text editor
+    When I enter '<title>' into the 'Title' field
+    And I enter '<comment>' into the 'Comment' text editor
     Then the 'All Discussions' header is displayed
-    
+Examples:
+    | title              | comment                                   |
+    | autoTestDiscussion | A brief description about the discussion  |
+    | sWjuuYFV2o14Mk7RxWGAmpqO25feI8YkR5QhmiB1gTRTFzxg4xqylWDmit9scXIiQQyAYFwVYFbwxObPEBeTvLFPeWsb4GJI6tg3 | 100 character limit test |
 
-Scenario: FNHS59 - Create a discussion error validation, and cancel
+
+Scenario Outline: FNHS59 - Create a discussion error validation, and cancel
     When I click the 'New Discussion' link
     Then the 'Create Discussion' header is displayed
-    When I click the 'Create Discussion' button
-    Then the 'Enter the discussion title' error message is displayed
-    And the 'Enter the discussion comment' error message is displayed
-    And the 'Enter the discussion title' error summary is displayed
-    And the 'Enter the discussion comment' error summary is displayed
+    When I enter '<title>' into the 'Title' field
+    And I enter '<comment>' into the 'Comment' text editor
+    Then the '<error>' error message is displayed
+    And the '<error>' error summary is displayed
     When I click the 'Discard Discussion' link
     Then the 'Entered Data will be lost' header is displayed
     When I click the 'Yes, discard' button
     Then the 'All Discussions' header is displayed
+Examples:
+    | title | comment | error                        |
+    |       | comment | Enter the discussion title   |
+    | title |         | Enter the discussion comment |
+    | sWjuuYFV2o14Mk7RxWGAmpqO25feI8YkR5QhmiB1gTRTFzxg4xqylWDmit9scXIiQQyAYFwVYFbwxObPEBeTvLFPeWsb4GJI6tg3X | comment | Enter 100 or fewer characters |
 
 
 Scenario: FNHS60 - Created discussion card validation
