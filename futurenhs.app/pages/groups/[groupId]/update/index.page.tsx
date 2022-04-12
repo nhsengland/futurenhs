@@ -16,6 +16,7 @@ import { withTextContent } from '@hofs/withTextContent'
 import { withGroup } from '@hofs/withGroup'
 import { withForms } from '@hofs/withForms'
 import {
+    selectFormData,
     selectMultiPartFormData,
     selectCsrfToken,
     selectParam,
@@ -53,7 +54,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         context: GetServerSidePropsContext
                     ) => {
                         const csrfToken: string = selectCsrfToken(context)
-                        const formData: any = selectMultiPartFormData(context)
+                        const currentValues: any = selectFormData(context)
+                        const submission: any = selectMultiPartFormData(context)
                         const groupId: string = selectParam(
                             context,
                             routeParams.GROUPID
@@ -103,22 +105,25 @@ export const getServerSideProps: GetServerSideProps = withUser({
                              * Handle server-side form post
                              */
                             if (
-                                formData &&
+                                submission &&
                                 requestMethod === requestMethods.POST
                             ) {
+
+                                form.initialValues = currentValues.getAll();
+
                                 const headers = {
                                     ...getStandardServiceHeaders({
                                         csrfToken,
                                         etag,
                                     }),
-                                    ...formData.getHeaders(),
+                                    ...submission.getHeaders(),
                                 }
 
                                 await putGroup({
                                     groupId,
                                     user,
                                     headers,
-                                    body: formData,
+                                    body: submission,
                                 })
 
                                 return {
@@ -129,6 +134,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 }
                             }
                         } catch (error: any) {
+
                             const validationErrors: FormErrors =
                                 getServiceErrorDataValidationErrors(error)
 

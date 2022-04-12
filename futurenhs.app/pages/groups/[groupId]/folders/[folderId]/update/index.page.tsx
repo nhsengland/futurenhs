@@ -26,7 +26,6 @@ import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { FormErrors } from '@appTypes/form'
 
-import { groupFolderForm } from '@formConfigs/group-folder'
 import { GroupCreateUpdateFolderTemplate } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate'
 import { Props } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate/interfaces'
 import { withTextContent } from '@hofs/withTextContent'
