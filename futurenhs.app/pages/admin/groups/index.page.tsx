@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 const user: User = selectUser(context)
                 const pagination: Pagination = {
                     pageNumber: selectPagination(context).pageNumber ?? 1,
-                    pageSize: selectPagination(context).pageSize ?? 10,
+                    pageSize: selectPagination(context).pageSize ?? 20,
                 }
 
                 props.layoutId = layoutIds.ADMIN
