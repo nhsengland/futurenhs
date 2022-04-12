@@ -3,6 +3,7 @@ import classNames from 'classnames'
 
 import { actions as userActions } from '@constants/actions'
 import { Link } from '@components/Link'
+import { ActionLink } from '@components/ActionLink'
 import { SVGIcon } from '@components/SVGIcon'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { DataGrid } from '@components/DataGrid'
@@ -221,30 +222,14 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
                     if (shouldRenderMemberEditColumn) {
                         rows.push({
-                            children: (
-                                <Link
-                                    href={
-                                        {
-                                            pathname: `${routes.groupMembersRoot}/${id}`,
-                                            query: {
-                                                edit: 'true',
-                                            },
-                                        } as any
-                                    }
-                                >
-                                    <a
-                                        aria-label={`Edit member ${
-                                            fullName || role
-                                        }`}
-                                    >
-                                        <SVGIcon
-                                            name="icon-edit"
-                                            className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0"
-                                        />
-                                        {editMember}
-                                    </a>
-                                </Link>
-                            ),
+                            children: 
+                                <ActionLink 
+                                    href={`${routes.groupMembersRoot}/${id}?edit=true`}
+                                    text={{
+                                        body: editMember,
+                                        ariaLabel: `Edit member ${fullName || role}`
+                                    }}
+                                    iconName="icon-edit" />,
                             className:
                                 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                             headerClassName: 'u-hidden',
