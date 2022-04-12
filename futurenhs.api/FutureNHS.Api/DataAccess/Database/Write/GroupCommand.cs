@@ -183,8 +183,6 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 Image = groupDto.ImageId,
                 IsPublic = groupDto.IsPublic,
                 RowVersion = groupDto.RowVersion,
-
-
             }, cancellationToken: cancellationToken);
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);

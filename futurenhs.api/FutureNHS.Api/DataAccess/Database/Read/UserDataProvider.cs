@@ -3,10 +3,7 @@ using FutureNHS.Api.Application.Application.HardCodedSettings;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Models;
-using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Models.User;
-using FutureNHS.Api.Exceptions;
 using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
@@ -24,7 +21,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
-        
+
         public async Task<(uint, IEnumerable<Member>)> GetMembersAsync(uint offset, uint limit, string sort, CancellationToken cancellationToken = default)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
@@ -69,25 +66,24 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             return (totalCount, members);
         }
-        
+
         public async Task<MemberDetails?> GetMemberAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =
                 @$" SELECT
-                                [{nameof(GroupMemberDetails.Id)}]                   = member.Id,
-                                [{nameof(GroupMemberDetails.Slug)}]                 = member.Slug, 
-                                [{nameof(GroupMemberDetails.FirstName)}]            = member.FirstName,
-                                [{nameof(GroupMemberDetails.LastName)}]             = member.Surname,
-                                [{nameof(GroupMemberDetails.Initials)}]             = member.Initials, 
-                                [{nameof(GroupMemberDetails.Email)}]                = member.Email, 
-                                [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
-                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(member.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ')
+                                [{nameof(MemberDetails.Id)}]                   = member.Id,
+                                [{nameof(MemberDetails.Slug)}]                 = member.Slug, 
+                                [{nameof(MemberDetails.FirstName)}]            = member.FirstName,
+                                [{nameof(MemberDetails.LastName)}]             = member.Surname,
+                                [{nameof(MemberDetails.Initials)}]             = member.Initials, 
+                                [{nameof(MemberDetails.Email)}]                = member.Email, 
+                                [{nameof(MemberDetails.Pronouns)}]             = member.Pronouns, 
+                                [{nameof(MemberDetails.DateJoinedUtc)}]        = FORMAT(member.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(MemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
 
                     FROM        MembershipUser member 
-                    WHERE       member.Id = @UserId
-
-";
+                    WHERE       member.Id = @UserId";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
