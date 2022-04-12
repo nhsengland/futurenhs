@@ -41,6 +41,7 @@ exports.config = {
     ],
     suites: {
         fullRegression: [
+            './features/**/platformAdmin.feature',
             './features/**/userAccess.feature',
             './features/**/search.feature',
             './features/**/groupNavigation.feature',
@@ -52,7 +53,6 @@ exports.config = {
             './features/**/forumAdmin.feature',
             './features/**/foldersManagement.feature',
             './features/**/filesManagement.feature',
-            './features/**/platformAdmin.feature',
             './features/**/memberProfile.feature',
             './features/**/cookies.feature',
             './features/**/systemPages.feature',
