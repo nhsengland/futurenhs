@@ -39,19 +39,19 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
     const columnList = [
         {
             children: 'Name',
-            className: '',
+            className: 'u-w-full tablet:u-w-2/5',
         },
         {
             children: 'Members',
-            className: 'tablet:u-text-center',
+            className: 'u-w-full tablet:u-w-1/5 tablet:u-text-center',
         },
         {
             children: 'Owner',
-            className: '',
+            className: 'u-w-full tablet:u-w-1/6',
         },
         {
             children: `Actions`,
-            className: 'tablet:u-text-right',
+            className: 'u-w-full tablet:u-w-1/6 tablet:u-text-right',
         }
     ];
 
@@ -66,16 +66,16 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
 
         const generatedCellClasses = {
             name: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/3']: true
+                ['u-justify-between u-w-full']: true
             }),
             members: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/5 tablet:u-text-center']: true
+                ['u-justify-between u-w-full tablet:u-text-center']: true
             }),
             owner: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/6']: true,
+                ['u-justify-between u-w-full']: true,
             }),
             actions: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/6']: true,
+                ['u-justify-between u-w-full']: true,
             })
         };
 
