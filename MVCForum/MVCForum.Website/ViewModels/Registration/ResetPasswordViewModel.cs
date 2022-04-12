@@ -15,11 +15,11 @@
         [Required(ErrorMessage = "Your password must be at least 10 characters long")]
         [StringLength(100, MinimumLength = 10, ErrorMessage = "Your password must be at least 10 characters long")]
         [DataType(DataType.Password)]
-        [ForumMvcResourceDisplayName("Members.Label.NewPassword")]
+        [Display(Name = "New Password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
+        [Display(Name = "Confirm New Password")]
         [Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
     }

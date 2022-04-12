@@ -5,7 +5,7 @@
 
     public class ForgotPasswordViewModel
     {
-        [ForumMvcResourceDisplayName("Members.Label.EmailAddressBlank")]
+        [Display(Name = "Enter your email address")]
         [Required(ErrorMessage = "Please provide a valid email address")]
         [EmailAddress(ErrorMessage = "Please provide a valid email address")]
         public string EmailAddress { get; set; }

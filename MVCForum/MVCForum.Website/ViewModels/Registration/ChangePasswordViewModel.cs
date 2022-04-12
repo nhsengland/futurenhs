@@ -7,18 +7,18 @@
     {
         [Required]
         [DataType(DataType.Password)]
-        [ForumMvcResourceDisplayName("Members.Label.CurrentPassword")]
+        [Display(Name = "Current Password")]
         public string OldPassword { get; set; }
 
         [Required]
         [StringLength(100, MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [ForumMvcResourceDisplayName("Members.Label.NewPassword")]
+        [Display(Name = "New Password")]
         public string NewPassword { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
+        [Display(Name = "Confirm New Password")]
         [Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
     }
