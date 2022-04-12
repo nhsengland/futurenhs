@@ -8,15 +8,15 @@
         public string ReturnUrl { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Username")]
+        [Display(Name = "Username")]
         public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [ForumMvcResourceDisplayName("Members.Label.Password")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.RememberMe")]
+        [Display(Name = "Remember Me?")]
         public bool RememberMe { get; set; }
     }
 }

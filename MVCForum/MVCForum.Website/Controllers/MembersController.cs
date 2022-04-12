@@ -360,7 +360,7 @@
                         {
                             // POTENTIAL SPAMMER!
                             ModelState.AddModelError(string.Empty,
-                                LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
+                                "There was an error with your answer. Please try again");
                             return View();
                         }
                     }
