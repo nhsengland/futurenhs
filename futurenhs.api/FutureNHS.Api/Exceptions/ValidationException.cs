@@ -15,5 +15,17 @@ namespace FutureNHS.Api.Exceptions
                 Errors.Add(validationError.PropertyName, validationError.ErrorMessage);
             }
         }
+
+        public ValidationException(Dictionary<string, string> errors)
+        {
+            Errors = errors;
+        }
+
+        public ValidationException(KeyValuePair<string, string> error)
+        {
+            Errors = new Dictionary<string, string>();
+
+            Errors.Append(error);
+        }
     }
 }
