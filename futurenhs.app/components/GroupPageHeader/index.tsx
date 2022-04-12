@@ -128,16 +128,16 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
             })
         }
 
-        if (
-            actions?.includes(actionsConstants.SITE_ADMIN_GROUPS_EDIT) ||
-            actions?.includes(actionsConstants.GROUPS_EDIT)
-        ) {
-            actionsMenuList.push({
-                id: actionsConstants.GROUPS_MEMBERS_ADD,
-                url: `${routes.groupRoot}?${queryParams.EDIT}=true`,
-                text: 'Page manager',
-            })
-        }
+        // if (
+        //     actions?.includes(actionsConstants.SITE_ADMIN_GROUPS_EDIT) ||
+        //     actions?.includes(actionsConstants.GROUPS_EDIT)
+        // ) {
+        //     actionsMenuList.push({
+        //         id: actionsConstants.GROUPS_MEMBERS_ADD,
+        //         url: `${routes.groupRoot}?${queryParams.EDIT}=true`,
+        //         text: 'Page manager',
+        //     })
+        // }
 
         // if (actions?.includes(actionsConstants.GROUPS_MEMBERS_ADD)) {
 
