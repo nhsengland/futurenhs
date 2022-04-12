@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { actions as actionConstants } from '@constants/actions';
 import { SVGIcon } from '@components/SVGIcon';
 import { Link } from '@components/Link';
+import { ActionLink } from '@components/ActionLink';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -22,6 +23,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
     actions,
     pagination,
     groupsList,
+    routes,
     user
 }) => {
 
@@ -96,12 +98,12 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: <Link href={`/groups/${groupId}`}>{mainHeading}</Link>,
+                children: <Link href={`${routes.groupsRoot}/${groupId}`}>{mainHeading}</Link>,
                 className: generatedCellClasses.name,
                 headerClassName: generatedHeaderCellClasses.name
             },
             {
-                children: <Link href={`/groups/${groupId}/members`}><a aria-label={`Go to ${mainHeading} members list`}>{totalMemberCount}</a></Link>,
+                children: <Link href={`${routes.groupsRoot}/${groupId}/members`}><a aria-label={`Go to ${mainHeading} members list`}>{totalMemberCount}</a></Link>,
                 className: generatedCellClasses.members,
                 headerClassName: generatedHeaderCellClasses.members,
                 shouldRenderCellHeader: true
@@ -113,7 +115,14 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
                 shouldRenderCellHeader: true
             },
             {
-                children: <Link href={`/groups/${groupId}/update`}><a aria-label={`Edit group ${mainHeading}`}><SVGIcon name="icon-edit" className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0" />Edit</a></Link>,
+                children: 
+                    <ActionLink 
+                        href={`${routes.groupsRoot}/${groupId}/update`}
+                        text={{
+                            body: 'Edit',
+                            ariaLabel: `Edit group ${mainHeading}`
+                        }}
+                        iconName="icon-edit" />,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden',
             }

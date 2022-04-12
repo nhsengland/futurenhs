@@ -13,6 +13,7 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { DataGrid } from '@components/DataGrid'
 import { RichText } from '@components/RichText'
+import { ActionLink } from '@components/ActionLink'
 import { PaginationWithStatus } from '@components/PaginationWithStatus'
 import { getGroupFolderContents } from '@services/getGroupFolderContents'
 import { BreadCrumbList } from '@appTypes/routing'
@@ -111,6 +112,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
         if (folderId) {
             columns.push({
                 children: 'Actions',
+                className: 'tablet:u-text-right'
             })
         }
 
@@ -167,7 +169,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                         ['u-hidden']: isFolder,
                     }),
                     actions: classNames({
-                        ['u-w-full u-justify-between']: true,
+                        ['u-w-full u-justify-between tablet:u-text-right']: true,
                         ['u-hidden']: isFolder,
                     }),
                 }
@@ -198,11 +200,13 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                     className: generatedCellClasses.type,
                 })
                 row.push({
-                    children: (
-                        <Link href={itemPath}>
-                            <a>{name}</a>
-                        </Link>
-                    ),
+                    children: 
+                        <ActionLink 
+                            href={itemPath}
+                            text={{
+                                body: name,
+                                ariaLabel: `View ${name}`
+                            }} />,
                     shouldRenderCellHeader: false,
                     className: generatedCellClasses.name,
                 })
@@ -249,34 +253,26 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                             ''
                         ) : (
                             <>
-                                {fileDownloadPath && (
-                                    <Link href={fileDownloadPath}>
-                                        <a
-                                            className="u-block tablet:u-mb-4 u-align-top"
-                                            aria-label={`Download ${name}`}
-                                        >
-                                            <SVGIcon
-                                                name="icon-download"
-                                                className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8"
-                                            />
-                                            Download file
-                                        </a>
-                                    </Link>
-                                )}
-                                {fileDetailPath && (
-                                    <Link href={fileDetailPath}>
-                                        <a
-                                            className="u-block u-align-top"
-                                            aria-label={`View details of ${name}`}
-                                        >
-                                            <SVGIcon
-                                                name="icon-view"
-                                                className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8"
-                                            />
-                                            View details
-                                        </a>
-                                    </Link>
-                                )}
+                                {fileDownloadPath &&
+                                    <ActionLink 
+                                        href={fileDownloadPath}
+                                        text={{
+                                            body: 'Download file',
+                                            ariaLabel: `Download ${name}`
+                                        }}
+                                        iconName="icon-download"
+                                        className="u-block tablet:u-mb-4 u-align-top" />
+                                }
+                                {fileDetailPath && 
+                                    <ActionLink 
+                                        href={fileDetailPath}
+                                        text={{
+                                            body: 'View details',
+                                            ariaLabel: `View details of ${name}`
+                                        }}
+                                        iconName="icon-view"
+                                        className="u-w-4 u-h-6 u-mr-2" />
+                                }
                             </>
                         ),
                         shouldRenderCellHeader: true,

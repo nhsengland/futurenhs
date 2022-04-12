@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 
 import { Link } from '@components/Link'
+import { ActionLink } from '@components/ActionLink'
 import { dateTime } from '@helpers/formatters/dateTime'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { DataGrid } from '@components/DataGrid'
@@ -165,15 +166,14 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
                                     generatedHeaderCellClasses.lastUpdate,
                             },
                             {
-                                children: (
-                                    <>
-                                        <SVGIcon
-                                            name="icon-download"
-                                            className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8"
-                                        />
-                                        <a href={fileDownloadPath}>Download</a>
-                                    </>
-                                ),
+                                children: 
+                                    <ActionLink 
+                                        href={fileDownloadPath}
+                                        text={{
+                                            body: 'Download',
+                                            ariaLabel: `Download ${name}`
+                                        }}
+                                        iconName="icon-download" />,
                                 shouldRenderCellHeader: false,
                                 className: generatedCellClasses.actions,
                             },

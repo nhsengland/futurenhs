@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react'
-import { useRouter } from 'next/router'
 import classNames from 'classnames'
 
 import { capitalise } from '@helpers/formatters/capitalise'
@@ -7,6 +6,7 @@ import { dateTime } from '@helpers/formatters/dateTime'
 import { actions as actionConstants } from '@constants/actions'
 import { SVGIcon } from '@components/SVGIcon'
 import { Link } from '@components/Link'
+import { ActionLink } from '@components/ActionLink'
 import { PaginationWithStatus } from '@components/PaginationWithStatus'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
@@ -125,30 +125,14 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                             shouldRenderCellHeader: true,
                         },
                         {
-                            children: (
-                                <Link
-                                    href={
-                                        {
-                                            pathname: `/users/${id}`,
-                                            query: {
-                                                edit: 'true',
-                                            },
-                                        } as any
-                                    }
-                                >
-                                    <a
-                                        aria-label={`Edit user ${
-                                            fullName || role
-                                        }`}
-                                    >
-                                        <SVGIcon
-                                            name="icon-edit"
-                                            className="u-w-4 u-h-4 u-mr-1 u-fill-theme-0"
-                                        />
-                                        Edit
-                                    </a>
-                                </Link>
-                            ),
+                            children: 
+                                <ActionLink 
+                                    href={`/users/${id}?edit=true`}
+                                    text={{
+                                        body: 'Edit',
+                                        ariaLabel: `Edit user ${fullName || role}`
+                                    }}
+                                    iconName="icon-edit" />,
                             className:
                                 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                             headerClassName: 'u-hidden',
