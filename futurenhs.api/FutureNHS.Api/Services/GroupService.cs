@@ -278,7 +278,7 @@ namespace FutureNHS.Api.Services
                 
                 // Get values from multipart form
                 var nameFound = formValues.TryGetValue("name", out var name);
-                if (nameFound is false || string.IsNullOrEmpty(name))
+                if (nameFound is false)
                 {
                     throw new ArgumentNullException($"Name was not provided");
                 }
@@ -295,18 +295,9 @@ namespace FutureNHS.Api.Services
                 
                 formValues.TryGetValue("imageid", out var image);
 
-                // Validation
-                if (name.ToString().Length > 255)
-                {
-                    throw new ArgumentOutOfRangeException($"Title must be less than 256 characters");
-                }
-                if (strapLine.ToString().Length > 255)
-                {
-                    throw new ArgumentOutOfRangeException($"Strap Line be less than 256 characters");
-                }
                 if (Guid.TryParse(theme, out var themeId) is false || themeId == new Guid())
                 {
-                    throw new ArgumentOutOfRangeException($"Incorrect Id provided");
+                    throw new ValidationException(new KeyValuePair<string, string>(nameof(GroupDto.ThemeId), "Enter the theme"));
                 }
 
                 var imageId = Guid.TryParse(image, out var imageGuid) ? (Guid?)imageGuid : null;
