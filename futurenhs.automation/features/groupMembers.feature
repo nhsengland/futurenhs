@@ -51,7 +51,7 @@ Examples:
     | nouser@test.com      | This user is not registered on the platform. The platform is not open for new registrations at present, please contact support for more information. |
     | autoUser2@test.co.uk | The email address belongs to a member of this group.                                                                                                 |
 
-
+@Core
 Scenario: FNHS30 - View group member profile page
     When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed

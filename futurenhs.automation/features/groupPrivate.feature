@@ -8,7 +8,7 @@ Background:
     Given I have logged in as a 'group admin' and accept the cookies
     Then the 'My Groups' header is displayed
 
-
+@Pending
 Scenario: FNHS37 - Members Table Validation
     When I select the 'Automation Private Group' group card
     Then the 'Automation Private Group' header is displayed
@@ -21,7 +21,7 @@ Scenario: FNHS37 - Members Table Validation
     | auto Admin | Admin            | [PrettyDate] | [PrettyDate]   | Edit    |
     | Auto User2 | Standard Members | [PrettyDate] | [PrettyDate]   | Edit    |
     
-
+@Pending
 Scenario: FNHS38 - Pending Approval: Group Home validation
     Given I log off and log in as an 'user'
     When I click the 'Discover new groups' tab
@@ -31,7 +31,7 @@ Scenario: FNHS38 - Pending Approval: Group Home validation
     When the 'Pending Approval' link is displayed
     Then the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
 
-
+@Pending
 Scenario: FNHS39 - Pending Approval: View group forum
     Given I log off and log in as an 'user'
     When I click the 'Discover new groups' tab
@@ -41,7 +41,7 @@ Scenario: FNHS39 - Pending Approval: View group forum
     When I click the 'Forum' tab
     And the 'You must be a member of this group to access this content' textual value is displayed
 
-
+@Pending
 Scenario: FNHS40 - Pending Approval: View group members
     Given I log off and log in as an 'user'
     When I click the 'Discover new groups' tab
@@ -51,7 +51,7 @@ Scenario: FNHS40 - Pending Approval: View group members
     When I click the 'Members' tab
     And the 'You must be a member of this group to access this content' textual value is displayed
     
-
+@Pending
 Scenario: FNHS41 - Join a private group 
     Given I log off and log in as an 'user'    
     When I click the 'Discover new groups' tab
@@ -61,7 +61,7 @@ Scenario: FNHS41 - Join a private group
     When I click the 'Join Group' link
     Then the 'Pending Approval' textual value is displayed
 
-
+@Pending
 Scenario: FNHS42 - Add member awaiting approval
     When I select the 'Automation Private Group' group card
     Then the 'Automation Private Group' header is displayed
