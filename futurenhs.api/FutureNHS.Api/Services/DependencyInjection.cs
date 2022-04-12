@@ -1,4 +1,6 @@
-﻿using FutureNHS.Api.Services.Interfaces;
+﻿using FutureNHS.Api.Services.Admin;
+using FutureNHS.Api.Services.Admin.Interfaces;
+using FutureNHS.Api.Services.Interfaces;
 
 namespace FutureNHS.Api.Services
 {
@@ -21,6 +23,8 @@ namespace FutureNHS.Api.Services
             services.AddScoped<IUserImageService, ImageService>();
             services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<IFileServerService, FileServerService>();
+
+            services.AddScoped<IAdminUserService, AdminUserService>(); 
 
             return services;
         }

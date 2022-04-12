@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Permissions;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
@@ -126,6 +127,22 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             var result = await dbConnection.QueryAsync<string>(queryDefinition);
 
             return result;
+        }
+
+        public async Task<IEnumerable<RoleDto>> GetRolesAsync(CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(RoleDto.Id)}]     = Id,
+                                [{nameof(RoleDto.Name)}]   = RoleName 
+          
+                    FROM        [MembershipRole];";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, cancellationToken: cancellationToken);
+
+            return await dbConnection.QueryAsync<RoleDto>(commandDefinition);
         }
     }
 }
