@@ -42,6 +42,7 @@ Scenario: FNHS53 - Post a comment in a discussion
     | 0 likes      |
     | Reply        |
 
+
 Scenario: FNHS12 - Validate Discussion card comment counter
     Then the 'forumSubmission' discussion card is displayed
     | AA                                      |
@@ -65,13 +66,17 @@ Scenario: FNHS12 - Validate Discussion card comment counter
     | Comments: 3                             |
 
 
-# ERROR VALIDATION 100000 character limit
-Scenario: FNHS54 - Post a comment error validation
+Scenario Outline: FNHS54 - Post a comment error validation
     When I select the 'forumSubmission Discussion' discussion card
     Then the 'forumSubmission Discussion' header is displayed 
+    When I enter '<input>' into the 'Your comment' text editor
     And I click the 'Add Comment' button
-    Then the 'Enter your comment' error message is displayed
-    And the 'Enter your comment' error summary is displayed
+    Then the '<error>' error message is displayed
+    And the '<error>' error summary is displayed
+Examples:
+    | input | error              |
+    |       | Enter your comment |
+    # | | Enter 100,000 or fewer characters | UNABLE TO ADD 100K characters into app
 
 @Core
 Scenario: FNHS55 - Reply to existing comment
