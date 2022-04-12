@@ -1,23 +1,31 @@
 ﻿using Dapper;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.User;
+using FutureNHS.Api.Exceptions;
+using FutureNHS.Api.Models.Member;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
     public class UserCommand : IUserCommand
-    { 
+    {
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<UserCommand> _logger;
+        private readonly IOptions<AzureImageBlobStorageConfiguration> _options;
 
-        public UserCommand(IAzureSqlDbConnectionFactory connectionFactory,ILogger<UserCommand> logger)
+        public UserCommand(IAzureSqlDbConnectionFactory connectionFactory,
+            ILogger<UserCommand> logger,
+            IOptions<AzureImageBlobStorageConfiguration> options)
         {
             _connectionFactory = connectionFactory;
             _logger = logger;
-
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task CreateInviteUserAsync(GroupInviteDto entityLike, CancellationToken cancellationToken)
@@ -61,6 +69,151 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             {
                 _logger.LogError(ex, "Error: CreateInviteUserAsync - User request to create was not successful.");
                 throw new DBConcurrencyException("Error: User request was not successful.");
+            }
+        }
+
+        public async Task<MemberProfile> GetMemberAsync(Guid id, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(MemberProfile.Id)}]                = member.Id,
+                                [{nameof(MemberProfile.FirstName)}]         = member.FirstName,
+                                [{nameof(MemberProfile.Surname)}]           = member.Surname,
+                                [{nameof(MemberProfile.Pronouns)}]          = member.Pronouns,
+                                [{nameof(MemberProfile.ImageId)}]           = member.ImageId,
+                                [{nameof(MemberProfile.RoleId)}]            = memberInRole.RoleIdentifier,
+                                [{nameof(MemberProfile.RowVersion)}]        = member.RowVersion,
+                                [{nameof(ImageData.Id)}]                    = image.Id,
+                                [{nameof(ImageData.Height)}]                = image.Height,
+                                [{nameof(ImageData.Width)}]                 = image.Width,
+                                [{nameof(ImageData.FileName)}]              = image.FileName,
+                                [{nameof(ImageData.MediaType)}]             = image.MediaType
+				    
+                    FROM        [MembershipUser] member
+                    JOIN		MembershipUsersInRoles memberInRole
+					    ON			memberInRole.UserIdentifier = member.Id
+                    LEFT JOIN   Image image
+                        ON          image.Id = member.ImageId
+                    WHERE
+                                member.[Id] = @Id";
+
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                Id = id,
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryAsync<MemberProfile, Image, MemberProfile>(query,
+                (group, image) =>
+                {
+                    if (image is not null)
+                    {
+                        var groupWithImage = @group with { Image = new ImageData(image, _options) };
+
+                        return groupWithImage;
+                    }
+
+                    return @group;
+
+                }, new
+                {
+                    Id = id,
+                }, splitOn: "id");
+
+            var memberProfile = reader.FirstOrDefault() ?? throw new NotFoundException("Member not found.");
+
+            return memberProfile;
+        }
+
+        public async Task<MemberRole> GetMembershipUsersInRoleAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT 
+                                [{nameof(MemberRole.MembershipUserId)}]  = muir.UserIdentifier, 
+                                [{nameof(MemberRole.RoleId)}]            = muir.RoleIdentifier,
+                                [{nameof(MemberRole.RowVersion)}]        = muir.RowVersion
+				    
+                    FROM        [MembershipUsersInRoles] muir
+                    WHERE      
+                                UserIdentifier = @UserId";
+
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                UserId = userId
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            return await dbConnection.QuerySingleOrDefaultAsync<MemberRole>(queryDefinition);
+        }
+
+        public async Task UpdateUserAsync(MemberDto user, byte[] rowVersion, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" UPDATE        [dbo].[MembershipUser]
+                    SET 
+                                  [FirstName]      = @FirstName
+                                 ,[Surname]        = @LastName
+                                 ,[Pronouns]       = @Pronouns
+                                 ,[ImageId]        = @ImageId
+                                 ,[ModifiedAtUTC]  = @ModifiedAtUtc
+                    
+                    WHERE 
+                                 [Id] = @Id
+                    AND          [RowVersion] = @RowVersion";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.Surname,
+                Pronouns = user.Pronouns,
+                ImageId = user.ImageId,
+                ModifiedAtUTC = user.ModifiedAtUTC,
+                RowVersion = rowVersion,
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.ExecuteAsync(queryDefinition);
+
+            if (result != 1)
+            {
+                _logger.LogError("Error: User request to edit user was not successful", queryDefinition);
+                throw new DBConcurrencyException("Error: User request to edit user was not successful");
+            }
+        }
+
+        public async Task UpdateUserRoleAsync(MemberRoleUpdate memberRoleUpdate, byte[] rowVersion, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" UPDATE       [dbo].[MembershipUsersInRoles]
+                    SET 
+                                 [RoleIdentifier]   = @NewRoleId                    
+                    WHERE 
+                                 [UserIdentifier]   = @UserId
+                    AND          [RoleIdentifier]   = @CurrentRoleId
+                    AND          [RowVersion]       = @RowVersion";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                UserId = memberRoleUpdate.MembershipUserId,
+                NewRoleId = memberRoleUpdate.NewRoleId,
+                CurrentRoleId = memberRoleUpdate.CurrentRoleId,
+                RowVersion = rowVersion
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.ExecuteAsync(queryDefinition);
+
+            if (result != 1)
+            {
+                _logger.LogError("Error: User request to edit user role was not successful", queryDefinition);
+                throw new DBConcurrencyException("Error: User request to edit user role was not successful");
             }
         }
 
@@ -143,8 +296,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             var results = reader.Read<MemberSearchDetails>();
 
-            var total = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
-   
+            var total = Convert.ToUInt32(await reader.ReadFirstAsync<int>());   
 
             return (total, results);
         }

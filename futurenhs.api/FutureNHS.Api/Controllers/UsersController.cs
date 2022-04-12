@@ -1,10 +1,6 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
-using FutureNHS.Api.Application.Application.HardCodedSettings;
+using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.Models.Pagination.Filter;
-using FutureNHS.Api.Models.Pagination.Helpers;
-using FutureNHS.Api.Models.UserInvite;
+using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,21 +9,21 @@ namespace FutureNHS.Api.Controllers
     [Route("api/v{version:apiVersion}")]
     [ApiController]
     [ApiVersion("1.0")]
-    //[FeatureGate(FeatureFlags.Groups)]
     public sealed class UsersController : ControllerBase
     {
-        private readonly ILogger<GroupsController> _logger;
+        private readonly ILogger<UsersController> _logger;
         private readonly IPermissionsService _permissionsService;
         private readonly IUserDataProvider _userDataProvider;
         private readonly IUserService _userService;
+        private readonly IEtagService _etagService;
 
-        public UsersController(ILogger<GroupsController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider,IUserService userService)
+        public UsersController(ILogger<UsersController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider, IUserService userService, IEtagService etagService)
         {
             _logger = logger;
             _permissionsService = permissionsService;
             _userDataProvider = userDataProvider;
             _userService = userService;
-
+            _etagService = etagService;
         }
 
         [HttpGet]
@@ -35,7 +31,7 @@ namespace FutureNHS.Api.Controllers
         public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(Guid userId, CancellationToken cancellationToken)
         {
             var permissions = await _permissionsService.GetUserPermissionsAsync(userId, cancellationToken);
-           
+
             if (permissions is null)
             {
                 return NotFound();
@@ -45,54 +41,33 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId:guid}/admin/users/search")]
-        public async Task<IActionResult> SearchMembersAsync(Guid userId, [FromQuery, MinLength(SearchSettings.TermMinimum), MaxLength(SearchSettings.TermMaximum)] string term, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
-        {
-            var route = Request.Path.Value;
+        [Route("users/{userId:guid}/users/{targetUserId:guid}/update")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetMemberForUpdateAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
+        {        
+           var member = await _userService.GetMemberAsync(userId, targetUserId, cancellationToken);
 
-            term = term.Trim();
-            var (total, members) = await _userService.SearchUsers(userId, term, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+           if (member is null)
+               return NotFound();
 
-            var pagedResponse = PaginationHelper.CreatePagedResponse(members, filter, total, route);
-
-            return Ok(pagedResponse);
+           return Ok(member);
         }
 
-        [HttpGet]
-        [Route("users/{userId:guid}/admin/users")]
-        public async Task<IActionResult> GetMembersAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        [HttpPut]
+        [DisableFormValueModelBinding]
+        [Route("users/{userId:guid}/users/{targetUserId:guid}/update")]
+        public async Task<IActionResult> UpdateMemberAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
         {
-            var route = Request.Path.Value;
+            if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+            {
+                return BadRequest("The data submitted is not in the multiform format");
+            }
 
-            var (total, members) = await _userService.GetMembersAsync(userId, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+            var rowVersion = _etagService.GetIfMatch();
 
-            var pagedResponse = PaginationHelper.CreatePagedResponse(members, filter, total, route);
-
-            return Ok(pagedResponse);
-        }
-
-        [HttpPost]
-        [Route("users/{userId:guid}/admin/invite")]
-        public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid userId, UserInvite userInvite, CancellationToken cancellationToken)
-        {
-            if(string.IsNullOrEmpty(userInvite.EmailAddress))
-                throw new ArgumentNullException(nameof(userInvite.EmailAddress));
-
-            await _userService.InviteMemberToGroupAndPlatformAsync(userId, userInvite.GroupId, userInvite.EmailAddress, cancellationToken);
+            await _userService.UpdateMemberAsync(userId, targetUserId, Request.Body, Request.ContentType, rowVersion, cancellationToken);
 
             return Ok();
-        }
-
-        [HttpGet]
-        [Route("users/{id:guid}")]
-        public async Task<IActionResult> GetMemberAsync(Guid id, CancellationToken cancellationToken)
-        {
-            var member = await _userDataProvider.GetMemberAsync(id, cancellationToken);
-
-            if (member is null)
-                return NotFound();
-
-            return Ok(member);
         }
     }
 }
