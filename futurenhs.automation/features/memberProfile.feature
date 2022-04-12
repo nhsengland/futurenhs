@@ -34,7 +34,6 @@ Scenario: FNHS79 - Edit my profile avatar upload
     And I click the 'Save Changes' button
     Then the 'User Profile' header is displayed
 
-# FORMATTING ERROR WITH TEXT AND BOUNDARIES MEANS UNABLE TO INTERACT WITH ELEMENTS
 @Pending
 Scenario Outline: FNHS80 - Edit my profile
 	And I have logged in as an 'edituser' and accept the cookies

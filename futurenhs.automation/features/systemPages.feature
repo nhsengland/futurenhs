@@ -7,18 +7,6 @@ Background:
     Given I have navigated to '/'
     And I have logged in as a 'admin' and accept the cookies
 
-@Pending
-## TEST COVERED THROUGH VISUAL REGRESSION/USERACCESS
-Scenario: FNHS13 - System Pages Validation
-    Given I have navigated to '<URL>'
-    Then the '<Header>' header is displayed
-    And the '<Content>' textual value is displayed
-Examples:
-    | URL                   | Header               | Content |
-    | /terms-and-conditions | Terms and Conditions ||
-    | /privacy-policy       | Privacy Policy       ||
-    | /cookies              | Cookies              ||
-    | /contact-us           | Contact Us           ||
 
 @Pending
 Scenario: FNHS83 - Create system content page

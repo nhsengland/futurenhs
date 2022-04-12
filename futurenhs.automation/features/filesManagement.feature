@@ -11,6 +11,7 @@ Background:
 	Then the 'Files' header is displayed
 
 @Core
+# FILE SIZE VALIDATION YET TO BE CONFIRMED
 Scenario Outline: FNHS72 - Upload a file
 	When I click the 'Empty Folder' link
 	Then the 'Empty Folder' header is displayed

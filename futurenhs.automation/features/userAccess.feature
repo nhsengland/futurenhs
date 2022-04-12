@@ -41,41 +41,6 @@ Scenario: FNHS02 - Unauthenticated page redirect
     Then the 'Log In' header is displayed
 
 @Core @Pending
-Scenario: FNHS03 - Invite User Form
-    And I have logged in as a 'group admin' and accept the cookies
-    Then the 'My Groups' header is displayed
-    When I select the 'Automation Admin Group' group card
-    Then the 'Automation Admin Group' header is displayed
-    When I select 'Invite new user' from the actions accordion
-    Then the 'Invite new member to join this group' header is displayed
-    When I enter 'autoTest@email.com' into the 'Email address' field
-    And I enter 'autoTest@email.com' into the 'Repeat email address' field
-    And I click the 'Send invite' option
-    Then the 'The membership invitation has been sent' textual value is displayed
-
-@Pending
-Scenario Outline: FNHS04 - Invite User Error Validation
-    Given I have logged in as a 'group admin' and accept the cookies
-    Then the 'My Groups' header is displayed
-    When I select the 'Automation Admin Group' group card
-    Then the 'Automation Admin Group' header is displayed
-    When I select 'Invite new user' from the actions accordion
-    Then the 'Invite new member to join this group' header is displayed
-    When I enter '<email>' into the 'Email address' field
-    And I enter '<repeat email>' into the 'Repeat email address' field
-    And I click the 'Send invite' option
-    Then the '<error message>' error summary is displayed
-    Then the '<error message>' error message is displayed
-Examples:
-    | email                   | repeat email            | error message                                                                                         |
-    | auto2Test@email.com     | auto2Tet@email.com      | Please provide matching email addresses                                                               |
-    | auto2Test@email.com     |                         | The Repeat email address field is required.                                                           |
-    |                         | auto2Tet@email.com      | The Email address field is required.                                                                  |
-    | fake@Email              | fake@Email              | Please provide a valid email address                                                                  |
-    | autoEditUser@test.co.uk | autoEditUser@test.co.uk | A user with that email address is already registered on the platform - you may add them to your group |
-    | autoAdmin@test.co.uk    | autoAdmin@test.co.uk    | A user with that email address is already a member of this group                                      |
-
-@Core @Pending
 Scenario: FNHS05 - Register as an invited user
     Given I have navigated to '/members/register' and accept the cookies
     Then the 'Register for an account' header is displayed
