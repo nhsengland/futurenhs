@@ -1,5 +1,5 @@
-Feature: groupManage
-    User journeys covering Administrator functionality on managing a group
+Feature: groupEdit
+    User journeys covering Edit Group Information form functionality as a group admin
 
 Background:
     Given I have navigated to '/'
@@ -17,26 +17,6 @@ Scenario: FNHS31 - Edit Group Information Page Validation
     And the 'Logo (optional)' label is displayed
     And the 'Save and close' button is displayed
     And the 'Discard changes' link is displayed
-    
-@Pending
-# PRIVATE GROUPS DON'T EXIST IN PRIVATEBETA/VNEXT
-Scenario Outline: FNHS32 - Make a Group Public/Private
-    When I select the 'Automation Editable Group' group card
-    Then the 'Automation Editable Group' header is displayed
-    When I select 'Edit group information' from the actions accordion
-    Then the 'Edit group information' header is displayed
-    When I select the 'Is the group public?' checkbox
-    And I click the 'Save and close' button
-    Given I log off and log in as a 'user'
-    Then the 'Automation Editable Group' header is displayed
-    And the 'Join Group' link is displayed
-    And I click the 'Forum' tab
-    Then the 'All Discussions' header is displayed
-    And the '<accesstext>' textual value is displayed
-Examples:
-    | accesstext                                                |
-    | Currently no discussions in this Group                    |
-    | You must be a member of this group to access this content |
 
 
 Scenario: FNHS33 - Edit Group Information
