@@ -22,6 +22,10 @@ namespace FutureNHS.Api.Services.Validation
             RuleFor(model => model.FileSizeBytes)
                 .LessThanOrEqualTo(262144000)
                 .WithMessage("The file must be smaller than 250MB");
+
+            RuleFor(model => model.FileSizeBytes)
+                .GreaterThan(0)
+                .WithMessage("Add a file");            
         }
     }
 }
