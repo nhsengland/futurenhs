@@ -121,6 +121,7 @@ export const Form: (props: Props) => JSX.Element = ({
                             instanceId={instanceId}
                             name={name}
                             inputType={inputType}
+                            type={inputType}
                             text={text}
                             component={formComponents[component]}
                             context={context}

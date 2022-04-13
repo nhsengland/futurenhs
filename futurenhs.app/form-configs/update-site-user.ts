@@ -73,6 +73,7 @@ export const updateSiteMemberForm: FormConfig = {
                 {
                     name: 'terms',
                     component: 'checkBox',
+                    inputType: 'checkbox',
                     text: {
                         label: 'Please confirm that all changes are in line with the platforms <a href="/terms-and-conditions">terms and conditions</a>'
                     },
