@@ -41,7 +41,7 @@ export const getSiteUser = async (
     const apiData: ApiResponse<any> = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
-    const { ok, status, statusText } = apiMeta
+    const { ok, status, statusText, headers } = apiMeta
 
     if (!ok) {
         throw new ServiceError(
@@ -55,6 +55,7 @@ export const getSiteUser = async (
         )
     }
 
+    serviceResponse.headers = headers
     serviceResponse.data = {
         id: apiData.id ?? '',
         firstName: apiData.firstName ?? '',
