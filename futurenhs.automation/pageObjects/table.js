@@ -14,6 +14,8 @@ class table extends basePage{
             pendingmembers:$('//table[@id="group-table-pending-members"]'),
             groupfiles:$('//table[@id="group-table-files"]'),
             filedetails:$('//table[@id="group-table-file"]'),
+            adminusers:$('//table[@id="admin-table-users"]'),
+            admingroups:$('//table[@id="admin-table-groups"]'),
         }
         var chosenTable = tables[desiredTable]
         return chosenTable
@@ -136,7 +138,7 @@ class table extends basePage{
             }
         }
         var tablePath = this.getTable(tableName);
-        var link = tablePath.$(`./tbody/tr[${tableRow}]/td//a[contains(normalize-space(.), "${linkText}")]`);
+        var link = tablePath.$(`./tbody/tr[${tableRow}]/td//a[text()="${linkText}"]`);
         helpers.waitForLoaded(link)
         helpers.click(link);
     }
