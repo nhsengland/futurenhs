@@ -125,4 +125,4 @@ Scenario Outline: FNHS111 - Forgot password form validation
 Examples:
     | input               | header                      | content                                                            |
     | autoUser@test.co.uk | Password reset request sent | An email has been sent with details on how to reset your password. |
-    |                     | There is a problem          | Please provide a valid email address                               |
+    |                     | There is a problem          | Enter your email address                                           |
