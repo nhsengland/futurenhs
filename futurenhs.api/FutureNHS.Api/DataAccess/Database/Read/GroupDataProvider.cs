@@ -43,13 +43,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 				FROM [Group] g
                 JOIN GroupUser groupUser ON groupUser.Group_Id = g.Id
                 LEFT JOIN Image image ON image.Id = g.ImageId 
-                WHERE groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1
+                WHERE g.IsDeleted = 0 AND groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1
                 ORDER BY g.Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @Limit ROWS ONLY;
 
                 SELECT COUNT(*) FROM GroupUser groupUser
-                WHERE groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1";
+                WHERE g.IsDeleted = 0 AND groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1";
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
                 using var reader = await dbConnection.QueryMultipleAsync(query, new
@@ -96,13 +96,15 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
 				FROM [Group] g    
                 LEFT JOIN Image image ON image.Id = g.ImageId  
-                WHERE NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)
+                WHERE g.IsDeleted = 0
+				AND NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)
                 ORDER BY g.Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @Limit ROWS ONLY;
 
                 SELECT COUNT(*) FROM [Group] g
-                WHERE NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)";
+                WHERE g.IsDeleted = 0
+				AND NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)";
 
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
