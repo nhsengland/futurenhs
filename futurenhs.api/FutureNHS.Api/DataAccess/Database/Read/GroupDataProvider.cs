@@ -49,6 +49,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 FETCH NEXT @Limit ROWS ONLY;
 
                 SELECT COUNT(*) FROM GroupUser groupUser
+                JOIN [Group] g ON g.Id = groupUser.Group_Id
                 WHERE g.IsDeleted = 0 AND groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1";
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
