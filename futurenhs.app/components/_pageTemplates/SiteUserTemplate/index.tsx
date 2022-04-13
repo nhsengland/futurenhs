@@ -16,6 +16,8 @@ import { getGenericFormError } from '@helpers/util/form';
 
 import { Props } from './interfaces'
 import { formTypes } from '@constants/forms'
+import { getStandardServiceHeaders } from '@helpers/fetch'
+import { putSiteUser } from '@services/putSiteUser'
 
 
 /**
@@ -28,7 +30,8 @@ export const SiteUserTemplate: (props: Props) => JSX.Element = ({
     user,
     forms,
     csrfToken,
-    routes
+    routes,
+    etag
 }) => {
 
     const router = useRouter()
@@ -58,20 +61,26 @@ export const SiteUserTemplate: (props: Props) => JSX.Element = ({
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
 
-        try {
-
-            //TODO: PENDING API
+        return new Promise((resolve) => {
+            const headers = getStandardServiceHeaders({ csrfToken, etag })
             
+            putSiteUser({ siteUserId: siteUser.id, body: formData, user, headers })
+                    .then(() => {
+                        setErrors({})
+                        resolve({})
 
-        } catch (error) {
+                        router.replace(`${routes.usersRoot}/${siteUser.id}`)
 
-            const errors: FormErrors = getServiceErrorDataValidationErrors(error) || getGenericFormError(error);
+                    })
+                    .catch((error) => {
+                        const errors: FormErrors =
+                            getServiceErrorDataValidationErrors(error) ||
+                            getGenericFormError(error)
 
-            setErrors(errors);
-
-            return Promise.resolve(errors);
-
-        }
+                        setErrors(errors)
+                        resolve(errors)
+                    })
+        })
 
     };
 
