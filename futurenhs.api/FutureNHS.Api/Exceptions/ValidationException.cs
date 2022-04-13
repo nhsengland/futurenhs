@@ -25,7 +25,7 @@ namespace FutureNHS.Api.Exceptions
         {
             Errors = new Dictionary<string, string>();
 
-            Errors.Append(error);
+            Errors.Add(error.Key, error.Value);
         }
     }
 }
