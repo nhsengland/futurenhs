@@ -6,7 +6,7 @@ import { routeParams } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withTextContent } from '@hofs/withTextContent'
 import { withRoutes } from '@hofs/withRoutes'
-import { selectCsrfToken, selectFormData, selectMultiPartFormData, selectParam, selectRequestMethod } from '@selectors/context'
+import { selectCsrfToken, selectFormData, selectMultiPartFormData, selectParam, selectRequestMethod, selectUser } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { getSiteUser } from '@services/getSiteUser'
 import { formTypes } from '@constants/forms'
@@ -19,6 +19,7 @@ import { getStandardServiceHeaders } from '@helpers/fetch'
 import { putSiteUser } from '@services/putSiteUser'
 import { FormErrors } from '@appTypes/form'
 import { getServiceErrorDataValidationErrors } from '@services/index'
+import { User } from '@appTypes/user'
 
 const routeId: string = '9e86c5cc-6836-4319-8d9d-b96249d4c909'
 const props: Partial<Props> = {}
@@ -37,6 +38,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 routeId,
                 getServerSideProps: async (context: GetServerSidePropsContext) => {
                     const userId: string = selectParam(context, routeParams.USERID)
+                    const user: User = selectUser(context)
 
                     const csrfToken: string = selectCsrfToken(context)
                     const currentValues: any = selectFormData(context)
@@ -65,7 +67,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             firstName: props.siteUser.firstName,
                             lastName: props.siteUser.lastName,
                             pronouns: props.siteUser.pronouns,
-                            image: props.siteUser.image
+                            image: props.siteUser.image,
+                            id: props.siteUser.id
                         }
 
                         /**
@@ -87,8 +90,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             }
 
                             await putSiteUser({
-                                siteUserId: userId,
                                 headers,
+                                user,
                                 body: submission,
                             })
 

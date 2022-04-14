@@ -64,7 +64,7 @@ export const SiteUserTemplate: (props: Props) => JSX.Element = ({
         return new Promise((resolve) => {
             const headers = getStandardServiceHeaders({ csrfToken, etag })
             
-            putSiteUser({ siteUserId: siteUser.id, body: formData, user, headers })
+            putSiteUser({ body: formData, user, headers })
                     .then(() => {
                         setErrors({})
                         resolve({})
