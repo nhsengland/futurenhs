@@ -11,8 +11,7 @@ import { User } from '@appTypes/user'
 declare type Options = {
     headers?: any
     body: FormData
-    siteUserId: string
-    user?: User
+    user: User
 }
 
 declare type Dependencies = {
@@ -21,14 +20,16 @@ declare type Dependencies = {
 }
 
 export const putSiteUser = async (
-    { siteUserId, headers, body, user }: Options,
+    { headers, body, user }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${siteUserId}`
+    const {id} = user
+
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
