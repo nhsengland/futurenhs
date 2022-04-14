@@ -24,7 +24,7 @@ const generateNonce = () => randomBytes(16).toString('base64');
 const generateCSP = (nonce) => {
 
     const csp = {
-        'default-src': isTest ? '*' : `'self' https://assets.nhs.uk https://dc.services.visualstudio.com/v2/track https://www.google-analytics.com http://localhost:9999`,
+        'default-src': isTest ? '*' : `'self' https://assets.nhs.uk https://dc.services.visualstudio.com/v2/track https://www.google-analytics.com http://localhost:9999 https://www.googletagmanager.com https://cdn.eu.pendo.io https://static.hotjar.com`,
         'img-src': `'self' data:`,
         'style-src': `'self' 'unsafe-inline'`,
         'script-src': `'self' 'nonce-${nonce}'`,
