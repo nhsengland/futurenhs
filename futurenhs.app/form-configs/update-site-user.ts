@@ -21,6 +21,10 @@ export const updateSiteMemberForm: FormConfig = {
                     component: 'hidden'
                 },
                 {
+                    name: 'id',
+                    component: 'hidden'
+                },
+                {
                     name: 'firstName',
                     inputType: 'text',
                     text: {
