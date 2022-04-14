@@ -121,6 +121,7 @@ export const Form: (props: Props) => JSX.Element = ({
                             instanceId={instanceId}
                             name={name}
                             inputType={inputType}
+                            type={inputType}
                             text={text}
                             component={formComponents[component]}
                             context={context}
@@ -162,12 +163,35 @@ export const Form: (props: Props) => JSX.Element = ({
 
     /**
      * Handle a form submission and return an object of external errors if any occur
-     * NB *ignore* the submission data sent as an arg to this handler and use the submission saved in the ref
-     * as only this supports multi-part form data
+     * NB we do a slight workaround here to patch the fact that final-form only deals with
+     * json style form submissions, but we need to handle multi-part form submissions with file
+     * included
      */
-    const handleSubmit = (_): Promise<FormErrors> => {
+    const handleSubmit = (finalFormSubmissionState: Record<string, any>): Promise<FormErrors> => {
         setIsProcessing(true)
 
+        const isFile = value => 'File' in window && value instanceof File;
+        const isBlob = value => 'Blob' in window && value instanceof Blob;
+
+        /**
+         * Iterate through the final form submission data and overwrite the corresponding FormData property
+         * UNLESS the FormData property points to a file input stream - in which case leave it alone.
+         * This should result in a FormData object which includes both valid file streams and dynamically generated
+         * field values
+         */
+        Object.keys(finalFormSubmissionState).forEach((key) => {
+
+            if(submission.current.has(key) && (!isFile(submission.current.get(key)) || !isBlob(submission.current.get(key)))){
+
+                submission.current.set(key, finalFormSubmissionState[key])
+
+            }
+
+        });
+
+        /**
+         * Submit form data then deal with any errors which come back
+         */
         return submitAction?.(submission.current)?.then(
             (errors: FormErrors) => {
                 setIsProcessing(false)

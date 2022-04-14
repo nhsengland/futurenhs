@@ -31,7 +31,7 @@ export const createGroupForm: FormConfig = {
         {
             fields: [
                 {
-                    name: 'Name',
+                    name: 'name',
                     inputType: 'text',
                     text: {
                         label: 'Group name',
@@ -52,7 +52,7 @@ export const createGroupForm: FormConfig = {
                     ]
                 },
                 {
-                    name: 'Strapline',
+                    name: 'strapline',
                     text: {
                         label: 'Strap line (optional)',
                         hint: 'Add a strapline to encapsulate your group, include keywords for search'
@@ -68,7 +68,7 @@ export const createGroupForm: FormConfig = {
                     ]
                 },
                 {
-                    name: 'File',
+                    name: 'image',
                     text: {
                         label: 'Logo (optional)',
                         hint: 'Please upload your logo or an icon. If not, we will use the default image.'
@@ -83,7 +83,7 @@ export const createGroupForm: FormConfig = {
                     component: 'hidden'
                 },
                 {
-                    name: 'ThemeId',
+                    name: 'themeId',
                     text: {
                         label: 'Choose your theme colour',
                         hint: 'Please choose a colour theme for your group. Please note, all colour combinations are accessible. For more information, see our knowledge hub.'
@@ -121,14 +121,19 @@ export const createGroupForm: FormConfig = {
                     optionClassName: 'tablet:u-w-2/5'
                 },
                 {
-                    name: 'Owner',
+                    name: 'groupOwnerId',
                     text: {
-                        label: 'Group owner (optional)'
+                        label: 'Group owner'
                     },
                     component: 'autoComplete',
-                    shouldRenderRemainingCharacterCount: true,
+                    shouldPreventFreeText: true,
+                    shouldRenderRemainingCharacterCount: false,
                     serviceId: serviceIds.GET_SITE_USERS_BY_TERM,
                     validators: [
+                        {
+                            type: 'required',
+                            message: 'Enter a valid group owner'
+                        },
                         {
                             type: 'maxLength',
                             maxLength: 255,
@@ -137,12 +142,14 @@ export const createGroupForm: FormConfig = {
                     ]
                 },
                 {
-                    name: 'Administrators',
+                    name: 'groupAdminId',
                     text: {
                         label: 'Group administrators (optional)'
                     },
                     component: 'autoComplete',
-                    shouldRenderRemainingCharacterCount: true,
+                    shouldPreventFreeText: true,
+                    shouldRenderRemainingCharacterCount: false,
+                    serviceId: serviceIds.GET_SITE_USERS_BY_TERM,
                     validators: [
                         {
                             type: 'maxLength',

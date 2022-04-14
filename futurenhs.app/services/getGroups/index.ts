@@ -91,7 +91,7 @@ export const getGroups: Service = async (
                       src: `${datum.image?.source}`,
                       height: datum.image?.height ?? null,
                       width: datum.image?.width ?? null,
-                      altText: 'TBC',
+                      altText: `Group image for ${datum.nameText}`,
                   }
                 : null,
         })

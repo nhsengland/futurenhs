@@ -22,6 +22,7 @@ export interface FormField {
     }>;
     initialError?: string;
     shouldRenderAsRte?: boolean;
+    shouldPreventFreeText?: boolean;
     shouldRenderRemainingCharacterCount?: boolean;
     validators?: Array<{
         type: ValidatorType;

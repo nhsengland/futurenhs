@@ -10,6 +10,10 @@ import { Service } from '@appTypes/service';
 
 import { Props } from './interfaces';
 
+/**
+ * Form field component for autocomplete enhanced text input
+ * Wraps alphagov autocomplete
+ */
 export const AutoComplete: (props: Props) => JSX.Element = ({
     input: {
         name,
@@ -23,6 +27,7 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
         submitError
     },
     text,
+    shouldPreventFreeText,
     shouldRenderRemainingCharacterCount,
     validators,
     context,
@@ -35,8 +40,11 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
 
     const cache = useRef({});
     const serviceTimeOut = useRef(null);
+    const autoCompleteField = useRef(null);
+    const currentInputValue = useRef(null);
 
     const { label, hint } = text ?? {};
+    
     const id: string = name;
     const shouldRenderError: boolean = Boolean(initialError) || ((Boolean(error) || Boolean(submitError)) && touched);
     const isRequired: boolean = Boolean(validators?.find(({ type }) => type === 'required'));
@@ -59,6 +67,9 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
         })
     };
 
+    /**
+     * Get suggestion list via an injected service using the input term
+     */
     const handleGetSuggestions = async (term: string, callBack: Function): Promise<void> => {
 
         const service: Service = services[serviceId];
@@ -70,6 +81,9 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
 
         }
 
+        /**
+         * Return cached response to the input term if it exists
+         */
         if(cachedData){
 
             callBack(cachedData);
@@ -78,19 +92,34 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
 
             window.clearTimeout(serviceTimeOut.current);
 
+            /**
+             * Set a short timeout to prevent the service getting hit on each key press
+             */
             serviceTimeOut.current = window.setTimeout(() => {
 
+                /**
+                 * Get suggestions from service
+                 */
                 services.getSiteUsersByTerm(Object.assign({ ...context, term }))
                     .then(({ data }) => {
 
+                        /**
+                         * Clear the suggestions cache if full
+                         */
                         if(Object.keys(cache.current).length > 10){
         
                             cache.current = {};
                 
                         }
             
+                        /**
+                         * Add the suggestions to cache
+                         */
                         cache.current[term] = data;
                 
+                        /**
+                         * Set the suggestions
+                         */
                         callBack(data);
 
                     })
@@ -106,13 +135,49 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
 
     }
 
-    const handleSuggestionConfirm = (selection: Option): any => {
+    /**
+     * Handle a confirmed selection
+     */
+    const handleSuggestionConfirm = (selection: Option): void => {
 
-        selection && onChange(selection.value);
+        if(selection){
+
+            onChange(selection.value);
+            currentInputValue.current = selection.label;
+
+        }
 
     }
 
+    /**
+     * Handle a change to the autocomplete input element
+     */
+    const handleInputChange = (event: any): void => {
+
+        const inputValue: string = event.target.value;
+
+        /**
+         * If free text entry is prevented clear the underlying value
+         */
+        if(shouldPreventFreeText && inputValue !== currentInputValue.current){
+
+            const clearedValue: string = '';
+
+            onChange(clearedValue);
+            currentInputValue.current = clearedValue;
+
+        }
+
+    }
+
+    /**
+     * Set up event listeners and timeouts
+     */
     useEffect(() => {
+
+        autoCompleteField.current = document.getElementById(name);
+        autoCompleteField.current.addEventListener('keyup', handleInputChange);
+        autoCompleteField.current.addEventListener('change', handleInputChange);
 
         return () => {
 
@@ -122,6 +187,9 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
 
     }, []);
 
+    /**
+     * Render
+     */
     return (
 
         <div className={generatedClasses.wrapper}>
@@ -153,6 +221,7 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
                 displayMenu="overlay"
                 required={isRequired}
                 showNoOptionsFound={false}
+                defaultValue={value}
                 source={handleGetSuggestions}
                 onConfirm={handleSuggestionConfirm} />
                     {(shouldRenderRemainingCharacterCount && maxLength) &&

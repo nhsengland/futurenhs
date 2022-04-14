@@ -1,5 +1,6 @@
 export interface Routes {
     siteRoot: string;
+    usersRoot: string;
     adminRoot: string;
     adminUsersRoot: string;
     adminUsersInvite: string;
