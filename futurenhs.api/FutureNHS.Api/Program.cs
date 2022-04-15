@@ -13,6 +13,7 @@ using FutureNHS.Api.Helpers.Interfaces;
 using FutureNHS.Api.Middleware;
 using FutureNHS.Api.Providers;
 using FutureNHS.Api.Providers.Interfaces;
+using FutureNHS.Api.Providers.Logging;
 using FutureNHS.Api.Services;
 using Ganss.XSS;
 using Microsoft.ApplicationInsights.DependencyCollector;
@@ -28,6 +29,8 @@ using Microsoft.AspNetCore.Authentication;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging.EventLog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSwaggerGen();
@@ -142,7 +145,9 @@ if (!string.IsNullOrWhiteSpace(appInsightsInstrumentationKey))
 
 builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme);
 
-builder.Services.AddLogging();
+
+
+
 
 builder.Services.AddHttpContextAccessor();
 
@@ -185,6 +190,23 @@ builder.Services.Configure<AzureBlobStorageConnectionStrings>(settings.GetSectio
 builder.Services.Configure<FileServerTemplateUrlStrings>(settings.GetSection("FileServer"));
 builder.Services.Configure<ApplicationGateway>(settings.GetSection("AzurePlatform:ApplicationGateway"));
 builder.Services.Configure<GovNotifyConfiguration>(settings.GetSection("GovNotify"));
+builder.Services.Configure<AzureTableStorageConfiguration>(settings.GetSection("Logging:TableStorageConfiguration"));
+
+builder.Services.AddSingleton<ILoggerProvider>(
+    sp =>
+    {
+        var config = sp.GetRequiredService<IOptionsMonitor<AzureTableStorageConfiguration>>();
+        if (config.CurrentValue is not null && !string.IsNullOrWhiteSpace(config.CurrentValue.TableName) && !string.IsNullOrWhiteSpace(config.CurrentValue.ConnectionString))
+        {
+           return new AzureTableLoggerProvider(config.CurrentValue.ConnectionString, config.CurrentValue.TableName);
+        }
+
+        return new EventLogLoggerProvider();
+
+    });
+
+builder.Services.AddLogging();
+
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
 builder.Services.AddScoped<IFileTypeValidator, FileTypeValidator>();
