@@ -290,11 +290,8 @@ builder.Services.AddScoped<IApiKeyRepository>(
 
     if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
     if (string.IsNullOrWhiteSpace(config.WebApplication)) throw new ApplicationException("The Web Application Key is missing from the Shared secrets configuration section");
-    if (string.IsNullOrWhiteSpace(config.Owner))
-    {
-        config.Owner = "FutureNHS";
-    }
-    
+    if (string.IsNullOrWhiteSpace(config.Owner)) throw new ApplicationException("The Owner Key is missing from the Shared secrets configuration section");
+
     var logger = sp.GetRequiredService<ILogger<IApiKeyRepository>>();
 
     return new ApiKeyRepository(config.WebApplication, config.Owner, logger);
