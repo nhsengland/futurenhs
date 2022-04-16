@@ -9,5 +9,8 @@ namespace FutureNHS.Api.Services.Interfaces
             CancellationToken cancellationToken);
 
         Task InviteMemberToGroupAndPlatformAsync(Guid userId, Guid? groupId, string email, CancellationToken cancellationToken);
+
+        Task<(uint totalCount, IEnumerable<MemberSearchDetails>)> SearchUsers(Guid userId, string term, uint offset,
+            uint limit, string sort, CancellationToken cancellationToken);
     }
 }

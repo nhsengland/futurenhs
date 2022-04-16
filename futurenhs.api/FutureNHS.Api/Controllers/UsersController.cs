@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
+using FutureNHS.Api.Application.Application.HardCodedSettings;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
@@ -40,6 +42,20 @@ namespace FutureNHS.Api.Controllers
             }
 
             return Ok(permissions);
+        }
+
+        [HttpGet]
+        [Route("users/{userId:guid}/admin/users/search")]
+        public async Task<IActionResult> SearchMembersAsync(Guid userId, [FromQuery, MinLength(SearchSettings.TermMinimum), MaxLength(SearchSettings.TermMaximum)] string term, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        {
+            var route = Request.Path.Value;
+
+            term = term.Trim();
+            var (total, members) = await _userService.SearchUsers(userId, term, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(members, filter, total, route);
+
+            return Ok(pagedResponse);
         }
 
         [HttpGet]
