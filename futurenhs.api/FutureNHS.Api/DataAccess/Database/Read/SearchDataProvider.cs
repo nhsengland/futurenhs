@@ -51,7 +51,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
 	                FROM		    dbo.[Group] groups
 	                WHERE		    groups.[IsLocked] = 0
-	                AND			
+	                AND				groups.[IsDeleted] = 0
+	                AND	
                                     (
                                     groups.[Name] 
                     LIKE		    @Term 
@@ -73,6 +74,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 	                JOIN		    dbo.[Folder] fldr 
                     ON			    fldr.[Id] = f.[ParentFolder]
 	                WHERE		    f.[FileStatus] = (SELECT [Id] FROM FileStatus WHERE [Name] = 'Verified') -- Verified
+	                AND			    f.[IsDeleted] = 0
 	                AND			
                                     (
                                     f.[Title] 
@@ -92,7 +94,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 	                FROM	        dbo.[Comment] p
 	                JOIN	        dbo.[Discussion] t 
                     ON              p.[Parent_EntityId] = t.[Entity_Id]
-	                WHERE	
+                    WHERE		    p.[IsDeleted] = 0
+	                AND				t.[IsDeleted] = 0
+	                AND	
                                     (
                                     p.[Content] 
                     LIKE            @Term
@@ -124,7 +128,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                     'discussion'
 
 	                FROM	        dbo.[Discussion] t
-	                WHERE	
+                    WHERE		    t.[IsDeleted] = 0
+	                AND		
                                     (
                                     t.[Title] 
                     LIKE            @Term
@@ -149,7 +154,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					SELECT			COUNT(*)
 	                FROM		    dbo.[Group] groups
 	                WHERE		    groups.[IsLocked] = 0
-	                AND			
+	                AND				groups.[IsDeleted] = 0
+	                AND	
                                     (
                                     groups.[Name] 
                     LIKE		    @Term 
@@ -167,7 +173,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 	                JOIN		    dbo.[Folder] fldr 
                     ON			    fldr.[Id] = f.[ParentFolder]
 	                WHERE		    f.[FileStatus] = (SELECT [Id] FROM FileStatus WHERE [Name] = 'Verified') -- Verified
-	                AND			
+	                AND			    f.[IsDeleted] = 0
+	                AND	
+
                                     (
                                     f.[Title] 
                     LIKE		    @Term 
@@ -182,7 +190,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 	                FROM	        dbo.[Discussion] t 
 					JOIN			dbo.[Comment] p
                     ON              p.[Parent_EntityId] = t.[Entity_Id]
-	                WHERE	
+                    WHERE		    p.[IsDeleted] = 0
+	                AND	
                                     (
                                     p.[Content] 
                     LIKE            @Term
@@ -211,7 +220,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					
                     AS              discussions 
 	                FROM	        dbo.[Discussion] t
-	                WHERE	
+                    WHERE		    t.[IsDeleted] = 0
+	                AND		
                                     (
                                     t.[Title] 
                     LIKE            @Term
