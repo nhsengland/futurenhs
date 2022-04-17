@@ -35,7 +35,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [DisableFormValueModelBinding]
-        [Route("users/{userId:guid}/groups")]
+        [Route("users/{userId:guid}/admin/groups")]
         public async Task<IActionResult> CreateGroupAsync(Guid userId, CancellationToken cancellationToken)
         {
             if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))

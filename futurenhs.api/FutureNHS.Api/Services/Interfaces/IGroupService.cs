@@ -1,4 +1,5 @@
-﻿using FutureNHS.Api.DataAccess.Models.Group;
+﻿using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Group;
 
 namespace FutureNHS.Api.Services.Interfaces
 {
