@@ -31,6 +31,7 @@ export const updateSiteMemberForm: FormConfig = {
                         label: 'First name',
                     },
                     component: 'input',
+                    shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
                             type: 'required',
@@ -50,6 +51,7 @@ export const updateSiteMemberForm: FormConfig = {
                         label: 'Last name (optional)',
                     },
                     component: 'input',
+                    shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
                             type: 'maxLength',
@@ -66,6 +68,7 @@ export const updateSiteMemberForm: FormConfig = {
                         hint: 'Example: she/her, he/him, they/them'
                     },
                     component: 'input',
+                    shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
                             type: 'maxLength',
