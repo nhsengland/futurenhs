@@ -48,11 +48,8 @@ export const getSiteGroups: Service = async (
             pageSize: 10,
         },
     })
-    const isDeletedQueryParam: string = isDeleted
-        ? '&isdeleted=true'
-        : '&isdeleted=false'
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/groups?${paginationQueryParams}${isDeletedQueryParam}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/groups?${paginationQueryParams}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
@@ -97,7 +94,7 @@ export const getSiteGroups: Service = async (
                 : null,
             owner: {
                 id: datum?.owner?.id,
-                fullName: datum?.owner?.fullName
+                fullName: datum?.owner?.name
             }
         })
     })
