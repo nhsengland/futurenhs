@@ -1,6 +1,5 @@
 const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === 'development';
-const isTest = process.env.NODE_ENV === 'test';
 
 /**
  * Import dependencies
@@ -23,18 +22,24 @@ const { AbortController } = require('node-abort-controller');
 const generateNonce = () => randomBytes(16).toString('base64');
 const generateCSP = (nonce) => {
 
+    /**
+     * Settings primarily built around an existing GTM setup
+     * script-src: unsafe-inline is required to allow the GTM script to load
+     * counter-intuitive sources list in connect-src (e.g. fonts) are required for the service worker which returns assets from a cache
+     */
     const csp = {
-        'default-src': isTest ? '*' : `'self' https://assets.nhs.uk https://dc.services.visualstudio.com/v2/track https://www.google-analytics.com http://localhost:9999 https://www.googletagmanager.com https://cdn.eu.pendo.io https://static.hotjar.com`,
-        'img-src': `'self' data:`,
+        'frame-src': 'https://vars.hotjar.com',
+        'img-src': `'self' data: *.google-analytics.com https://data.eu.pendo.io`,
         'style-src': `'self' 'unsafe-inline'`,
-        'script-src': `'self' 'nonce-${nonce}'`,
-        'script-src-elem': `'self' 'nonce-${nonce}' https://www.googletagmanager.com`,
-        'font-src': `'unsafe-inline' https://assets.nhs.uk`
+        'script-src': `'self' 'unsafe-inline' https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`,
+        'font-src': `'unsafe-inline' https://assets.nhs.uk`,
+        'connect-src': `'self' https://dc.services.visualstudio.com https://www.google-analytics.com *.hotjar.com https://ws2.hotjar.com wss://ws2.hotjar.com/api/v2/client/ws *.googletagmanager.com https://assets.nhs.uk https://cdn.eu.pendo.io https://data.eu.pendo.io`,
+        'worker-src': `'self'`
     };
 
     if (isDevelopment) {
 
-        csp['script-src'] = `'self' 'unsafe-eval' 'nonce-${nonce}'`;
+        csp['script-src'] = `'self' 'unsafe-inline' 'unsafe-eval' https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`;
 
     }
 
