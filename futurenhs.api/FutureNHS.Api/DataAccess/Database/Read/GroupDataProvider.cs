@@ -5,6 +5,7 @@ using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
+using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.Exceptions;
 using Microsoft.Extensions.Options;
 
@@ -130,6 +131,75 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     }, splitOn: "id");
 
                 totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
+            }
+
+            return (totalCount, groups);
+        }
+
+        public async Task<(uint totalGroups, IEnumerable<AdminGroupSummary> groupSummaries)> AdminGetGroupsAsync(uint offset, uint limit, CancellationToken cancellationToken = default)
+        {
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit));
+            }
+
+            uint totalCount;
+
+            IEnumerable<AdminGroupSummary> groups;
+
+            const string query =
+                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS NameText, g.Subtitle AS StrapLineText,
+				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
+				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id) AS DiscussionCount,
+                image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType,
+                owner.Id, owner.FirstName + ' ' + owner.Surname AS Name, owner.Slug AS Slug
+				FROM [Group] g
+                LEFT JOIN Image image ON image.Id = g.ImageId
+                LEFT JOIN MembershipUser owner ON owner.Id = g.MembershipUser_Id
+                WHERE g.IsDeleted = 0
+                ORDER BY g.Name
+                OFFSET @Offset ROWS
+                FETCH NEXT @Limit ROWS ONLY;
+
+                SELECT COUNT(*) 
+                FROM [Group] g
+                WHERE g.IsDeleted = 0";
+            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
+            {
+                using var reader = await dbConnection.QueryMultipleAsync(query, new
+                {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit)
+                });
+                groups = reader.Read<AdminGroupSummary, ImageData, UserNavProperty, AdminGroupSummary>(
+                    (group, image, owner) =>
+                    {
+                        if (image is not null)
+                        {
+                            var groupWithImage = group with { Image = new ImageData(image, _options) };
+
+                            if (owner is not null)
+                            {
+                                var groupWithOwner = groupWithImage with { Owner = owner };
+
+                                return groupWithOwner;
+                            }
+
+                            return groupWithImage;
+                        }
+
+                        if (owner is not null)
+                        {
+                            var groupWithOwner = group with { Owner = owner };
+
+                            return groupWithOwner;
+                        }
+
+                        return group;
+
+                    }, splitOn: "id");
+
+                totalCount = await reader.ReadFirstAsync<uint>();
             }
 
             return (totalCount, groups);
