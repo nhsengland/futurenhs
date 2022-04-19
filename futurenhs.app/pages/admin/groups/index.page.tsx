@@ -11,7 +11,7 @@ import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { selectUser, selectPagination } from '@selectors/context'
 import { Pagination } from '@appTypes/pagination'
-import { getGroups } from '@services/getGroups'
+import { getSiteGroups } from '@services/getSiteGroups'
 
 import { AdminGroupsTemplate } from '@components/_pageTemplates/AdminGroupsTemplate'
 import { Props } from '@components/_pageTemplates/AdminGroupsTemplate/interfaces'
@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                  */
                 try {
                     const [groupsList] = await Promise.all([
-                        getGroups({ user, pagination }),
+                        getSiteGroups({ user, pagination }),
                     ])
 
                     props.groupsList = groupsList.data ?? []

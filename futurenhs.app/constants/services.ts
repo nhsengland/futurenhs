@@ -19,6 +19,7 @@ export const enum services {
     GET_SITE_ACTIONS = 'getSiteActions',
     GET_SITE_USER = 'getSiteUser',
     GET_SITE_USERS = 'getSiteUsers',
+    GET_SITE_GROUPS = 'getSiteGroups',
     GET_SITE_USERS_BY_TERM = 'getSiteUsersByTerm',
     GET_USER = 'getUser',
     POST_SITE_USER_INVITE = 'postSiteUserInvite',

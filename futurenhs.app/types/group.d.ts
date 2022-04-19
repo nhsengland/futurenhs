@@ -9,7 +9,9 @@ export interface Group {
     imageId?: string;
     image?: Image;
     totalDiscussionCount?: number; 
-    totalMemberCount?: number;    
+    totalMemberCount?: number;
+    owner?: Partial<User>;
+    isDeleted?: boolean;
 }
 
 export interface GroupMember extends Member {}
