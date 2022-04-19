@@ -6,7 +6,7 @@ namespace FutureNHS.Api.DataAccess.DTOs
     {
         public Guid Id { get; init; }
         public string Name { get; init; }
-        public string? StrapLine { get; init; }
+        public string? Strapline { get; init; }
         public Guid? ThemeId { get; init; }
         public Guid? ImageId { get; init; }
         public bool IsPublic { get; init; }

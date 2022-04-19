@@ -300,8 +300,8 @@ namespace FutureNHS.Api.Services
                 {
                     throw new ArgumentNullException($"Name was not provided");
                 }
-                var strapLineFound = formValues.TryGetValue("strapline", out var strapLine);
-                if (strapLineFound is false)
+                var straplineFound = formValues.TryGetValue("strapline", out var strapline);
+                if (straplineFound is false)
                 {
                     throw new ArgumentNullException($"Strap Line was not provided");
                 }
@@ -331,7 +331,7 @@ namespace FutureNHS.Api.Services
                 {
                     Slug = slug,
                     Name = _htmlSanitizer.Sanitize(name),
-                    StrapLine = _htmlSanitizer.Sanitize(strapLine),
+                    Strapline = _htmlSanitizer.Sanitize(strapline),
                     ThemeId = themeId,
                     ImageId = imageId,
                     ModifiedBy = userId,
