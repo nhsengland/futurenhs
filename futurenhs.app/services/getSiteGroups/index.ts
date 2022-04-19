@@ -74,6 +74,7 @@ export const getSiteGroups: Service = async (
     }
 
     apiData.data?.forEach((datum) => {
+
         serviceResponse.data.push({
             text: {
                 mainHeading: datum.nameText ?? null,

@@ -14,6 +14,8 @@ using System.Data;
 using System.Net;
 using System.Security;
 using System.Text;
+using FutureNHS.Api.Application.Application.HardCodedSettings;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Exceptions;
 using Ganss.XSS;
 using FutureNHS.Api.Services.Validation;
@@ -23,7 +25,7 @@ namespace FutureNHS.Api.Services
     public class GroupService : IGroupService
     {
         private const string GroupEditRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/edit";
-
+        private const string AdminViewRole = $"https://schema.collaborate.future.nhs.uk/admin/v1/view";
         private readonly ILogger<DiscussionService> _logger;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
         private readonly ISystemClock _systemClock;
@@ -32,6 +34,7 @@ namespace FutureNHS.Api.Services
         private readonly IGroupCommand _groupCommand;
         private readonly IGroupImageService _imageService;
         private readonly IHtmlSanitizer _htmlSanitizer;
+        private readonly IGroupDataProvider _groupDataProvider;
 
 
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
@@ -39,16 +42,31 @@ namespace FutureNHS.Api.Services
 
         public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, 
             IImageBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupImageService imageService, IGroupCommand groupCommand,
-            IHtmlSanitizer htmlSanitizer)
+            IHtmlSanitizer htmlSanitizer, IGroupDataProvider groupDataProvider)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
             _blobStorageProvider = blobStorageProvider ?? throw new ArgumentNullException(nameof(blobStorageProvider));
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
             _fileTypeValidator = fileTypeValidator ?? throw new ArgumentNullException(nameof(fileTypeValidator));
             _groupCommand = groupCommand ?? throw new ArgumentNullException(nameof(groupCommand));
+            _groupDataProvider = groupDataProvider ?? throw new ArgumentNullException(nameof(groupDataProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
             _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
+        }
+
+        public async Task<(uint totalGroups, IEnumerable<AdminGroupSummary> groupSummaries)> AdminGetGroupsAsync(Guid userId, uint page = PaginationSettings.MinOffset, uint pageSize = PaginationSettings.DefaultPageSize, CancellationToken cancellationToken = default)
+        {
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AdminViewRole, cancellationToken);
+            if (userCanPerformAction is not true)
+            {
+                _logger.LogError($"Error: AdminGetGroupsAsync - User:{0} does not have access to view groups", userId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            var groups = await _groupDataProvider.AdminGetGroupsAsync(page, pageSize, cancellationToken);
+
+            return groups;
         }
 
         public async Task<GroupData?> GetGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
