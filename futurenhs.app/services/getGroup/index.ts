@@ -75,7 +75,7 @@ export const getGroup = async (
             title: apiData.name ?? null,
             metaDescription: 'A Future NHS group',
             mainHeading: apiData.name ?? null,
-            strapLine: apiData?.strapLine ?? null,
+            strapLine: apiData?.strapline ?? null,
         },
         image: apiData.image
             ? {

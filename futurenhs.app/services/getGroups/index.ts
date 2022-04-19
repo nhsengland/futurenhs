@@ -80,7 +80,7 @@ export const getGroups: Service = async (
         serviceResponse.data.push({
             text: {
                 mainHeading: datum.nameText ?? null,
-                strapLine: datum.strapLineText ?? null,
+                strapLine: datum.straplineText ?? null,
             } as any,
             groupId: datum.slug,
             themeId: datum.themeId,
