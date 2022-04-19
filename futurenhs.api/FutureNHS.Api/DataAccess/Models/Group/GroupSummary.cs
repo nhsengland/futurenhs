@@ -4,7 +4,7 @@
     {
         public Guid Id { get; init; }
         public string NameText { get; init; }
-        public string StrapLineText { get; init; }
+        public string StraplineText { get; init; }
         public int MemberCount { get; init; }
         public int DiscussionCount { get; init; }
         public string Slug { get; init; }

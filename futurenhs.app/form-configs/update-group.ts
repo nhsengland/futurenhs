@@ -63,8 +63,8 @@ export const updateGroupForm: FormConfig = {
                     validators: [
                         {
                             type: 'maxLength',
-                            maxLength: 1000,
-                            message: 'Enter 1000 or fewer characters',
+                            maxLength: 255,
+                            message: 'Enter 255 or fewer characters',
                         },
                     ],
                 },

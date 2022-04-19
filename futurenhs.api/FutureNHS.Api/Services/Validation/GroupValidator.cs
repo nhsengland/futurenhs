@@ -15,9 +15,9 @@ namespace FutureNHS.Api.Services.Validation
                 .MaximumLength(255)
                 .WithMessage("Enter 255 or fewer characters");
 
-            RuleFor(model => model.StrapLine)
-                .MaximumLength(1000)
-                .WithMessage("Enter 1000 or fewer characters");
+            RuleFor(model => model.Strapline)
+                .MaximumLength(255)
+                .WithMessage("Enter 255 or fewer characters");
         }
     }
 }

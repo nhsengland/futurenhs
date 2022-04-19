@@ -122,7 +122,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 @$" SELECT 
                                 [{nameof(GroupData.Id)}]                = g.Id, 
                                 [{nameof(GroupData.Name)}]              = g.Name,
-                                [{nameof(GroupData.StrapLine)}]         = g.Subtitle,
+                                [{nameof(GroupData.Strapline)}]         = g.Subtitle,
                                 [{nameof(GroupData.ThemeId)}]           = g.ThemeId, 
                                 [{nameof(GroupData.ImageId)}]           = g.ImageId, 
                                 [{nameof(GroupData.IsPublic)}]          = g.PublicGroup, 
@@ -178,7 +178,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             {
                 Slug = groupDto.Slug,
                 Name = groupDto.Name,
-                Subtitle = groupDto.StrapLine,
+                Subtitle = groupDto.Strapline,
                 Theme = groupDto.ThemeId,
                 Image = groupDto.ImageId,
                 IsPublic = groupDto.IsPublic,
