@@ -30,6 +30,7 @@ export const Like: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames('c-like', 'u-text-bold', className, {
             ['c-like--enabled']: isActive,
+            ['u-text-theme-6']: !shouldEnable
         }),
         icon: classNames('u-w-5', 'u-h-5', 'u-mr-2', {
             ['u-fill-theme-8']: isActive && hasLiked,
