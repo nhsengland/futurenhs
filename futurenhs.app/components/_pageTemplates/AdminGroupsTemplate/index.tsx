@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
 import { actions as actionConstants } from '@constants/actions';
-import { SVGIcon } from '@components/SVGIcon';
 import { Link } from '@components/Link';
 import { ActionLink } from '@components/ActionLink';
 import { PaginationWithStatus } from '@components/PaginationWithStatus';
@@ -13,7 +12,7 @@ import { DynamicListContainer } from '@components/DynamicListContainer';
 import { DataGrid } from '@components/DataGrid';
 
 import { Props } from './interfaces';
-import { getGroups } from '@services/getGroups';
+import { getSiteGroups } from '@services/getSiteGroups';
 
 /**
  * Admin groups dashboard template
@@ -24,7 +23,10 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
     pagination,
     groupsList,
     routes,
-    user
+    user,
+    services = {
+        getSiteGroups: getSiteGroups
+    }
 }) => {
 
     const router = useRouter();
@@ -60,11 +62,13 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
     const rowList = useMemo(() => dynamicGroupsList?.map(({
         text,
         groupId,
+        owner,
         totalDiscussionCount,
         totalMemberCount
     }) => {
 
         const { mainHeading } = text ?? {};
+        const { id: ownerId, fullName } = owner ?? {};
 
         const generatedCellClasses = {
             name: classNames({
@@ -98,18 +102,33 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: <Link href={`${routes.groupsRoot}/${groupId}`}>{mainHeading}</Link>,
+                children: <ActionLink 
+                    href={`${routes.groupsRoot}/${groupId}`}
+                    text={{
+                        body: mainHeading,
+                        ariaLabel: `Go to group ${mainHeading}`
+                    }} />,
                 className: generatedCellClasses.name,
                 headerClassName: generatedHeaderCellClasses.name
             },
             {
-                children: <Link href={`${routes.groupsRoot}/${groupId}/members`}><a aria-label={`Go to ${mainHeading} members list`}>{totalMemberCount}</a></Link>,
+                children: <ActionLink 
+                    href={`${routes.groupsRoot}/${groupId}/members`}
+                    text={{
+                        body: totalMemberCount?.toString(),
+                        ariaLabel: `Go to group ${mainHeading} members list`
+                    }} />,
                 className: generatedCellClasses.members,
                 headerClassName: generatedHeaderCellClasses.members,
                 shouldRenderCellHeader: true
             },
             {
-                children: '',
+                children: <ActionLink 
+                    href={`${routes.usersRoot}/${ownerId}`}
+                    text={{
+                        body: fullName,
+                        ariaLabel: `Go to group owner ${fullName} profile`
+                    }} />,
                 className: generatedCellClasses.owner,
                 headerClassName: generatedHeaderCellClasses.owner,
                 shouldRenderCellHeader: true
@@ -140,7 +159,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
         pageSize: requestedPageSize
     }) => {
 
-        const { data: additionalGroups, pagination } = await getGroups({
+        const { data: additionalGroups, pagination } = await services.getSiteGroups({
             user: user,
             pagination: {
                 pageNumber: requestedPageNumber,

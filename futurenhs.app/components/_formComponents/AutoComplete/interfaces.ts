@@ -21,6 +21,7 @@ export interface Props {
     inputType?: 'text' | 'email' | 'password' | 'number' | 'file';
     shouldRenderRemainingCharacterCount?: boolean;
     shouldPreventFreeText?: boolean;
+    minimumCharacters?: number;
     validators?: Array<any>;
     context?: Record<string, any>;
     services?: Record<string, Service>;

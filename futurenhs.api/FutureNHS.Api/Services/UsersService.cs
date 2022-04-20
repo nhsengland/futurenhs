@@ -3,6 +3,7 @@ using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.Services.Interfaces;
 using System.Security;
+using FutureNHS.Api.Application.Application.HardCodedSettings;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
@@ -41,6 +42,33 @@ namespace FutureNHS.Api.Services
             _registrationEmailId = notifyConfig.Value.RegistrationEmailTemplateId;
         }
 
+
+        public async Task<(uint totalCount, IEnumerable<MemberSearchDetails>)> SearchUsers(Guid userId, string term, uint offset, uint limit, string sort, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit));
+            }
+
+
+            if (term.Length is < SearchSettings.TermMinimum or > SearchSettings.TermMaximum)
+            {
+                throw new ArgumentOutOfRangeException(nameof(term));
+            }
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ListMembersRole, cancellationToken);
+            
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: Search Users - User:{0} does not have access to perform admin actions", userId.ToString());
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _userCommand.SearchUsers(term, offset, limit,sort, cancellationToken);
+        }
         public async Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));

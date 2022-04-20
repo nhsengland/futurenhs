@@ -1,5 +1,4 @@
 ﻿using FutureNHS.Api.DataAccess.Models;
-using Newtonsoft.Json;
 
 namespace FutureNHS.Api.DataAccess.DTOs
 {

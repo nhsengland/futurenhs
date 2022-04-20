@@ -2,7 +2,7 @@
 {
     public static class SearchSettings
     {
-        public const int TermMinimum = 3;
+        public const int TermMinimum = 2;
         public const int TermMaximum = 100;
     }
 }

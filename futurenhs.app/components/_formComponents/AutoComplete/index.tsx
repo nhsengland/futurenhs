@@ -29,6 +29,7 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
     text,
     shouldPreventFreeText,
     shouldRenderRemainingCharacterCount,
+    minimumCharacters = 2,
     validators,
     context,
     services = {
@@ -217,7 +218,7 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
                     inputValue: (value) => value?.label ?? '',
                     suggestion: ({ label }) => label
                 }}
-                minLength={3}
+                minLength={minimumCharacters}
                 displayMenu="overlay"
                 required={isRequired}
                 showNoOptionsFound={false}
