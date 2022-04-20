@@ -303,6 +303,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 const replyingUserName: string = createdBy?.text?.userName
                 const replyingUserId: string = createdBy?.id
                 const replyCreatedDate: string = dateTime({ value: created })
+                const shouldEnableLikes: boolean = shouldRenderCommentAndReplyForms && createdBy.id !== id
 
                 const { body } = text ?? {}
 
@@ -343,7 +344,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                             }
                             replyValidationFailAction={handleValidationFailure}
                             replySubmitAction={handleCommentReplySubmit}
-                            shouldEnableLikes={shouldRenderCommentAndReplyForms}
+                            shouldEnableLikes={shouldEnableLikes}
                             likeCount={likeCount}
                             isLiked={isLiked}
                             likeAction={handleLike}
@@ -502,6 +503,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                         repliesComponents?.some(
                                             (reply) => reply.key === newReplyId
                                         )
+                                    const shouldEnableLikes: boolean = shouldRenderCommentAndReplyForms && createdBy.id !== id
+
 
                                     const { body: commentBody } = text ?? {}
 
@@ -531,7 +534,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                     handleCommentReplySubmit
                                                 }
                                                 shouldEnableLikes={
-                                                    shouldRenderCommentAndReplyForms
+                                                    shouldEnableLikes
                                                 }
                                                 likeCount={likeCount}
                                                 isLiked={isLiked}

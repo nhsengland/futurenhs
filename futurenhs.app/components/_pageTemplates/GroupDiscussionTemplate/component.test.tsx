@@ -42,6 +42,12 @@ describe('Group discussion template', () => {
         discussionCommentsList: [
             {
                 commentId: 'Mock comment id',
+                createdBy: {
+                    id: 'Mock userId',
+                    text: {
+                        userName: 'Mock username'
+                    }
+                },
                 text: {
                     body: 'Mock comment text',
                 },
@@ -50,6 +56,12 @@ describe('Group discussion template', () => {
                         commentId: 'Mock reply id',
                         text: {
                             body: 'Mock reply text',
+                        },
+                        createdBy: {
+                            id: 'Mock userId',
+                            text: {
+                                userName: 'Mock username'
+                            }
                         },
                     },
                 ],
