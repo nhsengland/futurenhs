@@ -60,7 +60,7 @@ namespace Umbraco9ContentApi.Test
             var result = _contentHandler.GetContentAsync(_guid).Result;
 
             // Assert
-            Assert.AreEqual(result.Payload.System.Id, _guid);
+            Assert.AreEqual(result.Data.System.Id, _guid);
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Umbraco9ContentApi.Test
             var result = _contentHandler.GetAllContentAsync().Result;
 
             // Assert
-            Assert.AreEqual(_guidList, result.Payload.Select(x => x.System.Id));
+            Assert.AreEqual(_guidList, result.Data.Select(x => x.System.Id));
         }
     }
 }

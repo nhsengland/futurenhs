@@ -83,7 +83,7 @@
 
             // Assert
             Assert.NotNull(contentResult);
-            Assert.IsNotEmpty(contentResult.Payload);
+            Assert.IsNotEmpty(contentResult.Data);
         }
         #endregion
 

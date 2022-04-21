@@ -59,7 +59,7 @@ namespace Umbraco9ContentApi.Test.Handler
 
             // Assert
             Assert.NotNull(contentResult);
-            Assert.NotEmpty(contentResult.Payload);
+            Assert.NotEmpty(contentResult.Data);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Umbraco9ContentApi.Test.Handler
 
             // Assert
             Assert.NotNull(contentResult);
-            Assert.Empty(contentResult.Payload);
+            Assert.Empty(contentResult.Data);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Umbraco9ContentApi.Test.Handler
 
             // Assert
             Assert.NotNull(contentResult);
-            Assert.Empty(contentResult.Payload);
+            Assert.Empty(contentResult.Data);
         }
 
         #endregion
