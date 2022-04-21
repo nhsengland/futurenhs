@@ -25,7 +25,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProvider
                 return true;
             };
 
-            var baseUrl = _configuration.GetValue<Uri>("AppSettings:ContentApiPUrl");
+            var baseUrl = _configuration.GetValue<Uri>("ContentApi:ContentApiPUrl");
             var absoluteUrl = new Uri(baseUrl + requestUrl);
 
             using (var client = new HttpClient(httpClientHandler))
