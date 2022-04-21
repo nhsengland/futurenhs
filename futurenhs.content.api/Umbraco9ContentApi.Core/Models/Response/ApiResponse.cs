@@ -5,12 +5,12 @@
         public virtual bool Succeeded { get; private set; }
         public virtual string Message { get; private set; }
         public virtual IEnumerable<string> Errors { get; private set; }
-        public virtual T Payload { get; private set; }
-        public ApiResponse<T> Success(T payload, string message)
+        public virtual T Data { get; private set; }
+        public ApiResponse<T> Success(T data, string message)
         {
             return new ApiResponse<T>
             {
-                Payload = payload,
+                Data = data,
                 Succeeded = true,
                 Message = message
             };

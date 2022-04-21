@@ -58,7 +58,7 @@
         {
             var response = await _futureNhsBlockHandler.GetAllBlocksAsync();
 
-            if (response.Succeeded && !response.Payload.Any())
+            if (response.Succeeded && !response.Data.Any())
             {
                 return NotFound("No blocks found.");
             }

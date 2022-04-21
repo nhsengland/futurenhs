@@ -44,7 +44,7 @@ namespace FutureNHS.Api.Services
             await _groupCommand.CreateGroupSiteAsync(new GroupSiteDto()
             {
                 GroupId = groupId,
-                ContentRootId = Guid.Parse(response.Payload),
+                ContentRootId = Guid.Parse(response.Data),
                 CreatedAtUTC = now,
                 CreatedBy = userId,
                 ModifiedBy = null,
