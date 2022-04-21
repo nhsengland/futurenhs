@@ -55,7 +55,7 @@
         {
             var response = await _futureNhsTemplateHandler.GetAllTemplatesAsync();
 
-            if (response.Succeeded && !response.Payload.Any())
+            if (response.Succeeded && !response.Data.Any())
             {
                 return NotFound("No templates found.");
             }
