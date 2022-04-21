@@ -18,12 +18,12 @@ import { Props } from './interfaces';
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     actions,
+    contentBlocks,
     themeId
 }) => {
 
     const router = useRouter();
 
-    const [contentBlocks, setContentBlocks] = useState([]);
     const [mode, setMode] = useState(Boolean(router.query.edit) ? crud.UPDATE : crud.READ);
     const [isClient, setIsClient] = useState(false);
 
@@ -77,16 +77,18 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 }} />
             }
             {(isClient && isGroupAdmin && mode === crud.READ) &&
-                <LayoutColumnContainer>
-                    <LayoutColumn tablet={9}>
-                        <div className={generatedClasses.adminCallOut}>
-                            <p className={generatedClasses.adminCallOutText}>You are a Group Admin of this page. Please click edit to switch to editing mode.</p>
-                        </div>
-                    </LayoutColumn>
-                    <LayoutColumn tablet={3} className="u-flex u-items-center">
-                        <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
-                    </LayoutColumn>
-                </LayoutColumnContainer>
+                <>
+                    <LayoutColumnContainer>
+                        <LayoutColumn tablet={9}>
+                            <div className={generatedClasses.adminCallOut}>
+                                <p className={generatedClasses.adminCallOutText}>You are a Group Admin of this page. Please click edit to switch to editing mode.</p>
+                            </div>
+                        </LayoutColumn>
+                        <LayoutColumn tablet={3} className="u-flex u-items-center">
+                            <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
+                        </LayoutColumn>
+                    </LayoutColumnContainer>
+                </>
             }
             {(isClient && isGroupAdmin && (mode === crud.UPDATE || mode === crud.CREATE)) &&
                 <>
@@ -115,13 +117,14 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                         </div>
 
                     }
-                    <ContentBlockManager
-                        blocks={contentBlocks}
-                        stateChangeAction={handleContentBlockManagerStateChange}
-                        createBlockAction={handleAddBlock}
-                        className="u-mt-14" />
                 </>
             }
+            <ContentBlockManager
+                blocks={contentBlocks}
+                currentState={mode}
+                stateChangeAction={handleContentBlockManagerStateChange}
+                createBlockAction={handleAddBlock}
+                className="u-mt-14" />
         </LayoutColumn>
 
     )

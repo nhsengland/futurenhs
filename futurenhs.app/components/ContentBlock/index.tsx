@@ -13,8 +13,8 @@ import { Theme } from '@appTypes/theme'
 import { Props } from './interfaces'
 
 export const ContentBlock: (props: Props) => JSX.Element = ({
-    blockTypeId,
-    blockInstanceId,
+    typeId,
+    instanceId,
     isEditable,
     shouldRenderMovePrevious,
     shouldRenderMoveNext,
@@ -29,42 +29,46 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
 
     const { name } = text ?? {};
 
-    const shouldRenderHeader: boolean = !blockInstanceId || isEditable;
+    const shouldRenderHeader: boolean = !instanceId || isEditable;
 
     const generatedClasses: any = {
-        wrapper: classNames('c-content-block', className),
+        wrapper: classNames('c-content-block', {
+            ['c-content-block--editable']: isEditable
+        }, className),
         header: classNames('c-content-block_header'),
         headerButton: classNames('c-content-block_header-button', 'o-link-button', 'u-ml-10'),
         headerButtonIcon: classNames('u-w-6', 'u-h-6', 'u-mr-3'),
-        body: classNames('c-content-block_body'),
+        body: classNames('c-content-block_body', {
+            ['c-content-block_body--editable']: isEditable
+        }),
     }
 
     const handleCreate = (event: any): void => {
 
         event.preventDefault();
 
-        createAction?.(blockTypeId)
+        createAction?.(typeId)
     }
 
     const handleMovePrevious = (event: any): void => {
 
         event.preventDefault();
 
-        movePreviousAction?.(blockInstanceId)
+        movePreviousAction?.(instanceId)
     }
 
     const handleMoveNext = (event: any): void => {
 
         event.preventDefault();
 
-        moveNextAction?.(blockInstanceId)
+        moveNextAction?.(instanceId)
     }
 
     const handleDelete = (event: any): void => {
 
         event.preventDefault();
 
-        deleteAction?.(blockInstanceId)
+        deleteAction?.(instanceId)
     }
 
     return (
@@ -74,7 +78,7 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
                 <header className={generatedClasses.header}>
                     <span>{name}</span>
                     <div className="u-flex">
-                        {blockInstanceId
+                        {instanceId
                         
                             ?   <>
                                     {shouldRenderMovePrevious &&
