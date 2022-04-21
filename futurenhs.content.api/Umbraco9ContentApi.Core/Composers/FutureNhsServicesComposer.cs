@@ -7,9 +7,11 @@
     using Umbraco9ContentApi.Core.Converters;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
+    using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using Umbraco9ContentApi.Core.Services.FutureNhs;
     using UmbracoContentApi.Core;
     using UmbracoContentApi.Core.Converters;
+    using UmbracoContentApi.Core.Resolvers;
 
     /// <summary>
     /// Registers custom services on startup. 
@@ -32,6 +34,9 @@
             // Converters
             builder.Converters().Replace<MultinodeTreepickerConverter, BlockPickerConverter>();
             builder.Converters().Replace<TextAreaConverter, JsonContentConverter>();
+
+            // Resolvers
+            builder.Services.AddTransient<IFutureNHSContentResolver, FutureNHSContentResolver>();
         }
     }
 }

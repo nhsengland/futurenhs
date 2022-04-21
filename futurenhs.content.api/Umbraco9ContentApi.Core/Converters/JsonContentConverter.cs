@@ -11,7 +11,7 @@ namespace UmbracoContentApi.Core.Converters
         public object Convert(object value, Dictionary<string, object>? options = null)
         {
             return IsValidJson(value as string)
-                ? JsonConvert.DeserializeObject<PageContentModelData>(value as string)
+                ? JsonConvert.DeserializeObject<PageContentModel>(value as string)
                 : value;
         }
 

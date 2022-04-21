@@ -4,8 +4,8 @@
     using Microsoft.Extensions.Configuration;
     using Services.FutureNhs.Interface;
     using Umbraco.Cms.Web.Common.PublishedModels;
+    using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Response;
-    using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
 
     /// <summary>
     /// The handler that handles content methods and calls the content service.
