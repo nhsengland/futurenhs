@@ -6,7 +6,7 @@
     using System;
     using Umbraco.Cms.Web.Common.Controllers;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
-    using UmbracoContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models;
 
     /// <summary>
     /// Content Api controller.

@@ -9,7 +9,7 @@ namespace Umbraco9ContentApi.Test.Handler
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models.PublishedContent;
-    using UmbracoContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models;
     using Assert = Xunit.Assert;
 
     [TestFixture]
@@ -52,7 +52,7 @@ namespace Umbraco9ContentApi.Test.Handler
                 });
 
             _mockFutureNhsContentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
-                .Returns(new ContentModel() { System = new SystemModel() { Id = contentId } });
+                .Returns(new ContentModel() { Item = new ItemModel() { Id = contentId } });
 
             // Act
             var contentResult = await contentHandler.GetAllBlocksAsync();

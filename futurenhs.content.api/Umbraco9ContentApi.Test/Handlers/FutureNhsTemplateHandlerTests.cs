@@ -9,8 +9,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models.PublishedContent;
-    using UmbracoContentApi.Core.Models;
-    using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
+    using Umbraco9ContentApi.Core.Models;
 
     /// <summary>
     /// Future Nhs Template Handler tests.
@@ -76,7 +75,7 @@
                 });
 
             _mockFutureNhsContentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
-                .Returns(new ContentModel() { System = new SystemModel() { Id = contentId } });
+                .Returns(new ContentModel() { Item = new ItemModel() { Id = contentId } });
 
             // Act
             var contentResult = await contentHandler.GetAllTemplatesAsync();
@@ -107,7 +106,7 @@
         /// Gets the test model.
         /// </summary>
         /// <returns></returns>
-        private UmbracoContentApi.Core.Models.ContentModel GetTestModel()
+        private ContentModel GetTestModel()
         {
             var mockDictionary = new Dictionary<string, object>()
             {
@@ -116,7 +115,7 @@
 
             var model = new ContentModel()
             {
-                Fields = mockDictionary
+                Content = mockDictionary
             };
 
             return model;

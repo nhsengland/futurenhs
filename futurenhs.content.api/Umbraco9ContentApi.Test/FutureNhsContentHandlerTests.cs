@@ -7,8 +7,9 @@ using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco9ContentApi.Core.Handlers.FutureNhs;
 using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
+using Umbraco9ContentApi.Core.Models;
 using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
-using UmbracoContentApi.Core.Models;
+
 
 namespace Umbraco9ContentApi.Test
 {
@@ -53,14 +54,14 @@ namespace Umbraco9ContentApi.Test
         {
             // Arrange
             _guid = Guid.NewGuid();
-            _contentService.Setup(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result).Returns(new ContentModel() { System = new SystemModel() { Id = _guid } });
+            _contentService.Setup(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result).Returns(new ContentModel() { Item = new ItemModel() { Id = _guid } });
             CustomContentHandlerSetup();
 
             // Act
             var result = _contentHandler.GetContentAsync(_guid).Result;
 
             // Assert
-            Assert.AreEqual(result.Data.System.Id, _guid);
+            Assert.AreEqual(result.Data.Item.Id, _guid);
         }
 
         [Test]
@@ -107,10 +108,10 @@ namespace Umbraco9ContentApi.Test
             _contentService.Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()).Result).Returns(GenerateContentModels());
 
             _contentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
-                .Returns(new ContentModel() { System = new SystemModel() { Id = _guidList[0] } })
-                .Returns(new ContentModel() { System = new SystemModel() { Id = _guidList[1] } })
-                .Returns(new ContentModel() { System = new SystemModel() { Id = _guidList[2] } })
-                .Returns(new ContentModel() { System = new SystemModel() { Id = _guidList[3] } });
+                .Returns(new ContentModel() { Item = new ItemModel() { Id = _guidList[0] } })
+                .Returns(new ContentModel() { Item = new ItemModel() { Id = _guidList[1] } })
+                .Returns(new ContentModel() { Item = new ItemModel() { Id = _guidList[2] } })
+                .Returns(new ContentModel() { Item = new ItemModel() { Id = _guidList[3] } });
 
             CustomContentHandlerSetup();
 
@@ -119,7 +120,7 @@ namespace Umbraco9ContentApi.Test
             var result = _contentHandler.GetAllContentAsync().Result;
 
             // Assert
-            Assert.AreEqual(_guidList, result.Data.Select(x => x.System.Id));
+            Assert.AreEqual(_guidList, result.Data.Select(x => x.Item.Id));
         }
     }
 }

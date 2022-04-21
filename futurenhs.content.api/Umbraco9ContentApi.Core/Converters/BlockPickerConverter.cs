@@ -1,6 +1,6 @@
 ﻿using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco9ContentApi.Core.Resolvers.Interfaces;
 using UmbracoContentApi.Core.Converters;
-using UmbracoContentApi.Core.Resolvers;
 
 namespace Umbraco9ContentApi.Core.Converters
 {
@@ -10,13 +10,13 @@ namespace Umbraco9ContentApi.Core.Converters
     /// <seealso cref="IConverter" />
     public sealed class BlockPickerConverter : IConverter
     {
-        private readonly Lazy<IContentResolver> _contentResolver;
+        private readonly Lazy<IFutureNHSContentResolver> _contentResolver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockPickerConverter"/> class.
         /// </summary>
         /// <param name="contentResolver">The content resolver.</param>
-        public BlockPickerConverter(Lazy<IContentResolver> contentResolver)
+        public BlockPickerConverter(Lazy<IFutureNHSContentResolver> contentResolver)
         {
             _contentResolver = contentResolver;
         }
