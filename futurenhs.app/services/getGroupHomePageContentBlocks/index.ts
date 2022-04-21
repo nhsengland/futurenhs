@@ -8,6 +8,7 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import { ContentBlock } from '@appTypes/contentBlock';
 
 declare type Options = {
     user: User
@@ -22,13 +23,13 @@ declare type Dependencies = {
 export type getGroupHomePageContentService = (
     options: Options,
     dependencies?: Dependencies
-) => Promise<ServiceResponse<any>>
+) => Promise<ServiceResponse<Array<ContentBlock>>>
 
-export const getGroupHomePageContent = async (
+export const getGroupHomePageContentBlocks = async (
     { user, groupId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
-    const serviceResponse: ServiceResponse<any> = {
+    const serviceResponse: ServiceResponse<Array<ContentBlock>> = {
         data: null,
     }
 
@@ -63,10 +64,28 @@ export const getGroupHomePageContent = async (
         )
     }
 
-    serviceResponse.headers = headers
-    serviceResponse.data = {
+    const pageContentApiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${contentSiteMapApiData.contentRootId}`
 
-    }
+    const pageContentApiResponse: FetchResponse = await fetchJSON(
+        pageContentApiUrl,
+        setFetchOptions({ method: requestMethods.GET }),
+        defaultTimeOutMillis
+    )
+
+    const pageContentApiData: ApiResponse<any> = pageContentApiResponse.json
+
+    serviceResponse.headers = headers
+    serviceResponse.data = pageContentApiData?.payload?.fields?.pageContent?.fields.map((field) => {
+
+        console.log(field);
+
+        return {
+            instanceId: field.system.id,
+            typeId: field.system.contentType,
+            fields: field.fields         
+        } as ContentBlock
+
+    });
 
     return serviceResponse
 }

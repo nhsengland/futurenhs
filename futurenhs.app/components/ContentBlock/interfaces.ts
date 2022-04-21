@@ -1,6 +1,6 @@
 export interface Props {
-    blockTypeId: string;
-    blockInstanceId: string;
+    typeId: string;
+    instanceId: string;
     isEditable?: boolean;
     shouldRenderMovePrevious?: boolean;
     shouldRenderMoveNext?: boolean;
