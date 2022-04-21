@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
-    using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
+    using ContentModel = Models.ContentModel;
 
     /// <summary>
     /// Exposes and extends the Umbraco API.

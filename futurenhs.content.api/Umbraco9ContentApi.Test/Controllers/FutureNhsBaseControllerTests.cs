@@ -10,9 +10,10 @@
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
+    using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Response;
-    using UmbracoContentApi.Core.Models;
     using Assert = Xunit.Assert;
+
 
     /// <summary>
     /// Future Nhs Base Controller Tests.
@@ -53,8 +54,8 @@
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.NotNull(modelItem.Data.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Data.Fields.FirstOrDefault());
+            Assert.NotNull(modelItem.Data.Content);
+            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Data.Content.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -183,11 +184,11 @@
 
             var model = new ContentModel()
             {
-                System = new SystemModel
+                Item = new ItemModel
                 {
                     Id = contentId,
                 },
-                Fields = mockDictionary
+                Content = mockDictionary
             };
 
             var apiResponse = new Mock<ApiResponse<ContentModel>>();

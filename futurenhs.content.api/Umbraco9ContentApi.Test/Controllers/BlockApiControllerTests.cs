@@ -10,7 +10,7 @@
     using System.Net;
     using System.Threading.Tasks;
     using Umbraco9ContentApi.Core.Models.Response;
-    using UmbracoContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models;
     using Assert = Xunit.Assert;
 
     /// <summary>
@@ -53,8 +53,8 @@
             Assert.NotNull(itemResult);
             Assert.NotNull(itemResult.StatusCode);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.NotNull(payloadResult.Data.FirstOrDefault().Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Data.FirstOrDefault().Fields.FirstOrDefault());
+            Assert.NotNull(payloadResult.Data.FirstOrDefault().Content);
+            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Data.FirstOrDefault().Content.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -110,7 +110,7 @@
 
             var model = new List<ContentModel>()
             {
-                new ContentModel() {Fields = mockDictionary}
+                new ContentModel() {Content = mockDictionary}
             };
 
             var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();

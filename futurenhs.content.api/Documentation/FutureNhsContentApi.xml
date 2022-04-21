@@ -218,7 +218,7 @@
             </summary>
             <seealso cref="T:UmbracoContentApi.Core.Converters.IConverter" />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.#ctor(System.Lazy{UmbracoContentApi.Core.Resolvers.IContentResolver})">
+        <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.#ctor(System.Lazy{Umbraco9ContentApi.Core.Resolvers.Interfaces.IFutureNHSContentResolver})">
             <summary>
             Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Converters.BlockPickerConverter"/> class.
             </summary>
@@ -514,7 +514,7 @@
         <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.#ctor(Umbraco.Cms.Core.IPublishedContentQuery,System.Lazy{UmbracoContentApi.Core.Resolvers.IContentResolver},Umbraco.Cms.Core.Services.IContentService)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.#ctor(Umbraco.Cms.Core.IPublishedContentQuery,System.Lazy{Umbraco9ContentApi.Core.Resolvers.Interfaces.IFutureNHSContentResolver},Umbraco.Cms.Core.Services.IContentService)">
             <summary>Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService" /> class.</summary>
             <param name="publishedContent">Content of the published.</param>
             <param name="contentResolver">The content resolver.</param>

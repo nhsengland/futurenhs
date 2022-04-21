@@ -4,8 +4,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Umbraco.Cms.Web.Common.Controllers;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
+    using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Response;
-    using UmbracoContentApi.Core.Models;
 
     /// <summary>
     /// Block Api controller.

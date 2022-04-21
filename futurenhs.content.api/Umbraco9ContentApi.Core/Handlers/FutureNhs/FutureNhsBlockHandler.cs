@@ -3,9 +3,8 @@
     using Interface;
     using Microsoft.Extensions.Configuration;
     using Services.FutureNhs.Interface;
+    using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Response;
-    using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
-
 
     /// <summary>
     /// The handler that handles block methods and calls the content service.
