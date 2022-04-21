@@ -1,7 +1,7 @@
 ﻿namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
 {
+    using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Response;
-    using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
 
     public interface IFutureNhsContentHandler
     {

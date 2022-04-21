@@ -5,13 +5,13 @@
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco.Cms.Core.Services;
-    using UmbracoContentApi.Core.Resolvers;
-    using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
+    using Umbraco9ContentApi.Core.Resolvers.Interfaces;
+    using ContentModel = Models.ContentModel;
 
     /// <inheritdoc />
     public sealed class FutureNhsContentService : IFutureNhsContentService
     {
-        private readonly Lazy<IContentResolver> _contentResolver;
+        private readonly Lazy<IFutureNHSContentResolver> _contentResolver;
         private readonly IPublishedContentQuery _publishedContent;
         private readonly IContentService _contentService;
 
@@ -19,7 +19,7 @@
         /// <param name="publishedContent">Content of the published.</param>
         /// <param name="contentResolver">The content resolver.</param>
         /// <param name="contentService">The content service.</param>
-        public FutureNhsContentService(IPublishedContentQuery publishedContent, Lazy<IContentResolver> contentResolver, IContentService contentService)
+        public FutureNhsContentService(IPublishedContentQuery publishedContent, Lazy<IFutureNHSContentResolver> contentResolver, IContentService contentService)
         {
             _publishedContent = publishedContent;
             _contentResolver = contentResolver;
