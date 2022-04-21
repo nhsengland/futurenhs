@@ -1,11 +1,15 @@
 import { GetServerSideProps } from 'next'
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
-import { layoutIds, groupTabIds } from '@constants/routes'
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
+import { layoutIds, groupTabIds, routeParams } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withGroup } from '@hofs/withGroup'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
+import { User } from '@appTypes/user'
+import { selectUser, selectParam } from '@selectors/context'
+import { getGroupContentSiteMap } from '@services/getGroupContentSiteMap'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
 import { GroupHomeTemplate } from '@components/_pageTemplates/GroupHomeTemplate'
@@ -30,9 +34,26 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 getServerSideProps: async (
                     context: GetServerSidePropsContext
                 ) => {
+
+                    const user: User = selectUser(context)
+                    const groupId: string = selectParam(context, routeParams.GROUPID)
+
                     props.layoutId = layoutIds.GROUP
                     props.tabId = groupTabIds.INDEX
                     props.pageTitle = props.entityText.title
+
+                    /**
+                     * Get data from services
+                     */
+                    try {
+                        const [groupSiteMap] =
+                            await Promise.all([
+                                getGroupContentSiteMap({ user, groupId })
+                            ])
+
+                    } catch (error) {
+                        return handleSSRErrorProps({ props, error })
+                    }
 
                     /**
                      * Return data to page template
