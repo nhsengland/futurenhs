@@ -98,7 +98,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                         <ul className="u-list-none u-p-0">
                             {blocks?.map(({
                                 instanceId,
-                                typeId
+                                typeId,
+                                typeName
                             }, index: number) => {
 
                                 return (
@@ -109,9 +110,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                             typeId={typeId}
                                             isEditable={isEditable}
                                             text={{
-                                                name: ''
+                                                name: typeName
                                             }}>
-                                            TODO: BLOCK CONTENT
+                                                TODO: BLOCK CONTENT
                                         </ContentBlock>
                                     </li>
 
