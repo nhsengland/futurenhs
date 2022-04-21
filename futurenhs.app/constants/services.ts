@@ -1,6 +1,7 @@
 export const enum services {
     GET_GROUPS = 'getGroups',
     GET_GROUP = 'getGroup',
+    GET_GROUpP_CONTENT_SITE_MAP = 'getGroupContentSiteMap',
     GET_GROUP_ACTIONS = 'getGroupActions',
     GET_GROUP_DISCUSSIONS = 'getGroupDiscussions',
     GET_GROUP_DISCUSSION = 'getGroupDiscussion',

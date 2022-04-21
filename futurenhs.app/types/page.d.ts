@@ -6,6 +6,7 @@ import { Pagination } from '@appTypes/pagination';
 import { FormConfig } from '@appTypes/form';
 import { Routes } from '@appTypes/routing';
 import { Service } from '@appTypes/service';
+import { ContentBlock } from '@components/ContentBlock';
 import { GenericPageTextContent, GroupsPageTextContent } from '@appTypes/content';
 import { User } from '@appTypes/user';
 
@@ -22,6 +23,7 @@ export interface Page {
     pagination?: Pagination;
     errors?: Array<Record<string>>;
     contentText?: GenericPageTextContent;
+    contentBlocks?: Array<ContentBlock>;
     user?: User;
     className?: string;
     pageTitle?: string;

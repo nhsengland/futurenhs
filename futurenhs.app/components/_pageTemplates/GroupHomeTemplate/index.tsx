@@ -56,7 +56,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     }
 
     useDynamicElementClassName({
-        elementSelector: mode === 'update' ? 'main' : null,
+        elementSelector: (mode === crud.CREATE || mode === crud.UPDATE) ? 'main' : null,
         addClass: 'u-bg-theme-1',
         removeClass: 'u-bg-theme-3'
     });

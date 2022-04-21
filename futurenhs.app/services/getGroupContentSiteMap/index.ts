@@ -7,13 +7,11 @@ import { requestMethods, defaultTimeOutMillis } from '@constants/fetch'
 import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
-import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
 
 declare type Options = {
     user: User
     groupId: string
-    isForEdit?: boolean
 }
 
 declare type Dependencies = {
@@ -21,16 +19,16 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export type GetGroupService = (
+export type GetGroupContentSiteMapService = (
     options: Options,
     dependencies?: Dependencies
-) => Promise<ServiceResponse<Group>>
+) => Promise<ServiceResponse<any>>
 
-export const getGroup = async (
-    { user, groupId, isForEdit }: Options,
+export const getGroupContentSiteMap = async (
+    { user, groupId }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<Group>> => {
-    const serviceResponse: ServiceResponse<Group> = {
+): Promise<ServiceResponse<any>> => {
+    const serviceResponse: ServiceResponse<any> = {
         data: null,
     }
 
@@ -42,7 +40,7 @@ export const getGroup = async (
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }/v1/users/${id}/groups/${groupId}${isForEdit ? '/update' : ''}`
+    }/v1/groups/${groupId}/site`
 
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
@@ -57,9 +55,9 @@ export const getGroup = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the group',
+            'An unexpected error occurred when attempting to get the group content site map',
             {
-                serviceId: services.GET_GROUP,
+                serviceId: services.GET_GROUpP_CONTENT_SITE_MAP,
                 status: status,
                 statusText: statusText,
                 body: apiData,
@@ -67,24 +65,11 @@ export const getGroup = async (
         )
     }
 
+    console.log(apiData, apiMeta);
+
     serviceResponse.headers = headers
     serviceResponse.data = {
-        text: {
-            title: apiData.name ?? null,
-            metaDescription: 'A Future NHS group',
-            mainHeading: apiData.name ?? null,
-            strapLine: apiData?.strapLine ?? null,
-        },
-        image: apiData.image
-            ? {
-                  src: `${apiData.image?.source}`,
-                  height: apiData?.image?.height ?? null,
-                  width: apiData?.image?.width ?? null,
-                  altText: 'Group logo',
-              }
-            : null,
-        imageId: apiData.imageId,
-        themeId: apiData.themeId,
+
     }
 
     return serviceResponse
