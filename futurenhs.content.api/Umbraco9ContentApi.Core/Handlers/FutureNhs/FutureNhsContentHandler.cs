@@ -59,7 +59,7 @@
             ApiResponse<string> response = new ApiResponse<string>();
             if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && string.IsNullOrWhiteSpace(pageContent))
             {
-                errorList.Add("No payload provided.");
+                errorList.Add("No data provided.");
                 return response.Failure(errorList, "Failed.");
             }
 
