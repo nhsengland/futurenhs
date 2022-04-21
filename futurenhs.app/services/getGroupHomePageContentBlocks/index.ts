@@ -75,13 +75,12 @@ export const getGroupHomePageContentBlocks = async (
     const pageContentApiData: ApiResponse<any> = pageContentApiResponse.json
 
     serviceResponse.headers = headers
-    serviceResponse.data = pageContentApiData?.payload?.fields?.pageContent?.fields.map((field) => {
-
-        console.log(field);
+    serviceResponse.data = pageContentApiData?.data?.fields?.pageContent?.fields.map((field) => {
 
         return {
             instanceId: field.system.id,
             typeId: field.system.contentType,
+            typeName: field.system.name,
             fields: field.fields         
         } as ContentBlock
 
