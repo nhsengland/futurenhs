@@ -55,8 +55,8 @@
             Assert.NotNull(itemResult);
             Assert.NotNull(itemResult.StatusCode);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.NotNull(payloadResult.Payload.FirstOrDefault().Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Payload.FirstOrDefault().Fields.FirstOrDefault());
+            Assert.NotNull(payloadResult.Data.FirstOrDefault().Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Data.FirstOrDefault().Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -106,8 +106,8 @@
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.NotNull(payloadResult.Payload.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Payload.Fields.FirstOrDefault());
+            Assert.NotNull(payloadResult.Data.Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Data.Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -170,7 +170,7 @@
             };
 
             var apiResponse = new Mock<ApiResponse<ContentModel>>();
-            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Data).Returns(model);
 
             return apiResponse.Object;
         }
@@ -192,7 +192,7 @@
             };
 
             var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
-            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;
@@ -206,7 +206,7 @@
             };
 
             var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
-            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;

@@ -15,7 +15,6 @@ namespace Umbraco9ContentApi.Test.Controller
     using Umbraco9ContentApi.Core.Models.Response;
     using UmbracoContentApi.Core.Models;
     using Assert = Xunit.Assert;
-    using ContentModel = UmbracoContentApi.Core.Models.ContentModel;
 
     [TestFixture]
     public class ContentApiControllerTests
@@ -52,8 +51,8 @@ namespace Umbraco9ContentApi.Test.Controller
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.NotNull(modelItem.Payload.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Payload.Fields.FirstOrDefault());
+            Assert.NotNull(modelItem.Data.Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Data.Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -101,8 +100,8 @@ namespace Umbraco9ContentApi.Test.Controller
             Assert.NotNull(itemResult);
             Assert.NotNull(itemResult.StatusCode);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.NotNull(modelItem.Payload.FirstOrDefault().Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Payload.FirstOrDefault().Fields.FirstOrDefault());
+            Assert.NotNull(modelItem.Data.FirstOrDefault().Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Data.FirstOrDefault().Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -156,7 +155,7 @@ namespace Umbraco9ContentApi.Test.Controller
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.Equal(contentId.ToString(), modelResult.Payload);
+            Assert.Equal(contentId.ToString(), modelResult.Data);
         }
 
         /// <summary>
@@ -169,7 +168,7 @@ namespace Umbraco9ContentApi.Test.Controller
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
             var mockCreateResult = new Mock<ApiResponse<string>>();
-            mockCreateResult.Setup(x => x.Payload).Returns(contentId.ToString());
+            mockCreateResult.Setup(x => x.Data).Returns(contentId.ToString());
             _mockFutureNhsContentHandler.Setup(
                 x => x.CreateContentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(mockCreateResult.Object);
 
@@ -231,7 +230,7 @@ namespace Umbraco9ContentApi.Test.Controller
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.Equal(contentId.ToString(), modelItem.Payload);
+            Assert.Equal(contentId.ToString(), modelItem.Data);
         }
 
         /// <summary>
@@ -281,7 +280,7 @@ namespace Umbraco9ContentApi.Test.Controller
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.Equal(contentId.ToString(), modelItem.Payload);
+            Assert.Equal(contentId.ToString(), modelItem.Data);
         }
 
         /// <summary>
@@ -350,7 +349,7 @@ namespace Umbraco9ContentApi.Test.Controller
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
             Assert.True(modelItem.Succeeded);
-            Assert.Equal(modelItem.Payload, contentId.ToString());
+            Assert.Equal(modelItem.Data, contentId.ToString());
         }
 
         /// <summary>
@@ -401,7 +400,7 @@ namespace Umbraco9ContentApi.Test.Controller
         {
             var mock = new Mock<ApiResponse<string>>();
             mock.Setup(x => x.Succeeded).Returns(true);
-            mock.Setup(x => x.Payload).Returns(contentId.ToString());
+            mock.Setup(x => x.Data).Returns(contentId.ToString());
             return mock.Object;
         }
 
@@ -427,7 +426,7 @@ namespace Umbraco9ContentApi.Test.Controller
             };
 
             var apiResponse = new Mock<ApiResponse<ContentModel>>();
-            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Data).Returns(model);
 
             return apiResponse.Object;
         }
@@ -461,7 +460,7 @@ namespace Umbraco9ContentApi.Test.Controller
             };
 
             var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
-            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;
@@ -474,7 +473,7 @@ namespace Umbraco9ContentApi.Test.Controller
         private ApiResponse<IEnumerable<ContentModel>> GetContents_NotFound()
         {
             var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
-            apiResponse.Setup(x => x.Payload).Returns(new List<ContentModel>());
+            apiResponse.Setup(x => x.Data).Returns(new List<ContentModel>());
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;
