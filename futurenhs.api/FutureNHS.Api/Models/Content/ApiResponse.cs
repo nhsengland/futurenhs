@@ -10,7 +10,7 @@ namespace FutureNHS.Api.Models.Content
         public string Message { get; set; }
         [JsonProperty("errors")]
         public IEnumerable<string> Errors { get; set; }
-        [JsonProperty("payload")]
-        public T Payload { get; set; }
+        [JsonProperty("data")]
+        public T Data { get; set; }
     }
 }
