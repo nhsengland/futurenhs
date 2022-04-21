@@ -19,12 +19,12 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export type GetGroupContentSiteMapService = (
+export type getGroupHomePageContentService = (
     options: Options,
     dependencies?: Dependencies
 ) => Promise<ServiceResponse<any>>
 
-export const getGroupContentSiteMap = async (
+export const getGroupHomePageContent = async (
     { user, groupId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
@@ -38,34 +38,30 @@ export const getGroupContentSiteMap = async (
 
     const id: string = user.id
 
-    const apiUrl: string = `${
-        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }/v1/groups/${groupId}/site`
+    const contentSiteMapApiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/site`
 
-    const apiResponse: FetchResponse = await fetchJSON(
-        apiUrl,
+    const contentSiteMapApiResponse: FetchResponse = await fetchJSON(
+        contentSiteMapApiUrl,
         setFetchOptions({ method: requestMethods.GET }),
         defaultTimeOutMillis
     )
 
-    const apiData: ApiResponse<any> = apiResponse.json
-    const apiMeta: any = apiResponse.meta
+    const contentSiteMapApiData: ApiResponse<any> = contentSiteMapApiResponse.json
+    const contentSiteMapApiMeta: any = contentSiteMapApiResponse.meta
 
-    const { headers, ok, status, statusText } = apiMeta
+    const { headers, ok, status, statusText } = contentSiteMapApiMeta
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the group content site map',
+            'An unexpected error occurred when attempting to get the group homepage content',
             {
-                serviceId: services.GET_GROUpP_CONTENT_SITE_MAP,
+                serviceId: services.GET_GROUP_HOME_PAGE_CONTENT,
                 status: status,
                 statusText: statusText,
-                body: apiData,
+                body: contentSiteMapApiData,
             }
         )
     }
-
-    console.log(apiData, apiMeta);
 
     serviceResponse.headers = headers
     serviceResponse.data = {
