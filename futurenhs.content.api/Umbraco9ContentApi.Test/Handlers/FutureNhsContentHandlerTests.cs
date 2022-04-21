@@ -57,7 +57,7 @@
 
             // Assert
             Assert.IsNotNull(contentResult);
-            Assert.AreEqual(contentResult.Payload, contentId.ToString());
+            Assert.AreEqual(contentResult.Data, contentId.ToString());
         }
 
         #endregion
@@ -96,7 +96,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
-            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -128,7 +128,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, string.Empty);
 
             // Assert
-            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -161,7 +161,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, string.Empty);
 
             // Assert
-            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -192,7 +192,7 @@
             // Act
             var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
-            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -225,7 +225,7 @@
             // Act
             var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
-            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -259,7 +259,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, string.Empty);
 
             // Assert
-            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -292,7 +292,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, string.Empty);
 
             // Assert
-            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -324,7 +324,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
-            Assert.AreEqual(contentId.ToString(), contentResult.Payload);
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -363,7 +363,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
-            Assert.IsFalse(contentResult.Payload == "false");
+            Assert.IsFalse(contentResult.Data == "false");
         }
 
         /// <summary>
@@ -395,7 +395,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, string.Empty);
 
             // Assert
-            Assert.IsFalse(contentResult.Payload == "false");
+            Assert.IsFalse(contentResult.Data == "false");
         }
 
         /// <summary>
@@ -427,7 +427,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, string.Empty);
 
             // Assert
-            Assert.IsFalse(contentResult.Payload == "false");
+            Assert.IsFalse(contentResult.Data == "false");
         }
 
         /// <summary>
@@ -459,7 +459,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
-            Assert.IsFalse(contentResult.Payload == "false");
+            Assert.IsFalse(contentResult.Data == "false");
         }
 
         /// <summary>
@@ -493,7 +493,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
-            Assert.IsFalse(contentResult.Payload == "false");
+            Assert.IsFalse(contentResult.Data == "false");
         }
 
         /// <summary>
@@ -525,7 +525,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, string.Empty);
 
             // Assert
-            Assert.IsFalse(contentResult.Payload == "false");
+            Assert.IsFalse(contentResult.Data == "false");
         }
 
         /// <summary>
@@ -557,7 +557,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, string.Empty);
 
             // Assert
-            Assert.IsFalse(contentResult.Payload == "false");
+            Assert.IsFalse(contentResult.Data == "false");
         }
 
         /// <summary>
@@ -589,7 +589,7 @@
             var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
-            Assert.IsFalse(contentResult.Payload == "false");
+            Assert.IsFalse(contentResult.Data == "false");
         }
 
         #endregion
