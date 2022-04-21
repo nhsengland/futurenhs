@@ -53,8 +53,8 @@
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
-            Assert.NotNull(modelItem.Payload.Fields);
-            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Payload.Fields.FirstOrDefault());
+            Assert.NotNull(modelItem.Data.Fields);
+            var field = Assert.IsType<KeyValuePair<string, object>>(modelItem.Data.Fields.FirstOrDefault());
             Assert.Equal("Title", field.Key);
             Assert.Equal("This is a title.", field.Value);
         }
@@ -104,7 +104,7 @@
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.OK, itemResult.StatusCode.Value);
             Assert.True(modelItem.Succeeded);
-            Assert.Equal(modelItem.Payload, contentId.ToString());
+            Assert.Equal(modelItem.Data, contentId.ToString());
         }
 
         /// <summary>
@@ -154,7 +154,7 @@
         {
             var mock = new Mock<ApiResponse<string>>();
             mock.Setup(x => x.Succeeded).Returns(true);
-            mock.Setup(x => x.Payload).Returns(contentId.ToString());
+            mock.Setup(x => x.Data).Returns(contentId.ToString());
             return mock.Object;
         }
 
@@ -191,7 +191,7 @@
             };
 
             var apiResponse = new Mock<ApiResponse<ContentModel>>();
-            apiResponse.Setup(x => x.Payload).Returns(model);
+            apiResponse.Setup(x => x.Data).Returns(model);
 
             return apiResponse.Object;
         }
