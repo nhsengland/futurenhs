@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿
 
-namespace FutureNHS.Api.Models.Content
+namespace Umbraco9ContentApi.Core.Models
 {
     public class ContentModel
     {
-        [JsonProperty("item")]
         public ItemModel? Item { get; set; }
-
-        [JsonProperty("content")]
         public Dictionary<string, object>? Content { get; set; }
     }
 }
