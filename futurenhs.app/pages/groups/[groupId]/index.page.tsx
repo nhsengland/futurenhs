@@ -9,7 +9,7 @@ import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
 import { User } from '@appTypes/user'
 import { selectUser, selectParam } from '@selectors/context'
-import { getGroupHomePageContent } from '@services/getGroupHomePageContent'
+import { getGroupHomePageContentBlocks } from '@services/getGroupHomePageContentBlocks'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
 import { GroupHomeTemplate } from '@components/_pageTemplates/GroupHomeTemplate'
@@ -48,7 +48,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     try {
                         const [contentBlocks] =
                             await Promise.all([
-                                getGroupHomePageContent({ user, groupId })
+                                getGroupHomePageContentBlocks({ user, groupId })
                             ])
 
                         props.contentBlocks = contentBlocks.data
