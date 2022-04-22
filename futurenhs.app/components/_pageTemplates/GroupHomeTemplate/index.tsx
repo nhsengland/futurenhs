@@ -19,12 +19,14 @@ import { Props } from './interfaces';
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     actions,
     contentBlocks,
+    contentTemplate,
     themeId
 }) => {
 
     const router = useRouter();
 
     const [mode, setMode] = useState(Boolean(router.query.edit) ? crud.UPDATE : crud.READ);
+    const [isPreview, setIsPreview] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
     const isGroupAdmin: boolean = actions.includes(actionConstants.GROUPS_EDIT) || actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT);
@@ -35,23 +37,31 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         adminCallOut: classNames('nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full', `u-border-l-theme-${background}`),
         adminCallOutText: classNames('nhsuk-heading-m u-text-bold'),
         adminCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0'),
-        previewButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-mt-4 u-drop-shadow tablet:u-mt-0 tablet:u-mr-5'),
-        publishButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0')
+        previewButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-mt-4 u-drop-shadow tablet:u-mt-0'),
+        publishButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0 tablet:u-ml-5')
     };
 
     const handleSetToEditMode = (): void => {
+        setIsPreview(false);
         setMode(crud.UPDATE);
     }
 
     const handleContentBlockManagerStateChange = (state: crud) => {
+        setIsPreview(false);
         setMode(state)
     }
 
-    const handleAddBlock = (blockTypeId: string): void => {
-        // TODO - call service to add block
+    const handleCreateBlock = (blockTypeId: string): void => {
+        console.log(blockTypeId);
+    }
+
+    const handlePreviewUpdate = (): void => {
+        setIsPreview(true);
+        setMode(crud.READ);
     }
 
     const handlePublishUpdate = (): void => {
+        setIsPreview(false);
         setMode(crud.READ);
     }
 
@@ -78,16 +88,34 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
             }
             {(isClient && isGroupAdmin && mode === crud.READ) &&
                 <>
-                    <LayoutColumnContainer>
-                        <LayoutColumn tablet={9}>
-                            <div className={generatedClasses.adminCallOut}>
-                                <p className={generatedClasses.adminCallOutText}>You are a Group Admin of this page. Please click edit to switch to editing mode.</p>
-                            </div>
-                        </LayoutColumn>
-                        <LayoutColumn tablet={3} className="u-flex u-items-center">
-                            <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
+
+                    {isPreview
+
+                        ? <LayoutColumnContainer>
+                            <LayoutColumn tablet={6}>
+                                <div className={generatedClasses.adminCallOut}>
+                                    <p className={generatedClasses.adminCallOutText}>You are previewing the group homepage in editing mode.</p>
+                                </div>
+                            </LayoutColumn>
+                            <LayoutColumn tablet={6} className="u-flex u-items-center">
+                                <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
+                                <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
+                            </LayoutColumn>
+                        </LayoutColumnContainer>
+
+                        : <LayoutColumnContainer>
+                            <LayoutColumn tablet={9}>
+                                <div className={generatedClasses.adminCallOut}>
+                                    <p className={generatedClasses.adminCallOutText}>You are a Group Admin of this page. Please click edit to switch to editing mode.</p>
+                                </div>
+                            </LayoutColumn>
+                            <LayoutColumn tablet={3} className="u-flex u-items-center">
+                                <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
+                            </LayoutColumn>
+                        </LayoutColumnContainer>
+
+                    }
+
                 </>
             }
             {(isClient && isGroupAdmin && (mode === crud.UPDATE || mode === crud.CREATE)) &&
@@ -105,7 +133,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                                     <h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2>
                                 </LayoutColumn>
                                 <LayoutColumn tablet={6} className="tablet:u-flex u-items-center">
-                                    <button className={generatedClasses.previewButton}>Preview page</button>
+                                    <button className={generatedClasses.previewButton} onClick={handlePreviewUpdate}>Preview page</button>
                                     <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
                                 </LayoutColumn>
                             </LayoutColumnContainer>
@@ -121,9 +149,10 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
             }
             <ContentBlockManager
                 blocks={contentBlocks}
+                templateBlocks={contentTemplate}
                 currentState={mode}
                 stateChangeAction={handleContentBlockManagerStateChange}
-                createBlockAction={handleAddBlock}
+                createBlockAction={handleCreateBlock}
                 className="u-mt-14" />
         </LayoutColumn>
 

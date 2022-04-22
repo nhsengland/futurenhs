@@ -9,7 +9,9 @@ import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
 import { User } from '@appTypes/user'
 import { selectUser, selectParam } from '@selectors/context'
-import { getGroupHomePageContentBlocks } from '@services/getGroupHomePageContentBlocks'
+import { getGroupHomePageCmsContentIds } from '@services/getGroupHomePageCmsContentIds'
+import { getCmsPageTemplate } from '@services/getCmsPageTemplate'
+import { getCmsPageContent } from '@services/getCmsPageContent'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
 import { GroupHomeTemplate } from '@components/_pageTemplates/GroupHomeTemplate'
@@ -46,12 +48,19 @@ export const getServerSideProps: GetServerSideProps = withUser({
                      * Get data from services
                      */
                     try {
-                        const [contentBlocks] =
+
+                        const templateId: string = '0b955a4a-9e26-43e8-bb4b-51010e264d64';
+                        const groupHomePageCmsContentIds = await getGroupHomePageCmsContentIds({ user, groupId });
+                        const pageId: string = groupHomePageCmsContentIds.data.contentRootId;
+
+                        const [contentBlocks, contentTemplate] =
                             await Promise.all([
-                                getGroupHomePageContentBlocks({ user, groupId })
+                                getCmsPageContent({ user, pageId }),
+                                getCmsPageTemplate({ user, templateId })
                             ])
 
                         props.contentBlocks = contentBlocks.data
+                        props.contentTemplate = contentTemplate.data
 
                     } catch (error) {
                         return handleSSRErrorProps({ props, error })
