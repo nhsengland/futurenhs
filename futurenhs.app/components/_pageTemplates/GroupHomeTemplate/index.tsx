@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName';
 import { actions as actionConstants } from '@constants/actions';
 import { themes } from '@constants/themes';
-import { crud } from '@constants/crud';
+import { cprud } from '@constants/cprud';
 import { selectTheme } from '@selectors/themes';
 import { ContentBlockManager } from '@components/ContentBlockManager';
 import { RichText } from '@components/RichText';
@@ -15,19 +15,25 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { Theme } from '@appTypes/theme';
 
 import { Props } from './interfaces';
+import { CmsContentBlock } from '@appTypes/contentBlock';
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     actions,
     contentBlocks,
+    contentTemplate,
     themeId
 }) => {
 
     const router = useRouter();
 
-    const [mode, setMode] = useState(Boolean(router.query.edit) ? crud.UPDATE : crud.READ);
+    const [mode, setMode] = useState(Boolean(router.query.edit) ? cprud.UPDATE : cprud.READ);
+    const [blocks, setBlocks] = useState(contentBlocks);
+    const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
     const isGroupAdmin: boolean = actions.includes(actionConstants.GROUPS_EDIT) || actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT);
+    const shouldRenderEditor: boolean = isClient && isGroupAdmin;
+
     const { background }: Theme = selectTheme(themes, themeId);
 
     const generatedClasses: any = {
@@ -35,28 +41,50 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         adminCallOut: classNames('nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full', `u-border-l-theme-${background}`),
         adminCallOutText: classNames('nhsuk-heading-m u-text-bold'),
         adminCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0'),
-        previewButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-mt-4 u-drop-shadow tablet:u-mt-0 tablet:u-mr-5'),
-        publishButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0')
+        previewButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-mt-4 u-drop-shadow tablet:u-mt-0 tablet:u-ml-5'),
+        publishButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0 tablet:u-ml-5')
     };
 
-    const handleSetToEditMode = (): void => {
-        setMode(crud.UPDATE);
-    }
-
-    const handleContentBlockManagerStateChange = (state: crud) => {
+    const handleContentBlockManagerStateChange = (state: cprud) => {
         setMode(state)
     }
 
-    const handleAddBlock = (blockTypeId: string): void => {
-        // TODO - call service to add block
+    const handleDiscardChanges = (): void => {
+        setBlocks([...blocks]);
+        setHasEditedBlocks(false);
+    }
+
+    const handleEnterEditMode = (): void => {
+        setMode(cprud.UPDATE);
+    }
+
+    const handleLeaveEditMode = (): void => {
+        setMode(cprud.READ);
+    }
+
+    const handlePreviewUpdate = (): void => {
+        setMode(cprud.PREVIEW);
     }
 
     const handlePublishUpdate = (): void => {
-        setMode(crud.READ);
+        setMode(cprud.READ);
     }
 
+    const handleBlocksChange = (updatedBlocks: Array<CmsContentBlock>) => {
+
+        const hasBlockContentChanged: boolean = JSON.stringify(updatedBlocks) !== JSON.stringify(blocks);
+
+        setHasEditedBlocks(hasBlockContentChanged);
+    }
+
+    const LeaveEditButton: () => JSX.Element = () => <button className={generatedClasses.adminCallOutButton} onClick={handleLeaveEditMode}>Stop editing page</button>
+    const EnterEditButton: () => JSX.Element = () => <button className={generatedClasses.adminCallOutButton} onClick={handleEnterEditMode}>Edit page</button>
+    const DiscardChangesButton: () => JSX.Element = () => <button className={generatedClasses.adminCallOutButton} onClick={handleDiscardChanges}>Discard changes</button>
+    const PreviewButton: () => JSX.Element = () => <button className={generatedClasses.previewButton} onClick={handlePreviewUpdate}>Preview page</button>
+    const PublishButton: () => JSX.Element = () => <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
+
     useDynamicElementClassName({
-        elementSelector: (mode === crud.CREATE || mode === crud.UPDATE) ? 'main' : null,
+        elementSelector: (mode === cprud.CREATE || mode === cprud.UPDATE) ? 'main' : null,
         addClass: 'u-bg-theme-1',
         removeClass: 'u-bg-theme-3'
     });
@@ -67,6 +95,12 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
     }, []);
 
+    useEffect(() => {
+
+        setBlocks(contentBlocks);
+
+    }, [contentBlocks])
+
     return (
 
         <LayoutColumn tablet={12} className={generatedClasses.wrapper}>
@@ -76,23 +110,34 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                     body: 'JavaScript must be enabled in your browser to manage this page'
                 }} />
             }
-            {(isClient && isGroupAdmin && mode === crud.READ) &&
-                <>
-                    <LayoutColumnContainer>
-                        <LayoutColumn tablet={9}>
-                            <div className={generatedClasses.adminCallOut}>
-                                <p className={generatedClasses.adminCallOutText}>You are a Group Admin of this page. Please click edit to switch to editing mode.</p>
-                            </div>
-                        </LayoutColumn>
-                        <LayoutColumn tablet={3} className="u-flex u-items-center">
-                            <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-                </>
+            {(shouldRenderEditor && mode === cprud.READ) &&
+                <LayoutColumnContainer>
+                    <LayoutColumn tablet={9}>
+                        <div className={generatedClasses.adminCallOut}>
+                            <p className={generatedClasses.adminCallOutText}>You are a Group Admin of this page. Please click edit to switch to editing mode.</p>
+                        </div>
+                    </LayoutColumn>
+                    <LayoutColumn tablet={3} className="u-flex u-items-center">
+                        <EnterEditButton />
+                    </LayoutColumn>
+                </LayoutColumnContainer>
             }
-            {(isClient && isGroupAdmin && (mode === crud.UPDATE || mode === crud.CREATE)) &&
+            {(shouldRenderEditor && mode === cprud.PREVIEW) &&
+                <LayoutColumnContainer>
+                    <LayoutColumn tablet={6}>
+                        <div className={generatedClasses.adminCallOut}>
+                            <p className={generatedClasses.adminCallOutText}>You are previewing the group homepage in editing mode.</p>
+                        </div>
+                    </LayoutColumn>
+                    <LayoutColumn tablet={6} className="u-flex u-items-center">
+                        <EnterEditButton />
+                        <PublishButton />
+                    </LayoutColumn>
+                </LayoutColumnContainer>
+            }
+            {(shouldRenderEditor && (mode === cprud.UPDATE || mode === cprud.CREATE)) &&
                 <>
-                    {mode === crud.CREATE
+                    {mode === cprud.CREATE
 
                         ? <>
                             <h2 className="nhsuk-heading-xl u-mb-8">Add content block</h2>
@@ -101,12 +146,22 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
                         : <div className={generatedClasses.adminCallOut}>
                             <LayoutColumnContainer className="u-mb-6">
-                                <LayoutColumn tablet={6}>
+                                <LayoutColumn tablet={5}>
                                     <h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2>
                                 </LayoutColumn>
-                                <LayoutColumn tablet={6} className="tablet:u-flex u-items-center">
-                                    <button className={generatedClasses.previewButton}>Preview page</button>
-                                    <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
+                                <LayoutColumn tablet={7} className="tablet:u-flex u-items-center">
+                                    {!hasEditedBlocks && 
+                                        <>
+                                            <LeaveEditButton />
+                                        </>                                  
+                                    }
+                                    {hasEditedBlocks && 
+                                        <>
+                                            <DiscardChangesButton />
+                                            <PreviewButton />
+                                            <PublishButton />
+                                        </>                                  
+                                    }
                                 </LayoutColumn>
                             </LayoutColumnContainer>
                             <RichText
@@ -120,10 +175,11 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 </>
             }
             <ContentBlockManager
-                blocks={contentBlocks}
+                blocks={blocks}
+                blocksTemplate={contentTemplate}
                 currentState={mode}
+                blocksChangeAction={handleBlocksChange}
                 stateChangeAction={handleContentBlockManagerStateChange}
-                createBlockAction={handleAddBlock}
                 className="u-mt-14" />
         </LayoutColumn>
 

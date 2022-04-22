@@ -1,7 +1,9 @@
 export const enum services {
+    GET_CMS_PAGE_TEMPLATE = 'getCmsPageTemplate',
+    GET_CMS_PAGE_CONTENT = 'getCmsPageContent',
     GET_GROUPS = 'getGroups',
     GET_GROUP = 'getGroup',
-    GET_GROUP_HOME_PAGE_CONTENT = 'getGroupHomePageContent',
+    GET_GROUP_HOME_PAGE_CMS_CONTENT_IDS = 'getGroupHomePageCmsContentIds',
     GET_GROUP_ACTIONS = 'getGroupActions',
     GET_GROUP_DISCUSSIONS = 'getGroupDiscussions',
     GET_GROUP_DISCUSSION = 'getGroupDiscussion',
