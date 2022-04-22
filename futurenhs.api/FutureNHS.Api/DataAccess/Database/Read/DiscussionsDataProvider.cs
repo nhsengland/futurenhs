@@ -67,7 +67,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          lastCommentUser.Id = latestComment.CreatedBy
 
                     WHERE       groups.Slug = @Slug
-                    AND         groups.IsDeleted = 0       
+                    AND         groups.IsDeleted = 0    
+                    AND         discussion.IsDeleted = 0
                     ORDER BY    discussion.IsSticky DESC, discussion.CreatedAtUTC DESC
 
                     OFFSET      @Offset ROWS
@@ -79,6 +80,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					JOIN        [Group] groups
                     ON          groups.Id = discussion.Group_Id
 					WHERE       groups.Slug = @Slug
+                    AND         discussion.IsDeleted = 0
                     AND         groups.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
@@ -145,6 +147,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          lastCommentUser.Id = latestComment.CreatedBy
                     
                     WHERE       discussion.Entity_Id = @Id 
+                    AND         discussion.IsDeleted = 0
                     AND         groups.Slug = @Slug
                     AND         groups.IsDeleted = 0;";
 
