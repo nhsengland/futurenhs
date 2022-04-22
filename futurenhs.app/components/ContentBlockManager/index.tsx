@@ -7,8 +7,14 @@ import { ContentBlock } from '@components/ContentBlock'
 
 import { Props } from './interfaces'
 
+function arraymove(arr, fromIndex, toIndex) {
+    var element = arr[fromIndex];
+    arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, element);
+}
+
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
-    blocks,
+    blocks: sourceBlocks,
     templateBlocks,
     currentState = crud.READ,
     stateChangeAction,
@@ -17,6 +23,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 }) => {
 
     const [mode, setMode] = useState(currentState);
+    const [blocks, setBlocks] = useState(sourceBlocks);
 
     const hasTemplateBlocks: boolean = templateBlocks?.length > 0;
     const hasBlocks: boolean = blocks?.length > 0;
@@ -35,6 +42,36 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         handleSetToUpdateMode();
     }
 
+    const handleDeleteBlock = (index: number) => {
+
+        const updatedBlocks = [...blocks];
+
+        updatedBlocks.splice(index, 1);
+
+        setBlocks(updatedBlocks);
+
+    }
+
+    const handleMoveBlockPrevious = (currentIndex: number) => {
+
+        const updatedBlocks = [...blocks];
+
+        arraymove(updatedBlocks, currentIndex, currentIndex - 1);
+
+        setBlocks(updatedBlocks);
+
+    }
+
+    const handleMoveBlockNext = (currentIndex: number) => {
+
+        const updatedBlocks = [...blocks];
+
+        arraymove(updatedBlocks, currentIndex, currentIndex + 1);
+
+        setBlocks(updatedBlocks);
+
+    }
+
     const handleSetToCreateMode = (): void => {
         setMode(crud.CREATE);
         stateChangeAction?.(crud.CREATE)
@@ -51,9 +88,15 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     }, [currentState]);
 
+    useEffect(() => {
+
+        setBlocks(sourceBlocks);
+
+    }, [sourceBlocks]);
+
     return (
         <div className={generatedClasses.wrapper}>
-            {(mode === crud.CREATE) && (
+            {(mode === crud.CREATE && hasTemplateBlocks) && (
                 <>
                     {hasTemplateBlocks &&
                         <ul className="u-list-none u-p-0">
@@ -68,7 +111,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                         <ContentBlock
                                             instanceId={null}
                                             typeId={typeId}
-                                            isEditable={true}
+                                            isTemplate={true}
                                             text={{
                                                 name: typeName
                                             }}
@@ -109,11 +152,14 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                                     <li key={index}>
                                         <ContentBlock
-                                            instanceId={instanceId}
+                                            instanceId={index}
                                             typeId={typeId}
                                             isEditable={isEditable}
                                             shouldRenderMovePrevious={shouldRenderMovePrevious}
                                             shouldRenderMoveNext={shouldRenderMoveNext}
+                                            movePreviousAction={handleMoveBlockPrevious}
+                                            moveNextAction={handleMoveBlockNext}
+                                            deleteAction={handleDeleteBlock}
                                             text={{
                                                 name: typeName
                                             }}>
@@ -128,7 +174,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                         </ul>
                     }
-                    {mode === crud.UPDATE &&
+                    {(mode === crud.UPDATE && hasTemplateBlocks) &&
                         <div className={generatedClasses.addBlock}>
                             <div className={generatedClasses.blockBody}>
                                 <button

@@ -59,16 +59,18 @@ export const getCmsPageTemplate = async (
         )
     }
 
-    const template = apiData.data?.find((template) => template.system.id === templateId);
+    const template = apiData.data?.find((template) => template.item.id === templateId);
+
+    console.log(template.content.blocks);
     
     serviceResponse.headers = headers;
-    serviceResponse.data = template.fields.blocks.map((block) => {
+    serviceResponse.data = template.content.blocks.map((block) => {
 
         return {
             instanceId: null,
-            typeId: block.system.contentType,
-            typeName: block.system.name,
-            fields: block.fields         
+            typeId: block.item.contentType,
+            typeName: block.item.name,
+            fields: block.content         
         } as ContentBlock
 
     });

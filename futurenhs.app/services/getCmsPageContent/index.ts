@@ -59,13 +59,13 @@ export const getCmsPageContent = async (
     }
 
     serviceResponse.headers = headers
-    serviceResponse.data = apiData?.data?.fields?.pageContent?.fields.map((field) => {
+    serviceResponse.data = apiData?.data?.content?.pageContent?.blocks?.map((block) => {
 
         return {
-            instanceId: field.system.id,
-            typeId: field.system.contentType,
-            typeName: field.system.name,
-            fields: field.fields         
+            instanceId: block.item.id,
+            typeId: block.item.contentType,
+            typeName: block.item.name,
+            fields: block.content         
         } as ContentBlock
 
     });
