@@ -8,7 +8,7 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { ContentBlock } from '@appTypes/contentBlock';
+import { CmsContentBlock } from '@appTypes/contentBlock';
 
 declare type Options = {
     user: User;
@@ -24,7 +24,7 @@ export const getCmsPageTemplate = async (
     { user, templateId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
-    const serviceResponse: ServiceResponse<Array<ContentBlock>> = {
+    const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
         data: null,
     }
 
@@ -60,20 +60,9 @@ export const getCmsPageTemplate = async (
     }
 
     const template = apiData.data?.find((template) => template.item.id === templateId);
-
-    console.log(template.content.blocks);
     
     serviceResponse.headers = headers;
-    serviceResponse.data = template.content.blocks.map((block) => {
-
-        return {
-            instanceId: null,
-            typeId: block.item.contentType,
-            typeName: block.item.name,
-            fields: block.content         
-        } as ContentBlock
-
-    });
+    serviceResponse.data = template.content.blocks;
 
     return serviceResponse
 }

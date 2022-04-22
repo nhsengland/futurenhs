@@ -1,6 +1,8 @@
-export interface ContentBlock {
-    instanceId: string;
-    typeId: string;
-    typeName: string;
-    fields: Record<string, string>;
+export interface CmsContentBlock {
+    item: {
+        id: string;
+        name: string;
+        contentType: string;
+    };
+    content: Record<string, any>;
 }

@@ -1,22 +1,18 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames'
 
-import { crud } from '@constants/crud'
+import { moveArrayItem, deleteArrayItem } from '@helpers/util/data'
+import { cprud } from '@constants/cprud'
 import { SVGIcon } from '@components/SVGIcon'
 import { ContentBlock } from '@components/ContentBlock'
 
 import { Props } from './interfaces'
 
-function arraymove(arr, fromIndex, toIndex) {
-    var element = arr[fromIndex];
-    arr.splice(fromIndex, 1);
-    arr.splice(toIndex, 0, element);
-}
-
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
     blocks: sourceBlocks,
-    templateBlocks,
-    currentState = crud.READ,
+    blocksTemplate,
+    currentState = cprud.READ,
+    blocksChangeAction,
     stateChangeAction,
     createBlockAction,
     className,
@@ -25,9 +21,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const [mode, setMode] = useState(currentState);
     const [blocks, setBlocks] = useState(sourceBlocks);
 
-    const hasTemplateBlocks: boolean = templateBlocks?.length > 0;
+    const hasTemplateBlocks: boolean = blocksTemplate?.length > 0;
     const hasBlocks: boolean = blocks?.length > 0;
-    const isEditable: boolean = mode !== crud.READ;
+    const isEditable: boolean = mode !== cprud.READ && mode !== cprud.PREVIEW;
 
     const generatedClasses: any = {
         wrapper: classNames(className),
@@ -37,49 +33,54 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         blockBody: classNames('c-page-manager-block_body'),
     }
 
-    const handleCreateBlock = (blockTypeId?: string): void => {
-        createBlockAction?.(blockTypeId);
+    const handleCreateBlock = (blockTemplateIndex?: string): void => {
+
+        const updatedBlocks = [...blocks];
+        const blockTemplate = blocksTemplate[blockTemplateIndex];
+
+        updatedBlocks.push(blockTemplate)
+
         handleSetToUpdateMode();
+        setBlocks(updatedBlocks);
+        blocksChangeAction(updatedBlocks);
+
     }
 
     const handleDeleteBlock = (index: number) => {
 
-        const updatedBlocks = [...blocks];
-
-        updatedBlocks.splice(index, 1);
+        const updatedBlocks = deleteArrayItem(blocks, index);
 
         setBlocks(updatedBlocks);
+        blocksChangeAction(updatedBlocks);
 
     }
 
     const handleMoveBlockPrevious = (currentIndex: number) => {
 
-        const updatedBlocks = [...blocks];
-
-        arraymove(updatedBlocks, currentIndex, currentIndex - 1);
+        const updatedBlocks = moveArrayItem(blocks, currentIndex, currentIndex - 1);
 
         setBlocks(updatedBlocks);
+        blocksChangeAction(updatedBlocks);
 
     }
 
     const handleMoveBlockNext = (currentIndex: number) => {
 
-        const updatedBlocks = [...blocks];
-
-        arraymove(updatedBlocks, currentIndex, currentIndex + 1);
+        const updatedBlocks = moveArrayItem(blocks, currentIndex, currentIndex + 1);
 
         setBlocks(updatedBlocks);
+        blocksChangeAction(updatedBlocks);
 
     }
 
     const handleSetToCreateMode = (): void => {
-        setMode(crud.CREATE);
-        stateChangeAction?.(crud.CREATE)
+        setMode(cprud.CREATE);
+        stateChangeAction?.(cprud.CREATE)
     }
 
     const handleSetToUpdateMode = (): void => {
-        setMode(crud.UPDATE);
-        stateChangeAction?.(crud.UPDATE)
+        setMode(cprud.UPDATE);
+        stateChangeAction?.(cprud.UPDATE)
     }
 
     useEffect(() => {
@@ -96,24 +97,23 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     return (
         <div className={generatedClasses.wrapper}>
-            {(mode === crud.CREATE && hasTemplateBlocks) && (
+            {(mode === cprud.CREATE && hasTemplateBlocks) && (
                 <>
                     {hasTemplateBlocks &&
                         <ul className="u-list-none u-p-0">
-                            {templateBlocks?.map(({
-                                typeId,
-                                typeName
+                            {blocksTemplate?.map(({
+                                item
                             }, index: number) => {
 
                                 return (
 
-                                    <li key={index}>
+                                    <li key={index} className="u-mb-10">
                                         <ContentBlock
-                                            instanceId={null}
-                                            typeId={typeId}
+                                            instanceId={index}
+                                            typeId={item.contentType}
                                             isTemplate={true}
                                             text={{
-                                                name: typeName
+                                                name: item.name
                                             }}
                                             createAction={handleCreateBlock}>
                                                 TODO: BLOCK CONTENT
@@ -135,14 +135,12 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     </button>
                 </>
             )}
-            {(mode === crud.UPDATE || mode === crud.READ) && (
+            {(mode === cprud.UPDATE || mode === cprud.READ || mode === cprud.PREVIEW) && (
                 <>
                     {hasBlocks &&
                         <ul className="u-list-none u-p-0">
                             {blocks?.map(({
-                                instanceId,
-                                typeId,
-                                typeName
+                                item
                             }, index: number) => {
 
                                 const shouldRenderMovePrevious: boolean = index > 0;
@@ -150,10 +148,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                                 return (
 
-                                    <li key={index}>
+                                    <li key={index} className="u-mb-10">
                                         <ContentBlock
                                             instanceId={index}
-                                            typeId={typeId}
+                                            typeId={item.contentType}
                                             isEditable={isEditable}
                                             shouldRenderMovePrevious={shouldRenderMovePrevious}
                                             shouldRenderMoveNext={shouldRenderMoveNext}
@@ -161,7 +159,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                             moveNextAction={handleMoveBlockNext}
                                             deleteAction={handleDeleteBlock}
                                             text={{
-                                                name: typeName
+                                                name: item.name
                                             }}>
                                                 TODO: BLOCK CONTENT
                                         </ContentBlock>
@@ -174,7 +172,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                         </ul>
                     }
-                    {(mode === crud.UPDATE && hasTemplateBlocks) &&
+                    {(mode === cprud.UPDATE && hasTemplateBlocks) &&
                         <div className={generatedClasses.addBlock}>
                             <div className={generatedClasses.blockBody}>
                                 <button
