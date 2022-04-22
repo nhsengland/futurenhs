@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useState } from 'react'
 import classNames from 'classnames'
 
 import { themes } from '@constants/themes'
 import { selectTheme } from '@selectors/themes'
 import { RichText } from '@components/RichText'
 import { SVGIcon } from '@components/SVGIcon'
+import { Dialog } from '@components/Dialog'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { Theme } from '@appTypes/theme'
@@ -16,6 +16,7 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
     typeId,
     instanceId,
     isEditable,
+    isTemplate,
     shouldRenderMovePrevious,
     shouldRenderMoveNext,
     createAction,
@@ -27,83 +28,69 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
     className,
 }) => {
 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
     const { name } = text ?? {};
 
-    const shouldRenderHeader: boolean = !instanceId || isEditable;
+    const isPublished: boolean = !isEditable && !isTemplate;
 
     const generatedClasses: any = {
         wrapper: classNames('c-content-block', {
-            ['c-content-block--editable']: isEditable
+            ['c-content-block--editable']: !isPublished
         }, className),
         header: classNames('c-content-block_header'),
         headerButton: classNames('c-content-block_header-button', 'o-link-button', 'u-ml-10'),
         headerButtonIcon: classNames('u-w-6', 'u-h-6', 'u-mr-3'),
         body: classNames('c-content-block_body', {
-            ['c-content-block_body--editable']: isEditable
+            ['c-content-block_body--editable']: !isPublished
         }),
     }
 
-    const handleCreate = (event: any): void => {
+    const handleCreate = (event: any): void => createAction?.(instanceId)
+    const handleMovePrevious = (event: any): void => movePreviousAction?.(instanceId)
+    const handleMoveNext = (event: any): void => moveNextAction?.(instanceId)
+    const handleDeleteRequest = (event: any): void => setIsDeleteModalOpen(true)
+    const handleDeleteCancel = (index: number) => setIsDeleteModalOpen(false)
+    const handleDeleteConfirm = (index: number) => {
 
-        event.preventDefault();
-
-        createAction?.(typeId)
-    }
-
-    const handleMovePrevious = (event: any): void => {
-
-        event.preventDefault();
-
-        movePreviousAction?.(instanceId)
-    }
-
-    const handleMoveNext = (event: any): void => {
-
-        event.preventDefault();
-
-        moveNextAction?.(instanceId)
-    }
-
-    const handleDelete = (event: any): void => {
-
-        event.preventDefault();
-
+        setIsDeleteModalOpen(false);
         deleteAction?.(instanceId)
+
     }
 
     return (
 
         <div className={generatedClasses.wrapper}>
-            {shouldRenderHeader &&
+            {!isPublished &&
                 <header className={generatedClasses.header}>
                     <span>{name}</span>
                     <div className="u-flex">
-                        {instanceId
-                        
-                            ?   <>
-                                    {shouldRenderMovePrevious &&
-                                        <button onClick={handleMovePrevious} className={generatedClasses.headerButton}>
-                                            <SVGIcon name="icon-chevron-up" className={generatedClasses.headerButtonIcon} />
-                                            <span>Move block up</span>
-                                        </button>
-                                    }
-                                    {shouldRenderMoveNext &&
-                                        <button onClick={handleMoveNext} className={generatedClasses.headerButton}>
-                                            <SVGIcon name="icon-chevron-down" className={generatedClasses.headerButtonIcon} />
-                                            <span>Move block down</span>
-                                        </button>
-                                    }
-                                    <button onClick={handleDelete} className={generatedClasses.headerButton}>
-                                        <SVGIcon name="icon-delete" className={generatedClasses.headerButtonIcon} />
-                                        <span>Delete</span>
+                        {!isTemplate
+
+                            ? <>
+                                {shouldRenderMovePrevious &&
+                                    <button type="button" onClick={handleMovePrevious} className={generatedClasses.headerButton}>
+                                        <SVGIcon name="icon-chevron-up" className={generatedClasses.headerButtonIcon} />
+                                        <span>Move block up</span>
                                     </button>
-                                </>
-    
-                            :   <button onClick={handleCreate} className={generatedClasses.headerButton}>
-                                    <SVGIcon name="icon-plus-circle" className={generatedClasses.headerButtonIcon} />
-                                    <span>Add</span>
+                                }
+                                {shouldRenderMoveNext &&
+                                    <button type="button" onClick={handleMoveNext} className={generatedClasses.headerButton}>
+                                        <SVGIcon name="icon-chevron-down" className={generatedClasses.headerButtonIcon} />
+                                        <span>Move block down</span>
+                                    </button>
+                                }
+                                <button type="button" onClick={handleDeleteRequest} className={generatedClasses.headerButton}>
+                                    <SVGIcon name="icon-delete" className={generatedClasses.headerButtonIcon} />
+                                    <span>Delete</span>
                                 </button>
-    
+                            </>
+
+                            : <button type="button" onClick={handleCreate} className={generatedClasses.headerButton}>
+                                <SVGIcon name="icon-plus-circle" className={generatedClasses.headerButtonIcon} />
+                                <span>Add</span>
+                            </button>
+
                         }
                     </div>
                 </header>
@@ -111,6 +98,23 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
             <div className={generatedClasses.body}>
                 {children}
             </div>
+            <Dialog
+                id="dialog-discard-cms-block"
+                isOpen={isDeleteModalOpen}
+                text={{
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Yes, discard',
+                }}
+                cancelAction={handleDeleteCancel}
+                confirmAction={handleDeleteConfirm}
+            >
+                <h3>Entered Data will be lost</h3>
+                <p className="u-text-bold">
+                    Any entered details will be
+                    discarded. Are you sure you wish to
+                    proceed?
+                </p>
+            </Dialog>
         </div>
 
     )

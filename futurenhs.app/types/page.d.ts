@@ -24,6 +24,7 @@ export interface Page {
     errors?: Array<Record<string>>;
     contentText?: GenericPageTextContent;
     contentBlocks?: Array<ContentBlock>;
+    contentTemplate?: Array<ContentBlock>;
     user?: User;
     className?: string;
     pageTitle?: string;
