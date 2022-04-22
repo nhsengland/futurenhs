@@ -9,6 +9,7 @@ import { Props } from './interfaces'
 
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
     blocks,
+    templateBlocks,
     currentState = crud.READ,
     stateChangeAction,
     createBlockAction,
@@ -17,6 +18,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     const [mode, setMode] = useState(currentState);
 
+    const hasTemplateBlocks: boolean = templateBlocks?.length > 0;
     const hasBlocks: boolean = blocks?.length > 0;
     const isEditable: boolean = mode !== crud.READ;
 
@@ -53,37 +55,35 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         <div className={generatedClasses.wrapper}>
             {(mode === crud.CREATE) && (
                 <>
-                    <ul className="u-list-none u-p-0">
-                        <li>
-                            <ContentBlock
-                                instanceId={null}
-                                typeId='text'
-                                isEditable={true}
-                                text={{
-                                    name: 'Text block'
-                                }}
-                                createAction={handleCreateBlock}>
-                                <h3 className="nhsuk-heading-l">
-                                    Example text block title here
-                                </h3>
-                                <p>
-                                    Here’s an example of a text block and how it
-                                    will look on the platform. Lorem ipsum dolor
-                                    sit amet, consectetur adipiscing elit, sed
-                                    do eiusmod tempor incididunt ut labore et
-                                    dolore magna aliqua. Ut enim ad minim
-                                    veniam, quis nostrud exercitation ullamco
-                                    laboris nisi ut aliquip ex ea commodo
-                                    consequat. Duis aute irure dolor in
-                                    reprehenderit in voluptate velit esse cillum
-                                    dolore eu fugiat nulla pariatur. Excepteur
-                                    sint occaecat cupidatat non proident, sunt
-                                    in culpa qui officia deserunt mollit anim id
-                                    est laborum.
-                                </p>
-                            </ContentBlock>
-                        </li>
-                    </ul>
+                    {hasTemplateBlocks &&
+                        <ul className="u-list-none u-p-0">
+                            {templateBlocks?.map(({
+                                typeId,
+                                typeName
+                            }, index: number) => {
+
+                                return (
+
+                                    <li key={index}>
+                                        <ContentBlock
+                                            instanceId={null}
+                                            typeId={typeId}
+                                            isEditable={true}
+                                            text={{
+                                                name: typeName
+                                            }}
+                                            createAction={handleCreateBlock}>
+                                                TODO: BLOCK CONTENT
+                                        </ContentBlock>
+                                    </li>
+
+
+                                )
+
+                            })}
+
+                        </ul>
+                    }
                     <button
                         onClick={handleSetToUpdateMode}
                         className="c-button c-button-outline u-drop-shadow"
@@ -102,6 +102,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                 typeName
                             }, index: number) => {
 
+                                const shouldRenderMovePrevious: boolean = index > 0;
+                                const shouldRenderMoveNext: boolean = index < blocks.length - 1;
+
                                 return (
 
                                     <li key={index}>
@@ -109,6 +112,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                             instanceId={instanceId}
                                             typeId={typeId}
                                             isEditable={isEditable}
+                                            shouldRenderMovePrevious={shouldRenderMovePrevious}
+                                            shouldRenderMoveNext={shouldRenderMoveNext}
                                             text={{
                                                 name: typeName
                                             }}>
