@@ -16,6 +16,7 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
     typeId,
     instanceId,
     isEditable,
+    isTemplate,
     shouldRenderMovePrevious,
     shouldRenderMoveNext,
     createAction,
@@ -29,17 +30,17 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
 
     const { name } = text ?? {};
 
-    const shouldRenderHeader: boolean = !instanceId || isEditable;
+    const isPublished: boolean = !isEditable && !isTemplate;
 
     const generatedClasses: any = {
         wrapper: classNames('c-content-block', {
-            ['c-content-block--editable']: isEditable
+            ['c-content-block--editable']: !isPublished
         }, className),
         header: classNames('c-content-block_header'),
         headerButton: classNames('c-content-block_header-button', 'o-link-button', 'u-ml-10'),
         headerButtonIcon: classNames('u-w-6', 'u-h-6', 'u-mr-3'),
         body: classNames('c-content-block_body', {
-            ['c-content-block_body--editable']: isEditable
+            ['c-content-block_body--editable']: !isPublished
         }),
     }
 
@@ -74,11 +75,11 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
     return (
 
         <div className={generatedClasses.wrapper}>
-            {shouldRenderHeader &&
+            {!isPublished &&
                 <header className={generatedClasses.header}>
                     <span>{name}</span>
                     <div className="u-flex">
-                        {instanceId
+                        {!isTemplate
                         
                             ?   <>
                                     {shouldRenderMovePrevious &&

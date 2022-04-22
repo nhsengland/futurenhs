@@ -65,6 +65,10 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         setMode(crud.READ);
     }
 
+    const EditButton: () => JSX.Element = () => <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
+    const PreviewButton: () => JSX.Element = () => <button className={generatedClasses.previewButton} onClick={handlePreviewUpdate}>Preview page</button>
+    const PublishButton: () => JSX.Element = () => <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
+
     useDynamicElementClassName({
         elementSelector: (mode === crud.CREATE || mode === crud.UPDATE) ? 'main' : null,
         addClass: 'u-bg-theme-1',
@@ -98,8 +102,8 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                                 </div>
                             </LayoutColumn>
                             <LayoutColumn tablet={6} className="u-flex u-items-center">
-                                <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
-                                <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
+                                <EditButton />
+                                <PublishButton />
                             </LayoutColumn>
                         </LayoutColumnContainer>
 
@@ -110,7 +114,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                                 </div>
                             </LayoutColumn>
                             <LayoutColumn tablet={3} className="u-flex u-items-center">
-                                <button className={generatedClasses.adminCallOutButton} onClick={handleSetToEditMode}>Edit page</button>
+                                <EditButton />
                             </LayoutColumn>
                         </LayoutColumnContainer>
 
@@ -133,8 +137,8 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                                     <h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2>
                                 </LayoutColumn>
                                 <LayoutColumn tablet={6} className="tablet:u-flex u-items-center">
-                                    <button className={generatedClasses.previewButton} onClick={handlePreviewUpdate}>Preview page</button>
-                                    <button className={generatedClasses.publishButton} onClick={handlePublishUpdate}>Publish group page</button>
+                                    <PreviewButton />
+                                    <PublishButton />
                                 </LayoutColumn>
                             </LayoutColumnContainer>
                             <RichText
