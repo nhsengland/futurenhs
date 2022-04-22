@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useState } from 'react'
 import classNames from 'classnames'
 
 import { themes } from '@constants/themes'
 import { selectTheme } from '@selectors/themes'
 import { RichText } from '@components/RichText'
 import { SVGIcon } from '@components/SVGIcon'
+import { Dialog } from '@components/Dialog'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { Theme } from '@appTypes/theme'
@@ -28,6 +28,8 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
     className,
 }) => {
 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
     const { name } = text ?? {};
 
     const isPublished: boolean = !isEditable && !isTemplate;
@@ -44,32 +46,16 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
         }),
     }
 
-    const handleCreate = (event: any): void => {
+    const handleCreate = (event: any): void => createAction?.(instanceId)
+    const handleMovePrevious = (event: any): void => movePreviousAction?.(instanceId)
+    const handleMoveNext = (event: any): void => moveNextAction?.(instanceId)
+    const handleDeleteRequest = (event: any): void => setIsDeleteModalOpen(true)
+    const handleDeleteCancel = (index: number) => setIsDeleteModalOpen(false)
+    const handleDeleteConfirm = (index: number) => {
 
-        event.preventDefault();
-
-        createAction?.(typeId)
-    }
-
-    const handleMovePrevious = (event: any): void => {
-
-        event.preventDefault();
-
-        movePreviousAction?.(instanceId)
-    }
-
-    const handleMoveNext = (event: any): void => {
-
-        event.preventDefault();
-
-        moveNextAction?.(instanceId)
-    }
-
-    const handleDelete = (event: any): void => {
-
-        event.preventDefault();
-
+        setIsDeleteModalOpen(false);
         deleteAction?.(instanceId)
+
     }
 
     return (
@@ -80,31 +66,31 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
                     <span>{name}</span>
                     <div className="u-flex">
                         {!isTemplate
-                        
-                            ?   <>
-                                    {shouldRenderMovePrevious &&
-                                        <button onClick={handleMovePrevious} className={generatedClasses.headerButton}>
-                                            <SVGIcon name="icon-chevron-up" className={generatedClasses.headerButtonIcon} />
-                                            <span>Move block up</span>
-                                        </button>
-                                    }
-                                    {shouldRenderMoveNext &&
-                                        <button onClick={handleMoveNext} className={generatedClasses.headerButton}>
-                                            <SVGIcon name="icon-chevron-down" className={generatedClasses.headerButtonIcon} />
-                                            <span>Move block down</span>
-                                        </button>
-                                    }
-                                    <button onClick={handleDelete} className={generatedClasses.headerButton}>
-                                        <SVGIcon name="icon-delete" className={generatedClasses.headerButtonIcon} />
-                                        <span>Delete</span>
+
+                            ? <>
+                                {shouldRenderMovePrevious &&
+                                    <button type="button" onClick={handleMovePrevious} className={generatedClasses.headerButton}>
+                                        <SVGIcon name="icon-chevron-up" className={generatedClasses.headerButtonIcon} />
+                                        <span>Move block up</span>
                                     </button>
-                                </>
-    
-                            :   <button onClick={handleCreate} className={generatedClasses.headerButton}>
-                                    <SVGIcon name="icon-plus-circle" className={generatedClasses.headerButtonIcon} />
-                                    <span>Add</span>
+                                }
+                                {shouldRenderMoveNext &&
+                                    <button type="button" onClick={handleMoveNext} className={generatedClasses.headerButton}>
+                                        <SVGIcon name="icon-chevron-down" className={generatedClasses.headerButtonIcon} />
+                                        <span>Move block down</span>
+                                    </button>
+                                }
+                                <button type="button" onClick={handleDeleteRequest} className={generatedClasses.headerButton}>
+                                    <SVGIcon name="icon-delete" className={generatedClasses.headerButtonIcon} />
+                                    <span>Delete</span>
                                 </button>
-    
+                            </>
+
+                            : <button type="button" onClick={handleCreate} className={generatedClasses.headerButton}>
+                                <SVGIcon name="icon-plus-circle" className={generatedClasses.headerButtonIcon} />
+                                <span>Add</span>
+                            </button>
+
                         }
                     </div>
                 </header>
@@ -112,6 +98,23 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
             <div className={generatedClasses.body}>
                 {children}
             </div>
+            <Dialog
+                id="dialog-discard-cms-block"
+                isOpen={isDeleteModalOpen}
+                text={{
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Yes, discard',
+                }}
+                cancelAction={handleDeleteCancel}
+                confirmAction={handleDeleteConfirm}
+            >
+                <h3>Entered Data will be lost</h3>
+                <p className="u-text-bold">
+                    Any entered details will be
+                    discarded. Are you sure you wish to
+                    proceed?
+                </p>
+            </Dialog>
         </div>
 
     )

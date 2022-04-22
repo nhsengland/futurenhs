@@ -344,7 +344,20 @@ $button-shadow-size: 4px;
 
 }
 
+%link-button {
+    @extend %clear-button-styles;
+    @extend %link-base;
 
+    &:focus {
+        svg {
+            fill: $nhsuk-focus-text-color;
+        }
+    }
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
 
 %nhsuk-focused-button {
     background-color: $nhsuk-focus-color;
