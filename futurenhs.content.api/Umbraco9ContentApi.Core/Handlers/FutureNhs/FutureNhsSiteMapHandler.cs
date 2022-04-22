@@ -66,15 +66,15 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
 
             foreach (var item in descendants)
             {
-                yield return new SitemapGroupItemModel()
-                {
-                    Name = item.Name,
-                    Title = item.Value("title", fallback: Fallback.ToDefaultValue, defaultValue: "No title."),
-                    Id = item.Key,
-                    ParentId = item.Parent.Key,
-                    Url = item.Url(),
-                    Level = item.Level
-                };
+                yield return new SitemapGroupItemModel(
+                    item.Key,
+                    item.Name,
+                    item.Value("title", fallback: Fallback.ToDefaultValue, defaultValue: "No title."),
+                    item.Parent.Key,
+                    item.CreateDate,
+                    item.UpdateDate,
+                    item.Level
+                    );
             }
         }
     }
