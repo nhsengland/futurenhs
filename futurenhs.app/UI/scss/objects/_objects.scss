@@ -32,7 +32,5 @@
 }
 
 .o-link-button {
-    @extend %clear-button-styles;
-    @extend %link-base;
-    @include small-text;
+    @extend %link-button;
 }
