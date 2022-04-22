@@ -50,51 +50,19 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		// properties
 
 		///<summary>
-		/// Link Text 1: Link text 1
+		/// Link Text
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("linkText1")]
-		public virtual string LinkText1 => this.Value<string>(_publishedValueFallback, "linkText1");
+		[ImplementPropertyType("linkText")]
+		public virtual string LinkText => this.Value<string>(_publishedValueFallback, "linkText");
 
 		///<summary>
-		/// Link Text 2: Link text 2
+		/// Url
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("linkText2")]
-		public virtual string LinkText2 => this.Value<string>(_publishedValueFallback, "linkText2");
-
-		///<summary>
-		/// Link Text 3: Link text 3
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("linkText3")]
-		public virtual string LinkText3 => this.Value<string>(_publishedValueFallback, "linkText3");
-
-		///<summary>
-		/// Link Url 1: Link URL 1
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("linkUrl1")]
-		public virtual string LinkUrl1 => this.Value<string>(_publishedValueFallback, "linkUrl1");
-
-		///<summary>
-		/// Link Url 2: Link URL 2
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("linkUrl2")]
-		public virtual string LinkUrl2 => this.Value<string>(_publishedValueFallback, "linkUrl2");
-
-		///<summary>
-		/// Link Url 3: Link URL 3
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("linkUrl3")]
-		public virtual string LinkUrl3 => this.Value<string>(_publishedValueFallback, "linkUrl3");
+		[ImplementPropertyType("url")]
+		public virtual string Url => this.Value<string>(_publishedValueFallback, "url");
 	}
 }
