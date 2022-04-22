@@ -1,6 +1,4 @@
-﻿
-
-namespace Umbraco9ContentApi.Core.Models
+﻿namespace Umbraco9ContentApi.Core.Models
 {
     public class ContentModel
     {
