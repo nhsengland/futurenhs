@@ -39,7 +39,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                 @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS NameText, g.Subtitle AS StrapLineText, 
 				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
-				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id) AS DiscussionCount,
+				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id AND discussion.IsDeleted = 0) AS DiscussionCount,
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
 				FROM [Group] g
                 JOIN GroupUser groupUser ON groupUser.Group_Id = g.Id
@@ -94,7 +94,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                 @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS NameText, g.Subtitle AS StrapLineText, 
 				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
-				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id) AS DiscussionCount,
+				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id AND discussion.IsDeleted = 0) AS DiscussionCount,
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
 				FROM [Group] g    
                 LEFT JOIN Image image ON image.Id = g.ImageId  
@@ -150,7 +150,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                 @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS NameText, g.Subtitle AS StrapLineText,
 				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
-				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id) AS DiscussionCount,
+				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id AND discussion.IsDeleted = 0) AS DiscussionCount,
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType,
                 owner.Id, owner.FirstName + ' ' + owner.Surname AS Name, owner.Slug AS Slug
 				FROM [Group] g
