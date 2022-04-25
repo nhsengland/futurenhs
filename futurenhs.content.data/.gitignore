@@ -1,0 +1,9 @@
+*/bin
+*/obj
+*/Import\ Schema\ Logs
+
+node_modules
+package-lock.json
+
+*/Publish.sql
+*/Report.xml
