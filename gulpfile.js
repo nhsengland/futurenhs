@@ -3,6 +3,7 @@ const { series, parallel } = require('gulp'),
     db = require('./futurenhs.data/gulpfile'),
     api = require('./futurenhs.api/gulpfile'),
 	contentApi = require('./futurenhs.content.api/gulpfile'),
+    contentDb = require('./futurenhs.content.data/gulpfile'),
     app = require('./futurenhs.app/gulpfile');
 
     
@@ -38,6 +39,14 @@ const activateDb = series(db.msbuild, db.deployFutureNHSDatabase);
 const buildAutomationDb = series(db.msbuildAutomation, db.deployAutomationFutureNHSDatabase);
 
 /**
+ * CONTENT DATABASE TASKS
+ */
+
+ const activateContentDb = series(contentDb.msbuild, contentDb.deployFutureNHSContentDatabase);
+
+ const buildContentAutomationDb = series(contentDb.msbuildAutomation, contentDb.deployAutomationFutureNHSContentDatabase);
+
+/**
  * APP TASKS
  */
 
@@ -64,14 +73,15 @@ const watchApp = (done) => {
 /**
  * PLATFORM TASKS
  */
+const acivatecontentdb = series(activateContentDb);
 
-const activate = series(activateDb, buildAutomationDb, activateMvcForum, activateApi, activateContentApi, activateApp);
+const activate = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApi, activateContentApi, activateApp);
 
-const activateNoApp = series(activateDb, buildAutomationDb, activateMvcForum, activateApi, activateContentApi);
+const activateNoApp = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApi, activateContentApi);
 
-const activateNoApi = series(activateDb, buildAutomationDb, activateMvcForum, activateApp, activateContentApi);
+const activateNoApi = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApp, activateContentApi);
 
-const activateNoUmbraco = series(activateDb, buildAutomationDb, activateMvcForum, activateApi, activateApp);
+const activateNoUmbraco = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApi, activateApp);
 
 const deactivate = series(mvcforum.stopSite, api.stopSite, contentApi.stopSite, app.stopSite);
 
@@ -85,6 +95,7 @@ module.exports = {
     activateMvcForum,
     activateDb,
     buildAutomationDb,
+    activateContentDb,
     activateApp,
     deactivate,
     watchApp
