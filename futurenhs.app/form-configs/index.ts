@@ -9,6 +9,7 @@ import { updateGroupMemberForm } from './update-group-member';
 import { inviteUserForm } from './invite-user';
 import { updateSiteMemberForm } from './update-site-user';
 import { updateSiteUserRoleForm } from './update-site-user-role';
+import { contentBlockTextForm } from './content-block-text';
 import { formTypes } from '@constants/forms';
 
 export default {
@@ -23,4 +24,5 @@ export default {
     [formTypes.INVITE_USER]: inviteUserForm,
     [formTypes.UPDATE_SITE_USER]: updateSiteMemberForm,
     [formTypes.UPDATE_SITE_USER_ROLE]: updateSiteUserRoleForm
+    [formTypes.CONTENT_BLOCK_TEXT]: contentBlockTextForm
 }

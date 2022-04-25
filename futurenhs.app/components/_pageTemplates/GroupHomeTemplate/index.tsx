@@ -18,6 +18,8 @@ import { Props } from './interfaces';
 import { CmsContentBlock } from '@appTypes/contentBlock';
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
+    csrfToken,
+    forms,
     actions,
     contentBlocks,
     contentTemplate,
@@ -175,6 +177,8 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 </>
             }
             <ContentBlockManager
+                csrfToken={csrfToken}
+                forms={forms}
                 blocks={blocks}
                 blocksTemplate={contentTemplate}
                 currentState={mode}

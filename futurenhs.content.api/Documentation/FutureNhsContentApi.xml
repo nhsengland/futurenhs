@@ -476,6 +476,11 @@
             The SitemapGroupItemModel for front end website structure.
             </summary>
         </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+        </member>
         <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Name">
             <summary>
             Gets or sets the name.
@@ -491,19 +496,14 @@
             Gets or sets the parent identifier.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Id">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.CreatedAt">
             <summary>
-            Gets or sets the identifier.
+            Gets or sets the created at.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Url">
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.EditedAt">
             <summary>
-            Gets or sets the URL.
-            </summary>
-        </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Date">
-            <summary>
-            Gets or sets the date.
+            Gets or sets the edited at.
             </summary>
         </member>
         <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Level">
