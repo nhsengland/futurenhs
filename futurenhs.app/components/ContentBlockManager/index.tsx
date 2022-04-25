@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames'
 
+import { formTypes } from '@constants/forms'
 import { moveArrayItem, deleteArrayItem } from '@helpers/util/data'
 import { cprud } from '@constants/cprud'
 import { SVGIcon } from '@components/SVGIcon'
+import { Form } from '@components/Form'
 import { ContentBlock } from '@components/ContentBlock'
+import { TextContentBlock } from '@components/_contentBlockComponents/TextContentBlock';
 
 import { Props } from './interfaces'
+import { FormErrors } from '@appTypes/form'
 
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
+    csrfToken,
+    forms,
     blocks: sourceBlocks,
     blocksTemplate,
     currentState = cprud.READ,
@@ -83,6 +89,51 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         stateChangeAction?.(cprud.UPDATE)
     }
 
+    const handleUpdateBlockSubmit = async (): Promise<FormErrors> => {
+
+        return {}
+
+    }
+
+    const renderBlockContent = ({ isEditable, block }): JSX.Element => {
+
+        if (block.item.contentType === 'textBlock') {
+
+            if(isEditable){
+
+                console.log(forms, formTypes.CONTENT_BLOCK_TEXT);
+
+                const formConfig = forms[formTypes.CONTENT_BLOCK_TEXT];
+
+                return (
+
+                    <Form 
+                        csrfToken={csrfToken}
+                        formConfig={formConfig}
+                        text={{
+                            submitButton: 'Save'
+                        }}
+                        submitAction={handleUpdateBlockSubmit} />
+
+                )
+
+            }
+
+            return (
+
+                <TextContentBlock
+                    headingLevel={3}
+                    text={{
+                        heading: block.content.title,
+                        bodyHtml: block.content.mainText
+                    }} />
+
+            )
+
+        }
+
+    }
+
     useEffect(() => {
 
         setMode(currentState);
@@ -101,22 +152,20 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 <>
                     {hasTemplateBlocks &&
                         <ul className="u-list-none u-p-0">
-                            {blocksTemplate?.map(({
-                                item
-                            }, index: number) => {
+                            {blocksTemplate?.map((block, index: number) => {
 
                                 return (
 
                                     <li key={index} className="u-mb-10">
                                         <ContentBlock
                                             instanceId={index}
-                                            typeId={item.contentType}
+                                            typeId={block.item.contentType}
                                             isTemplate={true}
                                             text={{
-                                                name: item.name
+                                                name: block.item.name
                                             }}
                                             createAction={handleCreateBlock}>
-                                                TODO: BLOCK CONTENT
+                                                {renderBlockContent({ block, isEditable: false })}
                                         </ContentBlock>
                                     </li>
 
@@ -139,9 +188,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 <>
                     {hasBlocks &&
                         <ul className="u-list-none u-p-0">
-                            {blocks?.map(({
-                                item
-                            }, index: number) => {
+                            {blocks?.map((block, index: number) => {
 
                                 const shouldRenderMovePrevious: boolean = index > 0;
                                 const shouldRenderMoveNext: boolean = index < blocks.length - 1;
@@ -151,7 +198,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                     <li key={index} className="u-mb-10">
                                         <ContentBlock
                                             instanceId={index}
-                                            typeId={item.contentType}
+                                            typeId={block.item.contentType}
                                             isEditable={isEditable}
                                             shouldRenderMovePrevious={shouldRenderMovePrevious}
                                             shouldRenderMoveNext={shouldRenderMoveNext}
@@ -159,9 +206,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                             moveNextAction={handleMoveBlockNext}
                                             deleteAction={handleDeleteBlock}
                                             text={{
-                                                name: item.name
+                                                name: block.item.name
                                             }}>
-                                                TODO: BLOCK CONTENT
+                                            {renderBlockContent({ block, isEditable: mode === cprud.UPDATE })}
                                         </ContentBlock>
                                     </li>
 
