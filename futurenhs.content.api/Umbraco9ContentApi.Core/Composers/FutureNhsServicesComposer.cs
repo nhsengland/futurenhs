@@ -24,6 +24,7 @@
             // Services
             builder.Services.AddScoped<IFutureNhsContentService, FutureNhsContentService>();
             builder.Services.AddScoped<IFutureNhsSiteMapService, FutureNhsSiteMapService>();
+            builder.Services.AddScoped<IFutureNhsValidationService, FutureNhsValidationService>();
 
             // Handlers
             builder.Services.AddScoped<IFutureNhsContentHandler, FutureNhsContentHandler>();

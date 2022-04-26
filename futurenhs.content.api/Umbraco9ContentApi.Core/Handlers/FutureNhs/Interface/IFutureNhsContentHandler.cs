@@ -22,7 +22,7 @@
         /// <param name="description">The description.</param>
         /// <param name="pageContent">The content.</param>
         /// <returns>True or false.</returns>
-        Task<ApiResponse<string>> UpdateContentAsync(Guid id, string? title, string? description, string? pageContent);
+        Task<ApiResponse<string>> UpdateContentAsync(Guid id, string? title, string? description, PageContentModel? pageContent);
 
         /// <summary>
         /// Publishes the content.

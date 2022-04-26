@@ -127,7 +127,7 @@
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
         public async Task<IActionResult> UpdateContentAsync(Guid contentId, GeneralWebPageUpdateRequest updateRequest)
         {
-            if (string.IsNullOrWhiteSpace(updateRequest.Title) && string.IsNullOrWhiteSpace(updateRequest.Description) && string.IsNullOrWhiteSpace(updateRequest.PageContent))
+            if (string.IsNullOrWhiteSpace(updateRequest.Title) && string.IsNullOrWhiteSpace(updateRequest.Description) && updateRequest.PageContent is null)
             {
                 return BadRequest("No update provided, please check you are sending an update.");
             }

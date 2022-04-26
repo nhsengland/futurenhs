@@ -32,6 +32,6 @@
         /// The content.
         /// </value>
         [ModelBinder(Name = "pageContent")]
-        public string? PageContent { get; set; }
+        public PageContentModel? PageContent { get; set; }
     }
 }
