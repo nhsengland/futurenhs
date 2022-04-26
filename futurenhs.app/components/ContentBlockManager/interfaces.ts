@@ -7,9 +7,10 @@ export interface Props {
     forms: Record<string, FormConfig>;
     blocks: Array<CmsContentBlock>;
     blocksTemplate: Array<CmsContentBlock>;
-    currentState: cprud;
+    initialState?: cprud;
     blocksChangeAction?: (blocks: Array<CmsContentBlock>) => void
     stateChangeAction?: (currentState: cprud) => void
     createBlockAction?: (blockTypeId: string) => void
-    className?: string
+    themeId: string;
+    className?: string;
 }
