@@ -416,7 +416,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 GroupId = groupId
             });
 
-            var groupSiteData = await reader.ReadFirstAsync<GroupSite>();
+            var groupSiteData = await reader.ReadSingleOrDefaultAsync<GroupSite>();
 
             return groupSiteData;
         }
