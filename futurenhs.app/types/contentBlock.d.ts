@@ -1,4 +1,5 @@
 export interface CmsContentBlock {
+    instanceId?: string;
     item: {
         id: string;
         name: string;

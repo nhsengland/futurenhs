@@ -5,7 +5,7 @@ export interface Props {
     formConfig: FormConfig;
     context?: Record<string, any>;
     instanceId?: string;
-    text: {
+    text?: {
         submitButton: string
         cancelButton?: string
     }
@@ -22,4 +22,5 @@ export interface Props {
     cancelButtonClassName?: string
     shouldAddErrorTitle?: boolean
     shouldClearOnSubmitSuccess?: boolean
+    shouldRenderSubmitButton?: boolean;
 }
