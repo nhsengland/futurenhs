@@ -77,7 +77,7 @@
     "@storybook/testing-library": "0.0.10",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.1.1",
+    "@testing-library/react": "^12.1.5",
     "@types/jest": "^27.0.2",
     "@types/react": "^17.0.6",
     "autoprefixer": "^10.3.7",
