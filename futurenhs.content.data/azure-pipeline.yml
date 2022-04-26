@@ -4,7 +4,7 @@ trigger:
     - sprint
  paths:
     include:
-    - futurenhs.data/*
+    - futurenhs.content.data/*
 
 jobs:
 
@@ -16,7 +16,7 @@ jobs:
   steps:
   - task: VSBuild@1
     inputs:
-      solution: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.sln'
+      solution: '$(Build.SourcesDirectory)/futurenhs.content.data/FutureNHS.Content.Data.sln'
     displayName: 'Build dacpac solution'
   - task: SqlAzureDacpacDeployment@1
     inputs:
@@ -28,8 +28,8 @@ jobs:
       SqlPassword: '$(DATABASEPASSWORD)'
       deployType: 'DacpacTask'
       DeploymentAction: 'DeployReport'
-      DacpacFile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.Dacpac'
-      PublishProfile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml'
+      DacpacFile: '$(Build.SourcesDirectory)/futurenhs.content.data/FutureNHS.Content.Data/bin/Debug/FutureNHS.Content.Data.Dacpac'
+      PublishProfile: '$(Build.SourcesDirectory)/futurenhs.content.data/FutureNHS.Content.Data/FutureNHS.Content.Data.publish.xml'
       IpDetectionMethod: 'AutoDetect'
 
   - task: CopyFiles@2
@@ -48,8 +48,8 @@ jobs:
       SqlPassword: '$(DATABASEPASSWORD)'
       deployType: 'DacpacTask'
       DeploymentAction: 'Script'
-      DacpacFile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.Dacpac'
-      PublishProfile: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml'
+      DacpacFile: '$(Build.SourcesDirectory)/futurenhs.content.data/FutureNHS.Content.Data/bin/Debug/FutureNHS.Content.Data.Dacpac'
+      PublishProfile: '$(Build.SourcesDirectory)/futurenhs.content.data/FutureNHS.Content.Data/FutureNHS.Content.Data.publish.xml'
       IpDetectionMethod: 'AutoDetect'
 
   - task: CopyFiles@2
@@ -61,7 +61,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Stage build artifacts'
     inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug'
+      SourceFolder: '$(Build.SourcesDirectory)/futurenhs.content.data/FutureNHS.Content.Data/bin/Debug'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
@@ -69,5 +69,5 @@ jobs:
     displayName: 'Publish artifact'
     inputs:
      targetPath: '$(Build.ArtifactStagingDirectory)'
-     artifact: 'FNHS-Database'
+     artifact: 'FNHS-Content-Database'
      publishLocation: 'pipeline'

@@ -8,7 +8,7 @@ const search = require('../pageObjects/search');
 const contentCard = require('../pageObjects/contentCard');
 
   
-  When(/^I click the '([^"]*)' (button|link|option|tab|nav icon)$/, function (textValue, contentType) {
+  When(/^I click the '([^"]*)' (button|link|option|tab|nav icon|breadcrumb)$/, function (textValue, contentType) {
     genericPage.contentClick(contentType, textValue);
   });
 

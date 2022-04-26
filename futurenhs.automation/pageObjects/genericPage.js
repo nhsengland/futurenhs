@@ -18,6 +18,8 @@ class genericPage extends basePage{
             case "tab" : return `//a[@class="c-tabbed-nav_link"]/span[contains(normalize-space(.), "${textValue}")]`
             case "nav icon" : return `//li/a[@aria-label="${textValue}"]`
             case "label" : return `//label[contains(normalize-space(.), "${textValue}")]`
+            case "breadcrumb" : return `//a[@class="c-breadcrumb_link" and contains(text(), "${textValue}")]`
+            case "fieldset" : return `//fieldset[legend[contains(normalize-space(.), "${textValue}")]]`
            default: throw new Error("need content type to be defined");
        }
     }
@@ -107,11 +109,12 @@ class genericPage extends basePage{
      * @param {string} dialogName - used to determine selector of specific element from an array object
      */
     selectDialogButton(actionType, dialogName){
-        var desiredDialog = dialogName.toLowerCase().replace(' ', '');
+        var desiredDialog = dialogName.toLowerCase().replace(/ /g, '');
         var dialogs = {
             logout:$('//div[@id="dialog-logout"]'),
             leavegroup:$('//div[@id="dialog-leave-group"]'),
-            deletefolder:$('//div[@id="dialog-delete-folder"]')
+            deletefolder:$('//div[@id="dialog-delete-folder"]'),
+            discardinvite:$(`//div[@id="dialog-discard-discussion"]`)
         }
         var chosenDialog = dialogs[desiredDialog]
         browser.waitUntil(() => chosenDialog.isDisplayed() === true,{timeout: 5000, timeoutMsg: `Unable to locate the "${dialogName}" open dialog`});

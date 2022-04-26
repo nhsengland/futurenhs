@@ -27,13 +27,15 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication;
 using FutureNHS.Api.Services.Interfaces;
+using ImageProcessor.Imaging.Colors;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.EventLog;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSwaggerGen();
 
 var settings = builder.Configuration;
 

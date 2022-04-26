@@ -40,7 +40,7 @@ Then(/^the '([^"]*)' (reply|discussion|comment|group|post|search result) card is
 
 //// Generic Content Steps
 
-Then(/^the '([^"]*)' (header|textual value|link|button|option|label) is displayed$/, function (textValue, contentType) {
+Then(/^the '([^"]*)' (header|textual value|link|button|option|label|fieldset) is displayed$/, function (textValue, contentType) {
   genericPage.contentValidation(contentType, textValue);
 });
 
