@@ -11,5 +11,6 @@
     <DatabaseMaximumSize>2</DatabaseMaximumSize>
     <DropObjectsNotInSource>True</DropObjectsNotInSource>
     <BackupDatabaseBeforeChanges>True</BackupDatabaseBeforeChanges>
+    <AllowIncompatiblePlatform>True</AllowIncompatiblePlatform>
   </PropertyGroup>
 </Project>
