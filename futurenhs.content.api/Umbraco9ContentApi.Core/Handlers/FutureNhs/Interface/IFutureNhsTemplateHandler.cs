@@ -6,16 +6,18 @@
     public interface IFutureNhsTemplateHandler
     {
         /// <summary>
-        /// Gets the template.
+        /// Gets the template asynchronous.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>Specified template.</returns>
-        Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid id);
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets all templates.
+        /// Gets all templates asynchronous.
         /// </summary>
-        /// <returns>All templates.</returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllTemplatesAsync();
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllTemplatesAsync(CancellationToken cancellationToken);
     }
 }

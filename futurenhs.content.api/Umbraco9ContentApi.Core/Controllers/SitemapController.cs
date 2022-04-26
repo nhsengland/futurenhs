@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
-using Umbraco9ContentApi.Core.Models;
+using Umbraco9ContentApi.Core.Models.Data;
 
 namespace Umbraco9ContentApi.Core.Controllers
 {
@@ -11,29 +11,30 @@ namespace Umbraco9ContentApi.Core.Controllers
     /// </summary>
     /// <seealso cref="UmbracoApiController" />
     [Route("api/sitemap")]
-    public sealed class SitemapApiController : UmbracoApiController
+    public sealed class SitemapController : UmbracoApiController
     {
         IFutureNhsSiteMapHandler _futureNhsSiteMapHandler;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SitemapApiController"/> class.
+        /// Initializes a new instance of the <see cref="SitemapController"/> class.
         /// </summary>
         /// <param name="futureNhsSiteMapHandler">The future NHS site map handler.</param>
-        public SitemapApiController(IFutureNhsSiteMapHandler futureNhsSiteMapHandler)
+        public SitemapController(IFutureNhsSiteMapHandler futureNhsSiteMapHandler)
         {
             _futureNhsSiteMapHandler = futureNhsSiteMapHandler;
         }
 
         /// <summary>
-        /// Gets the specified page identifier.
+        /// Gets the site map asynchronous.
         /// </summary>
         /// <param name="pageId">The page identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{pageId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SitemapGroupItemModel>))]
-        public async Task<ActionResult> GetSiteMapAsync(Guid pageId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SitemapGroupItemData>))]
+        public async Task<ActionResult> GetSiteMapAsync(Guid pageId, CancellationToken cancellationToken)
         {
-            var response = await _futureNhsSiteMapHandler.GetSitemapGroupItemsAsync(pageId);
+            var response = await _futureNhsSiteMapHandler.GetSitemapGroupItemsAsync(pageId, cancellationToken);
 
             if (response.Succeeded)
             {
