@@ -10,30 +10,35 @@ export const contentBlockTextForm: FormConfig = {
                     name: 'heading',
                     inputType: 'text',
                     text: {
-                        label: 'Enter a block heading',
+                        label: 'Subtitle',
                     },
                     component: 'input',
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
                             type: 'required',
-                            message: 'Enter the block heading',
+                            message: 'Enter the subtitle',
                         },
                         {
                             type: 'maxLength',
-                            maxLength: 200,
-                            message: 'Enter 200 or fewer characters',
+                            maxLength: 255,
+                            message: 'Enter 255 or fewer characters',
                         },
                     ],
                 },
                 {
-                    name: 'body',
+                    name: 'mainText',
                     text: {
-                        label: 'Enter a block body (optional)',
+                        label: 'Main text',
                     },
                     component: 'textArea',
+                    shouldRenderAsRte: true,
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
+                        {
+                            type: 'required',
+                            message: 'Enter the main text',
+                        },
                         {
                             type: 'maxLength',
                             maxLength: 4000,
