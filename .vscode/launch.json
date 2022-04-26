@@ -22,8 +22,6 @@
        "--spec", "${relativeFile}",
        "--baseUrl=http://localhost:5000/",
        "--cucumberOpts.tagExpression='@debug'"
-      // To run a specific file, you can also do:
-      //"--spec ${workspaceRoot}/features/example.feature"
       ]
     }]
   }
