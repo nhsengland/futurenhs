@@ -1,5 +1,5 @@
-﻿using System.Data;
-using FutureNHS.Api.Exceptions;
+﻿using FutureNHS.Api.Exceptions;
+using System.Data;
 using System.Net;
 using System.Text.Json;
 
@@ -56,7 +56,7 @@ namespace FutureNHS.Api.Middleware
                     break;
                 case BadHttpRequestException badHttpRequestException:
                     httpStatusCode = HttpStatusCode.BadRequest;
-                    result = JsonSerializer.Serialize(new {error = badHttpRequestException.Message});
+                    result = JsonSerializer.Serialize(new { error = badHttpRequestException.Message });
                     break;
                 case ValidationException validationException:
                     httpStatusCode = HttpStatusCode.BadRequest;
