@@ -20,7 +20,7 @@
       "args": ["wdio.conf.js",
       // To debug the file in your VS Code current tab:
        "--spec", "${relativeFile}",
-       "--baseUrl=https://futurenhs.cds.co.uk/",
+       "--baseUrl=http://localhost:5000/",
        "--cucumberOpts.tagExpression='@debug'"
       // To run a specific file, you can also do:
       //"--spec ${workspaceRoot}/features/example.feature"
