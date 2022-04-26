@@ -1,6 +1,6 @@
 {
     "cucumberautocomplete.steps" : [
-        "stepDefinitions/*.js"
+        "futurenhs.automation/stepDefinitions/*.js"
     ],
     "cucumberautocomplete.strictGherkinCompletion": false
 }
