@@ -43,11 +43,20 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("page/{pageId:guid}")]
+        [Route("page/{pageId:guid}/published")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
-        public async Task<IActionResult> GetPageAsync(Guid pageId)
+        public async Task<IActionResult> GetPagePublishedAsync(Guid pageId)
         {
-            var page = await _contentDataProvider.GetContentAsync(pageId);
+            var page = await _contentDataProvider.GetContentPublishedAsnyc(pageId);
+            return new JsonResult(page);
+        }
+
+        [HttpGet]
+        [Route("page/{pageId:guid}/draft")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
+        public async Task<IActionResult> GetPageDraftAsync(Guid pageId)
+        {
+            var page = await _contentDataProvider.GetContentDraftAsnyc(pageId);
             return new JsonResult(page);
         }
 
