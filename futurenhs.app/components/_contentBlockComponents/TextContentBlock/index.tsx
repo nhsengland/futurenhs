@@ -14,13 +14,14 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
     const { heading, bodyHtml } = text ?? {};
 
     const generatedClasses: any = {
-        wrapper: classNames(className)
+        wrapper: classNames(className),
+        heading: classNames('nhsuk-heading-l', 'u-mb-14')
     };
 
     return (
         <div id={id} className={generatedClasses.wrapper}>
-            <Heading headingLevel={headingLevel}>{heading}</Heading>
-            <RichText bodyHtml={bodyHtml} />
+            <Heading headingLevel={headingLevel} className={generatedClasses.heading}>{heading}</Heading>
+            <RichText bodyHtml={bodyHtml} wrapperElementType="div" />
         </div>
     )
 }
