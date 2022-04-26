@@ -1149,9 +1149,7 @@
                 Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
 
             var sb = new StringBuilder();
-            sb.AppendFormat("<p>{0}</p>",
-                string.Format(LocalizationService.GetResourceString("Members.ResetPassword.EmailText"),
-                    settings.ForumName));
+            sb.AppendFormat("<p>A request has been made to reset your password. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.</p>");
             sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", url);
 
             var emailToAddress = new MailAddress(user.Email);
