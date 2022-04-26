@@ -2,6 +2,7 @@
 {
     using Interface;
     using Microsoft.Extensions.Configuration;
+    using Newtonsoft.Json;
     using Services.FutureNhs.Interface;
     using Umbraco.Cms.Web.Common.PublishedModels;
     using Umbraco9ContentApi.Core.Models;
@@ -15,17 +16,14 @@
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
+        private readonly IFutureNhsValidationService _futureNhsValidationService;
         private List<string>? errorList = null;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FutureNhsContentHandler" /> class.
-        /// </summary>
-        /// <param name="futureNhsContentService">The future NHS content service.</param>
-        /// <param name="config">The configuration.</param>
-        public FutureNhsContentHandler(IFutureNhsContentService futureNhsContentService, IConfiguration config)
+        public FutureNhsContentHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsValidationService futureNhsValidationService)
         {
-            _futureNhsContentService = futureNhsContentService;
-            _config = config;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _futureNhsContentService = futureNhsContentService ?? throw new ArgumentNullException(nameof(futureNhsContentService));
+            _futureNhsValidationService = futureNhsValidationService ?? throw new ArgumentNullException(nameof(futureNhsValidationService));
         }
 
         /// <inheritdoc />
@@ -54,14 +52,16 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, string pageContent)
+        public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, PageContentModel pageContent)
         {
             ApiResponse<string> response = new ApiResponse<string>();
-            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && string.IsNullOrWhiteSpace(pageContent))
+            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && pageContent is not null)
             {
                 errorList.Add("No data provided.");
                 return response.Failure(errorList, "Failed.");
             }
+
+            _futureNhsValidationService.ValidatePageContentModel(pageContent);
 
             var pageTemplateContent = await _futureNhsContentService.GetAsync(id);
 
@@ -76,9 +76,9 @@
                 pageTemplateContent.SetValue("description", description);
             }
 
-            if (!string.IsNullOrWhiteSpace(pageContent))
+            if (pageContent is null)
             {
-                pageTemplateContent.SetValue("pageContent", pageContent);
+                pageTemplateContent.SetValue("pageContent", JsonConvert.SerializeObject(pageContent));
             }
 
             var result = await _futureNhsContentService.SaveAndPublishAsync(pageTemplateContent);
@@ -90,7 +90,6 @@
 
             errorList.Add("Error occured.");
             return response.Failure(errorList, "Failed.");
-
         }
 
         /// <inheritdoc />
