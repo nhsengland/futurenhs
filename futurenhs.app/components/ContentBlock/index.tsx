@@ -13,7 +13,6 @@ import { Theme } from '@appTypes/theme'
 import { Props } from './interfaces'
 
 export const ContentBlock: (props: Props) => JSX.Element = ({
-    typeId,
     instanceId,
     isEditable,
     isTemplate,

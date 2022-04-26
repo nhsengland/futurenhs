@@ -48,7 +48,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     };
 
     const handleContentBlockManagerStateChange = (state: cprud) => {
-        setMode(state)
+        //setMode(state)
     }
 
     const handleDiscardChanges = (): void => {
@@ -61,15 +61,15 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     }
 
     const handleLeaveEditMode = (): void => {
-        setMode(cprud.READ);
+        //setMode(cprud.READ);
     }
 
     const handlePreviewUpdate = (): void => {
-        setMode(cprud.PREVIEW);
+        //setMode(cprud.PREVIEW);
     }
 
     const handlePublishUpdate = (): void => {
-        setMode(cprud.READ);
+        //setMode(cprud.READ);
     }
 
     const handleBlocksChange = (updatedBlocks: Array<CmsContentBlock>) => {

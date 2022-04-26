@@ -33,6 +33,7 @@ export const Form: (props: Props) => JSX.Element = ({
     submitButtonClassName,
     cancelButtonClassName,
     shouldAddErrorTitle = true,
+    shouldRenderSubmitButton = true,
     shouldClearOnSubmitSuccess,
 }) => {
     const router = useRouter()
@@ -140,7 +141,12 @@ export const Form: (props: Props) => JSX.Element = ({
     /**
      * Handle generic form life-cycle events
      */
-    const handleChange = (props: any): void => changeAction?.(props)
+    const handleChange = (props: any): void => {
+        
+        console.log(props, 123);
+        changeAction?.(props)
+
+    }
     const handleValidate = (submission: any): Record<string, string> =>
         validate(submission, fields)
     const handleValidationFailure = (errors: any) => {
@@ -353,16 +359,19 @@ export const Form: (props: Props) => JSX.Element = ({
                                     </Dialog>
                                 </>
                             )}
-                            <button
-                                disabled={isProcessing}
-                                type="submit"
-                                className={generatedClasses.submitButton}
-                            >
-                                {submitButton}
-                            </button>
+                            {shouldRenderSubmitButton &&
+                                <button
+                                    disabled={isProcessing}
+                                    type="submit"
+                                    className={generatedClasses.submitButton}
+                                >
+                                    {submitButton}
+                                </button>
+                            }
                         </div>
                         <FormSpy
                             subscription={{
+                                values: true,
                                 touched: true,
                                 errors: true,
                                 submitErrors: true,
