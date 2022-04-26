@@ -14,7 +14,7 @@
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
-        private List<string>? errorList = null;
+        private List<string>? errorList = new List<string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FutureNhsBlockHandler"/> class.
@@ -28,18 +28,18 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync()
+        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync(CancellationToken cancellationToken)
         {
             ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
             var contentModels = new List<ContentModel>();
             var blocksFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Blocks");
-            var publishedBlocks = await _futureNhsContentService.GetPublishedChildrenAsync(blocksFolderGuid);
+            var publishedBlocks = await _futureNhsContentService.GetPublishedContentChildrenAsync(blocksFolderGuid, cancellationToken);
 
             if (publishedBlocks is not null && publishedBlocks.Any())
             {
                 foreach (var block in publishedBlocks)
                 {
-                    contentModels.Add(await _futureNhsContentService.ResolveAsync(block));
+                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(block, cancellationToken));
                 }
             }
 

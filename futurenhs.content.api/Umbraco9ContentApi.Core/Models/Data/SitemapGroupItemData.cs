@@ -1,9 +1,6 @@
-﻿namespace Umbraco9ContentApi.Core.Models
+﻿namespace Umbraco9ContentApi.Core.Models.Data
 {
-    /// <summary>
-    /// The SitemapGroupItemModel for front end website structure.
-    /// </summary>
-    public class SitemapGroupItemModel
+    public class SitemapGroupItemData
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -40,7 +37,7 @@
         /// </summary>
         public int Level { get; set; }
 
-        public SitemapGroupItemModel(Guid id, string name, string title, Guid parentId, DateTime createdAt, DateTime editedAt, int level)
+        public SitemapGroupItemData(Guid id, string name, string title, Guid parentId, DateTime createdAt, DateTime editedAt, int level)
         {
             Id = id;
             Name = name;
