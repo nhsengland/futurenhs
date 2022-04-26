@@ -43,7 +43,7 @@ jobs:
       azureSubscription: '$(AZURESUBSCRIPTIONNAME)'
       AuthenticationType: 'server'
       ServerName: '$(DBSERVERNAME)'
-      DatabaseName: 'MatthewM_DACPAC_Testing'
+      DatabaseName: '$(DATABASE)'
       SqlUsername: '$(DATABASEUSERNAME)'
       SqlPassword: '$(DATABASEPASSWORD)'
       deployType: 'DacpacTask'
