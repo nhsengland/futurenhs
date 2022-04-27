@@ -20,6 +20,8 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { Theme } from '@appTypes/theme';
 
+const simpleClone = (item) => JSON.parse(JSON.stringify(item));
+
 /**
  * Generic CMS content block manager
  */
@@ -42,13 +44,15 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      * Blocks in data from the API include no unique IDs so we need to inject some locally
      * to safely manage dynamic block sorting, adding or deleting
      */
-    const handleInjectUniqueIds = (blocks: Array<CmsContentBlock>): Array<CmsContentBlock> => {
+    const handleInjectUniqueIds = (sourceBlocks: Array<CmsContentBlock>): Array<CmsContentBlock> => {
 
-        if(!blocks?.length) {
+        if(!sourceBlocks?.length) {
 
             return [];
 
         }
+
+        const blocks: Array<CmsContentBlock> = simpleClone(sourceBlocks);
 
         return blocks.map((block) => {
 
@@ -61,6 +65,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     }
 
     const [mode, setMode] = useState(initialState);
+    const [referenceBlocks, setReferenceBlocks] = useState([]);
     const [blocks, setBlocks] = useState([]);
     const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
 
@@ -88,7 +93,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const LeaveEditButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToReadMode}>Stop editing page</button>
     const EnterEditButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>Edit page</button>
-    const DiscardChangesButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>Discard changes</button>
+    const DiscardChangesButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleDiscardUpdates}>Discard changes</button>
     const PreviewButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToPreviewMode}>Preview page</button>
     const PublishButton: () => JSX.Element = () => <button className={generatedClasses.headerPrimaryCallOutButton} onClick={handleUpdateBlockSubmit}>Publish group page</button>
 
@@ -98,7 +103,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const handleCreateBlock = (instanceId: string): void => {
 
         const updatedBlocks = [...blocks];
-        const block = JSON.parse(JSON.stringify(blocksTemplate[instanceId]));
+        const block = simpleClone(blocksTemplate[instanceId]);
 
         block.instanceId = randomBytes(6).toString('hex');
         updatedBlocks.push(block)
@@ -199,6 +204,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     }
 
     /**
+     * Handle resetting updates to initial state
+     */
+    const handleDiscardUpdates = (): void => {
+        setBlocks(referenceBlocks);
+    }
+
+    /**
      * Handle submitting the current block list data to the API
      */
     const handleUpdateBlockSubmit = async (): Promise<FormErrors> => {
@@ -280,7 +292,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        const isLocalBlockStateMatchingSource: boolean = JSON.stringify(blocks) == JSON.stringify(sourceBlocks);
+        const isLocalBlockStateMatchingSource: boolean = JSON.stringify(blocks) === JSON.stringify(referenceBlocks);
 
         if(isLocalBlockStateMatchingSource && hasEditedBlocks){
 
@@ -288,7 +300,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         } else if(!isLocalBlockStateMatchingSource && !hasEditedBlocks){
 
-            setHasEditedBlocks(false);
+            setHasEditedBlocks(true);
 
         }
 
@@ -299,7 +311,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        setBlocks(handleInjectUniqueIds(sourceBlocks));
+        const updatedBlocks: Array<CmsContentBlock> = handleInjectUniqueIds(sourceBlocks);
+
+        setBlocks(updatedBlocks);
+        setReferenceBlocks(updatedBlocks);
 
     }, [sourceBlocks]);
 
