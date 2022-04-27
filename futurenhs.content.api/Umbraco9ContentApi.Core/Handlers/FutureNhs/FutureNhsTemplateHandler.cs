@@ -5,7 +5,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Umbraco9ContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
     using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
 

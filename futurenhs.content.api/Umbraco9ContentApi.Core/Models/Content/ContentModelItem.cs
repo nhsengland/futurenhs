@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Umbraco9ContentApi.Core.Models
+namespace Umbraco9ContentApi.Core.Models.Content
 {
-    public class ItemModel
+    public class ContentModelItem
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }

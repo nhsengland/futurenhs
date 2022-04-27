@@ -9,8 +9,8 @@
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
-    using Umbraco9ContentApi.Core.Models;
     using Assert = Xunit.Assert;
 
     /// <summary>
@@ -73,7 +73,6 @@
             var result = await controller.GetAllBlocksAsync();
             var itemResult = result as NotFoundObjectResult;
 
-
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.NotFound, itemResult.StatusCode.Value);
@@ -105,7 +104,7 @@
         {
             var mockDictionary = new Dictionary<string, object>()
             {
-                { "Title", "This is a title." }
+                { "Title", "Text"}
             };
 
             var model = new List<ContentModel>()
@@ -119,7 +118,6 @@
 
             return apiResponse.Object;
         }
-
 
         /// <summary>
         /// Gets the test blocks not found.

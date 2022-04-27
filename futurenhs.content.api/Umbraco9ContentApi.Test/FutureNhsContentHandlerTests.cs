@@ -7,7 +7,7 @@ using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco9ContentApi.Core.Handlers.FutureNhs;
 using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
-using Umbraco9ContentApi.Core.Models;
+using Umbraco9ContentApi.Core.Models.Content;
 using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
 
 
@@ -66,7 +66,7 @@ namespace Umbraco9ContentApi.Test
         {
             // Arrange
             _guid = Guid.NewGuid();
-            _mockFutureNhsContentService.Setup(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result).Returns(new ContentModel() { Item = new ItemModel() { Id = _guid } });
+            _mockFutureNhsContentService.Setup(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result).Returns(new ContentModel() { Item = new ContentModelItem() { Id = _guid } });
             CustomContentHandlerSetup();
 
             // Act
@@ -120,10 +120,10 @@ namespace Umbraco9ContentApi.Test
             _mockFutureNhsContentService.Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()).Result).Returns(GenerateContentModels());
 
             _mockFutureNhsContentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
-                .Returns(new ContentModel() { Item = new ItemModel() { Id = _guidList[0] } })
-                .Returns(new ContentModel() { Item = new ItemModel() { Id = _guidList[1] } })
-                .Returns(new ContentModel() { Item = new ItemModel() { Id = _guidList[2] } })
-                .Returns(new ContentModel() { Item = new ItemModel() { Id = _guidList[3] } });
+                .Returns(new ContentModel() { Item = new ContentModelItem() { Id = _guidList[0] } })
+                .Returns(new ContentModel() { Item = new ContentModelItem() { Id = _guidList[1] } })
+                .Returns(new ContentModel() { Item = new ContentModelItem() { Id = _guidList[2] } })
+                .Returns(new ContentModel() { Item = new ContentModelItem() { Id = _guidList[3] } });
 
             CustomContentHandlerSetup();
 

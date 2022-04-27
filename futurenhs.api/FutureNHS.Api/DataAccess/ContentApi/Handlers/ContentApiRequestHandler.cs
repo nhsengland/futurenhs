@@ -14,9 +14,9 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId)
+        public Task<ApiResponse<ContentModel>> GetContentAsync(Guid contentId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/block/{blockId}");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/content/{contentId}");
         }
 
         /// <inheritdoc />
@@ -26,9 +26,21 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<ContentModel>> GetContentAsync(Guid contentId)
+        public Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/content/{contentId}");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/block/{blockId}");
+        }
+
+        /// <inheritdoc />
+        public Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId)
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/placeholder");
+        }
+
+        /// <inheritdoc />
+        public Task<ApiResponse<IEnumerable<string>>> GetBlockFieldValuesAsync(Guid blockId)
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/fields");
         }
 
         /// <inheritdoc />

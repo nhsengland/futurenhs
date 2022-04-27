@@ -11,22 +11,34 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces
         /// <returns></returns>
         Task<ApiResponse<ContentModel>> GetContentAsync(Guid contentId);
         /// <summary>
+        /// Gets the blocks asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetBlocksAsync();
+        /// <summary>
         /// Gets the block asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <returns></returns>
         Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId);
         /// <summary>
+        /// Gets the block placeholder values asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId);
+        /// <summary>
+        /// Gets the block field values asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<string>>> GetBlockFieldValuesAsync(Guid blockId);
+        /// <summary>
         /// Gets the template asynchronous.
         /// </summary>
         /// <param name="templateId">The template identifier.</param>
         /// <returns></returns>
         Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid templateId);
-        /// <summary>
-        /// Gets the blocks asynchronous.
-        /// </summary>
-        /// <returns></returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetBlocksAsync();
         /// <summary>
         /// Gets the templates asynchronous.
         /// </summary>
