@@ -21,19 +21,34 @@
             uSync directory paths.
             </summary>
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Controllers.BlockController">
+        <member name="T:Umbraco9ContentApi.Core.Controllers.BlockApiController">
             <summary>
             Block Api controller.
             </summary>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler,Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler,Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler)">
             <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.BlockController"/> class.
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.BlockApiController"/> class.
             </summary>
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
             <param name="futureNhsBlockHandler">The future Nhs block handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockController.GetBlockAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetBlockAsync(System.Guid)">
+            <summary>
+            Gets the specified block.
+            </summary>
+            <param name="blockId">The content identifier.</param>
+            <returns>The specified block.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetAllBlocksAsync">
+            <summary>
+            Gets all blocks.
+            </summary>
+            <returns>All blocks.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.GetBlockPlaceholderValuesAsync(System.Guid)">
             <summary>
             Gets the block asynchronous.
             </summary>
@@ -41,87 +56,71 @@
             <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockController.GetAllBlocksAsync(System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockApiController.DeleteBlockAsync(System.Guid)">
             <summary>
-            Gets all blocks asynchronous.
-            </summary>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.BlockController.DeleteBlockAsync(System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Deletes the block asynchronous.
+            Deletes the specified block.
             </summary>
             <param name="blockId">The block identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>The block identifier.</returns>
+            <remarks></remarks>
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Controllers.ContentController">
+        <member name="T:Umbraco9ContentApi.Core.Controllers.ContentApiController">
             <summary>
             Content Api controller.
             </summary>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler)">
             <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.ContentController" /> class.
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.ContentApiController" /> class.
             </summary>
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentController.GetContentPublishedAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetContentAsync(System.Guid)">
             <summary>
-            Gets the content published asynchronous.
+            Gets the specified content.
             </summary>
             <param name="contentId">The content identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>The specified content.</returns>
+            <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentController.GetContentDraftAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.GetAllContentAsync">
             <summary>
-            Gets the content draft asynchronous.
+            Gets all content.
             </summary>
-            <param name="contentId">The content identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>All content.</returns>
+            <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentController.GetAllContentAsync(System.Threading.CancellationToken)">
-            <summary>
-            Gets all content asynchronous.
-            </summary>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentController.CreateContentAsync(Umbraco9ContentApi.Core.Models.Requests.GeneralWebPageCreateRequest,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.CreateContentAsync(Umbraco9ContentApi.Core.Models.Request.GeneralWebPageCreateRequest)">
             <summary>
             Creates the content asynchronous.
             </summary>
             <param name="createRequest">The create request.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>The created content.</returns>
+            <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentController.PublishContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.PublishContentAsync(System.Guid)">
             <summary>
-            Publishes the content asynchronous.
+            Publishes the specified content.
             </summary>
             <param name="contentId">The content identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>The content identifier.</returns>
+            <remarks></remarks>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentController.UpdateContentAsync(System.Guid,Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.UpdateContentAsync(System.Guid,Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest)">
             <summary>
-            Updates the content asynchronous.
+            Updates the specified content.
+            </summary>                                                                                                                                                                                                                                                           
+            <param name="contentId">The content identifier.</param>
+            <param name="updateRequest">The update request.</param>
+            <returns>The content identifier.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentApiController.DeleteContentAsync(System.Guid)">
+            <summary>
+            Deletes the specified content.
             </summary>
             <param name="contentId">The content identifier.</param>
-            <param name="request">The request.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.ContentController.DeleteContentAsync(System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Deletes the content asynchronous.
-            </summary>
-            <param name="contentId">The content identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>The content identifier.</returns>
         </member>
         <member name="T:Umbraco9ContentApi.Core.Controllers.DefaultRenderController">
             <summary>
@@ -134,77 +133,91 @@
             </summary>
             <returns>A redirect to the swagger page.</returns>
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Controllers.SitemapController">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.Base.FutureNhsBaseController.Get(System.Guid)">
+            <summary>
+            Gets the specified identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>The content.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Controllers.Base.FutureNhsBaseController.Delete(System.Guid)">
+            <summary>
+            Deletes the specified identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Delete operation result.</returns>
+        </member>
+        <member name="T:Umbraco9ContentApi.Core.Controllers.SitemapApiController">
             <summary>
             Sitemap Api Controller.
             </summary>
             <seealso cref="T:Umbraco.Cms.Web.Common.Controllers.UmbracoApiController" />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapApiController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler)">
             <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.SitemapController"/> class.
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.SitemapApiController"/> class.
             </summary>
             <param name="futureNhsSiteMapHandler">The future NHS site map handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapController.GetSiteMapAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.SitemapApiController.GetSiteMapAsync(System.Guid)">
             <summary>
-            Gets the site map asynchronous.
+            Gets the specified page identifier.
             </summary>
             <param name="pageId">The page identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Controllers.TemplateController">
+        <member name="T:Umbraco9ContentApi.Core.Controllers.TemplateApiController">
             <summary>
             Template Api controller.
             </summary>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler,Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.#ctor(Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler,Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler)">
             <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.TemplateController"/> class.
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.TemplateApiController"/> class.
             </summary>
             <param name="futureNhsContentHandler">The future Nhs content handler.</param>
             <param name="futureNhsTemplateHandler">The future Nhs template handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateController.GetTemplateAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetTemplateAsync(System.Guid)">
             <summary>
             Gets the template asynchronous.
             </summary>
             <param name="templateId">The template identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateController.GetAllTemplatesAsync(System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.GetAllTemplatesAsync">
             <summary>
             Gets all templates asynchronous.
             </summary>
-            <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateController.DeleteTemplateAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.TemplateApiController.DeleteTemplateAsync(System.Guid)">
             <summary>
             Deletes the template asynchronous.
             </summary>
             <param name="templateId">The template identifier.</param>
             <returns></returns>
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Controllers.uSyncController">
+        <member name="T:Umbraco9ContentApi.Core.Controllers.uSyncApiController">
             <summary>
             uSync Api controller to access uSync handlers.
             </summary>
             <seealso cref="T:Umbraco.Cms.Web.Common.Controllers.UmbracoApiController" />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.uSyncController.#ctor(Umbraco9ContentApi.Core.Handlers.uSync.Interface.IuSyncHandler)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.uSyncApiController.#ctor(Umbraco9ContentApi.Core.Handlers.uSync.Interface.IuSyncHandler)">
             <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.uSyncController"/> class.
+            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Controllers.uSyncApiController"/> class.
             </summary>
             <param name="uSyncHandler">The uSync handler.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Controllers.uSyncController.DoUSyncImportAsync(System.Boolean)">
+        <member name="M:Umbraco9ContentApi.Core.Controllers.uSyncApiController.DoUSyncImportAsync(System.Boolean)">
             <summary>
             Imports all usync items.
             </summary>
-            <param name="isActive">if set to <c>true</c> [import].</param>
+            <param name="import">if set to <c>true</c> [import].</param>
             <remarks></remarks>
+            <response code="200">Success! Import successful.</response>
+            <response code="500">Error. Import unsuccessful.</response>
             <returns>True or false.</returns>
         </member>
         <member name="T:Umbraco9ContentApi.Core.Converters.BlockPickerConverter">
@@ -213,7 +226,7 @@
             </summary>
             <seealso cref="T:UmbracoContentApi.Core.Converters.IConverter" />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.#ctor(System.Lazy{Umbraco9ContentApi.Core.Resolvers.Interfaces.IFutureNHSContentResolver})">
+        <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.#ctor(System.Lazy{Umbraco9ContentApi.Core.Resolvers.Interfaces.IFutureNhsContentResolver})">
             <summary>
             Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Converters.BlockPickerConverter"/> class.
             </summary>
@@ -231,14 +244,10 @@
             </summary>
             <seealso cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler" />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.#ctor(Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService,Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler"/> class.
-            </summary>
-            <param name="futureNhsContentService">The future NHS content service.</param>
-            <param name="config">The configuration.</param>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetAllBlocksAsync">
+            <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetAllBlocksAsync(System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetBlockPlaceholderValuesAsync(System.Guid)">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler">
@@ -247,22 +256,22 @@
             </summary>
             <seealso cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler" />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.CreateContentAsync(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.CreateContentAsync(System.String,System.String,System.Boolean)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.UpdateContentAsync(System.Guid,System.String,System.String,Umbraco9ContentApi.Core.Models.PageContentModel,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.UpdateContentAsync(System.Guid,System.String,System.String,Umbraco9ContentApi.Core.Models.PageContentModel)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.PublishContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.PublishContentAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetContentPublishedAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetContentAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.DeleteContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.DeleteContentAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetAllContentAsync(System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsContentHandler.GetAllContentAsync">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler">
@@ -278,7 +287,7 @@
             <param name="futureNhsContentService">The future NHS content service.</param>
             <param name="futureNhsSiteMapService">The future NHS site map service.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.GetSitemapGroupItemsAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.GetSitemapGroupItemsAsync(System.Guid)">
             <inheritdoc />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsSiteMapHandler.PopulateGroupSiteMapItemViewModel(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
@@ -301,31 +310,37 @@
             <param name="futureNhsContentService">The future NHS content service.</param>
             <param name="config">The configuration.</param>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetTemplateAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetTemplateAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetAllTemplatesAsync(System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetAllTemplatesAsync">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler.GetAllBlocksAsync(System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler.GetAllBlocksAsync">
             <summary>
-            Gets all blocks asynchronous.
+            Gets all blocks.
             </summary>
-            <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.CreateContentAsync(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler.GetBlockPlaceholderValuesAsync(System.Guid)">
             <summary>
-            Creates the content asynchronous.
+            Gets the block placeholder values asynchronous.
+            </summary>
+            <param name="blockId">The block identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.CreateContentAsync(System.String,System.String,System.Boolean)">
+            <summary>
+            Creates the content.
             </summary>
             <param name="pageName">Name of the page.</param>
             <param name="pageParentId">The page parent identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <param name="publish">if set to <c>true</c> [publish].</param>
+            <returns>Created content identifier.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.UpdateContentAsync(System.Guid,System.String,System.String,Umbraco9ContentApi.Core.Models.PageContentModel,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.UpdateContentAsync(System.Guid,System.String,System.String,Umbraco9ContentApi.Core.Models.PageContentModel)">
             <summary>
-            Updates the content asynchronous.
+            Updates the content of the page.
             </summary>
             <param name="id">The identifier.</param>
             <param name="title">The title.</param>
@@ -333,71 +348,57 @@
             <param name="pageContent">The content.</param>
             <returns>True or false.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.PublishContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.PublishContentAsync(System.Guid)">
             <summary>
-            Publishes the content asynchronous.
+            Publishes the content.
             </summary>
             <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>True or false.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.DeleteContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.DeleteContentAsync(System.Guid)">
             <summary>
-            Deletes the content asynchronous.
+            Deletes the content.
             </summary>
             <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>True or false.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetContentPublishedAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetContentAsync(System.Guid)">
             <summary>
-            Gets the content published asynchronous.
+            Gets the content.
             </summary>
             <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>Specified content.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetContentDraftAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetAllContentAsync">
             <summary>
-            Gets the content draft asynchronous.
+            Gets all content.
             </summary>
-            <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsContentHandler.GetAllContentAsync(System.Threading.CancellationToken)">
-            <summary>
-            Gets all content asynchronous.
-            </summary>
-            <returns></returns>
+            <returns>All content.</returns>
         </member>
         <member name="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler">
             <summary>
             FutureNhsSitemapHandler interface.
             </summary>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler.GetSitemapGroupItemsAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsSiteMapHandler.GetSitemapGroupItemsAsync(System.Guid)">
             <summary>
             Gets the sitemap group items asynchronous.
             </summary>
             <param name="pageId">The page identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetTemplateAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetTemplateAsync(System.Guid)">
             <summary>
-            Gets the template asynchronous.
+            Gets the template.
             </summary>
             <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>Specified template.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetAllTemplatesAsync(System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsTemplateHandler.GetAllTemplatesAsync">
             <summary>
-            Gets all templates asynchronous.
+            Gets all templates.
             </summary>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>All templates.</returns>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.Interface.IuSyncHandler.RunImportAsync">
             <summary>
@@ -424,55 +425,25 @@
         <member name="M:Umbraco9ContentApi.Core.Handlers.uSync.uSyncHandler.RunImportAsync">
             <inheritdoc />
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Data.SitemapGroupItemData.Id">
+        <member name="T:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageCreateRequest">
             <summary>
-            Gets or sets the identifier.
+            The request used to create the content for a web page.
             </summary>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Data.SitemapGroupItemData.Name">
+        <member name="P:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageCreateRequest.Name">
             <summary>
             Gets or sets the name.
             </summary>
+            <value>
+            The name.
+            </value>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Data.SitemapGroupItemData.Title">
-            <summary>
-            Gets or sets the title.
-            </summary>
-        </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Data.SitemapGroupItemData.ParentId">
+        <member name="P:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageCreateRequest.ParentId">
             <summary>
             Gets or sets the parent identifier.
             </summary>
-        </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Data.SitemapGroupItemData.CreatedAt">
-            <summary>
-            Gets or sets the created at.
-            </summary>
-        </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Data.SitemapGroupItemData.EditedAt">
-            <summary>
-            Gets or sets the edited at.
-            </summary>
-        </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Data.SitemapGroupItemData.Level">
-            <summary>
-            Gets or sets the level.
-            </summary>
-        </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Requests.GeneralWebPageCreateRequest.PageName">
-            <summary>
-            Gets or sets the name of the page.
-            </summary>
             <value>
-            The name of the page.
-            </value>
-        </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Requests.GeneralWebPageCreateRequest.PageParentId">
-            <summary>
-            Gets or sets the page parent identifier.
-            </summary>
-            <value>
-            The page parent identifier.
+            The parent identifier.
             </value>
         </member>
         <member name="T:Umbraco9ContentApi.Core.Models.Request.GeneralWebPageUpdateRequest">
@@ -504,128 +475,160 @@
             The content.
             </value>
         </member>
+        <member name="T:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel">
+            <summary>
+            The SitemapGroupItemModel for front end website structure.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Title">
+            <summary>
+            Gets or sets the title.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.ParentId">
+            <summary>
+            Gets or sets the parent identifier.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.CreatedAt">
+            <summary>
+            Gets or sets the created at.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.EditedAt">
+            <summary>
+            Gets or sets the edited at.
+            </summary>
+        </member>
+        <member name="P:Umbraco9ContentApi.Core.Models.SitemapGroupItemModel.Level">
+            <summary>
+            Gets or sets the level.
+            </summary>
+        </member>
         <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublishedContentChildrenAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.#ctor(Umbraco.Cms.Core.IPublishedContentQuery,System.Lazy{Umbraco9ContentApi.Core.Resolvers.Interfaces.IFutureNhsContentResolver},Umbraco.Cms.Core.Services.IContentService)">
+            <summary>Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService" /> class.</summary>
+            <param name="publishedContent">Content of the published.</param>
+            <param name="contentResolver">The content resolver.</param>
+            <param name="contentService">The content service.</param>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublishedChildrenAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublishedContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetPublishedAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.ResolveContentPublishedAsync(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.ResolveAsync(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.ResolveDraftContentAsync(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.CreateAsync(System.Guid,System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.CreateContentAsync(Umbraco9ContentApi.Core.Models.Dto.GeneralWebPageDto,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.DeleteAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.DeleteContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.PublishAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.PublishContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetTemplateBlocksAsync(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetTemplateBlocksAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveAsync(Umbraco.Cms.Core.Models.IContent)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveContentAsync(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveAndPublishAsync(Umbraco.Cms.Core.Models.IContent)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveAndPublishContentAsync(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedContentChildrenAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService">
             <summary>
-            Gets the published content children asynchronous.
+            Exposes and extends the Umbraco API.
+            </summary>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedChildrenAsync(System.Guid)">
+            <summary>
+            Gets the published children.
             </summary>
             <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>Published contents children.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedAsync(System.Guid)">
             <summary>
-            Gets the published content asynchronous.
+            Gets the content.
+            </summary>
+            <param name="id">The unique identifier.</param>
+            <returns>Published content.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetAsync(System.Guid)">
+            <summary>
+            Gets the content.
             </summary>
             <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.ResolveAsync(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent)">
             <summary>
-            Gets the content asynchronous.
-            </summary>
-            <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.ResolveContentPublishedAsync(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent,System.Threading.CancellationToken)">
-            <summary>
-            Resolves the asynchronous.
+            Resolves the content.
             </summary>
             <param name="content">The content.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>Content model.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.ResolveDraftContentAsync(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.CreateAsync(System.Guid,System.String,System.String)">
             <summary>
-            Resolves the draft content asynchronous.
+            Creates the content.
             </summary>
-            <param name="content">The content.</param>
-            <param name="cancellationToken">The cancellation token.</param>
+            <param name="parentContentId">The parent content identifier.</param>
+            <param name="contentName">Name of the content.</param>
+            <param name="documentTypeAlias">The document type alias.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.CreateContentAsync(Umbraco9ContentApi.Core.Models.Dto.GeneralWebPageDto,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.DeleteAsync(System.Guid)">
             <summary>
-            Creates the asynchronous.
-            </summary>
-            <param name="generalWebPage">The general web page.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.DeleteContentAsync(System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Deletes the asynchronous.
+            Deletes the content.
             </summary>
             <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>Operation result.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.PublishContentAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.PublishAsync(System.Guid)">
             <summary>
-            Publishes the asynchronous.
+            Publishes the content.
+            </summary>
+            <param name="contentId">The content identifier.</param>
+            <returns>Publish result.</returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetTemplateBlocksAsync(System.Guid)">
+            <summary>
+            Gets the  specified template's blocks.
             </summary>
             <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
+            <returns>Blocks for specified template.</returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetTemplateBlocksAsync(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveAsync(Umbraco.Cms.Core.Models.IContent)">
             <summary>
-            Gets the template blocks asynchronous.
-            </summary>
-            <param name="id">The identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveContentAsync(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
-            <summary>
-            Saves the content asynchronous.
+            Saves the content.
             </summary>
             <param name="content">The content.</param>
-            <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveAndPublishContentAsync(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveAndPublishAsync(Umbraco.Cms.Core.Models.IContent)">
             <summary>
-            Saves the and publish content asynchronous.
+            Saves the content and publish.
             </summary>
             <param name="content">The content.</param>
-            <param name="cancellationToken">The cancellation token.</param>
             <returns></returns>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncBaseService.ImportAsync">

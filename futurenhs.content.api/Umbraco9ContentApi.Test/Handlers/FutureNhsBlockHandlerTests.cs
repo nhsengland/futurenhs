@@ -7,6 +7,7 @@ namespace Umbraco9ContentApi.Test.Handler
     using NUnit.Framework;
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco9ContentApi.Core.Models;
@@ -16,7 +17,9 @@ namespace Umbraco9ContentApi.Test.Handler
     public class FutureNhsBlockHandlerTests
     {
         private Mock<IFutureNhsContentService> _mockFutureNhsContentService;
+        private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService;
         private IConfiguration? _config;
+        private CancellationToken cancellationToken;
 
         /// <summary>
         /// Setups this instance.
@@ -25,6 +28,7 @@ namespace Umbraco9ContentApi.Test.Handler
         public void Setup()
         {
             _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
+            _mockFutureNhsBlockService = new Mock<IFutureNhsBlockService>();
         }
 
         #region Get All Blocks Tests
@@ -124,7 +128,7 @@ namespace Umbraco9ContentApi.Test.Handler
         private FutureNhsBlockHandler GetHandler(IConfiguration? config)
         {
             var handler = new FutureNhsBlockHandler(
-                _mockFutureNhsContentService.Object,
+                _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object,
                 config);
 
             return handler;

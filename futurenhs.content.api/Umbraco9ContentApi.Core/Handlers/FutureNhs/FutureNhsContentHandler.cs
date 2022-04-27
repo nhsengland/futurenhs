@@ -121,7 +121,6 @@
 
             errorList.Add("Couldn't retrieve content.");
             return response.Failure(errorList, "Failed.");
-
         }
 
         /// <inheritdoc />

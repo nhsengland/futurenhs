@@ -1,6 +1,7 @@
 using FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Models.Content;
+using FutureNHS.Api.Models.Content.Blocks;
 using FutureNHS.Api.Models.Content.Requests;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -80,10 +81,19 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("block/{blockId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<BlockModel>))]
         public async Task<IActionResult> GetBlockAsync(Guid blockId)
         {
             var block = await _contentDataProvider.GetBlockAsync(blockId);
+            return new JsonResult(block);
+        }
+
+        [HttpGet]
+        [Route("block/{blockId:guid}/placeholder")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<string>>))]
+        public async Task<IActionResult> GetBlockPlaceholderValuesAsync(Guid blockId)
+        {
+            var block = await _contentDataProvider.GetBlockPlaceholderValuesAsync(blockId);
             return new JsonResult(block);
         }
 

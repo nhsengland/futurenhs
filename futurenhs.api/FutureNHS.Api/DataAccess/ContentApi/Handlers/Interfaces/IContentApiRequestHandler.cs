@@ -1,4 +1,5 @@
 ﻿using FutureNHS.Api.Models.Content;
+using FutureNHS.Api.Models.Content.Blocks;
 
 namespace FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces
 {
@@ -15,7 +16,13 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <returns></returns>
-        Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId);
+        Task<ApiResponse<BlockModel>> GetBlockAsync(Guid blockId);
+        /// <summary>
+        /// Gets the block placeholder values asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId);
         /// <summary>
         /// Gets the template asynchronous.
         /// </summary>
@@ -26,7 +33,7 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces
         /// Gets the blocks asynchronous.
         /// </summary>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetBlocksAsync();
+        Task<ApiResponse<IEnumerable<BlockModel>>> GetBlocksAsync();
         /// <summary>
         /// Gets the templates asynchronous.
         /// </summary>

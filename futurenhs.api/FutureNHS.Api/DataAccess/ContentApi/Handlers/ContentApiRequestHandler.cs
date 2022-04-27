@@ -1,6 +1,7 @@
 ﻿using FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
 using FutureNHS.Api.Models.Content;
+using FutureNHS.Api.Models.Content.Blocks;
 
 namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
 {
@@ -14,15 +15,21 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId)
+        public Task<ApiResponse<BlockModel>> GetBlockAsync(Guid blockId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/block/{blockId}");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<BlockModel>>(HttpMethod.Get, $"api/block/{blockId}");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<IEnumerable<ContentModel>>> GetBlocksAsync()
+        public Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModel>>>(HttpMethod.Get, "api/block");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/placeholder");
+        }
+
+        /// <inheritdoc />
+        public Task<ApiResponse<IEnumerable<BlockModel>>> GetBlocksAsync()
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<BlockModel>>>(HttpMethod.Get, "api/block");
         }
 
         /// <inheritdoc />

@@ -23,6 +23,7 @@
         {
             // Services
             builder.Services.AddScoped<IFutureNhsContentService, FutureNhsContentService>();
+            builder.Services.AddScoped<IFutureNhsBlockService, FutureNhsBlockService>();
             builder.Services.AddScoped<IFutureNhsSiteMapService, FutureNhsSiteMapService>();
             builder.Services.AddScoped<IFutureNhsValidationService, FutureNhsValidationService>();
 
@@ -37,7 +38,8 @@
             builder.Converters().Replace<TextAreaConverter, JsonContentConverter>();
 
             // Resolvers
-            builder.Services.AddTransient<IFutureNHSContentResolver, FutureNHSContentResolver>();
+            builder.Services.AddTransient<IFutureNhsContentResolver, FutureNhsContentResolver>();
+            builder.Services.AddTransient<IFutureNhsBlockResolver, FutureNhsBlockResolver>();
         }
     }
 }

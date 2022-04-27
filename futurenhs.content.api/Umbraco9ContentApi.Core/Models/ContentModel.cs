@@ -2,7 +2,7 @@
 {
     public class ContentModel
     {
-        public ItemModel? Item { get; set; }
-        public Dictionary<string, object>? Content { get; set; }
+        public ItemModel Item { get; set; }
+        public Dictionary<string, object> Content { get; set; }
     }
 }

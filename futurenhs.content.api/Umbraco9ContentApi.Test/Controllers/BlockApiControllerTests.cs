@@ -9,8 +9,9 @@
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
-    using Umbraco9ContentApi.Core.Models.Response;
     using Umbraco9ContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Blocks;
+    using Umbraco9ContentApi.Core.Models.Response;
     using Assert = Xunit.Assert;
 
     /// <summary>
@@ -73,7 +74,6 @@
             var result = await controller.GetAllBlocksAsync();
             var itemResult = result as NotFoundObjectResult;
 
-
             // Assert
             Assert.NotNull(itemResult);
             Assert.Equal((int)HttpStatusCode.NotFound, itemResult.StatusCode.Value);
@@ -101,34 +101,33 @@
         /// Gets the test blocks found.
         /// </summary>
         /// <returns></returns>
-        private ApiResponse<IEnumerable<ContentModel>> GetBlocks_Found()
+        private ApiResponse<IEnumerable<BlockModel>> GetBlocks_Found()
         {
-            var mockDictionary = new Dictionary<string, object>()
+            var mockDictionary = new List<string>()
             {
-                { "Title", "This is a title." }
+                { "Title"}
             };
 
-            var model = new List<ContentModel>()
+            var model = new List<BlockModel>()
             {
-                new ContentModel() {Content = mockDictionary}
+                new BlockModel() {Fields = mockDictionary}
             };
 
-            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            var apiResponse = new Mock<ApiResponse<IEnumerable<BlockModel>>>();
             apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;
         }
 
-
         /// <summary>
         /// Gets the test blocks not found.
         /// </summary>
         /// <returns></returns>
-        private ApiResponse<IEnumerable<ContentModel>> GetTestBlocks_NotFound()
+        private ApiResponse<IEnumerable<BlockModel>> GetTestBlocks_NotFound()
         {
-            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
-            apiResponse.Setup(x => x.Data).Returns(new List<ContentModel>());
+            var apiResponse = new Mock<ApiResponse<IEnumerable<BlockModel>>>();
+            apiResponse.Setup(x => x.Data).Returns(new List<BlockModel>());
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;
