@@ -8,12 +8,10 @@ namespace FutureNHS.Api.Middleware
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionHandlerMiddleware> _logger;
 
-        public ExceptionHandlerMiddleware(RequestDelegate next, ILogger<ExceptionHandlerMiddleware> logger)
+        public ExceptionHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
-            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -71,7 +69,6 @@ namespace FutureNHS.Api.Middleware
                     result = JsonSerializer.Serialize(new { error = dependencyFailedException.Message });
                     break;
                 default:
-                    _logger.LogError(exception, "Unexpected exception caught in middleware");
                     result = JsonSerializer.Serialize(new { error = exception.Message });
                     break;
             }

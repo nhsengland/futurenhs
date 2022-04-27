@@ -10,17 +10,17 @@
     /// Template Api controller.
     /// </summary>
     [Route("api/template")]
-    public sealed class TemplateController : UmbracoApiController
+    public sealed class TemplateApiController : UmbracoApiController
     {
         private readonly IFutureNhsContentHandler _futureNhsContentHandler;
         private readonly IFutureNhsTemplateHandler _futureNhsTemplateHandler;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TemplateController"/> class.
+        /// Initializes a new instance of the <see cref="TemplateApiController"/> class.
         /// </summary>
         /// <param name="futureNhsContentHandler">The future Nhs content handler.</param>
         /// <param name="futureNhsTemplateHandler">The future Nhs template handler.</param>
-        public TemplateController(IFutureNhsContentHandler futureNhsContentHandler, IFutureNhsTemplateHandler futureNhsTemplateHandler)
+        public TemplateApiController(IFutureNhsContentHandler futureNhsContentHandler, IFutureNhsTemplateHandler futureNhsTemplateHandler)
         {
             _futureNhsContentHandler = futureNhsContentHandler;
             _futureNhsTemplateHandler = futureNhsTemplateHandler;
@@ -33,9 +33,9 @@
         /// <returns></returns>
         [HttpGet("{templateId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> GetTemplateAsync(Guid templateId, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetTemplateAsync(Guid templateId)
         {
-            var template = await _futureNhsTemplateHandler.GetTemplateAsync(templateId, cancellationToken);
+            var template = await _futureNhsTemplateHandler.GetTemplateAsync(templateId);
 
             if (template is null)
             {
@@ -48,13 +48,12 @@
         /// <summary>
         /// Gets all templates asynchronous.
         /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
-        public async Task<ActionResult> GetAllTemplatesAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult> GetAllTemplatesAsync()
         {
-            var response = await _futureNhsTemplateHandler.GetAllTemplatesAsync(cancellationToken);
+            var response = await _futureNhsTemplateHandler.GetAllTemplatesAsync();
 
             if (response.Succeeded && !response.Data.Any())
             {
@@ -75,9 +74,9 @@
         /// <param name="templateId">The template identifier.</param>
         /// <returns></returns>
         [HttpDelete("{templateId:guid}")]
-        public async Task<ActionResult> DeleteTemplateAsync(Guid templateId, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteTemplateAsync(Guid templateId)
         {
-            var response = await _futureNhsContentHandler.DeleteContentAsync(templateId, cancellationToken);
+            var response = await _futureNhsContentHandler.DeleteContentAsync(templateId);
 
             if (response.Succeeded)
             {

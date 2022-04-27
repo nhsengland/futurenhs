@@ -7,7 +7,6 @@ namespace Umbraco9ContentApi.Test.Handler
     using NUnit.Framework;
     using System;
     using System.Collections.Generic;
-    using System.Threading;
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco9ContentApi.Core.Models;
@@ -18,7 +17,6 @@ namespace Umbraco9ContentApi.Test.Handler
     {
         private Mock<IFutureNhsContentService> _mockFutureNhsContentService;
         private IConfiguration? _config;
-        private CancellationToken cancellationToken;
 
         /// <summary>
         /// Setups this instance.
@@ -47,17 +45,17 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentChildrenAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(new List<IPublishedContent>()
                 {
                     mockContent.Object
                 });
 
-            _mockFutureNhsContentService.SetupSequence(x => x.ResolvePublishedContentAsync(It.IsAny<IPublishedContent>(), cancellationToken).Result)
+            _mockFutureNhsContentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
                 .Returns(new ContentModel() { Item = new ItemModel() { Id = contentId } });
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
+            var contentResult = await contentHandler.GetAllBlocksAsync();
 
             // Assert
             Assert.NotNull(contentResult);
@@ -80,11 +78,11 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentChildrenAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(new List<IPublishedContent>());
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
+            var contentResult = await contentHandler.GetAllBlocksAsync();
 
             // Assert
             Assert.NotNull(contentResult);
@@ -107,7 +105,7 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
+            var contentResult = await contentHandler.GetAllBlocksAsync();
 
             // Assert
             Assert.NotNull(contentResult);

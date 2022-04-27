@@ -7,12 +7,10 @@
     using NUnit.Framework;
     using System;
     using System.Collections.Generic;
-    using System.Threading;
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco9ContentApi.Core.Models;
-    using Umbraco9ContentApi.Core.Models.Dto;
 
     /// <summary>
     /// Futrue Nhs Content Handler Tests.
@@ -21,9 +19,8 @@
     public class FutureNhsContentHandlerTests
     {
         private Mock<IFutureNhsContentService> _mockFutureNhsContentService;
-        private Mock<IFutureNhsValidationService> _mockFutureNhsValidationService;
+        private Mock<IFutureNhsValidationService> _mockFutureNhsValidaitonService;
         private IConfiguration? _config;
-        private CancellationToken cancellationToken;
 
         /// <summary>
         /// Setups this instance.
@@ -32,11 +29,7 @@
         public void Setup()
         {
             _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
-            _mockFutureNhsValidationService = new Mock<IFutureNhsValidationService>();
-            var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:Groups", Guid.NewGuid().ToString() } };
-            _config = new ConfigurationBuilder()
-               .AddInMemoryCollection(inMemorySettings)
-               .Build();
+            _mockFutureNhsValidaitonService = new Mock<IFutureNhsValidationService>();
         }
 
         #region Create Content Tests
@@ -51,14 +44,19 @@
             var newPageName = "Test Page";
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
             var mockContent = GetMockContentItem(contentId);
+            var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:Groups", Guid.NewGuid().ToString() } };
+            _config = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.CreateContentAsync(It.IsAny<GeneralWebPageDto>(), cancellationToken))
+                .Setup(x => x.CreateAsync(It.IsAny<Guid>(),
+                    It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(mockContent.Object);
 
             // Act
-            var contentResult = await contentHandler.CreateContentAsync(newPageName, null, cancellationToken);
+            var contentResult = await contentHandler.CreateContentAsync(newPageName);
 
             // Assert
             Assert.IsNotNull(contentResult);
@@ -86,19 +84,19 @@
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
             Assert.AreEqual(contentId.ToString(), contentResult.Data);
@@ -118,19 +116,19 @@
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null);
 
             // Assert
             Assert.AreEqual(contentId.ToString(), contentResult.Data);
@@ -151,19 +149,19 @@
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null);
 
             // Assert
             Assert.AreEqual(contentId.ToString(), contentResult.Data);
@@ -183,20 +181,21 @@
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -215,19 +214,19 @@
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
     .ReturnsAsync(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
@@ -247,19 +246,20 @@
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
     .ReturnsAsync(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
+
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null);
 
             // Assert
             Assert.AreEqual(contentId.ToString(), contentResult.Data);
@@ -279,20 +279,20 @@
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
     .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null);
 
             // Assert
             Assert.AreEqual(contentId.ToString(), contentResult.Data);
@@ -312,21 +312,22 @@
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
     .ReturnsAsync(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
+            Assert.AreEqual(contentId.ToString(), contentResult.Data);
             Assert.IsTrue(contentResult.Succeeded);
         }
 
@@ -342,26 +343,27 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
+
             var newPageName = "Update Title";
             var newDescription = "Update Description";
             var newPageContent = new PageContentModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
             Assert.IsFalse(contentResult.Data == "false");
@@ -380,20 +382,20 @@
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null);
 
             // Assert
             Assert.IsFalse(contentResult.Data == "false");
@@ -412,20 +414,20 @@
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null);
 
             // Assert
             Assert.IsFalse(contentResult.Data == "false");
@@ -444,20 +446,20 @@
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
                 .ReturnsAsync(false);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
             Assert.IsFalse(contentResult.Data == "false");
@@ -478,20 +480,20 @@
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
      .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent);
 
             // Assert
             Assert.IsFalse(contentResult.Data == "false");
@@ -510,20 +512,20 @@
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
     .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null);
 
             // Assert
             Assert.IsFalse(contentResult.Data == "false");
@@ -542,20 +544,20 @@
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
     .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null);
 
             // Assert
             Assert.IsFalse(contentResult.Data == "false");
@@ -574,20 +576,20 @@
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
-            var contentHandler = GetHandler(_config);
+            var contentHandler = GetHandler(null);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetContentAsync(It.IsAny<Guid>(), cancellationToken))
+                .Setup(x => x.GetAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(mockContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
+                .Setup(x => x.GetPublishedAsync(It.IsAny<Guid>())).ReturnsAsync(mockPublishedContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.SaveAndPublishAsync(It.IsAny<IContent>()))
     .ReturnsAsync(true);
 
             // Act
-            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent, cancellationToken);
+            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent);
 
             // Assert
             Assert.IsFalse(contentResult.Data == "false");
@@ -607,7 +609,9 @@
         private FutureNhsContentHandler GetHandler(IConfiguration? config)
         {
             var handler = new FutureNhsContentHandler(
-                config, _mockFutureNhsContentService.Object, _mockFutureNhsValidationService.Object);
+                config,
+                _mockFutureNhsContentService.Object,
+                _mockFutureNhsValidaitonService.Object);
 
             return handler;
         }
