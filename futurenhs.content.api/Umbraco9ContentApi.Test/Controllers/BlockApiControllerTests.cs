@@ -8,7 +8,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using System.Threading;
     using System.Threading.Tasks;
     using Umbraco9ContentApi.Core.Models.Response;
     using Umbraco9ContentApi.Core.Models;
@@ -22,7 +21,6 @@
     {
         private Mock<IFutureNhsContentHandler> _mockFutureNhsContentHandler;
         private Mock<IFutureNhsBlockHandler> _mockFutureNhsBlockHandler;
-        private CancellationToken cancellationToken;
 
         /// <summary>
         /// Setups this instance.
@@ -43,11 +41,11 @@
         public async Task GetAllBlocks_SuccessAsync()
         {
             // Arrange
-            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync(cancellationToken)).ReturnsAsync(GetBlocks_Found);
+            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync()).ReturnsAsync(GetBlocks_Found);
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllBlocksAsync(cancellationToken);
+            var result = await controller.GetAllBlocksAsync();
             var itemResult = result as OkObjectResult;
             var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModel>>;
 
@@ -68,12 +66,13 @@
         public async Task GetAllBlocks_NotFoundAsync()
         {
             // Arrange
-            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync(cancellationToken)).ReturnsAsync(GetTestBlocks_NotFound());
+            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync()).ReturnsAsync(GetTestBlocks_NotFound());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllBlocksAsync(cancellationToken);
+            var result = await controller.GetAllBlocksAsync();
             var itemResult = result as NotFoundObjectResult;
+
 
             // Assert
             Assert.NotNull(itemResult);
@@ -89,9 +88,9 @@
         /// Gets the controller.
         /// </summary>
         /// <returns></returns>
-        private BlockController GetController()
+        private BlockApiController GetController()
         {
-            var controller = new BlockController(
+            var controller = new BlockApiController(
                 _mockFutureNhsContentHandler.Object,
                 _mockFutureNhsBlockHandler.Object);
 

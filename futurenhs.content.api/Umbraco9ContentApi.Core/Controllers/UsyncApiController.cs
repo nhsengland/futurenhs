@@ -10,15 +10,15 @@
     /// </summary>
     /// <seealso cref="UmbracoApiController" />
     [Route("api/usync")]
-    public sealed class uSyncController : UmbracoApiController
+    public sealed class uSyncApiController : UmbracoApiController
     {
         private readonly IuSyncHandler _uSyncHandler;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="uSyncController"/> class.
+        /// Initializes a new instance of the <see cref="uSyncApiController"/> class.
         /// </summary>
         /// <param name="uSyncHandler">The uSync handler.</param>
-        public uSyncController(IuSyncHandler uSyncHandler)
+        public uSyncApiController(IuSyncHandler uSyncHandler)
         {
             _uSyncHandler = uSyncHandler;
         }
@@ -26,15 +26,17 @@
         /// <summary>
         /// Imports all usync items.
         /// </summary>
-        /// <param name="isActive">if set to <c>true</c> [import].</param>
+        /// <param name="import">if set to <c>true</c> [import].</param>
         /// <remarks></remarks>
+        /// <response code="200">Success! Import successful.</response>
+        /// <response code="500">Error. Import unsuccessful.</response>
         /// <returns>True or false.</returns>
-        [HttpPost("{isActive:bool}/import")]
-        public async Task<ActionResult> DoUSyncImportAsync(bool isActive)
+        [HttpPost("{import:bool}/import")]
+        public async Task<ActionResult> DoUSyncImportAsync(bool import)
         {
             bool result = false;
 
-            if (isActive)
+            if (import)
             {
                 result = _uSyncHandler.RunImportAsync().Result;
             }

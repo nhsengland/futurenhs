@@ -5,8 +5,6 @@
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco.Cms.Core.Services;
-    using Umbraco9ContentApi.Core.Models.Dto;
-    using Umbraco9ContentApi.Core.Resolvers.Interface;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using ContentModel = Models.ContentModel;
 
@@ -14,58 +12,54 @@
     public sealed class FutureNhsContentService : IFutureNhsContentService
     {
         private readonly Lazy<IFutureNHSContentResolver> _contentResolver;
-        private readonly Lazy<IDraftContentResolver> _draftContentResolver;
         private readonly IPublishedContentQuery _publishedContent;
         private readonly IContentService _contentService;
 
-        public FutureNhsContentService(IPublishedContentQuery publishedContent, Lazy<IFutureNHSContentResolver> contentResolver, IContentService contentService, Lazy<IDraftContentResolver> draftContentResolver)
+        /// <summary>Initializes a new instance of the <see cref="FutureNhsContentService" /> class.</summary>
+        /// <param name="publishedContent">Content of the published.</param>
+        /// <param name="contentResolver">The content resolver.</param>
+        /// <param name="contentService">The content service.</param>
+        public FutureNhsContentService(IPublishedContentQuery publishedContent, Lazy<IFutureNHSContentResolver> contentResolver, IContentService contentService)
         {
             _publishedContent = publishedContent;
             _contentResolver = contentResolver;
             _contentService = contentService;
-            _draftContentResolver = draftContentResolver;
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<IPublishedContent>> GetPublishedContentChildrenAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IPublishedContent>> GetPublishedChildrenAsync(Guid id)
         {
             return _publishedContent.Content(id).Children ?? null;
         }
 
         /// <inheritdoc />
-        public async Task<IPublishedContent> GetPublishedContentAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<IPublishedContent> GetPublishedAsync(Guid id)
         {
             return _publishedContent.Content(id);
         }
 
         /// <inheritdoc />
-        public async Task<IContent> GetContentAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<IContent> GetAsync(Guid id)
         {
             return _contentService.GetById(id);
         }
 
         /// <inheritdoc />
-        public async Task<ContentModel> ResolvePublishedContentAsync(IPublishedContent content, CancellationToken cancellationToken)
+        public async Task<ContentModel> ResolveAsync(IPublishedContent content)
         {
             return _contentResolver.Value.ResolveContent(content);
         }
 
         /// <inheritdoc />
-        public async Task<ContentModel> ResolveDraftContentAsync(IContent content, CancellationToken cancellationToken)
+        public async Task<IContent?> CreateAsync(Guid parentContentId, string contentName, string documentTypeAlias)
         {
-            return _draftContentResolver.Value.ResolveContent(content);
-        }
-
-        /// <inheritdoc />
-        public async Task<IContent?> CreateContentAsync(GeneralWebPageDto generalWebPage, CancellationToken cancellationToken)
-        {
-            var parentContent = _contentService.GetById(generalWebPage.PageParentId);
-            var result = _contentService.CreateAndSave(generalWebPage.PageName, parentContent, generalWebPage.DocumentTypeAlias);
+            var parentContent = _contentService.GetById(parentContentId);
+            var result = _contentService.CreateAndSave(contentName, parentContent, documentTypeAlias);
             return result;
         }
 
         /// <inheritdoc />
-        public async Task<bool> DeleteContentAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var content = _contentService.GetById(id);
 
@@ -85,7 +79,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<bool> PublishContentAsync(Guid contentId, CancellationToken cancellationToken)
+        public async Task<bool> PublishAsync(Guid contentId)
         {
             var content = _contentService.GetById(contentId);
             var result = _contentService.SaveAndPublish(content);
@@ -93,7 +87,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<ContentModel>> GetTemplateBlocksAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ContentModel>> GetTemplateBlocksAsync(Guid id)
         {
             var contentModels = new List<ContentModel>();
             var template = _publishedContent.Content(id);
@@ -107,21 +101,21 @@
 
             foreach (var block in blocks)
             {
-                contentModels.Add(await ResolvePublishedContentAsync(block, cancellationToken));
+                contentModels.Add(await ResolveAsync(block));
             }
 
             return contentModels is not null ? contentModels : new List<ContentModel>();
         }
 
         /// <inheritdoc />
-        public async Task<bool> SaveContentAsync(IContent content, CancellationToken cancellationToken)
+        public async Task<bool> SaveAsync(IContent content)
         {
             var result = _contentService.Save(content);
             return true ? result.Success : false;
         }
 
         /// <inheritdoc />
-        public async Task<bool> SaveAndPublishContentAsync(IContent content, CancellationToken cancellationToken)
+        public async Task<bool> SaveAndPublishAsync(IContent content)
         {
             var result = _contentService.SaveAndPublish(content);
             return true ? result.Success : false;

@@ -5,17 +5,11 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces
     public interface IContentApiRequestHandler
     {
         /// <summary>
-        /// Gets the content published asynchronous.
+        /// Gets the content asynchronous.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <returns></returns>
-        Task<ApiResponse<ContentModel>> GetContentPublishedAsnyc(Guid contentId);
-        /// <summary>
-        /// Gets the content draft asnyc.
-        /// </summary>
-        /// <param name="contentId">The content identifier.</param>
-        /// <returns></returns>
-        Task<ApiResponse<ContentModel>> GetContentDraftAsnyc(Guid contentId);
+        Task<ApiResponse<ContentModel>> GetContentAsync(Guid contentId);
         /// <summary>
         /// Gets the block asynchronous.
         /// </summary>

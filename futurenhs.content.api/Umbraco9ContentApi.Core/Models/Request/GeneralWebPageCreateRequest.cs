@@ -1,25 +1,28 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Umbraco9ContentApi.Core.Models.Requests
+namespace Umbraco9ContentApi.Core.Models.Request
 {
+    /// <summary>
+    /// The request used to create the content for a web page.
+    /// </summary>
     public class GeneralWebPageCreateRequest
     {
         /// <summary>
-        /// Gets or sets the name of the page.
+        /// Gets or sets the name.
         /// </summary>
         /// <value>
-        /// The name of the page.
+        /// The name.
         /// </value>
-        [JsonProperty("pageName")]
-        public string PageName { get; set; }
+        [ModelBinder(Name = "name")]
+        public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the page parent identifier.
+        /// Gets or sets the parent identifier.
         /// </summary>
         /// <value>
-        /// The page parent identifier.
+        /// The parent identifier.
         /// </value>
-        [JsonProperty("pageParentId")]
-        public string PageParentId { get; set; }
+        [ModelBinder(Name = "parentId")]
+        public string? ParentId { get; set; }
     }
 }
