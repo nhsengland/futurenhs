@@ -18,7 +18,8 @@
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
-        private List<string>? errorList = new List<string>();
+        private List<string>? errorList = null;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FutureNhsTemplateHandler"/> class.
         /// </summary>
@@ -31,11 +32,11 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid id)
         {
             ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
-            var template = await _futureNhsContentService.GetPublishedContentAsync(id, cancellationToken);
-            var result = await _futureNhsContentService.ResolvePublishedContentAsync(template, cancellationToken);
+            var template = await _futureNhsContentService.GetPublishedAsync(id);
+            var result = await _futureNhsContentService.ResolveAsync(template);
 
             if (result is null)
             {
@@ -47,18 +48,18 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllTemplatesAsync(CancellationToken cancellationToken)
+        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllTemplatesAsync()
         {
             ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
             var contentModels = new List<ContentModel>();
             var templatesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Templates");
-            var publishedTemplates = await _futureNhsContentService.GetPublishedContentChildrenAsync(templatesFolderGuid, cancellationToken);
+            var publishedTemplates = await _futureNhsContentService.GetPublishedChildrenAsync(templatesFolderGuid);
 
             if (publishedTemplates is not null && publishedTemplates.Any())
             {
                 foreach (var templates in publishedTemplates)
                 {
-                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(templates, cancellationToken));
+                    contentModels.Add(await _futureNhsContentService.ResolveAsync(templates));
                 }
             }
 
