@@ -29,11 +29,9 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
     const handleBlocksChange = (blocks: Array<CmsContentBlock>): void => {
 
-        console.log(blocks);
-
         // TODO save blocks to API
 
-        setBlocks(blocks);
+        //setBlocks(blocks);
 
     };
  

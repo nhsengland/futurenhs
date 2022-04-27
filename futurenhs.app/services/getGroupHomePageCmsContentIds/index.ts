@@ -8,7 +8,7 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { ContentBlock } from '@appTypes/contentBlock';
+import { CmsContentBlock } from '@appTypes/contentBlock';
 
 declare type Options = {
     user: User
@@ -24,7 +24,7 @@ export const getGroupHomePageCmsContentIds = async (
     { user, groupId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
-    const serviceResponse: ServiceResponse<Array<ContentBlock>> = {
+    const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
         data: null,
     }
 

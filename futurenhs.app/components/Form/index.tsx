@@ -143,7 +143,6 @@ export const Form: (props: Props) => JSX.Element = ({
      */
     const handleChange = (props: any): void => {
         
-        console.log(props, 123);
         changeAction?.(props)
 
     }
