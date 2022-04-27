@@ -79,6 +79,15 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
+        [Route("block")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
+        public async Task<IActionResult> GetBlocksAsync()
+        {
+            var blocks = await _contentDataProvider.GetBlocksAsync();
+            return new JsonResult(blocks);
+        }
+
+        [HttpGet]
         [Route("block/{blockId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
         public async Task<IActionResult> GetBlockAsync(Guid blockId)
@@ -88,12 +97,21 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("block")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
-        public async Task<IActionResult> GetBlocksAsync()
+        [Route("block/{blockId:guid}/placeholder")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<string>>))]
+        public async Task<IActionResult> GetBlockPlaceholderValuesAsync(Guid blockId)
         {
-            var blocks = await _contentDataProvider.GetBlocksAsync();
-            return new JsonResult(blocks);
+            var block = await _contentDataProvider.GetBlockPlaceholderValuesAsync(blockId);
+            return new JsonResult(block);
+        }
+
+        [HttpGet]
+        [Route("block/{blockId:guid}/fields")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<string>>))]
+        public async Task<IActionResult> GetBlockFieldValuesAsync(Guid blockId)
+        {
+            var block = await _contentDataProvider.GetBlockFieldValuesAsync(blockId);
+            return new JsonResult(block);
         }
 
         [HttpGet]

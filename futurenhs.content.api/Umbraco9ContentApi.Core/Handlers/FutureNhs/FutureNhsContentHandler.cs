@@ -6,6 +6,7 @@
     using Services.FutureNhs.Interface;
     using Umbraco.Cms.Web.Common.PublishedModels;
     using Umbraco9ContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
 
     /// <summary>
@@ -121,7 +122,6 @@
 
             errorList.Add("Couldn't retrieve content.");
             return response.Failure(errorList, "Failed.");
-
         }
 
         /// <inheritdoc />

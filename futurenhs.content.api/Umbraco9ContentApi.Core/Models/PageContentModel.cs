@@ -1,4 +1,6 @@
-﻿namespace Umbraco9ContentApi.Core.Models
+﻿using Umbraco9ContentApi.Core.Models.Content;
+
+namespace Umbraco9ContentApi.Core.Models
 {
     public class PageContentModel
     {
