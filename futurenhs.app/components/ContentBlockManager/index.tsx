@@ -20,6 +20,9 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { Theme } from '@appTypes/theme';
 
+/**
+ * Generic CMS content block manager
+ */
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
     csrfToken,
     forms,
@@ -35,6 +38,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     const currentValues: any = useRef({});
 
+    /**
+     * Blocks in data from the API include no unique IDs so we need to inject some locally
+     * to safely manage dynamic block sorting, adding or deleting
+     */
     const handleInjectUniqueIds = (blocks: Array<CmsContentBlock>): Array<CmsContentBlock> => {
 
         if(!blocks?.length) {
@@ -68,20 +75,26 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         header: classNames('u-mb-14'),
         headerCallOut: classNames('nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full', `u-border-l-theme-${background}`),
         headerCallOutText: classNames('nhsuk-heading-m u-text-bold'),
-        headerCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0'),
-        headerPrimaryCallOutButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0 tablet:u-ml-5'),
+        headerCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0 tablet:u-mr-5'),
+        headerPrimaryCallOutButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0'),
         addBlock: classNames('c-page-manager-block', 'u-text-center'),
         block: classNames('c-page-manager-block'),
         blockHeader: classNames('c-page-manager-block_header', 'u-text-bold'),
         blockBody: classNames('c-page-manager-block_body'),
     }
-    
+
+    /**
+     * Action buttons
+     */
     const LeaveEditButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToReadMode}>Stop editing page</button>
     const EnterEditButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>Edit page</button>
     const DiscardChangesButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>Discard changes</button>
     const PreviewButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToPreviewMode}>Preview page</button>
     const PublishButton: () => JSX.Element = () => <button className={generatedClasses.headerPrimaryCallOutButton} onClick={handleUpdateBlockSubmit}>Publish group page</button>
 
+    /**
+     * Handle creating a new block instance from the page template and adding it to the active block list
+     */
     const handleCreateBlock = (instanceId: string): void => {
 
         const updatedBlocks = [...blocks];
@@ -96,6 +109,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     }
 
+    /**
+     * Handle deleting a block instance from the active block list
+     */
     const handleDeleteBlock = (instanceId: string): void => {
 
         const index: number = blocks.findIndex((block) => block.instanceId === instanceId);
@@ -106,6 +122,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     }
 
+    /**
+     * Handle moving a block instance one index backwards in the active block list
+     */
     const handleMoveBlockPrevious = (instanceId: string): void => {
 
         const index: number = blocks.findIndex((block) => block.instanceId === instanceId);
@@ -125,6 +144,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     }
 
+    /**
+     * Handle moving a block instance one index forwards in the active block list
+     */
     const handleMoveBlockNext = (instanceId: string): void => {
 
         const index: number = blocks.findIndex((block) => block.instanceId === instanceId);
@@ -144,32 +166,49 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     }
 
+    /**
+     * Handle setting the active mode to create
+     */
     const handleSetToCreateMode = (): void => {
         setMode(cprud.CREATE);
         stateChangeAction?.(cprud.CREATE)
     }
 
+    /**
+     * Handle setting the active mode to read
+     */
     const handleSetToReadMode = (): void => {
         setMode(cprud.READ);
         stateChangeAction?.(cprud.READ)
     }
     
+    /**
+     * Handle setting the active mode to preview
+     */
     const handleSetToPreviewMode = (): void => {
         setMode(cprud.PREVIEW);
         stateChangeAction?.(cprud.PREVIEW)
     }
 
+    /**
+     * Handle setting the active mode to update
+     */
     const handleSetToUpdateMode = (): void => {
         setMode(cprud.UPDATE);
         stateChangeAction?.(cprud.UPDATE)
     }
 
+    /**
+     * Handle submitting the current block list data to the API
+     */
     const handleUpdateBlockSubmit = async (): Promise<FormErrors> => {
-
+        setMode(cprud.READ);
         return {}
-
     }
 
+    /**
+     * Render block data
+     */
     const renderBlockContent = ({ isEditable, block }): JSX.Element => {
 
         const { instanceId } = block;
@@ -236,24 +275,37 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     }
 
+    /**
+     * On active block data change, compare with source data from API to determine if there are changes
+     */
     useEffect(() => {
 
         const isLocalBlockStateMatchingSource: boolean = JSON.stringify(blocks) == JSON.stringify(sourceBlocks);
 
-        if(isLocalBlockStateMatchingSource === hasEditedBlocks){
+        if(isLocalBlockStateMatchingSource && hasEditedBlocks){
 
-            setHasEditedBlocks(!hasEditedBlocks);
+            setHasEditedBlocks(false);
+
+        } else if(!isLocalBlockStateMatchingSource && !hasEditedBlocks){
+
+            setHasEditedBlocks(false);
 
         }
 
     }, [blocks]);
 
+    /**
+     * Reset the active block data to the API block data if it is updated
+     */
     useEffect(() => {
 
         setBlocks(handleInjectUniqueIds(sourceBlocks));
 
     }, [sourceBlocks]);
 
+    /**
+     * Render
+     */
     return (
         <div className={generatedClasses.wrapper}>
             <header className={generatedClasses.header}>
@@ -272,8 +324,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 {(mode === cprud.PREVIEW) &&
                     <LayoutColumnContainer>
                         <LayoutColumn tablet={6}>
-                            <div className={generatedClasses.adminCallOut}>
-                                <p className={generatedClasses.adminCallOutText}>You are previewing the group homepage in editing mode.</p>
+                            <div className={generatedClasses.headerCallOut}>
+                                <p className={generatedClasses.headerCallOutText}>You are previewing the group homepage in editing mode.</p>
                             </div>
                         </LayoutColumn>
                         <LayoutColumn tablet={6} className="u-flex u-items-center">
@@ -291,14 +343,12 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 {(mode === cprud.UPDATE) &&
                     <div className={generatedClasses.adminCallOut}>
                     <LayoutColumnContainer className="u-mb-6">
-                        <LayoutColumn tablet={5}>
+                        <LayoutColumn tablet={5} className="u-flex u-items-center">
                             <h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2>
                         </LayoutColumn>
                         <LayoutColumn tablet={7} className="tablet:u-flex u-items-center">
                             {!hasEditedBlocks && 
-                                <>
-                                    <LeaveEditButton />
-                                </>                                  
+                                <LeaveEditButton />
                             }
                             {hasEditedBlocks && 
                                 <>
