@@ -14,10 +14,10 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
             _futureNhsContentService = futureNhsContentService;
         }
 
-        public async Task<IEnumerable<string>> GetBlockPlaceholderValuesAsync(Guid blockId)
+        public async Task<IEnumerable<string>> GetBlockPlaceholderValuesAsync(Guid blockId, CancellationToken cancellationToken)
         {
             List<string> placeholderValues = new List<string>();
-            var block = _futureNhsContentService.GetPublishedAsync(blockId);
+            var block = _futureNhsContentService.GetPublishedContentAsync(blockId, cancellationToken);
 
             foreach (var property in block.Result.Properties)
             {
