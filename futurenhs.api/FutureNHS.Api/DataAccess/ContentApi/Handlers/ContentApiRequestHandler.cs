@@ -20,15 +20,25 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<IEnumerable<ContentModel>>> GetBlocksAsync()
+        public Task<ApiResponse<ContentModel>> GetContentPublishedAsnyc(Guid contentId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModel>>>(HttpMethod.Get, "api/block");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/content/{contentId}/published");
         }
 
         /// <inheritdoc />
+        public Task<ApiResponse<ContentModel>> GetContentDraftAsnyc(Guid contentId)
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/content/{contentId}/draft");
+        }
         public Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId)
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/block/{blockId}");
+        }
+
+        /// <inheritdoc />
+        public Task<ApiResponse<IEnumerable<ContentModel>>> GetBlocksAsync()
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModel>>>(HttpMethod.Get, "api/block");
         }
 
         /// <inheritdoc />
@@ -49,14 +59,17 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<SitemapGroupItemModel>>>(HttpMethod.Get, $"api/sitemap/{contentId}");
         }
 
+        /// <inheritdoc />
         public Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid templateId)
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/template/{templateId}");
         }
 
+        /// <inheritdoc />
         public Task<ApiResponse<IEnumerable<ContentModel>>> GetTemplatesAsync()
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModel>>>(HttpMethod.Get, "api/template");
         }
     }
 }
+

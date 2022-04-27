@@ -7,49 +7,60 @@
     public interface IFutureNhsContentHandler
     {
         /// <summary>
-        /// Creates the content.
+        /// Creates the content asynchronous.
         /// </summary>
         /// <param name="pageName">Name of the page.</param>
         /// <param name="pageParentId">The page parent identifier.</param>
-        /// <param name="publish">if set to <c>true</c> [publish].</param>
-        /// <returns>Created content identifier.</returns>
-        Task<ApiResponse<string>> CreateContentAsync(string pageName, string? pageParentId = null, bool publish = false);
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> CreateContentAsync(string pageName, string pageParentId, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Updates the content of the page.
+        /// Updates the content asynchronous.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="title">The title.</param>
         /// <param name="description">The description.</param>
         /// <param name="pageContent">The content.</param>
         /// <returns>True or false.</returns>
-        Task<ApiResponse<string>> UpdateContentAsync(Guid id, string? title, string? description, PageContentModel? pageContent);
+        Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, PageContentModel pageContent, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Publishes the content.
+        /// Publishes the content asynchronous.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>True or false.</returns>
-        Task<ApiResponse<string>> PublishContentAsync(Guid id);
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> PublishContentAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Deletes the content.
+        /// Deletes the content asynchronous.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>True or false.</returns>
-        Task<ApiResponse<string>> DeleteContentAsync(Guid id);
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> DeleteContentAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the content.
+        /// Gets the content published asynchronous.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>Specified content.</returns>
-        Task<ApiResponse<ContentModel>> GetContentAsync(Guid id);
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<ContentModel>> GetContentPublishedAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets all content.
+        /// Gets the content draft asynchronous.
         /// </summary>
-        /// <returns>All content.</returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllContentAsync();
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<ContentModel>> GetContentDraftAsync(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets all content asynchronous.
+        /// </summary>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllContentAsync(CancellationToken cancellationToken);
     }
 }

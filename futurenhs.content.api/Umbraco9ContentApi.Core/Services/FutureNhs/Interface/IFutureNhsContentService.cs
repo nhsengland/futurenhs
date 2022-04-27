@@ -4,83 +4,97 @@
     using System.Collections.Generic;
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
+    using Umbraco9ContentApi.Core.Models.Dto;
     using ContentModel = Models.Content.ContentModel;
 
-    /// <summary>
-    /// Exposes and extends the Umbraco API.
-    /// </summary>
     public interface IFutureNhsContentService
     {
         /// <summary>
-        /// Gets the published children.
+        /// Gets the published content children asynchronous.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>Published contents children.</returns>
-        Task<IEnumerable<IPublishedContent>> GetPublishedChildrenAsync(Guid id);
-
-        /// <summary>
-        /// Gets the content.
-        /// </summary>
-        /// <param name="id">The unique identifier.</param>
-        /// <returns>Published content.</returns>
-        Task<IPublishedContent> GetPublishedAsync(Guid id);
-
-        /// <summary>
-        /// Gets the content.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<IContent> GetAsync(Guid id);
+        Task<IEnumerable<IPublishedContent>> GetPublishedContentChildrenAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Resolves the content.
+        /// Gets the published content asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<IPublishedContent> GetPublishedContentAsync(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the content asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<IContent> GetDraftContentAsync(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Resolves the published content asynchronous.
         /// </summary>
         /// <param name="content">The content.</param>
-        /// <returns>Content model.</returns>
-        Task<ContentModel> ResolveAsync(IPublishedContent content);
-
-        /// <summary>
-        /// Creates the content.
-        /// </summary>
-        /// <param name="parentContentId">The parent content identifier.</param>
-        /// <param name="contentName">Name of the content.</param>
-        /// <param name="documentTypeAlias">The document type alias.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<IContent?> CreateAsync(Guid parentContentId, string contentName, string documentTypeAlias);
+        Task<ContentModel> ResolvePublishedContentAsync(IPublishedContent content, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Deletes the content.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>Operation result.</returns>
-        Task<bool> DeleteAsync(Guid id);
-
-        /// <summary>
-        /// Publishes the content.
-        /// </summary>
-        /// <param name="contentId">The content identifier.</param>
-        /// <returns>Publish result.</returns>
-        Task<bool> PublishAsync(Guid contentId);
-
-        /// <summary>
-        /// Gets the  specified template's blocks.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>Blocks for specified template.</returns>
-        Task<IEnumerable<ContentModel>> GetTemplateBlocksAsync(Guid id);
-
-        /// <summary>
-        /// Saves the content.
+        /// Resolves the draft content asynchronous.
         /// </summary>
         /// <param name="content">The content.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<bool> SaveAsync(IContent content);
+        Task<ContentModel> ResolveDraftContentAsync(IContent content, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Saves the content and publish.
+        /// Creates the asynchronous.
+        /// </summary>
+        /// <param name="generalWebPage">The general web page.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<IContent> CreateContentAsync(GeneralWebPageDto generalWebPage, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Deletes the asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<bool> DeleteContentAsync(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Publishes the asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<bool> PublishContentAsync(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the template blocks asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<IEnumerable<ContentModel>> GetTemplateBlocksAsync(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Saves the content asynchronous.
         /// </summary>
         /// <param name="content">The content.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<bool> SaveAndPublishAsync(IContent content);
+        Task<bool> SaveContentAsync(IContent content, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Saves the and publish content asynchronous.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<bool> SaveAndPublishContentAsync(IContent content, CancellationToken cancellationToken);
     }
 }
