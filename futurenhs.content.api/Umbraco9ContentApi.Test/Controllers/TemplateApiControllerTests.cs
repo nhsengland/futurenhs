@@ -10,7 +10,7 @@
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
-    using Umbraco9ContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
     using Assert = Xunit.Assert;
 
@@ -162,7 +162,7 @@
 
             var model = new ContentModel()
             {
-                Item = new ItemModel
+                Item = new ContentModelItem
                 {
                     Id = contentId,
                 },

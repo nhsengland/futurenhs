@@ -1,7 +1,7 @@
 ﻿namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
 {
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
-    using Umbraco9ContentApi.Core.Models;
 
     public interface IFutureNhsTemplateHandler
     {
