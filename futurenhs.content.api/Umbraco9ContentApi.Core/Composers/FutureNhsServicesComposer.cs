@@ -7,7 +7,6 @@
     using Umbraco9ContentApi.Core.Converters;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
-    using Umbraco9ContentApi.Core.Resolvers.Interface;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using Umbraco9ContentApi.Core.Services.FutureNhs;
     using UmbracoContentApi.Core;
@@ -38,7 +37,6 @@
             builder.Converters().Replace<TextAreaConverter, JsonContentConverter>();
 
             // Resolvers
-            builder.Services.AddTransient<IDraftContentResolver, DraftContentResolver>();
             builder.Services.AddTransient<IFutureNHSContentResolver, FutureNHSContentResolver>();
         }
     }

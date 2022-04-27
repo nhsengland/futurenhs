@@ -11,33 +11,33 @@
     /// Block Api controller.
     /// </summary>
     [Route("api/block")]
-    public sealed class BlockController : UmbracoApiController
+    public sealed class BlockApiController : UmbracoApiController
     {
         private readonly IFutureNhsContentHandler _futureNhsContentHandler;
         private readonly IFutureNhsBlockHandler _futureNhsBlockHandler;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BlockController"/> class.
+        /// Initializes a new instance of the <see cref="BlockApiController"/> class.
         /// </summary>
         /// <param name="futureNhsContentHandler">The future Nhs content handler.</param>
         /// <param name="futureNhsBlockHandler">The future Nhs block handler.</param>
-        public BlockController(IFutureNhsContentHandler futureNhsContentHandler, IFutureNhsBlockHandler futureNhsBlockHandler)
+        public BlockApiController(IFutureNhsContentHandler futureNhsContentHandler, IFutureNhsBlockHandler futureNhsBlockHandler)
         {
             _futureNhsContentHandler = futureNhsContentHandler;
             _futureNhsBlockHandler = futureNhsBlockHandler;
         }
 
         /// <summary>
-        /// Gets the block asynchronous.
+        /// Gets the specified block.
         /// </summary>
-        /// <param name="blockId">The block identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        /// <param name="blockId">The content identifier.</param>
+        /// <returns>The specified block.</returns>
+        /// <remarks></remarks>
         [HttpGet("{blockId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> GetBlockAsync(Guid blockId, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetBlockAsync(Guid blockId)
         {
-            var content = await _futureNhsContentHandler.GetContentPublishedAsync(blockId, cancellationToken);
+            var content = await _futureNhsContentHandler.GetContentAsync(blockId);
 
             if (content is null)
             {
@@ -48,15 +48,15 @@
         }
 
         /// <summary>
-        /// Gets all blocks asynchronous.
+        /// Gets all blocks.
         /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        /// <returns>All blocks.</returns>
+        /// <remarks></remarks>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
-        public async Task<ActionResult> GetAllBlocksAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult> GetAllBlocksAsync()
         {
-            var response = await _futureNhsBlockHandler.GetAllBlocksAsync(cancellationToken);
+            var response = await _futureNhsBlockHandler.GetAllBlocksAsync();
 
             if (response.Succeeded && !response.Data.Any())
             {
@@ -72,15 +72,15 @@
         }
 
         /// <summary>
-        /// Deletes the block asynchronous.
+        /// Deletes the specified block.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        /// <returns>The block identifier.</returns>
+        /// <remarks></remarks>
         [HttpDelete("{blockId:guid}")]
-        public async Task<ActionResult> DeleteBlockAsync(Guid blockId, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteBlockAsync(Guid blockId)
         {
-            var response = await _futureNhsContentHandler.DeleteContentAsync(blockId, cancellationToken);
+            var response = await _futureNhsContentHandler.DeleteContentAsync(blockId);
 
             if (response.Succeeded)
             {

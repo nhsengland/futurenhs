@@ -14,7 +14,7 @@
         /// The title.
         /// </value>
         [ModelBinder(Name = "title")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -23,7 +23,7 @@
         /// The description.
         /// </value>
         [ModelBinder(Name = "description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the content.
@@ -32,6 +32,6 @@
         /// The content.
         /// </value>
         [ModelBinder(Name = "pageContent")]
-        public PageContentModel PageContent { get; set; }
+        public PageContentModel? PageContent { get; set; }
     }
 }

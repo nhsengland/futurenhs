@@ -6,10 +6,9 @@
     public interface IFutureNhsBlockHandler
     {
         /// <summary>
-        /// Gets all blocks asynchronous.
+        /// Gets all blocks.
         /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync(CancellationToken cancellationToken);
+        /// <returns>All blocks.</returns>
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync();
     }
 }
