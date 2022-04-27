@@ -2,7 +2,7 @@
 
 namespace FutureNHS.Api.Models.Content
 {
-    public class ItemModel
+    public class ContentModelItem
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }

@@ -10,13 +10,13 @@ namespace Umbraco9ContentApi.Core.Converters
     /// <seealso cref="IConverter" />
     public sealed class BlockPickerConverter : IConverter
     {
-        private readonly Lazy<IFutureNHSContentResolver> _contentResolver;
+        private readonly Lazy<IFutureNhsContentResolver> _contentResolver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockPickerConverter"/> class.
         /// </summary>
         /// <param name="contentResolver">The content resolver.</param>
-        public BlockPickerConverter(Lazy<IFutureNHSContentResolver> contentResolver)
+        public BlockPickerConverter(Lazy<IFutureNhsContentResolver> contentResolver)
         {
             _contentResolver = contentResolver;
         }

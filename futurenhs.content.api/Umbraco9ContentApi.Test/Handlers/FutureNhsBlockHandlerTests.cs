@@ -7,16 +7,19 @@ namespace Umbraco9ContentApi.Test.Handler
     using NUnit.Framework;
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models.PublishedContent;
-    using Umbraco9ContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Assert = Xunit.Assert;
 
     [TestFixture]
     public class FutureNhsBlockHandlerTests
     {
         private Mock<IFutureNhsContentService> _mockFutureNhsContentService;
+        private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService;
         private IConfiguration? _config;
+        private CancellationToken cancellationToken;
 
         /// <summary>
         /// Setups this instance.
@@ -25,6 +28,7 @@ namespace Umbraco9ContentApi.Test.Handler
         public void Setup()
         {
             _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
+            _mockFutureNhsBlockService = new Mock<IFutureNhsBlockService>();
         }
 
         #region Get All Blocks Tests
@@ -52,7 +56,7 @@ namespace Umbraco9ContentApi.Test.Handler
                 });
 
             _mockFutureNhsContentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
-                .Returns(new ContentModel() { Item = new ItemModel() { Id = contentId } });
+                .Returns(new ContentModel() { Item = new ContentModelItem() { Id = contentId } });
 
             // Act
             var contentResult = await contentHandler.GetAllBlocksAsync();
@@ -124,7 +128,7 @@ namespace Umbraco9ContentApi.Test.Handler
         private FutureNhsBlockHandler GetHandler(IConfiguration? config)
         {
             var handler = new FutureNhsBlockHandler(
-                _mockFutureNhsContentService.Object,
+                _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object,
                 config);
 
             return handler;

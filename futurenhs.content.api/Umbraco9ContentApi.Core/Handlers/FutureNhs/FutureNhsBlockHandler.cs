@@ -3,7 +3,7 @@
     using Interface;
     using Microsoft.Extensions.Configuration;
     using Services.FutureNhs.Interface;
-    using Umbraco9ContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
 
     /// <summary>
@@ -14,16 +14,13 @@
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
-        private List<string>? errorList = null;
+        private readonly IFutureNhsBlockService _futureNhsBlockService;
+        private List<string>? errorList = new List<string>();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FutureNhsBlockHandler"/> class.
-        /// </summary>
-        /// <param name="futureNhsContentService">The future NHS content service.</param>
-        /// <param name="config">The configuration.</param>
-        public FutureNhsBlockHandler(IFutureNhsContentService futureNhsContentService, IConfiguration config)
+        public FutureNhsBlockHandler(IFutureNhsContentService futureNhsContentService, IFutureNhsBlockService futureNhsBlockService, IConfiguration config)
         {
             _futureNhsContentService = futureNhsContentService;
+            _futureNhsBlockService = futureNhsBlockService;
             _config = config;
         }
 
@@ -44,6 +41,43 @@
             }
 
             return response.Success(contentModels, "Success.");
+        }
+
+        public async Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId)
+        {
+            ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
+            var block = await _futureNhsContentService.GetPublishedAsync(blockId);
+            var result = await _futureNhsContentService.ResolveAsync(block);
+
+            if (result is not null)
+            {
+                return response.Success(result, "Success.");
+            }
+
+            errorList.Add("Couldn't retrieve block.");
+            return response.Failure(errorList, "Failed.");
+        }
+
+        /// <inheritdoc />
+        public async Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId)
+        {
+            ApiResponse<IEnumerable<string>> response = new ApiResponse<IEnumerable<string>>();
+            var blockPlaceholderValues = await _futureNhsBlockService.GetBlockPlaceholderValuesAsync(blockId);
+            return response.Success(blockPlaceholderValues, "Success.");
+        }
+        public async Task<ApiResponse<IEnumerable<string>>> GetBlockFieldValuesAsync(Guid blockId)
+        {
+            ApiResponse<IEnumerable<string>> response = new ApiResponse<IEnumerable<string>>();
+            var block = await _futureNhsContentService.GetPublishedAsync(blockId);
+            var result = await _futureNhsContentService.ResolveAsync(block);
+
+            if (result is not null)
+            {
+                return response.Success(result.Content.Keys, "Success.");
+            }
+
+            errorList.Add("Couldn't retrieve block.");
+            return response.Failure(errorList, "Failed.");
         }
     }
 }

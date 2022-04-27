@@ -4,7 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Umbraco.Cms.Web.Common.Controllers;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
-    using Umbraco9ContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
 
     /// <summary>
@@ -34,10 +34,10 @@
         /// <returns>The specified block.</returns>
         /// <remarks></remarks>
         [HttpGet("{blockId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
         public async Task<ActionResult> GetBlockAsync(Guid blockId)
         {
-            var content = await _futureNhsContentHandler.GetContentAsync(blockId);
+            var content = await _futureNhsBlockHandler.GetBlockAsync(blockId);
 
             if (content is null)
             {
@@ -69,6 +69,44 @@
             }
 
             return Problem(response.Message);
+        }
+
+        /// <summary>
+        /// Gets the block asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <returns></returns>
+        [HttpGet("{blockId:guid}/placeholder")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<string>>))]
+        public async Task<ActionResult> GetBlockPlaceholderValuesAsync(Guid blockId)
+        {
+            var content = await _futureNhsBlockHandler.GetBlockPlaceholderValuesAsync(blockId);
+
+            if (content is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(content);
+        }
+
+        /// <summary>
+        /// Gets the block asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <returns></returns>
+        [HttpGet("{blockId:guid}/fields")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<string>>))]
+        public async Task<ActionResult> GetBlockFieldValuesAsync(Guid blockId)
+        {
+            var content = await _futureNhsBlockHandler.GetBlockFieldValuesAsync(blockId);
+
+            if (content is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(content);
         }
 
         /// <summary>
