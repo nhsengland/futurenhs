@@ -16,20 +16,10 @@ namespace Umbraco9ContentApi.Test.Handler
     [TestFixture]
     public class FutureNhsBlockHandlerTests
     {
-        private Mock<IFutureNhsContentService> _mockFutureNhsContentService;
-        private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService;
+        private Mock<IFutureNhsContentService> _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
+        private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService = new Mock<IFutureNhsBlockService>();
         private IConfiguration? _config;
         private CancellationToken cancellationToken;
-
-        /// <summary>
-        /// Setups this instance.
-        /// </summary>
-        [SetUp]
-        public void Setup()
-        {
-            _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
-            _mockFutureNhsBlockService = new Mock<IFutureNhsBlockService>();
-        }
 
         #region Get All Blocks Tests
 
@@ -49,17 +39,17 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()))
+                .Setup(x => x.GetPublishedContentChildrenAsync(It.IsAny<Guid>(), cancellationToken))
                 .ReturnsAsync(new List<IPublishedContent>()
                 {
                     mockContent.Object
                 });
 
-            _mockFutureNhsContentService.SetupSequence(x => x.ResolveAsync(It.IsAny<IPublishedContent>()).Result)
+            _mockFutureNhsContentService.SetupSequence(x => x.ResolvePublishedContentAsync(It.IsAny<IPublishedContent>(), cancellationToken).Result)
                 .Returns(new ContentModel() { Item = new ContentModelItem() { Id = contentId } });
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync();
+            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
 
             // Assert
             Assert.NotNull(contentResult);
@@ -82,11 +72,11 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedChildrenAsync(It.IsAny<Guid>()))
+                .Setup(x => x.GetPublishedContentChildrenAsync(It.IsAny<Guid>(), cancellationToken))
                 .ReturnsAsync(new List<IPublishedContent>());
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync();
+            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
 
             // Assert
             Assert.NotNull(contentResult);
@@ -109,7 +99,7 @@ namespace Umbraco9ContentApi.Test.Handler
             var contentHandler = GetHandler(_config);
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync();
+            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
 
             // Assert
             Assert.NotNull(contentResult);
@@ -128,7 +118,8 @@ namespace Umbraco9ContentApi.Test.Handler
         private FutureNhsBlockHandler GetHandler(IConfiguration? config)
         {
             var handler = new FutureNhsBlockHandler(
-                _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object,
+                _mockFutureNhsContentService.Object,
+                _mockFutureNhsBlockService.Object,
                 config);
 
             return handler;

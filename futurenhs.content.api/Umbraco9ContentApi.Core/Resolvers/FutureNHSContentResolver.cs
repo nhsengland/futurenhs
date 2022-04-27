@@ -49,7 +49,6 @@ namespace UmbracoContentApi.Core.Resolvers
 
                 var dict = new Dictionary<string, object>();
 
-
                 if (content is IPublishedContent publishedContent)
                 {
                     contentModel.Item.CreatedAt = publishedContent.CreateDate;
@@ -121,29 +120,12 @@ namespace UmbracoContentApi.Core.Resolvers
                     {
                         Id = content.Key,
                         ContentType = content.ContentType.Alias,
+                        Name = content.Name,
                         Type = content.ContentType.Name
                     }
                 };
 
                 var dict = new Dictionary<string, object>();
-
-
-                if (content is IPublishedContent publishedContent)
-                {
-                    contentModel.Item.CreatedAt = publishedContent.CreateDate;
-                    contentModel.Item.EditedAt = publishedContent.UpdateDate;
-                    contentModel.Item.Locale = _variationContextAccessor.VariationContext.Culture;
-                    contentModel.Item.Name = publishedContent.Name;
-                    contentModel.Item.UrlSegment = publishedContent.UrlSegment;
-
-                    if (options != null &&
-                        options.ContainsKey("addUrl") &&
-                        bool.TryParse(options["addUrl"].ToString(), out var addUrl) &&
-                        addUrl)
-                    {
-                        contentModel.Item.Url = publishedContent.Url(mode: UrlMode.Absolute);
-                    }
-                }
 
                 foreach (var property in content.Properties)
                 {
@@ -157,7 +139,6 @@ namespace UmbracoContentApi.Core.Resolvers
                         {
                             continue;
                         }
-
 
                         prop = converter.Convert(prop, options?.ToDictionary(x => x.Key, x => x.Value));
 

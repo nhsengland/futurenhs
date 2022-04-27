@@ -9,25 +9,29 @@
         /// Gets the block asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId);
+        Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId, CancellationToken cancellationToken);
         /// <summary>
-        /// Gets all blocks.
+        /// Gets all blocks asynchronous.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync();
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync(CancellationToken cancellationToken);
         /// <summary>
         /// Gets the block placeholder values asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId);
+        Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId, CancellationToken cancellationToken);
         /// <summary>
         /// Gets the block field values asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockFieldValuesAsync(Guid blockId);
+        Task<ApiResponse<IEnumerable<string>>> GetBlockFieldValuesAsync(Guid blockId, CancellationToken cancellationToken);
 
     }
 }

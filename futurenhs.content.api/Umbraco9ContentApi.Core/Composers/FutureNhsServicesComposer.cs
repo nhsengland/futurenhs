@@ -7,6 +7,7 @@
     using Umbraco9ContentApi.Core.Converters;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
+    using Umbraco9ContentApi.Core.Resolvers;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using Umbraco9ContentApi.Core.Services.FutureNhs;
     using UmbracoContentApi.Core;

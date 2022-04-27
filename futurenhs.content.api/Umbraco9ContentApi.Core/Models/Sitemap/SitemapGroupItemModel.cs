@@ -1,8 +1,5 @@
-﻿namespace Umbraco9ContentApi.Core.Models
+﻿namespace Umbraco9ContentApi.Core.Models.Sitemap
 {
-    /// <summary>
-    /// The SitemapGroupItemModel for front end website structure.
-    /// </summary>
     public class SitemapGroupItemModel
     {
         /// <summary>
