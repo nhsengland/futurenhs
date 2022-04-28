@@ -1,6 +1,6 @@
 export interface Props {
     typeId: string;
-    instanceId: string | number;
+    instanceId: string;
     isEditable?: boolean;
     isTemplate?: boolean;
     shouldRenderMovePrevious?: boolean;

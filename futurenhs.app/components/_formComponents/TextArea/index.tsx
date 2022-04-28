@@ -10,7 +10,7 @@ import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { Props } from './interfaces'
 
 export const TextArea: (props: Props) => JSX.Element = ({
-    input: { name, value, onChange },
+    input,
     initialError,
     meta: { touched, error, submitError },
     text,
@@ -34,7 +34,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
 
     const { label, hint } = text ?? {}
 
-    const id: string = name
+    const id: string = input.name
     const shouldRenderError: boolean =
         Boolean(initialError) ||
         ((Boolean(error) || Boolean(submitError)) && touched)
@@ -47,14 +47,17 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const elementMinHeight: string = `${minHeight}px`
 
     const handleRteInit = (_, editor) => (editorRef.current = editor)
-    const handleRteChange = (value: any) => onChange(value)
-    const handleRteFocus = () => setIsRteFocussed(true)
+    const handleRteChange = (value: any) => input.onChange(value)
+    const handleRteFocus = () => {
+        input.onFocus();
+        setIsRteFocussed(true)
+    }
     const handleRteBlur = () => setIsRteFocussed(false)
 
     const generatedIds: any = {
-        hint: `${name}-hint`,
-        errorLabel: `${name}-error`,
-        remainingCharacters: `${name}-remaining-characters`,
+        hint: `${id}-hint`,
+        errorLabel: `${id}-error`,
+        remainingCharacters: `${id}-remaining-characters`,
     }
 
     const generatedClasses: any = {
@@ -114,9 +117,9 @@ export const TextArea: (props: Props) => JSX.Element = ({
                 {shouldLoadRte ? (
                     <Editor
                         tinymceScriptSrc="/js/tinymce/tinymce.min.js"
-                        textareaName={name}
-                        id={name}
-                        value={value}
+                        textareaName={input.name}
+                        id={id}
+                        value={input.value}
                         onInit={handleRteInit}
                         onEditorChange={handleRteChange}
                         onFocus={handleRteFocus}
@@ -136,12 +139,10 @@ export const TextArea: (props: Props) => JSX.Element = ({
                     />
                 ) : (
                     <textarea
+                        {...input}
                         {...ariaInputProps}
                         ref={textAreaRef}
                         id={id}
-                        name={name}
-                        value={value}
-                        onChange={onChange}
                         className={generatedClasses.input}
                         style={{ minHeight: elementMinHeight }}
                     />
@@ -150,7 +151,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
             {shouldRenderRemainingCharacterCount && maxLength && (
                 <RemainingCharacterCount
                     id={generatedIds.remainingCharacters}
-                    currentCharacterCount={value?.length ?? 0}
+                    currentCharacterCount={input.value?.length ?? 0}
                     maxCharacterCount={maxLength}
                     className="u-float-right"
                 />

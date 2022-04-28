@@ -14,6 +14,7 @@ import { Props } from './interfaces'
 
 export const ContentBlock: (props: Props) => JSX.Element = ({
     instanceId,
+    typeId,
     isEditable,
     isTemplate,
     shouldRenderMovePrevious,
@@ -34,7 +35,7 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
     const isPublished: boolean = !isEditable && !isTemplate;
 
     const generatedClasses: any = {
-        wrapper: classNames('c-content-block', {
+        wrapper: classNames('c-content-block', 'focus:u-outline-none', {
             ['c-content-block--editable']: !isPublished
         }, className),
         header: classNames('c-content-block_header'),
@@ -59,7 +60,7 @@ export const ContentBlock: (props: Props) => JSX.Element = ({
 
     return (
 
-        <div className={generatedClasses.wrapper}>
+        <div id={instanceId} tabIndex={-1} className={generatedClasses.wrapper} data-content-type-id={typeId}>
             {!isPublished &&
                 <header className={generatedClasses.header}>
                     <span>{name}</span>

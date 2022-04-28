@@ -15,12 +15,13 @@ import { CmsContentBlock } from '@appTypes/contentBlock';
 import { RichText } from '@components/RichText';
 
 import { Props } from './interfaces'
-import { FormErrors } from '@appTypes/form'
+import { FormConfig, FormErrors } from '@appTypes/form'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
 import { Theme } from '@appTypes/theme';
 
 const simpleClone = (item) => JSON.parse(JSON.stringify(item));
+const simpleCompare = (a: any, b: any): boolean => JSON.stringify(a) === JSON.stringify(b);
 
 /**
  * Generic CMS content block manager
@@ -34,17 +35,19 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     blocksChangeAction,
     stateChangeAction,
     createBlockAction,
+    saveBlocksAction,
     themeId,
     className,
 }) => {
 
-    const currentValues: any = useRef({});
+    const valueUpdateCache: any = useRef({});
+    const valueUpdateCacheTimeOut: any = useRef(null);
 
     /**
      * Blocks in data from the API include no unique IDs so we need to inject some locally
      * to safely manage dynamic block sorting, adding or deleting
      */
-    const handleInjectUniqueIds = (sourceBlocks: Array<CmsContentBlock>): Array<CmsContentBlock> => {
+    const handleToggleInstanceIds = (sourceBlocks: Array<CmsContentBlock>, shouldAdd: boolean): Array<CmsContentBlock> => {
 
         if(!sourceBlocks?.length) {
 
@@ -52,11 +55,17 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         }
 
-        const blocks: Array<CmsContentBlock> = simpleClone(sourceBlocks);
+        return simpleClone(sourceBlocks).map((block) => {
 
-        return blocks.map((block) => {
+            if(shouldAdd){
 
-            block.instanceId = randomBytes(6).toString('hex');
+                block.instanceId = randomBytes(6).toString('hex');
+
+            } else {
+
+                delete block.instanceId;
+
+            }
 
             return block;
 
@@ -80,8 +89,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         header: classNames('u-mb-14'),
         headerCallOut: classNames('nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full', `u-border-l-theme-${background}`),
         headerCallOutText: classNames('nhsuk-heading-m u-text-bold'),
-        headerCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0 tablet:u-mr-5'),
-        headerPrimaryCallOutButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0'),
+        headerCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0 tablet:u-ml-5'),
+        headerPrimaryCallOutButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0 tablet:u-ml-5'),
         addBlock: classNames('c-page-manager-block', 'u-text-center'),
         block: classNames('c-page-manager-block'),
         blockHeader: classNames('c-page-manager-block_header', 'u-text-bold'),
@@ -110,7 +119,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         handleSetToUpdateMode();
         setBlocks(updatedBlocks);
-        blocksChangeAction(updatedBlocks);
+        blocksChangeAction?.(updatedBlocks);
 
     }
 
@@ -123,7 +132,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         const updatedBlocks = deleteArrayItem(blocks, index);
 
         setBlocks(updatedBlocks);
-        blocksChangeAction(updatedBlocks);
+        blocksChangeAction?.(updatedBlocks);
 
     }
 
@@ -137,7 +146,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         const updatedBlocks = moveArrayItem(blocks, index, targetIndex);
 
         setBlocks(updatedBlocks);
-        blocksChangeAction(updatedBlocks);
+        blocksChangeAction?.(updatedBlocks);
 
         setTimeout(() => {
             
@@ -159,7 +168,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         const updatedBlocks = moveArrayItem(blocks, index, targetIndex);
 
         setBlocks(updatedBlocks);
-        blocksChangeAction(updatedBlocks);
+        blocksChangeAction?.(updatedBlocks);
 
         setTimeout(() => {
             
@@ -214,9 +223,93 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      * Handle submitting the current block list data to the API
      */
     const handleUpdateBlockSubmit = async (): Promise<FormErrors> => {
-        setMode(cprud.READ);
-        return {}
+
+        const blocksToSave: Array<CmsContentBlock> = handleToggleInstanceIds(blocks, false);
+
+        let errors: FormErrors = {};
+
+        if(saveBlocksAction){
+
+            errors = await saveBlocksAction(blocksToSave);
+
+        }
+
+        if(!Object.keys(errors).length){
+
+            setMode(cprud.READ);
+
+        }
+
+        return errors
     }
+
+    /**
+     * Handle form updates from blocks in edit mode
+     */
+    const handleFormUpdate = ({ formState, instanceId }): void => {
+
+        const { values, visited } = formState;
+
+        const updatedContent: Record<string, any> = {};
+        const targetBlock: CmsContentBlock = blocks.find((block) => block.instanceId === instanceId);
+
+        /**
+         * Handle value updates
+         */
+        Object.keys(values).forEach((key) => {
+
+            const value: any = values[key];
+            const fieldName: string = key.replace(`-${instanceId}`, '');
+
+            /**
+             * If a field has been interacted with and its current value differs from the value current held in blocks
+             */
+            if(key.includes(instanceId) && visited[key] && value !== targetBlock.content[fieldName]){
+
+                updatedContent[fieldName] = values[key];
+
+            }
+
+        });
+
+        /**
+         * If there are updates to block content
+         */
+        if(Object.keys(updatedContent).length > 0){
+
+            valueUpdateCache.current[instanceId] = Object.assign({}, valueUpdateCache.current[instanceId], updatedContent);
+    
+            processValueUpdateCache();
+
+        }
+
+    };
+
+    /**
+     * Process the update cache
+     * Avoids individual updates to form fields causing full blocks rerender
+     */
+    const processValueUpdateCache = (): void => {
+
+        window.clearTimeout(valueUpdateCacheTimeOut.current);
+
+        valueUpdateCacheTimeOut.current = window.setTimeout(() => {
+
+            const updatedBlocks: Array<CmsContentBlock> = simpleClone(blocks);
+
+            Object.keys(valueUpdateCache.current).forEach((instanceId) => {
+
+                const targetBlock: CmsContentBlock = updatedBlocks.find((block) => block.instanceId === instanceId);
+
+                targetBlock.content = Object.assign({}, targetBlock.content, valueUpdateCache.current[instanceId]);
+
+            })
+
+            setBlocks(updatedBlocks);
+
+        }, 250);
+
+    };
 
     /**
      * Render block data
@@ -229,29 +322,12 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
             if(isEditable){
 
-                const formConfig = JSON.parse(JSON.stringify(forms[formTypes.CONTENT_BLOCK_TEXT]));
-                const headingFieldName: string = 'heading' + '-' + instanceId;
-                const mainTextFieldName: string = 'mainText' + '-' + instanceId;
+                const formConfig: FormConfig = simpleClone(forms[formTypes.CONTENT_BLOCK_TEXT]);
+                const handleChange: (formState: any) => void = (formState) => handleFormUpdate({ instanceId, formState });
 
                 formConfig.initialValues = {
-                    [headingFieldName]: currentValues.current[headingFieldName] || block.content.title,
-                    [mainTextFieldName]: currentValues.current[mainTextFieldName] || block.content.mainText
-                };
-
-                const handleChange = ({ values }) => {
-
-                    Object.keys(values).forEach((key) => {
-
-                        if(key.includes(instanceId)){
-
-                            currentValues.current[key] = values[key];
-
-                        }
-
-                    });
-
-                    currentValues.current = Object.assign({}, currentValues.current, values);
-
+                    [`title-${instanceId}`]: block.content.title,
+                    [`mainText-${instanceId}`]: block.content.mainText
                 };
 
                 return (
@@ -292,7 +368,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        const isLocalBlockStateMatchingSource: boolean = JSON.stringify(blocks) === JSON.stringify(referenceBlocks);
+        const isLocalBlockStateMatchingSource: boolean = simpleCompare(blocks, referenceBlocks);
 
         if(isLocalBlockStateMatchingSource && hasEditedBlocks){
 
@@ -304,6 +380,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         }
 
+        return () => window.clearTimeout(valueUpdateCacheTimeOut.current);
+
     }, [blocks]);
 
     /**
@@ -311,7 +389,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        const updatedBlocks: Array<CmsContentBlock> = handleInjectUniqueIds(sourceBlocks);
+        const updatedBlocks: Array<CmsContentBlock> = handleToggleInstanceIds(sourceBlocks, true);
 
         setBlocks(updatedBlocks);
         setReferenceBlocks(updatedBlocks);
@@ -358,10 +436,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 {(mode === cprud.UPDATE) &&
                     <div className={generatedClasses.adminCallOut}>
                     <LayoutColumnContainer className="u-mb-6">
-                        <LayoutColumn tablet={5} className="u-flex u-items-center">
+                        <LayoutColumn tablet={hasEditedBlocks ? 5 : 9} className="u-flex u-items-center">
                             <h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2>
                         </LayoutColumn>
-                        <LayoutColumn tablet={7} className="tablet:u-flex u-items-center">
+                        <LayoutColumn tablet={hasEditedBlocks ? 7 : 3} className="tablet:u-flex u-items-center">
                             {!hasEditedBlocks && 
                                 <LeaveEditButton />
                             }
@@ -394,7 +472,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                                     <li key={index} className="u-mb-10">
                                         <ContentBlock
-                                            instanceId={index}
+                                            instanceId={index.toString()}
                                             typeId={item.contentType}
                                             isTemplate={true}
                                             text={{
@@ -433,7 +511,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                                 return (
 
-                                    <li key={block.instanceId} id={instanceId} tabIndex={-1} className="u-mb-10 focus:u-outline-none">
+                                    <li key={block.instanceId} className="u-mb-10">
                                         <ContentBlock
                                             instanceId={instanceId}
                                             typeId={item.contentType}

@@ -372,6 +372,7 @@ export const Form: (props: Props) => JSX.Element = ({
                             subscription={{
                                 values: true,
                                 touched: true,
+                                visited: true,
                                 errors: true,
                                 submitErrors: true,
                                 submitFailed: true,
