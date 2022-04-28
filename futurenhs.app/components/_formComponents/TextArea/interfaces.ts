@@ -3,6 +3,7 @@ export interface Props {
         name: string
         value: any
         onChange: any
+        onFocus: any;
         onBlur
     }
     meta: {
