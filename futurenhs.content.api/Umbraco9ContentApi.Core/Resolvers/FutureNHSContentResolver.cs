@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 using Umbraco9ContentApi.Core.Models.Content;
 using Umbraco9ContentApi.Core.Resolvers.Interfaces;
@@ -15,26 +16,38 @@ namespace UmbracoContentApi.Core.Resolvers
         private readonly ILogger<FutureNhsContentResolver> _logger;
         private readonly IPublishedValueFallback _publishedValueFallback;
         private readonly IVariationContextAccessor _variationContextAccessor;
+        private readonly IContentTypeService _contentTypeService;
 
         public FutureNhsContentResolver(
             IVariationContextAccessor variationContextAccessor,
             ConverterCollection converters,
             ILogger<FutureNhsContentResolver> logger,
-            IPublishedValueFallback publishedValueFallback)
+            IPublishedValueFallback publishedValueFallback, IContentTypeService contentTypeService)
         {
             _variationContextAccessor = variationContextAccessor;
             _converters = converters;
             _logger = logger;
             _publishedValueFallback = publishedValueFallback;
+            _contentTypeService = contentTypeService;
         }
 
-        public ContentModel ResolveContent(IPublishedElement content, Dictionary<string, object>? options = null)
+        public ContentModel ResolveContent(IPublishedElement content, string propertyGroupAlias, Dictionary<string, object>? options = null)
         {
             try
             {
                 if (content == null)
                 {
                     throw new ArgumentNullException(nameof(content));
+                }
+
+                var contentType = _contentTypeService.Get(content.ContentType.Alias);
+                var group = contentType.PropertyGroups.FirstOrDefault(x => x.Alias == propertyGroupAlias);
+                var groupProperties = group?.PropertyTypes.Select(x => x.Alias);
+
+                if (groupProperties == null)
+                {
+                    throw new ArgumentNullException(nameof(groupProperties));
+
                 }
 
                 var contentModel = new ContentModel
@@ -66,7 +79,7 @@ namespace UmbracoContentApi.Core.Resolvers
                     }
                 }
 
-                foreach (var property in content.Properties)
+                foreach (var property in content.Properties.Where(x => groupProperties.Contains(x.Alias)))
                 {
                     var converter =
                         _converters.FirstOrDefault(x => x.EditorAlias.Equals(property.PropertyType.EditorAlias));
@@ -78,7 +91,6 @@ namespace UmbracoContentApi.Core.Resolvers
                         {
                             continue;
                         }
-
 
                         prop = converter.Convert(prop, options?.ToDictionary(x => x.Key, x => x.Value));
 
@@ -96,6 +108,7 @@ namespace UmbracoContentApi.Core.Resolvers
                 }
 
                 contentModel.Content = dict;
+
                 return contentModel;
             }
             catch (Exception e)

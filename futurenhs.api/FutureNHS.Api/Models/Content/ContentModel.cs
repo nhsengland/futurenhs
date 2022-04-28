@@ -6,7 +6,6 @@ namespace FutureNHS.Api.Models.Content
     {
         [JsonProperty("item")]
         public ContentModelItem? Item { get; set; }
-
         [JsonProperty("content")]
         public Dictionary<string, object>? Content { get; set; }
     }

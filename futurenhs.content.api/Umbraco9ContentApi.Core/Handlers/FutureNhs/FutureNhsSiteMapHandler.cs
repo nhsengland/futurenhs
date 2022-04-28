@@ -1,8 +1,8 @@
 ﻿using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
-using Umbraco9ContentApi.Core.Models.Sitemap;
 using Umbraco9ContentApi.Core.Models.Response;
+using Umbraco9ContentApi.Core.Models.Sitemap;
 using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
 
 namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
@@ -15,13 +15,8 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
     {
         private readonly IFutureNhsContentService _futureNhsContentService;
         private readonly IFutureNhsSiteMapService _futureNhsSiteMapService;
-        private List<string>? errorList = new List<string>();
+        private List<string> errorList = new List<string>();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FutureNhsSiteMapHandler"/> class.
-        /// </summary>
-        /// <param name="futureNhsContentService">The future NHS content service.</param>
-        /// <param name="futureNhsSiteMapService">The future NHS site map service.</param>
         public FutureNhsSiteMapHandler(IFutureNhsContentService futureNhsContentService, IFutureNhsSiteMapService futureNhsSiteMapService)
         {
             _futureNhsContentService = futureNhsContentService;
@@ -39,7 +34,7 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
             // If it doesn't exist, return as empty.
             if (page is null)
             {
-                errorList.Add("Couldn't retrieve page.");
+                errorList.Add("Could not retrieve page.");
                 return response.Failure(errorList, "Failed.");
             }
 

@@ -69,6 +69,7 @@
         /// <summary>
         /// Gets all content asynchronous.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<ApiResponse<IEnumerable<ContentModel>>> GetAllContentAsync(CancellationToken cancellationToken);
     }

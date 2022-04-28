@@ -63,6 +63,7 @@ namespace FutureNHS.Api.Services
             if (Guid.Empty == contentId) throw new ArgumentOutOfRangeException(nameof(contentId));
 
             return await _contentCommand.UpdateContentAsync(contentId, pageContent, cancellationToken);
+
         }
 
         /// <inheritdoc />
