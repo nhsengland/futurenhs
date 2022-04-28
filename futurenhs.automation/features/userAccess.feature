@@ -40,23 +40,6 @@ Scenario: FNHS02 - Unauthenticated page redirect
     Given I have navigated to '/groups/aa/'
     Then the 'Log In' header is displayed
 
-@Core @Pending
-Scenario: FNHS05 - Register as an invited user
-    Given I have navigated to '/members/register' and accept the cookies
-    Then the 'Register for an account' header is displayed
-    And the 'Please read before choosing which address to use' textual value is displayed
-    And the 'Use your work rather than personal email, where possible.' textual value is displayed
-    And the 'Use the address provided to you by the main organisation you work for, where possible.' textual value is displayed
-    And the 'Use your own email, not a group email address.' textual value is displayed
-    When I enter 'autoTest@email.com' into the 'E-mail address' field
-    And I enter 'Password101' into the 'Password' field
-    And I enter 'Password101' into the 'Repeat password' field
-    And I enter 'auto' into the 'First name' field
-    And I enter 'test' into the 'Last name' field
-    And I click the 'Register now' button
-    Then the 'My Groups' header is displayed
-    And the 'Automation Admin Group' link is displayed
-
 @Pending
 Scenario Outline: FNHS06 - User Registration Error Validation
     Given I have navigated to '/members/register' and accept the cookies
