@@ -127,6 +127,30 @@ class formPage extends basePage{
     }
 
     /**
+     * input first 3 characters of known string, and choose item from auto suggest dropdown list 
+     * @param {*} option - desired value, used for first 3 digits in the field, and to find the desired option from the suggestion list
+     * @param {string} label - the textual value of the desired label used as part of the selector
+     */
+    autoSuggestSelect(option, label){
+        // Input first 3 digits into the input field
+        var input = option.slice(0, 3)
+        var fieldLabel = this.findLabel(label);
+        var fieldInput = fieldLabel.parentElement().$('input');
+        helpers.waitForLoaded(fieldInput)
+        fieldInput.setValue(input);
+        // Choose item from the suggestion list
+        var suggestDropdown = fieldLabel.parentElement().$(`./div/ul`);
+        helpers.waitForLoaded(suggestDropdown);
+        var suggestList = suggestDropdown.$$('li')
+        suggestList.forEach(suggestion => {
+            if(suggestion.getText() === option){
+                helpers.click(suggestion);
+                return
+            }   
+        });
+    }
+
+    /**
      * Function to locate a field and validate the input value against what is expected
      * @param {string} labelText - the textual value of the label used for the selector
      * @param {string} expectedValue - the expected value of the field, used to validate against
