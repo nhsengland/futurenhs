@@ -25,6 +25,10 @@ Given(/^I log off and log in as a.? '([^"]*)'$/, function (userType) {
   loginPage.switchUser(userType);
 });
 
+Given(/^I return to the homepage$/, function() {
+  genericPage.homepageReturn();
+});
+
 Given(/^I ensure the browser is in mobile emulation$/, function () {
   if(browser.capabilities.browserName != 'msedge'){
     browser.emulateDevice('iPhone X');

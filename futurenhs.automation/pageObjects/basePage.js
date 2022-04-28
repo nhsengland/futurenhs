@@ -24,7 +24,7 @@ class basePage {
      * Generic function to click the FNHS icon to return to the homepage of the platform
      */
     homepageReturn(){
-        var homePageLink = $(`//a[@class="c-site-header_logo u-focus-item"]`)
+        var homePageLink = $(`//a[@class="class="c-site-header_logo u-focus-item""]`)
         helpers.click(homePageLink)
     }
 

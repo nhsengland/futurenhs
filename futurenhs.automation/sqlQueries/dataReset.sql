@@ -69,7 +69,7 @@ DELETE [dbo].[MembershipUser] WHERE UserName = 'autoTest@email.com'
 --Delete new group generated
 	-- Group creation new fields	
 DECLARE @groupid AS uniqueidentifier;
-SELECT @groupid = id FROM [dbo].[Group] WHERE [Name] = 'alphaGroupTest';
+SELECT @groupid = id FROM [dbo].[Group] WHERE [Name] = 'Automation Created Group';
 
 DELETE [dbo].[GroupUser] WHERE Group_Id = @groupid
 DELETE [dbo].[Group] WHERE Id = @groupid

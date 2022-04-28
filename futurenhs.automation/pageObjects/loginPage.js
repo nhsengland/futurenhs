@@ -50,8 +50,7 @@ class loginPage extends basePage{
      * Function to logout the user and validate the Log In page has loaded
      */
     logoutUser(){
-        helpers.click('//summary[@class="c-site-header-nav_root-nav-trigger"]');
-        helpers.click('//a[@href="/members/logoff?Length=7"]');
+        genericPage.selectAccordionItem('Log Off', 'usermenu')
         genericPage.selectDialogButton('confirm', 'logout');
         genericPage.contentValidation('header', 'Log In');
         genericPage.contentValidation('button', 'Log In');
