@@ -97,6 +97,30 @@
             return response.Failure(errorList, "Failed.");
         }
 
+        public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, PageContentModel pageContent, CancellationToken cancellationToken)
+        {
+            ApiResponse<string> response = new ApiResponse<string>();
+
+            _futureNhsValidationService.ValidatePageContentModel(pageContent);
+
+            var pageTemplateContent = await _futureNhsContentService.GetDraftContentAsync(id, cancellationToken);
+
+            if (pageContent is null)
+            {
+                pageTemplateContent.SetValue("pageContent", JsonConvert.SerializeObject(pageContent));
+            }
+
+            var result = await _futureNhsContentService.SaveContentAsync(pageTemplateContent, cancellationToken);
+
+            if (result)
+            {
+                return response.Success(id.ToString(), "Success.");
+            }
+
+            errorList.Add("Error occured.");
+            return response.Failure(errorList, "Failed.");
+        }
+
         /// <inheritdoc />
         public async Task<ApiResponse<string>> PublishContentAsync(Guid contentId, CancellationToken cancellationToken)
         {

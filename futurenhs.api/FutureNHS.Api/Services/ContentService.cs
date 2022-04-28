@@ -57,13 +57,12 @@ namespace FutureNHS.Api.Services
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> UpdateContentAsync(Guid? userId, Guid contentId, GeneralWebPageUpdateRequest updateRequest, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> UpdateContentAsync(Guid? userId, Guid contentId, PageContentModel pageContent, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == contentId) throw new ArgumentOutOfRangeException(nameof(contentId));
 
-            return await _contentCommand.UpdateContentAsync(contentId, updateRequest, cancellationToken);
-
+            return await _contentCommand.UpdateContentAsync(contentId, pageContent, cancellationToken);
         }
 
         /// <inheritdoc />

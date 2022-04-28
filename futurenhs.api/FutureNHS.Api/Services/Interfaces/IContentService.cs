@@ -22,7 +22,7 @@ namespace FutureNHS.Api.Services.Interfaces
         /// <param name="updateRequest">The update request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> UpdateContentAsync(Guid? userId, Guid contentId, GeneralWebPageUpdateRequest updateRequest, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> UpdateContentAsync(Guid? userId, Guid contentId, PageContentModel updateRequest, CancellationToken cancellationToken);
         /// <summary>
         /// Deletes the content asynchronous.
         /// </summary>
