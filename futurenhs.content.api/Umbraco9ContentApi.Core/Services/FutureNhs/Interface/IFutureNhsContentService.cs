@@ -39,7 +39,7 @@
         /// <param name="content">The content.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ContentModel> ResolvePublishedContentAsync(IPublishedContent content, CancellationToken cancellationToken);
+        Task<ContentModel> ResolvePublishedContentAsync(IPublishedContent content, string propertyGroupAlias, CancellationToken cancellationToken);
 
         /// <summary>
         /// Resolves the draft content asynchronous.

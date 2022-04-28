@@ -18,7 +18,7 @@
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
-        private List<string>? errorList = new List<string>();
+        private List<string> errorList = new List<string>();
         /// <summary>
         /// Initializes a new instance of the <see cref="FutureNhsTemplateHandler"/> class.
         /// </summary>
@@ -35,11 +35,11 @@
         {
             ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
             var template = await _futureNhsContentService.GetPublishedContentAsync(id, cancellationToken);
-            var result = await _futureNhsContentService.ResolvePublishedContentAsync(template, cancellationToken);
+            var result = await _futureNhsContentService.ResolvePublishedContentAsync(template, "content", cancellationToken);
 
             if (result is null)
             {
-                errorList.Add("Couldn't retrieve template.");
+                errorList.Add("Could not retrieve template.");
                 return response.Failure(errorList, "Failed.");
             }
 
@@ -58,7 +58,7 @@
             {
                 foreach (var templates in publishedTemplates)
                 {
-                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(templates, cancellationToken));
+                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(templates, "content", cancellationToken));
                 }
             }
 

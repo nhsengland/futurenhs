@@ -19,10 +19,10 @@ namespace FutureNHS.Api.Services.Interfaces
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <param name="contentId">The content identifier.</param>
-        /// <param name="updateRequest">The update request.</param>
+        /// <param name="pageContent">Content of the page.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> UpdateContentAsync(Guid? userId, Guid contentId, PageContentModel updateRequest, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> UpdateContentAsync(Guid? userId, Guid contentId, PageContentModel pageContent, CancellationToken cancellationToken);
         /// <summary>
         /// Deletes the content asynchronous.
         /// </summary>

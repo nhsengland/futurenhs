@@ -15,10 +15,6 @@ namespace Umbraco9ContentApi.Core.Controllers
     {
         IFutureNhsSiteMapHandler _futureNhsSiteMapHandler;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SitemapController"/> class.
-        /// </summary>
-        /// <param name="futureNhsSiteMapHandler">The future NHS site map handler.</param>
         public SitemapController(IFutureNhsSiteMapHandler futureNhsSiteMapHandler)
         {
             _futureNhsSiteMapHandler = futureNhsSiteMapHandler;
@@ -34,14 +30,14 @@ namespace Umbraco9ContentApi.Core.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SitemapGroupItemModel>))]
         public async Task<ActionResult> GetSiteMapAsync(Guid pageId, CancellationToken cancellationToken)
         {
-            var response = await _futureNhsSiteMapHandler.GetSitemapGroupItemsAsync(pageId, cancellationToken);
+            var result = await _futureNhsSiteMapHandler.GetSitemapGroupItemsAsync(pageId, cancellationToken);
 
-            if (response.Succeeded)
+            if (result.Succeeded)
             {
-                return Ok(response);
+                return Ok(result);
             }
 
-            return Problem(response.Message);
+            return Problem(result.Message);
         }
     }
 }

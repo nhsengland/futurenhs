@@ -14,10 +14,6 @@
     {
         private readonly IuSyncHandler _uSyncHandler;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="uSyncController"/> class.
-        /// </summary>
-        /// <param name="uSyncHandler">The uSync handler.</param>
         public uSyncController(IuSyncHandler uSyncHandler)
         {
             _uSyncHandler = uSyncHandler;

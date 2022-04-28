@@ -20,7 +20,7 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces
         /// Gets the blocks asynchronous.
         /// </summary>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetBlocksAsync();
+        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync();
         /// <summary>
         /// Gets the block asynchronous.
         /// </summary>
@@ -28,17 +28,29 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces
         /// <returns></returns>
         Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId);
         /// <summary>
-        /// Gets the block placeholder values asynchronous.
+        /// Gets the block fields placeholder values asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId);
+        Task<ApiResponse<IEnumerable<string>>> GetBlockContentPlaceholderValuesAsync(Guid blockId);
+        /// <summary>
+        /// Gets the block labels placeholder values asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<string>>> GetBlockLabelsPlaceholderValuesAsync(Guid blockId);
         /// <summary>
         /// Gets the block field values asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockFieldValuesAsync(Guid blockId);
+        Task<ApiResponse<IEnumerable<string>>> GetBlockContentAsync(Guid blockId);
+        /// <summary>
+        /// Gets the block labels asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<string>>> GetBlockLabelsAsync(Guid blockId);
         /// <summary>
         /// Gets the template asynchronous.
         /// </summary>

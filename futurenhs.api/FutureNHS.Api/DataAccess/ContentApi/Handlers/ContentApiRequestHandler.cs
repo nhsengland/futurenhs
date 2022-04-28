@@ -30,27 +30,41 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/content/{contentId}/draft");
         }
+
+        /// <inheritdoc />
         public Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId)
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/block/{blockId}");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<IEnumerable<ContentModel>>> GetBlocksAsync()
+        public Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync()
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModel>>>(HttpMethod.Get, "api/block");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId)
+        public Task<ApiResponse<IEnumerable<string>>> GetBlockContentPlaceholderValuesAsync(Guid blockId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/placeholder");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/content/placeholder");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<IEnumerable<string>>> GetBlockFieldValuesAsync(Guid blockId)
+        public Task<ApiResponse<IEnumerable<string>>> GetBlockLabelsPlaceholderValuesAsync(Guid blockId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/fields");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/labels/placeholder");
+        }
+
+        /// <inheritdoc />
+        public Task<ApiResponse<IEnumerable<string>>> GetBlockContentAsync(Guid blockId)
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/content");
+        }
+
+        /// <inheritdoc />
+        public Task<ApiResponse<IEnumerable<string>>> GetBlockLabelsAsync(Guid blockId)
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<string>>>(HttpMethod.Get, $"api/block/{blockId}/labels");
         }
 
         /// <inheritdoc />
