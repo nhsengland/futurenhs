@@ -76,7 +76,7 @@
                     mockContent.Object
                 });
 
-            _mockFutureNhsContentService.SetupSequence(x => x.ResolvePublishedContentAsync(It.IsAny<IPublishedContent>(), cancellationToken).Result)
+            _mockFutureNhsContentService.SetupSequence(x => x.ResolvePublishedContentAsync(It.IsAny<IPublishedContent>(), "content", cancellationToken).Result)
                 .Returns(new ContentModel() { Item = new ContentModelItem() { Id = contentId } });
 
             // Act

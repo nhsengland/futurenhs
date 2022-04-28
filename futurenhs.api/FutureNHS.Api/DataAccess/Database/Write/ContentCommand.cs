@@ -23,9 +23,9 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> UpdateContentAsync(Guid contentId, PageContentModel updateRequest, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> UpdateContentAsync(Guid contentId, PageContentModel pageContent, CancellationToken cancellationToken)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Put, $"api/content/{contentId}", JsonContent.Create(updateRequest));
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Put, $"api/content/{contentId}", JsonContent.Create(pageContent));
         }
 
         /// <inheritdoc />

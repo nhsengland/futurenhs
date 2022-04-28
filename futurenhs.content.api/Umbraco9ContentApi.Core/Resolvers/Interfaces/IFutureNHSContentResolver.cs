@@ -6,7 +6,7 @@ namespace Umbraco9ContentApi.Core.Resolvers.Interfaces
 {
     public interface IFutureNhsContentResolver
     {
-        ContentModel ResolveContent(IPublishedElement content, Dictionary<string, object>? options = null);
+        ContentModel ResolveContent(IPublishedElement content, string propertyGroupAlias = "content", Dictionary<string, object>? options = null);
         ContentModel ResolveContent(IContent content, Dictionary<string, object>? options = null);
     }
 }
