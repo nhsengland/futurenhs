@@ -63,9 +63,9 @@ namespace FutureNHS.Api.Controllers
         [HttpPut]
         [Route("page/{pageId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
-        public async Task<IActionResult> UpdatePageAsync(Guid? userId, Guid pageId, [FromBody] GeneralWebPageUpdateRequest updateRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdatePageAsync(Guid? userId, Guid pageId, [FromBody] PageContentModel pageContent, CancellationToken cancellationToken)
         {
-            var pageGuid = await _contentService.UpdateContentAsync(userId, pageId, updateRequest, cancellationToken);
+            var pageGuid = await _contentService.UpdateContentAsync(userId, pageId, pageContent, cancellationToken);
             return new JsonResult(pageGuid);
         }
 

@@ -6,6 +6,7 @@
     using System;
     using Umbraco.Cms.Web.Common.Controllers;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
+    using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Requests;
 
@@ -142,6 +143,22 @@
                     request.Title,
                     request.Description,
                     request.PageContent,
+                    cancellationToken);
+
+            if (result.Succeeded)
+            {
+                return Ok(result);
+            }
+
+            return Problem("Error updating content: " + contentId);
+        }
+
+        [HttpPut("{contentId:guid}")]
+        public async Task<IActionResult> UpdateContentAsync(Guid contentId, PageContentModel pageContentModel, CancellationToken cancellationToken)
+        {
+            var result = await _futureNhsContentHandler.UpdateContentAsync(
+                    contentId,
+                    pageContentModel,
                     cancellationToken);
 
             if (result.Succeeded)
