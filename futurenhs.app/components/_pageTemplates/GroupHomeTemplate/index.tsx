@@ -1,21 +1,27 @@
 import { useState } from 'react';
 import classNames from 'classnames';
 
+import { getServiceErrorDataValidationErrors } from '@services/index';
+import { getGenericFormError } from '@helpers/util/form';
 import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName';
 import { actions as actionConstants } from '@constants/actions';
 import { ContentBlockManager } from '@components/ContentBlockManager';
 import { NoScript } from '@components/NoScript';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { putCmsPageContent } from '@services/putCmsPageContent';
 
 import { Props } from './interfaces';
 import { CmsContentBlock } from '@appTypes/contentBlock';
+import { FormErrors } from '@appTypes/form';
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
+    user,
     csrfToken,
     forms,
     actions,
-    contentBlocks,
+    contentTemplateId,
     contentTemplate,
+    contentBlocks,
     themeId
 }) => {
 
@@ -27,11 +33,27 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         wrapper: classNames('c-page-body')
     };
 
-    const handleBlocksChange = (blocks: Array<CmsContentBlock>): void => {
+    const handleSaveBlocks = (blocks: Array<CmsContentBlock>): Promise<FormErrors> => {
 
-        // TODO save blocks to API
+        return new Promise((resolve) => {
 
-        //setBlocks(blocks);
+            putCmsPageContent({ 
+                user, 
+                pageId: contentTemplateId, 
+                pageBlocks: blocks 
+            })
+            .then(() => resolve({}))
+            .catch((error) => {
+
+                const errors: FormErrors =
+                getServiceErrorDataValidationErrors(error) ||
+                getGenericFormError(error)
+
+                resolve(errors)
+
+            })
+
+        }) 
 
     };
  
@@ -55,7 +77,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 forms={forms}
                 blocks={blocks}
                 blocksTemplate={contentTemplate}
-                blocksChangeAction={handleBlocksChange}
+                saveBlocksAction={handleSaveBlocks}
                 themeId={themeId} />
         </LayoutColumn>
 

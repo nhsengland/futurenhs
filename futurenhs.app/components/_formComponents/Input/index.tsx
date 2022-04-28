@@ -8,7 +8,7 @@ import { Props } from './interfaces'
 
 export const Input: (props: Props) => JSX.Element = ({
     inputType,
-    input: { name, value, onChange },
+    input,
     initialError,
     meta: { touched, error, submitError },
     text,
@@ -16,8 +16,9 @@ export const Input: (props: Props) => JSX.Element = ({
     validators,
     className,
 }) => {
+
     const { label, hint } = text ?? {}
-    const id: string = name
+    const id: string = input.name
     const shouldRenderError: boolean =
         Boolean(initialError) ||
         ((Boolean(error) || Boolean(submitError)) && touched)
@@ -79,18 +80,16 @@ export const Input: (props: Props) => JSX.Element = ({
                 </span>
             )}
             <input
+                {...input}
                 {...ariaInputProps}
                 id={id}
-                name={name}
                 type={inputType}
-                value={value}
-                onChange={onChange}
                 className={generatedClasses.input}
             />
             {shouldRenderRemainingCharacterCount && maxLength && (
                 <RemainingCharacterCount
                     id={generatedIds.remainingCharacters}
-                    currentCharacterCount={value?.length ?? 0}
+                    currentCharacterCount={input.value?.length ?? 0}
                     maxCharacterCount={maxLength}
                     className="u-float-right"
                 />

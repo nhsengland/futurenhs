@@ -52,16 +52,17 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         try {
 
-                            const templateId: string = '0b955a4a-9e26-43e8-bb4b-51010e264d64';
+                            const contentTemplateId: string = '0b955a4a-9e26-43e8-bb4b-51010e264d64';
                             const groupHomePageCmsContentIds = await getGroupHomePageCmsContentIds({ user, groupId });
                             const pageId: string = groupHomePageCmsContentIds.data.contentRootId;
 
                             const [contentBlocks, contentTemplate] =
                                 await Promise.all([
                                     getCmsPageContent({ user, pageId }),
-                                    getCmsPageTemplate({ user, templateId })
+                                    getCmsPageTemplate({ user, templateId: contentTemplateId })
                                 ])
 
+                            props.contentTemplateId = contentTemplateId;
                             props.contentBlocks = contentBlocks.data
                             props.contentTemplate = contentTemplate.data
 
