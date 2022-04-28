@@ -107,7 +107,7 @@ class formPage extends basePage{
         var radioLegend = $(`//legend[text()="${legendLabel}"]`).parentElement();
         helpers.waitForLoaded(radioLegend);
         if(buttonLabel === 'Theme'){
-            helpers.click(radioLegend.$(`./div/label[@for="ThemeId[1]"]`));
+            helpers.click(radioLegend.$(`./div/label[@for="themeId[1]"]`));
         } else {
             helpers.click(radioLegend.$(`./div/label[text()="${buttonLabel}"]`));
         }
