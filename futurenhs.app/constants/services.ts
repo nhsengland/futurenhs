@@ -36,6 +36,8 @@ export const enum services {
     POST_GROUP_FOLDER = 'postGroupFolder',
     POST_GROUP_FILE = 'postGroupFile',
     POST_GROUP_MEMBERSHIP = 'postGroupMembership',
+    POST_CMS_PAGE_CONTENT = 'postCmsPageContent',
+    PUT_CMS_PAGE_CONTENT = 'putCmsPageContent',
     PUT_GROUP = 'putGroup',
     PUT_GROUP_FOLDER = 'putGroupFolder',
     PUT_GROUP_DISCUSSION_COMMENT_LIKE = 'putGroupDiscussionCommentLike',

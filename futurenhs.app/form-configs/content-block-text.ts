@@ -7,7 +7,7 @@ export const contentBlockTextForm: FormConfig = {
         {
             fields: [
                 {
-                    name: 'heading',
+                    name: 'title',
                     inputType: 'text',
                     text: {
                         label: 'Subtitle',

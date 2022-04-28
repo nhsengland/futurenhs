@@ -13,6 +13,7 @@ import { CmsContentBlock } from '@appTypes/contentBlock';
 declare type Options = {
     user: User
     pageId: string
+    pageBlocks: Array<CmsContentBlock>
 }
 
 declare type Dependencies = {
@@ -20,8 +21,8 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const getCmsPageContent = async (
-    { user, pageId }: Options,
+export const putCmsPageContent = async (
+    { user, pageId, pageBlocks }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
     const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
@@ -34,11 +35,12 @@ export const getCmsPageContent = async (
 
     const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${pageId}/published`
-
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${pageId}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        setFetchOptions({ method: requestMethods.PUT, body: {
+            blocks: pageBlocks
+        } }),
         defaultTimeOutMillis
     )
 
@@ -49,9 +51,9 @@ export const getCmsPageContent = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the cms page content',
+            'An unexpected error occurred when attempting to update the cms page content',
             {
-                serviceId: services.GET_CMS_PAGE_CONTENT,
+                serviceId: services.PUT_CMS_PAGE_CONTENT,
                 status: status,
                 statusText: statusText,
                 body: apiData,
