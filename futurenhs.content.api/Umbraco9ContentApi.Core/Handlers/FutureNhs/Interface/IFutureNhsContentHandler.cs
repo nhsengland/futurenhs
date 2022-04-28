@@ -26,6 +26,15 @@
         Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, PageContentModel pageContent, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Updates the content asynchronous.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="pageContent">Content of the page.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> UpdateContentAsync(Guid id, PageContentModel pageContent, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Publishes the content asynchronous.
         /// </summary>
         /// <param name="id">The identifier.</param>
