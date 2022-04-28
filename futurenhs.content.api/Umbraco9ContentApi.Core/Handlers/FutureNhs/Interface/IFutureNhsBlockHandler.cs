@@ -22,16 +22,23 @@
         /// Gets the block placeholder values asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
+        /// <param name="propertyGroupAlias">The property group alias.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId, CancellationToken cancellationToken);
+        Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
         /// <summary>
-        /// Gets the block field values asynchronous.
+        /// Gets the block content asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockFieldValuesAsync(Guid blockId, CancellationToken cancellationToken);
-
+        Task<ApiResponse<IEnumerable<string>>> GetBlockContentAsync(Guid blockId, CancellationToken cancellationToken);
+        /// <summary>
+        /// Gets the block lables asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<IEnumerable<string>>> GetBlockLabelsAsync(Guid blockId, CancellationToken cancellationToken);
     }
 }

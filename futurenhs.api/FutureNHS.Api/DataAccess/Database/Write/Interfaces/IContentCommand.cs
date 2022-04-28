@@ -15,9 +15,10 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write.Interfaces
         /// Updates the content asynchronous.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
-        /// <param name="createRequest">The create request.</param>
+        /// <param name="pageContent">Content of the page.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> UpdateContentAsync(Guid contentId, PageContentModel createRequest, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> UpdateContentAsync(Guid contentId, PageContentModel pageContent, CancellationToken cancellationToken);
         /// <summary>
         /// Deletes the content asynchronous.
         /// </summary>

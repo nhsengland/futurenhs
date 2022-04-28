@@ -18,7 +18,7 @@
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
         private readonly IFutureNhsValidationService _futureNhsValidationService;
-        private List<string>? errorList = null;
+        private List<string> errorList = new List<string>();
 
         public FutureNhsContentHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsValidationService futureNhsValidationService)
         {
@@ -97,6 +97,7 @@
             return response.Failure(errorList, "Failed.");
         }
 
+        /// <inheritdoc />
         public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, PageContentModel pageContent, CancellationToken cancellationToken)
         {
             ApiResponse<string> response = new ApiResponse<string>();
@@ -141,17 +142,18 @@
         {
             ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
             var content = await _futureNhsContentService.GetPublishedContentAsync(id, cancellationToken);
-            var result = await _futureNhsContentService.ResolvePublishedContentAsync(content, cancellationToken);
+            var result = await _futureNhsContentService.ResolvePublishedContentAsync(content, "content", cancellationToken);
 
             if (result is not null)
             {
                 return response.Success(result, "Success.");
             }
 
-            errorList.Add("Couldn't retrieve content.");
+            errorList.Add("Could not retrieve content.");
             return response.Failure(errorList, "Failed.");
         }
 
+        /// <inheritdoc />
         public async Task<ApiResponse<ContentModel>> GetContentDraftAsync(Guid id, CancellationToken cancellationToken)
         {
             ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
@@ -163,7 +165,7 @@
                 return response.Success(result, "Success.");
             }
 
-            errorList.Add("Couldn't retrieve content.");
+            errorList.Add("Could not retrieve content.");
             return response.Failure(errorList, "Failed.");
         }
 
@@ -178,7 +180,7 @@
                 return response.Success(id.ToString(), "Success.");
             }
 
-            errorList.Add("Couldn't delete content.");
+            errorList.Add("Could not delete content.");
             return response.Failure(errorList, "Failed.");
         }
 
@@ -196,7 +198,7 @@
             {
                 foreach (var content in publishedContent)
                 {
-                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(content, cancellationToken));
+                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(content, "content", cancellationToken));
                 }
             }
 

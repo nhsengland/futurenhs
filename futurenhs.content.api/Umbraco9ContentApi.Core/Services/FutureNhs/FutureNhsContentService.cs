@@ -46,9 +46,9 @@
         }
 
         /// <inheritdoc />
-        public async Task<ContentModel> ResolvePublishedContentAsync(IPublishedContent content, CancellationToken cancellationToken)
+        public async Task<ContentModel> ResolvePublishedContentAsync(IPublishedContent content, string propertyGroupAlias, CancellationToken cancellationToken)
         {
-            return _contentResolver.Value.ResolveContent(content);
+            return _contentResolver.Value.ResolveContent(content, propertyGroupAlias);
         }
 
         /// <inheritdoc />
@@ -108,7 +108,7 @@
 
             foreach (var block in blocks)
             {
-                contentModels.Add(await ResolvePublishedContentAsync(block, cancellationToken));
+                contentModels.Add(await ResolvePublishedContentAsync(block, "content", cancellationToken));
             }
 
             return contentModels is not null ? contentModels : new List<ContentModel>();

@@ -33,14 +33,19 @@
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
         public async Task<ActionResult> GetContentPublishedAsync(Guid contentId, CancellationToken cancellationToken)
         {
-            var content = await _futureNhsContentHandler.GetContentPublishedAsync(contentId, cancellationToken);
+            var result = await _futureNhsContentHandler.GetContentPublishedAsync(contentId, cancellationToken);
 
-            if (content is null)
+            if (result is null)
             {
                 return NotFound();
             }
 
-            return Ok(content);
+            if (result.Succeeded)
+            {
+                return Ok(result);
+            }
+
+            return Problem("Error retrieving content.");
         }
 
         /// <summary>
@@ -53,14 +58,19 @@
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
         public async Task<ActionResult> GetContentDraftAsync(Guid contentId, CancellationToken cancellationToken)
         {
-            var content = await _futureNhsContentHandler.GetContentDraftAsync(contentId, cancellationToken);
+            var result = await _futureNhsContentHandler.GetContentDraftAsync(contentId, cancellationToken);
 
-            if (content is null)
+            if (result is null)
             {
                 return NotFound();
             }
 
-            return Ok(content);
+            if (result.Succeeded)
+            {
+                return Ok(result);
+            }
+
+            return Problem("Error retrieving content.");
         }
 
         /// <summary>
@@ -73,6 +83,11 @@
         public async Task<ActionResult> GetAllContentAsync(CancellationToken cancellationToken)
         {
             var result = await _futureNhsContentHandler.GetAllContentAsync(cancellationToken);
+
+            if (result.Succeeded && !result.Data.Any())
+            {
+                return NotFound("No content found.");
+            }
 
             if (result.Succeeded)
             {
@@ -154,11 +169,11 @@
         }
 
         [HttpPut("{contentId:guid}")]
-        public async Task<IActionResult> UpdateContentAsync(Guid contentId, PageContentModel pageContentModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateContentAsync(Guid contentId, PageContentModel pageContent, CancellationToken cancellationToken)
         {
             var result = await _futureNhsContentHandler.UpdateContentAsync(
                     contentId,
-                    pageContentModel,
+                    pageContent,
                     cancellationToken);
 
             if (result.Succeeded)

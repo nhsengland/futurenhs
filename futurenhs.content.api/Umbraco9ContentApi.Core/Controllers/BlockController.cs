@@ -16,11 +16,6 @@
         private readonly IFutureNhsContentHandler _futureNhsContentHandler;
         private readonly IFutureNhsBlockHandler _futureNhsBlockHandler;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BlockController"/> class.
-        /// </summary>
-        /// <param name="futureNhsContentHandler">The future Nhs content handler.</param>
-        /// <param name="futureNhsBlockHandler">The future Nhs block handler.</param>
         public BlockController(IFutureNhsContentHandler futureNhsContentHandler, IFutureNhsBlockHandler futureNhsBlockHandler)
         {
             _futureNhsContentHandler = futureNhsContentHandler;
@@ -37,14 +32,14 @@
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
         public async Task<ActionResult> GetBlockAsync(Guid blockId, CancellationToken cancellationToken)
         {
-            var content = await _futureNhsContentHandler.GetContentPublishedAsync(blockId, cancellationToken);
+            var result = await _futureNhsContentHandler.GetContentPublishedAsync(blockId, cancellationToken);
 
-            if (content is null)
+            if (result is null)
             {
                 return NotFound();
             }
 
-            return Ok(content);
+            return Ok(result);
         }
 
         /// <summary>
@@ -56,57 +51,84 @@
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
         public async Task<ActionResult> GetAllBlocksAsync(CancellationToken cancellationToken)
         {
-            var response = await _futureNhsBlockHandler.GetAllBlocksAsync(cancellationToken);
+            var result = await _futureNhsBlockHandler.GetAllBlocksAsync(cancellationToken);
 
-            if (response.Succeeded && !response.Data.Any())
+            if (result.Succeeded && !result.Data.Any())
             {
                 return NotFound("No blocks found.");
             }
 
-            if (response.Succeeded)
+            if (result.Succeeded)
             {
-                return Ok(response);
+                return Ok(result);
             }
 
-            return Problem(response.Message);
+            return Problem(result.Message);
         }
 
         /// <summary>
-        /// Gets the block asynchronous.
+        /// Gets the block placeholder values for {propertyTypeAlias} asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
+        /// <param name="propertyGroupAlias">The property type alias.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        [HttpGet("{blockId:guid}/placeholder")]
+        [HttpGet("{blockId:guid}/{propertyGroupAlias}/placeholder")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<string>>))]
-        public async Task<ActionResult> GetBlockPlaceholderValuesAsync(Guid blockId, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetBlocPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken)
         {
-            var content = await _futureNhsBlockHandler.GetBlockPlaceholderValuesAsync(blockId, cancellationToken);
+            if (string.IsNullOrWhiteSpace(propertyGroupAlias))
+                return BadRequest("No property group alias was provided.");
 
-            if (content is null)
+            var result = await _futureNhsBlockHandler.GetBlockPlaceholderValuesAsync(blockId, propertyGroupAlias, cancellationToken);
+
+            if (result is null)
             {
                 return NotFound();
             }
 
-            return Ok(content);
+            return Ok(result);
         }
 
         /// <summary>
-        /// Gets the block asynchronous.
+        /// Gets the block content asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        [HttpGet("{blockId:guid}/fields")]
+        [HttpGet("{blockId:guid}/content")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<string>>))]
-        public async Task<ActionResult> GetBlockFieldValuesAsync(Guid blockId, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetBlockContentAsync(Guid blockId, CancellationToken cancellationToken)
         {
-            var content = await _futureNhsBlockHandler.GetBlockFieldValuesAsync(blockId, cancellationToken);
+            var result = await _futureNhsBlockHandler.GetBlockContentAsync(blockId, cancellationToken);
 
-            if (content is null)
+            if (result is null)
             {
                 return NotFound();
             }
 
-            return Ok(content);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets the block labels asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpGet("{blockId:guid}/labels")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<string>>))]
+        public async Task<ActionResult> GetBlockLabelsAsync(Guid blockId, CancellationToken cancellationToken)
+        {
+            var result = await _futureNhsBlockHandler.GetBlockLabelsAsync(blockId, cancellationToken);
+
+            if (result is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+
         }
 
         /// <summary>
@@ -118,14 +140,14 @@
         [HttpDelete("{blockId:guid}")]
         public async Task<ActionResult> DeleteBlockAsync(Guid blockId, CancellationToken cancellationToken)
         {
-            var response = await _futureNhsContentHandler.DeleteContentAsync(blockId, cancellationToken);
+            var result = await _futureNhsContentHandler.DeleteContentAsync(blockId, cancellationToken);
 
-            if (response.Succeeded)
+            if (result.Succeeded)
             {
-                return Ok(response);
+                return Ok(result);
             }
 
-            return Problem(response.Message);
+            return Problem(result.Message);
         }
     }
 }
