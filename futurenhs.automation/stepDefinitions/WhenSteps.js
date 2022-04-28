@@ -46,6 +46,10 @@ const contentCard = require('../pageObjects/contentCard');
   When(/^I select '([^"]*)' from the '([^"]*)' dropdown$/, function (dropdownOption, dropdownLabel) {
     formPage.dropdownSelect(dropdownOption, dropdownLabel);
   });
+  
+  When(/^I choose '([^"]*)' from the '([^"]*)' auto suggest list$/, function (inputValue, autoSuggestLabel) {
+    formPage.autoSuggestSelect(inputValue, autoSuggestLabel);
+  });
 
   When(/^I select the ('([^"]*)' )?checkbox$/, function (label) {
     formPage.checkboxSelect(label);

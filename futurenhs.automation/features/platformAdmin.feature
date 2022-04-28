@@ -72,8 +72,8 @@ Scenario Outline: FNHS23 - Create a group
     When I enter '<groupname>' into the 'Group name' field
     And I enter '<strapline>' into the 'Strap line' text area
     And I select the 'Theme' radio button for 'Choose your theme colour'
-    And I enter 'auto Admin' into the 'Group owner' field
-    And I enter 'auto Admin' into the 'Group administrators' field
+    And I choose 'auto Admin' from the 'Group owner' auto suggest list
+    And I choose 'auto Admin' from the 'Group administrators' auto suggest list
     And I click the 'Save and create group' button
     Then the 'Groups' header is not displayed
     And the 'Admin groups' table exists
@@ -94,7 +94,7 @@ Scenario Outline: FNHS24 - Create a group error validation
     When I enter '<groupname>' into the 'Group name' field
     And I enter '<strapline>' into the 'Strap line' text area
     And I select the '<theme>' radio button for 'Choose your theme colour'
-    And I enter '<owner>' into the 'Group owner' field
+    And I choose '<owner>' from the 'Group owner' auto suggest list
     And I click the 'Save and create group' button
     Then the '<error message>' error summary is displayed
     And the '<error message>' textual value is displayed
