@@ -9,10 +9,6 @@ const tablePOM = require('../pageObjects/table');
 const axe = require('../util/axe');
 const lighthouse = require('../util/lighthouse');
 
-Then(/^I return to the homepage$/, function() {
-  genericPage.homepageReturn();
-});
-
 Then(/^the current URL is '([^"]*)'$/, function (expectedUrl) {
   expect(browser.getUrl()).toEqual(expectedUrl);
 });
