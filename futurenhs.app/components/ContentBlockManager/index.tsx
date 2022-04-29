@@ -11,6 +11,7 @@ import { SVGIcon } from '@components/SVGIcon'
 import { Form } from '@components/Form'
 import { ContentBlock } from '@components/ContentBlock'
 import { TextContentBlock } from '@components/_contentBlockComponents/TextContentBlock';
+import { KeyLinksBlock } from '@components/_contentBlockComponents/KeyLinksBlock';
 import { CmsContentBlock } from '@appTypes/contentBlock';
 import { RichText } from '@components/RichText';
 
@@ -330,9 +331,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const renderBlockContent = ({ isEditable, block }): JSX.Element => {
 
-        const { instanceId } = block;
+        const { instanceId, item, content } = block;
 
-        if (block.item.contentType === 'textBlock') {
+        if (item.contentType === 'textBlock') {
 
             if(isEditable){
 
@@ -340,8 +341,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 const handleChange: (formState: any) => void = (formState) => handleFormUpdate({ instanceId, formState });
 
                 formConfig.initialValues = {
-                    [`title-${instanceId}`]: block.content.title,
-                    [`mainText-${instanceId}`]: block.content.mainText
+                    [`title-${instanceId}`]: content.title,
+                    [`mainText-${instanceId}`]: content.mainText
                 };
 
                 return (
@@ -367,8 +368,30 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 <TextContentBlock
                     headingLevel={3}
                     text={{
-                        heading: block.content.title,
-                        bodyHtml: block.content.mainText
+                        heading: content.title,
+                        bodyHtml: content.mainText
+                    }} />
+
+            )
+
+        }
+
+        if (item.contentType === 'keyLinksBlock') {
+
+            console.log(content);
+
+            if(isEditable){
+
+
+
+            }
+
+            return (
+
+                <KeyLinksBlock
+                    headingLevel={3}
+                    text={{
+                        heading: content.title
                     }} />
 
             )
