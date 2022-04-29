@@ -22,7 +22,6 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     forms,
     actions,
     contentPageId,
-    contentTemplateId,
     contentTemplate,
     contentBlocks,
     themeId
@@ -42,15 +41,14 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
             putCmsPageContent({ 
                 user, 
-                pageId: contentTemplateId, 
+                pageId: contentPageId, 
                 pageBlocks: blocks 
             })
             .then(() => {
 
                 postCmsPageContent({ 
                     user, 
-                    pageId: contentTemplateId, 
-                    pageBlocks: blocks 
+                    pageId: contentPageId
                 })
                 .then(() => {
 
@@ -96,7 +94,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
             {isGroupAdmin &&
                 <NoScript headingLevel={2} text={{
                     heading: 'Important',
-                    body: 'JavaScript must be enabled in your browser to manage this page'
+                    body: 'JavaScript must be enabled in your browser to manage the content of this page'
                 }} />
             }
             <ContentBlockManager
@@ -104,6 +102,22 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 forms={forms}
                 blocks={blocks}
                 blocksTemplate={contentTemplate}
+                text={{
+                    headerReadBody: "You are a Group Admin of this page. Please click edit to switch to editing mode.",
+                    headerPreviewBody: "You are previewing the group homepage in editing mode.",
+                    headerCreateHeading: "Add content block",
+                    headerCreateBody: "Choose a content block to add to your group homepage",
+                    headerUpdateHeading: "Editing group homepage",
+                    headerUpdateBody: "Welcome to your group homepage. You are currently in editing mode. You can save a draft at any time, preview your page, or publish your changes. Once published, you can edit your page in the group actions. For more information and help, see our quick guide. For some inspiration, visit our knowledge hub.",
+                    headerEnterUpdateButton: "Edit page",
+                    headerLeaveUpdateButton: "Stop editing page",
+                    headerDiscardUpdateButton: "Discard updates",
+                    headerPreviewUpdateButton: "Preview page",
+                    headerPublishUpdateButton: "Publish group page",
+                    createButton: "Add content block",
+                    cancelCreateButton: "Cancel"
+                }}
+                shouldRenderEditingHeader={isGroupAdmin}
                 saveBlocksAction={handleSaveBlocks}
                 themeId={themeId} />
         </LayoutColumn>

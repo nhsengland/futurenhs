@@ -1,5 +1,7 @@
 import { TextContentBlock } from './TextContentBlock';
+import { KeyLinksBlock } from './KeyLinksBlock';
 
 export const contentBlockComponents: any = {
-    textBlock: TextContentBlock
+    textBlock: TextContentBlock,
+    keyLinksBlock: KeyLinksBlock
 };

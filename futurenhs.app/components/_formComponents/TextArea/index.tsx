@@ -112,7 +112,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
             )}
             <div
                 className={generatedClasses.inputWrapper}
-                style={{ minHeight: elementMinHeight }}
+                style={{ minHeight: editorRef.current ? 'auto' : elementMinHeight }}
             >
                 {shouldLoadRte ? (
                     <Editor

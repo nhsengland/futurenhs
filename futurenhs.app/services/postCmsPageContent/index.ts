@@ -13,7 +13,6 @@ import { CmsContentBlock } from '@appTypes/contentBlock';
 declare type Options = {
     user: User
     pageId: string
-    pageBlocks: Array<CmsContentBlock>
 }
 
 declare type Dependencies = {
@@ -22,7 +21,7 @@ declare type Dependencies = {
 }
 
 export const postCmsPageContent = async (
-    { user, pageId, pageBlocks }: Options,
+    { user, pageId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
     const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
@@ -38,9 +37,7 @@ export const postCmsPageContent = async (
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${pageId}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.POST, body: {
-            blocks: pageBlocks
-        } }),
+        setFetchOptions({ method: requestMethods.POST }),
         defaultTimeOutMillis
     )
 
@@ -51,7 +48,7 @@ export const postCmsPageContent = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to create the cms page content',
+            'An unexpected error occurred when attempting to publish the cms page content',
             {
                 serviceId: services.POST_CMS_PAGE_CONTENT,
                 status: status,
