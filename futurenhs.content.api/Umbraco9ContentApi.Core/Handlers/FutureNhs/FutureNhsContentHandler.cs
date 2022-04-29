@@ -60,7 +60,7 @@
         public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, PageContentModel pageContent, CancellationToken cancellationToken)
         {
             ApiResponse<string> response = new ApiResponse<string>();
-            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && pageContent is not null)
+            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && pageContent is null)
             {
                 errorList.Add("No data provided.");
                 return response.Failure(errorList, "Failed.");
@@ -68,25 +68,25 @@
 
             _futureNhsValidationService.ValidatePageContentModel(pageContent);
 
-            var pageTemplateContent = await _futureNhsContentService.GetDraftContentAsync(id, cancellationToken);
+            var groupWebPage = await _futureNhsContentService.GetDraftContentAsync(id, cancellationToken);
 
             if (!string.IsNullOrWhiteSpace(title))
             {
-                pageTemplateContent.Name = title;
-                pageTemplateContent.SetValue("title", title);
+                groupWebPage.Name = title;
+                groupWebPage.SetValue("title", title);
             }
 
             if (!string.IsNullOrWhiteSpace(description))
             {
-                pageTemplateContent.SetValue("description", description);
+                groupWebPage.SetValue("description", description);
             }
 
             if (pageContent is null)
             {
-                pageTemplateContent.SetValue("pageContent", JsonConvert.SerializeObject(pageContent));
+                groupWebPage.SetValue("pageContent", JsonConvert.SerializeObject(pageContent));
             }
 
-            var result = await _futureNhsContentService.SaveContentAsync(pageTemplateContent, cancellationToken);
+            var result = await _futureNhsContentService.SaveContentAsync(groupWebPage, cancellationToken);
 
             if (result)
             {
@@ -104,18 +104,18 @@
 
             _futureNhsValidationService.ValidatePageContentModel(pageContent);
 
-            var pageTemplateContent = await _futureNhsContentService.GetDraftContentAsync(id, cancellationToken);
+            var groupWebPage = await _futureNhsContentService.GetDraftContentAsync(id, cancellationToken);
 
-            if (pageContent is null)
+            if (groupWebPage is not null)
             {
-                pageTemplateContent.SetValue("pageContent", JsonConvert.SerializeObject(pageContent));
-            }
+                groupWebPage.Properties["pageContent"].SetValue(JsonConvert.SerializeObject(pageContent));
 
-            var result = await _futureNhsContentService.SaveContentAsync(pageTemplateContent, cancellationToken);
+                var result = await _futureNhsContentService.SaveContentAsync(groupWebPage, cancellationToken);
 
-            if (result)
-            {
-                return response.Success(id.ToString(), "Success.");
+                if (result)
+                {
+                    return response.Success(id.ToString(), "Success.");
+                }
             }
 
             errorList.Add("Error occured.");

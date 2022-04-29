@@ -30,8 +30,11 @@
 
                 if (blockValues is not null)
                 {
-                    if (!expectedValues.SequenceEqual(blockValues))
-                        throw new ArgumentOutOfRangeException($"Block fields do not match the expected fields for contentType {contentType.Name}.");
+                    foreach (var value in blockValues)
+                    {
+                        if (!expectedValues.Contains(value))
+                            throw new ArgumentOutOfRangeException($"Block fields do not match the expected fields for contentType {contentType.Name}.");
+                    }
                 }
             }
         }
