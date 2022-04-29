@@ -93,18 +93,17 @@ Scenario Outline: FNHS24 - Create a group error validation
     And the 'Discard group' link is displayed
     When I enter '<groupname>' into the 'Group name' field
     And I enter '<strapline>' into the 'Strap line' text area
-    And I select the '<theme>' radio button for 'Choose your theme colour'
     And I choose '<owner>' from the 'Group owner' auto suggest list
     And I click the 'Save and create group' button
     Then the '<error message>' error summary is displayed
     And the '<error message>' textual value is displayed
 Examples:
-    | groupname | strapline | theme | owner      | error message             |
-    |           | strapline | Theme | auto Admin | Enter the group name      |
-    | lys1LaevYMlfKKuhDCsk6ytL7JuEtgKJtJBkX7qKfN9ie0TlNmizA7jc2Gz4jds73h7fDu6NXrhg5RtJXigODOvyVw356uTl73pGlcLkA8Z1P17QkQL4l9D6NXjpU0BiY4apRyChrEJk1TeXuSdObCyZNx9UrzGipSn0G0b2fbtI47d8xLThayvjd1juprX8OkdJJol1ujqJudcbn0Nle3Owp1Br3cGuTiGb5bbvVfdNsTAvZWu1WA0cDw0MkTQa | strapline | Theme | auto Admin | Enter 255 or fewer characters | 
-    | groupname | aSjTVIGXLcNzmvpY7os6yGA8MQiJdh1fuX0h7bnl88sWPX9t7POO0Z9LAMUSG5cxZt0OMuaq696fHasNXeN6wSUj14xa3G6lrVVQsSSNFQpOqi6NXozsNNtUo9gPupXL89doCbsz4DaISzcfV9qGzmhsXFhomcdg7pz6k4vZdDKu8f7yEUpmimjCzf1tiIu5SbL5QQnFQIjTw44yq6Z0ammBMN4dshdlniVmiSZU28nDPJ9ZporntlfEb5BgZKRR1EcRAMFZ0GRvkP4FKl1EB93N1h5ykDUkr1lV2u3J35ccCtxrS15s5DDXBDnSDqjWWZiYTvBWi2m3nKKGN9sHvvTZ9Atc7ALFRxmA2qdXaYKui2emqJYEHYEHkrReggc1JAatb3kTTbcdp8fBygFcNADttAC9DWubffASAq5qkaIR5a8P4OydePX7UpMXd4RgbXbkDauec45XPne5qGugJLPxcHPlgFedhv8AVThYXydfUBriAkNy4sSy4LAxJ2GjQBFw7S9U9UMLdVHUFT55aBCpt94sCHBPPEK5okivtnj8sMv62N47OdjGd0JzGz9SeR3bs9HSH9gHzHBvoWNXih7t3FhIH0NNeOAVudJlsdV7wbXt0lVKczp2YnER3Kxk9na0OviO0yr0zJd2XsUeBWa5BquebcdMleENhfMlEEbgWJukGTySQcyu2qiU5x3yQWMiKcXQwAtDG303bhzT1ZveBxhlXaBh1VyNq4WFeHgMsG96oQvmcAPp6PSH2fJTbvetHAkDhuVlyeNEVPLlTyaPOWyB1ivxcipcFyaR5bF11Wu5eJbAglYpDzL65TuCdvJTtvEMqzECMc5gIJljki1u0OMM2Lwlw2AZjhdwJldtvPTy3McncOLr4BrsbWUZe3fMxPjDmJsTwtR2qRc4nB6YsviQreeOqgrftY2yykqdK1WWsSF41tgzj9KLTkVdnjS2RM2BDkWUOYGerfnnmJ3RNiYi6dO9Wb5jwhXTf | Theme | auto Admin | Enter 1000 or fewer characters | 
-    | groupname | strapline |       | auto Admin | Select the group theme    |
-    | groupname | strapline | Theme |            | Enter a valid group owner |
+    | groupname | strapline | owner      | error message             |
+    |           | strapline | auto Admin | Enter the group name      |
+    | lys1LaevYMlfKKuhDCsk6ytL7JuEtgKJtJBkX7qKfN9ie0TlNmizA7jc2Gz4jds73h7fDu6NXrhg5RtJXigODOvyVw356uTl73pGlcLkA8Z1P17QkQL4l9D6NXjpU0BiY4apRyChrEJk1TeXuSdObCyZNx9UrzGipSn0G0b2fbtI47d8xLThayvjd1juprX8OkdJJol1ujqJudcbn0Nle3Owp1Br3cGuTiGb5bbvVfdNsTAvZWu1WA0cDw0MkTQa | strapline | auto Admin | Enter 255 or fewer characters | 
+    | groupname | aSjTVIGXLcNzmvpY7os6yGA8MQiJdh1fuX0h7bnl88sWPX9t7POO0Z9LAMUSG5cxZt0OMuaq696fHasNXeN6wSUj14xa3G6lrVVQsSSNFQpOqi6NXozsNNtUo9gPupXL89doCbsz4DaISzcfV9qGzmhsXFhomcdg7pz6k4vZdDKu8f7yEUpmimjCzf1tiIu5SbL5QQnFQIjTw44yq6Z0ammBMN4dshdlniVmiSZU28nDPJ9ZporntlfEb5BgZKRR1EcRAMFZ0GRvkP4FKl1EB93N1h5ykDUkr1lV2u3J35ccCtxrS15s5DDXBDnSDqjWWZiYTvBWi2m3nKKGN9sHvvTZ9Atc7ALFRxmA2qdXaYKui2emqJYEHYEHkrReggc1JAatb3kTTbcdp8fBygFcNADttAC9DWubffASAq5qkaIR5a8P4OydePX7UpMXd4RgbXbkDauec45XPne5qGugJLPxcHPlgFedhv8AVThYXydfUBriAkNy4sSy4LAxJ2GjQBFw7S9U9UMLdVHUFT55aBCpt94sCHBPPEK5okivtnj8sMv62N47OdjGd0JzGz9SeR3bs9HSH9gHzHBvoWNXih7t3FhIH0NNeOAVudJlsdV7wbXt0lVKczp2YnER3Kxk9na0OviO0yr0zJd2XsUeBWa5BquebcdMleENhfMlEEbgWJukGTySQcyu2qiU5x3yQWMiKcXQwAtDG303bhzT1ZveBxhlXaBh1VyNq4WFeHgMsG96oQvmcAPp6PSH2fJTbvetHAkDhuVlyeNEVPLlTyaPOWyB1ivxcipcFyaR5bF11Wu5eJbAglYpDzL65TuCdvJTtvEMqzECMc5gIJljki1u0OMM2Lwlw2AZjhdwJldtvPTy3McncOLr4BrsbWUZe3fMxPjDmJsTwtR2qRc4nB6YsviQreeOqgrftY2yykqdK1WWsSF41tgzj9KLTkVdnjS2RM2BDkWUOYGerfnnmJ3RNiYi6dO9Wb5jwhXTf | auto Admin | Enter 1000 or fewer characters | 
+    | groupname | strapline | auto Admin | Select the group theme    |
+    | groupname | strapline |            | Enter a valid group owner |
 
 
 Scenario: FNHS25 - Created Group Homepage Validation
