@@ -24,6 +24,7 @@ export interface Props {
         createButton: string;
         cancelCreateButton: string;
     };
+    shouldRenderEditingHeader?: boolean;
     blocksChangeAction?: (blocks: Array<CmsContentBlock>) => void
     stateChangeAction?: (currentState: cprud) => void
     createBlockAction?: (blockTypeId: string) => void

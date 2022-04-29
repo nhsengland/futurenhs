@@ -22,7 +22,6 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     forms,
     actions,
     contentPageId,
-    contentTemplateId,
     contentTemplate,
     contentBlocks,
     themeId
@@ -42,15 +41,14 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
             putCmsPageContent({ 
                 user, 
-                pageId: contentTemplateId, 
+                pageId: contentPageId, 
                 pageBlocks: blocks 
             })
             .then(() => {
 
                 postCmsPageContent({ 
                     user, 
-                    pageId: contentTemplateId, 
-                    pageBlocks: blocks 
+                    pageId: contentPageId
                 })
                 .then(() => {
 
@@ -96,7 +94,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
             {isGroupAdmin &&
                 <NoScript headingLevel={2} text={{
                     heading: 'Important',
-                    body: 'JavaScript must be enabled in your browser to manage this page'
+                    body: 'JavaScript must be enabled in your browser to manage the content of this page'
                 }} />
             }
             <ContentBlockManager
@@ -104,7 +102,6 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 forms={forms}
                 blocks={blocks}
                 blocksTemplate={contentTemplate}
-                saveBlocksAction={handleSaveBlocks}
                 text={{
                     headerReadBody: "You are a Group Admin of this page. Please click edit to switch to editing mode.",
                     headerPreviewBody: "You are previewing the group homepage in editing mode.",
@@ -120,6 +117,8 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                     createButton: "Add content block",
                     cancelCreateButton: "Cancel"
                 }}
+                shouldRenderEditingHeader={isGroupAdmin}
+                saveBlocksAction={handleSaveBlocks}
                 themeId={themeId} />
         </LayoutColumn>
 

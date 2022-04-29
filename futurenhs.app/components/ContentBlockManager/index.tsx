@@ -34,6 +34,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     blocksTemplate,
     initialState = cprud.READ,
     text,
+    shouldRenderEditingHeader,
     blocksChangeAction,
     stateChangeAction,
     createBlockAction,
@@ -42,16 +43,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     className,
 }) => {
 
-    const valueUpdateCache: any = useRef({});
-    const valueUpdateCacheTimeOut: any = useRef(null);
-
     /**
      * Blocks in data from the API include no unique IDs so we need to inject some locally
      * to safely manage dynamic block sorting, adding or deleting
      */
     const handleToggleInstanceIds = (sourceBlocks: Array<CmsContentBlock>, shouldAdd: boolean): Array<CmsContentBlock> => {
 
-        if(!sourceBlocks?.length) {
+        if (!sourceBlocks?.length) {
 
             return [];
 
@@ -59,7 +57,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         return simpleClone(sourceBlocks).map((block) => {
 
-            if(shouldAdd){
+            if (shouldAdd) {
 
                 block.instanceId = randomBytes(6).toString('hex');
 
@@ -75,9 +73,14 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     }
 
+    const valueUpdateCache: any = useRef({});
+    const valueUpdateCacheTimeOut: any = useRef(null);
+    const initialBlocks: any = useRef(handleToggleInstanceIds(sourceBlocks, true));
+
     const [mode, setMode] = useState(initialState);
-    const [referenceBlocks, setReferenceBlocks] = useState([]);
-    const [blocks, setBlocks] = useState([]);
+    const [isJsEnabled, setIsJsEnabled] = useState(false);
+    const [referenceBlocks, setReferenceBlocks] = useState(initialBlocks.current);
+    const [blocks, setBlocks] = useState(initialBlocks.current);
     const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
 
     const hasTemplateBlocks: boolean = blocksTemplate?.length > 0;
@@ -85,18 +88,18 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const isEditable: boolean = mode !== cprud.READ && mode !== cprud.PREVIEW;
 
     const { headerReadBody,
-            headerPreviewBody,
-            headerCreateHeading,
-            headerCreateBody,
-            headerUpdateHeading,
-            headerUpdateBody,
-            headerEnterUpdateButton,
-            headerLeaveUpdateButton,
-            headerDiscardUpdateButton,
-            headerPreviewUpdateButton,
-            headerPublishUpdateButton,
-            createButton,
-            cancelCreateButton } = text ?? {};
+        headerPreviewBody,
+        headerCreateHeading,
+        headerCreateBody,
+        headerUpdateHeading,
+        headerUpdateBody,
+        headerEnterUpdateButton,
+        headerLeaveUpdateButton,
+        headerDiscardUpdateButton,
+        headerPreviewUpdateButton,
+        headerPublishUpdateButton,
+        createButton,
+        cancelCreateButton } = text ?? {};
     const { background }: Theme = selectTheme(themes, themeId);
 
     const generatedClasses: any = {
@@ -164,7 +167,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         blocksChangeAction?.(updatedBlocks);
 
         setTimeout(() => {
-            
+
             const targetSelector: string = updatedBlocks[targetIndex].instanceId;
 
             document.getElementById(targetSelector)?.focus()
@@ -186,7 +189,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         blocksChangeAction?.(updatedBlocks);
 
         setTimeout(() => {
-            
+
             const targetSelector: string = updatedBlocks[targetIndex].instanceId;
 
             document.getElementById(targetSelector)?.focus()
@@ -210,7 +213,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         setMode(cprud.READ);
         stateChangeAction?.(cprud.READ)
     }
-    
+
     /**
      * Handle setting the active mode to preview
      */
@@ -243,13 +246,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         let errors: FormErrors = {};
 
-        if(saveBlocksAction){
+        if (saveBlocksAction) {
 
             errors = await saveBlocksAction(blocksToSave);
 
         }
 
-        if(!Object.keys(errors).length){
+        if (!Object.keys(errors).length) {
 
             setMode(cprud.READ);
 
@@ -263,7 +266,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleFormUpdate = ({ formState, instanceId }): void => {
 
-        const { values, visited } = formState;
+        const { values = {}, visited } = formState;
 
         const updatedContent: Record<string, any> = {};
         const targetBlock: CmsContentBlock = blocks.find((block) => block.instanceId === instanceId);
@@ -279,7 +282,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
             /**
              * If a field has been interacted with and its current value differs from the value current held in blocks
              */
-            if(key.includes(instanceId) && visited[key] && value !== targetBlock.content[fieldName]){
+            if (key.includes(instanceId) && visited[key] && value !== targetBlock.content[fieldName]) {
 
                 updatedContent[fieldName] = values[key];
 
@@ -290,10 +293,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         /**
          * If there are updates to block content
          */
-        if(Object.keys(updatedContent).length > 0){
+        if (Object.keys(updatedContent).length > 0) {
 
             valueUpdateCache.current[instanceId] = Object.assign({}, valueUpdateCache.current[instanceId], updatedContent);
-    
+
             processValueUpdateCache();
 
         }
@@ -310,17 +313,21 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         valueUpdateCacheTimeOut.current = window.setTimeout(() => {
 
-            const updatedBlocks: Array<CmsContentBlock> = simpleClone(blocks);
+            if (valueUpdateCache.current && Object.keys(valueUpdateCache.current).length > 0) {
 
-            Object.keys(valueUpdateCache.current).forEach((instanceId) => {
+                const updatedBlocks: Array<CmsContentBlock> = simpleClone(blocks);
 
-                const targetBlock: CmsContentBlock = updatedBlocks.find((block) => block.instanceId === instanceId);
+                Object.keys(valueUpdateCache.current).forEach((instanceId) => {
 
-                targetBlock.content = Object.assign({}, targetBlock.content, valueUpdateCache.current[instanceId]);
+                    const targetBlock: CmsContentBlock = updatedBlocks.find((block) => block.instanceId === instanceId);
 
-            })
+                    targetBlock.content = Object.assign({}, targetBlock.content, valueUpdateCache.current[instanceId]);
 
-            setBlocks(updatedBlocks);
+                })
+
+                setBlocks(updatedBlocks);
+
+            }
 
         }, 250);
 
@@ -335,7 +342,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         if (item.contentType === 'textBlock') {
 
-            if(isEditable){
+            if (isEditable) {
 
                 const formConfig: FormConfig = simpleClone(forms[formTypes.CONTENT_BLOCK_TEXT]);
                 const handleChange: (formState: any) => void = (formState) => handleFormUpdate({ instanceId, formState });
@@ -349,7 +356,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                     <LayoutColumnContainer>
                         <LayoutColumn desktop={9}>
-                            <Form 
+                            <Form
                                 key={instanceId}
                                 csrfToken={csrfToken}
                                 instanceId={instanceId}
@@ -378,9 +385,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         if (item.contentType === 'keyLinksBlock') {
 
-            console.log(content);
-
-            if(isEditable){
+            if (isEditable) {
 
 
 
@@ -407,11 +412,11 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         const isLocalBlockStateMatchingSource: boolean = simpleCompare(blocks, referenceBlocks);
 
-        if(isLocalBlockStateMatchingSource && hasEditedBlocks){
+        if (isLocalBlockStateMatchingSource && hasEditedBlocks) {
 
             setHasEditedBlocks(false);
 
-        } else if(!isLocalBlockStateMatchingSource && !hasEditedBlocks){
+        } else if (!isLocalBlockStateMatchingSource && !hasEditedBlocks) {
 
             setHasEditedBlocks(true);
 
@@ -434,80 +439,91 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     }, [sourceBlocks]);
 
     /**
+     * Enable the editing header when JavaScript is enabled
+     */
+    useEffect(() => {
+
+        setIsJsEnabled(true);
+
+    }, []);
+
+    /**
      * Render
      */
     return (
         <div className={generatedClasses.wrapper}>
-            <header className={generatedClasses.header}>
-                {(mode === cprud.READ) && 
-                    <LayoutColumnContainer>
-                        <LayoutColumn tablet={9}>
-                            <div className={generatedClasses.headerCallOut}>
-                                {headerReadBody &&
-                                    <RichText bodyHtml={headerReadBody} wrapperElementType="p" className={generatedClasses.headerCallOutText} />
-                                }
-                            </div>
-                        </LayoutColumn>
-                        <LayoutColumn tablet={3} className="u-flex u-items-center">
-                            <EnterUpdateButton />
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-                }
-                {(mode === cprud.PREVIEW) &&
-                    <LayoutColumnContainer>
-                        <LayoutColumn tablet={6}>
-                            <div className={generatedClasses.headerCallOut}>
-                                {headerPreviewBody &&
-                                    <RichText bodyHtml={headerPreviewBody} wrapperElementType="p" className={generatedClasses.headerCallOutText} />
-                                }
-                            </div>
-                        </LayoutColumn>
-                        <LayoutColumn tablet={6} className="u-flex u-items-center">
-                            <EnterUpdateButton />
-                            <PublishUpdateButton />
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-                }
-                {(mode === cprud.CREATE) &&
-                    <>
-                        {headerCreateHeading && 
-                            <h2 className="nhsuk-heading-xl u-mb-8">{headerCreateHeading}</h2>
-                        }
-                        {headerCreateBody &&
-                            <RichText wrapperElementType="p" bodyHtml={headerCreateBody} className="u-text-lead u-text-theme-7" />
-                        }
-                    </>
-                }
-                {(mode === cprud.UPDATE) &&
-                    <div className={generatedClasses.adminCallOut}>
-                    <LayoutColumnContainer className="u-mb-6">
-                        <LayoutColumn tablet={hasEditedBlocks ? 5 : 9} className="u-flex u-items-center">
-                            {headerUpdateHeading && 
-                                <h2 className="nhsuk-heading-l u-m-0">{headerUpdateHeading}</h2>
-                            }
-                        </LayoutColumn>
-                        <LayoutColumn tablet={hasEditedBlocks ? 7 : 3} className="tablet:u-flex u-items-center">
-                            {!hasEditedBlocks && 
-                                <LeaveUpdateButton />
-                            }
-                            {hasEditedBlocks && 
-                                <>
-                                    <DiscardUpdateButton />
-                                    <PreviewUpdateButton />
-                                    <PublishUpdateButton />
-                                </>                                  
-                            }
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-                    {headerUpdateBody && 
-                        <RichText
-                            wrapperElementType="div"
-                            bodyHtml={headerUpdateBody}
-                            className="u-text-lead u-text-theme-7" />
+            {(isJsEnabled && shouldRenderEditingHeader) &&
+                <header className={generatedClasses.header}>
+                    {(mode === cprud.READ) &&
+                        <LayoutColumnContainer>
+                            <LayoutColumn tablet={9}>
+                                <div className={generatedClasses.headerCallOut}>
+                                    {headerReadBody &&
+                                        <RichText bodyHtml={headerReadBody} wrapperElementType="p" className={generatedClasses.headerCallOutText} />
+                                    }
+                                </div>
+                            </LayoutColumn>
+                            <LayoutColumn tablet={3} className="u-flex u-items-center">
+                                <EnterUpdateButton />
+                            </LayoutColumn>
+                        </LayoutColumnContainer>
                     }
-                </div>
-                }
-            </header>
+                    {(mode === cprud.PREVIEW) &&
+                        <LayoutColumnContainer>
+                            <LayoutColumn tablet={6}>
+                                <div className={generatedClasses.headerCallOut}>
+                                    {headerPreviewBody &&
+                                        <RichText bodyHtml={headerPreviewBody} wrapperElementType="p" className={generatedClasses.headerCallOutText} />
+                                    }
+                                </div>
+                            </LayoutColumn>
+                            <LayoutColumn tablet={6} className="u-flex u-items-center">
+                                <EnterUpdateButton />
+                                <PublishUpdateButton />
+                            </LayoutColumn>
+                        </LayoutColumnContainer>
+                    }
+                    {(mode === cprud.CREATE) &&
+                        <>
+                            {headerCreateHeading &&
+                                <h2 className="nhsuk-heading-xl u-mb-8">{headerCreateHeading}</h2>
+                            }
+                            {headerCreateBody &&
+                                <RichText wrapperElementType="p" bodyHtml={headerCreateBody} className="u-text-lead u-text-theme-7" />
+                            }
+                        </>
+                    }
+                    {(mode === cprud.UPDATE) &&
+                        <div className={generatedClasses.adminCallOut}>
+                            <LayoutColumnContainer className="u-mb-6">
+                                <LayoutColumn tablet={hasEditedBlocks ? 5 : 9} className="u-flex u-items-center">
+                                    {headerUpdateHeading &&
+                                        <h2 className="nhsuk-heading-l u-m-0">{headerUpdateHeading}</h2>
+                                    }
+                                </LayoutColumn>
+                                <LayoutColumn tablet={hasEditedBlocks ? 7 : 3} className="tablet:u-flex u-items-center">
+                                    {!hasEditedBlocks &&
+                                        <LeaveUpdateButton />
+                                    }
+                                    {hasEditedBlocks &&
+                                        <>
+                                            <DiscardUpdateButton />
+                                            <PreviewUpdateButton />
+                                            <PublishUpdateButton />
+                                        </>
+                                    }
+                                </LayoutColumn>
+                            </LayoutColumnContainer>
+                            {headerUpdateBody &&
+                                <RichText
+                                    wrapperElementType="div"
+                                    bodyHtml={headerUpdateBody}
+                                    className="u-text-lead u-text-theme-7" />
+                            }
+                        </div>
+                    }
+                </header>
+            }
             {(mode === cprud.CREATE && hasTemplateBlocks) && (
                 <>
                     {hasTemplateBlocks &&
@@ -527,7 +543,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                                 name: item.name
                                             }}
                                             createAction={handleCreateBlock}>
-                                                {renderBlockContent({ block, isEditable: false })}
+                                            {renderBlockContent({ block, isEditable: false })}
                                         </ContentBlock>
                                     </li>
 
@@ -572,7 +588,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                             text={{
                                                 name: item.name
                                             }}>
-                                                {renderBlockContent({ block, isEditable: mode === cprud.UPDATE })}
+                                            {renderBlockContent({ block, isEditable: mode === cprud.UPDATE })}
                                         </ContentBlock>
                                     </li>
 
