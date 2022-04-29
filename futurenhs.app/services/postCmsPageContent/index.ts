@@ -21,7 +21,7 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const putCmsPageContent = async (
+export const postCmsPageContent = async (
     { user, pageId, pageBlocks }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
@@ -38,7 +38,7 @@ export const putCmsPageContent = async (
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${pageId}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.PUT, body: {
+        setFetchOptions({ method: requestMethods.POST, body: {
             blocks: pageBlocks
         } }),
         defaultTimeOutMillis
@@ -51,9 +51,9 @@ export const putCmsPageContent = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to update the cms page content',
+            'An unexpected error occurred when attempting to create the cms page content',
             {
-                serviceId: services.PUT_CMS_PAGE_CONTENT,
+                serviceId: services.POST_CMS_PAGE_CONTENT,
                 status: status,
                 statusText: statusText,
                 body: apiData,

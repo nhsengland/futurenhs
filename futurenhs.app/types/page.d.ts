@@ -23,6 +23,7 @@ export interface Page {
     pagination?: Pagination;
     errors?: Array<Record<string>>;
     contentText?: GenericPageTextContent;
+    contentPageId?: string;
     contentTemplateId?: string;
     contentTemplate?: Array<ContentBlock>;
     contentBlocks?: Array<ContentBlock>;

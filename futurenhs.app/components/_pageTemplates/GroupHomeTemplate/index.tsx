@@ -8,7 +8,9 @@ import { actions as actionConstants } from '@constants/actions';
 import { ContentBlockManager } from '@components/ContentBlockManager';
 import { NoScript } from '@components/NoScript';
 import { LayoutColumn } from '@components/LayoutColumn';
+import { getCmsPageContent } from '@services/getCmsPageContent';
 import { putCmsPageContent } from '@services/putCmsPageContent';
+import { postCmsPageContent } from '@services/postCmsPageContent';
 
 import { Props } from './interfaces';
 import { CmsContentBlock } from '@appTypes/contentBlock';
@@ -19,6 +21,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     csrfToken,
     forms,
     actions,
+    contentPageId,
     contentTemplateId,
     contentTemplate,
     contentBlocks,
@@ -42,7 +45,31 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 pageId: contentTemplateId, 
                 pageBlocks: blocks 
             })
-            .then(() => resolve({}))
+            .then(() => {
+
+                postCmsPageContent({ 
+                    user, 
+                    pageId: contentTemplateId, 
+                    pageBlocks: blocks 
+                })
+                .then(() => {
+
+                    getCmsPageContent({
+                        user,
+                        pageId: contentPageId
+                    })
+                    .then((response) => {
+    
+                        const updatedBlocks: Array<CmsContentBlock> = response.data;
+    
+                        setBlocks(updatedBlocks);
+                        resolve({})
+    
+                    });
+
+                });
+        
+            })
             .catch((error) => {
 
                 const errors: FormErrors =
