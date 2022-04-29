@@ -21,8 +21,9 @@
         /// <param name="id">The identifier.</param>
         /// <param name="title">The title.</param>
         /// <param name="description">The description.</param>
-        /// <param name="pageContent">The content.</param>
-        /// <returns>True or false.</returns>
+        /// <param name="pageContent">Content of the page.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, PageContentModel pageContent, CancellationToken cancellationToken);
 
         /// <summary>
