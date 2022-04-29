@@ -32,6 +32,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     blocks: sourceBlocks,
     blocksTemplate,
     initialState = cprud.READ,
+    text,
     blocksChangeAction,
     stateChangeAction,
     createBlockAction,
@@ -82,6 +83,19 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const hasBlocks: boolean = blocks?.length > 0;
     const isEditable: boolean = mode !== cprud.READ && mode !== cprud.PREVIEW;
 
+    const { headerReadBody,
+            headerPreviewBody,
+            headerCreateHeading,
+            headerCreateBody,
+            headerUpdateHeading,
+            headerUpdateBody,
+            headerEnterUpdateButton,
+            headerLeaveUpdateButton,
+            headerDiscardUpdateButton,
+            headerPreviewUpdateButton,
+            headerPublishUpdateButton,
+            createButton,
+            cancelCreateButton } = text ?? {};
     const { background }: Theme = selectTheme(themes, themeId);
 
     const generatedClasses: any = {
@@ -91,7 +105,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         headerCallOutText: classNames('nhsuk-heading-m u-text-bold'),
         headerCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0 tablet:u-ml-5'),
         headerPrimaryCallOutButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0 tablet:u-ml-5'),
-        addBlock: classNames('c-page-manager-block', 'u-text-center'),
+        createBlock: classNames('c-page-manager-block', 'u-text-center'),
         block: classNames('c-page-manager-block'),
         blockHeader: classNames('c-page-manager-block_header', 'u-text-bold'),
         blockBody: classNames('c-page-manager-block_body'),
@@ -100,11 +114,11 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Action buttons
      */
-    const LeaveEditButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToReadMode}>Stop editing page</button>
-    const EnterEditButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>Edit page</button>
-    const DiscardChangesButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleDiscardUpdates}>Discard changes</button>
-    const PreviewButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToPreviewMode}>Preview page</button>
-    const PublishButton: () => JSX.Element = () => <button className={generatedClasses.headerPrimaryCallOutButton} onClick={handleUpdateBlockSubmit}>Publish group page</button>
+    const EnterUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>{headerEnterUpdateButton}</button>
+    const LeaveUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToReadMode}>{headerLeaveUpdateButton}</button>
+    const DiscardUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleDiscardUpdates}>{headerDiscardUpdateButton}</button>
+    const PreviewUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToPreviewMode}>{headerPreviewUpdateButton}</button>
+    const PublishUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerPrimaryCallOutButton} onClick={handleUpdateBlockSubmit}>{headerPublishUpdateButton}</button>
 
     /**
      * Handle creating a new block instance from the page template and adding it to the active block list
@@ -406,11 +420,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     <LayoutColumnContainer>
                         <LayoutColumn tablet={9}>
                             <div className={generatedClasses.headerCallOut}>
-                                <p className={generatedClasses.headerCallOutText}>You are a Group Admin of this page. Please click edit to switch to editing mode.</p>
+                                {headerReadBody &&
+                                    <RichText bodyHtml={headerReadBody} wrapperElementType="p" className={generatedClasses.headerCallOutText} />
+                                }
                             </div>
                         </LayoutColumn>
                         <LayoutColumn tablet={3} className="u-flex u-items-center">
-                            <EnterEditButton />
+                            <EnterUpdateButton />
                         </LayoutColumn>
                     </LayoutColumnContainer>
                 }
@@ -418,45 +434,54 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     <LayoutColumnContainer>
                         <LayoutColumn tablet={6}>
                             <div className={generatedClasses.headerCallOut}>
-                                <p className={generatedClasses.headerCallOutText}>You are previewing the group homepage in editing mode.</p>
+                                {headerPreviewBody &&
+                                    <RichText bodyHtml={headerPreviewBody} wrapperElementType="p" className={generatedClasses.headerCallOutText} />
+                                }
                             </div>
                         </LayoutColumn>
                         <LayoutColumn tablet={6} className="u-flex u-items-center">
-                            <EnterEditButton />
-                            <PublishButton />
+                            <EnterUpdateButton />
+                            <PublishUpdateButton />
                         </LayoutColumn>
                     </LayoutColumnContainer>
                 }
                 {(mode === cprud.CREATE) &&
                     <>
-                        <h2 className="nhsuk-heading-xl u-mb-8">Add content block</h2>
-                        <RichText wrapperElementType="p" bodyHtml="Choose a content block to add to your group homepage" className="u-text-lead u-text-theme-7" />
+                        {headerCreateHeading && 
+                            <h2 className="nhsuk-heading-xl u-mb-8">{headerCreateHeading}</h2>
+                        }
+                        {headerCreateBody &&
+                            <RichText wrapperElementType="p" bodyHtml={headerCreateBody} className="u-text-lead u-text-theme-7" />
+                        }
                     </>
                 }
                 {(mode === cprud.UPDATE) &&
                     <div className={generatedClasses.adminCallOut}>
                     <LayoutColumnContainer className="u-mb-6">
                         <LayoutColumn tablet={hasEditedBlocks ? 5 : 9} className="u-flex u-items-center">
-                            <h2 className="nhsuk-heading-l u-m-0">Editing group homepage</h2>
+                            {headerUpdateHeading && 
+                                <h2 className="nhsuk-heading-l u-m-0">{headerUpdateHeading}</h2>
+                            }
                         </LayoutColumn>
                         <LayoutColumn tablet={hasEditedBlocks ? 7 : 3} className="tablet:u-flex u-items-center">
                             {!hasEditedBlocks && 
-                                <LeaveEditButton />
+                                <LeaveUpdateButton />
                             }
                             {hasEditedBlocks && 
                                 <>
-                                    <DiscardChangesButton />
-                                    <PreviewButton />
-                                    <PublishButton />
+                                    <DiscardUpdateButton />
+                                    <PreviewUpdateButton />
+                                    <PublishUpdateButton />
                                 </>                                  
                             }
                         </LayoutColumn>
                     </LayoutColumnContainer>
-                    <RichText
-                        wrapperElementType="div"
-                        bodyHtml="Welcome to your group homepage. You are currently in editing mode. You can save a draft at any time, preview your page, or publish your changes. Once published, you can edit your page in the group actions. For more information and help, see our quick guide.
-    For some inspiration, visit our knowledge hub."
-                        className="u-text-lead u-text-theme-7" />
+                    {headerUpdateBody && 
+                        <RichText
+                            wrapperElementType="div"
+                            bodyHtml={headerUpdateBody}
+                            className="u-text-lead u-text-theme-7" />
+                    }
                 </div>
                 }
             </header>
@@ -494,7 +519,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                         onClick={handleSetToUpdateMode}
                         className="c-button c-button-outline u-drop-shadow"
                     >
-                        Cancel
+                        {cancelCreateButton}
                     </button>
                 </>
             )}
@@ -536,7 +561,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                         </ul>
                     }
                     {(mode === cprud.UPDATE && hasTemplateBlocks) &&
-                        <div className={generatedClasses.addBlock}>
+                        <div className={generatedClasses.createBlock}>
                             <div className={generatedClasses.blockBody}>
                                 <button
                                     onClick={handleSetToCreateMode}
@@ -547,7 +572,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                         className="u-w-9 u-h-8 u-mr-4 u-align-middle"
                                     />
                                     <span className="u-align-middle">
-                                        Add content block
+                                        {createButton}
                                     </span>
                                 </button>
                             </div>
