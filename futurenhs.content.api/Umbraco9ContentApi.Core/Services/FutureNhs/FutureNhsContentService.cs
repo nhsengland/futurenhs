@@ -28,7 +28,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<IPublishedContent>> GetPublishedContentChildrenAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IPublishedContent>?> GetPublishedContentChildrenAsync(Guid id, CancellationToken cancellationToken)
         {
             return _publishedContent.Content(id).Children ?? null;
         }

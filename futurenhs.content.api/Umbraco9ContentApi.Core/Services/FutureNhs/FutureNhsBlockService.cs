@@ -17,26 +17,18 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
             _contentTypeService = contentTypeService;
         }
 
-        public async Task<IEnumerable<string>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string?>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken)
         {
-            List<string> placeholderValues = new List<string>();
             var block = await _futureNhsContentService.GetPublishedContentAsync(blockId, cancellationToken);
 
             var contentType = _contentTypeService.Get(block.ContentType.Alias);
             var group = contentType.PropertyGroups.FirstOrDefault(x => x.Alias == propertyGroupAlias);
             var groupProperties = group?.PropertyTypes.Select(x => x.Alias);
 
-            foreach (var property in block.Properties.Where(x => groupProperties.Contains(x.Alias)))
-            {
-                var converter =
-                        _converters.FirstOrDefault(x => x.EditorAlias.Equals(property.PropertyType.EditorAlias));
-                if (converter != null)
-                {
-                    placeholderValues.Add(property.GetValue().ToString());
-                }
-            }
-
-            return placeholderValues;
+            return (from property in block.Properties.Where(x => groupProperties != null && groupProperties.Contains(x.Alias))
+                    let converter = _converters.FirstOrDefault(x => x.EditorAlias.Equals(property.PropertyType.EditorAlias))
+                    where converter != null
+                    select property.GetValue().ToString()).ToList();
         }
     }
 }
