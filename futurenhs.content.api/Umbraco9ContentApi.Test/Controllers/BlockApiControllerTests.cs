@@ -58,7 +58,7 @@
             Assert.NotNull(payloadResult.Data.FirstOrDefault().Content);
             var field = Assert.IsType<KeyValuePair<string, object>>(payloadResult.Data.FirstOrDefault().Content.FirstOrDefault());
             Assert.Equal("Title", field.Key);
-            Assert.Equal("This is a title.", field.Value);
+            Assert.Equal("Test text.", field.Value);
         }
 
         /// <summary>
