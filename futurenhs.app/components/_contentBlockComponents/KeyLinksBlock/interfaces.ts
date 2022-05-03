@@ -4,5 +4,10 @@ export interface Props {
         heading: string;
     };
     headingLevel: number;
+    links: Array<{
+        url: string
+        text: string
+    }>;
+    themeId?: string;
     className?: string
 }
