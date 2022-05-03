@@ -51,13 +51,12 @@ namespace FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProvider
 
                     return default(T);
                 }
-
-                ;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex,$"Error connecting to content Api Client - {ex.Message}");
             }
+            return default(T);
         }
     }
 }
