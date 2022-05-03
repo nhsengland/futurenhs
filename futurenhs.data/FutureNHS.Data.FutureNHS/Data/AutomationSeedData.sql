@@ -1,18 +1,4 @@
-﻿/*
-Post-Deployment Script Template							
---------------------------------------------------------------------------------------
- This file contains SQL statements that will be appended to the build script.		
- Use SQLCMD syntax to include a file in the post-deployment script.			
- Example:      :r .\myfile.sql								
- Use SQLCMD syntax to reference a variable in the post-deployment script.		
- Example:      :setvar TableName MyTable							
-               SELECT * FROM [$(TableName)]					
---------------------------------------------------------------------------------------
-*/
-:r .\SeedData.sql
-:r .\AutomationTeardownData.sql
-IF NOT EXISTS (select id from [MembershipUser] where [UserName] = 'autoAdmin@test.co.uk')
-BEGIN
+﻿BEGIN
 
 	-- Disable constraints for all tables:
 	EXEC sp_msforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT all'
@@ -213,17 +199,7 @@ BEGIN
 	INSERT [dbo].[Entity] ([Id]) VALUES (N'5889c069-5061-403b-93f6-adda00f7638a')
 	INSERT [dbo].[Entity] ([Id]) VALUES (N'f91c0e75-9d3d-4700-9efb-adda00f770d0')
 	INSERT [dbo].[Entity] ([Id]) VALUES (N'eaf7a8f1-b9a0-415d-b26d-88517132536e')
-
-	/**
-	* INSERT GROUP PERMISSIONS FOR ROLE
-	*/
-	INSERT [dbo].[GroupPermissionForRole] ([Id], [IsTicked], [Group_Id], [MembershipRole_Id], [Permission_Id]) VALUES (N'f7de7d85-7fb9-48cc-a0f3-ae2000bbeae7', 1, N'2d841d48-9753-463f-aff2-ad3a0093f48b', N'f8ca6f25-305a-4b03-a789-ad36011e9d1c', N'd21443bc-c174-47da-b804-ad36011e9e23')
-	INSERT [dbo].[GroupPermissionForRole] ([Id], [IsTicked], [Group_Id], [MembershipRole_Id], [Permission_Id]) VALUES (N'c4371a44-0626-4f95-8d7f-ae2000bbee46', 1, N'0d1ea1e0-83f9-491f-b99a-ad4000df7f09', N'f8ca6f25-305a-4b03-a789-ad36011e9d1c', N'd21443bc-c174-47da-b804-ad36011e9e23')
-	INSERT [dbo].[GroupPermissionForRole] ([Id], [IsTicked], [Group_Id], [MembershipRole_Id], [Permission_Id]) VALUES (N'077f3cc8-d169-4e96-b347-ae2000bbf034', 1, N'3e4a64dc-664a-4388-bc52-ad950106fb30', N'f8ca6f25-305a-4b03-a789-ad36011e9d1c', N'd21443bc-c174-47da-b804-ad36011e9e23')
-	INSERT [dbo].[GroupPermissionForRole] ([Id], [IsTicked], [Group_Id], [MembershipRole_Id], [Permission_Id]) VALUES (N'810ad7e2-9cb9-48df-aa09-ae2000bbf2a4', 1, N'61de48cf-686e-483d-84cf-ad95010721d3', N'f8ca6f25-305a-4b03-a789-ad36011e9d1c', N'd21443bc-c174-47da-b804-ad36011e9e23')
-	INSERT [dbo].[GroupPermissionForRole] ([Id], [IsTicked], [Group_Id], [MembershipRole_Id], [Permission_Id]) VALUES (N'ebf1dec4-594d-4af9-a725-ae2000bbf3d6', 1, N'41234726-7e93-4767-afbe-adda00f560a2', N'f8ca6f25-305a-4b03-a789-ad36011e9d1c', N'd21443bc-c174-47da-b804-ad36011e9e23')
-	INSERT [dbo].[GroupPermissionForRole] ([Id], [IsTicked], [Group_Id], [MembershipRole_Id], [Permission_Id]) VALUES (N'e07e6296-6d39-4c90-8370-ae2000bbf9ae', 1, N'b8c36360-ecbe-4ade-a3c2-adfd00f01faf', N'f8ca6f25-305a-4b03-a789-ad36011e9d1c', N'd21443bc-c174-47da-b804-ad36011e9e23')
-
+	
     -- Re-enable constraints for all tables:
     EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';	
 
