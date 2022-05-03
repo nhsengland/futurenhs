@@ -12,4 +12,6 @@ export interface Member {
     joinDate?: string;
     lastLogInDate?: string;
     image?: Image;
+    imageId?: string;
+    roleId?: string;
 }

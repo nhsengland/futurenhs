@@ -8,12 +8,10 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { GroupMember } from '@appTypes/group'
 import { Member } from '@appTypes/member'
 
 declare type Options = {
     user: User
-    targetUserId: string
 }
 
 declare type Dependencies = {
@@ -21,11 +19,11 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const getSiteUser = async (
-    { user, targetUserId }: Options,
+export const getSiteUserRoles = async (
+    { user }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<Member>> => {
-    const serviceResponse: ServiceResponse<Member> = {
+): Promise<ServiceResponse<any>> => {
+    const serviceResponse: ServiceResponse<any> = {
         data: null,
     }
 
@@ -35,7 +33,7 @@ export const getSiteUser = async (
 
     const { id } = user 
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${targetUserId}/update`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/users/roles`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
@@ -49,9 +47,9 @@ export const getSiteUser = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the site user',
+            'An unexpected error occurred when attempting to get site user roles',
             {
-                serviceId: services.GET_SITE_USER,
+                serviceId: services.GET_SITE_USER_ROLE,
                 status: status,
                 statusText: statusText,
                 body: apiData,
@@ -60,23 +58,7 @@ export const getSiteUser = async (
     }
 
     serviceResponse.headers = headers
-    serviceResponse.data = {
-        id: apiData.id ?? '',
-        firstName: apiData.firstName ?? '',
-        lastName: apiData.surname ?? '',
-        email: apiData.email ?? '',
-        pronouns: apiData.pronouns ?? '',
-        role: apiData.roleId ?? '',
-        image: apiData.image
-        ? {
-              src: `${apiData.image?.source}`,
-              height: apiData?.image?.height,
-              width: apiData?.image?.width,
-              altText: 'Profile image',
-          }
-        : null,
-        imageId: apiData.imageId ?? ''
-    }
+    serviceResponse.data = apiData
 
     return serviceResponse
 }

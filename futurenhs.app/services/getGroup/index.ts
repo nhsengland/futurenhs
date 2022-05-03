@@ -44,8 +44,6 @@ export const getGroup = async (
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
     }/v1/users/${id}/groups/${groupId}${isForEdit ? '/update' : ''}`
 
-    console.log(apiUrl)
-
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),

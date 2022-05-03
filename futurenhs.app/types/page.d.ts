@@ -12,7 +12,7 @@ import { User } from '@appTypes/user';
 export interface Page {
     id: string;
     routes: Routes;
-    etag?: string;
+    etag?: string | Record<string, string>;
     themeId?: string;
     layoutId?: layoutIds;
     actions?: Array<actions>;

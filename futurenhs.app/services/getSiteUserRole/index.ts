@@ -8,7 +8,6 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { GroupMember } from '@appTypes/group'
 import { Member } from '@appTypes/member'
 
 declare type Options = {
@@ -21,7 +20,7 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const getSiteUser = async (
+export const getSiteUserRole = async (
     { user, targetUserId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<Member>> => {
@@ -35,7 +34,7 @@ export const getSiteUser = async (
 
     const { id } = user 
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${targetUserId}/update`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/users/${targetUserId}/roles`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
@@ -49,9 +48,9 @@ export const getSiteUser = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the site user',
+            'An unexpected error occurred when attempting to get the site user\'s role',
             {
-                serviceId: services.GET_SITE_USER,
+                serviceId: services.GET_SITE_USER_ROLE,
                 status: status,
                 statusText: statusText,
                 body: apiData,
@@ -61,21 +60,7 @@ export const getSiteUser = async (
 
     serviceResponse.headers = headers
     serviceResponse.data = {
-        id: apiData.id ?? '',
-        firstName: apiData.firstName ?? '',
-        lastName: apiData.surname ?? '',
-        email: apiData.email ?? '',
-        pronouns: apiData.pronouns ?? '',
-        role: apiData.roleId ?? '',
-        image: apiData.image
-        ? {
-              src: `${apiData.image?.source}`,
-              height: apiData?.image?.height,
-              width: apiData?.image?.width,
-              altText: 'Profile image',
-          }
-        : null,
-        imageId: apiData.imageId ?? ''
+        roleId: apiData.roleId ?? '',
     }
 
     return serviceResponse
