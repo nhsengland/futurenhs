@@ -4,7 +4,12 @@ import { defaultGroupLogos } from '@constants/icons';
 
 export default {
     title: 'User profile',
-    component: UserProfile
+    component: UserProfile,
+    argTypes: {
+        image: {
+            control: { type: '' }
+        }
+    }
 }
 
 const Template = (args) => <UserProfile {...args} />

@@ -3,7 +3,24 @@ import { Dialog } from './index'
 
 export default {
     title: 'Dialog',
-    component: Dialog
+    component: Dialog,
+    argTypes: {
+        id: {
+            control: { type: '' }
+        },
+        children: {
+            control: { type: '' }
+        },
+        appElement: {
+            control: { type: '' }
+        },
+        confirmAction: {
+            control: { type: '' }
+        },
+        cancelAction: {
+            control: { type: '' }
+        },
+    }
 }
 
 const Template = (args) => {
@@ -17,7 +34,14 @@ const Template = (args) => {
     return (
         <>
             <button className="c-button" onClick={() => setIsOpen(true)}>Open Dialog</button>
-            <Dialog confirmAction={toggleModal} cancelAction={toggleModal} isOpen={isOpen} {...args} />
+            <Dialog confirmAction={toggleModal} cancelAction={toggleModal} isOpen={isOpen} {...args}>
+                <h3>Entered Data will be lost</h3>
+                <p className="u-text-bold">
+                    Any entered details will be
+                    discarded. Are you sure you wish to
+                    proceed?
+                </p>
+            </Dialog>
         </>
     )
 }

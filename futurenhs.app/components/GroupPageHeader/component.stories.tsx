@@ -9,10 +9,22 @@ export default {
     component: GroupPageHeader,
     argTypes: {
         themeId: {
-          options: ['36d49305-eca8-4176-bfea-d25af21469b9', '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56', '5053a8c6-ea4d-4125-9dc3-475e3e931fee'],
-          control: { type: 'radio' },
+            options: ['36d49305-eca8-4176-bfea-d25af21469b9', '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56', '5053a8c6-ea4d-4125-9dc3-475e3e931fee'],
+            control: { type: 'radio' },
         },
-      },
+        id: {
+            control: { type: '' }
+        },
+        actions: {
+            control: { type: '' }
+        },
+        routes: {
+            control: { type: '' }
+        },
+        image: {
+            control: { type: '' }
+        }
+    },
 
 };
 
