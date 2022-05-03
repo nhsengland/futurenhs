@@ -1,0 +1,128 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+ branches:
+    include:
+    - sprint
+ paths:
+    include:
+    - futurenhs.content.api/*
+
+variables:
+  solution: 'FutureNHSContentApi.sln'
+  buildPlatform: 'x64'
+  buildConfiguration: 'Release'
+
+jobs:
+
+- job: BuildFutureNHS
+  displayName: 'Build and deploy artifact for FutureNHS Api'
+  pool :
+    vmImage: 'windows-latest'
+   ##dependsOn: CheckChangesInPaths
+   ##condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHS'], 'true') 
+  steps:
+   - task: UseDotNet@2
+     displayName: 'Set dotnet SDK to v6.0'
+     inputs:
+      packageType: 'sdk'
+      version: '6.x'
+      
+   - task: NuGetToolInstaller@1
+     inputs:
+      versionSpec: 
+      checkLatest: true
+
+   - task: NuGetCommand@2
+     inputs:
+      command: 'restore'
+      restoreSolution: '$(Build.SourcesDirectory)/$(working-dir)/*.sln'
+      feedsToUse: 'select'
+
+   - task: VSBuild@1
+     displayName: 'Build dotnet'
+     inputs:
+      solution: '$(Build.SourcesDirectory)/$(working-dir)/*.sln'
+      vsVersion: '17.0'
+      msbuildArchitecture: 'x64'
+      configuration: 'Release'
+
+    # Run all tests with "/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura" to generate the code coverage file
+   - task: DotNetCoreCLI@2
+     displayName: Test
+     inputs:
+      command: test
+      configuration: 'Release'
+      arguments: '--collect:"XPlat Code Coverage"'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/Umbraco9ContentApi.Test/Umbraco9ContentApi.Test.csproj'
+      workingDirectory: '$(Build.SourcesDirectory)/$(working-dir)'
+      nobuild: true
+
+   - script: |
+       dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8
+       reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
+     displayName: Create Code coverage report
+
+    # Publish the code coverage result (summary and web site)
+    # The summary allows to view the coverage percentage in the summary tab
+    # The web site allows to view which lines are covered directly in Azure Pipeline
+   - task: PublishCodeCoverageResults@1
+     displayName: 'Publish code coverage'
+     inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+      failIfCoverageEmpty: false # Optional
+      
+   - task: DotNetCoreCLI@2
+     displayName: 'Publish FutureNHS Api'
+     inputs:
+      command: 'publish'
+      configuration: 'Release'
+      publishWebProjects: false
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
+      zipAfterPublish: false
+
+   - task: CopyFiles@2
+     displayName: 'Copy files for artifact'
+     inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/Umbraco9ContentApi.Umbraco/bin/Debug/net6.0/publish'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+   - task: PublishPipelineArtifact@1
+     displayName: 'Publish artifact'
+     inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'FNHSApi'
+      publishLocation: 'pipeline'
+      
+   - task: PowerShell@2
+     displayName: 'Add RUN Tag to trigger Release'
+     env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+     inputs:
+      targetType: 'inline'
+      script: |
+       $user = ""
+       $token = $env:SYSTEM_ACCESSTOKEN
+
+       $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$token)))
+
+       $org = "$(System.CollectionUri)"
+       $teamProject = "$(System.TeamProject)"
+       $buildId = "$(Build.BuildId)"
+       $tagName = "RUN"
+
+       $restApiUpdateBuild = "$org/$teamProject/_apis/build/builds/$buildId/tags/$tagName`?api-version=6.0"
+
+       function InvokePutReques ($PutUrl)
+       {   
+           return Invoke-RestMethod -Uri $PutUrl -Method Put -ContentType "application/json" -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+       }
+
+       $result = InvokePutReques $restApiUpdateBuild
+      pwsh: true
+    
