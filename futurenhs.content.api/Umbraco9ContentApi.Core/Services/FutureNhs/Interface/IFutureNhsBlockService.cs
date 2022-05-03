@@ -2,6 +2,6 @@
 {
     public interface IFutureNhsBlockService
     {
-        Task<IEnumerable<string>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
+        Task<IEnumerable<string?>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
     }
 }

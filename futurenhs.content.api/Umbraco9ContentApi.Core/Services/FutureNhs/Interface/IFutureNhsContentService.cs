@@ -15,7 +15,7 @@
         /// <param name="id">The identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<IEnumerable<IPublishedContent>> GetPublishedContentChildrenAsync(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<IPublishedContent>?> GetPublishedContentChildrenAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the published content asynchronous.

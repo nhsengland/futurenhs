@@ -25,7 +25,7 @@
         /// <param name="propertyGroupAlias">The property group alias.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
+        Task<ApiResponse<IEnumerable<string?>>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
         /// <summary>
         /// Gets the block content asynchronous.
         /// </summary>

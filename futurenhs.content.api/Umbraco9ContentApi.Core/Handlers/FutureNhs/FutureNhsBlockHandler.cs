@@ -60,9 +60,9 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<string>>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken)
+        public async Task<ApiResponse<IEnumerable<string?>>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken)
         {
-            ApiResponse<IEnumerable<string>> response = new ApiResponse<IEnumerable<string>>();
+            ApiResponse<IEnumerable<string?>> response = new ApiResponse<IEnumerable<string?>>();
             var blockPlaceholderValues = await _futureNhsBlockService.GetBlockPlaceholderValuesAsync(blockId, propertyGroupAlias, cancellationToken);
             return response.Success(blockPlaceholderValues, "Success.");
         }
