@@ -8,7 +8,7 @@ export interface Props {
      */
     iconName?: string
     /**
-     * Determines how many likes should be displayed on initial render
+     * Renders how many likes the entity has
      */
     likeCount: number
     /**

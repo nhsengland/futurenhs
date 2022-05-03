@@ -80,6 +80,7 @@
     "@testing-library/react": "^12.1.5",
     "@types/jest": "^27.0.2",
     "@types/react": "^17.0.6",
+    "@whitespace/storybook-addon-html": "^5.0.0",
     "autoprefixer": "^10.3.7",
     "axe-html-reporter": "^2.2.3",
     "babel-jest": "^27.2.5",
