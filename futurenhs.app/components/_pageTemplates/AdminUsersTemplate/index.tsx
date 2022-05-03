@@ -127,7 +127,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                         {
                             children: 
                                 <ActionLink 
-                                    href={`/users/${id}?edit=true`}
+                                    href={`${routes.usersRoot}/${id}/update`}
                                     text={{
                                         body: 'Edit',
                                         ariaLabel: `Edit user ${fullName || role}`

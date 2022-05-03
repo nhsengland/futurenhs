@@ -1,8 +1,9 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System;
 using Azure;
 using Azure.Data.Tables;
+using Microsoft.Extensions.Logging;
 
-namespace FutureNHS.Api.Providers.Logging
+namespace Umbraco9ContentApi.Umbraco.Providers.Logging
 {
 
 
@@ -43,7 +44,7 @@ namespace FutureNHS.Api.Providers.Logging
 
     public class LogEntity : ITableEntity
     {
-        public string Application => "Api";
+        public string Application => "Content_Api";
         public string LogLevel { get; set; }
         public string EventId { get; set; }
         public string Message { get; set; }

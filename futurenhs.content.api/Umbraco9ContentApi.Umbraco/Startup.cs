@@ -5,10 +5,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.EventLog;
+using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Website.Controllers;
 using Umbraco.Extensions;
 using Umbraco9ContentApi.Core.Controllers;
+using Umbraco9ContentApi.Core.Extensions;
+using Umbraco9ContentApi.Umbraco.AzurePlatform;
+using Umbraco9ContentApi.Umbraco.Providers.Logging;
 
 namespace UmbracoContentApi.Umbraco
 {
@@ -16,6 +23,7 @@ namespace UmbracoContentApi.Umbraco
 
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _config;
 
@@ -43,11 +51,13 @@ namespace UmbracoContentApi.Umbraco
         /// </remarks>
         public void ConfigureServices(IServiceCollection services)
         {
+            var loggingTableStorageConfig = services.Configure<AzureTableStorageConfiguration> (_config.GetSection("Logging:TableStorageConfiguration"));
 #pragma warning disable IDE0022 // Use expression body for methods
             services.AddUmbraco(_env, _config)
                 .AddBackOffice()
                 .AddWebsite()
                 .AddComposers()
+                .AddAzureBlobMediaFileSystem() // This configures the required services 
                 .Build();
 
             services.AddSwaggerGen(c =>
@@ -66,6 +76,25 @@ namespace UmbracoContentApi.Umbraco
             {
                 c.DefaultControllerType = typeof(DefaultRenderController);
             });
+            services.AddApplicationInsightsTelemetry(_config["ApplicationInsights:ConnectionString"]);
+
+            var loggingTableStorageConnectionString = _config["Logging:TableStorageConfiguration:ConnectionString"];
+            var loggingTableStorageTableName = _config["Logging:TableStorageConfiguration:TableName"];
+            
+            services.AddSingleton<ILoggerProvider>(
+                sp =>
+                {
+                    var config = sp.GetRequiredService<IOptionsMonitor<AzureTableStorageConfiguration>>();
+                    if (config.CurrentValue is not null && !string.IsNullOrWhiteSpace(config.CurrentValue.TableName) && !string.IsNullOrWhiteSpace(config.CurrentValue.ConnectionString))
+                    {
+                        return new AzureTableLoggerProvider(config.CurrentValue.ConnectionString, config.CurrentValue.TableName);
+                    }
+
+                    return new EventLogLoggerProvider();
+
+                });
+
+            services.AddLogging();
 #pragma warning restore IDE0022 // Use expression body for methods
 
         }
@@ -87,6 +116,7 @@ namespace UmbracoContentApi.Umbraco
                 {
                     u.UseBackOffice();
                     u.UseWebsite();
+                    u.UseAzureBlobMediaFileSystem();
                 })
                 .WithEndpoints(u =>
                 {

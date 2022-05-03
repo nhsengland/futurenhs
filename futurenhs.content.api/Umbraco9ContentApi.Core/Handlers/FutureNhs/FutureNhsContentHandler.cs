@@ -15,7 +15,7 @@
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
-        private List<string>? errorList = null;
+        private List<string>? errorList = new List<string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FutureNhsContentHandler" /> class.
