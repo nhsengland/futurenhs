@@ -44,6 +44,11 @@ const DocumentHead: (props: Props) => JSX.Element = ({ assetPath = '' }) => {
                 href={`${assetPath}/favicon/feed.xml`}
             />
             <meta name="description" content={``} />
+            <noscript>
+                <style>
+                    {`.u-no-js-hidden { display: none !important }`}
+                </style>
+            </noscript>
         </Head>
     )
 }
