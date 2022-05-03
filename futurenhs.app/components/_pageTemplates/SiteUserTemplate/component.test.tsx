@@ -68,27 +68,4 @@ describe('Site User Template', () => {
 
     })
 
-    it('conditionally renders edit user form', () => {
-
-        render(<SiteUserTemplate { ...props }/>);
-
-        expect(screen.queryByText('Edit profile')).toBeNull();
-
-        ;(nextRouter as any).useRouter.mockImplementation(() => ({
-            asPath: '/users/userId',
-            query: {
-                edit: true
-            }
-        }))
-
-        const propsCopy: Props = Object.assign({}, props, {
-            actions: [
-                actions.SITE_ADMIN_MEMBERS_EDIT
-            ]
-        })
-
-        render(<SiteUserTemplate { ...propsCopy }/>);
-
-        expect(screen.getAllByText('Edit profile').length).toBe(1)
-    })
 })

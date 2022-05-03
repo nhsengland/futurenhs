@@ -1,7 +1,7 @@
 const FormData = require('form-data')
 
 import { genericMessages } from '@constants/text'
-import { FormErrors } from '@appTypes/form'
+import { FormConfig, FormErrors, FormOptions } from '@appTypes/form'
 
 /**
  * Converts a form submission object submitted via express-form-data into a basic server-side FormData object
@@ -96,4 +96,20 @@ export const getGenericFormError = (error: any): FormErrors => {
     return {
         _error: error.message || genericMessages.UNEXPECTED_ERROR,
     }
+}
+
+
+/**
+ * Returns a new form config object with new list of options
+ */
+export const setFormConfigOptions = (formConfig: FormConfig, step = 0, name: string, options: Array<FormOptions>): FormConfig => {
+
+    const configCopy = JSON.parse(JSON.stringify(formConfig));
+
+    const targetField = configCopy.steps[step].fields.find((field) => field.name === name);
+
+    targetField.options = options
+    
+    return configCopy
+
 }

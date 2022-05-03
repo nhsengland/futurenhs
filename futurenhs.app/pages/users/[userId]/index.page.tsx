@@ -20,6 +20,7 @@ import { putSiteUser } from '@services/putSiteUser'
 import { FormErrors } from '@appTypes/form'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { User } from '@appTypes/user'
+import { actions } from '@constants/actions'
 
 const routeId: string = '9e86c5cc-6836-4319-8d9d-b96249d4c909'
 const props: Partial<Props> = {}
@@ -40,78 +41,23 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const userId: string = selectParam(context, routeParams.USERID)
                     const user: User = selectUser(context)
 
-                    const csrfToken: string = selectCsrfToken(context)
-                    const currentValues: any = selectFormData(context)
-                    const submission: any = selectMultiPartFormData(context)
-                    const requestMethod: requestMethods = selectRequestMethod(context)
-
-                    const form: any =
-                        props.forms[formTypes.UPDATE_SITE_USER]
 
                     /**
                      * Get data from services
                      */
                     try {
                         const [userData] = await Promise.all([
-                            getSiteUser({ userId }),
+                            getSiteUser({ user, targetUserId: userId }),
                         ])
-
-                        const etag = userData.headers.get('etag');
-                        props.etag = etag;
 
                         props.siteUser = userData.data
                         props.pageTitle = `${props.contentText.title} - ${props.siteUser.firstName ?? ''
                             } ${props.siteUser.lastName ?? ''}`
+ 
 
-                        form.initialValues = {
-                            firstName: props.siteUser.firstName,
-                            lastName: props.siteUser.lastName,
-                            pronouns: props.siteUser.pronouns,
-                            image: props.siteUser.image,
-                            id: props.siteUser.id
-                        }
-
-                        /**
-                         * Handle server-side form post
-                         */
-                        if (
-                            submission &&
-                            requestMethod === requestMethods.POST
-                        ) {
-
-                            form.initialValues = currentValues.getAll();
-
-                            const headers = {
-                                ...getStandardServiceHeaders({
-                                    csrfToken,
-                                    etag,
-                                }),
-                                ...submission.getHeaders(),
-                            }
-
-                            await putSiteUser({
-                                headers,
-                                user,
-                                body: submission,
-                            })
-
-                            return {
-                                redirect: {
-                                    permanent: false,
-                                    destination: `${props.routes.usersRoot}/${userId}`,
-                                },
-                            }
-                        }
                     } catch (error: any) {
 
-                        const validationErrors: FormErrors =
-                            getServiceErrorDataValidationErrors(error)
-
-                        if (validationErrors) {
-                            form.errors = validationErrors
-                        } else {
-                            return handleSSRErrorProps({ props, error })
-                        }
+                        return handleSSRErrorProps({ props, error })
                     }
 
                     /**

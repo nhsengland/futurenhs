@@ -22,7 +22,7 @@ describe('getGroup service', () => {
                     meta: response,
                     json: {
                         name: 'mockNameText',
-                        strapLine:
+                        strapline:
                             'Testing unreleased features of the FutureNHS platform',
                         image: {
                             source: '/mockSource',

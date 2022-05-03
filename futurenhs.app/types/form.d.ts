@@ -6,6 +6,11 @@ declare type Component = any;
 declare type InputType = string;
 declare type ValidatorType = string;
 
+export interface FormOptions {
+    value: string;
+    label: string;
+}
+
 export interface FormField {
     component: Component;
     inputType?: InputType;
@@ -16,10 +21,7 @@ export interface FormField {
         hint?: string;
     };
     fields?: Array<FormField>;
-    options?: Array<{
-        value: string;
-        label: string;
-    }>;
+    options?: Array<FormOptions>;
     initialError?: string;
     shouldRenderAsRte?: boolean;
     shouldPreventFreeText?: boolean;

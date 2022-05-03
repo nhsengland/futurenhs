@@ -5,12 +5,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Azure.Data.Tables" Version="12.5.0" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
         <PackageReference Include="Umbraco.Cms" Version="9.2.0" />
     </ItemGroup>
 
     <!-- Force windows to use ICU. Otherwise Windows 10 2019H1+ will do it, but older windows 10 and most if not all winodws servers will run NLS -->
     <ItemGroup>
         <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
+        <PackageReference Include="Umbraco.StorageProviders.AzureBlob" Version="1.1.0" />
         <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2" />
     </ItemGroup>
     <ItemGroup>
@@ -30,6 +33,8 @@
     <PropertyGroup>
         <RazorCompileOnBuild>false</RazorCompileOnBuild>
         <RazorCompileOnPublish>false</RazorCompileOnPublish>
+        <ApplicationInsightsResourceId>/subscriptions/d9c0a8f2-3fae-48e7-a2dd-6ffcc5c1c994/resourceGroups/rg-fnhso-dev-uksouth-001/providers/microsoft.insights/components/appi-fnhso-dev-uksouth-files</ApplicationInsightsResourceId>
+        <UserSecretsId>e1790849-1e62-4eeb-8552-08f71c0d0a13</UserSecretsId>
     </PropertyGroup>
 
 </Project>

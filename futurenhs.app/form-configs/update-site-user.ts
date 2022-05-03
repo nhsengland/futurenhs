@@ -13,15 +13,11 @@ export const updateSiteMemberForm: FormConfig = {
                     },
                     component: 'imageUpload',
                     relatedFields: {
-                        fileId: 'ImageId'
+                        fileId: 'imageId'
                     }
                 },
                 {
-                    name: 'ImageId',
-                    component: 'hidden'
-                },
-                {
-                    name: 'id',
+                    name: 'imageId',
                     component: 'hidden'
                 },
                 {

@@ -20,7 +20,7 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const putSiteUser = async (
+export const putSiteUserRole = async (
     { headers, body, user, targetUserId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
@@ -30,14 +30,17 @@ export const putSiteUser = async (
 
     const {id} = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${targetUserId}/update`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/users/${targetUserId}/roles`
+    
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.PUT,
             headers: headers,
-            isMultiPartForm: true,
-            body: body,
+            body: {
+                newRoleId: body.get('newRoleId'),
+                currentRoleId: body.get('currentRoleId'),
+            },
         }),
         defaultTimeOutMillis
     )
@@ -49,9 +52,9 @@ export const putSiteUser = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to update the user',
+            'An unexpected error occurred when attempting to update the user\'s role',
             {
-                serviceId: services.PUT_SITE_USER,
+                serviceId: services.PUT_SITE_USER_ROLE,
                 status: status,
                 statusText: statusText,
                 body: apiData,
