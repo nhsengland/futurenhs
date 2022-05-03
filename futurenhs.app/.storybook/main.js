@@ -10,6 +10,7 @@ module.exports = {
         '@storybook/addon-a11y',
         '@storybook/addon-viewport',
         '@storybook/addon-actions',
+        '@whitespace/storybook-addon-html',
         require.resolve('storybook-addon-grid/preset')
     ],
     core: {
