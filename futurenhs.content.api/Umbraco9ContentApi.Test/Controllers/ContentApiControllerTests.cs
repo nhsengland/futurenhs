@@ -1,5 +1,3 @@
-//using System;
-
 //namespace Umbraco9ContentApi.Test.Controller
 //{
 //    using Core.Handlers.FutureNhs.Interface;
@@ -1010,3 +1008,6 @@ namespace Umbraco9ContentApi.Test.Controller
     }
 }
 >>>>>>> df91f166... unit test errors
+=======
+//}
+>>>>>>> 51fe2824... Addition of settings for Azure
