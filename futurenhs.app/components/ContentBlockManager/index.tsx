@@ -78,7 +78,6 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const initialBlocks: any = useRef(handleToggleInstanceIds(sourceBlocks, true));
 
     const [mode, setMode] = useState(initialState);
-    const [isJsEnabled, setIsJsEnabled] = useState(false);
     const [referenceBlocks, setReferenceBlocks] = useState(initialBlocks.current);
     const [blocks, setBlocks] = useState(initialBlocks.current);
     const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
@@ -104,7 +103,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     const generatedClasses: any = {
         wrapper: classNames(className),
-        header: classNames('u-mb-14'),
+        header: classNames('u-mb-14', 'u-no-js-hidden'),
         headerCallOut: classNames('nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full', `u-border-l-theme-${background}`),
         headerCallOutText: classNames('nhsuk-heading-m u-text-bold'),
         headerCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0 tablet:u-ml-5'),
@@ -387,9 +386,45 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
             if (isEditable) {
 
+                const formConfig: FormConfig = simpleClone(forms[formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER]);
+                const handleChange: (formState: any) => void = (formState) => handleFormUpdate({ instanceId, formState });
 
+                formConfig.initialValues = {
+                    [`title-${instanceId}`]: content.title
+                };
+
+                return (
+
+                    <LayoutColumnContainer>
+                        <LayoutColumn desktop={9}>
+                            <Form
+                                key={instanceId}
+                                csrfToken={csrfToken}
+                                instanceId={instanceId}
+                                formConfig={formConfig}
+                                shouldRenderSubmitButton={false}
+                                changeAction={handleChange} />
+                        </LayoutColumn>
+                    </LayoutColumnContainer>
+
+                )
 
             }
+
+            const links = [
+                {
+                    url: '/',
+                    text: 'Link 1'
+                },
+                {
+                    url: '/',
+                    text: 'Link 2'
+                },
+                {
+                    url: '/',
+                    text: 'Link 3'
+                }
+            ];
 
             return (
 
@@ -397,7 +432,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     headingLevel={3}
                     text={{
                         heading: content.title
-                    }} />
+                    }}
+                    links={links}
+                    themeId={themeId} />
 
             )
 
@@ -439,20 +476,11 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     }, [sourceBlocks]);
 
     /**
-     * Enable the editing header when JavaScript is enabled
-     */
-    useEffect(() => {
-
-        setIsJsEnabled(true);
-
-    }, []);
-
-    /**
      * Render
      */
     return (
         <div className={generatedClasses.wrapper}>
-            {(isJsEnabled && shouldRenderEditingHeader) &&
+            {shouldRenderEditingHeader &&
                 <header className={generatedClasses.header}>
                     {(mode === cprud.READ) &&
                         <LayoutColumnContainer>
@@ -543,7 +571,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                                 name: item.name
                                             }}
                                             createAction={handleCreateBlock}>
-                                            {renderBlockContent({ block, isEditable: false })}
+                                                {renderBlockContent({ block, isEditable: false })}
                                         </ContentBlock>
                                     </li>
 
@@ -588,7 +616,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                             text={{
                                                 name: item.name
                                             }}>
-                                            {renderBlockContent({ block, isEditable: mode === cprud.UPDATE })}
+                                                {renderBlockContent({ block, isEditable: mode === cprud.UPDATE })}
                                         </ContentBlock>
                                     </li>
 

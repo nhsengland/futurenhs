@@ -11,5 +11,6 @@ export const enum formTypes {
     INVITE_USER = '8beea5e8-9300-4f3a-87de-1385a280b897',
     UPDATE_SITE_USER = '4d1d9915-fe9d-4233-8a77-b18a0a064838',
     UPDATE_SITE_USER_ROLE = 'df898661-0be9-44a9-91de-6885fd90cca2',
-    CONTENT_BLOCK_TEXT = 'ba8a54bf-b8e1-4a2d-9c63-957fa1feb9d2'
+    CONTENT_BLOCK_TEXT = 'ba8a54bf-b8e1-4a2d-9c63-957fa1feb9d2',
+    CONTENT_BLOCK_QUICK_LINKS_WRAPPER = 'b8759004-ca70-4a10-9676-dcedf5e818b6'
 }
