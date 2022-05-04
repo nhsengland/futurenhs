@@ -7,6 +7,7 @@ using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Exceptions;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
@@ -159,6 +160,114 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             var group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
 
             return group;
+        }
+
+        public async Task CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken)
+        {
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
+
+            var groupId = Guid.NewGuid();
+
+            const string insertGroup =
+                 @"INSERT [dbo].[Group]
+                                ([Id]
+                                ,[Name]
+                                ,[CreatedAtUtc]
+                                ,[GroupOwner]
+                                ,[Subtitle]
+                                ,[Slug]
+                                ,[CreatedBy]
+                                ,[Image])
+   
+                    VALUES
+                                (@Id
+                                ,@Name
+                                ,@CreatedAtUtc
+                                ,@GroupOwner
+                                ,@Subtitle
+                                ,@Slug
+                                ,@CreatedBy
+                                ,@ImageId)";
+
+            await connection.OpenAsync(cancellationToken);
+
+            await using var transaction = connection.BeginTransaction();
+
+            var insertGroupResult = await connection.ExecuteAsync(insertGroup, new
+            {
+                Id = groupId,
+                Name = groupDto.Name,
+                CreatedAtUtc = groupDto.CreatedAtUtc,
+                GroupOwner = groupDto.GroupOwnerId,
+                Subtitle = groupDto.StrapLine,
+                Slug = groupDto.Slug,
+                CreatedBy = userId,
+                ImageId = groupDto.ImageId,
+            }, transaction: transaction);
+
+            foreach (var groupUser in groupDto.GroupAdminUsers)
+            {
+                const string insertGroupAdministrators =
+                   @"
+                    INSERT INTO [dbo].[GroupUser]
+                    (
+                        [Approved],
+                        [Rejected],
+                        [Locked],
+                        [Banned],
+                        [RequestToJoinDateUTC],
+                        [ApprovedToJoinDateUTC],
+                        [ApprovingMembershipUser_Id],
+                        [MembershipRole_Id],
+                        [MembershipUser_Id],
+                        [Group_Id]
+                    )
+                    VALUES
+                    (
+                        '1',
+                        '0',
+                        '0',
+                        '0',
+                        @CurrentDateUtc,
+                        @CurrentDateUtc,
+                        @ApprovingMemberId,
+                        (
+                            SELECT [Id]
+                            FROM   [dbo].[MembershipRole]
+                            WHERE  [RoleName] = 'Admin'
+                        ),
+                        @MembershipUserId,
+                        @GroupId
+                    )";
+
+                var insertGroupUserInRoles = await connection.ExecuteAsync(insertGroupAdministrators, new
+                {
+                    CurrentDateUtc = groupDto.CreatedAtUtc,
+                    ApprovingMemberId = userId,
+                    MembershipUserId = groupUser,
+                    GroupId = groupId
+                }, transaction: transaction);
+
+                if (insertGroupUserInRoles != 1)
+                {
+                    _logger.LogError("Error: User request to create a group user in roles was not successful.", insertGroupUserInRoles);
+                    throw new DataException("Error: User request to create a group user in roles was not successful.");
+                }
+            }
+
+            if (insertGroupResult != 1)
+            {
+                _logger.LogError("Error: User request to create a group was not successful.", insertGroup);
+                throw new DataException("Error: User request to create a group was not successful.");
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+
+            await connection.CloseAsync();
+
+            return;
         }
 
         public async Task UpdateGroupAsync(GroupDto groupDto, CancellationToken cancellationToken = default)
