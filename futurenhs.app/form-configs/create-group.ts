@@ -157,7 +157,16 @@ export const createGroupForm: FormConfig = {
                             message: 'Enter 1000 or fewer characters'
                         }
                     ]
+                },
+                {
+                    name: 'public',
+                    component: 'checkBox',
+                    inputType: 'checkbox',
+                    text: {
+                        label: 'Group is public?'
+                    }
                 }
+                
             ]
         }
     ]

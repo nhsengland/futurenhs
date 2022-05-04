@@ -47,7 +47,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const form: any = props.forms[createGroupForm.id];
     
                         props.layoutId = layoutIds.ADMIN;
-                        //props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`;
     
                         if (!props.actions?.includes(actionConstants.SITE_ADMIN_GROUPS_ADD)) {
     
@@ -71,7 +70,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 return {
                                     redirect: {
                                         permanent: false,
-                                        destination: `${props.routes.adminGroupsCreate}`
+                                        destination: `${props.routes.adminGroupsRoot}`
                                     }
                                 }
     

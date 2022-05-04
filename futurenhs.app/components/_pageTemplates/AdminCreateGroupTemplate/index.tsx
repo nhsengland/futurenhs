@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getGenericFormError } from '@helpers/util/form';
@@ -26,6 +27,8 @@ export const AdminCreateGroupTemplate: (props: Props) => JSX.Element = ({
     }
 }) => {
 
+    const router = useRouter();
+
     const formConfig: FormConfig = selectForm(forms, formTypes.CREATE_GROUP);
     const [errors, setErrors] = useState(formConfig.errors);
 
@@ -39,6 +42,8 @@ export const AdminCreateGroupTemplate: (props: Props) => JSX.Element = ({
         try {
 
             await services.postGroup({ user, body: formData as any });
+
+            router.replace(`${routes.adminGroupsRoot}`)
 
             return Promise.resolve({});
 

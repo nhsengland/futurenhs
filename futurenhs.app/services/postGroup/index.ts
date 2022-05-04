@@ -27,7 +27,7 @@ export const postGroup = async ({
 
     const { id } = user;
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups`;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/groups`;
     const apiResponse: any = await fetchJSON(apiUrl, setFetchOptions({
         method: requestMethods.POST,
         headers: headers,
