@@ -3,9 +3,8 @@ import Head from 'next/head'
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
 
-import { selectThemeBackgroundId } from '@selectors/themes'
 import { defaultGroupLogos } from '@constants/icons'
-import { themes } from '@constants/themes'
+import { useTheme } from '@hooks/useTheme'
 import { Link } from '@components/Link'
 import { DynamicListContainer } from '@components/DynamicListContainer'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
@@ -129,8 +128,7 @@ export const GroupListingTemplate: (props: Props) => JSX.Element = ({
                                         ? image
                                         : defaultGroupLogos.large
                                     const cardLinkHref: string = `/groups/${groupId}`
-                                    const themeBorderId: number =
-                                        selectThemeBackgroundId(themes, themeId)
+                                    const themeBorderId: number = useTheme(themeId).background
 
                                     const generatedClasses = {
                                         wrapper: classNames(
