@@ -38,7 +38,7 @@ class formPage extends basePage{
     inputFieldSet(valueToSet, label){
         var fieldLabel = this.findLabel(label);
         var fieldInput = fieldLabel.parentElement().$('input');
-        helpers.waitForLoaded(fieldInput)
+        helpers.waitForLoaded(fieldInput);
         fieldInput.setValue(valueToSet);
         browser.keys('Tab');    
     }
