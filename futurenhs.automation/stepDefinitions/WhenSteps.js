@@ -1,4 +1,4 @@
-var {When} = require('@cucumber/cucumber');
+var {When, Before} = require('@cucumber/cucumber');
 const genericPage = require('../pageObjects/genericPage');
 const formPage = require('../pageObjects/formPage');
 const forumPage = require('../pageObjects/forumPage');
@@ -6,6 +6,11 @@ const tablePOM = require('../pageObjects/table');
 const filesPage = require('../pageObjects/filesPage');
 const search = require('../pageObjects/search');
 const contentCard = require('../pageObjects/contentCard');
+const helpers = require('../util/helpers');
+
+  Before(() => {
+    this.generatedString = {}
+  });
 
   
   When(/^I click the '([^"]*)' (button|link|option|tab|nav icon|breadcrumb)$/, function (textValue, contentType) {
@@ -40,6 +45,10 @@ const contentCard = require('../pageObjects/contentCard');
   // FormPage Steps
 
   When(/^I enter '([^"]*)' into the ('([^"]*)' )?(field|text area|text editor)$/, function (inputTxt, label, inputType) {
+    if(inputTxt != null && inputTxt.includes('[STRING: ')){
+      inputTxt = helpers.randomStringGenerator(inputTxt);
+      this.generatedString = inputTxt
+    }
     formPage.formActionSelect(inputTxt, label, inputType);
   });
 

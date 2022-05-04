@@ -46,6 +46,21 @@ class Helpers{
   }
 
   /**
+   * generates a random string to X no. of characters as defined in the param
+   * @param {*} - desired length of string
+   * @returns - string value
+   */
+  randomStringGenerator(length){
+    var string = ''
+    var stringVals = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    var stringLength = length.match(/[0-9]{1,}/g).toString();
+    for(var i = 0; i<parseInt(stringLength); i++){
+      string += stringVals.charAt(Math.floor(Math.random() * stringVals.length));
+    }
+    return string
+  }
+
+  /**
   *  in instances where more than one element is present but not enabled, allows you to quickly select only the active ones
   * @param {string} selector - a selector that $ or $$ would understand
   * @param {number} instance (optional) - in the case where you expect multible buttons, picks the specified one( if not provided gets first one )
