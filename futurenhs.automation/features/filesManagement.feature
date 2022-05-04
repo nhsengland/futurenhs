@@ -24,17 +24,16 @@ Scenario Outline: FNHS72 - Upload a file
 	Then the 'Empty Folder' header is displayed
 	And the '<File name>' row is displayed on the 'Group Files' table
 Examples:
-	| File to upload     | File name        | File description          |
-	| /media/docTest.doc | docTest          | test doc file for upload  |
-	| /media/pdfTest.pdf | pdfTest          | test pdf file for upload  |
-	| /media/docTest.doc | VSmnp7PvnPRhfiZWCk5GdSjT2nD3TKlxBE2AbyObV1Yza | test file with title of 45 characters |
-	| /media/docTest.doc | descriptionTest  | gEcdosYCBQC7sY9XxOdPKxMWBqfHY3A78F5sROBjv71hfVuj0nl03SXyGPzychj3ffH7vWW7yKYYbZayRWauCThasQDwfVIawmEiI0HFfBETQzSGnaYOQfq3Nh0HXV89M1sYu5fozAJMzvTA20FezL |
-	# | /media/500kb.txt	 | 500KB File Test  | test file of 500kb limit  |			
-	# | /media/JdDBz18tDwh1jC2pK3RZHzEJPyLLJUfA6qTcs23MBesG7kZfVvltwg5ixHk2zXEmc8xNYXpunGHL67QAX4EJ3yEAINQMjZp3.pdf | hundredCharacterFile                          | test file with file name of 100 characters                                                                                                             |
-	# | /media/x.pdf                                                                                                | singleCharacterFile                           | test file with file name of 1 character                                                                                                                |
+	| File to upload     | File name       | File description                      |
+	| /media/docTest.doc | docTest         | test doc file for upload              |
+	| /media/pdfTest.pdf | pdfTest         | test pdf file for upload              |
+	| /media/docTest.doc | [STRING: 45]    | test file with title of 45 characters |
+	| /media/docTest.doc | descriptionTest | [STRING: 150]                         |
+	# | /media/JdDBz18tDwh1jC2pK3RZHzEJPyLLJUfA6qTcs23MBesG7kZfVvltwg5ixHk2zXEmc8xNYXpunGHL67QAX4EJ3yEAINQMjZp3.pdf | hundredCharacterFile                  | test file with file name of 100 characters |
+	# | /media/x.pdf                                                                                                | singleCharacterFile                   | test file with file name of 1 character    |
 
 
-Scenario: FNHS73 - File detials page validation
+Scenario: FNHS73 - File details page validation
 	When I click the 'Automation Test Folder' link
 	Then the 'Automation Test Folder' header is displayed
 	When I click 'View details' on the 'docTest' row of the 'Group Files' table
@@ -67,12 +66,11 @@ Scenario Outline: FNHS74 - Upload a file, file error validation
 	When I click the 'Upload File' button
 	Then the '<error message>' error summary is displayed
 Examples:
-	| File to upload   | File name 		 | File description | error message 					  |
-	| /media/501kb.txt | 501KB File Test | Description 		| The file must be smaller than 500KB |
-	# | /media/JdDBz18tDwh1jC2pK3RZHzEJPyLLJUfA6qTcs23MBesG7kZfVvltwg5ixHk2zXEmc8xNYXpunGHL67QAX4EJ3yEAINQMjZp3cn257.pdf | Title                                          | Description                                                                                                                                             | The name of the file cannot be more than 100 characters	|
-	# | /media/.txt                                                                                                      | Title                                          | Description                                                                                                                                             | The file must have a name.                              |
-	# | /media/test.jpg                                                                                                  | Title                                          | Description                                                                                                                                             | The file above was not uploaded because the type is not allowed          |
-	# | /media/invalidDocTest.doc                                                                                        | InvalidFile                                    | Description                                                                                                                                             | The file above was not uploaded because the type could not be identified |
+	| File to upload | File name | File description | error message |
+	# | /media/JdDBz18tDwh1jC2pK3RZHzEJPyLLJUfA6qTcs23MBesG7kZfVvltwg5ixHk2zXEmc8xNYXpunGHL67QAX4EJ3yEAINQMjZp3cn257.pdf | Title            | Description   | The name of the file cannot be more than 100 characters                  |
+	# | /media/.txt                                                                                                      | Title            | Description   | The file must have a name.                                               |
+	# | /media/test.jpg                                                                                                  | Title            | Description   | The file above was not uploaded because the type is not allowed          |
+	# | /media/invalidDocTest.doc                                                                                        | InvalidFile      | Description   | The file above was not uploaded because the type could not be identified |
 
 
 Scenario Outline: FNHS75 - Upload a file, form error validation
@@ -87,10 +85,10 @@ Scenario Outline: FNHS75 - Upload a file, form error validation
 	Then the '<error message>' error summary is displayed
 	Then the '<error message>' error message is displayed
 Examples:
-	| File to upload     | File name | File description | error message        |
-	| /media/docTest.doc |           | Description      | Enter the file title |
-	| /media/docTest.doc | VSmnfp7PvnPRhfiZWCk5GdSjT2nD3TKlxBE2AbyObV1Yza | Description | Enter 45 or fewer characters                             				 |
-	| /media/docTest.doc | Title     | gEcdosYCBQC7sY9XxOdPKxMWBqfHY3A78F5sROBjv71hfVuj0nl03SXsyGPzychj3ffH7vWW7yKYYbZayRWauCThasQDwfVIawmEiI0HFfBETQzSGnaYOQfq3Nh0HXV89M1sYu5fozAJMzvTA20FezL | Enter 150 or fewer characters |
+	| File to upload     | File name    | File description | error message                 |
+	| /media/docTest.doc |              | Description      | Enter the file title          |
+	| /media/docTest.doc | [STRING: 46] | Description      | Enter 45 or fewer characters  |
+	| /media/docTest.doc | Title        | [STRING: 151]    | Enter 150 or fewer characters |
 
 
 Scenario: FNHS76 - Upload without a file error validation
@@ -157,10 +155,10 @@ Scenario Outline: FNHS90 - Edit File error validation
 	Then the '<Error Message>' error summary is displayed
 	And the '<Error Message>' error message is displayed
 Examples:
-	| Title                                          | Description | Error Message                                       |
-	|                                                | Description | Please provide a file name                          |
-	| VSmnfp7PvnPRhfiZWCk5GdSjT2nD3TKlxBE2AbyObV1Yza |             | Enter 45 or fewer characters  |
-	| Title | gEcdosYCBQC7sY9XxOdPKxMWBqfHY3A78F5sROBjv71hfVuj0nl03SXsyGPzychj3ffH7vWW7yKYYbZayRWauCThasQDwfVIawmEiI0HFfBETQzSGnaYOQfq3Nh0HXV89M1sYu5fozAJMzvTA20FezL | Enter 150 or fewer characters |
+	| Title        | Description   | Error Message                 |
+	|              | Description   | Please provide a file name    |
+	| [STRING: 46] |               | Enter 45 or fewer characters  |
+	| Title        | [STRING: 151] | Enter 150 or fewer characters |
 
 
 Scenario: FNHS91 - Files Page Breadcrumb Validation

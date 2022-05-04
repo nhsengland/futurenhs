@@ -18,9 +18,9 @@ Scenario Outline: FNHS58 - Create a new discussion
     And I enter '<comment>' into the 'Comment' text editor
     Then the 'All Discussions' header is displayed
 Examples:
-    | title              | comment                                   |
-    | autoTestDiscussion | A brief description about the discussion  |
-    | sWjuuYFV2o14Mk7RxWGAmpqO25feI8YkR5QhmiB1gTRTFzxg4xqylWDmit9scXIiQQyAYFwVYFbwxObPEBeTvLFPeWsb4GJI6tg3 | 100 character limit test |
+    | title              | comment                                  |
+    | autoTestDiscussion | A brief description about the discussion |
+    | [STRING: 100]      | 100 character limit test                 |
 
 
 Scenario Outline: FNHS59 - Create a discussion error validation, and cancel
@@ -35,10 +35,10 @@ Scenario Outline: FNHS59 - Create a discussion error validation, and cancel
     When I click the 'Yes, discard' button
     Then the 'All Discussions' header is displayed
 Examples:
-    | title | comment | error                        |
-    |       | comment | Enter the discussion title   |
-    | title |         | Enter the discussion comment |
-    | sWjuuYFV2o14Mk7RxWGAmpqO25feI8YkR5QhmiB1gTRTFzxg4xqylWDmit9scXIiQQyAYFwVYFbwxObPEBeTvLFPeWsb4GJI6tg3X | comment | Enter 100 or fewer characters |
+    | title         | comment | error                         |
+    |               | comment | Enter the discussion title    |
+    | title         |         | Enter the discussion comment  |
+    | [STRING: 101] | comment | Enter 100 or fewer characters |
 
 
 Scenario: FNHS60 - Created discussion card validation
@@ -46,7 +46,7 @@ Scenario: FNHS60 - Created discussion card validation
     | AG                                           |
     | Created by Auto GroupAdmin [PRETTYDATE]      |
     | Last comment by Auto GroupAdmin [PRETTYDATE] |
-    | Comments: 0                                  |  
+    | Comments: 0                                  |
     # | Views: 0                                     |
 
 @Core
