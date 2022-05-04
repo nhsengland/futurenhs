@@ -37,6 +37,9 @@ Then(/^the '([^"]*)' (reply|discussion|comment|group|post|search result) card is
 //// Generic Content Steps
 
 Then(/^the '([^"]*)' (header|textual value|link|button|option|label|fieldset) is displayed$/, function (textValue, contentType) {
+  if(textValue != null && textValue.includes('[STRING: ')){
+    textValue = this.generatedString
+  }
   genericPage.contentValidation(contentType, textValue);
 });
 
@@ -69,6 +72,9 @@ Then(/^the '([^"]*)' error (message|summary) is displayed$/, function (messageTx
 });
 
 Then(/^the '([^"]*)' (field|text area) contains '([^"]*)'$/, function (fieldLabel, fieldType, fieldValue) {
+  if(fieldValue != null && fieldValue.includes('[STRING: ')){
+    fieldValue = this.generatedString
+  }
   formPage.fieldTextValidation(fieldLabel, fieldValue, fieldType);
 });
 
@@ -106,7 +112,10 @@ Then(/^the '([^"]*)' (mobile )?table is displayed$/, function(tableName, mobile,
   tablePOM.tableValidation(tableName, table.raw(), mobile);  
 });
 
-Then(/^the '([^"]*)' row is displayed on the '([^"]*)' table$/, function (rowValue, tableName ) {
+Then(/^the '([^"]*)' row is displayed on the '([^"]*)' table$/, function (rowValue, tableName) {
+  if(rowValue != null && rowValue.includes('[STRING: ')){
+    rowValue = this.generatedString
+  }
   tablePOM.tableRowExists(rowValue, tableName);
 });
 
