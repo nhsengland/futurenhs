@@ -3,11 +3,9 @@ import { useState, useEffect } from 'react'
 import classNames from 'classnames'
 
 import { Link } from '@components/Link'
-import { themes } from '@constants/themes'
 import { cacheNames } from '@constants/caches'
 import { clearClientCaches } from '@helpers/util/data'
-import { selectTheme } from '@selectors/themes'
-import { queryParams } from '@constants/routes'
+import { useTheme } from '@hooks/useTheme'
 import { actions as actionsConstants } from '@constants/actions'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { Dialog } from '@components/Dialog'
@@ -61,7 +59,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
         ({ isActive }) => isActive
     )?.text
     const { background, content }: Theme = shouldRenderActionsMenu
-        ? selectTheme(themes, themeId)
+        ? useTheme(themeId)
         : {
               background: 14,
               content: 1,

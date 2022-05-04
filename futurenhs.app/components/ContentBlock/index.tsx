@@ -1,14 +1,8 @@
 import { useState } from 'react'
 import classNames from 'classnames'
 
-import { themes } from '@constants/themes'
-import { selectTheme } from '@selectors/themes'
-import { RichText } from '@components/RichText'
 import { SVGIcon } from '@components/SVGIcon'
 import { Dialog } from '@components/Dialog'
-import { LayoutColumn } from '@components/LayoutColumn'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { Theme } from '@appTypes/theme'
 
 import { Props } from './interfaces'
 
