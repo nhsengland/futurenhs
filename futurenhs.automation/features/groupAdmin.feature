@@ -36,7 +36,7 @@ Scenario: FNHS112 - Group Home page manager available
     Then the 'Page manager' link is displayed
 
 
-Scenario: FNHS112 - Group Members table admin validation    
+Scenario: FNHS113 - Group Members table admin validation    
     When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     When I click the 'Members' tab
