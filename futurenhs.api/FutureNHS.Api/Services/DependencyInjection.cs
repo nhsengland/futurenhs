@@ -24,6 +24,7 @@ namespace FutureNHS.Api.Services
             services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<IFileServerService, FileServerService>();
 
+            services.AddScoped<IAdminGroupService, AdminGroupService>();
             services.AddScoped<IAdminUserService, AdminUserService>(); 
 
             return services;

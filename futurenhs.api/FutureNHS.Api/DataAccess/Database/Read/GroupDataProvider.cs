@@ -155,7 +155,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 owner.Id, owner.FirstName + ' ' + owner.Surname AS Name, owner.Slug AS Slug
 				FROM [Group] g
                 LEFT JOIN Image image ON image.Id = g.ImageId
-                LEFT JOIN MembershipUser owner ON owner.Id = g.MembershipUser_Id
+                LEFT JOIN MembershipUser owner ON owner.Id = g.GroupOwner
                 WHERE g.IsDeleted = 0
                 ORDER BY g.Name
                 OFFSET @Offset ROWS
