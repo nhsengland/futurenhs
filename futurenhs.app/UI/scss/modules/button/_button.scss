@@ -17,6 +17,10 @@
         @extend %nhsuk-button-reverse;
     }
 
+    &--themeable {
+        @extend %nhsuk-button-themeable
+    }
+
 }
 
 .c-button-outline {
