@@ -10,6 +10,7 @@ const testProps: Props = {
         value: 'mockValue',
         onChange: jest.fn(),
         onBlur: jest.fn(),
+        onFocus: jest.fn()
     },
     meta: {
         error: '',

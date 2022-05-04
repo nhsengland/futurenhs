@@ -133,6 +133,116 @@ $button-shadow-size: 4px;
     }
 }
 
+%nhsuk-button-themeable {
+    font-size: $base-font-size;
+    line-height: $base-font-line-height;
+    border: $nhsuk-border-width-form-element solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 $button-shadow-size 0 $nhsuk-button-shadow-color;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 600;
+    position: relative;
+    text-align: center;
+    vertical-align: top;
+    width: auto;
+    padding: $nhsuk-spacing-point-2 $nhsuk-spacing-point-3;
+
+    @include respond-to(desktop) {
+        padding: 12px $nhsuk-spacing-point-3;
+        line-height: $base-font-line-height-desktop;
+        font-size: $base-font-size-desktop;
+    }
+
+    &:link,
+    &:visited,
+    &:active,
+    &:hover {
+        text-decoration: none;
+    }
+
+    &::-moz-focus-inner {
+        border: 0;
+        padding: 0;
+    }
+
+    &:hover {
+        background-color: $color_shade_nhsuk-blue-35;
+    }
+
+    &:focus {
+        background: $nhsuk-focus-color;
+        box-shadow: 0 $button-shadow-size 0 $nhsuk-focus-text-color;
+        color: $nhsuk-focus-text-color;
+        outline: $nhsuk-focus-width solid transparent;
+
+        &:visited {
+            color: $nhsuk-focus-text-color;
+
+            &:active {
+                color: $color_nhsuk-white;
+            }
+        }
+    }
+
+
+    &::before {
+        background: transparent;
+        bottom: -($nhsuk-border-width-form-element + $button-shadow-size);
+        content: '';
+        display: block;
+        left: -$nhsuk-border-width-form-element;
+        position: absolute;
+        right: -$nhsuk-border-width-form-element;
+        top: -$nhsuk-border-width-form-element;
+    }
+
+    &:active {
+        background: $nhsuk-button-active-color;
+        box-shadow: none;
+        top: $button-shadow-size;
+
+        //
+        // When the button is active it is shifted down by $button-shadow-size to
+        // denote a 'pressed' state. If the user happened to click at the very top
+        // of the button, their mouse is no longer over the button (because it has
+        // 'moved beneath them') and so the click event is not fired.
+        //
+        // This corrects that by shifting the top of the pseudo element so that it
+        // continues to cover the area that the user originally clicked, which means
+        // the click event is still fired.
+        //
+        &::before {
+            top: -($nhsuk-border-width-form-element + $button-shadow-size);
+        }
+    }
+
+
+    &:disabled,
+    &.u-disabled {
+        background-color: $nhsuk-button-color;
+        opacity: (.5);
+        pointer-events: none;
+        text-decoration: none;
+
+        &:hover {
+            background-color: $nhsuk-button-color;
+            cursor: default;
+        }
+
+        &:focus {
+            background-color: $nhsuk-button-color;
+            outline: none;
+        }
+
+        &:active {
+            box-shadow: 0 $button-shadow-size 0 $nhsuk-button-shadow-color; // s0
+            top: 0;
+        }
+    }
+}
+
 %nhsuk-button-secondary {
     background-color: $nhsuk-secondary-button-color;
     box-shadow: 0 $button-shadow-size 0 $nhsuk-secondary-button-shadow-color;

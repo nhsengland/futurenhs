@@ -2,11 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 import { randomBytes } from 'crypto';
 import classNames from 'classnames'
 
-import { themes } from '@constants/themes';
+import { useTheme } from '@hooks/useTheme';
 import { formTypes } from '@constants/forms'
 import { moveArrayItem, deleteArrayItem } from '@helpers/util/data'
 import { cprud } from '@constants/cprud'
-import { selectTheme } from '@selectors/themes';
 import { SVGIcon } from '@components/SVGIcon'
 import { Form } from '@components/Form'
 import { ContentBlock } from '@components/ContentBlock'
@@ -19,7 +18,6 @@ import { Props } from './interfaces'
 import { FormConfig, FormErrors } from '@appTypes/form'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-import { Theme } from '@appTypes/theme';
 
 const simpleClone = (item) => JSON.parse(JSON.stringify(item));
 const simpleCompare = (a: any, b: any): boolean => JSON.stringify(a) === JSON.stringify(b);
@@ -55,21 +53,41 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         }
 
-        return simpleClone(sourceBlocks).map((block) => {
+        const updatedBlocks: Array<CmsContentBlock> = simpleClone(sourceBlocks)
+        
+        const iterator = (blocks: Array<CmsContentBlock>) => {
+            
+            blocks.forEach((block) => {
 
-            if (shouldAdd) {
+                if(block != null && block.constructor?.name === "Object"){
+    
+                    if (shouldAdd) {
 
-                block.instanceId = randomBytes(6).toString('hex');
+                        block.instanceId = randomBytes(6).toString('hex');
 
-            } else {
+                    } else {
 
-                delete block.instanceId;
+                        delete block.instanceId;
 
-            }
+                    }
 
-            return block;
+                }
 
-        })
+                const childBlocks: Array<CmsContentBlock> = block.content?.links; // TODO request links is changed to blocks or children in Umbraco
+
+                if(childBlocks?.length){
+
+                    iterator(childBlocks);
+
+                }
+
+            })
+
+        }
+
+        iterator(updatedBlocks);
+
+        return updatedBlocks;
 
     }
 
@@ -99,7 +117,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         headerPublishUpdateButton,
         createButton,
         cancelCreateButton } = text ?? {};
-    const { background }: Theme = selectTheme(themes, themeId);
+    const { background } = useTheme(themeId);
 
     const generatedClasses: any = {
         wrapper: classNames(className),
@@ -404,6 +422,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                 formConfig={formConfig}
                                 shouldRenderSubmitButton={false}
                                 changeAction={handleChange} />
+                            
                         </LayoutColumn>
                     </LayoutColumnContainer>
 
@@ -411,20 +430,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
             }
 
-            const links = [
-                {
-                    url: '/',
-                    text: 'Link 1'
-                },
-                {
-                    url: '/',
-                    text: 'Link 2'
-                },
-                {
-                    url: '/',
-                    text: 'Link 3'
-                }
-            ];
+            const links = content.links?.map((link) => ({
+                url: link.content?.url,
+                text: link.content?.linkText
+            }))
 
             return (
 
@@ -616,7 +625,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                             text={{
                                                 name: item.name
                                             }}>
-                                                {renderBlockContent({ block, isEditable: mode === cprud.UPDATE })}
+                                            {renderBlockContent({ block, isEditable: mode === cprud.UPDATE })}
                                         </ContentBlock>
                                     </li>
 

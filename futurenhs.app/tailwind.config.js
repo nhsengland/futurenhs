@@ -38,24 +38,39 @@ Object.keys(themeColors).map((colorName) => {
 
 
 module.exports = {
+    mode: 'jit',
     prefix: 'u-',
-    purge: {
-        enabled: true,
-        layers: ["base", "components", "utilities"],
-        content: [
-            "./pages/**/*.js",
-            "./pages/**/*.ts",
-            "./pages/**/*.jsx",
-            "./pages/**/*.tsx",
-            "./components/**/*.js",
-            "./components/**/*.ts",
-            "./components/**/*.jsx",
-            "./components/**/*.tsx",
-            "./form-configs/**/*.ts"
-        ],
-        safelist: [/bg-theme-\d{1,2}$/, /text-theme-\d{1,2}$/, /border-theme-\d{1,2}$/, /fill-theme-\d{1,2}$/,  /border-[lrtb]-theme-\d{1,2}-?\w+$/g]
-    },
-    darkMode: false,
+    content: [
+        "./pages/**/*.js",
+        "./pages/**/*.ts",
+        "./pages/**/*.jsx",
+        "./pages/**/*.tsx",
+        "./components/**/*.js",
+        "./components/**/*.ts",
+        "./components/**/*.jsx",
+        "./components/**/*.tsx",
+        "./form-configs/**/*.ts"
+    ],
+    safelist: [
+        {
+            pattern: /bg-theme-\d{1,2}$/
+        },
+        {
+            pattern: /text-theme-\d{1,2}$/
+        },
+        {
+            pattern: /text-theme-\d{1,2}$/
+        },
+        {
+            pattern: /border-theme-\d{1,2}$/
+        },
+        {
+            pattern: /fill-theme-\d{1,2}$/
+        },
+        {
+            pattern: /border-[lrtb]-theme-\d{1,2}-?\w+$/g
+        }
+    ],
     theme: {
         screens: {
             'tablet': '768px',
