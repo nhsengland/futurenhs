@@ -15,6 +15,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     meta: { touched, error, submitError },
     text,
     shouldRenderAsRte,
+    rteToolBarOptions = 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap', 
     shouldRenderRemainingCharacterCount,
     validators,
     minHeight = 200,
@@ -118,6 +119,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                     <Editor
                         tinymceScriptSrc="/js/tinymce/tinymce.min.js"
                         textareaName={input.name}
+                        statusbar={false}
                         id={id}
                         value={input.value}
                         onInit={handleRteInit}
@@ -129,8 +131,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                             plugins: [
                                 'autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap',
                             ],
-                            toolbar:
-                                'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
+                            toolbar: rteToolBarOptions,
                             content_style:
                                 'body { font-family: Helvetica, Arial, sans-serif; font-size: 19px }',
                             iframe_aria_text:

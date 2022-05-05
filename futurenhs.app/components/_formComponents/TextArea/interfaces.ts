@@ -19,6 +19,7 @@ export interface Props {
     }
     shouldRenderAsRte?: boolean
     shouldRenderRemainingCharacterCount?: boolean
+    rteToolBarOptions?: string;
     validators?: Array<any>
     minHeight?: number
     className?: string
