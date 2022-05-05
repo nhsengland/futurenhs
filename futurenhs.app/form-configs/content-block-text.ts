@@ -32,6 +32,7 @@ export const contentBlockTextForm: FormConfig = {
                         label: 'Main text',
                     },
                     component: 'textArea',
+                    rteToolBarOptions: 'bold | bullist numlist | link unlink',
                     shouldRenderAsRte: true,
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
