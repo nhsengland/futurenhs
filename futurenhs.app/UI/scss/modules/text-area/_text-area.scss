@@ -22,6 +22,12 @@
     border: .125rem solid #4c6272;
 }
 
+.nhsuk-form-group .tox-toolbar__primary {
+    background: none !important;
+    background-color: $very-light-grey !important;
+    border-bottom: .125rem solid #4c6272;
+}
+
 .c-textarea--error,
 .nhsuk-form-group--error .tox-tinymce {
     border: $nhsuk-border-width-form-element-error solid $nhsuk-error-color;
