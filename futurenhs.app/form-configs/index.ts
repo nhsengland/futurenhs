@@ -5,6 +5,7 @@ import { groupFolderForm } from './group-folder';
 import { createFileForm } from './create-file';
 import { createGroupForm } from './create-group';
 import { updateGroupForm } from './update-group';
+import { deleteGroupMemberForm } from './delete-group-member';
 import { updateGroupMemberForm } from './update-group-member';
 import { inviteUserForm } from './invite-user';
 import { updateSiteMemberForm } from './update-site-user';
@@ -28,5 +29,6 @@ export default {
     [formTypes.UPDATE_SITE_USER_ROLE]: updateSiteUserRoleForm,
     [formTypes.CONTENT_BLOCK_TEXT]: contentBlockTextForm,
     [formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER]: contentBlockQuickLinksWrapper,
-    [formTypes.CONTENT_BLOCK_QUICK_LINK]: contentBlockQuickLink
+    [formTypes.CONTENT_BLOCK_QUICK_LINK]: contentBlockQuickLink,
+    [formTypes.DELETE_GROUP_MEMBER]: deleteGroupMemberForm
 }

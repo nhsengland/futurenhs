@@ -2,25 +2,20 @@ import { formTypes } from '@constants/forms'
 import { FormConfig } from '@appTypes/form'
 
 export const updateGroupMemberForm: FormConfig = {
-    id: formTypes.UPDATE_GROUP,
+    id: formTypes.UPDATE_GROUP_MEMBER,
     steps: [
         {
             fields: [
                 {
-                    name: 'member-role',
+                    name: 'groupUserRoleId',
                     inputType: 'multiChoice',
                     text: {
                         label: 'Member role',
                     },
                     options: [
-                        {
-                            value: 'Admin',
-                            label: 'Admin',
-                        },
-                        {
-                            value: 'Standard Members',
-                            label: 'Member',
-                        },
+                        /**
+                         * List of options dynamically generated from response from API
+                         */
                     ],
                     component: 'multiChoice',
                     validators: [

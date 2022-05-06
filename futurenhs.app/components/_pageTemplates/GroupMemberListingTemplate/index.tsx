@@ -224,7 +224,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                         rows.push({
                             children: 
                                 <ActionLink 
-                                    href={`${routes.groupMembersRoot}/${id}?edit=true`}
+                                    href={`${routes.groupMembersRoot}/${id}/update`}
                                     text={{
                                         body: editMember,
                                         ariaLabel: `Edit member ${fullName || role}`
