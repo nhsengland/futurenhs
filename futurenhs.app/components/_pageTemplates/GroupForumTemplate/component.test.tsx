@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as nextRouter from 'next/router'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@jestMocks/index'
 import { actions } from '@constants/actions'
 
 import { GroupForumTemplate } from './index'

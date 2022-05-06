@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@jestMocks/index'
 
 import Page, { getServerSideProps } from './index.page'
 import { routes } from '@jestMocks/generic-props'

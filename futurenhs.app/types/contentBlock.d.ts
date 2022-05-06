@@ -5,5 +5,5 @@ export interface CmsContentBlock {
         name: string;
         contentType: string;
     };
-    content: Record<string, any>;
+    content: Record<any, any>;
 }

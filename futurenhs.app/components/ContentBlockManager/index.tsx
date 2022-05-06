@@ -1,33 +1,26 @@
 import { useState, useEffect, useRef } from 'react'
-import { randomBytes } from 'crypto';
 import classNames from 'classnames'
+import deepEquals from 'fast-deep-equal';
 
+import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName';
 import { useTheme } from '@hooks/useTheme';
-import { formTypes } from '@constants/forms'
-import { moveArrayItem, deleteArrayItem } from '@helpers/util/data'
+import { moveArrayItem, deleteArrayItem, simpleClone, hasKeys, createHtmlSafeId } from '@helpers/util/data'
 import { cprud } from '@constants/cprud'
 import { SVGIcon } from '@components/SVGIcon'
-import { Form } from '@components/Form'
+import { Dialog } from '@components/Dialog'
 import { ContentBlock } from '@components/ContentBlock'
-import { TextContentBlock } from '@components/_contentBlockComponents/TextContentBlock';
-import { KeyLinksBlock } from '@components/_contentBlockComponents/KeyLinksBlock';
 import { CmsContentBlock } from '@appTypes/contentBlock';
 import { RichText } from '@components/RichText';
 
 import { Props } from './interfaces'
-import { FormConfig, FormErrors } from '@appTypes/form'
+import { FormErrors } from '@appTypes/form'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-
-const simpleClone = (item) => JSON.parse(JSON.stringify(item));
-const simpleCompare = (a: any, b: any): boolean => JSON.stringify(a) === JSON.stringify(b);
 
 /**
  * Generic CMS content block manager
  */
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
-    csrfToken,
-    forms,
     blocks: sourceBlocks,
     blocksTemplate,
     initialState = cprud.READ,
@@ -35,6 +28,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     shouldRenderEditingHeader,
     blocksChangeAction,
     stateChangeAction,
+    discardUpdateAction,
     createBlockAction,
     saveBlocksAction,
     themeId,
@@ -54,16 +48,16 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         }
 
         const updatedBlocks: Array<CmsContentBlock> = simpleClone(sourceBlocks)
-        
+
         const iterator = (blocks: Array<CmsContentBlock>) => {
-            
+
             blocks.forEach((block) => {
 
-                if(block != null && block.constructor?.name === "Object"){
-    
+                if (block != null && block.constructor?.name === "Object") {
+
                     if (shouldAdd) {
 
-                        block.instanceId = randomBytes(6).toString('hex');
+                        block.instanceId = createHtmlSafeId();
 
                     } else {
 
@@ -75,7 +69,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                 const childBlocks: Array<CmsContentBlock> = block.content?.links; // TODO request links is changed to blocks or children in Umbraco
 
-                if(childBlocks?.length){
+                if (childBlocks?.length) {
 
                     iterator(childBlocks);
 
@@ -91,14 +85,17 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
     }
 
-    const valueUpdateCache: any = useRef({});
-    const valueUpdateCacheTimeOut: any = useRef(null);
+    const localErrors: any = useRef({});
+    const blockUpdateCache: any = useRef({});
+    const blockUpdateCacheTimeOut: any = useRef(null);
     const initialBlocks: any = useRef(handleToggleInstanceIds(sourceBlocks, true));
 
     const [mode, setMode] = useState(initialState);
     const [referenceBlocks, setReferenceBlocks] = useState(initialBlocks.current);
     const [blocks, setBlocks] = useState(initialBlocks.current);
     const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
+    const [isDiscardChangesModalOpen, setIsDiscardChangesModalOpen] = useState(false);
+    const [blockIdsInEditMode, setBlockIdsInEditMode] = useState([]);
 
     const hasTemplateBlocks: boolean = blocksTemplate?.length > 0;
     const hasBlocks: boolean = blocks?.length > 0;
@@ -135,11 +132,11 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Action buttons
      */
-    const EnterUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>{headerEnterUpdateButton}</button>
-    const LeaveUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToReadMode}>{headerLeaveUpdateButton}</button>
-    const DiscardUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleDiscardUpdates}>{headerDiscardUpdateButton}</button>
-    const PreviewUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerCallOutButton} onClick={handleSetToPreviewMode}>{headerPreviewUpdateButton}</button>
-    const PublishUpdateButton: () => JSX.Element = () => <button className={generatedClasses.headerPrimaryCallOutButton} onClick={handleUpdateBlockSubmit}>{headerPublishUpdateButton}</button>
+    const EnterUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>{headerEnterUpdateButton}</button>
+    const LeaveUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerCallOutButton} onClick={handleSetToReadMode}>{headerLeaveUpdateButton}</button>
+    const DiscardUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerCallOutButton} onClick={handleDiscardUpdates}>{headerDiscardUpdateButton}</button>
+    const PreviewUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerCallOutButton} onClick={handleSetToPreviewMode}>{headerPreviewUpdateButton}</button>
+    const PublishUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerPrimaryCallOutButton} onClick={handleUpdateBlockSubmit}>{headerPublishUpdateButton}</button>
 
     /**
      * Handle creating a new block instance from the page template and adding it to the active block list
@@ -149,7 +146,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         const updatedBlocks = [...blocks];
         const block = simpleClone(blocksTemplate[instanceId]);
 
-        block.instanceId = randomBytes(6).toString('hex');
+        block.instanceId = createHtmlSafeId();
         updatedBlocks.push(block)
 
         handleSetToUpdateMode();
@@ -165,6 +162,12 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         const index: number = blocks.findIndex((block) => block.instanceId === instanceId);
         const updatedBlocks = deleteArrayItem(blocks, index);
+
+        if (localErrors.current[instanceId]) {
+
+            delete localErrors.current[instanceId];
+
+        }
 
         setBlocks(updatedBlocks);
         blocksChangeAction?.(updatedBlocks);
@@ -216,6 +219,38 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     }
 
     /**
+     * Handle setting an editable block instance to read mode
+     */
+    const handleSetEditableBlockToReadMode = (instanceId: string): void => {
+
+        if(blockIdsInEditMode.includes(instanceId) && !localErrors.current[instanceId]){
+
+            const index: number = blockIdsInEditMode.findIndex((item) => item === instanceId);
+            const updatedBlockIdsInEditMode: Array<string> = deleteArrayItem(blockIdsInEditMode, index);
+
+            setBlockIdsInEditMode(updatedBlockIdsInEditMode);
+
+        }
+
+    }
+
+    /**
+     * Handle setting an editable block instance to update mode
+     */
+    const handleSetEditableBlockToUpdateMode = (instanceId: string): void => {
+
+        const updatedBlockIdsInEditMode: Array<string> = [...blockIdsInEditMode];
+
+        if(!updatedBlockIdsInEditMode.includes(instanceId)){
+
+            updatedBlockIdsInEditMode.push(instanceId);
+            setBlockIdsInEditMode(updatedBlockIdsInEditMode);
+
+        }
+
+    }
+
+    /**
      * Handle setting the active mode to create
      */
     const handleSetToCreateMode = (): void => {
@@ -234,7 +269,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Handle setting the active mode to preview
      */
-    const handleSetToPreviewMode = (): void => {
+    const handleSetToPreviewMode = (event): void => {
         setMode(cprud.PREVIEW);
         stateChangeAction?.(cprud.PREVIEW)
     }
@@ -250,8 +285,17 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Handle resetting updates to initial state
      */
-    const handleDiscardUpdates = (): void => {
+    const handleDiscardUpdates = (): void => setIsDiscardChangesModalOpen(true);
+    const handleDiscardChangesCancel = () => setIsDiscardChangesModalOpen(false);
+    const handleDiscardChangesConfirm = () => {
+
+        discardUpdateAction?.();
+        setIsDiscardChangesModalOpen(false);
+        setMode(cprud.READ);
         setBlocks(referenceBlocks);
+
+        localErrors.current = {};
+
     }
 
     /**
@@ -261,86 +305,74 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         const blocksToSave: Array<CmsContentBlock> = handleToggleInstanceIds(blocks, false);
 
-        let errors: FormErrors = {};
+        let serverErrors: FormErrors = {};
+        let formattedLocalErrors: FormErrors = {};
 
         if (saveBlocksAction) {
 
-            errors = await saveBlocksAction(blocksToSave);
+            Object.keys(localErrors.current).forEach((instanceId) => {
+
+                formattedLocalErrors = Object.assign({}, formattedLocalErrors, localErrors.current[instanceId]);
+
+            });
+
+            serverErrors = await saveBlocksAction(blocksToSave, formattedLocalErrors);
 
         }
 
-        if (!Object.keys(errors).length) {
+        if (!hasKeys(serverErrors)) {
 
             setMode(cprud.READ);
 
         }
 
-        return errors
+        return serverErrors
     }
 
     /**
-     * Handle form updates from blocks in edit mode
+     * Handle updates from blocks in edit mode
      */
-    const handleFormUpdate = ({ formState, instanceId }): void => {
+    const handleUpdateBlock = ({ block, instanceId, errors }): void => {
 
-        const { values = {}, visited } = formState;
+        if (!hasKeys(errors) && localErrors.current.hasOwnProperty(instanceId)) {
 
-        const updatedContent: Record<string, any> = {};
-        const targetBlock: CmsContentBlock = blocks.find((block) => block.instanceId === instanceId);
+            delete localErrors.current[instanceId]
 
-        /**
-         * Handle value updates
-         */
-        Object.keys(values).forEach((key) => {
+        } else if (hasKeys(errors)) {
 
-            const value: any = values[key];
-            const fieldName: string = key.replace(`-${instanceId}`, '');
-
-            /**
-             * If a field has been interacted with and its current value differs from the value current held in blocks
-             */
-            if (key.includes(instanceId) && visited[key] && value !== targetBlock.content[fieldName]) {
-
-                updatedContent[fieldName] = values[key];
-
-            }
-
-        });
-
-        /**
-         * If there are updates to block content
-         */
-        if (Object.keys(updatedContent).length > 0) {
-
-            valueUpdateCache.current[instanceId] = Object.assign({}, valueUpdateCache.current[instanceId], updatedContent);
-
-            processValueUpdateCache();
+            localErrors.current[instanceId] = errors;
 
         }
 
-    };
+        blockUpdateCache.current[instanceId] = Object.assign({}, blockUpdateCache.current[instanceId], block);
+
+        processBlockUpdateCache();
+
+    }
 
     /**
      * Process the update cache
      * Avoids individual updates to form fields causing full blocks rerender
      */
-    const processValueUpdateCache = (): void => {
+    const processBlockUpdateCache = (): void => {
 
-        window.clearTimeout(valueUpdateCacheTimeOut.current);
+        window.clearTimeout(blockUpdateCacheTimeOut.current);
 
-        valueUpdateCacheTimeOut.current = window.setTimeout(() => {
+        blockUpdateCacheTimeOut.current = window.setTimeout(() => {
 
-            if (valueUpdateCache.current && Object.keys(valueUpdateCache.current).length > 0) {
+            if (blockUpdateCache.current && hasKeys(blockUpdateCache.current)) {
 
                 const updatedBlocks: Array<CmsContentBlock> = simpleClone(blocks);
 
-                Object.keys(valueUpdateCache.current).forEach((instanceId) => {
+                Object.keys(blockUpdateCache.current).forEach((instanceId) => {
 
-                    const targetBlock: CmsContentBlock = updatedBlocks.find((block) => block.instanceId === instanceId);
+                    const targetBlockIndex: number = updatedBlocks.findIndex((block) => block.instanceId === instanceId);
 
-                    targetBlock.content = Object.assign({}, targetBlock.content, valueUpdateCache.current[instanceId]);
+                    updatedBlocks[targetBlockIndex] = blockUpdateCache.current[instanceId];
 
                 })
+
+                blockUpdateCache.current = {};
 
                 setBlocks(updatedBlocks);
 
@@ -351,112 +383,52 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     };
 
     /**
-     * Render block data
+     * Set non-active blocks to read mode if they have no errors
      */
-    const renderBlockContent = ({ isEditable, block }): JSX.Element => {
+    const handleLeaveBlock = (event): void => {
 
-        const { instanceId, item, content } = block;
+        if (mode === cprud.UPDATE && blockIdsInEditMode.length > 0) {
 
-        if (item.contentType === 'textBlock') {
+            const updatedBlockIdsInEditMode: Array<string> = [];
 
-            if (isEditable) {
+            blockIdsInEditMode.forEach((instanceId: string) => {
 
-                const formConfig: FormConfig = simpleClone(forms[formTypes.CONTENT_BLOCK_TEXT]);
-                const handleChange: (formState: any) => void = (formState) => handleFormUpdate({ instanceId, formState });
+                const isEventInBlock: boolean = document.getElementById(instanceId)?.contains(event.target);
+                const blockHasErrors: boolean = localErrors.current.hasOwnProperty(instanceId);
 
-                formConfig.initialValues = {
-                    [`title-${instanceId}`]: content.title,
-                    [`mainText-${instanceId}`]: content.mainText
-                };
+                if(isEventInBlock || blockHasErrors){
 
-                return (
+                    updatedBlockIdsInEditMode.push(instanceId);
 
-                    <LayoutColumnContainer>
-                        <LayoutColumn desktop={9}>
-                            <Form
-                                key={instanceId}
-                                csrfToken={csrfToken}
-                                instanceId={instanceId}
-                                formConfig={formConfig}
-                                shouldRenderSubmitButton={false}
-                                changeAction={handleChange} />
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
+                }
 
-                )
+            });
+
+            if(!deepEquals(blockIdsInEditMode, updatedBlockIdsInEditMode)){
+
+                setBlockIdsInEditMode(updatedBlockIdsInEditMode);
 
             }
 
-            return (
-
-                <TextContentBlock
-                    headingLevel={3}
-                    text={{
-                        heading: content.title,
-                        bodyHtml: content.mainText
-                    }} />
-
-            )
-
         }
 
-        if (item.contentType === 'keyLinksBlock') {
+    };
 
-            if (isEditable) {
-
-                const formConfig: FormConfig = simpleClone(forms[formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER]);
-                const handleChange: (formState: any) => void = (formState) => handleFormUpdate({ instanceId, formState });
-
-                formConfig.initialValues = {
-                    [`title-${instanceId}`]: content.title
-                };
-
-                return (
-
-                    <LayoutColumnContainer>
-                        <LayoutColumn desktop={9}>
-                            <Form
-                                key={instanceId}
-                                csrfToken={csrfToken}
-                                instanceId={instanceId}
-                                formConfig={formConfig}
-                                shouldRenderSubmitButton={false}
-                                changeAction={handleChange} />
-                            
-                        </LayoutColumn>
-                    </LayoutColumnContainer>
-
-                )
-
-            }
-
-            const links = content.links?.map((link) => ({
-                url: link.content?.url,
-                text: link.content?.linkText
-            }))
-
-            return (
-
-                <KeyLinksBlock
-                    headingLevel={3}
-                    text={{
-                        heading: content.title
-                    }}
-                    links={links}
-                    themeId={themeId} />
-
-            )
-
-        }
-
-    }
+    /**
+     * Set the class name on main depending on current mode - TODO this would be better in the parent component
+     */
+    useDynamicElementClassName({
+        elementSelector: mode === cprud.READ ? null : 'main',
+        addClass: 'u-bg-theme-1',
+        removeClass: 'u-bg-theme-3'
+    });
 
     /**
      * On active block data change, compare with source data from API to determine if there are changes
      */
     useEffect(() => {
 
-        const isLocalBlockStateMatchingSource: boolean = simpleCompare(blocks, referenceBlocks);
+        const isLocalBlockStateMatchingSource: boolean = deepEquals(blocks, referenceBlocks);
 
         if (isLocalBlockStateMatchingSource && hasEditedBlocks) {
 
@@ -468,7 +440,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         }
 
-        return () => window.clearTimeout(valueUpdateCacheTimeOut.current);
+        return () => window.clearTimeout(blockUpdateCacheTimeOut.current);
 
     }, [blocks]);
 
@@ -483,6 +455,34 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         setReferenceBlocks(updatedBlocks);
 
     }, [sourceBlocks]);
+
+    /**
+     * Leave edit mode on click outside
+     */
+    useEffect(() => {
+
+        document.addEventListener('click', handleLeaveBlock, false);
+        document.addEventListener('focus', handleLeaveBlock, false);
+
+        return () => {
+            document.removeEventListener('click', handleLeaveBlock, false);
+            document.addEventListener('focus', handleLeaveBlock, false);
+        }
+
+    }, [mode, blockIdsInEditMode]);
+
+    /**
+     * Conditionally reset blocks from edit mode
+     */
+    useEffect(() => {
+
+        if(blockIdsInEditMode.length > 0 && (mode === cprud.READ || mode === cprud.PREVIEW)){
+
+            setBlockIdsInEditMode([]);
+
+        }
+
+    }, [mode]);
 
     /**
      * Render
@@ -501,7 +501,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                 </div>
                             </LayoutColumn>
                             <LayoutColumn tablet={3} className="u-flex u-items-center">
-                                <EnterUpdateButton />
+                                <EnterUpdateButton isDisabled={false} />
                             </LayoutColumn>
                         </LayoutColumnContainer>
                     }
@@ -515,8 +515,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                 </div>
                             </LayoutColumn>
                             <LayoutColumn tablet={6} className="u-flex u-items-center">
-                                <EnterUpdateButton />
-                                <PublishUpdateButton />
+                                <EnterUpdateButton isDisabled={false} />
+                                <PublishUpdateButton isDisabled={false} />
                             </LayoutColumn>
                         </LayoutColumnContainer>
                     }
@@ -540,13 +540,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                 </LayoutColumn>
                                 <LayoutColumn tablet={hasEditedBlocks ? 7 : 3} className="tablet:u-flex u-items-center">
                                     {!hasEditedBlocks &&
-                                        <LeaveUpdateButton />
+                                        <LeaveUpdateButton isDisabled={false} />
                                     }
                                     {hasEditedBlocks &&
                                         <>
-                                            <DiscardUpdateButton />
-                                            <PreviewUpdateButton />
-                                            <PublishUpdateButton />
+                                            <DiscardUpdateButton isDisabled={false} />
+                                            <PreviewUpdateButton isDisabled={hasKeys(localErrors.current)} />
+                                            <PublishUpdateButton isDisabled={false} />
                                         </>
                                     }
                                 </LayoutColumn>
@@ -573,15 +573,17 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                                     <li key={index} className="u-mb-10">
                                         <ContentBlock
+                                            mode={mode}
                                             instanceId={index.toString()}
                                             typeId={item.contentType}
-                                            isTemplate={true}
+                                            themeId={themeId}
+                                            block={block}
+                                            isEditable={true}
                                             text={{
                                                 name: item.name
                                             }}
-                                            createAction={handleCreateBlock}>
-                                                {renderBlockContent({ block, isEditable: false })}
-                                        </ContentBlock>
+                                            changeAction={handleUpdateBlock}
+                                            createAction={handleCreateBlock} />
                                     </li>
 
 
@@ -603,30 +605,38 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 <>
                     {hasBlocks &&
                         <ul className="u-list-none u-p-0">
-                            {blocks?.map((block, index: number) => {
+                            {blocks?.map((block: CmsContentBlock, index: number) => {
 
                                 const { instanceId, item } = block;
 
                                 const shouldRenderMovePrevious: boolean = index > 0;
                                 const shouldRenderMoveNext: boolean = index < blocks.length - 1;
+                                const isInEditMode: boolean = blockIdsInEditMode.includes(instanceId);
+                                const initialErrors: FormErrors = localErrors.current[instanceId] ?? {};
 
                                 return (
 
-                                    <li key={block.instanceId} className="u-mb-10">
+                                    <li key={index + block.instanceId} className="u-mb-10">
                                         <ContentBlock
+                                            mode={mode}
                                             instanceId={instanceId}
                                             typeId={item.contentType}
+                                            themeId={themeId}
+                                            block={block}
+                                            initialErrors={initialErrors}
                                             isEditable={isEditable}
+                                            isInEditMode={isInEditMode}
                                             shouldRenderMovePrevious={shouldRenderMovePrevious}
                                             shouldRenderMoveNext={shouldRenderMoveNext}
                                             movePreviousAction={handleMoveBlockPrevious}
                                             moveNextAction={handleMoveBlockNext}
+                                            changeAction={handleUpdateBlock}
                                             deleteAction={handleDeleteBlock}
+                                            enterReadModeAction={handleSetEditableBlockToReadMode}
+                                            enterUpdateModeAction={handleSetEditableBlockToUpdateMode}
                                             text={{
                                                 name: item.name
-                                            }}>
-                                            {renderBlockContent({ block, isEditable: mode === cprud.UPDATE })}
-                                        </ContentBlock>
+                                            }} />
                                     </li>
 
 
@@ -656,6 +666,23 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     }
                 </>
             )}
+            <Dialog
+                id="dialog-discard-cms-block-changes"
+                isOpen={isDiscardChangesModalOpen}
+                text={{
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Yes, discard',
+                }}
+                cancelAction={handleDiscardChangesCancel}
+                confirmAction={handleDiscardChangesConfirm}
+            >
+                <h3>Changed Data will be lost</h3>
+                <p className="u-text-bold">
+                    All changes will be
+                    discarded. Are you sure you wish to
+                    proceed?
+                </p>
+            </Dialog>
         </div>
     )
 }

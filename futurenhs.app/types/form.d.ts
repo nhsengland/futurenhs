@@ -26,6 +26,7 @@ export interface FormField {
     shouldRenderAsRte?: boolean;
     shouldPreventFreeText?: boolean;
     shouldRenderRemainingCharacterCount?: boolean;
+    rteToolBarOptions?: string;
     validators?: Array<{
         type: ValidatorType;
         maxLength?: number;
