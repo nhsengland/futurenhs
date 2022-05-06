@@ -113,3 +113,12 @@ export const setFormConfigOptions = (formConfig: FormConfig, step = 0, name: str
     return configCopy
 
 }
+
+/**
+ * Checks if server side form submission is the expected form
+ */
+export const checkMatchingFormType = (formData: Record<any, any>, formId: string): boolean => {
+
+    return Boolean(formData.body?.['_form-id'] === formId)
+
+}

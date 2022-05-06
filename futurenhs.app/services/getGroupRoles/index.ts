@@ -8,13 +8,10 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { GroupMember } from '@appTypes/group'
 
 declare type Options = {
     user: User
     groupId: string
-    memberId: string
-    isForEdit?: boolean
 }
 
 declare type Dependencies = {
@@ -22,11 +19,11 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const getGroupMember = async (
-    { user, groupId, memberId, isForEdit }: Options,
+export const getGroupRoles = async (
+    { user, groupId }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<GroupMember>> => {
-    const serviceResponse: ServiceResponse<GroupMember> = {
+): Promise<ServiceResponse<any>> => {
+    const serviceResponse: ServiceResponse<any> = {
         data: null,
     }
 
@@ -34,25 +31,25 @@ export const getGroupMember = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const id: string = user.id
+    const { id } = user 
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/${memberId}${isForEdit ? '/update' : ''}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/roles`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
         defaultTimeOutMillis
     )
-    
+
     const apiData: ApiResponse<any> = apiResponse.json
     const apiMeta: any = apiResponse.meta
-    
+
     const { ok, status, statusText, headers } = apiMeta
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the group member',
+            'An unexpected error occurred when attempting to get group roles',
             {
-                serviceId: services.GET_GROUP_MEMBER,
+                serviceId: services.GET_GROUP_ROLES,
                 status: status,
                 statusText: statusText,
                 body: apiData,
@@ -61,16 +58,7 @@ export const getGroupMember = async (
     }
 
     serviceResponse.headers = headers
-    serviceResponse.data = {
-        id: apiData.id ?? '',
-        firstName: apiData.firstName ?? '',
-        lastName: apiData.lastName ?? '',
-        email: apiData.email ?? '',
-        pronouns: apiData.pronouns ?? '',
-        role: apiData.role ?? '',
-        joinDate: apiData.dateJoinedUtc ?? '',
-        lastLogInDate: apiData.lastLoginUtc ?? '',
-    }
+    serviceResponse.data = apiData
 
     return serviceResponse
 }
