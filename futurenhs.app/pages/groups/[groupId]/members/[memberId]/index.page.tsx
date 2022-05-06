@@ -3,7 +3,6 @@ import { GetServerSideProps } from 'next'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { routeParams } from '@constants/routes'
-import { formTypes } from '@constants/forms'
 import { layoutIds, groupTabIds } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
@@ -48,8 +47,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             routeParams.MEMBERID
                         )
 
-                        const form: any =
-                            props.forms[formTypes.UPDATE_GROUP_MEMBER]
 
                         /**
                          * Get data from services
@@ -66,9 +63,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 props.member.firstName ?? ''
                             } ${props.member.lastName ?? ''}`
 
-                            form.initialValues = {
-                                'member-role': props.member.role,
-                            }
+
                         } catch (error) {
                             return handleSSRErrorProps({ props, error })
                         }

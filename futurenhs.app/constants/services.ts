@@ -15,6 +15,7 @@ export const enum services {
     GET_GROUP_FILE = 'getGroupFile',
     GET_GROUP_FILE_VIEW = 'getGroupFileView',
     GET_GROUP_MEMBERS = 'getGroupMembers',
+    GET_GROUP_ROLES = 'getGroupRoles',
     GET_PENDING_GROUP_MEMBERS = 'getGroupPendingMembers',
     GET_GROUP_MEMBER = 'getGroupMember',
     GET_PAGE_TEXT_CONTENT = 'getPageTextContent',
@@ -43,6 +44,7 @@ export const enum services {
     PUT_GROUP_DISCUSSION_COMMENT_LIKE = 'putGroupDiscussionCommentLike',
     PUT_SITE_USER = 'putSiteUser',
     PUT_SITE_USER_ROLE = 'putSiteUserRole',
+    PUT_GROUP_MEMBER_ROLE ='putGroupMemberRole',
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
 }
