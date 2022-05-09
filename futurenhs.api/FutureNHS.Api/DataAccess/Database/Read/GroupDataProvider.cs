@@ -375,7 +375,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
                                 [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName
+                                [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName,
+                                [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id
 
                     FROM        GroupUser groupUser
                     JOIN        [Group] groups 

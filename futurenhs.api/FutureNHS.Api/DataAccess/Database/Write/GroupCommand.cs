@@ -389,7 +389,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             }
         }
 
-        public async Task<GroupUserDto> GetGroupUserAsync(Guid groupUserId, Guid groupId, CancellationToken cancellationToken = default)
+        public async Task<GroupUserDto> GetGroupUserAsync(Guid membershipUserId, Guid groupId, CancellationToken cancellationToken = default)
         {
             const string query =
                 @$" SELECT
@@ -410,14 +410,14 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 
 
                     FROM        [GroupUser] groupUser
-                    WHERE       groupUser.Id = @GroupUserId
+                    WHERE       groupUser.MembershipUser_Id = @MembershipUserId
                     AND         groupUser.Group_Id = @GroupId;";
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
             var commandDefinition = new CommandDefinition(query, new
             {
-                GroupUserId = groupUserId,
+                MembershipUserId = membershipUserId,
                 GroupId = groupId
             }, cancellationToken: cancellationToken);
 

@@ -2,6 +2,7 @@ using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Helpers;
+using FutureNHS.Api.Models.Group.Request;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -187,11 +188,11 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId:guid}/groups/{slug}/members/{groupUserId:guid}/update")]
+        [Route("users/{userId:guid}/groups/{slug}/members/{targetUserId:guid}/update")]
         [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> GetMemberInGroupForUpdateAsync(Guid userId, string slug, Guid groupUserId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMemberInGroupForUpdateAsync(Guid userId, string slug, Guid targetUserId, CancellationToken cancellationToken)
         {
-            var groupMember = await _groupMembershipService.GetGroupMembershipUserAsync(userId, groupUserId, slug, cancellationToken);
+            var groupMember = await _groupMembershipService.GetGroupMembershipUserAsync(userId, targetUserId, slug, cancellationToken);
 
             if (groupMember is null)
                 return NotFound();
@@ -200,13 +201,13 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPut]
-        [Route("users/{userId:guid}/groups/{slug}/members/{groupUserId:guid}/roles/update")]
+        [Route("users/{userId:guid}/groups/{slug}/members/{targetUserId:guid}/roles/update")]
         [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> UpdateMemberInGroupAsync(Guid userId, string slug, Guid groupUserId, [FromBody] Guid groupRoleId, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateMemberInGroupAsync(Guid userId, string slug, Guid targetUserId, [FromBody] UpdateGroupUserRoleRequest updateGroupUserRoleRequest, CancellationToken cancellationToken)
         {
             var rowVersion = _etagService.GetIfMatch();
 
-            await _groupMembershipService.UpdateGroupMembershipUserRoleAsync(userId, slug, groupUserId, groupRoleId, rowVersion, cancellationToken);
+            await _groupMembershipService.UpdateGroupMembershipUserRoleAsync(userId, slug, targetUserId, updateGroupUserRoleRequest.GroupUserRoleId, rowVersion, cancellationToken);
                         
             return Ok();
         }

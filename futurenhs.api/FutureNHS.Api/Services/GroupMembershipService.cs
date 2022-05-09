@@ -33,10 +33,10 @@ namespace FutureNHS.Api.Services
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
         }
 
-        public async Task<GroupMemberDetails> GetGroupMembershipUserAsync(Guid userId, Guid groupUserId, string slug, CancellationToken cancellationToken)
+        public async Task<GroupMemberDetails> GetGroupMembershipUserAsync(Guid userId, Guid targetUserId, string slug, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
-            if (Guid.Empty == groupUserId) throw new ArgumentOutOfRangeException(nameof(groupUserId));
+            if (Guid.Empty == targetUserId) throw new ArgumentOutOfRangeException(nameof(targetUserId));
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
 
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, EditUserRole, cancellationToken);
@@ -54,10 +54,10 @@ namespace FutureNHS.Api.Services
                 throw new KeyNotFoundException("Error: Group not found for slug");
             }
 
-            var groupUserResult = await _groupCommand.GetGroupUserAsync(groupUserId, groupId.Value, cancellationToken);
+            var groupUserResult = await _groupCommand.GetGroupUserAsync(targetUserId, groupId.Value, cancellationToken);
             if (groupUserResult is null)
             {
-                _logger.LogError($"Error: GetGroupMembershipUserAsync - User:{0} not found in group:{1}", groupUserId, slug);
+                _logger.LogError($"Error: GetGroupMembershipUserAsync - User:{0} not found in group:{1}", targetUserId, slug);
                 throw new KeyNotFoundException("Error: User not found in group");
             }
 
@@ -71,13 +71,13 @@ namespace FutureNHS.Api.Services
             var roleResult = await _rolesCommand.GetRoleAsync(groupUserResult.MembershipRole, cancellationToken);
             if (roleResult is null)
             {
-                _logger.LogError($"Error: GetGroupMembershipUserAsync - User:{0} not found in group:{1}", groupUserId, slug);
+                _logger.LogError($"Error: GetGroupMembershipUserAsync - Role:{0} not found in group:{1}", groupUserResult.MembershipRole, slug);
                 throw new KeyNotFoundException("Error: User not found in group");
             }
 
             var membershipUser = new GroupMemberDetails
             {
-                Id = groupUserResult.Id,
+                Id = userResult.Id,
                 UserName = userResult.UserName,
                 Slug = userResult.Slug,
                 FirstName = userResult.FirstName,
@@ -94,11 +94,11 @@ namespace FutureNHS.Api.Services
             return membershipUser;
         }
 
-        public async Task UpdateGroupMembershipUserRoleAsync(Guid userId, string slug, Guid groupUserId, Guid groupRoleId, byte[] rowVersion, CancellationToken cancellationToken)
+        public async Task UpdateGroupMembershipUserRoleAsync(Guid userId, string slug, Guid targetUserId, Guid groupRoleId, byte[] rowVersion, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
-            if (Guid.Empty == groupUserId) throw new ArgumentOutOfRangeException(nameof(groupUserId));
+            if (Guid.Empty == targetUserId) throw new ArgumentOutOfRangeException(nameof(targetUserId));
             if (Guid.Empty == groupRoleId) throw new ArgumentOutOfRangeException(nameof(groupRoleId));
 
             var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
@@ -108,17 +108,17 @@ namespace FutureNHS.Api.Services
                 throw new KeyNotFoundException("Error: Group not found for slug");
             }
 
-            var groupUserDto = await _groupCommand.GetGroupUserAsync(groupUserId, groupId.Value, cancellationToken);
+            var groupUserDto = await _groupCommand.GetGroupUserAsync(targetUserId, groupId.Value, cancellationToken);
             if (!groupUserDto.RowVersion.SequenceEqual(rowVersion))
             {
-                _logger.LogError($"Precondition Failed: UpdateGroupMembershipUserRoleAsync - GroupUser:{0} has changed prior to submission ", groupUserId);
+                _logger.LogError($"Precondition Failed: UpdateGroupMembershipUserRoleAsync - GroupUser:{0} has changed prior to submission ", targetUserId);
                 throw new PreconditionFailedExeption("Precondition Failed: GroupUser has changed prior to submission");
             }
 
             if (userId == groupUserDto.MembershipUser)
             {
                 _logger.LogError($"Error: UpdateGroupMembershipUserRoleAsync - User:{0} User cannot edit their own group role", userId);
-                throw new ValidationException(nameof(groupUserId), "User cannot edit their own group role");
+                throw new ValidationException(nameof(targetUserId), "User cannot edit their own group role");
             }
 
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, EditUserRole, cancellationToken);
@@ -128,7 +128,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            await _groupCommand.UpdateUserGroupRolesAsync(groupUserId, groupRoleId, rowVersion, cancellationToken);
+            await _groupCommand.UpdateUserGroupRolesAsync(groupUserDto.Id, groupRoleId, rowVersion, cancellationToken);
         }
 
         public async Task<IEnumerable<GroupRoleDto>> GetMembershipRolesForGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
@@ -146,11 +146,11 @@ namespace FutureNHS.Api.Services
             return await _groupCommand.GetAllGroupRolesAsync(cancellationToken);
         }
 
-        public async Task DeleteGroupMembershipUserAsync(Guid userId, string slug, Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken)
+        public async Task DeleteGroupMembershipUserAsync(Guid userId, string slug, Guid targetUserId, byte[] rowVersion, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
-            if (Guid.Empty == groupUserId) throw new ArgumentOutOfRangeException(nameof(groupUserId));
+            if (Guid.Empty == targetUserId) throw new ArgumentOutOfRangeException(nameof(targetUserId));
 
             var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
             if (!groupId.HasValue)
@@ -159,17 +159,17 @@ namespace FutureNHS.Api.Services
                 throw new KeyNotFoundException("Error: Group not found for slug");
             }
 
-            var groupUserDto = await _groupCommand.GetGroupUserAsync(groupUserId, groupId.Value, cancellationToken);
+            var groupUserDto = await _groupCommand.GetGroupUserAsync(targetUserId, groupId.Value, cancellationToken);
             if (!groupUserDto.RowVersion.SequenceEqual(rowVersion))
             {
-                _logger.LogError($"Precondition Failed: DeleteGroupMembershipUserAsync - GroupUser:{0} has changed prior to submission ", groupUserId);
+                _logger.LogError($"Precondition Failed: DeleteGroupMembershipUserAsync - GroupUser:{0} has changed prior to submission ", targetUserId);
                 throw new PreconditionFailedExeption("Precondition Failed: GroupUser has changed prior to submission");
             }
 
             if (userId == groupUserDto.MembershipUser)
             {
                 _logger.LogError($"Error: DeleteGroupMembershipUserAsync - User:{0} User cannot delete themselves from a group", userId);
-                throw new ValidationException(nameof(groupUserId), "User cannot delete themselves from a group");
+                throw new ValidationException(nameof(userId), "User cannot delete themselves from a group");
             }
 
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, EditUserRole, cancellationToken);
@@ -179,7 +179,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            await _groupCommand.DeleteUserFromGroupAsync(groupUserId, rowVersion, cancellationToken);
+            await _groupCommand.DeleteUserFromGroupAsync(groupUserDto.Id, rowVersion, cancellationToken);
         }
 
         public async Task UserJoinGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
