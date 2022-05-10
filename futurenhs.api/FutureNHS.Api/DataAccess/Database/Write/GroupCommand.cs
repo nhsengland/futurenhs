@@ -201,7 +201,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 Name = groupDto.Name,
                 CreatedAtUtc = groupDto.CreatedAtUtc,
                 GroupOwner = groupDto.GroupOwnerId,
-                Subtitle = groupDto.StrapLine,
+                Subtitle = groupDto.Strapline,
                 Slug = groupDto.Slug,
                 CreatedBy = userId,
                 ImageId = groupDto.ImageId,
