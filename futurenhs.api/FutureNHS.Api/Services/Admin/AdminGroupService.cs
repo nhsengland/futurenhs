@@ -294,7 +294,7 @@ namespace FutureNHS.Api.Services.Admin
                 {
                     Slug = Guid.NewGuid().ToString(),
                     Name = _htmlSanitizer.Sanitize(name),
-                    StrapLine = _htmlSanitizer.Sanitize(strapLine),
+                    Strapline = _htmlSanitizer.Sanitize(strapLine),
                     ThemeId = themeId,
                     ImageId = imageId,
                     GroupOwnerId = groupOwnerId,
