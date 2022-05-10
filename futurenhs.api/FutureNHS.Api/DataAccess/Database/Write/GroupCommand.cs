@@ -179,7 +179,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,[Subtitle]
                                 ,[Slug]
                                 ,[CreatedBy]
-                                ,[Image])
+                                ,[ImageId])
    
                     VALUES
                                 (@Id
