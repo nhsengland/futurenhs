@@ -1,7 +1,7 @@
 import React from 'react'
 import * as nextRouter from 'next/router'
 import { routes } from '@jestMocks/generic-props'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup } from '@jestMocks/index'
 
 import { GroupFilePreviewTemplate } from './index'
 import { Props } from './interfaces'

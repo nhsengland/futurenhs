@@ -1,13 +1,16 @@
+import { CmsContentBlock } from "@appTypes/contentBlock";
+import { FormErrors } from "@appTypes/form";
+
 export interface Props {
     id?: string
-    text: {
-        heading: string;
-    };
+    isEditable?: boolean;
+    block: CmsContentBlock;
     headingLevel: number;
-    links: Array<{
-        url: string
-        text: string
-    }>;
     themeId?: string;
+    initialErrors?: FormErrors;
+    changeAction: (config: {
+        instanceId: string;
+        formState: Record<any, any>;
+    }) => void
     className?: string
 }

@@ -1,18 +1,31 @@
-import App from 'next/app'
-import { useRouter } from 'next/router'
-import Head from 'next/head'
-import ErrorPage from '@pages/500.page'
+import '../UI/scss/screen.scss';
 
-import { StandardLayout } from '@components/_pageLayouts/StandardLayout'
-import { GroupLayout } from '@components/_pageLayouts/GroupLayout'
-import { AdminLayout } from '@components/_pageLayouts/AdminLayout'
-import { layoutIds } from '@constants/routes'
+import React from 'react';
+import App from 'next/app';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import ErrorPage from '@pages/500.page';
 
-import '../UI/scss/screen.scss'
+import { StandardLayout } from '@components/_pageLayouts/StandardLayout';
+import { GroupLayout } from '@components/_pageLayouts/GroupLayout';
+import { AdminLayout } from '@components/_pageLayouts/AdminLayout';
+import { layoutIds } from '@constants/routes';
+import formConfigs from '@formConfigs/index';
+import { themes } from '@constants/themes';
+import { ThemesContext, FormsContext } from '@contexts/index';
 
 const CustomApp = ({ Component, pageProps }) => {
     const router = useRouter()
-    const { errors, layoutId } = pageProps
+    const { errors, layoutId, csrfToken } = pageProps
+
+    const formsContextConfig: Record<string, any> = {
+        csrfToken: csrfToken,
+        templates: formConfigs
+    };
+
+    const themesContextConfig: Record<string, any> = {
+        themes: themes
+    };
 
     const hasServerError: boolean =
         errors?.filter((error) =>
@@ -35,41 +48,57 @@ const CustomApp = ({ Component, pageProps }) => {
 
     if (hasServerError) {
         return (
-            <StandardLayout {...pageProps} user={null}>
-                <ErrorPage statusCode={500} />
-            </StandardLayout>
+            <ThemesContext.Provider value={themesContextConfig}>
+                <FormsContext.Provider value={formsContextConfig}>
+                    <StandardLayout {...pageProps} user={null}>
+                        <ErrorPage statusCode={500} />
+                    </StandardLayout>
+                </FormsContext.Provider>
+            </ThemesContext.Provider>
         )
     }
 
     if (layoutId === layoutIds.GROUP) {
         return (
-            <GroupLayout {...pageProps}>
-                <Head>
-                    <title>{headTitle}</title>
-                </Head>
-                <Component {...pageProps} key={router.asPath} />
-            </GroupLayout>
+            <ThemesContext.Provider value={themesContextConfig}>
+                <FormsContext.Provider value={formsContextConfig}>
+                    <GroupLayout {...pageProps}>
+                        <Head>
+                            <title>{headTitle}</title>
+                        </Head>
+                        <Component {...pageProps} key={router.asPath} />
+                    </GroupLayout>
+                </FormsContext.Provider>
+            </ThemesContext.Provider>
         )
     }
 
     if (layoutId === layoutIds.ADMIN) {
         return (
-            <AdminLayout {...pageProps}>
-                <Head>
-                    <title>{headTitle}</title>
-                </Head>
-                <Component {...pageProps} key={router.asPath} />
-            </AdminLayout>
+            <ThemesContext.Provider value={themesContextConfig}>
+                <FormsContext.Provider value={formsContextConfig}>
+                    <AdminLayout {...pageProps}>
+                        <Head>
+                            <title>{headTitle}</title>
+                        </Head>
+                        <Component {...pageProps} key={router.asPath} />
+                    </AdminLayout>
+                </FormsContext.Provider>
+            </ThemesContext.Provider>
         )
     }
 
     return (
-        <StandardLayout {...pageProps}>
-            <Head>
-                <title>{headTitle}</title>
-            </Head>
-            <Component {...pageProps} key={router.asPath} />
-        </StandardLayout>
+        <ThemesContext.Provider value={themesContextConfig}>
+            <FormsContext.Provider value={formsContextConfig}>
+                <StandardLayout {...pageProps}>
+                    <Head>
+                        <title>{headTitle}</title>
+                    </Head>
+                    <Component {...pageProps} key={router.asPath} />
+                </StandardLayout>
+            </FormsContext.Provider>
+        </ThemesContext.Provider>
     )
 }
 

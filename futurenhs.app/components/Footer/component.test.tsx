@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@jestMocks/index'
 import { shallow } from 'enzyme'
 
 import { Footer } from './index'

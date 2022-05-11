@@ -22,6 +22,7 @@
         "@pages/*": ["pages/*"],
         "@components/*": ["components/*"],
         "@constants/*": ["constants/*"],
+        "@contexts/*": ["contexts/*"],
         "@helpers/*": ["helpers/*"],
         "@services/*": ["services/*"],
         "@selectors/*": ["selectors/*"],

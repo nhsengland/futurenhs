@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render } from '@jestMocks/index'
 
 import { Hidden } from './index'
 

@@ -19,6 +19,7 @@ export const contentBlockQuickLink: FormConfig = {
                             message: 'Enter the link title',
                         }
                     ],
+                    className: 'u-grow tablet:u-mr-3'
                 },
                 {
                     name: 'link',
@@ -33,6 +34,7 @@ export const contentBlockQuickLink: FormConfig = {
                             message: 'Enter the link',
                         }
                     ],
+                    className: 'u-grow'
                 }
             ],
         },

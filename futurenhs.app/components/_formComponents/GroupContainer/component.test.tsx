@@ -1,6 +1,6 @@
 import { Props } from './interfaces'
 import { GroupContainer } from '.'
-import { render } from '@testing-library/react'
+import { render } from '@jestMocks/index'
 
 const props: Props = {
     className: 'mockGroupContainer',
