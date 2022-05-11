@@ -227,7 +227,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleSetEditableBlockToReadMode = (instanceId: string): void => {
 
-        if (blockIdsInEditMode.includes(instanceId) && !localErrors.current[instanceId]) {
+        if(blockIdsInEditMode.includes(instanceId) && !localErrors.current[instanceId]){
 
             const index: number = blockIdsInEditMode.findIndex((item) => item === instanceId);
             const updatedBlockIdsInEditMode: Array<string> = deleteArrayItem(blockIdsInEditMode, index);
@@ -245,7 +245,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         const updatedBlockIdsInEditMode: Array<string> = [...blockIdsInEditMode];
 
-        if (!updatedBlockIdsInEditMode.includes(instanceId)) {
+        if(!updatedBlockIdsInEditMode.includes(instanceId)){
 
             updatedBlockIdsInEditMode.push(instanceId);
             setBlockIdsInEditMode(updatedBlockIdsInEditMode);
@@ -400,7 +400,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 const isEventInBlock: boolean = document.getElementById(instanceId)?.contains(event.target);
                 const blockHasErrors: boolean = localErrors.current.hasOwnProperty(instanceId);
 
-                if (isEventInBlock || blockHasErrors) {
+                if(isEventInBlock || blockHasErrors){
 
                     updatedBlockIdsInEditMode.push(instanceId);
 
@@ -408,7 +408,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
             });
 
-            if (!deepEquals(blockIdsInEditMode, updatedBlockIdsInEditMode)) {
+            if(!deepEquals(blockIdsInEditMode, updatedBlockIdsInEditMode)){
 
                 setBlockIdsInEditMode(updatedBlockIdsInEditMode);
 
@@ -480,7 +480,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        if (blockIdsInEditMode.length > 0 && (mode === cprud.READ || mode === cprud.PREVIEW)) {
+        if(blockIdsInEditMode.length > 0 && (mode === cprud.READ || mode === cprud.PREVIEW)){
 
             setBlockIdsInEditMode([]);
 
