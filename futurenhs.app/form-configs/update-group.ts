@@ -58,7 +58,8 @@ export const updateGroupForm: FormConfig = {
                         label: 'Strap line (optional)',
                         hint: 'Add a strapline to encapsulate your group, include keywords for search',
                     },
-                    component: 'textArea',
+                    component: 'input',
+                    inputType: 'text',
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
@@ -72,7 +73,7 @@ export const updateGroupForm: FormConfig = {
                     name: 'File',
                     text: {
                         label: 'Logo (optional)',
-                        hint: 'Please upload your logo or an icon. If not, we will use the existing image.',
+                        hint: 'Please upload your logo or an icon. If not, we will use the existing image. The selected file must be a JPG or PNG and must be smaller than 5MB.',
                     },
                     component: 'imageUpload',
                     relatedFields: {
