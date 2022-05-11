@@ -99,5 +99,5 @@ Scenario: FNHS94 - Remove member from a group
     | Last name | User |
     | Email | autoUser@test.co.uk |
     And the 'Remove from group' button is displayed
-    Then I confirm this on the open '' dialog
+    Then I confirm this on the open 'Remove member' dialog
     And the 'Group Members' table exists
