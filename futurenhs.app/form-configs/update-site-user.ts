@@ -10,6 +10,7 @@ export const updateSiteMemberForm: FormConfig = {
                     name: 'image',
                     text: {
                         label: 'Image',
+                        hint: 'The selected file must be a JPG or PNG and must be smaller than 5MB.'
                     },
                     component: 'imageUpload',
                     relatedFields: {
