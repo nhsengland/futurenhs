@@ -25,7 +25,7 @@ namespace FutureNHS.Api.Services
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> CreateContentAsync(Guid? userId, Guid groupId, GeneralWebPageCreateRequest createRequest, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> CreatePageAsync(Guid userId, Guid groupId, CreatePageRequest createRequest, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == groupId) throw new ArgumentOutOfRangeException(nameof(groupId));
@@ -36,10 +36,10 @@ namespace FutureNHS.Api.Services
             // Else, Its a new group site. Therefore, we create a new db entry and update the content CMS.
             if (!string.IsNullOrEmpty(createRequest.ParentId))
             {
-                return await _contentCommand.CreateContentAsync(createRequest, cancellationToken);
+                return await _contentCommand.CreatePageAsync(createRequest, cancellationToken);
             }
 
-            var response = await _contentCommand.CreateContentAsync(createRequest, cancellationToken);
+            var response = await _contentCommand.CreatePageAsync(createRequest, cancellationToken);
 
             await _groupCommand.CreateGroupSiteAsync(new GroupSiteDto()
             {
@@ -53,21 +53,27 @@ namespace FutureNHS.Api.Services
                 cancellationToken);
 
             return response;
-
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> UpdateContentAsync(Guid? userId, Guid contentId, PageContentModel pageContent, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> UpdatePageAsync(Guid userId, Guid contentId, PageModel pageContent, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == contentId) throw new ArgumentOutOfRangeException(nameof(contentId));
 
-            return await _contentCommand.UpdateContentAsync(contentId, pageContent, cancellationToken);
-
+            return await _contentCommand.UpdatePageAsync(contentId, pageContent, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> DeleteContentAsync(Guid? userId, Guid contentId, int? contentLevel, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> CreateBlockAsync(Guid userId, CreateBlockRequest createRequest, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            return await _contentCommand.CreateBlockAsync(createRequest, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task<ApiResponse<string>> DeleteContentAsync(Guid userId, Guid contentId, int? contentLevel, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == contentId) throw new ArgumentOutOfRangeException(nameof(contentId));
@@ -87,6 +93,30 @@ namespace FutureNHS.Api.Services
             if (Guid.Empty == contentId) throw new ArgumentOutOfRangeException(nameof(contentId));
 
             return await _contentCommand.PublishContentAsync(contentId, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task<ApiResponse<string>> DiscardDraftContentAsync(Guid contentId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == contentId) throw new ArgumentOutOfRangeException(nameof(contentId));
+
+            return await _contentCommand.DiscardDraftContentAsync(contentId, cancellationToken);
+        }
+
+        public async Task<ApiResponse<string>> UpdateUserEditingContentAsync(Guid userId, Guid pageId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (Guid.Empty == pageId) throw new ArgumentOutOfRangeException(nameof(pageId));
+
+            return await _contentCommand.UpdateUserEditingContentAsync(userId, pageId, cancellationToken);
+        }
+
+        public async Task<ApiResponse<string>> CheckPageEditStatusAsync(Guid userId, Guid pageId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (Guid.Empty == pageId) throw new ArgumentOutOfRangeException(nameof(pageId));
+
+            return await _contentCommand.CheckPageEditStatusAsync(userId, pageId, cancellationToken);
         }
     }
 }

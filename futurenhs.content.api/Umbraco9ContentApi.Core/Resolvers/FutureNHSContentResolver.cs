@@ -37,7 +37,7 @@ namespace UmbracoContentApi.Core.Resolvers
             {
                 if (content == null)
                 {
-                    throw new ArgumentNullException(nameof(content));
+                    return new ContentModel();
                 }
 
                 var contentType = _contentTypeService.Get(content.ContentType.Alias);
@@ -47,7 +47,6 @@ namespace UmbracoContentApi.Core.Resolvers
                 if (groupProperties == null)
                 {
                     throw new ArgumentNullException(nameof(groupProperties));
-
                 }
 
                 var contentModel = new ContentModel
@@ -89,6 +88,7 @@ namespace UmbracoContentApi.Core.Resolvers
 
                         if (prop == null)
                         {
+                            dict.Add(property.Alias, null);
                             continue;
                         }
 
@@ -118,13 +118,22 @@ namespace UmbracoContentApi.Core.Resolvers
             }
         }
 
-        public ContentModel ResolveContent(IContent content, Dictionary<string, object>? options = null)
+        public ContentModel ResolveContent(IContent content, string propertyGroupAlias, Dictionary<string, object>? options = null)
         {
             try
             {
                 if (content == null)
                 {
-                    throw new ArgumentNullException(nameof(content));
+                    return new ContentModel();
+                }
+
+                var contentType = _contentTypeService.Get(content.ContentType.Alias);
+                var group = contentType.PropertyGroups.FirstOrDefault(x => x.Alias == propertyGroupAlias);
+                var groupProperties = group?.PropertyTypes.Select(x => x.Alias);
+
+                if (groupProperties == null)
+                {
+                    throw new ArgumentNullException(nameof(groupProperties));
                 }
 
                 var contentModel = new ContentModel
@@ -140,7 +149,7 @@ namespace UmbracoContentApi.Core.Resolvers
 
                 var dict = new Dictionary<string, object>();
 
-                foreach (var property in content.Properties)
+                foreach (var property in content.Properties.Where(x => groupProperties.Contains(x.Alias)))
                 {
                     var converter =
                         _converters.FirstOrDefault(x => x.EditorAlias.Equals(property.PropertyType.PropertyEditorAlias));
@@ -150,15 +159,13 @@ namespace UmbracoContentApi.Core.Resolvers
 
                         if (prop == null)
                         {
+                            dict.Add(property.Alias, null);
                             continue;
                         }
 
                         prop = converter.Convert(prop, options?.ToDictionary(x => x.Key, x => x.Value));
 
-                        if (prop != null)
-                        {
-                            dict.Add(property.Alias, prop);
-                        }
+                        dict.Add(property.Alias, prop);
                     }
                     else
                     {

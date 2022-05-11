@@ -5,6 +5,7 @@
     using Umbraco.Cms.Web.Common.Controllers;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
     using Umbraco9ContentApi.Core.Models.Content;
+    using Umbraco9ContentApi.Core.Models.Requests;
     using Umbraco9ContentApi.Core.Models.Response;
 
     /// <summary>
@@ -23,6 +24,26 @@
         }
 
         /// <summary>
+        /// Creates the block asynchronous.
+        /// </summary>
+        /// <param name="pageId">The page identifier.</param>
+        /// <param name="createRequest">The create request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> CreateBlockAsync(CreateBlockRequest createRequest, CancellationToken cancellationToken)
+        {
+            var result = await _futureNhsBlockHandler.CreateBlockAsync(createRequest, cancellationToken);
+
+            if (result.Succeeded)
+            {
+                return Ok(result);
+            }
+
+            return Problem(result.Message);
+        }
+
+        /// <summary>
         /// Gets the block asynchronous.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
@@ -32,7 +53,7 @@
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
         public async Task<ActionResult> GetBlockAsync(Guid blockId, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsContentHandler.GetContentPublishedAsync(blockId, cancellationToken);
+            var result = await _futureNhsContentHandler.GetPublishedContentAsync(blockId, cancellationToken);
 
             if (result is null)
             {
@@ -129,25 +150,6 @@
 
             return Ok(result);
 
-        }
-
-        /// <summary>
-        /// Deletes the specified block.
-        /// </summary>
-        /// <param name="blockId">The block identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        [HttpDelete("{blockId:guid}")]
-        public async Task<ActionResult> DeleteBlockAsync(Guid blockId, CancellationToken cancellationToken)
-        {
-            var result = await _futureNhsContentHandler.DeleteContentAsync(blockId, cancellationToken);
-
-            if (result.Succeeded)
-            {
-                return Ok(result);
-            }
-
-            return Problem(result.Message);
         }
     }
 }

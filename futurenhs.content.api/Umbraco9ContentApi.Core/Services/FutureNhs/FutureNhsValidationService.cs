@@ -14,7 +14,9 @@
             _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
         }
 
-        public void ValidatePageContentModel(PageContentModel pageContentModel)
+
+
+        public void ValidatePageContentModel(PageModel pageContentModel)
         {
             foreach (var block in pageContentModel.Blocks)
             {
@@ -33,8 +35,30 @@
                     foreach (var value in blockValues)
                     {
                         if (!expectedValues.Contains(value))
-                            throw new ArgumentOutOfRangeException($"Block fields do not match the expected fields for contentType {contentType.Name}.");
+                            throw new ArgumentOutOfRangeException($"Fields do not match the expected fields for contentType {contentType.Name}.");
                     }
+                }
+            }
+        }
+
+        public void ValidateContentModel(Models.Content.ContentModel contentModel)
+        {
+            var contentType = _contentTypeService.Get(contentModel.Item?.ContentType);
+
+            if (contentType is null)
+            {
+                throw new ArgumentOutOfRangeException($"{contentModel.Item?.ContentType} isn't a valid content type.");
+            }
+
+            var expectedValues = contentType.PropertyTypes.Select(x => x.Alias).ToList();
+            var blockValues = contentModel.Content?.Select(x => x.Key.ToString()).ToList();
+
+            if (blockValues is not null)
+            {
+                foreach (var value in blockValues)
+                {
+                    if (!expectedValues.Contains(value))
+                        throw new ArgumentOutOfRangeException($"Fields do not match the expected fields for contentType {contentType.Name}.");
                 }
             }
         }

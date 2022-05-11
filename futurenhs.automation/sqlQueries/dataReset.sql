@@ -129,4 +129,4 @@ BEGIN TRANSACTION
     -- Re-enable constraints for all tables:
     EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';	
 
-ROLLBACK TRANSACTION
+rollback TRANSACTION

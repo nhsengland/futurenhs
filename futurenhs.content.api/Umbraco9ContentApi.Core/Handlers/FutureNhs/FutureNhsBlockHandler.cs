@@ -3,7 +3,9 @@
     using Interface;
     using Microsoft.Extensions.Configuration;
     using Services.FutureNhs.Interface;
+    using Umbraco.Cms.Core.Services;
     using Umbraco9ContentApi.Core.Models.Content;
+    using Umbraco9ContentApi.Core.Models.Requests;
     using Umbraco9ContentApi.Core.Models.Response;
 
     /// <summary>
@@ -15,13 +17,17 @@
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
         private readonly IFutureNhsBlockService _futureNhsBlockService;
+        private readonly IFutureNhsValidationService _futureNhsValidationService;
+        private readonly IContentTypeService _contentTypeService;
         private List<string> errorList = new List<string>();
 
-        public FutureNhsBlockHandler(IFutureNhsContentService futureNhsContentService, IFutureNhsBlockService futureNhsBlockService, IConfiguration config)
+        public FutureNhsBlockHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsBlockService futureNhsBlockService, IFutureNhsValidationService futureNhsValidationService, IContentTypeService contentTypeService)
         {
+            _config = config;
             _futureNhsContentService = futureNhsContentService;
             _futureNhsBlockService = futureNhsBlockService;
-            _config = config;
+            _futureNhsValidationService = futureNhsValidationService;
+            _contentTypeService = contentTypeService;
         }
 
         /// <inheritdoc />
@@ -29,7 +35,7 @@
         {
             ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
             var ContentModels = new List<ContentModel>();
-            var blocksFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Blocks");
+            var blocksFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:PlaceholderBlocks");
             var publishedBlocks = await _futureNhsContentService.GetPublishedContentChildrenAsync(blocksFolderGuid, cancellationToken);
 
             if (publishedBlocks is not null && publishedBlocks.Any())
@@ -96,6 +102,27 @@
             }
 
             errorList.Add("Could not retrieve block labels.");
+            return response.Failure(errorList, "Failed.");
+        }
+
+        /// <inheritdoc />
+        public async Task<ApiResponse<string>> CreateBlockAsync(CreateBlockRequest createRequest, CancellationToken cancellationToken)
+        {
+            ApiResponse<string> response = new ApiResponse<string>();
+            bool result;
+
+            var BlocksDataSourceFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:BlocksDataSource");
+            var createdBlock = await _futureNhsBlockService.CreateBlockAsync(createRequest, BlocksDataSourceFolderGuid, cancellationToken);
+
+            // assign block to parent content (page or block)
+            result = await _futureNhsContentService.AssignBlockToContent(createRequest.parentId, createdBlock.Key, cancellationToken);
+
+            if (result)
+            {
+                return response.Success(createdBlock.Key.ToString(), "Success.");
+            }
+
+            errorList.Add("Error occured.");
             return response.Failure(errorList, "Failed.");
         }
     }
