@@ -54,7 +54,7 @@ export const CheckBox: (props: Props) => JSX.Element = ({
         <div className={generatedClasses.wrapper}>
             {hint && (
                 <RichText
-                    id={generatedIds.hintId}
+                    id={generatedIds.hint}
                     className={generatedClasses.hint}
                     bodyHtml={hint}
                     wrapperElementType="span"

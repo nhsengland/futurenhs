@@ -15,7 +15,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     meta: { touched, error, submitError },
     text,
     shouldRenderAsRte,
-    rteToolBarOptions = 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap', 
+    rteToolBarOptions = 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
     shouldRenderRemainingCharacterCount,
     validators,
     minHeight = 200,
@@ -60,6 +60,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
         hint: `${id}-hint`,
         errorLabel: `${id}-error`,
         remainingCharacters: `${id}-remaining-characters`,
+        label: `${id}-label`
     }
 
     const generatedClasses: any = {
@@ -96,12 +97,12 @@ export const TextArea: (props: Props) => JSX.Element = ({
 
     return (
         <div className={generatedClasses.wrapper}>
-            <label htmlFor={id} className={generatedClasses.label}>
+            <label htmlFor={id} className={generatedClasses.label} id={generatedIds.label}>
                 {label}
             </label>
             {hint && (
                 <RichText
-                    id={generatedIds.hintId}
+                    id={generatedIds.hint}
                     className={generatedClasses.hint}
                     bodyHtml={hint}
                     wrapperElementType="span"
@@ -112,11 +113,13 @@ export const TextArea: (props: Props) => JSX.Element = ({
                     {error || submitError || initialError}
                 </span>
             )}
-            <div
-                className={generatedClasses.inputWrapper}
-                style={{ minHeight: editorRef.current ? 'auto' : elementMinHeight }}
-            >
-                {shouldLoadRte ? (
+            {shouldLoadRte ? (
+                <div
+                    className={generatedClasses.inputWrapper}
+                    style={{ minHeight: editorRef.current ? 'auto' : elementMinHeight }}
+                    aria-describedby={generatedIds.label}
+                    tabIndex={0}
+                >
                     <Editor
                         tinymceScriptSrc="/js/tinymce/tinymce.min.js"
                         textareaName={input.name}
@@ -138,7 +141,12 @@ export const TextArea: (props: Props) => JSX.Element = ({
                                 'Rich Text Area. To navigate to the formatting toolbar press OPTION-F10 if you are an Apple user or ALT-F10 for all other users. Make sure your screen reader is in Focus or Auto Forms Mode.',
                         }}
                     />
-                ) : (
+                </div>
+            ) : (
+                <div
+                    className={generatedClasses.inputWrapper}
+                    style={{ minHeight: editorRef.current ? 'auto' : elementMinHeight }}
+                >
                     <textarea
                         {...input}
                         {...ariaInputProps}
@@ -147,8 +155,8 @@ export const TextArea: (props: Props) => JSX.Element = ({
                         className={generatedClasses.input}
                         style={{ minHeight: elementMinHeight }}
                     />
-                )}
-            </div>
+                </div>
+            )}
             {shouldRenderRemainingCharacterCount && maxLength && (
                 <RemainingCharacterCount
                     id={generatedIds.remainingCharacters}
