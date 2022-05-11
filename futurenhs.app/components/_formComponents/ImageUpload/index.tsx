@@ -89,7 +89,7 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
             </label>
             {hint && (
                 <RichText
-                    id={generatedIds.hintId}
+                    id={generatedIds.hint}
                     className={generatedClasses.hint}
                     bodyHtml={hint}
                     wrapperElementType="span"
