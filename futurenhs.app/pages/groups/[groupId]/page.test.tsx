@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as nextRouter from 'next/router'
-import { render } from '@testing-library/react'
+import { render } from '@jestMocks/index'
 
 import GroupHomeTemplate, { getServerSideProps } from './index.page'
 import { Props } from '@components/_pageTemplates/GroupHomeTemplate/interfaces'

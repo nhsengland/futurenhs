@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup } from '@jestMocks/index'
 
 import { PaginationStatus } from './index'
 import { Props } from './interfaces'
