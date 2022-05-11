@@ -1,7 +1,9 @@
-import { useState } from 'react'
 import classNames from 'classnames'
+import FlipMove from 'react-flip-move';
 
+import { simpleClone, deleteArrayItem, moveArrayItem } from '@helpers/util/data'
 import { formTypes } from '@constants/forms'
+import { cmsBlocks } from '@constants/blocks';
 import { useTheme } from '@hooks/useTheme'
 import { useFormConfig } from '@hooks/useForm'
 import { useCsrf } from '@hooks/useCsrf'
@@ -12,58 +14,130 @@ import { Form } from '@components/Form'
 import { SVGIcon } from '@components/SVGIcon'
 import { Theme } from '@appTypes/theme'
 import { FormConfig } from '@appTypes/form'
+import { CmsContentBlock } from '@appTypes/contentBlock';
 
 import { Props } from './interfaces'
 
 export const KeyLinksBlock: (props: Props) => JSX.Element = ({
-    id,
     block,
     headingLevel,
     themeId,
     isEditable,
+    createAction,
     changeAction,
     initialErrors,
+    maxLinks = 10,
     className,
 }) => {
 
-    const [childBlocks, setChildBlocks] = useState(block.content.links);
-    const { title, links } = block?.content ?? {};
-    
-    const hasLinks: boolean = block?.content?.links?.length > 0;
+    const blockId: string = block?.item?.id;
+    const { title, blocks } = block?.content ?? {};
+
+    const hasLinks: boolean = block?.content?.blocks?.length > 0;
+    const hasMaxLinks: boolean = block?.content?.blocks?.length === maxLinks;
 
     const { background, content: contentTheme }: Theme = useTheme(themeId);
     const csrfToken: string = useCsrf();
     const formConfig: FormConfig = useFormConfig(formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER, {
-        [`title-${id}`]: title
+        [`title-${blockId}`]: title
     }, initialErrors);
 
     const generatedClasses: any = {
         wrapper: classNames(className),
         heading: classNames('nhsuk-heading-m', 'u-mb-3'),
-        list: classNames('u-list-none u-p-0 u-w-full'),
-        item: classNames('u-mb-0'),
-        link: classNames('u-block c-button c-button--themeable u-w-full u-drop-shadow u-mb-3', `u-bg-theme-${background}`, `u-text-theme-${contentTheme}`)
+        list: classNames('u-list-none u-p-0 u-w-full')
     };
 
     const handleAddChildBlock = (): void => {
 
-        const updatedChildBlocks: Array<{
-            url: string;
-            linkText: string;
-        }> = [...childBlocks];
+        if(!hasMaxLinks){
 
-        updatedChildBlocks.push({
-            url: null,
-            linkText: null
-        });
+            createAction?.(cmsBlocks.KEY_LINK, blockId).then((createdBlockId: string) => {
 
-        setChildBlocks(updatedChildBlocks)
+                const updatedBlock: CmsContentBlock = simpleClone(block);
+                const newBlock: CmsContentBlock = {
+                    item: {
+                        id: createdBlockId,
+                        contentType: cmsBlocks.KEY_LINK
+                    },
+                    content: {
+                        linkText: '',
+                        url: ''
+                    }
+                }
+    
+                updatedBlock.content.blocks.push(newBlock);
+    
+                changeAction?.({ block: updatedBlock, errors: null })
+
+                setTimeout(() => {
+
+                    document.getElementById(createdBlockId)?.focus()
+        
+                }, 50)
+    
+            });
+
+        }
 
     }
 
-    const handleChange = (formState: Record<any, any>): void => {
+    /**
+     * Handle moving a child block
+     */
+    const handleMoveChildBlock = (blockId: string, offSet: number): void => {
 
-        changeAction?.({ instanceId: id, formState })
+        const updatedBlock: CmsContentBlock = simpleClone(block);
+        const childBlocks: Array<CmsContentBlock> = updatedBlock.content.blocks ?? [];
+
+        const index: number = childBlocks.findIndex((childBlock) => childBlock.item?.id === blockId);
+        const targetIndex: number = index + offSet;
+        const updatedChildBlocks: Array<CmsContentBlock> = moveArrayItem(childBlocks, index, targetIndex);
+        
+        updatedBlock.content.blocks = updatedChildBlocks;
+        
+        changeAction?.({ block: updatedBlock, errors: null })
+
+        setTimeout(() => {
+
+            document.getElementById(blockId)?.focus()
+
+        }, 0)
+
+    };
+
+    const handleChange = (formState: Record<string, any>, childBlockId?: string): void => {
+
+        const { values, errors, visited } = formState;
+
+        const updatedBlock: CmsContentBlock = simpleClone(block);
+        const blockIdToUse: string = childBlockId ?? blockId;
+        const content: Record<string, any> = childBlockId ? updatedBlock.content.blocks.find((block) => block.item.id === childBlockId)?.content ?? {} : updatedBlock.content;
+
+        /**
+         * Handle value updates
+         */
+        if (content) {
+
+            for (const key in content) {
+
+                const fieldName: string = `${key}-${blockIdToUse}`
+                const value: any = values[fieldName];
+
+                /**
+                 * If a field has been interacted with
+                 */
+                if (visited[fieldName] && content[key] !== value) {
+
+                    content[key] = value ?? null;
+
+                }
+
+            };
+
+        }
+
+        changeAction?.({ block: updatedBlock, errors })
 
     }
 
@@ -74,55 +148,104 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
             <LayoutColumnContainer>
                 <LayoutColumn desktop={9}>
                     <Form
-                        key={id}
+                        key={blockId}
                         csrfToken={csrfToken}
-                        instanceId={id}
+                        instanceId={blockId}
                         formConfig={formConfig}
                         shouldRenderSubmitButton={false}
                         changeAction={handleChange} />
                 </LayoutColumn>
                 <LayoutColumn>
                     <ul className={generatedClasses.list}>
-                        {links?.map((link, index) => {
+                        <FlipMove
+                            typeName={null}
+                            enterAnimation="fade"
+                            leaveAnimation="fade"
+                            duration={100}>
+                        {block.content.blocks?.map((childBlock, index) => {
 
-                            const { content } = link;
+                            const { item, content } = childBlock;
+
+                            const childBlockId: string = item.id;
 
                             const formConfig: FormConfig = useFormConfig(formTypes.CONTENT_BLOCK_QUICK_LINK, {
-                                title: content?.linkText,
-                                link: content?.url
-                            });
+                                [`linkText-${childBlockId}`]: content?.linkText,
+                                [`url-${childBlockId}`]: content?.url
+                            }, initialErrors);
 
                             const shouldRenderMovePrevious: boolean = index > 0;
-                            const shouldRenderMoveNext: boolean = index < links.length - 1;
+                            const shouldRenderMoveNext: boolean = index < block.content.blocks.length - 1;
+                            const handleChildChange = (formState: Record<any, any>): void => handleChange(formState, childBlockId);
+                            const handleChildDelete = (event: any): void => {
+
+                                event.preventDefault();
+
+                                const updatedBlock: CmsContentBlock = simpleClone(block);
+                                const childBlocks: Array<CmsContentBlock> = updatedBlock.content.blocks ?? [];
+                                const childBlockIndex: number = childBlocks.findIndex((childBlock) => childBlock.item.id === childBlockId);
+
+                                if (childBlockIndex > -1) {
+
+                                    updatedBlock.content.blocks = deleteArrayItem(childBlocks, childBlockIndex);
+                                    changeAction?.({ block: updatedBlock, errors: {} });
+
+                                }
+
+                            }
+
+                            const handleChildMovePrevious = (event: any): void => { 
+
+                                event.preventDefault();
+
+                                handleMoveChildBlock(childBlockId, -1);
+
+                            }
+
+                            const handleChildMoveNext = (event: any): void => {
+
+                                event.preventDefault();
+
+                                handleMoveChildBlock(childBlockId, +1);
+
+                            }
+
+                            const generatedClasses: any = {
+                                itemWrapper: classNames('u-mb-0', 'focus:u-outline-none'),
+                                orderingWrapper: classNames('u-flex u-flex-col u-justify-center u-w-4 u-mr-5', {
+                                    ['u-justify-center']: !shouldRenderMovePrevious || !shouldRenderMoveNext,
+                                    ['u-justify-between']: shouldRenderMovePrevious && shouldRenderMoveNext
+                                }),
+                                orderingButton: classNames('o-link-button u-w-4 u-h-3')
+                            };
 
                             return (
 
-                                <li key={index} className={generatedClasses.item}>
+                                <li key={index + childBlockId} id={childBlockId} tabIndex={-1} className={generatedClasses.itemWrapper}>
                                     <LayoutColumnContainer key={index} className="u-items-end">
                                         <LayoutColumn desktop={10}>
                                             <Form
-                                                key={id}
+                                                key={childBlockId}
                                                 csrfToken={csrfToken}
-                                                instanceId={id}
+                                                instanceId={childBlockId}
                                                 formConfig={formConfig}
                                                 shouldRenderSubmitButton={false}
-                                                changeAction={handleChange}
-                                                bodyClassName="u-flex u-items-end" />
+                                                changeAction={handleChildChange}
+                                                bodyClassName="tablet:u-flex tablet:u-items-end" />
                                         </LayoutColumn>
                                         <LayoutColumn desktop={2} className="u-flex u-mb-6 u-h-10 u-fill-theme-8">
-                                            <div className="u-flex u-flex-col u-w-4 u-mr-5">
+                                            <div className={generatedClasses.orderingWrapper}>
                                                 {shouldRenderMovePrevious &&
-                                                    <button type="button" className="o-link-button u-mb-2" aria-label="Move link up">
-                                                        <SVGIcon name="icon-chevron-up" className="u-w-4 u-h-4" />
+                                                    <button type="button" className={generatedClasses.orderingButton} aria-label="Move link up" onClick={handleChildMovePrevious}>
+                                                        <SVGIcon name="icon-chevron-up" />
                                                     </button>
                                                 }
                                                 {shouldRenderMoveNext &&
-                                                    <button type="button" className="o-link-button" aria-label="Move link down">
-                                                        <SVGIcon name="icon-chevron-down" className="u-w-4 u-h-4" />
+                                                    <button type="button" className={generatedClasses.orderingButton} aria-label="Move link down" onClick={handleChildMoveNext}>
+                                                        <SVGIcon name="icon-chevron-down" />
                                                     </button>
                                                 }
                                             </div>
-                                            <button type="button" className="o-link-button u-text-size-standard">
+                                            <button type="button" className="o-link-button u-text-size-standard" onClick={handleChildDelete}>
                                                 <SVGIcon name="icon-delete" className="u-w-5 u-h-5 u-mr-2 u-align-middle" />
                                                 <span className="u-align-middle">Delete link</span>
                                             </button>
@@ -134,10 +257,11 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
 
 
                         })}
+                        </FlipMove>
                     </ul>
                 </LayoutColumn>
                 <LayoutColumn>
-                    <button onClick={handleAddChildBlock} className="c-button c-button--secondary">Add link</button>
+                    <button disabled={hasMaxLinks} onClick={handleAddChildBlock} className="c-button c-button--secondary">Add link</button>
                 </LayoutColumn>
             </LayoutColumnContainer>
 
@@ -146,18 +270,35 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
     }
 
     return (
-        <div id={id} className={generatedClasses.wrapper}>
+        <div id={blockId} className={generatedClasses.wrapper}>
             <Heading headingLevel={headingLevel} className={generatedClasses.heading}>{title}</Heading>
             {hasLinks &&
                 <LayoutColumnContainer>
                     <ul className={generatedClasses.list}>
-                        {links?.map(({ content }, index) => content ? (
-                            <li key={index} className={generatedClasses.item}>
-                                <LayoutColumn tablet={6} desktop={4}>
-                                    <a href={content.url} className={generatedClasses.link}>{content.linkText}</a>
-                                </LayoutColumn>
-                            </li>
-                        ) : null)}
+                        {blocks?.map(({ content }, index) => {
+
+                            if(content){
+
+                                const generatedClasses: any = {
+                                    itemWrapper: classNames('u-mb-0'),
+                                    link: classNames('u-block c-button c-button--themeable u-w-full u-drop-shadow u-mb-3', `u-bg-theme-${background}`, `u-text-theme-${contentTheme}`),
+                                };
+
+                                return (
+
+                                    <li key={index} className={generatedClasses.itemWrapper}>
+                                        <LayoutColumn tablet={6} desktop={4}>
+                                            <a href={content.url} className={generatedClasses.link} rel="noreferrer">{content.linkText}</a>
+                                        </LayoutColumn>
+                                    </li>
+    
+                                )
+
+                            }
+
+                            return null
+
+                        })}
                     </ul>
                 </LayoutColumnContainer>
             }

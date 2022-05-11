@@ -22,16 +22,16 @@
         }
 
         /// <summary>
-        /// Gets the template asynchronous.
+        /// Gets the template.
         /// </summary>
         /// <param name="templateId">The template identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{templateId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> GetTemplateAsync(Guid templateId, CancellationToken cancellationToken)
+        public ActionResult GetTemplate(Guid templateId, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsTemplateHandler.GetTemplateAsync(templateId, cancellationToken);
+            var result = _futureNhsTemplateHandler.GetTemplate(templateId, cancellationToken);
 
             if (result is null)
             {
@@ -42,15 +42,15 @@
         }
 
         /// <summary>
-        /// Gets all templates asynchronous.
+        /// Gets all templates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
-        public async Task<ActionResult> GetAllTemplatesAsync(CancellationToken cancellationToken)
+        public ActionResult GetAllTemplates(CancellationToken cancellationToken)
         {
-            var result = await _futureNhsTemplateHandler.GetAllTemplatesAsync(cancellationToken);
+            var result = _futureNhsTemplateHandler.GetAllTemplates(cancellationToken);
 
             if (result.Succeeded && !result.Data.Any())
             {
@@ -66,15 +66,15 @@
         }
 
         /// <summary>
-        /// Deletes the template asynchronous.
+        /// Deletes the template.
         /// </summary>
         /// <param name="templateId">The template identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpDelete("{templateId:guid}")]
-        public async Task<ActionResult> DeleteTemplateAsync(Guid templateId, CancellationToken cancellationToken)
+        public ActionResult DeleteTemplate(Guid templateId, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsContentHandler.DeleteContentAsync(templateId, cancellationToken);
+            var result = _futureNhsContentHandler.DeleteContent(templateId, cancellationToken);
 
             if (result.Succeeded)
             {

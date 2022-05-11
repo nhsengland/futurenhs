@@ -8,9 +8,11 @@ export interface Props {
     headingLevel: number;
     themeId?: string;
     initialErrors?: FormErrors;
+    maxLinks?: number;
+    createAction: any;
     changeAction: (config: {
-        instanceId: string;
-        formState: Record<any, any>;
+        block: CmsContentBlock;
+        errors: FormErrors;
     }) => void
     className?: string
 }

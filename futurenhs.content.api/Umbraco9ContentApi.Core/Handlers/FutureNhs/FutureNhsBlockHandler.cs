@@ -3,7 +3,6 @@
     using Interface;
     using Microsoft.Extensions.Configuration;
     using Services.FutureNhs.Interface;
-    using Umbraco.Cms.Core.Services;
     using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Requests;
     using Umbraco9ContentApi.Core.Models.Response;
@@ -17,113 +16,82 @@
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
         private readonly IFutureNhsBlockService _futureNhsBlockService;
-        private readonly IFutureNhsValidationService _futureNhsValidationService;
-        private readonly IContentTypeService _contentTypeService;
-        private List<string> errorList = new List<string>();
 
-        public FutureNhsBlockHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsBlockService futureNhsBlockService, IFutureNhsValidationService futureNhsValidationService, IContentTypeService contentTypeService)
+        public FutureNhsBlockHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsBlockService futureNhsBlockService)
         {
             _config = config;
             _futureNhsContentService = futureNhsContentService;
             _futureNhsBlockService = futureNhsBlockService;
-            _futureNhsValidationService = futureNhsValidationService;
-            _contentTypeService = contentTypeService;
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync(CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<ContentModel>> GetAllBlocks(CancellationToken cancellationToken)
         {
-            ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
-            var ContentModels = new List<ContentModel>();
             var blocksFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:PlaceholderBlocks");
-            var publishedBlocks = await _futureNhsContentService.GetPublishedContentChildrenAsync(blocksFolderGuid, cancellationToken);
 
-            if (publishedBlocks is not null && publishedBlocks.Any())
+            if (blocksFolderGuid == Guid.Empty)
             {
-                foreach (var block in publishedBlocks)
+                throw new NullReferenceException($"Placeholder blocks guid cannot be null.");
+            };
+
+            var placeholderBlocksFolder = _futureNhsContentService.GetPublishedContent(blocksFolderGuid, cancellationToken);
+
+            var contentModelList = new List<ContentModel>();
+
+            if (placeholderBlocksFolder.Children is not null && placeholderBlocksFolder.Children.Any())
+            {
+                foreach (var block in placeholderBlocksFolder.Children)
                 {
-                    ContentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(block, "content", cancellationToken));
+                    contentModelList.Add(_futureNhsContentService.ResolvePublishedContent(block, "content", cancellationToken));
                 }
             }
 
-            return response.Success(ContentModels, "Success.");
+            return new ApiResponse<IEnumerable<ContentModel>>().Success(contentModelList, "Success.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId, CancellationToken cancellationToken)
+        public ApiResponse<ContentModel> GetBlock(Guid blockId, CancellationToken cancellationToken)
         {
             ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
-            var block = await _futureNhsContentService.GetPublishedContentAsync(blockId, cancellationToken);
-            var result = await _futureNhsContentService.ResolvePublishedContentAsync(block, "content", cancellationToken);
-
-            if (result is not null)
-            {
-                return response.Success(result, "Success.");
-            }
-
-            errorList.Add("Could not retrieve block.");
-            return response.Failure(errorList, "Failed.");
+            var block = _futureNhsContentService.GetPublishedContent(blockId, cancellationToken);
+            return new ApiResponse<ContentModel>().Success(_futureNhsContentService.ResolvePublishedContent(block, "content", cancellationToken), "Retrieved block successfully.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<string?>>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<string?>> GetBlockPlaceholderValues(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken)
         {
-            ApiResponse<IEnumerable<string?>> response = new ApiResponse<IEnumerable<string?>>();
-            var blockPlaceholderValues = await _futureNhsBlockService.GetBlockPlaceholderValuesAsync(blockId, propertyGroupAlias, cancellationToken);
-            return response.Success(blockPlaceholderValues, "Success.");
+            var blockPlaceholderValues = _futureNhsBlockService.GetBlockPlaceholderValues(blockId, propertyGroupAlias, cancellationToken);
+            return new ApiResponse<IEnumerable<string?>>().Success(blockPlaceholderValues, "Success.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<string>>> GetBlockContentAsync(Guid blockId, CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<string>> GetBlockContent(Guid blockId, CancellationToken cancellationToken)
         {
-            ApiResponse<IEnumerable<string>> response = new ApiResponse<IEnumerable<string>>();
-            var block = await _futureNhsContentService.GetPublishedContentAsync(blockId, cancellationToken);
-            var result = await _futureNhsContentService.ResolvePublishedContentAsync(block, "content", cancellationToken);
-
-            if (result is not null)
-            {
-                return response.Success(result.Content.Keys, "Success.");
-            }
-
-            errorList.Add("Could not retrieve block content.");
-            return response.Failure(errorList, "Failed.");
+            var block = _futureNhsContentService.GetPublishedContent(blockId, cancellationToken);
+            return new ApiResponse<IEnumerable<string>>().Success(_futureNhsContentService.ResolvePublishedContent(block, "content", cancellationToken).Content.Keys, "Retrieved block content successfully.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<string>>> GetBlockLabelsAsync(Guid blockId, CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<string>> GetBlockLabels(Guid blockId, CancellationToken cancellationToken)
         {
-            ApiResponse<IEnumerable<string>> response = new ApiResponse<IEnumerable<string>>();
-            var block = await _futureNhsContentService.GetPublishedContentAsync(blockId, cancellationToken);
-            var result = await _futureNhsContentService.ResolvePublishedContentAsync(block, "labels", cancellationToken);
-
-            if (result is not null)
-            {
-                return response.Success(result.Content.Keys, "Success.");
-            }
-
-            errorList.Add("Could not retrieve block labels.");
-            return response.Failure(errorList, "Failed.");
+            var block = _futureNhsContentService.GetPublishedContent(blockId, cancellationToken);
+            return new ApiResponse<IEnumerable<string>>().Success(_futureNhsContentService.ResolvePublishedContent(block, "labels", cancellationToken).Content.Keys, "Retrieved block labels successfully.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> CreateBlockAsync(CreateBlockRequest createRequest, CancellationToken cancellationToken)
+        public ApiResponse<string> CreateBlock(CreateBlockRequest createRequest, CancellationToken cancellationToken)
         {
-            ApiResponse<string> response = new ApiResponse<string>();
-            bool result;
+            var parentContent = _futureNhsContentService.GetDraftContent(createRequest.parentId, cancellationToken);
+            var createdBlock = _futureNhsBlockService.CreateBlock(createRequest, cancellationToken);
 
-            var BlocksDataSourceFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:BlocksDataSource");
-            var createdBlock = await _futureNhsBlockService.CreateBlockAsync(createRequest, BlocksDataSourceFolderGuid, cancellationToken);
+            // Assign block to parent content (page or block).
+            parentContent = _futureNhsContentService.AssignBlockToContent(parentContent, createdBlock.Key, cancellationToken);
 
-            // assign block to parent content (page or block)
-            result = await _futureNhsContentService.AssignBlockToContent(createRequest.parentId, createdBlock.Key, cancellationToken);
+            // Save parent content.
+            _futureNhsContentService.SaveContent(parentContent, cancellationToken);
 
-            if (result)
-            {
-                return response.Success(createdBlock.Key.ToString(), "Success.");
-            }
-
-            errorList.Add("Error occured.");
-            return response.Failure(errorList, "Failed.");
+            return new ApiResponse<string>().Success(createdBlock.Key.ToString(), "Block successfully created.");
         }
     }
 }
+

@@ -45,11 +45,11 @@
         {
             // Arrange
             var contentList = GetTestTemplates_Found();
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplatesAsync(cancellationToken)).ReturnsAsync(contentList);
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplates(cancellationToken)).Returns(contentList);
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllTemplatesAsync(cancellationToken);
+            var result = controller.GetAllTemplates(cancellationToken);
             var itemResult = result as OkObjectResult;
             var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModel>>;
 
@@ -70,11 +70,11 @@
         public async Task GetAllTemplates_NotFound()
         {
             // Arrange
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplatesAsync(cancellationToken)).ReturnsAsync(GetTestTemplates_NotFound());
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetAllTemplates(cancellationToken)).Returns(GetTestTemplates_NotFound());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllTemplatesAsync(cancellationToken);
+            var result = controller.GetAllTemplates(cancellationToken);
             var itemResult = result as NotFoundObjectResult;
 
 
@@ -97,10 +97,10 @@
             // Arrange
             var controller = GetController();
             var contentId = new Guid("4C8F8C9D-DF83-4815-BF63-1DE803903326");
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplateAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(GetTemplate_Found(contentId));
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplate(It.IsAny<Guid>(), cancellationToken)).Returns(GetTemplate_Found(contentId));
 
             // Act
-            var result = await controller.GetTemplateAsync(contentId, cancellationToken);
+            var result = controller.GetTemplate(contentId, cancellationToken);
             var itemResult = result as OkObjectResult;
             var payloadResult = itemResult.Value as ApiResponse<ContentModel>;
 
@@ -121,12 +121,12 @@
         public async Task GetTemplate_Failure()
         {
             // Arrange
-            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplateAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(() => null);
+            _mockFutureNhsTemplateHandler.Setup(x => x.GetTemplate(It.IsAny<Guid>(), cancellationToken)).Returns(() => null);
             var controller = GetController();
             var contentId = new Guid("8E87CC7B-26BD-4543-906D-53652F5B6F02");
 
             // Act
-            var result = await controller.GetTemplateAsync(contentId, cancellationToken);
+            var result = controller.GetTemplate(contentId, cancellationToken);
             var itemResult = result as NotFoundResult;
 
             // Assert

@@ -2,7 +2,7 @@
 {
     public class ContentModel
     {
-        public ContentModelItem Item { get; set; }
-        public Dictionary<string, object> Content { get; set; }
+        public virtual ContentModelItem Item { get; set; }
+        public virtual Dictionary<string, object> Content { get; set; }
     }
 }

@@ -9,11 +9,11 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
     public interface IFutureNhsSiteMapHandler
     {
         /// <summary>
-        /// Gets the sitemap group items asynchronous.
+        /// Gets the sitemap group items.
         /// </summary>
         /// <param name="pageId">The page identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<SitemapGroupItemModel>>> GetSitemapGroupItemsAsync(Guid pageId, CancellationToken cancellationToken);
+        ApiResponse<IEnumerable<SitemapGroupItemModel>> GetSitemapGroupItems(Guid pageId, CancellationToken cancellationToken);
     }
 }

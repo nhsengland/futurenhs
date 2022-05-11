@@ -9,120 +9,103 @@
     public interface IFutureNhsContentService
     {
         /// <summary>
-        /// Gets the published content children asynchronous.
+        /// Gets the published content.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
+
         /// <returns></returns>
-        Task<IEnumerable<IPublishedContent>?> GetPublishedContentChildrenAsync(Guid id, CancellationToken cancellationToken);
+        IPublishedContent GetPublishedContent(Guid id, CancellationToken cancellationToken);
         /// <summary>
-        /// Gets the published content asynchronous.
+        /// Gets the content.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="contentId">The identifier.</param>
+
         /// <returns></returns>
-        Task<IPublishedContent> GetPublishedContentAsync(Guid id, CancellationToken cancellationToken);
+        IContent GetDraftContent(Guid contentId, CancellationToken cancellationToken);
         /// <summary>
-        /// Gets the content asynchronous.
+        /// Resolves the published content.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<IContent> GetDraftContentAsync(Guid id, CancellationToken cancellationToken);
-        /// <summary>
-        /// Resolves the published content asynchronous.
-        /// </summary>
-        /// <param name="content">The content.</param>
+        /// <param name="publishedContent">The content.</param>
         /// <param name="propertyGroupAlias">The property group alias.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ContentModel> ResolvePublishedContentAsync(IPublishedContent content, string propertyGroupAlias, CancellationToken cancellationToken);
+        ContentModel ResolvePublishedContent(IPublishedContent publishedContent, string propertyGroupAlias, CancellationToken cancellationToken);
         /// <summary>
-        /// Resolves the draft content asynchronous.
+        /// Resolves the draft content.
         /// </summary>
-        /// <param name="content">The content.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="draftContent">The content.</param>
         /// <returns></returns>
-        Task<ContentModel> ResolveDraftContentAsync(IContent content, CancellationToken cancellationToken);
+        ContentModel ResolveDraftContent(IContent draftContent, CancellationToken cancellationToken);
         /// <summary>
-        /// Creates the content asynchronous.
+        /// Creates the content.
         /// </summary>
         /// <param name="Name">The name.</param>
         /// <param name="parentId">The parent identifier.</param>
         /// <param name="documentTypeAlias">The document type alias.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<IContent> CreateContentAsync(string Name, Guid parentId, string documentTypeAlias, CancellationToken cancellationToken);
+        IContent CreateContent(string Name, Guid parentId, string documentTypeAlias, CancellationToken cancellationToken);
         /// <summary>
-        /// Deletes the asynchronous.
+        /// Deletes the.
+        /// </summary>
+        /// <param name="contentId">The identifier.</param>
+        /// <returns></returns>
+        void DeleteContent(Guid contentId, CancellationToken cancellationToken);
+        /// <summary>
+        /// Publishes the.
+        /// </summary>
+        /// <param name="content">The identifier.</param>
+        /// <returns></returns>
+        void PublishContent(IContent content, CancellationToken cancellationToken);
+        /// <summary>
+        /// Gets the template blocks.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<bool> DeleteContentAsync(Guid id, CancellationToken cancellationToken);
+        List<ContentModel> GetTemplateBlocks(Guid id, CancellationToken cancellationToken);
         /// <summary>
-        /// Deletes the content of the associated.
+        /// Sets the content property value.
         /// </summary>
-        /// <param name="blockId">The block identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="content">The content to update.</param>
+        /// <param name="propertAlias">The propert alias.</param>
+        /// <param name="value">The value.</param>
         /// <returns></returns>
-        Task<bool> DeleteAssociatedContent(Guid blockId, CancellationToken cancellationToken);
+        IContent SetContentPropertyValue(IContent content, string propertAlias, object value, CancellationToken cancellationToken);
         /// <summary>
-        /// Publishes the asynchronous.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<bool> PublishContentAsync(Guid id, CancellationToken cancellationToken);
-        /// <summary>
-        /// Updates the user editing content asynchronous.
-        /// </summary>
-        /// <param name="pageId">The page identifier.</param>
-        /// <param name="userId">The user identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<bool> UpdateUserEditingContentAsync(Guid userId, Guid pageId, CancellationToken cancellationToken);
-        /// <summary>
-        /// Gets the template blocks asynchronous.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<IEnumerable<ContentModel>> GetTemplateBlocksAsync(Guid id, CancellationToken cancellationToken);
-        /// <summary>
-        /// Saves the content asynchronous.
+        /// Saves the content.
         /// </summary>
         /// <param name="content">The content.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<bool> SaveContentAsync(IContent content, CancellationToken cancellationToken);
+        void SaveContent(IContent content, CancellationToken cancellationToken);
         /// <summary>
-        /// Saves the and publish content asynchronous.
+        /// Saves the and publish content.
         /// </summary>
         /// <param name="content">The content.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<bool> SaveAndPublishContentAsync(IContent content, CancellationToken cancellationToken);
+        void SaveAndPublishContent(IContent content, CancellationToken cancellationToken);
         /// <summary>
         /// Assigns the block to the content.
         /// </summary>
-        /// <param name="parentId">The parent identifier.</param>
+        /// <param name="parentContent">The parent content.</param>
         /// <param name="blockId">The block identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<bool> AssignBlockToContent(Guid parentId, Guid blockId, CancellationToken cancellationToken);
+        IContent AssignBlockToContent(IContent parentContent, Guid blockId, CancellationToken cancellationToken);
         /// <summary>
         /// Gets the associated blocks.
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        List<IPublishedContent> GetAssociatedPublishedBlocks(IPublishedContent content);
+        List<IPublishedContent> GetAssociatedPublishedContentBlocks(IPublishedContent content, CancellationToken cancellationToken);
         /// <summary>
-        /// Rollbacks the draft content asynchronous.
+        /// Rollbacks the draft content.
         /// </summary>
         /// <param name="draftContent">Content of the draft.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        bool RollbackDraftContentAsync(IContent draftContent, CancellationToken cancellationToken);
+        void RollbackDraftContent(IContent draftContent, CancellationToken cancellationToken);
+        /// <summary>
+        /// Compares the content model lists.
+        /// </summary>
+        /// <param name="contentModelList">The content model list.</param>
+        /// <param name="comparedcontentModelList">The comparedcontent model list.</param>
+        /// <returns></returns>
+        IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModel> contentModelList, IEnumerable<ContentModel> comparedcontentModelList);
     }
 }

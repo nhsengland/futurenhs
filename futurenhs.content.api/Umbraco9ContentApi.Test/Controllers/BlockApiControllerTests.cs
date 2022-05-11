@@ -40,14 +40,14 @@
         /// Gets all blocks success.
         /// </summary>
         [Test]
-        public async Task GetAllBlocks_SuccessAsync()
+        public async Task GetAllBlocks_Success()
         {
             // Arrange
-            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync(cancellationToken)).ReturnsAsync(GetBlocks_Found);
+            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocks(cancellationToken)).Returns(GetBlocks_Found);
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllBlocksAsync(cancellationToken);
+            var result = controller.GetAllBlocks(cancellationToken);
             var itemResult = result as OkObjectResult;
             var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModel>>;
 
@@ -65,14 +65,14 @@
         /// Gets all blocks not found.
         /// </summary>
         [Test]
-        public async Task GetAllBlocks_NotFoundAsync()
+        public async Task GetAllBlocks_NotFound()
         {
             // Arrange
-            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocksAsync(cancellationToken)).ReturnsAsync(GetTestBlocks_NotFound());
+            _mockFutureNhsBlockHandler.Setup(x => x.GetAllBlocks(cancellationToken)).Returns(GetTestBlocks_NotFound());
             var controller = GetController();
 
             // Act
-            var result = await controller.GetAllBlocksAsync(cancellationToken);
+            var result = controller.GetAllBlocks(cancellationToken);
             var itemResult = result as NotFoundObjectResult;
 
             // Assert

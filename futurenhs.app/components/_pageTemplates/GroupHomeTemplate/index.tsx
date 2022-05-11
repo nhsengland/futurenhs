@@ -11,6 +11,7 @@ import { LayoutColumn } from '@components/LayoutColumn';
 import { getCmsPageContent } from '@services/getCmsPageContent';
 import { putCmsPageContent } from '@services/putCmsPageContent';
 import { postCmsPageContent } from '@services/postCmsPageContent';
+import { postCmsBlock } from '@services/postCmsBlock';
 import { FormErrors } from '@appTypes/form';
 import { CmsContentBlock } from '@appTypes/contentBlock';
 
@@ -38,7 +39,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
     const handleClearErrors = () => {
 
-        if(Object.keys(errors).length > 0){
+        if (Object.keys(errors).length > 0) {
 
             setErrors({});
 
@@ -46,11 +47,44 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
     }
 
+    const handleCreateBlock = (blockContentTypeId: string, parentBlockId?: string): Promise<string> => {
+
+        return new Promise((resolve, reject) => {
+
+            postCmsBlock({
+                user,
+                blockContentTypeId,
+                parentBlockId,
+                pageId: contentPageId,
+            })
+            .then((newBlock) => {
+
+                resolve(newBlock.data);
+                
+            })
+            .catch((error) => {
+
+                const errors: FormErrors =
+                    getServiceErrorDataValidationErrors(error) ||
+                    getGenericFormError(error)
+
+                setErrors(errors)
+                window.scrollTo(0, 0)
+                errorSummaryRef?.current?.focus?.()
+
+                reject()
+
+            })
+
+        })
+
+    }
+
     const handleSaveBlocks = (blocks: Array<CmsContentBlock>, localErrors: FormErrors): Promise<FormErrors> => {
 
         return new Promise((resolve) => {
 
-            if(Object.keys(localErrors).length){
+            if (Object.keys(localErrors).length) {
 
                 setErrors(localErrors)
                 window.scrollTo(0, 0)
@@ -60,61 +94,61 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
             } else {
 
-                putCmsPageContent({ 
-                    user, 
-                    pageId: contentPageId, 
-                    pageBlocks: blocks 
+                putCmsPageContent({
+                    user,
+                    pageId: contentPageId,
+                    pageBlocks: blocks
                 })
-                .then(() => {
-    
-                    postCmsPageContent({ 
-                        user, 
-                        pageId: contentPageId
-                    })
                     .then(() => {
-    
-                        getCmsPageContent({
+
+                        postCmsPageContent({
                             user,
                             pageId: contentPageId
                         })
-                        .then((response) => {
-        
-                            const updatedBlocks: Array<CmsContentBlock> = response.data;
-        
-                            setBlocks(updatedBlocks);
-                            setErrors({});
-                            resolve({})
-        
-                        });
-    
-                    });
-            
-                })
-                .catch((error) => {
-    
-                    const errors: FormErrors =
-                    getServiceErrorDataValidationErrors(error) ||
-                    getGenericFormError(error)
+                            .then(() => {
 
-                    setErrors(errors)
-                    window.scrollTo(0, 0)
-                    errorSummaryRef?.current?.focus?.()
-    
-                    resolve(errors)
-    
-                })
+                                getCmsPageContent({
+                                    user,
+                                    pageId: contentPageId
+                                })
+                                    .then((response) => {
+
+                                        const updatedBlocks: Array<CmsContentBlock> = response.data;
+
+                                        setBlocks(updatedBlocks);
+                                        setErrors({});
+                                        resolve({})
+
+                                    });
+
+                            });
+
+                    })
+                    .catch((error) => {
+
+                        const errors: FormErrors =
+                            getServiceErrorDataValidationErrors(error) ||
+                            getGenericFormError(error)
+
+                        setErrors(errors)
+                        window.scrollTo(0, 0)
+                        errorSummaryRef?.current?.focus?.()
+
+                        resolve(errors)
+
+                    })
 
             }
 
-        }) 
+        })
 
     };
 
     return (
         <LayoutColumn tablet={12} className={generatedClasses.wrapper}>
-            <ErrorSummary 
+            <ErrorSummary
                 ref={errorSummaryRef}
-                errors={errors} 
+                errors={errors}
                 className="u-mb-6" />
             {isGroupAdmin &&
                 <NoScript headingLevel={2} text={{
@@ -145,6 +179,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 stateChangeAction={handleClearErrors}
                 blocksChangeAction={handleClearErrors}
                 saveBlocksAction={handleSaveBlocks}
+                createBlockAction={handleCreateBlock}
                 themeId={themeId} />
         </LayoutColumn>
     )

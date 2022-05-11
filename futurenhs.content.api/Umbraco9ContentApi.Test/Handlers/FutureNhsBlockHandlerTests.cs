@@ -10,49 +10,51 @@ namespace Umbraco9ContentApi.Test.Handler
     using System.Threading;
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models.PublishedContent;
-    using Umbraco.Cms.Core.Services;
     using Umbraco9ContentApi.Core.Models.Content;
     using Assert = Xunit.Assert;
+    using ContentModel = Core.Models.Content.ContentModel;
 
     [TestFixture]
     public class FutureNhsBlockHandlerTests
     {
-        private Mock<IFutureNhsContentService> _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
-        private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService = new Mock<IFutureNhsBlockService>();
-        private Mock<IFutureNhsValidationService> _mockFutureNhsValidationService = new Mock<IFutureNhsValidationService>();
-        private Mock<IContentTypeService> _mockContentTypeService = new Mock<IContentTypeService>();
+        private Mock<IFutureNhsContentService> _mockFutureNhsContentService;
+        private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService;
         private IConfiguration _config;
         private CancellationToken cancellationToken;
 
         #region Get All Blocks Tests
 
+        [SetUp]
+        public void Setup()
+        {
+            _mockFutureNhsContentService = new Mock<IFutureNhsContentService>().SetupAllProperties();
+            _mockFutureNhsBlockService = new Mock<IFutureNhsBlockService>();
+        }
+
         /// <summary>
         /// Gets all blocks success asynchronous.
         /// </summary>
         [Test]
-        public async Task GetAllBlocks_Success()
+        public async Task GetAllBlocks__BlocksExist_Success()
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
             var mockContent = GetMockPublishedContentItem(true);
-            var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:Groups", Guid.NewGuid().ToString() } };
+            var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:PlaceholderBlocks", Guid.NewGuid().ToString() } };
             _config = new ConfigurationBuilder()
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentChildrenAsync(It.IsAny<Guid>(), cancellationToken))
-                .ReturnsAsync(new List<IPublishedContent>()
-                {
-                    mockContent.Object
-                });
+               .Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken))
+               .Returns(mockContent.Object);
 
-            _mockFutureNhsContentService.SetupSequence(x => x.ResolvePublishedContentAsync(It.IsAny<IPublishedContent>(), "content", cancellationToken).Result)
+            _mockFutureNhsContentService.SetupSequence(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), "content", cancellationToken))
                 .Returns(new ContentModel() { Item = new ContentModelItem() { Id = contentId } });
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
+            var contentResult = contentHandler.GetAllBlocks(cancellationToken);
 
             // Assert
             Assert.NotNull(contentResult);
@@ -63,23 +65,24 @@ namespace Umbraco9ContentApi.Test.Handler
         /// Gets all blocks success failure no items.
         /// </summary>
         [Test]
-        public async Task GetAllBlocks_SuccessFailure_NoItems()
+        public async Task GetAllBlocks_NoBlocks_Failure()
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var mockContent = GetMockPublishedContentItem(true);
-            var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:Groups", Guid.NewGuid().ToString() } };
+            var mockContent = new Mock<IPublishedContent>();
+            mockContent.Setup(x => x.Children).Returns(new List<IPublishedContent>());
+            var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:PlaceholderBlocks", Guid.NewGuid().ToString() } };
             _config = new ConfigurationBuilder()
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentChildrenAsync(It.IsAny<Guid>(), cancellationToken))
-                .ReturnsAsync(new List<IPublishedContent>());
+                .Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken))
+                .Returns(mockContent.Object);
 
             // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
+            var contentResult = contentHandler.GetAllBlocks(cancellationToken);
 
             // Assert
             Assert.NotNull(contentResult);
@@ -93,20 +96,14 @@ namespace Umbraco9ContentApi.Test.Handler
         public async Task GetAllBlocks_Failure_NoFolderGuid()
         {
             // Arrange
-            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var mockContent = GetMockPublishedContentItem(true);
             var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:Groups", string.Empty } };
             _config = new ConfigurationBuilder()
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
             var contentHandler = GetHandler(_config);
 
-            // Act
-            var contentResult = await contentHandler.GetAllBlocksAsync(cancellationToken);
-
-            // Assert
-            Assert.NotNull(contentResult);
-            Assert.Empty(contentResult.Data);
+            // Act/Assert
+            Assert.Throws<NullReferenceException>(() => contentHandler.GetAllBlocks(cancellationToken));
         }
 
         #endregion
@@ -120,11 +117,10 @@ namespace Umbraco9ContentApi.Test.Handler
         /// <returns></returns>
         private FutureNhsBlockHandler GetHandler(IConfiguration config)
         {
-            var handler = new FutureNhsBlockHandler(config,
+            var handler = new FutureNhsBlockHandler(
+                config,
                 _mockFutureNhsContentService.Object,
-                _mockFutureNhsBlockService.Object,
-                _mockFutureNhsValidationService.Object,
-                _mockContentTypeService.Object
+                _mockFutureNhsBlockService.Object
                 );
 
             return handler;
@@ -138,6 +134,7 @@ namespace Umbraco9ContentApi.Test.Handler
         {
             var mockContent = new Mock<IPublishedContent>();
             mockContent.Setup(x => x.IsPublished(It.IsAny<string>())).Returns(isPublished);
+            mockContent.Setup(x => x.Children).Returns(new List<IPublishedContent> { mockContent.Object });
             return mockContent;
         }
 

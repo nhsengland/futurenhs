@@ -113,7 +113,7 @@ namespace UmbracoContentApi.Core.Resolvers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An exceptional exception happened, see the inner exception for details");
+                _logger.LogError(e, "An exception occured when resolving content, see the inner exception for details");
                 throw;
             }
         }
@@ -180,7 +180,7 @@ namespace UmbracoContentApi.Core.Resolvers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An exceptional exception happened, see the inner exception for details");
+                _logger.LogError(e, "An exception occured when resolving content, see the inner exception for details");
                 throw;
             }
         }

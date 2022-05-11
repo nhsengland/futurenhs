@@ -7,7 +7,7 @@ export const contentBlockQuickLink: FormConfig = {
         {
             fields: [
                 {
-                    name: 'title',
+                    name: 'linkText',
                     inputType: 'text',
                     text: {
                         label: 'Link title',
@@ -22,7 +22,7 @@ export const contentBlockQuickLink: FormConfig = {
                     className: 'u-grow tablet:u-mr-3'
                 },
                 {
-                    name: 'link',
+                    name: 'url',
                     inputType: 'text',
                     text: {
                         label: 'Link',
