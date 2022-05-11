@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@jestMocks/index'
 
 import { AdminCreateGroupTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'

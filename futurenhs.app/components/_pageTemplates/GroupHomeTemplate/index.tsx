@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import classNames from 'classnames';
 
 import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getGenericFormError } from '@helpers/util/form';
-import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName';
 import { actions as actionConstants } from '@constants/actions';
+import { ErrorSummary } from '@components/ErrorSummary';
 import { ContentBlockManager } from '@components/ContentBlockManager';
 import { NoScript } from '@components/NoScript';
 import { LayoutColumn } from '@components/LayoutColumn';
@@ -18,8 +18,6 @@ import { FormErrors } from '@appTypes/form';
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     user,
-    csrfToken,
-    forms,
     actions,
     contentPageId,
     contentTemplate,
@@ -27,7 +25,10 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     themeId
 }) => {
 
+    const errorSummaryRef: any = useRef()
+
     const [blocks, setBlocks] = useState(contentBlocks);
+    const [errors, setErrors] = useState({});
 
     const isGroupAdmin: boolean = actions.includes(actionConstants.GROUPS_EDIT) || actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT);
 
@@ -35,62 +36,87 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         wrapper: classNames('c-page-body')
     };
 
-    const handleSaveBlocks = (blocks: Array<CmsContentBlock>): Promise<FormErrors> => {
+    const handleClearErrors = () => {
+
+        if(Object.keys(errors).length > 0){
+
+            setErrors({});
+
+        }
+
+    }
+
+    const handleSaveBlocks = (blocks: Array<CmsContentBlock>, localErrors: FormErrors): Promise<FormErrors> => {
 
         return new Promise((resolve) => {
 
-            putCmsPageContent({ 
-                user, 
-                pageId: contentPageId, 
-                pageBlocks: blocks 
-            })
-            .then(() => {
+            if(Object.keys(localErrors).length){
 
-                postCmsPageContent({ 
+                setErrors(localErrors)
+                window.scrollTo(0, 0)
+                errorSummaryRef?.current?.focus?.()
+
+                resolve(localErrors)
+
+            } else {
+
+                putCmsPageContent({ 
                     user, 
-                    pageId: contentPageId
+                    pageId: contentPageId, 
+                    pageBlocks: blocks 
                 })
                 .then(() => {
-
-                    getCmsPageContent({
-                        user,
+    
+                    postCmsPageContent({ 
+                        user, 
                         pageId: contentPageId
                     })
-                    .then((response) => {
+                    .then(() => {
     
-                        const updatedBlocks: Array<CmsContentBlock> = response.data;
-    
-                        setBlocks(updatedBlocks);
-                        resolve({})
+                        getCmsPageContent({
+                            user,
+                            pageId: contentPageId
+                        })
+                        .then((response) => {
+        
+                            const updatedBlocks: Array<CmsContentBlock> = response.data;
+        
+                            setBlocks(updatedBlocks);
+                            setErrors({});
+                            resolve({})
+        
+                        });
     
                     });
+            
+                })
+                .catch((error) => {
+    
+                    const errors: FormErrors =
+                    getServiceErrorDataValidationErrors(error) ||
+                    getGenericFormError(error)
 
-                });
-        
-            })
-            .catch((error) => {
+                    setErrors(errors)
+                    window.scrollTo(0, 0)
+                    errorSummaryRef?.current?.focus?.()
+    
+                    resolve(errors)
+    
+                })
 
-                const errors: FormErrors =
-                getServiceErrorDataValidationErrors(error) ||
-                getGenericFormError(error)
-
-                resolve(errors)
-
-            })
+            }
 
         }) 
 
     };
- 
-    useDynamicElementClassName({
-        elementSelector: 'main',
-        addClass: 'u-bg-theme-1',
-        removeClass: 'u-bg-theme-3'
-    });
 
     return (
 
         <LayoutColumn tablet={12} className={generatedClasses.wrapper}>
+            <ErrorSummary 
+                ref={errorSummaryRef}
+                errors={errors} 
+                className="u-mb-6" />
             {isGroupAdmin &&
                 <NoScript headingLevel={2} text={{
                     heading: 'Important',
@@ -98,8 +124,6 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 }} />
             }
             <ContentBlockManager
-                csrfToken={csrfToken}
-                forms={forms}
                 blocks={blocks}
                 blocksTemplate={contentTemplate}
                 text={{
@@ -118,6 +142,9 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                     cancelCreateButton: "Cancel"
                 }}
                 shouldRenderEditingHeader={isGroupAdmin}
+                discardUpdateAction={handleClearErrors}
+                stateChangeAction={handleClearErrors}
+                blocksChangeAction={handleClearErrors}
                 saveBlocksAction={handleSaveBlocks}
                 themeId={themeId} />
         </LayoutColumn>

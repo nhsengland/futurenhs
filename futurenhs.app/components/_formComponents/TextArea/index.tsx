@@ -21,6 +21,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     minHeight = 200,
     className,
 }) => {
+
     const editorRef = useRef(null)
     const textAreaRef = useRef(null)
 
@@ -119,7 +120,6 @@ export const TextArea: (props: Props) => JSX.Element = ({
                     <Editor
                         tinymceScriptSrc="/js/tinymce/tinymce.min.js"
                         textareaName={input.name}
-                        statusbar={false}
                         id={id}
                         value={input.value}
                         onInit={handleRteInit}

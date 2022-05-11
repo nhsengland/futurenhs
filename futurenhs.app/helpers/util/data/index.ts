@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 /**
  * Evaluates whether a property is defined and not null
  */
@@ -34,6 +36,30 @@ export const moveArrayItem = (array: Array<any>, fromIndex: number, toIndex: num
     return newArray;
 
 }
+
+/**
+ * Creates a unique Id suitable for use in HTML
+ */
+export const createHtmlSafeId = (): string => randomBytes(6).toString('hex');
+
+/**
+ * Clones a serialisable object/array
+ * NOT suitable for objects with non-serialisable data e.g. functions, Dates etc 
+ */
+export const simpleClone = (item) => JSON.parse(JSON.stringify(item));
+
+/**
+ * Returns whether an object has any own properties
+ */
+export const hasKeys = (object: Record<any, any>): boolean => {
+
+    if(object) {
+        return Object.keys(object).length > 0;
+    }
+
+    return false;
+
+};
 
 /**
  * Maps an object into a string

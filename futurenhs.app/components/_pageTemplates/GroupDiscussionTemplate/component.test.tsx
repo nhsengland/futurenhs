@@ -1,6 +1,6 @@
 import React from 'react'
 import * as nextRouter from 'next/router'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup } from '@jestMocks/index'
 import { actions as userActions } from '@constants/actions'
 import { routes } from '@jestMocks/generic-props'
 import formConfigs from '@formConfigs/index'

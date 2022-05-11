@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup } from '@jestMocks/index'
 import { SiteUserTemplate } from './index'
 import { Props } from './interfaces'
 import * as nextRouter from 'next/router'

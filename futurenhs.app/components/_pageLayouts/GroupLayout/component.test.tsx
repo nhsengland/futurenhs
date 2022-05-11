@@ -5,7 +5,7 @@ import { GroupLayout } from './index'
 import { routes } from '@jestMocks/generic-props'
 
 import { Props } from './interfaces'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@jestMocks/index'
 
 describe('Group Layout', () => {
     ;(nextRouter as any).useRouter = jest.fn()

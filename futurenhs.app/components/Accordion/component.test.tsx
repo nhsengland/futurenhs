@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { render, fireEvent, screen, createEvent } from '@testing-library/react'
+import { render, fireEvent, screen, createEvent } from '@jestMocks/index'
 
 import { Accordion } from './index'
 

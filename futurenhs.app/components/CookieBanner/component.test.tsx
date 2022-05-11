@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@jestMocks/index'
 import { CookieBanner } from './index'
 
 import { Props } from './interfaces'

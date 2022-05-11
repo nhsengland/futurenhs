@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as nextRouter from 'next/router'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@jestMocks/index'
 
 import AdminHomeTemplate, { getServerSideProps } from './index.page'
 import { routes } from '@jestMocks/generic-props'
@@ -8,7 +8,6 @@ import { layoutIds } from '@constants/routes'
 import { Props } from '@components/_pageTemplates/AdminHomeTemplate/interfaces'
 
 import { mswServer } from '../../jest-mocks/msw-server'
-import { handlers } from '../../jest-mocks/handlers'
 import { actions } from '@constants/actions'
 
 const props: Props = {

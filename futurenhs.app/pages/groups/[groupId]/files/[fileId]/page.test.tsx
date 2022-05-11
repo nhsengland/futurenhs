@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as nextRouter from 'next/router'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@jestMocks/index'
 
 import { routes } from '@jestMocks/generic-props'
 import GroupFilePreviewTemplate, { getServerSideProps } from './index.page'

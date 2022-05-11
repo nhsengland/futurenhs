@@ -1,6 +1,6 @@
 import React from 'react'
 import * as nextRouter from 'next/router'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup } from '@jestMocks/index'
 
 import { groupFolderForm } from '@formConfigs/group-folder'
 import { routes } from '@jestMocks/generic-props'

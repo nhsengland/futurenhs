@@ -4,8 +4,6 @@ import { cprud } from '@constants/cprud'
 import { FormErrors } from "@appTypes/form";
 
 export interface Props {
-    csrfToken: string;
-    forms: Record<string, FormConfig>;
     blocks: Array<CmsContentBlock>;
     blocksTemplate: Array<CmsContentBlock>;
     initialState?: cprud;
@@ -25,10 +23,11 @@ export interface Props {
         cancelCreateButton: string;
     };
     shouldRenderEditingHeader?: boolean;
+    discardUpdateAction?: () => void;
     blocksChangeAction?: (blocks: Array<CmsContentBlock>) => void
     stateChangeAction?: (currentState: cprud) => void
     createBlockAction?: (blockTypeId: string) => void
-    saveBlocksAction?: (blocks: Array<CmsContentBlock>) => Promise<FormErrors>
+    saveBlocksAction?: (blocks: Array<CmsContentBlock>, localErrors: FormErrors) => Promise<FormErrors>
     themeId: string;
     className?: string;
 }

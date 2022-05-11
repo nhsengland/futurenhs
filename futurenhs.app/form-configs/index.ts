@@ -11,6 +11,7 @@ import { updateSiteMemberForm } from './update-site-user';
 import { updateSiteUserRoleForm } from './update-site-user-role';
 import { contentBlockTextForm } from './content-block-text';
 import { contentBlockQuickLinksWrapper } from './content-block-quick-links-wrapper';
+import { contentBlockQuickLink } from './content-block-quick-link';
 import { formTypes } from '@constants/forms';
 
 export default {
@@ -26,5 +27,6 @@ export default {
     [formTypes.UPDATE_SITE_USER]: updateSiteMemberForm,
     [formTypes.UPDATE_SITE_USER_ROLE]: updateSiteUserRoleForm,
     [formTypes.CONTENT_BLOCK_TEXT]: contentBlockTextForm,
-    [formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER]: contentBlockQuickLinksWrapper
+    [formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER]: contentBlockQuickLinksWrapper,
+    [formTypes.CONTENT_BLOCK_QUICK_LINK]: contentBlockQuickLink
 }
