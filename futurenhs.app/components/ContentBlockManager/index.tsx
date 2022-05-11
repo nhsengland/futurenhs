@@ -1,17 +1,20 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import classNames from 'classnames'
 import deepEquals from 'fast-deep-equal';
 import FlipMove from 'react-flip-move';
 
 import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName';
 import { useTheme } from '@hooks/useTheme';
-import { moveArrayItem, deleteArrayItem, simpleClone, hasKeys, createHtmlSafeId } from '@helpers/util/data'
+import { moveArrayItem, deleteArrayItem, simpleClone, hasKeys } from '@helpers/util/data'
 import { cprud } from '@constants/cprud'
+import { cmsBlocks } from '@constants/blocks';
 import { SVGIcon } from '@components/SVGIcon'
 import { Dialog } from '@components/Dialog'
-import { ContentBlock } from '@components/ContentBlock'
+import { ContentBlockWrapper } from '@components/ContentBlockWrapper'
 import { CmsContentBlock } from '@appTypes/contentBlock';
 import { RichText } from '@components/RichText';
+import { TextContentBlock } from '@components/_contentBlockComponents/TextContentBlock';
+import { KeyLinksBlock } from '@components/_contentBlockComponents/KeyLinksBlock';
 
 import { Props } from './interfaces'
 import { FormErrors } from '@appTypes/form'
@@ -22,6 +25,7 @@ import { LayoutColumn } from '@components/LayoutColumn';
  * Generic CMS content block manager
  */
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
+    themeId,
     blocks: sourceBlocks,
     blocksTemplate,
     initialState = cprud.READ,
@@ -32,75 +36,23 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     discardUpdateAction,
     createBlockAction,
     saveBlocksAction,
-    themeId,
     className,
 }) => {
-
-    /**
-     * Blocks in data from the API include no unique IDs so we need to inject some locally
-     * to safely manage dynamic block sorting, adding or deleting
-     */
-    const handleToggleInstanceIds = (sourceBlocks: Array<CmsContentBlock>, shouldAdd: boolean): Array<CmsContentBlock> => {
-
-        if (!sourceBlocks?.length) {
-
-            return [];
-
-        }
-
-        const updatedBlocks: Array<CmsContentBlock> = simpleClone(sourceBlocks)
-
-        const iterator = (blocks: Array<CmsContentBlock>) => {
-
-            blocks.forEach((block) => {
-
-                if (block != null && block.constructor?.name === "Object") {
-
-                    if (shouldAdd) {
-
-                        block.instanceId = createHtmlSafeId();
-
-                    } else {
-
-                        delete block.instanceId;
-
-                    }
-
-                }
-
-                const childBlocks: Array<CmsContentBlock> = block.content?.links; // TODO request links is changed to blocks or children in Umbraco
-
-                if (childBlocks?.length) {
-
-                    iterator(childBlocks);
-
-                }
-
-            })
-
-        }
-
-        iterator(updatedBlocks);
-
-        return updatedBlocks;
-
-    }
 
     const localErrors: any = useRef({});
     const blockUpdateCache: any = useRef({});
     const blockUpdateCacheTimeOut: any = useRef(null);
-    const initialBlocks: any = useRef(handleToggleInstanceIds(sourceBlocks, true));
 
     const [mode, setMode] = useState(initialState);
-    const [referenceBlocks, setReferenceBlocks] = useState(initialBlocks.current);
-    const [blocks, setBlocks] = useState(initialBlocks.current);
+    const [referenceBlocks, setReferenceBlocks] = useState(sourceBlocks);
+    const [blocks, setBlocks] = useState(sourceBlocks);
     const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
     const [isDiscardChangesModalOpen, setIsDiscardChangesModalOpen] = useState(false);
     const [blockIdsInEditMode, setBlockIdsInEditMode] = useState([]);
 
     const hasTemplateBlocks: boolean = blocksTemplate?.length > 0;
     const hasBlocks: boolean = blocks?.length > 0;
-    const isEditable: boolean = mode !== cprud.READ && mode !== cprud.PREVIEW;
+    const hasBlockInEditMode: boolean = blockIdsInEditMode.length > 0;
 
     const { headerReadBody,
         headerPreviewBody,
@@ -142,33 +94,53 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Handle creating a new block instance from the page template and adding it to the active block list
      */
-    const handleCreateBlock = (instanceId: string): void => {
+    const handleCreateBlock = (blockContentTypeId: string, parentBlockId?: string): void => {
 
-        const updatedBlocks = [...blocks];
-        const block = simpleClone(blocksTemplate[instanceId]);
+        createBlockAction?.(blockContentTypeId, parentBlockId).then((createdBlockId: string) => {
 
-        block.instanceId = createHtmlSafeId();
-        updatedBlocks.push(block)
+            const updatedBlocks: Array<CmsContentBlock> = [...blocks];
+            const block: CmsContentBlock = simpleClone(blocksTemplate.find((block) => block.item.contentType === blockContentTypeId));
 
-        handleSetToUpdateMode();
-        setBlocks(updatedBlocks);
-        blocksChangeAction?.(updatedBlocks);
+            block.item.id = createdBlockId;
+            block.content.blocks = [];
+
+            updatedBlocks.push(block)
+
+            handleSetToUpdateMode();
+            setBlocks(updatedBlocks);
+            blocksChangeAction?.(updatedBlocks);
+
+        });
 
     }
 
     /**
      * Handle deleting a block instance from the active block list
      */
-    const handleDeleteBlock = (instanceId: string): void => {
+    const handleDeleteBlock = (blockId: string): void => {
 
-        const index: number = blocks.findIndex((block) => block.instanceId === instanceId);
+        const index: number = blocks.findIndex((block) => block.item.id === blockId);
+        const blockToDelete: CmsContentBlock = blocks[index];
+        const childBlocks: Array<CmsContentBlock> = blockToDelete?.content?.blocks ?? [];
         const updatedBlocks = deleteArrayItem(blocks, index);
 
-        if (localErrors.current[instanceId]) {
+        if (localErrors.current[blockId]) {
 
-            delete localErrors.current[instanceId];
+            delete localErrors.current[blockId];
 
         }
+
+        childBlocks.forEach((childBlock) => {
+
+            const childBlockId: string = childBlock.item.id;
+
+            if(localErrors.current[childBlockId]){
+
+                delete localErrors.current[childBlockId]
+
+            }
+
+        });
 
         setBlocks(updatedBlocks);
         blocksChangeAction?.(updatedBlocks);
@@ -178,113 +150,107 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Handle moving a block instance one index backwards in the active block list
      */
-    const handleMoveBlockPrevious = (instanceId: string): void => {
+    const handleMoveBlockPrevious = (blockId: string): void => {
 
-        handleMoveBlock(instanceId, -1);
+        handleMoveBlock(blockId, -1);
 
     }
 
     /**
      * Handle moving a block instance one index forwards in the active block list
      */
-    const handleMoveBlockNext = (instanceId: string): void => {
+    const handleMoveBlockNext = (blockId: string): void => {
 
-        handleMoveBlock(instanceId, 1);
+        handleMoveBlock(blockId, 1);
 
-    }
+    };
 
     /**
      * Handle moving a block instance in the active block list
      */
-    const handleMoveBlock = (instanceId: string, offSet: number): void => {
+    const handleMoveBlock = (blockId: string, offSet: number): void => {
 
-        const index: number = blocks.findIndex((block) => block.instanceId === instanceId);
+        const index: number = blocks.findIndex((block) => block.item.id === blockId);
         const targetIndex: number = index + offSet;
-        const updatedBlocks = moveArrayItem(blocks, index, targetIndex);
+        const updatedBlocks: Array<CmsContentBlock> = moveArrayItem(blocks, index, targetIndex);
 
-        setBlockIdsInEditMode([]);
+        setBlocks(updatedBlocks);
+
+        blocksChangeAction?.(updatedBlocks);
 
         setTimeout(() => {
 
-            setBlocks(updatedBlocks);
+            const targetSelector: string = updatedBlocks[targetIndex].item.id;
 
-            blocksChangeAction?.(updatedBlocks);
-
-            setTimeout(() => {
-
-                const targetSelector: string = updatedBlocks[targetIndex].instanceId;
-
-                document.getElementById(targetSelector)?.focus()
-
-            }, 0)
+            document.getElementById(targetSelector)?.focus()
 
         }, 0)
 
-    }
+    };
 
     /**
      * Handle setting an editable block instance to read mode
      */
-    const handleSetEditableBlockToReadMode = (instanceId: string): void => {
+    const handleSetEditableBlockToReadMode = (blockId: string): void => {
 
-        if (blockIdsInEditMode.includes(instanceId) && !localErrors.current[instanceId]) {
+        if (blockIdsInEditMode.includes(blockId) && !localErrors.current[blockId]) {
 
-            const index: number = blockIdsInEditMode.findIndex((item) => item === instanceId);
+            const index: number = blockIdsInEditMode.findIndex((id) => id === blockId);
             const updatedBlockIdsInEditMode: Array<string> = deleteArrayItem(blockIdsInEditMode, index);
 
             setBlockIdsInEditMode(updatedBlockIdsInEditMode);
 
         }
 
-    }
+    };
 
     /**
      * Handle setting an editable block instance to update mode
      */
-    const handleSetEditableBlockToUpdateMode = (instanceId: string): void => {
+    const handleSetEditableBlockToUpdateMode = (blockId: string): void => {
 
         const updatedBlockIdsInEditMode: Array<string> = [...blockIdsInEditMode];
 
-        if (!updatedBlockIdsInEditMode.includes(instanceId)) {
+        if (!updatedBlockIdsInEditMode.includes(blockId)) {
 
-            updatedBlockIdsInEditMode.push(instanceId);
+            updatedBlockIdsInEditMode.push(blockId);
             setBlockIdsInEditMode(updatedBlockIdsInEditMode);
 
         }
 
-    }
+    };
 
     /**
      * Handle setting the active mode to create
      */
-    const handleSetToCreateMode = (): void => {
+    const handleSetToCreateMode = useCallback((): void => {
         setMode(cprud.CREATE);
         stateChangeAction?.(cprud.CREATE)
-    }
+    }, []);
 
     /**
      * Handle setting the active mode to read
      */
-    const handleSetToReadMode = (): void => {
+    const handleSetToReadMode = useCallback((): void => {
         setMode(cprud.READ);
         stateChangeAction?.(cprud.READ)
-    }
+    }, []);
 
     /**
      * Handle setting the active mode to preview
      */
-    const handleSetToPreviewMode = (event): void => {
+    const handleSetToPreviewMode = useCallback((event): void => {
         setMode(cprud.PREVIEW);
         stateChangeAction?.(cprud.PREVIEW)
-    }
+    }, []);
 
     /**
      * Handle setting the active mode to update
      */
-    const handleSetToUpdateMode = (): void => {
+    const handleSetToUpdateMode = useCallback((): void => {
         setMode(cprud.UPDATE);
         stateChangeAction?.(cprud.UPDATE)
-    }
+    }, []);
 
     /**
      * Handle resetting updates to initial state
@@ -307,20 +273,18 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleUpdateBlockSubmit = async (): Promise<FormErrors> => {
 
-        const blocksToSave: Array<CmsContentBlock> = handleToggleInstanceIds(blocks, false);
-
         let serverErrors: FormErrors = {};
         let formattedLocalErrors: FormErrors = {};
 
         if (saveBlocksAction) {
 
-            Object.keys(localErrors.current).forEach((instanceId) => {
+            Object.keys(localErrors.current).forEach((blockId) => {
 
-                formattedLocalErrors = Object.assign({}, formattedLocalErrors, localErrors.current[instanceId]);
+                formattedLocalErrors = Object.assign({}, formattedLocalErrors, localErrors.current[blockId]);
 
             });
 
-            serverErrors = await saveBlocksAction(blocksToSave, formattedLocalErrors);
+            serverErrors = await saveBlocksAction(blocks, formattedLocalErrors);
 
         }
 
@@ -336,23 +300,25 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Handle updates from blocks in edit mode
      */
-    const handleUpdateBlock = ({ block, instanceId, errors }): void => {
+    const handleUpdateBlock = ({ block, errors }): void => {
 
-        if (!hasKeys(errors) && localErrors.current.hasOwnProperty(instanceId)) {
+        const blockId: string = block.item.id;
 
-            delete localErrors.current[instanceId]
+        if (errors && !hasKeys(errors) && localErrors.current.hasOwnProperty(blockId)) {
 
-        } else if (hasKeys(errors)) {
+            delete localErrors.current[blockId]
 
-            localErrors.current[instanceId] = errors;
+        } else if (errors && hasKeys(errors)) {
+
+            localErrors.current[blockId] = errors;
 
         }
 
-        blockUpdateCache.current[instanceId] = Object.assign({}, blockUpdateCache.current[instanceId], block);
+        blockUpdateCache.current[blockId] = Object.assign({}, blockUpdateCache.current[blockId], block);
 
         processBlockUpdateCache();
 
-    }
+    };
 
     /**
      * Process the update cache
@@ -368,11 +334,11 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                 const updatedBlocks: Array<CmsContentBlock> = simpleClone(blocks);
 
-                Object.keys(blockUpdateCache.current).forEach((instanceId) => {
+                Object.keys(blockUpdateCache.current).forEach((blockId) => {
 
-                    const targetBlockIndex: number = updatedBlocks.findIndex((block) => block.instanceId === instanceId);
+                    const targetBlockIndex: number = updatedBlocks.findIndex((block) => block.item?.id === blockId);
 
-                    updatedBlocks[targetBlockIndex] = blockUpdateCache.current[instanceId];
+                    updatedBlocks[targetBlockIndex] = blockUpdateCache.current[blockId];
 
                 })
 
@@ -389,20 +355,37 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Set non-active blocks to read mode if they have no errors
      */
-    const handleLeaveBlock = (event): void => {
+    const handleDocumentClick = (event): void => {
 
         if (mode === cprud.UPDATE && blockIdsInEditMode.length > 0) {
 
             const updatedBlockIdsInEditMode: Array<string> = [];
 
-            blockIdsInEditMode.forEach((instanceId: string) => {
+            blockIdsInEditMode.forEach((blockId: string) => {
 
-                const isEventInBlock: boolean = document.getElementById(instanceId)?.contains(event.target);
-                const blockHasErrors: boolean = localErrors.current.hasOwnProperty(instanceId);
+                const isEventInBlock: boolean = document.getElementById(blockId)?.contains(event.target);
+                const hasErrors: boolean = localErrors.current.hasOwnProperty(blockId);
 
-                if (isEventInBlock || blockHasErrors) {
+                if (isEventInBlock || hasErrors) {
 
-                    updatedBlockIdsInEditMode.push(instanceId);
+                    updatedBlockIdsInEditMode.push(blockId);
+
+                } else {
+
+                    for(let i = 0; i < blocks.length; i++){
+
+                        const block: CmsContentBlock = blocks[i];
+                        const blockId: string = block.item.id;
+                        const isEventInBlock: boolean = document.getElementById(blockId)?.contains(event.target);
+
+                        if(isEventInBlock){
+
+                            updatedBlockIdsInEditMode.push(blockId);
+                            break;
+
+                        }
+
+                    };
 
                 }
 
@@ -417,6 +400,51 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         }
 
     };
+
+    /**
+     * Render block content
+     */
+    const renderBlockContent = (block: CmsContentBlock): JSX.Element => {
+
+        const { item } = block;
+        const { id } = item;
+
+        const isInEditMode: boolean = blockIdsInEditMode.includes(id);
+        const initialErrors: FormErrors = localErrors.current[id];
+
+        if (item.contentType === cmsBlocks.TEXT) {
+
+            return (
+
+                <TextContentBlock
+                    isEditable={isInEditMode}
+                    headingLevel={3}
+                    block={block}
+                    initialErrors={initialErrors}
+                    changeAction={handleUpdateBlock} />
+
+            )
+
+        }
+
+        if (item.contentType === cmsBlocks.KEY_LINKS) {
+
+            return (
+
+                <KeyLinksBlock
+                    isEditable={isInEditMode}
+                    headingLevel={3}
+                    block={block}
+                    themeId={themeId}
+                    initialErrors={initialErrors}
+                    createAction={createBlockAction}
+                    changeAction={handleUpdateBlock} />
+
+            )
+
+        }
+
+    }
 
     /**
      * Set the class name on main depending on current mode - TODO this would be better in the parent component
@@ -453,10 +481,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        const updatedBlocks: Array<CmsContentBlock> = handleToggleInstanceIds(sourceBlocks, true);
-
-        setBlocks(updatedBlocks);
-        setReferenceBlocks(updatedBlocks);
+        setBlocks(sourceBlocks);
+        setReferenceBlocks(sourceBlocks);
 
     }, [sourceBlocks]);
 
@@ -465,12 +491,12 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        document.addEventListener('click', handleLeaveBlock, false);
-        document.addEventListener('focus', handleLeaveBlock, false);
+        document.addEventListener('click', handleDocumentClick, false);
+        document.addEventListener('focus', handleDocumentClick, false);
 
         return () => {
-            document.removeEventListener('click', handleLeaveBlock, false);
-            document.addEventListener('focus', handleLeaveBlock, false);
+            document.removeEventListener('click', handleDocumentClick, false);
+            document.addEventListener('focus', handleDocumentClick, false);
         }
 
     }, [mode, blockIdsInEditMode]);
@@ -571,23 +597,15 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                         <ul className="u-list-none u-p-0">
                             {blocksTemplate?.map((block, index) => {
 
-                                const { item } = block;
-
                                 return (
 
                                     <li key={index} className="u-mb-10">
-                                        <ContentBlock
+                                        <ContentBlockWrapper
                                             mode={mode}
-                                            instanceId={index.toString()}
-                                            typeId={item.contentType}
-                                            themeId={themeId}
                                             block={block}
-                                            isEditable={true}
-                                            text={{
-                                                name: item.name
-                                            }}
-                                            changeAction={handleUpdateBlock}
-                                            createAction={handleCreateBlock} />
+                                            createAction={handleCreateBlock}>
+                                                {renderBlockContent(block)}
+                                        </ContentBlockWrapper>
                                     </li>
 
 
@@ -608,50 +626,58 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
             {(mode === cprud.UPDATE || mode === cprud.READ || mode === cprud.PREVIEW) && (
                 <>
                     {hasBlocks &&
-                        <ul className="u-list-none u-p-0">
+                        <ul className="u-list-none u-p-0 u-relative">
                             <FlipMove
+                                typeName={null}
                                 disableAllAnimations={mode !== cprud.UPDATE}
                                 enterAnimation="fade"
                                 leaveAnimation="fade"
-                                duration={200}>
-                                {blocks?.map((block: CmsContentBlock, index: number) => {
+                                duration={100}>
+                                    {blocks?.map((block: CmsContentBlock, index: number) => {
 
-                                    const { instanceId, item } = block;
+                                        const { item } = block;
+                                        const { id } = item;
 
-                                    const shouldRenderMovePrevious: boolean = index > 0;
-                                    const shouldRenderMoveNext: boolean = index < blocks.length - 1;
-                                    const isInEditMode: boolean = blockIdsInEditMode.includes(instanceId);
-                                    const initialErrors: FormErrors = localErrors.current[instanceId] ?? {};
+                                        const key: string = index + id;
+                                        const shouldRenderMovePrevious: boolean = index > 0;
+                                        const shouldRenderMoveNext: boolean = index < blocks.length - 1;
+                                        const isInEditMode: boolean = blockIdsInEditMode.includes(id);
+                                        const isEditable: boolean = mode !== cprud.READ && mode !== cprud.PREVIEW;
+                                        const hasErrors: boolean = localErrors.current[id];
 
-                                    return (
+                                        return (
 
-                                        <li key={index + block.instanceId} className="u-mb-10">
-                                            <ContentBlock
-                                                mode={mode}
-                                                instanceId={instanceId}
-                                                typeId={item.contentType}
-                                                themeId={themeId}
-                                                block={block}
-                                                initialErrors={initialErrors}
-                                                isEditable={isEditable}
-                                                isInEditMode={isInEditMode}
-                                                shouldRenderMovePrevious={shouldRenderMovePrevious}
-                                                shouldRenderMoveNext={shouldRenderMoveNext}
-                                                movePreviousAction={handleMoveBlockPrevious}
-                                                moveNextAction={handleMoveBlockNext}
-                                                changeAction={handleUpdateBlock}
-                                                deleteAction={handleDeleteBlock}
-                                                enterReadModeAction={handleSetEditableBlockToReadMode}
-                                                enterUpdateModeAction={handleSetEditableBlockToUpdateMode}
-                                                text={{
-                                                    name: item.name
-                                                }} />
-                                        </li>
+                                            <li key={key} className="u-mb-10">
+                                                {isEditable 
+                                                
+                                                    ?   <ContentBlockWrapper
+                                                            key={key}
+                                                            mode={mode}
+                                                            block={block}
+                                                            isInEditMode={isInEditMode}
+                                                            shouldRenderMovePrevious={shouldRenderMovePrevious}
+                                                            shouldRenderMoveNext={shouldRenderMoveNext}
+                                                            shouldEnableMovePrevious={!hasBlockInEditMode}
+                                                            shouldEnableMoveNext={!hasBlockInEditMode}
+                                                            shouldEnableDelete={!hasBlockInEditMode || isInEditMode}
+                                                            shouldEnableEnterUpdate={!hasBlockInEditMode}
+                                                            shouldEnableEnterRead={isInEditMode && !hasErrors}
+                                                            movePreviousAction={handleMoveBlockPrevious}
+                                                            moveNextAction={handleMoveBlockNext}
+                                                            deleteAction={handleDeleteBlock}
+                                                            enterReadModeAction={handleSetEditableBlockToReadMode}
+                                                            enterUpdateModeAction={handleSetEditableBlockToUpdateMode}>
+                                                                {renderBlockContent(block)}
+                                                        </ContentBlockWrapper>
 
+                                                    :   renderBlockContent(block)
+                                                
+                                                } 
+                                            </li>
 
-                                    )
+                                        )
 
-                                })}
+                                    })}
                             </FlipMove>
                         </ul>
                     }
@@ -660,6 +686,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                             <div className={generatedClasses.blockBody}>
                                 <button
                                     onClick={handleSetToCreateMode}
+                                    disabled={hasBlockInEditMode}
                                     className="c-button c-button-outline u-drop-shadow"
                                 >
                                     <SVGIcon

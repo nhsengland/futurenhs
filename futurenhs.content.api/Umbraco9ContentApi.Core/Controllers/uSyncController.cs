@@ -1,7 +1,6 @@
 ﻿namespace Umbraco9ContentApi.Core.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using System.Threading.Tasks;
     using Umbraco.Cms.Web.Common.Controllers;
     using Umbraco9ContentApi.Core.Handlers.uSync.Interface;
 
@@ -26,13 +25,13 @@
         /// <remarks></remarks>
         /// <returns>True or false.</returns>
         [HttpPost("{isActive:bool}/import")]
-        public async Task<ActionResult> DoUSyncImportAsync(bool isActive)
+        public ActionResult DoUSyncImport(bool isActive)
         {
             bool result = false;
 
             if (isActive)
             {
-                result = _uSyncHandler.RunImportAsync().Result;
+                result = _uSyncHandler.RunImport();
             }
 
             // import end

@@ -41,23 +41,23 @@
         }
 
         /// <inheritdoc />
-        public async Task<bool> RunImportAsync()
+        public bool RunImport()
         {
             try
             {
-                uSyncImportResults = await _uSyncContentTypeService.ImportAsync();
+                uSyncImportResults = _uSyncContentTypeService.Import();
                 if (uSyncImportResults is not null) contentTypeCount = uSyncImportResults.Where(x => x.Success).Count();
 
-                uSyncImportResults = await _uSyncDataTypeService.ImportAsync();
+                uSyncImportResults = _uSyncDataTypeService.Import();
                 if (uSyncImportResults is not null) dataTypeCount = uSyncImportResults.Where(x => x.Success).Count();
 
-                uSyncImportResults = await _uSyncMediaTypeService.ImportAsync();
+                uSyncImportResults = _uSyncMediaTypeService.Import();
                 if (uSyncImportResults is not null) MediaTypeCount = uSyncImportResults.Where(x => x.Success).Count();
 
-                uSyncImportResults = await _uSyncContentService.ImportAsync();
+                uSyncImportResults = _uSyncContentService.Import();
                 if (uSyncImportResults is not null) contentCount = uSyncImportResults.Where(x => x.Success).Count();
 
-                uSyncImportResults = await _uSyncMediaService.ImportAsync();
+                uSyncImportResults = _uSyncMediaService.Import();
                 if (uSyncImportResults is not null) mediaCount = uSyncImportResults.Where(x => x.Success).Count();
             }
             catch (Exception e)

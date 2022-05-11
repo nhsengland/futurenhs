@@ -5,14 +5,6 @@ namespace FutureNHS.Api.Models.Content.Requests
     public class CreateBlockRequest
     {
         /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
-        [JsonProperty("name")]
-        public string Name { get; set; }
-        /// <summary>
         /// Gets or sets the type of the content.
         /// </summary>
         /// <value>

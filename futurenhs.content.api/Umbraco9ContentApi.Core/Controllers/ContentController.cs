@@ -21,16 +21,16 @@
         }
 
         /// <summary>
-        /// Gets the published content asynchronous.
+        /// Gets the published content.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{contentId:guid}/published")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<IActionResult> GetPublishedContentAsync(Guid contentId, CancellationToken cancellationToken)
+        public IActionResult GetPublishedContent(Guid contentId, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsContentHandler.GetPublishedContentAsync(contentId, cancellationToken);
+            var result = _futureNhsContentHandler.GetPublishedContent(contentId, cancellationToken);
 
             if (result.Succeeded == false)
             {
@@ -46,16 +46,16 @@
         }
 
         /// <summary>
-        /// Gets the content draft asynchronous.
+        /// Gets the content draft.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{contentId:guid}/draft")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
-        public async Task<ActionResult> GetDraftContentAsync(Guid contentId, CancellationToken cancellationToken)
+        public ActionResult GetDraftContent(Guid contentId, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsContentHandler.GetDraftContentAsync(contentId, cancellationToken);
+            var result = _futureNhsContentHandler.GetDraftContent(contentId, cancellationToken);
 
             if (result is null)
             {
@@ -71,15 +71,15 @@
         }
 
         /// <summary>
-        /// Publishes the content asynchronous.
+        /// Publishes the content.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpPost("{contentId:guid}/publish")]
-        public async Task<ActionResult> PublishContentAsync(Guid contentId, CancellationToken cancellationToken)
+        public ActionResult PublishContent(Guid contentId, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsContentHandler.PublishContentAsync(contentId, cancellationToken);
+            var result = _futureNhsContentHandler.PublishContentAndAssociatedContent(contentId, cancellationToken);
 
             if (result.Succeeded)
             {
@@ -90,15 +90,15 @@
         }
 
         /// <summary>
-        /// Deletes the content asynchronous.
+        /// Deletes the content.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpDelete("{contentId:guid}")]
-        public async Task<ActionResult> DeleteContentAsync(Guid contentId, CancellationToken cancellationToken)
+        public ActionResult DeleteContent(Guid contentId, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsContentHandler.DeleteContentAsync(contentId, cancellationToken);
+            var result = _futureNhsContentHandler.DeleteContent(contentId, cancellationToken);
 
             if (result.Succeeded)
             {
@@ -109,15 +109,15 @@
         }
 
         /// <summary>
-        /// Discards the draft content asynchronous.
+        /// Discards the draft content.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpDelete("{contentId:guid}/discard")]
-        public async Task<ActionResult> DiscardDraftContentAsync(Guid contentId, CancellationToken cancellationToken)
+        public ActionResult DiscardDraftContent(Guid contentId, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsContentHandler.DiscardDraftContentAsync(contentId, cancellationToken);
+            var result = _futureNhsContentHandler.DiscardDraftContent(contentId, cancellationToken);
 
             if (result.Succeeded)
             {

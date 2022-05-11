@@ -4,7 +4,6 @@
     using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
     using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
@@ -31,38 +30,29 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid id, CancellationToken cancellationToken)
+        public ApiResponse<ContentModel> GetTemplate(Guid id, CancellationToken cancellationToken)
         {
-            ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
-            var template = await _futureNhsContentService.GetPublishedContentAsync(id, cancellationToken);
-            var result = await _futureNhsContentService.ResolvePublishedContentAsync(template, "content", cancellationToken);
-
-            if (result is null)
-            {
-                errorList.Add("Could not retrieve template.");
-                return response.Failure(errorList, "Failed.");
-            }
-
-            return response.Success(result, "Success.");
+            var template = _futureNhsContentService.GetPublishedContent(id, cancellationToken);
+            return new ApiResponse<ContentModel>().Success(_futureNhsContentService.ResolvePublishedContent(template, "content", cancellationToken), "Template retrieved successfully.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllTemplatesAsync(CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<ContentModel>> GetAllTemplates(CancellationToken cancellationToken)
         {
             ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
             var contentModels = new List<ContentModel>();
             var templatesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Templates");
-            var publishedTemplates = await _futureNhsContentService.GetPublishedContentChildrenAsync(templatesFolderGuid, cancellationToken);
+            var publishedTemplates = _futureNhsContentService.GetPublishedContent(templatesFolderGuid, cancellationToken).Children;
 
             if (publishedTemplates is not null && publishedTemplates.Any())
             {
                 foreach (var templates in publishedTemplates)
                 {
-                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(templates, "content", cancellationToken));
+                    contentModels.Add(_futureNhsContentService.ResolvePublishedContent(templates, "content", cancellationToken));
                 }
             }
 
-            return response.Success(contentModels, "Success.");
+            return new ApiResponse<IEnumerable<ContentModel>>().Success(contentModels, "All templates retrieved successfully.");
         }
     }
 }

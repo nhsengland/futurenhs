@@ -6,6 +6,6 @@
         /// Runs the import.
         /// </summary>
         /// <returns></returns>
-        Task<bool> RunImportAsync();
+        bool RunImport();
     }
 }

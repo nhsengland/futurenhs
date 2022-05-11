@@ -1,10 +1,14 @@
-﻿using Umbraco9ContentApi.Core.Models.Requests;
+﻿using Umbraco.Cms.Core.Models;
+using Umbraco9ContentApi.Core.Models.Requests;
+using ContentModel = Umbraco9ContentApi.Core.Models.Content.ContentModel;
 
 namespace Umbraco9ContentApi.Core.Services.FutureNhs.Interface
 {
     public interface IFutureNhsBlockService
     {
-        Task<IEnumerable<string?>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
-        Task<Umbraco.Cms.Core.Models.IContent> CreateBlockAsync(CreateBlockRequest createRequest, Guid blocksDataSourceFolderGuid, CancellationToken cancellationToken);
+        IEnumerable<string> GetBlockPlaceholderValues(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
+        IContent CreateBlock(CreateBlockRequest createRequest, CancellationToken cancellationToken);
+        IContent UpdateBlock(ContentModel block, CancellationToken cancellationToken);
+        IEnumerable<ContentModel> GetChildBlocks(IEnumerable<ContentModel> blocks, CancellationToken cancellationToken);
     }
 }

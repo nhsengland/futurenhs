@@ -467,6 +467,19 @@ $button-shadow-size: 4px;
     &:hover {
         text-decoration: underline;
     }
+
+    &:disabled {
+        opacity: (.5);
+
+        &:hover {
+            cursor: default;
+            text-decoration: none;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
 }
 
 %nhsuk-focused-button {

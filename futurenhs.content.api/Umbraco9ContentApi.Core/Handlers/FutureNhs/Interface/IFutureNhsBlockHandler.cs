@@ -7,46 +7,46 @@
     public interface IFutureNhsBlockHandler
     {
         /// <summary>
-        /// Gets the block asynchronous.
+        /// Gets the block.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId, CancellationToken cancellationToken);
+        ApiResponse<ContentModel> GetBlock(Guid blockId, CancellationToken cancellationToken);
         /// <summary>
-        /// Gets all blocks asynchronous.
+        /// Gets all blocks.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync(CancellationToken cancellationToken);
+        ApiResponse<IEnumerable<ContentModel>> GetAllBlocks(CancellationToken cancellationToken);
         /// <summary>
-        /// Gets the block placeholder values asynchronous.
+        /// Gets the block placeholder values.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <param name="propertyGroupAlias">The property group alias.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string?>>> GetBlockPlaceholderValuesAsync(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
+        ApiResponse<IEnumerable<string?>> GetBlockPlaceholderValues(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
         /// <summary>
-        /// Gets the block content asynchronous.
+        /// Gets the block content.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockContentAsync(Guid blockId, CancellationToken cancellationToken);
+        ApiResponse<IEnumerable<string>> GetBlockContent(Guid blockId, CancellationToken cancellationToken);
         /// <summary>
-        /// Gets the block lables asynchronous.
+        /// Gets the block lables.
         /// </summary>
         /// <param name="blockId">The block identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<IEnumerable<string>>> GetBlockLabelsAsync(Guid blockId, CancellationToken cancellationToken);
+        ApiResponse<IEnumerable<string>> GetBlockLabels(Guid blockId, CancellationToken cancellationToken);
         /// <summary>
-        /// Creates the block asynchronous.
+        /// Creates the block.
         /// </summary>
         /// <param name="createRequest">The create request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> CreateBlockAsync(CreateBlockRequest createRequest, CancellationToken cancellationToken);
+        ApiResponse<string> CreateBlock(CreateBlockRequest createRequest, CancellationToken cancellationToken);
     }
 }

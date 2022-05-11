@@ -1,7 +1,6 @@
 ﻿namespace Umbraco9ContentApi.Core.Handlers.FutureNhs
 {
     using Interface;
-    using Microsoft.Extensions.Configuration;
     using Services.FutureNhs.Interface;
     using Umbraco.Cms.Web.Common.PublishedModels;
     using Umbraco9ContentApi.Core.Models.Content;
@@ -13,212 +12,147 @@
     /// <seealso cref="IFutureNhsContentHandler" />
     public sealed class FutureNhsContentHandler : IFutureNhsContentHandler
     {
-        private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
-        private readonly IFutureNhsValidationService _futureNhsValidationService;
-        private List<string> errorList = new List<string>();
+        private readonly IFutureNhsBlockService _futureNhsBlockService;
 
-        public FutureNhsContentHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsValidationService futureNhsValidationService)
+        public FutureNhsContentHandler(IFutureNhsContentService futureNhsContentService, IFutureNhsBlockService futureNhsBlockService)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
             _futureNhsContentService = futureNhsContentService ?? throw new ArgumentNullException(nameof(futureNhsContentService));
-            _futureNhsValidationService = futureNhsValidationService ?? throw new ArgumentNullException(nameof(futureNhsValidationService));
+            _futureNhsBlockService = futureNhsBlockService;
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> PublishContentAsync(Guid contentId, CancellationToken cancellationToken)
+        public ApiResponse<string> PublishContentAndAssociatedContent(Guid contentId, CancellationToken cancellationToken)
         {
-            ApiResponse<string> response = new ApiResponse<string>();
-            bool result;
+            var draftContent = _futureNhsContentService.GetDraftContent(contentId, cancellationToken);
+            var publishedContent = _futureNhsContentService.GetPublishedContent(contentId, cancellationToken);
 
-            var publishedContent = await _futureNhsContentService.GetPublishedContentAsync(contentId, cancellationToken);
-            var draftContent = await _futureNhsContentService.GetDraftContentAsync(contentId, cancellationToken);
-
-            if (draftContent is not null && publishedContent is not null)
+            if (draftContent is not null)
             {
-                var resolvedDraftContent = await _futureNhsContentService.ResolveDraftContentAsync(draftContent, cancellationToken);
-                var resolvedPublishedContent = await _futureNhsContentService.ResolvePublishedContentAsync(publishedContent, "content", cancellationToken);
+                var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(draftContent, cancellationToken);
+                var resolvedPublishedContent = _futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken);
 
-                var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault() as IEnumerable<ContentModel>;
-                var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault() as IEnumerable<ContentModel>;
+                var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModel>)c.Value).FirstOrDefault();
+                var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModel>)c.Value).FirstOrDefault();
+
 
                 if (publishedBlocks is not null && draftBlocks is not null)
                 {
-                    // Find the difference between published and draft content.
-                    var difference = publishedBlocks.Select(x => x.Item.Id).Where(x => !draftBlocks.Select(pb => pb.Item.Id).Contains(x)).ToList();
+                    // Find the difference between published and draft contents list of blocks
+                    var blocksToRemove = _futureNhsContentService.CompareContentModelLists(publishedBlocks, draftBlocks);
 
-                    // Delete the difference if they were initially draft.
-                    foreach (var blockId in difference)
+                    foreach (var block in blocksToRemove)
                     {
-                        result = await _futureNhsContentService.DeleteAssociatedContent(blockId, cancellationToken);
+                        var publishedBlock = _futureNhsContentService.GetPublishedContent(block, cancellationToken);
 
-                        if (!result)
+                        // Delete associated blocks
+                        var publishedContentBlocks = _futureNhsContentService.GetAssociatedPublishedContentBlocks(publishedBlock, cancellationToken);
+
+                        for (int i = 0; i < publishedContentBlocks.Count; i++)
                         {
-                            errorList.Add("Could not delete associated content.");
-                            response.Failure(errorList, "Failed");
+                            _futureNhsContentService.DeleteContent(publishedContentBlocks[i].Key, cancellationToken);
                         }
 
-                        result = await _futureNhsContentService.DeleteContentAsync(blockId, cancellationToken);
+                        // Delete block
+                        _futureNhsContentService.DeleteContent(block, cancellationToken);
                     }
 
-                    // Publish remaining draft blocks.
-                    foreach (var draftBlock in draftBlocks)
-                    {
-                        result = await _futureNhsContentService.PublishContentAsync(draftBlock.Item.Id, cancellationToken);
+                    // Publish draft block child blocks
+                    var draftBlocksChildBlocks = _futureNhsBlockService.GetChildBlocks(draftBlocks, cancellationToken);
 
-                        if (!result)
-                        {
-                            errorList.Add("Could not publish associated blocks.");
-                            response.Failure(errorList, "Failed");
-                        }
+                    foreach (var block in draftBlocksChildBlocks)
+                    {
+                        var draftBlock = _futureNhsContentService.GetDraftContent(block.Item.Id, cancellationToken);
+                        _futureNhsContentService.PublishContent(draftBlock, cancellationToken);
+                    }
+
+                    // Publish draft blocks
+                    foreach (var block in draftBlocks)
+                    {
+                        var draftBlock = _futureNhsContentService.GetDraftContent(block.Item.Id, cancellationToken);
+                        _futureNhsContentService.PublishContent(draftBlock, cancellationToken);
                     }
                 }
             }
 
-            result = await _futureNhsContentService.PublishContentAsync(contentId, cancellationToken);
+            _futureNhsContentService.PublishContent(draftContent, cancellationToken);
 
-            if (result)
-            {
-                return response.Success(result.ToString(), "Success.");
-            }
-
-            errorList.Add("Publish failed.");
-            return response.Failure(errorList, "Failed.");
-
+            return new ApiResponse<string>().Success(contentId.ToString(), "Content and associated content successfully published.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<ContentModel>> GetPublishedContentAsync(Guid id, CancellationToken cancellationToken)
+        public ApiResponse<ContentModel> GetPublishedContent(Guid contentId, CancellationToken cancellationToken)
         {
-            ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
-            var content = await _futureNhsContentService.GetPublishedContentAsync(id, cancellationToken);
-            var result = await _futureNhsContentService.ResolvePublishedContentAsync(content, "content", cancellationToken);
-
-            if (result is not null)
-            {
-                return response.Success(result, "Success.");
-            }
-
-            errorList.Add("Could not retrieve content.");
-            return response.Failure(errorList, "Failed.");
+            var publishedContent = _futureNhsContentService.GetPublishedContent(contentId, cancellationToken);
+            return new ApiResponse<ContentModel>().Success(_futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken), "Published content found.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<ContentModel>> GetDraftContentAsync(Guid id, CancellationToken cancellationToken)
+        public ApiResponse<ContentModel> GetDraftContent(Guid contentId, CancellationToken cancellationToken)
         {
-            ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
-            var content = await _futureNhsContentService.GetDraftContentAsync(id, cancellationToken);
-            var result = await _futureNhsContentService.ResolveDraftContentAsync(content, cancellationToken);
-
-            if (result is not null)
-            {
-                return response.Success(result, "Success.");
-            }
-
-            errorList.Add("Could not retrieve content.");
-            return response.Failure(errorList, "Failed.");
+            var publishedContent = _futureNhsContentService.GetDraftContent(contentId, cancellationToken);
+            return new ApiResponse<ContentModel>().Success(_futureNhsContentService.ResolveDraftContent(publishedContent, cancellationToken), "Draft content found.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> DeleteContentAsync(Guid id, CancellationToken cancellationToken)
+        public ApiResponse<string> DeleteContent(Guid contentId, CancellationToken cancellationToken)
         {
-            ApiResponse<string> response = new ApiResponse<string>();
-            var result = await _futureNhsContentService.DeleteContentAsync(id, cancellationToken);
-
-            if (result)
-            {
-                return response.Success(id.ToString(), "Success.");
-            }
-
-            errorList.Add("Could not delete content.");
-            return response.Failure(errorList, "Failed.");
+            _futureNhsContentService.DeleteContent(contentId, cancellationToken);
+            return new ApiResponse<string>().Success(contentId.ToString(), "Content deleted successfully.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllPagesAsync(CancellationToken cancellationToken)
+        public ApiResponse<string> DiscardDraftContent(Guid contentId, CancellationToken cancellationToken)
         {
-            ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
-            var contentModels = new List<ContentModel>();
-            var pagesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
-            var publishedContent = await _futureNhsContentService.GetPublishedContentChildrenAsync(pagesFolderGuid, cancellationToken);
-
-            if (publishedContent is not null && publishedContent.Any())
-            {
-                foreach (var content in publishedContent)
-                {
-                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(content, "content", cancellationToken));
-                }
-            }
-
-            return response.Success(contentModels, "Success.");
-        }
-
-        /// <inheritdoc />
-        public async Task<ApiResponse<string>> DiscardDraftContentAsync(Guid contentId, CancellationToken cancellationToken)
-        {
-            ApiResponse<string> response = new ApiResponse<string>();
-            bool result;
-
-            var draftContent = await _futureNhsContentService.GetDraftContentAsync(contentId, cancellationToken);
+            var draftContent = _futureNhsContentService.GetDraftContent(contentId, cancellationToken);
 
             if (draftContent.ContentType.Alias == GeneralWebPage.ModelTypeAlias)
             {
-                var publishedContent = await _futureNhsContentService.GetPublishedContentAsync(contentId, cancellationToken);
+                var publishedContent = _futureNhsContentService.GetPublishedContent(contentId, cancellationToken);
+                var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(draftContent, cancellationToken);
+                var resolvedPublishedContent = _futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken);
 
-                var resolvedDraftContent = await _futureNhsContentService.ResolveDraftContentAsync(draftContent, cancellationToken);
-                var resolvedPublishedContent = await _futureNhsContentService.ResolvePublishedContentAsync(publishedContent, "content", cancellationToken);
-
-                // get content list
+                // Get context content blocks
                 var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault() as IEnumerable<ContentModel>;
                 var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault() as IEnumerable<ContentModel>;
 
+                // For each block rollback to published version
                 if (publishedBlocks is not null && draftBlocks is not null)
                 {
-                    // Rollback associated draft content to published version.
                     foreach (var block in draftBlocks)
                     {
-                        var draft = await _futureNhsContentService.GetDraftContentAsync(block.Item.Id, cancellationToken);
-                        result = _futureNhsContentService.RollbackDraftContentAsync(draft, cancellationToken);
-
-                        if (!result)
-                        {
-                            errorList.Add("Could not rollback associated content.");
-                            response.Failure(errorList, "Failed");
-                        }
+                        var draft = _futureNhsContentService.GetDraftContent(block.Item.Id, cancellationToken);
+                        _futureNhsContentService.RollbackDraftContent(draft, cancellationToken);
                     }
 
-                    // Find the difference between published and draft content.
-                    var difference = draftBlocks.Select(x => x.Item.Id).Where(x => !publishedBlocks.Select(pb => pb.Item.Id).Contains(x)).ToList();
+                    // Find the difference between draft and published contents list of blocks.
+                    var blocksToRemove = _futureNhsContentService.CompareContentModelLists(draftBlocks, publishedBlocks);
 
-                    // Delete the difference if they were originally published.
-                    foreach (var blockId in difference)
+                    foreach (var block in blocksToRemove)
                     {
-                        result = await _futureNhsContentService.DeleteAssociatedContent(blockId, cancellationToken);
+                        var publishedBlock = _futureNhsContentService.GetPublishedContent(block, cancellationToken);
 
-                        if (!result)
+                        // Delete associated blocks.
+                        var publishedContentBlocks = _futureNhsContentService.GetAssociatedPublishedContentBlocks(publishedBlock, cancellationToken);
+
+                        for (int i = 0; i < publishedContentBlocks.Count; i++)
                         {
-                            errorList.Add("Could not delete associated content.");
-                            response.Failure(errorList, "Failed");
+                            _futureNhsContentService.DeleteContent(publishedContentBlocks[i].Key, cancellationToken);
                         }
 
-                        result = await _futureNhsContentService.DeleteContentAsync(blockId, cancellationToken);
+                        // Delete block.
+                        _futureNhsContentService.DeleteContent(block, cancellationToken);
                     }
                 }
+
+                // Rollback context content to published version.
+                _futureNhsContentService.RollbackDraftContent(draftContent, cancellationToken);
+
+                // Publish to reset draft status to false. 
+                _futureNhsContentService.PublishContent(draftContent, cancellationToken);
             }
 
-            // Rollback draft content to published version.
-            result = _futureNhsContentService.RollbackDraftContentAsync(draftContent, cancellationToken);
-
-            // Publish to reset draft status to false. 
-            result = await _futureNhsContentService.PublishContentAsync(draftContent.Key, cancellationToken);
-
-            if (result)
-            {
-                return response.Success(result.ToString(), "Success.");
-            }
-
-            errorList.Add("Could not discard all or some content.");
-            return response.Failure(errorList, "Failed.");
+            return new ApiResponse<string>().Success(contentId.ToString(), "Content discarded successfully.");
         }
     }
 }

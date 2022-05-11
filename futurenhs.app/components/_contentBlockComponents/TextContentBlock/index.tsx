@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 
+import { simpleClone } from '@helpers/util/data'
 import { useCsrf } from '@hooks/useCsrf'
 import { useFormConfig } from '@hooks/useForm'
 import { Heading } from '@components/Heading'
@@ -8,12 +9,12 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { Form } from '@components/Form'
 import { formTypes } from '@constants/forms'
+import { FormConfig } from '@appTypes/form'
+import { CmsContentBlock } from '@appTypes/contentBlock';
 
 import { Props } from './interfaces'
-import { FormConfig } from '@appTypes/form'
 
 export const TextContentBlock: (props: Props) => JSX.Element = ({
-    id,
     block,
     headingLevel,
     isEditable,
@@ -22,12 +23,13 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
     className,
 }) => {
 
+    const blockId: string = block?.item?.id;
     const { title, mainText } = block?.content ?? {};
 
     const csrfToken: string = useCsrf();
     const formConfig: FormConfig = useFormConfig(formTypes.CONTENT_BLOCK_TEXT, {
-        [`title-${id}`]: title,
-        [`mainText-${id}`]: mainText
+        [`title-${blockId}`]: title,
+        [`mainText-${blockId}`]: mainText
     }, initialErrors);
 
     const generatedClasses: any = {
@@ -35,9 +37,34 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
         heading: classNames('nhsuk-heading-l', 'u-mb-14')
     };
 
-    const handleChange = (formState: Record<any, any>) => {
+    const handleChange = ({ values, errors, visited }): void => {
 
-        changeAction?.({ instanceId: id, formState })
+        const updatedBlock: CmsContentBlock = simpleClone(block);
+
+        /**
+         * Handle value updates
+         */
+        if (updatedBlock?.content) {
+
+            Object.keys(updatedBlock.content).forEach((key) => {
+
+                const fieldName: string = `${key}-${blockId}`
+                const value: any = values[fieldName];
+
+                /**
+                 * If a field has been interacted with
+                 */
+                if (visited[fieldName] && updatedBlock.content[key] !== value) {
+
+                    updatedBlock.content[key] = value ?? null;
+
+                }
+
+            });
+
+        }
+
+        changeAction?.({ block: updatedBlock, errors })
 
     }
 
@@ -49,7 +76,7 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
                 <LayoutColumn desktop={9}>
                     <Form
                         csrfToken={csrfToken}
-                        instanceId={id}
+                        instanceId={blockId}
                         formConfig={formConfig}
                         shouldRenderSubmitButton={false}
                         changeAction={handleChange} />
@@ -61,7 +88,7 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
     }
 
     return (
-        <div id={id} className={generatedClasses.wrapper}>
+        <div id={blockId} className={generatedClasses.wrapper}>
             <Heading headingLevel={headingLevel} className={generatedClasses.heading}>{title}</Heading>
             <RichText bodyHtml={mainText} wrapperElementType="div" />
         </div>

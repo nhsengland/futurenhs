@@ -6,6 +6,6 @@ namespace Umbraco9ContentApi.Core.Models
     public class PageModel
     {
         [JsonProperty("blocks")]
-        public ContentModel[] Blocks { get; set; }
+        public virtual IEnumerable<ContentModel> Blocks { get; set; }
     }
 }

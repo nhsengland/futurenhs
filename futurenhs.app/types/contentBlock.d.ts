@@ -1,9 +1,8 @@
 export interface CmsContentBlock {
-    instanceId?: string;
     item: {
         id: string;
-        name: string;
         contentType: string;
+        name?: string;
     };
     content: Record<any, any>;
 }

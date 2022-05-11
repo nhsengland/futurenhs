@@ -6,50 +6,42 @@
     public interface IFutureNhsContentHandler
     {
         /// <summary>
-        /// Publishes the content asynchronous.
+        /// Publishes the content of the content and associated.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> PublishContentAsync(Guid id, CancellationToken cancellationToken);
-
+        ApiResponse<string> PublishContentAndAssociatedContent(Guid id, CancellationToken cancellationToken);
         /// <summary>
-        /// Deletes the content asynchronous.
+        /// Deletes the content.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> DeleteContentAsync(Guid id, CancellationToken cancellationToken);
+        ApiResponse<string> DeleteContent(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the content published asynchronous.
+        /// Gets the content published.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<ContentModel>> GetPublishedContentAsync(Guid id, CancellationToken cancellationToken);
+        ApiResponse<ContentModel> GetPublishedContent(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the content draft asynchronous.
+        /// Gets the content draft.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<ContentModel>> GetDraftContentAsync(Guid id, CancellationToken cancellationToken);
+        ApiResponse<ContentModel> GetDraftContent(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets all content asynchronous.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<ApiResponse<IEnumerable<ContentModel>>> GetAllPagesAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Discards the draft content asynchronous.
+        /// Discards the draft content.
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> DiscardDraftContentAsync(Guid contentId, CancellationToken cancellationToken);
+        ApiResponse<string> DiscardDraftContent(Guid contentId, CancellationToken cancellationToken);
     }
 }

@@ -1,610 +1,221 @@
-﻿//namespace Umbraco9ContentApi.Test.Handler
-//{
-//    using Core.Handlers.FutureNhs;
-//    using Core.Services.FutureNhs.Interface;
-//    using Microsoft.Extensions.Configuration;
-//    using Moq;
-//    using NUnit.Framework;
-//    using System;
-//    using System.Collections.Generic;
-//    using System.Threading;
-//    using System.Threading.Tasks;
-//    using Umbraco.Cms.Core.Models;
-//    using Umbraco.Cms.Core.Models.PublishedContent;
-//    using Umbraco9ContentApi.Core.Models;
-
-//    /// <summary>
-//    /// Futrue Nhs Content Handler Tests.
-//    /// </summary>
-//    [TestFixture]
-//    public class FutureNhsContentHandlerTests
-//    {
-//        private Mock<IFutureNhsContentService> _mockFutureNhsContentService;
-//        private Mock<IFutureNhsValidationService> _mockFutureNhsValidationService;
-//        private IConfiguration? _config;
-//        private CancellationToken cancellationToken;
-
-//        /// <summary>
-//        /// Setups this instance.
-//        /// </summary>
-//        [SetUp]
-//        public void Setup()
-//        {
-//            _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
-//            _mockFutureNhsValidationService = new Mock<IFutureNhsValidationService>();
-//            var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:Groups", Guid.NewGuid().ToString() } };
-//            _config = new ConfigurationBuilder()
-//               .AddInMemoryCollection(inMemorySettings)
-//               .Build();
-//        }
-
-//        #region Update Content Tests
-
-//        #region Update Content Success Tests
-
-//        /// <summary>
-//        /// Updates the content all information provided unpublished success.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_AllInformationProvided_Published_Success()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-//            var newPageName = "Update Title";
-//            var newDescription = "Update Description";
-//            var newPageContent = new PageModel();
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(true);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//                .ReturnsAsync(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent, cancellationToken);
-
-//            // Assert
-//            Assert.AreEqual(contentId.ToString(), contentResult.Data);
-//            Assert.IsTrue(contentResult.Succeeded);
-//        }
-
-//        /// <summary>
-//        /// Updates the content title provided published success.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_TitleProvided_Published_Success()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-//            var newPageName = "Update Title";
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(true);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//                .ReturnsAsync(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null, cancellationToken);
-
-//            // Assert
-//            Assert.AreEqual(contentId.ToString(), contentResult.Data);
-//            Assert.IsTrue(contentResult.Succeeded);
-//        }
-
-//        /// <summary>
-//        /// Updates the content description provided published success.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_DescriptionProvided_Published_Success()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newDescription = "Update Description";
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(true);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//                .ReturnsAsync(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null, cancellationToken);
-
-//            // Assert
-//            Assert.AreEqual(contentId.ToString(), contentResult.Data);
-//            Assert.IsTrue(contentResult.Succeeded);
-//        }
-
-//        /// <summary>
-//        /// Updates the content content provided published success.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_ContentProvided_Published_Success()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-//            var newPageContent = new PageModel();
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(true);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//                .ReturnsAsync(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent, cancellationToken);
-
-//            Assert.IsTrue(contentResult.Succeeded);
-//        }
-
-//        /// <summary>
-//        /// Updates the content all information provided unpublished success.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_AllInformationProvided_Unpublished_Success()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-//            var newPageName = "Update Title";
-//            var newDescription = "Update Description";
-//            var newPageContent = new PageModel();
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(false);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//    .ReturnsAsync(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent, cancellationToken);
-
-//            Assert.AreEqual(contentId.ToString(), contentResult.Data);
-//            Assert.IsTrue(contentResult.Succeeded);
-//        }
-
-//        /// <summary>
-//        /// Updates the content title provided unpublished success.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_TitleProvided_Unpublished_Success()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newPageName = "Update Title";
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(false);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//    .ReturnsAsync(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null, cancellationToken);
-
-//            // Assert
-//            Assert.AreEqual(contentId.ToString(), contentResult.Data);
-//            Assert.IsTrue(contentResult.Succeeded);
-//        }
-
-//        /// <summary>
-//        /// Updates the content description provided unpublished success.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_DescriptionProvided_Unpublished_Success()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newDescription = "Update Description";
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(false);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//    .ReturnsAsync(true);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null, cancellationToken);
-
-//            // Assert
-//            Assert.AreEqual(contentId.ToString(), contentResult.Data);
-//            Assert.IsTrue(contentResult.Succeeded);
-//        }
-
-//        /// <summary>
-//        /// Updates the content content provided unpublished success.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_ContentProvided_Unpublished_Success()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-//            var newPageContent = new PageModel();
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(false);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//    .ReturnsAsync(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent, cancellationToken);
-
-//            // Assert
-//            Assert.IsTrue(contentResult.Succeeded);
-//        }
-
-//        #endregion
-
-//        #region Update Content Fail Tests
-
-//        /// <summary>
-//        /// Updates the content all information provided published failure.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_AllInformationProvided_Published_Failure()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-//            var newPageName = "Update Title";
-//            var newDescription = "Update Description";
-//            var newPageContent = new PageModel();
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//                .ReturnsAsync(false);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent, cancellationToken);
-
-//            // Assert
-//            Assert.IsFalse(contentResult.Data == "false");
-//        }
-
-//        /// <summary>
-//        /// Updates the content title provided published failure.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_TitleProvided_Published_Failure()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newPageName = "Update Title";
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//                .ReturnsAsync(false);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null, cancellationToken);
-
-//            // Assert
-//            Assert.IsFalse(contentResult.Data == "false");
-//        }
-
-//        /// <summary>
-//        /// Updates the content description provided published failure.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_DescriptionProvided_Published_Failure()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newDescription = "Update Description";
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//                .ReturnsAsync(false);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null, cancellationToken);
-
-//            // Assert
-//            Assert.IsFalse(contentResult.Data == "false");
-//        }
-
-//        /// <summary>
-//        /// Updates the content content provided published failure.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_ContentProvided_Published_Failure()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newPageContent = new PageModel();
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(true);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//                .ReturnsAsync(false);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent, cancellationToken);
-
-//            // Assert
-//            Assert.IsFalse(contentResult.Data == "false");
-//        }
-
-//        /// <summary>
-//        /// Updates the content all information provided unpublished failure.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_AllInformationProvided_Unpublished_Failure()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newPageName = "Update Title";
-//            var newDescription = "Update Description";
-//            var newPageContent = new PageModel();
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(false);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//     .ReturnsAsync(true);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, newDescription, newPageContent, cancellationToken);
-
-//            // Assert
-//            Assert.IsFalse(contentResult.Data == "false");
-//        }
-
-//        /// <summary>
-//        /// Updates the content title provided unpublished failure.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_TitleProvided_Unpublished_Failure()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newPageName = "Update Title";
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(false);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//    .ReturnsAsync(true);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, newPageName, string.Empty, null, cancellationToken);
-
-//            // Assert
-//            Assert.IsFalse(contentResult.Data == "false");
-//        }
-
-//        /// <summary>
-//        /// Updates the content description provided unpublished failure.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_DescriptionProvided_Unpublished_Failure()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newDescription = "Update Description";
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(false);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//    .ReturnsAsync(true);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, newDescription, null, cancellationToken);
-
-//            // Assert
-//            Assert.IsFalse(contentResult.Data == "false");
-//        }
-
-//        /// <summary>
-//        /// Updates the content content provided unpublished failure.
-//        /// </summary>
-//        [Test]
-//        public async Task UpdateContent_ContentProvided_Unpublished_Failure()
-//        {
-//            // Arrange
-//            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-
-//            var newPageContent = new PageModel();
-//            var mockContent = GetMockContentItem(contentId);
-//            var mockPublishedContent = GetMockPublishedContentItem(false);
-
-//            var contentHandler = GetHandler(_config);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetDraftContentAsync(It.IsAny<Guid>(), cancellationToken))
-//                .ReturnsAsync(mockContent.Object);
-
-//            _mockFutureNhsContentService
-//                .Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(mockPublishedContent.Object);
-
-//            _mockFutureNhsContentService.Setup(x => x.SaveContentAsync(It.IsAny<IContent>(), cancellationToken))
-//    .ReturnsAsync(true);
-
-//            // Act
-//            var contentResult = await contentHandler.UpdateContentAsync(contentId, string.Empty, string.Empty, newPageContent, cancellationToken);
-
-//            // Assert
-//            Assert.IsFalse(contentResult.Data == "false");
-//        }
-
-//        #endregion
-
-//        #endregion
-
-//        #region Setup
-
-//        /// <summary>
-//        /// Gets the handler.
-//        /// </summary>
-//        /// <param name="config">The configuration.</param>
-//        /// <returns></returns>
-//        private FutureNhsContentHandler GetHandler(IConfiguration? config)
-//        {
-//            var handler = new FutureNhsContentHandler(
-//                config, _mockFutureNhsContentService.Object, _mockFutureNhsValidationService.Object);
-
-//            return handler;
-//        }
-
-//        /// <summary>
-//        /// Gets the mock content item.
-//        /// </summary>
-//        /// <returns></returns>
-//        private Mock<IContent> GetMockContentItem(Guid contentId)
-//        {
-//            var mockContent = new Mock<IContent>();
-//            mockContent.Setup(x => x.Key).Returns(contentId);
-//            return mockContent;
-//        }
-
-//        /// <summary>
-//        /// Gets the mock published content item.
-//        /// </summary>
-//        /// <returns></returns>
-//        private Mock<IPublishedContent> GetMockPublishedContentItem(bool isPublished)
-//        {
-//            var mockContent = new Mock<IPublishedContent>();
-//            mockContent.Setup(x => x.IsPublished(It.IsAny<string>())).Returns(isPublished);
-//            return mockContent;
-//        }
-
-//        #endregion
-//    }
-//}
+﻿namespace Umbraco9ContentApi.Test.Handler
+{
+    using Core.Handlers.FutureNhs;
+    using Core.Services.FutureNhs.Interface;
+    using Microsoft.Extensions.Configuration;
+    using Moq;
+    using NUnit.Framework;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Umbraco.Cms.Core.Models;
+    using Umbraco.Cms.Core.Models.PublishedContent;
+    using Umbraco.Cms.Web.Common.PublishedModels;
+    using ContentModel = Core.Models.Content.ContentModel;
+
+    /// <summary>
+    /// Futrue Nhs Content Handler Tests.
+    /// </summary>
+    [TestFixture]
+    public class FutureNhsContentHandlerTests
+    {
+        // Mock Services
+        private Mock<IFutureNhsContentService> _mockFutureNhsContentService = new();
+        private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService = new();
+
+        private IConfiguration _config;
+        private CancellationToken cancellationToken;
+
+        /// <summary>
+        /// Setups this instance.
+        /// </summary>
+        [SetUp]
+        public void Setup()
+        {
+            _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
+            var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:Groups", Guid.NewGuid().ToString() } };
+            _config = new ConfigurationBuilder()
+               .AddInMemoryCollection(inMemorySettings)
+               .Build();
+        }
+
+        [Test]
+        public async Task DiscardDraftContent_BlocksAdded_Success()
+        {
+            // Arrange          
+            var contentId = Guid.NewGuid();
+            var mockDraftContent = GetMockContent(contentId);
+            var mockPublishedContent = GetMockPublishedContentItem(true);
+            var mockContentModelWithBlocks = GetMockContentModelWithBlocks(true);
+            var mockContentModelWithoutBlocks = GetMockContentModelWithBlocks(false);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.GetDraftContent(It.IsAny<Guid>(), cancellationToken))
+                .Returns(mockDraftContent.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken))
+                .Returns(mockPublishedContent.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>(), cancellationToken))
+                .Returns(mockContentModelWithBlocks.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>(), cancellationToken))
+                .Returns(mockContentModelWithoutBlocks.Object);
+
+            var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object);
+
+            // Act
+            var contentResult = contentHandler.DiscardDraftContent(contentId, cancellationToken);
+
+            // Assert
+            Assert.IsNotNull(contentResult);
+            Assert.True(contentResult.Succeeded);
+        }
+
+        [Test]
+        public async Task DiscardDraftContent_BlocksRemoved_Success()
+        {
+            // Arrange          
+            var contentId = Guid.NewGuid();
+            var mockDraftContent = GetMockContent(contentId);
+            var mockPublishedContent = GetMockPublishedContentItem(true);
+            var mockContentModelWithBlocks = GetMockContentModelWithBlocks(true);
+            var mockContentModelWithoutBlocks = GetMockContentModelWithBlocks(false);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.GetDraftContent(It.IsAny<Guid>(), cancellationToken))
+                .Returns(mockDraftContent.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken))
+                .Returns(mockPublishedContent.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>(), cancellationToken))
+                .Returns(mockContentModelWithoutBlocks.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>(), cancellationToken))
+                .Returns(mockContentModelWithBlocks.Object);
+
+            var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object);
+
+            // Act
+            var contentResult = contentHandler.DiscardDraftContent(contentId, cancellationToken);
+
+            // Assert
+            Assert.IsNotNull(contentResult);
+            Assert.True(contentResult.Succeeded);
+        }
+
+
+
+        #region Setup
+
+        /// <summary>
+        /// Gets the handler.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="futureNhsContentService">The future NHS content service.</param>
+        /// <returns></returns>
+        private FutureNhsContentHandler GetHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsBlockService futureNhsBlockService)
+        {
+            var handler = new FutureNhsContentHandler(
+                futureNhsContentService, futureNhsBlockService);
+
+            return handler;
+        }
+
+        /// <summary>
+        /// Gets the mock content model.
+        /// </summary>
+        /// <param name="contentType">Type of the content.</param>
+        /// <returns></returns>
+        private ContentModel GetMockBlockContentModel(string contentType)
+        {
+            var dict = new Dictionary<string, object>()
+            {
+                { "Field", "Value" },
+            };
+
+            var mockContentModel = new Mock<ContentModel>();
+            mockContentModel.Setup(x => x.Item.Id).Returns(Guid.NewGuid());
+            mockContentModel.Setup(x => x.Item.ContentType).Returns(contentType);
+            mockContentModel.Setup(x => x.Content).Returns(dict);
+            return mockContentModel.Object;
+        }
+
+        private Mock<ContentModel> GetMockContentModelWithBlocks(bool withBlocks)
+        {
+            List<ContentModel> blockContentModels = new();
+
+            if (withBlocks)
+            {
+                blockContentModels.Add(GetMockBlockContentModel(TextBlock.ModelTypeAlias));
+                blockContentModels.Add(GetMockBlockContentModel(KeyLinksBlock.ModelTypeAlias));
+            }
+
+            var dict = new Dictionary<string, object>()
+            {
+                { "blocks", blockContentModels },
+            };
+
+            var mockPageContentModel = new Mock<ContentModel>();
+            mockPageContentModel.Setup(x => x.Item.Id).Returns(Guid.NewGuid());
+            mockPageContentModel.Setup(x => x.Item.ContentType).Returns(GeneralWebPage.ModelTypeAlias);
+            mockPageContentModel.Setup(x => x.Content).Returns(dict);
+            return mockPageContentModel;
+        }
+
+        /// <summary>
+        /// Gets the mock content item.
+        /// </summary>
+        /// <returns></returns>
+        private Mock<IContent> GetMockContent(Guid contentId)
+        {
+            var mockContent = new Mock<IContent>();
+            mockContent.Setup(x => x.Key).Returns(contentId);
+            mockContent.Setup(x => x.Properties.GetEnumerator()).Returns(GetPropertyCollection("blocks", "mainText").GetEnumerator());
+            mockContent.Setup(x => x.ContentType.Alias).Returns(GeneralWebPage.ModelTypeAlias);
+            return mockContent;
+        }
+
+        /// <summary>
+        /// Gets the mock property.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <returns></returns>
+        private IPropertyCollection GetPropertyCollection(params string[] alias)
+        {
+            List<IProperty> propertyList = new();
+            Mock<IPropertyCollection> mockPropertyCollection = new();
+
+            for (int i = 0; i < alias.Length; i++)
+            {
+                var mockProperty = new Mock<IProperty>();
+                mockProperty.Setup(x => x.Alias).Returns(alias[i]);
+                propertyList.Add(mockProperty.Object);
+            }
+
+            mockPropertyCollection.Setup(x => x.GetEnumerator()).Returns(propertyList.GetEnumerator());
+            return mockPropertyCollection.Object;
+        }
+
+        /// <summary>
+        /// Gets the mock published content item.
+        /// </summary>
+        /// <returns></returns>
+        private Mock<IPublishedContent> GetMockPublishedContentItem(bool isPublished)
+        {
+            var mockContent = new Mock<IPublishedContent>();
+            mockContent.Setup(x => x.IsPublished(It.IsAny<string>())).Returns(isPublished);
+            return mockContent;
+        }
+
+        #endregion
+    }
+}

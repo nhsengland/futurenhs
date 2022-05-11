@@ -13,6 +13,7 @@ import { CmsContentBlock } from '@appTypes/contentBlock';
 declare type Options = {
     user: User
     pageId: string
+    isPublished?: boolean
 }
 
 declare type Dependencies = {
@@ -21,7 +22,7 @@ declare type Dependencies = {
 }
 
 export const getCmsPageContent = async (
-    { user, pageId }: Options,
+    { user, pageId, isPublished = true }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
     const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
@@ -34,7 +35,7 @@ export const getCmsPageContent = async (
 
     const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${pageId}/published`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${pageId}/${isPublished ? 'published' : 'draft'}`;
 
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
@@ -60,7 +61,7 @@ export const getCmsPageContent = async (
     }
 
     serviceResponse.headers = headers
-    serviceResponse.data = apiData?.data?.content?.pageContent?.blocks;
+    serviceResponse.data = apiData?.data?.content?.blocks;
 
     return serviceResponse
 }

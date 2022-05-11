@@ -41,10 +41,10 @@
             var contentId = new Guid("A90E7522-18B4-444F-A736-0422A85C0D52");
             var publishedContent = GetMockPublishedContentItem(true);
             var content = GetTestModel();
-            _mockFutureNhsContentService.Setup(x => x.GetPublishedContentAsync(It.IsAny<Guid>(), cancellationToken)).ReturnsAsync(publishedContent.Object);
+            _mockFutureNhsContentService.Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken)).Returns(publishedContent.Object);
 
             // Act
-            var result = handler.GetTemplateAsync(contentId, cancellationToken);
+            var result = handler.GetTemplate(contentId, cancellationToken);
 
             // Assert
             Assert.NotNull(result);
@@ -70,17 +70,14 @@
             var contentHandler = GetHandler(_config);
 
             _mockFutureNhsContentService
-                .Setup(x => x.GetPublishedContentChildrenAsync(It.IsAny<Guid>(), cancellationToken))
-                .ReturnsAsync(new List<IPublishedContent>()
-                {
-                    mockContent.Object
-                });
+                .Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken))
+                .Returns(mockContent.Object);
 
-            _mockFutureNhsContentService.SetupSequence(x => x.ResolvePublishedContentAsync(It.IsAny<IPublishedContent>(), "content", cancellationToken).Result)
+            _mockFutureNhsContentService.Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), "content", cancellationToken))
                 .Returns(new ContentModel() { Item = new ContentModelItem() { Id = contentId } });
 
             // Act
-            var contentResult = await contentHandler.GetAllTemplatesAsync(cancellationToken);
+            var contentResult = contentHandler.GetAllTemplates(cancellationToken);
 
             // Assert
             Assert.NotNull(contentResult);
@@ -131,8 +128,10 @@
         {
             var mockContent = new Mock<IPublishedContent>();
             mockContent.Setup(x => x.IsPublished(It.IsAny<string>())).Returns(isPublished);
+            mockContent.Setup(x => x.Children).Returns(new List<IPublishedContent> { mockContent.Object });
             return mockContent;
         }
+
 
         #endregion
     }

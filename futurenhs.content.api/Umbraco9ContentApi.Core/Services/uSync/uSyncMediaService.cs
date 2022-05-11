@@ -57,7 +57,7 @@ namespace Umbraco9ContentApi.Core.Services.uSync
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<uSyncAction>> ImportAsync()
+        public  IEnumerable<uSyncAction> Import()
         {
             mediaHandler = new MediaHandler(
                 _logger,

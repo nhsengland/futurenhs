@@ -7,8 +7,8 @@ export interface Props {
     isEditable?: boolean;
     headingLevel: number;
     changeAction: (config: {
-        instanceId: string;
-        formState: Record<any, any>;
+        block: CmsContentBlock;
+        errors: FormErrors;
     }) => void
     initialErrors?: FormErrors;
     className?: string

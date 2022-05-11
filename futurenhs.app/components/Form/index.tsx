@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import classNames from 'classnames'
@@ -22,6 +22,7 @@ export const Form: (props: Props) => JSX.Element = ({
     formConfig,
     context = {},
     instanceId,
+    initAction,
     changeAction,
     cancelAction,
     submitAction,
@@ -215,6 +216,12 @@ export const Form: (props: Props) => JSX.Element = ({
         )
     }
 
+    useEffect(() => {
+
+        initAction?.(formInstance.current);
+
+    }, []);
+
     /**
      * Render
      */
@@ -224,6 +231,9 @@ export const Form: (props: Props) => JSX.Element = ({
             onSubmit={handleSubmit}
             validate={handleValidate}
             render={({ form, errors, handleSubmit, hasValidationErrors }) => {
+
+                formInstance.current = form;
+
                 /**
                  * Handles opening a modal to confirm cancellation of a submission
                  */
@@ -275,7 +285,6 @@ export const Form: (props: Props) => JSX.Element = ({
                                  * react-final-form only natively handles submissions as JSON in handleSubmit, so the FormData is cached in a ref before calling handleSubmit
                                  */
                                 submission.current = new FormData(event.target)
-                                formInstance.current = form
 
                                 /**
                                  * Submit and then reset the form on success

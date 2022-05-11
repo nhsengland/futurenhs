@@ -1,5 +1,4 @@
 import { CmsContentBlock } from "@appTypes/contentBlock";
-import { FormConfig } from '@appTypes/form';
 import { cprud } from '@constants/cprud'
 import { FormErrors } from "@appTypes/form";
 
@@ -26,7 +25,7 @@ export interface Props {
     discardUpdateAction?: () => void;
     blocksChangeAction?: (blocks: Array<CmsContentBlock>) => void
     stateChangeAction?: (currentState: cprud) => void
-    createBlockAction?: (blockTypeId: string) => void
+    createBlockAction?: (blockTypeContentId: string, parentBlockId?: string) => Promise<string>
     saveBlocksAction?: (blocks: Array<CmsContentBlock>, localErrors: FormErrors) => Promise<FormErrors>
     themeId: string;
     className?: string;

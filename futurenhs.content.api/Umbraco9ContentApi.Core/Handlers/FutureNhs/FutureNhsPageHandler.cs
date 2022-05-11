@@ -2,38 +2,36 @@
 {
     using Interface;
     using Microsoft.Extensions.Configuration;
-    using Newtonsoft.Json;
     using Services.FutureNhs.Interface;
-    using Umbraco.Cms.Core;
-    using Umbraco.Cms.Core.Services;
     using Umbraco.Cms.Web.Common.PublishedModels;
+    using Umbraco9ContentApi.Core.Extensions;
     using Umbraco9ContentApi.Core.Models;
-    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Response;
-    using static Umbraco.Cms.Core.Constants;
+    using ContentModel = Models.Content.ContentModel;
 
     /// <summary>
-    /// The handler that handles content methods and calls the content service.
+    /// The handler that handles page methods.
     /// </summary>
     /// <seealso cref="IFutureNhsContentHandler" />
     public sealed class FutureNhsPageHandler : IFutureNhsPageHandler
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
+        private readonly IFutureNhsBlockService _futureNhsBlockService;
         private readonly IFutureNhsValidationService _futureNhsValidationService;
-        private readonly IContentTypeService _contentTypeService;
-        private List<string> errorList = new List<string>();
 
-        public FutureNhsPageHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsValidationService futureNhsValidationService, IContentTypeService contentTypervice)
+        private List<string> errorList = new();
+
+        public FutureNhsPageHandler(IConfiguration config, IFutureNhsContentService futureNhsContentService, IFutureNhsBlockService futureNhsBlockService, IFutureNhsValidationService futureNhsValidationService)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _futureNhsContentService = futureNhsContentService ?? throw new ArgumentNullException(nameof(futureNhsContentService));
-            _futureNhsValidationService = futureNhsValidationService ?? throw new ArgumentNullException(nameof(futureNhsValidationService));
-            _contentTypeService = contentTypervice;
+            _futureNhsBlockService = futureNhsBlockService ?? throw new ArgumentNullException(nameof(futureNhsBlockService));
+            _futureNhsValidationService = futureNhsValidationService ?? throw new ArgumentNullException(nameof(futureNhsValidationService)); ;
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> CreatePageAsync(string pageName, string pageParentId, CancellationToken cancellationToken)
+        public ApiResponse<string> CreatePage(string pageName, string pageParentId, CancellationToken cancellationToken)
         {
             ApiResponse<string> response = new ApiResponse<string>();
             Guid pageParentGuid;
@@ -44,142 +42,103 @@
                 ? pageParentGuid
                 : pageFolderGuid;
 
-            var result = _futureNhsContentService.CreateContentAsync(pageName, parentId, GeneralWebPage.ModelTypeAlias, cancellationToken).Result;
-
-            if (result is null)
-            {
-                errorList.Add("Content creation failed.");
-                return response.Failure(errorList, "Failed.");
-            }
-
-            return response.Success(result.Key.ToString(), "Success.");
+            return new ApiResponse<string>().Success(_futureNhsContentService.CreateContent(pageName, parentId, GeneralWebPage.ModelTypeAlias, cancellationToken).Key.ToString(), "Page created successfully.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> UpdatePageAsync(Guid pageId, PageModel pageModel, CancellationToken cancellationToken)
+        public ApiResponse<string> UpdatePage(Guid pageId, PageModel pageModel, CancellationToken cancellationToken)
         {
-            ApiResponse<string> response = new ApiResponse<string>();
-            bool result;
+            List<string> pageBlockUdis = new();
 
-            if (pageModel is null || !pageModel.Blocks.Any())
+            // Get the draft page to update
+            var pageToUpdate = _futureNhsContentService.GetDraftContent(pageId, cancellationToken);
+
+            // Get current saved draft
+            var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(pageToUpdate, cancellationToken);
+            var resolvedDraftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault();
+
+            // Get page model block child blocks
+            var pageModelBlockChildBlocks = _futureNhsBlockService.GetChildBlocks(pageModel.Blocks, cancellationToken);
+
+            // Remove any blocks that were on the latest saved draft but not the new incoming draft
+            if (resolvedDraftBlocks is not null && resolvedDraftBlocks is IEnumerable<ContentModel> draftBlocks && draftBlocks.Any())
             {
-                errorList.Add("No data provided.");
-                return response.Failure(errorList, "Failed.");
+                // Get latest saved draft block child blocks
+                var savedDraftBlocksChildBlocks = _futureNhsBlockService.GetChildBlocks(draftBlocks, cancellationToken);
+
+                // Find the difference between saved draft and incoming page model block child blocks
+                var blocksToRemove = _futureNhsContentService.CompareContentModelLists(savedDraftBlocksChildBlocks, pageModelBlockChildBlocks);
+
+                foreach (var blockId in blocksToRemove)
+                {
+                    _futureNhsContentService.DeleteContent(blockId, cancellationToken);
+                }
             }
 
-            _futureNhsValidationService.ValidatePageContentModel(pageModel);
+            // If the incoming page update blocks have child blocks, update those too.
+            if (pageModelBlockChildBlocks is not null && pageModelBlockChildBlocks.Any())
+            {
+                foreach (var content in pageModelBlockChildBlocks)
+                {
+                    var update = _futureNhsBlockService.UpdateBlock(content, cancellationToken);
+                    _futureNhsContentService.SaveContent(update, cancellationToken);
+                }
+            }
 
-            var pageToUpdate = await _futureNhsContentService.GetDraftContentAsync(pageId, cancellationToken);
-
-            List<string> blockUdisList = new List<string>();
-
+            // Update the blocks and child blocks on the page
             foreach (var block in pageModel.Blocks)
             {
-                // Convert block item guid to a udi (required by umbraco)
-                string blockUdi = Udi.Create(UdiEntityType.Document, block.Item.Id).ToString();
-                blockUdisList.Add(blockUdi);
-
                 _futureNhsValidationService.ValidateContentModel(block);
 
-                var blockToUpdate = await _futureNhsContentService.GetDraftContentAsync(block.Item.Id, cancellationToken);
+                var updatedBlock = _futureNhsBlockService.UpdateBlock(block, cancellationToken);
+                _futureNhsContentService.SaveContent(updatedBlock, cancellationToken);
 
-                // Get the block blockType
-                var blockType = _contentTypeService.Get(block.Item?.ContentType);
-
-                // Loop through the blockType properties
-                foreach (var property in blockType.PropertyTypes)
-                {
-                    var updateValue = block.Content.Where(p => p.Key == property.Alias).Select(x => x.Value).FirstOrDefault();
-
-                    // If the property has child/nested block we set the value appropriately
-                    if (property.PropertyEditorAlias is "Umbraco.MultiNodeTreePicker")
-                    {
-                        var blockModelsObject = JsonConvert.SerializeObject(updateValue);
-                        var blockModels = JsonConvert.DeserializeObject<List<ContentModel>>(blockModelsObject);
-
-                        if (blockModels is not null)
-                        {
-                            foreach (var model in blockModels)
-                            {
-                                // Convert block item guid to a udi (required by umbraco)
-                                blockUdi = Udi.Create(UdiEntityType.Document, model.Item.Id).ToString();
-                                blockUdisList.Add(blockUdi);
-                            }
-
-                            blockToUpdate.Properties[$"{property.Alias}"].SetValue(string.Join(",", blockUdisList));
-                        }
-                    }
-                    else
-                    {
-                        blockToUpdate.Properties[$"{property.Alias}"].SetValue(updateValue);
-                    }
-                }
-
-                result = await _futureNhsContentService.SaveContentAsync(blockToUpdate, cancellationToken);
-
-                if (!result)
-                {
-                    errorList.Add("Could not update blocks.");
-                    return response.Failure(errorList, "Failed.");
-                }
+                // Add updated block to the list of blocks on this page 
+                pageBlockUdis.Add(block.GetUdi());
             }
 
-            pageToUpdate.Properties[$"blocks"].SetValue(string.Join(",", blockUdisList));
+            // Set the list of blocks on the page
+            var updateContentPropertyResult = _futureNhsContentService.SetContentPropertyValue(pageToUpdate, "blocks", string.Join(",", pageBlockUdis), cancellationToken);
 
-            result = await _futureNhsContentService.SaveContentAsync(pageToUpdate, cancellationToken);
+            // Save the page
+            _futureNhsContentService.SaveContent(updateContentPropertyResult, cancellationToken);
 
-            if (result)
-            {
-                return response.Success(pageId.ToString(), "Success.");
-            }
-
-            errorList.Add("Error occured.");
-            return response.Failure(errorList, "Failed.");
+            return new ApiResponse<string>().Success(pageId.ToString(), "Page updated successfully.");
         }
 
-
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllPagesAsync(CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<ContentModel>> GetAllPages(CancellationToken cancellationToken)
         {
-            ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
             var contentModels = new List<ContentModel>();
             var pagesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
-            var publishedContent = await _futureNhsContentService.GetPublishedContentChildrenAsync(pagesFolderGuid, cancellationToken);
+            var publishedContent = _futureNhsContentService.GetPublishedContent(pagesFolderGuid, cancellationToken).Children;
 
             if (publishedContent is not null && publishedContent.Any())
             {
                 foreach (var content in publishedContent)
                 {
-                    contentModels.Add(await _futureNhsContentService.ResolvePublishedContentAsync(content, "content", cancellationToken));
+                    contentModels.Add(_futureNhsContentService.ResolvePublishedContent(content, "content", cancellationToken));
                 }
             }
 
-            return response.Success(contentModels, "Success.");
+            return new ApiResponse<IEnumerable<ContentModel>>().Success(contentModels, "All pages retrieved successfully.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> UpdateUserEditingContentAsync(Guid userId, Guid pageId, CancellationToken cancellationToken)
+        public ApiResponse<string> UpdateUserEditingContent(Guid userId, Guid pageId, CancellationToken cancellationToken)
         {
-            ApiResponse<string> response = new ApiResponse<string>();
-            bool result;
-
-            result = await _futureNhsContentService.UpdateUserEditingContentAsync(userId, pageId, cancellationToken);
-
-            if (result)
-            {
-                return response.Success(result.ToString(), "Success.");
-            }
-
-            errorList.Add("Could not update edit status.");
-            return response.Failure(errorList, "Failed.");
+            var page = _futureNhsContentService.GetDraftContent(pageId, cancellationToken);
+            var updatedPage = _futureNhsContentService.SetContentPropertyValue(page, "userEditing", page, cancellationToken);
+            _futureNhsContentService.SaveContent(updatedPage, cancellationToken);
+            return new ApiResponse<string>().Success(pageId.ToString(), "Page updated successfully.");
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> CheckPageEditStatusAsync(Guid pageId, CancellationToken cancellationToken)
+        public ApiResponse<string> CheckPageEditStatus(Guid pageId, CancellationToken cancellationToken)
         {
             ApiResponse<string> response = new ApiResponse<string>();
 
-            var draftPage = await _futureNhsContentService.GetDraftContentAsync(pageId, cancellationToken);
+            var draftPage = _futureNhsContentService.GetDraftContent(pageId, cancellationToken);
 
             if (!draftPage.Edited)
             {

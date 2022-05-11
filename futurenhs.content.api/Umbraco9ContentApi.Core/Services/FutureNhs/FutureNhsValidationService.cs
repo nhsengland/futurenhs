@@ -2,7 +2,7 @@
 {
     using System;
     using Umbraco.Cms.Core.Services;
-    using Umbraco9ContentApi.Core.Models;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
 
     public class FutureNhsValidationService : IFutureNhsValidationService
@@ -14,41 +14,12 @@
             _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
         }
 
-
-
-        public void ValidatePageContentModel(PageModel pageContentModel)
-        {
-            foreach (var block in pageContentModel.Blocks)
-            {
-                var contentType = _contentTypeService.Get(block.Item?.ContentType);
-
-                if (contentType is null)
-                {
-                    throw new ArgumentOutOfRangeException($"{block.Item?.ContentType} isn't a valid content type.");
-                }
-
-                var expectedValues = contentType.PropertyTypes.Select(x => x.Alias).ToList();
-                var blockValues = block.Content?.Select(x => x.Key.ToString()).ToList();
-
-                if (blockValues is not null)
-                {
-                    foreach (var value in blockValues)
-                    {
-                        if (!expectedValues.Contains(value))
-                            throw new ArgumentOutOfRangeException($"Fields do not match the expected fields for contentType {contentType.Name}.");
-                    }
-                }
-            }
-        }
-
-        public void ValidateContentModel(Models.Content.ContentModel contentModel)
+        public void ValidateContentModel(ContentModel contentModel)
         {
             var contentType = _contentTypeService.Get(contentModel.Item?.ContentType);
 
             if (contentType is null)
-            {
-                throw new ArgumentOutOfRangeException($"{contentModel.Item?.ContentType} isn't a valid content type.");
-            }
+                throw new KeyNotFoundException($"No content type for {contentModel.Item?.ContentType} found.");
 
             var expectedValues = contentType.PropertyTypes.Select(x => x.Alias).ToList();
             var blockValues = contentModel.Content?.Select(x => x.Key.ToString()).ToList();
@@ -58,7 +29,7 @@
                 foreach (var value in blockValues)
                 {
                     if (!expectedValues.Contains(value))
-                        throw new ArgumentOutOfRangeException($"Fields do not match the expected fields for contentType {contentType.Name}.");
+                        throw new ArgumentOutOfRangeException($"{contentType.Name}");
                 }
             }
         }
