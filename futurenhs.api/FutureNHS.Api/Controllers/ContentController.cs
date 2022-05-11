@@ -34,11 +34,11 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("page/{userId}/{groupId}")]
+        [Route("page/{userId:guid}/{groupId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
-        public async Task<IActionResult> CreatePageAsync(Guid userId, Guid groupId, [FromBody] GeneralWebPageCreateRequest createRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreatePageAsync(Guid userId, Guid groupId, [FromBody] CreatePageRequest createRequest, CancellationToken cancellationToken)
         {
-            var pageGuid = await _contentService.CreateContentAsync(userId, groupId, createRequest, cancellationToken);
+            var pageGuid = await _contentService.CreatePageAsync(userId, groupId, createRequest, cancellationToken);
             return new JsonResult(pageGuid);
         }
 
@@ -61,21 +61,21 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPut]
-        [Route("page/{pageId:guid}")]
+        [Route("page/{userId:guid}/{pageId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
-        public async Task<IActionResult> UpdatePageAsync(Guid? userId, Guid pageId, [FromBody] PageContentModel pageContent, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdatePageAsync(Guid userId, Guid pageId, [FromBody] PageModel pageContent, CancellationToken cancellationToken)
         {
-            var pageGuid = await _contentService.UpdateContentAsync(userId, pageId, pageContent, cancellationToken);
+            var pageGuid = await _contentService.UpdatePageAsync(userId, pageId, pageContent, cancellationToken);
             return new JsonResult(pageGuid);
         }
 
         [HttpDelete]
-        [Route("page/{pageId:guid}")]
+        [Route("page/{userId:guid}/{pageId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
-        public async Task<IActionResult> DeletePageAsync(Guid? userId, Guid pageId, CancellationToken cancellationToken, int? contentLevel = null)
+        public async Task<IActionResult> DeletePageAsync(Guid userId, Guid pageId, CancellationToken cancellationToken, int? contentLevel = null)
         {
-            var pageGuid = await _contentService.DeleteContentAsync(userId, pageId, contentLevel, cancellationToken);
-            return new JsonResult(pageGuid);
+            var response = await _contentService.DeleteContentAsync(userId, pageId, contentLevel, cancellationToken);
+            return new JsonResult(response);
         }
 
         [HttpPost]
@@ -87,13 +87,58 @@ namespace FutureNHS.Api.Controllers
             return Ok(pageGuid);
         }
 
+        [HttpDelete]
+        [Route("page/{pageId:guid}/discard")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        public async Task<IActionResult> DiscardPageDraftAsync(Guid pageId, CancellationToken cancellationToken)
+        {
+            var response = await _contentService.DiscardDraftContentAsync(pageId, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPut]
+        [Route("page/{userId:guid}/{pageId:guid}/user")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        public async Task<IActionResult> UpdateUserEditingContentAsync(Guid userId, Guid pageId, CancellationToken cancellationToken)
+        {
+            var response = await _contentService.UpdateUserEditingContentAsync(userId, pageId, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("page/{userId:guid}/{pageId:guid}/editStatus")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        public async Task<IActionResult> CheckPageEditStatusAsync(Guid userId, Guid pageId, CancellationToken cancellationToken)
+        {
+            var response = await _contentService.CheckPageEditStatusAsync(userId, pageId, cancellationToken);
+            return Ok(response);
+        }
+
         [HttpGet]
         [Route("block")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
-        public async Task<IActionResult> GetAllBlocks()
+        public async Task<IActionResult> GetAllBlocksAsync()
         {
             var blocks = await _contentDataProvider.GetAllBlocksAsync();
             return new JsonResult(blocks);
+        }
+
+        [HttpPost]
+        [Route("block/{userId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
+        public async Task<IActionResult> CreateBlockAsync(Guid userId, [FromBody] CreateBlockRequest createRequest, CancellationToken cancellationToken)
+        {
+            var pageGuid = await _contentService.CreateBlockAsync(userId, createRequest, cancellationToken);
+            return new JsonResult(pageGuid);
+        }
+
+        [HttpDelete]
+        [Route("block/{userId:guid}/{blockId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        public async Task<IActionResult> DeleteBlockAsync(Guid userId, Guid blockId, CancellationToken cancellationToken, int? contentLevel = null)
+        {
+            var response = await _contentService.DeleteContentAsync(userId, blockId, contentLevel, cancellationToken);
+            return new JsonResult(response);
         }
 
         [HttpGet]

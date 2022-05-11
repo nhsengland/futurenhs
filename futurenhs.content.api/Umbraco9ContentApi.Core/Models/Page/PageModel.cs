@@ -3,7 +3,7 @@ using Umbraco9ContentApi.Core.Models.Content;
 
 namespace Umbraco9ContentApi.Core.Models
 {
-    public class PageContentModel
+    public class PageModel
     {
         [JsonProperty("blocks")]
         public ContentModel[] Blocks { get; set; }

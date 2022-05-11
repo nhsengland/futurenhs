@@ -10,6 +10,7 @@ namespace Umbraco9ContentApi.Test.Handler
     using System.Threading;
     using System.Threading.Tasks;
     using Umbraco.Cms.Core.Models.PublishedContent;
+    using Umbraco.Cms.Core.Services;
     using Umbraco9ContentApi.Core.Models.Content;
     using Assert = Xunit.Assert;
 
@@ -18,7 +19,9 @@ namespace Umbraco9ContentApi.Test.Handler
     {
         private Mock<IFutureNhsContentService> _mockFutureNhsContentService = new Mock<IFutureNhsContentService>();
         private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService = new Mock<IFutureNhsBlockService>();
-        private IConfiguration? _config;
+        private Mock<IFutureNhsValidationService> _mockFutureNhsValidationService = new Mock<IFutureNhsValidationService>();
+        private Mock<IContentTypeService> _mockContentTypeService = new Mock<IContentTypeService>();
+        private IConfiguration _config;
         private CancellationToken cancellationToken;
 
         #region Get All Blocks Tests
@@ -115,12 +118,14 @@ namespace Umbraco9ContentApi.Test.Handler
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns></returns>
-        private FutureNhsBlockHandler GetHandler(IConfiguration? config)
+        private FutureNhsBlockHandler GetHandler(IConfiguration config)
         {
-            var handler = new FutureNhsBlockHandler(
+            var handler = new FutureNhsBlockHandler(config,
                 _mockFutureNhsContentService.Object,
                 _mockFutureNhsBlockService.Object,
-                config);
+                _mockFutureNhsValidationService.Object,
+                _mockContentTypeService.Object
+                );
 
             return handler;
         }

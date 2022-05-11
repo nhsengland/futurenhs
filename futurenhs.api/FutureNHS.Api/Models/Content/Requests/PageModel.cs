@@ -1,6 +1,6 @@
 ﻿namespace FutureNHS.Api.Models.Content.Requests
 {
-    public class PageContentModel
+    public class PageModel
     {
         public ContentModel[]? Blocks { get; set; }
     }

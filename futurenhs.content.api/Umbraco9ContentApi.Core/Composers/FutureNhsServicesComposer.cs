@@ -7,7 +7,6 @@
     using Umbraco9ContentApi.Core.Converters;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
-    using Umbraco9ContentApi.Core.Resolvers;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using Umbraco9ContentApi.Core.Services.FutureNhs;
     using UmbracoContentApi.Core;
@@ -33,6 +32,7 @@
             builder.Services.AddScoped<IFutureNhsBlockHandler, FutureNhsBlockHandler>();
             builder.Services.AddScoped<IFutureNhsTemplateHandler, FutureNhsTemplateHandler>();
             builder.Services.AddScoped<IFutureNhsSiteMapHandler, FutureNhsSiteMapHandler>();
+            builder.Services.AddScoped<IFutureNhsPageHandler, FutureNhsPageHandler>();
 
             // Converters
             builder.Converters().Replace<MultinodeTreepickerConverter, BlockPickerConverter>();
