@@ -13,7 +13,7 @@ Scenario: FNHS31 - Edit Group Information Page Validation
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
     And the 'Group name' field contains 'Automation Editable Group'
-    And the 'Strap line' text area contains 'DO NOT USE - This group is reserved solely for use by our automated test scripts'
+    And the 'Strap line' field contains 'DO NOT USE - This group is reserved solely for use by our automated test scripts'
     And the 'Logo (optional)' label is displayed
     And the 'Save and close' button is displayed
     And the 'Discard changes' link is displayed
@@ -25,7 +25,7 @@ Scenario: FNHS33 - Edit Group Information
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
     When I enter 'Automation Edited Group' into the 'Group name' field
-    And I enter 'Strapline' into the 'Strap line' text area
+    And I enter 'Strapline' into the 'Strap line' field
     And I click the 'Save and close' button
     Then the 'Automation Edited Group' header is displayed
     And the 'Strapline' textual value is displayed
@@ -37,7 +37,7 @@ Scenario Outline: FNHS34 - Edit Group Information error validation
     When I select 'Edit group information' from the actions accordion
     Then the 'Edit group information' header is displayed
     When I enter '<name>' into the 'Group name' field
-    And I enter '<strapline>' into the 'Strap line' text area
+    And I enter '<strapline>' into the 'Strap line' field
     And I click the 'Save and close' button
     Then the 'There is a problem' textual value is displayed
     Then the '<error message>' error summary is displayed
@@ -46,7 +46,7 @@ Examples:
     | name                      | strapline      | error message                  |
     |                           | Strapline      | Enter the group name           | 
     | [STRING: 256]             | Strapline      | Enter 255 or fewer characters  |
-    | Automation Edited Group   | [STRING: 1001] | Enter 1000 or fewer characters |
+    | Automation Edited Group   | [STRING: 256]  | Enter 255 or fewer characters  |
 
 
 Scenario Outline: FNHS35 - Edit group information change logo

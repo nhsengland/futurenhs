@@ -70,7 +70,7 @@ Scenario Outline: FNHS23 - Create a group
     Then the 'Create a group' header is displayed
     And the 'Discard group' link is displayed
     When I enter '<groupname>' into the 'Group name' field
-    And I enter '<strapline>' into the 'Strap line' text area
+    And I enter '<strapline>' into the 'Strap line' field
     And I select the 'Theme' radio button for 'Choose your theme colour'
     And I choose 'auto Admin' from the 'Group owner' auto suggest list
     And I choose 'auto Admin' from the 'Group administrators' auto suggest list
@@ -82,7 +82,7 @@ Examples:
     | groupname                | strapline                              |
     | Automation Created Group | A group created to test group creation |
     | [STRING: 255]            | Automation group name char length test |
-    | Auto 1000 Strapline Test | [STRING: 1000]                         |
+    | Auto 255 Strapline Test  | [STRING: 255]                          |
     
 
 Scenario Outline: FNHS24 - Create a group error validation
@@ -93,7 +93,7 @@ Scenario Outline: FNHS24 - Create a group error validation
     Then the 'Create a group' header is displayed
     And the 'Discard group' link is displayed
     When I enter '<groupname>' into the 'Group name' field
-    And I enter '<strapline>' into the 'Strap line' text area
+    And I enter '<strapline>' into the 'Strap line' field
     And I choose '<owner>' from the 'Group owner' auto suggest list
     And I click the 'Save and create group' button
     Then the '<error message>' error summary is displayed
@@ -102,7 +102,7 @@ Examples:
     | groupname     | strapline      | owner      | error message                  |
     |               | strapline      | auto Admin | Enter the group name           |
     | [STRING: 256] | strapline      | auto Admin | Enter 255 or fewer characters  | 
-    | groupname     | [STRING: 1001] | auto Admin | Enter 1000 or fewer characters | 
+    | groupname     | [STRING: 256]  | auto Admin | Enter 255 or fewer characters  | 
     | groupname     | strapline      | auto Admin | Select the group theme         |
     | groupname     | strapline      |            | Enter a valid group owner      |
 
