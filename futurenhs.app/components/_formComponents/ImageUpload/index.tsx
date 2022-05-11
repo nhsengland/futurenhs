@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
+import { Field } from 'react-final-form'
 import classNames from 'classnames'
 
 import { RichText } from '@components/RichText'
@@ -21,6 +22,10 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
     const [shouldRenderClearFileInput, setShouldRenderClearFileInput] =
         useState(false)
     const [shouldDisableClearFileInput, setShouldDisableClearFileInput] =
+        useState(false)
+    const [shouldClearFile, setShouldClearFile] =
+        useState(false)
+    const [hasClearedFile, setHasClearedFile] =
         useState(false)
 
     const { label, hint } = text ?? {}
@@ -63,8 +68,7 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
     const handleClearFile = (event: any) => {
         event.preventDefault()
 
-        fileIdInput.current.value = ''
-        setShouldRenderClearFileInput(false)
+        setShouldClearFile(true);
     }
 
     useEffect(() => {
@@ -114,6 +118,26 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
                     Clear existing image
                 </button>
             )}
+            {relatedFields?.fileId &&
+                <Field name={relatedFields.fileId} subscription={{}}>
+                    {({ input: { onChange } }) => {
+    
+                        if(shouldClearFile && !hasClearedFile){
+        
+                            setTimeout(() => {
+
+                                onChange('');
+                                setHasClearedFile(true);
+                                setShouldRenderClearFileInput(false)
+
+                            }, 0);
+    
+                        }
+    
+                        return (null)
+                    }}
+                </Field>
+            }
         </div>
     )
 }
