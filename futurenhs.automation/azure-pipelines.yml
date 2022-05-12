@@ -10,9 +10,7 @@ trigger:
 jobs:
 - job:
   pool:
-    name: Azure Pipelines
     vmImage: windows-latest
-    demands: npm
 
   steps:
     - task: Npm@1
