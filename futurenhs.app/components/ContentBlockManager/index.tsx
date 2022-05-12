@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import deepEquals from 'fast-deep-equal';
+import FlipMove from 'react-flip-move';
 
 import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName';
 import { useTheme } from '@hooks/useTheme';
@@ -179,20 +180,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleMoveBlockPrevious = (instanceId: string): void => {
 
-        const index: number = blocks.findIndex((block) => block.instanceId === instanceId);
-        const targetIndex: number = index - 1;
-        const updatedBlocks = moveArrayItem(blocks, index, targetIndex);
-
-        setBlocks(updatedBlocks);
-        blocksChangeAction?.(updatedBlocks);
-
-        setTimeout(() => {
-
-            const targetSelector: string = updatedBlocks[targetIndex].instanceId;
-
-            document.getElementById(targetSelector)?.focus()
-
-        }, 0)
+        handleMoveBlock(instanceId, -1);
 
     }
 
@@ -201,18 +189,34 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleMoveBlockNext = (instanceId: string): void => {
 
+        handleMoveBlock(instanceId, 1);
+
+    }
+
+    /**
+     * Handle moving a block instance in the active block list
+     */
+    const handleMoveBlock = (instanceId: string, offSet: number): void => {
+
         const index: number = blocks.findIndex((block) => block.instanceId === instanceId);
-        const targetIndex: number = index + 1;
+        const targetIndex: number = index + offSet;
         const updatedBlocks = moveArrayItem(blocks, index, targetIndex);
 
-        setBlocks(updatedBlocks);
-        blocksChangeAction?.(updatedBlocks);
+        setBlockIdsInEditMode([]);
 
         setTimeout(() => {
 
-            const targetSelector: string = updatedBlocks[targetIndex].instanceId;
+            setBlocks(updatedBlocks);
 
-            document.getElementById(targetSelector)?.focus()
+            blocksChangeAction?.(updatedBlocks);
+
+            setTimeout(() => {
+
+                const targetSelector: string = updatedBlocks[targetIndex].instanceId;
+
+                document.getElementById(targetSelector)?.focus()
+
+            }, 0)
 
         }, 0)
 
@@ -223,7 +227,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleSetEditableBlockToReadMode = (instanceId: string): void => {
 
-        if(blockIdsInEditMode.includes(instanceId) && !localErrors.current[instanceId]){
+        if (blockIdsInEditMode.includes(instanceId) && !localErrors.current[instanceId]) {
 
             const index: number = blockIdsInEditMode.findIndex((item) => item === instanceId);
             const updatedBlockIdsInEditMode: Array<string> = deleteArrayItem(blockIdsInEditMode, index);
@@ -241,7 +245,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         const updatedBlockIdsInEditMode: Array<string> = [...blockIdsInEditMode];
 
-        if(!updatedBlockIdsInEditMode.includes(instanceId)){
+        if (!updatedBlockIdsInEditMode.includes(instanceId)) {
 
             updatedBlockIdsInEditMode.push(instanceId);
             setBlockIdsInEditMode(updatedBlockIdsInEditMode);
@@ -396,7 +400,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 const isEventInBlock: boolean = document.getElementById(instanceId)?.contains(event.target);
                 const blockHasErrors: boolean = localErrors.current.hasOwnProperty(instanceId);
 
-                if(isEventInBlock || blockHasErrors){
+                if (isEventInBlock || blockHasErrors) {
 
                     updatedBlockIdsInEditMode.push(instanceId);
 
@@ -404,7 +408,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
             });
 
-            if(!deepEquals(blockIdsInEditMode, updatedBlockIdsInEditMode)){
+            if (!deepEquals(blockIdsInEditMode, updatedBlockIdsInEditMode)) {
 
                 setBlockIdsInEditMode(updatedBlockIdsInEditMode);
 
@@ -476,7 +480,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        if(blockIdsInEditMode.length > 0 && (mode === cprud.READ || mode === cprud.PREVIEW)){
+        if (blockIdsInEditMode.length > 0 && (mode === cprud.READ || mode === cprud.PREVIEW)) {
 
             setBlockIdsInEditMode([]);
 
@@ -605,45 +609,50 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 <>
                     {hasBlocks &&
                         <ul className="u-list-none u-p-0">
-                            {blocks?.map((block: CmsContentBlock, index: number) => {
+                            <FlipMove
+                                disableAllAnimations={mode !== cprud.UPDATE}
+                                enterAnimation="fade"
+                                leaveAnimation="fade"
+                                duration={200}>
+                                {blocks?.map((block: CmsContentBlock, index: number) => {
 
-                                const { instanceId, item } = block;
+                                    const { instanceId, item } = block;
 
-                                const shouldRenderMovePrevious: boolean = index > 0;
-                                const shouldRenderMoveNext: boolean = index < blocks.length - 1;
-                                const isInEditMode: boolean = blockIdsInEditMode.includes(instanceId);
-                                const initialErrors: FormErrors = localErrors.current[instanceId] ?? {};
+                                    const shouldRenderMovePrevious: boolean = index > 0;
+                                    const shouldRenderMoveNext: boolean = index < blocks.length - 1;
+                                    const isInEditMode: boolean = blockIdsInEditMode.includes(instanceId);
+                                    const initialErrors: FormErrors = localErrors.current[instanceId] ?? {};
 
-                                return (
+                                    return (
 
-                                    <li key={index + block.instanceId} className="u-mb-10">
-                                        <ContentBlock
-                                            mode={mode}
-                                            instanceId={instanceId}
-                                            typeId={item.contentType}
-                                            themeId={themeId}
-                                            block={block}
-                                            initialErrors={initialErrors}
-                                            isEditable={isEditable}
-                                            isInEditMode={isInEditMode}
-                                            shouldRenderMovePrevious={shouldRenderMovePrevious}
-                                            shouldRenderMoveNext={shouldRenderMoveNext}
-                                            movePreviousAction={handleMoveBlockPrevious}
-                                            moveNextAction={handleMoveBlockNext}
-                                            changeAction={handleUpdateBlock}
-                                            deleteAction={handleDeleteBlock}
-                                            enterReadModeAction={handleSetEditableBlockToReadMode}
-                                            enterUpdateModeAction={handleSetEditableBlockToUpdateMode}
-                                            text={{
-                                                name: item.name
-                                            }} />
-                                    </li>
+                                        <li key={index + block.instanceId} className="u-mb-10">
+                                            <ContentBlock
+                                                mode={mode}
+                                                instanceId={instanceId}
+                                                typeId={item.contentType}
+                                                themeId={themeId}
+                                                block={block}
+                                                initialErrors={initialErrors}
+                                                isEditable={isEditable}
+                                                isInEditMode={isInEditMode}
+                                                shouldRenderMovePrevious={shouldRenderMovePrevious}
+                                                shouldRenderMoveNext={shouldRenderMoveNext}
+                                                movePreviousAction={handleMoveBlockPrevious}
+                                                moveNextAction={handleMoveBlockNext}
+                                                changeAction={handleUpdateBlock}
+                                                deleteAction={handleDeleteBlock}
+                                                enterReadModeAction={handleSetEditableBlockToReadMode}
+                                                enterUpdateModeAction={handleSetEditableBlockToUpdateMode}
+                                                text={{
+                                                    name: item.name
+                                                }} />
+                                        </li>
 
 
-                                )
+                                    )
 
-                            })}
-
+                                })}
+                            </FlipMove>
                         </ul>
                     }
                     {(mode === cprud.UPDATE && hasTemplateBlocks) &&
