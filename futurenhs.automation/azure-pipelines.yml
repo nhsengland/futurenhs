@@ -14,6 +14,7 @@ jobs:
         workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
         
     - script: 'npm test $(TESTSUITE)'
+      workingDirectory: '$(Build.SourcesDirectory)/futurenhs.automation'
       displayName: 'Execute Tests'
     - task: PublishTestResults@2
       displayName: 'Publish Test Results **/wdio-*.log'
