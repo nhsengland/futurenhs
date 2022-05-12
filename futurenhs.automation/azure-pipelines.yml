@@ -11,6 +11,8 @@ jobs:
         command: custom
         verbose: false
         customCommand: 'i -force'
+        workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
+        
     - script: 'npm test $(TESTSUITE)'
       displayName: 'Execute Tests'
     - task: PublishTestResults@2
