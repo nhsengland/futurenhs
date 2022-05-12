@@ -43,10 +43,10 @@ Scenario Outline: FNHS34 - Edit Group Information error validation
     Then the '<error message>' error summary is displayed
     And the '<error message>' textual value is displayed
 Examples:
-    | name                      | strapline      | error message                  |
-    |                           | Strapline      | Enter the group name           | 
-    | [STRING: 256]             | Strapline      | Enter 255 or fewer characters  |
-    | Automation Edited Group   | [STRING: 256]  | Enter 255 or fewer characters  |
+    | name                    | strapline      | error message                  |
+    |                         | Strap line     | Enter the group name           | 
+    | [STRING: 256]           | Strapline      | Enter 255 or fewer characters  |
+    | Automation Edited Group | [STRING: 256]  | Enter 255 or fewer characters  |
 
 
 Scenario Outline: FNHS35 - Edit group information change logo
