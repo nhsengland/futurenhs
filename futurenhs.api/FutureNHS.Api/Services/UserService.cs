@@ -10,11 +10,6 @@ using FutureNHS.Api.Models.Member;
 using FutureNHS.Api.Services.Interfaces;
 using FutureNHS.Api.Services.Validation;
 using HeyRed.Mime;
-using System.Security;
-using FutureNHS.Api.Application.Application.HardCodedSettings;
-using FutureNHS.Api.Configuration;
-using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
-using FutureNHS.Api.DataAccess.DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.WebUtilities;
@@ -22,7 +17,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using System.Data;
 using System.Net;
-using System.Net.Mail;
 using System.Security;
 using System.Text;
 
@@ -45,7 +39,7 @@ namespace FutureNHS.Api.Services
         private readonly IImageBlobStorageProvider _blobStorageProvider;
 
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
-        private const long MaxFileSizeBytes = 500000; // 500kb
+        private const long MaxFileSizeBytes = 5242880; // 5MB
 
         // Notification template Ids
         private readonly string _registrationEmailId;
@@ -131,15 +125,7 @@ namespace FutureNHS.Api.Services
                 if (userValidationResult.Errors.Count > 0)
                     throw new ValidationException(userValidationResult);
             }
-
-            if (image is not null)
-            {
-                var imageValidator = new ImageValidator();
-                var imageValidationResult = await imageValidator.ValidateAsync(image, cancellationToken);
-                if (imageValidationResult.Errors.Count > 0)
-                    throw new ValidationException(imageValidationResult);
-            }
-
+            
             try
             {
                 if (image is not null)
@@ -238,6 +224,15 @@ namespace FutureNHS.Api.Services
                                 CreatedBy = targetUserId,
                                 CreatedAtUtc = now
                             };
+
+                            var imageValidator = new ImageValidator(MaxFileSizeBytes);
+                            var imageValidationResult = await imageValidator.ValidateAsync(imageDto, cancellationToken);
+                            if (imageValidationResult.Errors.Count > 0)
+                            {
+                                await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
+                                _logger.LogError("File size:{0} is greater than the max allowed size:{1}", size, MaxFileSizeBytes);
+                                throw new ValidationException(imageValidationResult);
+                            }
                         }
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
