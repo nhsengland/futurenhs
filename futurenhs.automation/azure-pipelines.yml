@@ -17,6 +17,7 @@ jobs:
     - script: 'npm test $(TESTSUITE)'
       workingDirectory: '$(Build.SourcesDirectory)/futurenhs.automation'
       displayName: 'Execute Tests'
+      continueOnError: true
     - task: PublishTestResults@2
       displayName: 'Publish Test Results **/wdio-*.log'
       inputs:
