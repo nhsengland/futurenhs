@@ -1,0 +1,21 @@
+jobs:
+- job:
+  pool:
+    name: Azure Pipelines
+    vmImage: windows-latest
+    demands: npm
+
+  steps:
+    - task: Npm@1
+      displayName: 'Npm install'
+      inputs:
+       command: 'install'
+
+
+    - script: 'npm test $(TESTSUITE)'
+      displayName: 'Execute Tests'
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results **/wdio-*.log'
+      inputs:
+        testResultsFiles: '**/wdio-*.log'
