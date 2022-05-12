@@ -1,10 +1,15 @@
-﻿using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
+﻿using FutureNHS.Api.Application.Application.HardCodedSettings;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
+using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Helpers.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Validation;
+using Ganss.XSS;
 using HeyRed.Mime;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Features;
@@ -14,11 +19,6 @@ using System.Data;
 using System.Net;
 using System.Security;
 using System.Text;
-using FutureNHS.Api.Application.Application.HardCodedSettings;
-using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.Exceptions;
-using Ganss.XSS;
-using FutureNHS.Api.Services.Validation;
 
 namespace FutureNHS.Api.Services
 {
@@ -38,7 +38,7 @@ namespace FutureNHS.Api.Services
 
 
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
-        private const long MaxFileSizeBytes = 500000; // 500kb
+        private const long MaxFileSizeBytes = 5242880; // 5MB
 
         public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, 
             IImageBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupImageService imageService, IGroupCommand groupCommand,
@@ -123,14 +123,6 @@ namespace FutureNHS.Api.Services
             var groupValidationResult = await groupValidator.ValidateAsync(group, cancellationToken);
             if (groupValidationResult.Errors.Count > 0)
                 throw new ValidationException(groupValidationResult);
-
-            if (image is not null)
-            {
-                var imageValidator = new ImageValidator();
-                var imageValidationResult = await imageValidator.ValidateAsync(image, cancellationToken);
-                if (imageValidationResult.Errors.Count > 0)
-                    throw new ValidationException(imageValidationResult);
-            }
 
             try
             {
@@ -235,14 +227,6 @@ namespace FutureNHS.Api.Services
                             // trick to get the size without reading the stream in memory
                             var size = section.Body.Position;
 
-                            // check size limit in case somehow a larger file got through. we can't do it until after the upload because we don't want to put the stream in memory
-                            if (MaxFileSizeBytes < size)
-                            {
-                                await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
-                                _logger.LogError("File size:{0} is greater than the max allowed size:{1}", size, MaxFileSizeBytes);
-                                throw new ConstraintException("File size is greater than the max allowed size");
-                            }
-
                             // TODO MimeDetective does not work when stream has already been uploaded - figure out a solution
                             //if (fileContentTypeMatchesExtension is false)
                             //{
@@ -262,6 +246,15 @@ namespace FutureNHS.Api.Services
                                 CreatedBy = userId,
                                 CreatedAtUtc = now
                             };
+
+                            var imageValidator = new ImageValidator(MaxFileSizeBytes);
+                            var imageValidationResult = await imageValidator.ValidateAsync(imageDto, cancellationToken);
+                            if (imageValidationResult.Errors.Count > 0)
+                            {
+                                await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
+                                _logger.LogError("File size:{0} is greater than the max allowed size:{1}", size, MaxFileSizeBytes);
+                                throw new ValidationException(imageValidationResult);
+                            }
                         }
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))

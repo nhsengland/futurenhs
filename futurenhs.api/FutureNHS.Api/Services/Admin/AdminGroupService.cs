@@ -38,7 +38,7 @@ namespace FutureNHS.Api.Services.Admin
 
         // Notification template Ids
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
-        private const long MaxFileSizeBytes = 500000; // 500kb
+        private const long MaxFileSizeBytes = 5242880; // 5MB
 
         public AdminGroupService(ISystemClock systemClock,
             ILogger<AdminGroupService> logger,
@@ -71,11 +71,7 @@ namespace FutureNHS.Api.Services.Admin
             var (group, image) = await AdminUploadGroupImageMultipartContent(userId, requestBody, contentType, cancellationToken);
  
             if (image is not null)
-            {
-                var imageValidator = new ImageValidator();
-                var imageValidationResult = await imageValidator.ValidateAsync(image, cancellationToken);
-                if (imageValidationResult.Errors.Count > 0)
-                    throw new ValidationException(imageValidationResult);
+            {                
                 try
                 {
                     var imageId = await _imageService.CreateImageAsync(image);
@@ -199,6 +195,15 @@ namespace FutureNHS.Api.Services.Admin
                                 CreatedBy = userId,
                                 CreatedAtUtc = now
                             };
+
+                            var imageValidator = new ImageValidator(MaxFileSizeBytes);
+                            var imageValidationResult = await imageValidator.ValidateAsync(imageDto, cancellationToken);
+                            if (imageValidationResult.Errors.Count > 0)
+                            {
+                                await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
+                                _logger.LogError("File size:{0} is greater than the max allowed size:{1}", size, MaxFileSizeBytes);
+                                throw new ValidationException(imageValidationResult);
+                            }
                         }
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
