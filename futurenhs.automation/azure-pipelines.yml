@@ -22,3 +22,4 @@ jobs:
       displayName: 'Publish Test Results **/wdio-*.log'
       inputs:
         testResultsFiles: '**/wdio-*.log'
+        mergeTestResults: true
