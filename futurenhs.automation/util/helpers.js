@@ -80,5 +80,15 @@ class Helpers{
     },{timeout: 10000, timeoutMsg: `never found an enabled element for "${elementQuery}"`})
     return result[instance-1]
   }
+
+  /**
+   * helper to clear all textual content of a field, "CTRL + A, DEL"
+   * @param {*} field - field that contains the content to be cleared
+   */
+  clearField(field){        
+    field.click()
+    browser.keys(['Control', 'a'])
+    browser.keys('Delete')
+  }
 }
 module.exports = new Helpers()
