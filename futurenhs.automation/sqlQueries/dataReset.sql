@@ -20,9 +20,9 @@ BEGIN TRANSACTION
 	-- Delete posts made as part of forumSubmission.feature
 	DECLARE @forumSubmissionTopic AS uniqueidentifier;
 	SELECT @forumSubmissionTopic = Entity_Id FROM [dbo].[Discussion] WHERE Title = 'forumSubmission Discussion';
-	INSERT INTO @entityTable (id) SELECT Entity_Id FROM [dbo].[Comment] WHERE Content LIKE '%Comment posted by the automation%' AND Parent_EntityId = @forumSubmissionTopic;
-	INSERT INTO @entityTable (id) SELECT Entity_Id FROM [dbo].[Comment] WHERE Content LIKE '%This is a reply%' AND Parent_EntityId = @forumSubmissionTopic;
-	INSERT INTO @entityTable (id) SELECT Entity_Id FROM [dbo].[Comment] WHERE Content LIKE '%This is another reply%' AND Parent_EntityId = @forumSubmissionTopic;
+	INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Comment] WHERE Content LIKE '%Comment posted by the automation%' AND Parent_EntityId = @forumSubmissionTopic;
+	INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Comment] WHERE Content LIKE '%This is a reply%' AND Parent_EntityId = @forumSubmissionTopic;
+	INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Comment] WHERE Content LIKE '%This is another reply%' AND Parent_EntityId = @forumSubmissionTopic;
 	DELETE [dbo].[Comment] WHERE [dbo].[Comment].Content LIKE '%Comment posted by the automation%' AND Parent_EntityId = @forumSubmissionTopic;
 	DELETE [dbo].[Comment] WHERE [dbo].[Comment].Content LIKE '%This is a reply%' AND Parent_EntityId = @forumSubmissionTopic;
 	DELETE [dbo].[Comment] WHERE [dbo].[Comment].Content LIKE '%This is another reply%' AND Parent_EntityId = @forumSubmissionTopic;
@@ -30,10 +30,17 @@ BEGIN TRANSACTION
 	-- Delete discussions generated as part of forumAdmin.feature
 	DECLARE @automationDiscussions AS uniqueidentifier;
 	SELECT @automationDiscussions = Entity_Id FROM [dbo].[Discussion] WHERE CreatedBy = @groupAdmin;
-	INSERT INTO @entityTable (id) SELECT Entity_Id FROM [dbo].[Comment] WHERE CreatedBy = @groupAdmin;
-	INSERT INTO @entityTable (id) SELECT Entity_Id FROM [dbo].[Discussion] WHERE CreatedBy = @groupAdmin;
+	INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Comment] WHERE CreatedBy = @groupAdmin;
+	INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Discussion] WHERE CreatedBy = @groupAdmin;
 	DELETE [dbo].[Comment] WHERE Parent_EntityId = @automationDiscussions;
 	DELETE [dbo].[Discussion] WHERE CreatedBy = @groupAdmin;
+
+	--Delete images that have been uploaded
+	DELETE FROM [dbo].[Image]
+	WHERE [Id] IN (
+		(SELECT ImageId FROM [MembershipUser] WHERE email = 'autoEditUser@test.co.uk'),
+		(SELECT ImageId FROM [Group] WHERE Name = 'Automation Edited Group')
+	)
 
 	-- Delete Folder generated as part of filesManagement.feature
 	DECLARE @adminGroup AS uniqueidentifier;
@@ -121,4 +128,4 @@ BEGIN TRANSACTION
     -- Re-enable constraints for all tables:
     EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';	
 
-ROLLBACK TRANSACTION
+rollback TRANSACTION
