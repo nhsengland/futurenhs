@@ -5,10 +5,6 @@ jobs:
     vmImage: windows-latest
     demands: npm
 
-    variables:
-    - name: TESTSUITE
-      value: pipeline
-
   steps:
     - task: Npm@1
       displayName: 'npm install'
