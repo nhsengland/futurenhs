@@ -39,11 +39,8 @@ class formPage extends basePage{
         var fieldLabel = this.findLabel(label);
         var fieldInput = fieldLabel.parentElement().$('input');
         helpers.waitForLoaded(fieldInput);
-        if(valueToSet === null){
-            helpers.clearField(fieldInput);
-        } else {
-            fieldInput.setValue(valueToSet);
-        }
+        helpers.clearElement(fieldInput);
+        fieldInput.addValue(valueToSet);
         browser.keys('Tab');    
     }
 
@@ -56,11 +53,8 @@ class formPage extends basePage{
         var fieldLabel = this.findLabel(label);
         var areaInput = fieldLabel.parentElement().$('textarea');
         helpers.waitForLoaded(areaInput);
-        if(valueToSet === null){
-            helpers.clearField(areaInput);
-        } else {
-            areaInput.setValue(valueToSet);
-        }
+        helpers.clearElement(areaInput);
+        areaInput.addValue(valueToSet);
         browser.keys('Tab');
     }
 
