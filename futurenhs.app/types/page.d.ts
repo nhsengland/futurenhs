@@ -34,7 +34,7 @@ export interface Page {
 
 export interface GroupPage extends Page {
     groupId?: string;
-    tabId: 'index' | 'forum' | 'files' | 'members';
+    tabId: 'index' | 'forum' | 'files' | 'members' | 'about';
     imageId?: string;
     image: Image;
     contentText: GroupsPageTextContent;
