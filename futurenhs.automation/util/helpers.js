@@ -82,11 +82,11 @@ class Helpers{
   }
 
   /**
-   * helper to clear all textual content of a field, "CTRL + A, DEL"
-   * @param {*} field - field that contains the content to be cleared
+   * helper to clear all textual content of a element, "CTRL + A, DEL"
+   * @param {*} element - element that contains the content to be cleared
    */
-  clearField(field){        
-    field.click()
+   clearElement(element){        
+    this.click(element)
     browser.keys(['Control', 'a'])
     browser.keys('Delete')
   }
