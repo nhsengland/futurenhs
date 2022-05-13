@@ -177,6 +177,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,[CreatedAtUtc]
                                 ,[GroupOwner]
                                 ,[Subtitle]
+                                ,[ThemeId]
                                 ,[Slug]
                                 ,[CreatedBy]
                                 ,[ImageId])
@@ -187,6 +188,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,@CreatedAtUtc
                                 ,@GroupOwner
                                 ,@Subtitle
+                                ,@ThemeId
                                 ,@Slug
                                 ,@CreatedBy
                                 ,@ImageId)";
@@ -202,6 +204,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 CreatedAtUtc = groupDto.CreatedAtUtc,
                 GroupOwner = groupDto.GroupOwnerId,
                 Subtitle = groupDto.Strapline,
+                ThemeId = groupDto.ThemeId,
                 Slug = groupDto.Slug,
                 CreatedBy = userId,
                 ImageId = groupDto.ImageId,
