@@ -39,4 +39,5 @@ export const enum groupTabIds {
     FORUM = 'forum',
     FILES = 'files',
     MEMBERS = 'members',
+    ABOUT = 'about'
 }
