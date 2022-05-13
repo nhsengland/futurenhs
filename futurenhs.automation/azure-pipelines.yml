@@ -13,12 +13,16 @@ jobs:
     vmImage: windows-latest
 
   steps:
+    - task: NodeTool@0
+      displayName: 'Use Node 14.15.0'
+      inputs:
+        versionSpec: 14.15.0
     - task: Npm@1
       displayName: 'npm install'
       inputs:
         command: custom
         verbose: false
-        customCommand: 'i -force'
+        customCommand: 'i'
         workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
         
     - script: 'npm test $(TESTSUITE)'
