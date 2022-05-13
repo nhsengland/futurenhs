@@ -49,6 +49,25 @@ export const withGroup = (
                 ...(props.actions ?? []),
                 ...(actionsData.data ?? []),
             ]
+
+
+            /**
+             * TODO: Determine whether user has access to group when back-end permissions work is complete
+             */
+            const hasAccessToGroup: boolean = true;
+            const isAboutPage: boolean = context.resolvedUrl?.endsWith('/about')
+
+            if (!hasAccessToGroup && !isAboutPage) {
+                return {
+                    props,
+                    redirect: {
+                        permanent: false,
+                        destination: props.routes.groupAboutRoot
+                    }
+                }
+
+            }
+
         } catch (error) {
             return handleSSRErrorProps({ props, error })
         }

@@ -58,6 +58,9 @@ export const withRoutes = (
                     groupMembersRoot: groupIndexRoute
                         ? `${groupIndexRoute}/members`
                         : null,
+                    groupAboutRoot: groupIndexRoute
+                        ? `${groupIndexRoute}/about`
+                        : null,
                 },
             })
         } catch (error) {
