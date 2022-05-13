@@ -82,7 +82,7 @@ export const AdminCreateGroupTemplate: (props: Props) => JSX.Element = ({
                                 user: user
                             }}
                             submitAction={handleSubmit}
-                            cancelHref={routes.siteRoot}
+                            cancelHref={routes.adminGroupsRoot}
                             shouldClearOnSubmitSuccess={true}
                             bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1">
                                 <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
