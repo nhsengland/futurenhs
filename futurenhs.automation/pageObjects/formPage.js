@@ -38,7 +38,6 @@ class formPage extends basePage{
     inputFieldSet(valueToSet, label){
         var fieldLabel = this.findLabel(label);
         var fieldInput = fieldLabel.parentElement().$('input');
-        helpers.waitForLoaded(fieldInput);
         helpers.clearElement(fieldInput);
         fieldInput.addValue(valueToSet);
         browser.keys('Tab');    
@@ -52,7 +51,6 @@ class formPage extends basePage{
     textAreaSet(valueToSet, label){
         var fieldLabel = this.findLabel(label);
         var areaInput = fieldLabel.parentElement().$('textarea');
-        helpers.waitForLoaded(areaInput);
         helpers.clearElement(areaInput);
         areaInput.addValue(valueToSet);
         browser.keys('Tab');
