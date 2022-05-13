@@ -192,13 +192,14 @@ namespace FutureNHS.Api.Services
                             // now make it unique
                             var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
 
-                            var compressedImage = _imageService.TransformImageForAvatar(section.Body);
-
                             if (!_acceptedFileTypes.Contains(fileExtension.ToLower()))
                             {
-                                _logger.LogError("file extension:{0} is not an accepted file", fileExtension);
-                                throw new ConstraintException("The file is not an accepted file");
+                                _logger.LogError("file extension:{0} is not an accepted image file", fileExtension);
+                                throw new ValidationException("Image", "The image is not in an accepted format");
                             }
+
+                            var compressedImage = _imageService.TransformImageForAvatar(section.Body);
+
                             try
                             {
                                 await _blobStorageProvider.UploadFileAsync(compressedImage.Image, uniqueFileName,
