@@ -1,4 +1,4 @@
-BEGIN TRANSACTION
+BEGIN
 
 	-- Disable constraints for all tables:
     EXEC sp_msforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT all'
@@ -55,11 +55,6 @@ BEGIN TRANSACTION
 	    --WHERE [MembershipUser_Id] IN (SELECT * FROM #autoUsers)
     --);
 
-    DELETE FROM [dbo].[Group] 
-    WHERE [GroupOwner] IN (
-        SELECT * FROM #autoUsers
-    );
-
     DELETE FROM [dbo].[GroupUser] 
     WHERE [MembershipUser_Id] IN (
         SELECT * FROM #autoUsers
@@ -88,9 +83,14 @@ BEGIN TRANSACTION
         SELECT * FROM @entityTable
     );
 
+	DELETE FROM [dbo].[Group] 
+    WHERE [GroupOwner] IN (
+        SELECT * FROM #autoUsers
+    );
+
 	DROP TABLE #autoUsers
 
     -- Re-enable constraints for all tables:
     EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';	
 
-ROLLBACK TRANSACTION
+END
