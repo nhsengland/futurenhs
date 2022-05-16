@@ -23,8 +23,8 @@ jobs:
         serverName: '$(devTestdbServerName)'
         databaseName: '$(devTestdbName)'
         useSQLAuthentication: true
-        userName: 'devTestEnv1'
-        password: 'devTestEnv2'
+        userName: '$(devTestEnv1)'
+        password: '$(devTestEnv2)'
         scriptName: '/sqlQueries/fullAutomationDataSeed.sql'
     - task: Npm@1
       displayName: 'npm install'
@@ -44,8 +44,8 @@ jobs:
         serverName: '$(devTestdbServerName)'
         databaseName: '$(devTestdbName)'
         useSQLAuthentication: true
-        userName: 'devTestEnv1'
-        password: 'devTestEnv2'
+        userName: '$(devTestEnv1)'
+        password: '$(devTestEnv2)'
         scriptName: '/sqlQueries/fullAutomationDataTeardown.sql'
     - task: PublishTestResults@2
       displayName: 'Publish Test Results **/wdio-*.log'
