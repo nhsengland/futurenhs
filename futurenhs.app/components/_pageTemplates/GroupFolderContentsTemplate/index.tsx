@@ -270,8 +270,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                             body: 'View details',
                                             ariaLabel: `View details of ${name}`
                                         }}
-                                        iconName="icon-view"
-                                        className="u-w-4 u-h-6 u-mr-2" />
+                                        iconName="icon-view"/>
                                 }
                             </>
                         ),
@@ -344,7 +343,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                 desktop={8}
                                 className="u-self-center"
                             >
-                                <h2 className="nhsuk-heading-l u-m-0 o-truncated-text-lines-3">
+                                <h2 className="nhsuk-heading-l o-truncated-text-lines-3">
                                     {name}
                                 </h2>
                             </LayoutColumn>
