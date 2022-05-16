@@ -30,9 +30,9 @@ export const Input: (props: Props) => JSX.Element = ({
     )?.maxLength
 
     const generatedIds: any = {
-        hint: `${name}-hint`,
-        errorLabel: `${name}-error`,
-        remainingCharacters: `${name}-remaining-characters`,
+        hint: `${id}-hint`,
+        errorLabel: `${id}-error`,
+        remainingCharacters: `${id}-remaining-characters`,
     }
 
     const generatedClasses: any = {
