@@ -5,6 +5,7 @@ using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.DataAccess.Models.Discussions;
 using FutureNHS.Api.DataAccess.Models.User;
+using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
 {
@@ -161,6 +162,45 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             });
 
             return GenerateDiscussionModelFromData(reader).FirstOrDefault();
+        }
+
+        public async Task<DiscussionCreatorDetails> GetDiscussionCreatorDetailsAsync(Guid discussionId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(DiscussionCreatorDetails.DiscussionId)}]         = discussion.Entity_Id,
+                                [{nameof(DiscussionCreatorDetails.GroupSlug)}]            = groups.Slug,
+                                [{nameof(DiscussionCreatorDetails.CreatedAtUtc)}]         = FORMAT(discussion.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionCreatorDetails.CreatedById)}]          = discussion.CreatedBy,
+                                [{nameof(DiscussionCreatorDetails.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
+                                [{nameof(DiscussionCreatorDetails.CreatedByEmail)}]       = createdByUser.Email
+                    
+                    FROM        Discussion discussion
+                    JOIN        [Group] groups 
+                    ON          groups.Id = discussion.Group_Id
+
+                    LEFT JOIN   MembershipUser createdByUser 
+                    ON          createdByUser.Id = discussion.CreatedBy
+                    
+                    WHERE       discussion.Entity_Id = @Id 
+                    AND         discussion.IsDeleted = 0;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Id = discussionId
+            }, cancellationToken: cancellationToken);
+
+            var result = await dbConnection.QuerySingleOrDefaultAsync<DiscussionCreatorDetails>(commandDefinition);
+
+            if (result is null)
+            {
+                _logger.LogError("Error: User request to edit a comment was not successful", commandDefinition);
+                throw new DBConcurrencyException("Error: User request to edit a comment was not successful");
+            }
+
+            return result;
         }
 
         private IEnumerable<Discussion> GenerateDiscussionModelFromData(IEnumerable<DiscussionData> discussionData)
