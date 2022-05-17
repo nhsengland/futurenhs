@@ -3,6 +3,7 @@ using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Comment;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Notifications.Interfaces;
 using FutureNHS.Api.Services.Validation;
 using Microsoft.AspNetCore.Authentication;
 using System.Security;
@@ -22,15 +23,22 @@ namespace FutureNHS.Api.Services
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
         private readonly IEtagService _etagService;
+        private readonly ICommentNotificationService _commentNotificationService;
 
-        public CommentService(ISystemClock systemClock, ILogger<CommentService> logger, IPermissionsService permissionsService,
-            ICommentCommand commentCommand, IEtagService etagService, IEntityCommand entityCommand)
+        public CommentService(ISystemClock systemClock, 
+            ILogger<CommentService> logger,
+            IPermissionsService permissionsService,
+            ICommentCommand commentCommand,
+            IEtagService etagService,
+            IEntityCommand entityCommand,
+            ICommentNotificationService  commentNotificationService)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
             _commentCommand = commentCommand ?? throw new ArgumentNullException(nameof(commentCommand));
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
+            _commentNotificationService = commentNotificationService ?? throw new ArgumentNullException(nameof(commentNotificationService));
         }
 
         public async Task<Guid> CreateCommentAsync(Guid userId, string slug, Guid parentEntityId, Comment comment, CancellationToken cancellationToken)
@@ -69,6 +77,8 @@ namespace FutureNHS.Api.Services
 
             if (validationResult.Errors.Count > 0)
                 throw new ValidationException(validationResult);
+
+            _ = Task.Run(async () => await _commentNotificationService.SendNotificationToDiscussionCreatorAsync(userId, parentEntityId, cancellationToken));
 
             return await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
         }
