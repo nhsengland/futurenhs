@@ -88,13 +88,13 @@ jobs:
       command: 'custom'
       workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
       customCommand: 'run test-js'
-
-  - task: CopyFiles@2
-    displayName: 'Copy files for artifact'
+  - task: ArchiveFiles@2
     inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/futurenhs.app'
-      Contents: '**'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/FNHSvNextApp.zip'
+      replaceExistingArchive: true
 
   - task: PublishPipelineArtifact@1
     inputs:
