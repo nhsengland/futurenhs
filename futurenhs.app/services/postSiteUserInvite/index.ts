@@ -31,7 +31,7 @@ export const postSiteUserInvite = async (
     const { id } = user
     const emailAddress: FormDataEntryValue = body.get('Email')
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/invite`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/users/invite`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
