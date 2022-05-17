@@ -9,5 +9,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
 
         Task<Discussion?> GetDiscussionAsync(Guid? userId, string groupSlug, Guid id,
             CancellationToken cancellationToken);
+        Task<DiscussionCreatorDetails> GetDiscussionCreatorDetailsAsync(Guid discussionId, CancellationToken cancellationToken);
     }
 }

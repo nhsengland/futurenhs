@@ -1,6 +1,8 @@
 ﻿using FutureNHS.Api.Services.Admin;
 using FutureNHS.Api.Services.Admin.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Notifications;
+using FutureNHS.Api.Services.Notifications.Interfaces;
 
 namespace FutureNHS.Api.Services
 {
@@ -23,6 +25,8 @@ namespace FutureNHS.Api.Services
             services.AddScoped<IUserImageService, ImageService>();
             services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<IFileServerService, FileServerService>();
+
+            services.AddScoped<ICommentNotificationService, CommentNotificationService>();
 
             services.AddScoped<IAdminGroupService, AdminGroupService>();
             services.AddScoped<IAdminUserService, AdminUserService>(); 
