@@ -14,7 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <SqlCmdVariable Include="RunAutomatedScripts">
-      <Value>false</Value>
+      <Value>true</Value>
     </SqlCmdVariable>
   </ItemGroup>
 </Project>
