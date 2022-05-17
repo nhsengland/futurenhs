@@ -120,4 +120,10 @@
   <ItemGroup>
     <RefactorLog Include="FutureNHS.Data.FutureNHS.refactorlog" />
   </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="RunAutomatedScripts">
+      <DefaultValue>false</DefaultValue>
+      <Value>$(SqlCmdVar__1)</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
 </Project>
