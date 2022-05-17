@@ -12,6 +12,7 @@ Post-Deployment Script Template
 :r .\SeedData.sql
 
 IF NOT EXISTS (select id from [MembershipUser] where [UserName] = 'autoAdmin@test.co.uk')
+IF '$(RunAutomatedScripts)' = 'true'
 BEGIN
 
 	-- Disable constraints for all tables:
