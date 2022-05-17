@@ -1,4 +1,5 @@
-﻿BEGIN
+﻿IF '$(RunAutomatedScripts)' = 'true'
+BEGIN
 
 	-- Disable constraints for all tables:
 	EXEC sp_msforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT all'
