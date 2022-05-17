@@ -3,7 +3,7 @@ import React from 'react'
 import { SkipLinks } from './index'
 
 export default {
-    title: 'Skip links',
+    title: 'SkipLinks',
     component: SkipLinks
 }
 

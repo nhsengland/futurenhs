@@ -3,7 +3,7 @@ import { UserProfile } from './index'
 import { defaultGroupLogos } from '@constants/icons';
 
 export default {
-    title: 'User profile',
+    title: 'UserProfile',
     component: UserProfile,
     argTypes: {
         image: {
