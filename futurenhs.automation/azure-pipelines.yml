@@ -25,7 +25,7 @@ jobs:
         useSQLAuthentication: true
         userName: '$(devTestEnv1)'
         password: '$(devTestEnv2)'
-        scriptName: '/sqlQueries/fullAutomationDataSeed.sql'
+        scriptName: '$(Build.SourcesDirectory)/futurenhs.automation/sqlQueries/fullAutomationDataSeed.sql'
     - task: Npm@1
       displayName: 'npm install'
       inputs:
@@ -46,7 +46,7 @@ jobs:
         useSQLAuthentication: true
         userName: '$(devTestEnv1)'
         password: '$(devTestEnv2)'
-        scriptName: '/sqlQueries/fullAutomationDataTeardown.sql'
+        scriptName: '$(Build.SourcesDirectory)/futurenhs.automation/sqlQueries/fullAutomationDataTeardown.sql'
       
     - task: PublishTestResults@2
       displayName: 'Publish Test Results **/wdio-*.log'
