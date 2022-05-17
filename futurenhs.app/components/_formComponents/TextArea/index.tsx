@@ -117,7 +117,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                 <div
                     className={generatedClasses.inputWrapper}
                     style={{ minHeight: editorRef.current ? 'auto' : elementMinHeight }}
-                    aria-describedby={generatedIds.label}
+                    aria-labelledby={generatedIds.label}
                     tabIndex={0}
                 >
                     <Editor
