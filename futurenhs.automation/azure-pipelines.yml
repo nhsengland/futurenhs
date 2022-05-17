@@ -17,15 +17,7 @@ jobs:
       displayName: 'Use Node 14.15.0'
       inputs:
         versionSpec: 14.15.0
-    - task: ExecuteSqlScript@1
-      inputs:
-        runOnAgent: true
-        serverName: '$(devTestdbServerName)'
-        databaseName: '$(devTestdbName)'
-        useSQLAuthentication: true
-        userName: '$(devTestEnv1)'
-        password: '$(devTestEnv2)'
-        scriptName: '$(Build.SourcesDirectory)/futurenhs.automation/sqlQueries/fullAutomationDataSeed.sql'
+
     - task: Npm@1
       displayName: 'npm install'
       inputs:
@@ -38,16 +30,7 @@ jobs:
       workingDirectory: '$(Build.SourcesDirectory)/futurenhs.automation'
       displayName: 'Execute Tests'
       continueOnError: true
-    - task: ExecuteSqlScript@1
-      inputs:
-        runOnAgent: true
-        serverName: '$(devTestdbServerName)'
-        databaseName: '$(devTestdbName)'
-        useSQLAuthentication: true
-        userName: '$(devTestEnv1)'
-        password: '$(devTestEnv2)'
-        scriptName: '$(Build.SourcesDirectory)/futurenhs.automation/sqlQueries/fullAutomationDataTeardown.sql'
-      
+    
     - task: PublishTestResults@2
       displayName: 'Publish Test Results **/wdio-*.log'
       inputs:
