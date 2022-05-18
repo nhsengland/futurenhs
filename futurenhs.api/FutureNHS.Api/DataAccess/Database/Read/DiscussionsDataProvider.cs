@@ -196,8 +196,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             if (result is null)
             {
-                _logger.LogError("Error: User request to edit a comment was not successful", commandDefinition);
-                throw new DBConcurrencyException("Error: User request to edit a comment was not successful");
+                _logger.LogError("Error: User request to get a discussion was not successful", commandDefinition);
+                throw new DBConcurrencyException("Error: User request to get a discussion was not successful");
             }
 
             return result;

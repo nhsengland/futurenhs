@@ -6,5 +6,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
     {
         Task<(uint total, IEnumerable<Comment>?)> GetCommentsForDiscussionAsync(Guid? userId, string groupSlug, Guid topicId, uint offset, uint limit, CancellationToken cancellationToken);
         Task<(uint total, IEnumerable<Comment>?)> GetRepliesForCommentAsync(Guid? userId, string groupSlug, Guid threadId, uint offset, uint limit, CancellationToken cancellationToken);
+        Task<CommentCreatorDetails> GetCommentCreatorDetailsAsync(Guid commentId, CancellationToken cancellationToken);
     }
 }

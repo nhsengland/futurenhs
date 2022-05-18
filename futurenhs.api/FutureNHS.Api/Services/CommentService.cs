@@ -128,6 +128,8 @@ namespace FutureNHS.Api.Services
             if (validationResult.Errors.Count > 0)
                 throw new ValidationException(validationResult);
 
+            _ = Task.Run(async () => await _commentNotificationService.SendNotificationToCommentCreatorAsync(userId, replyingToComment, cancellationToken));
+
             return await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
         }
 
