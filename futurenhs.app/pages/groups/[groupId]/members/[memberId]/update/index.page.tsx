@@ -19,12 +19,13 @@ import { User } from '@appTypes/user'
 import { GroupMemberUpdateTemplate } from '@components/_pageTemplates/GroupMemberUpdateTemplate'
 import { Props } from '@components/_pageTemplates/GroupMemberTemplate/interfaces'
 import { actions } from '@constants/actions'
-import { FormOptions } from '@appTypes/form'
+import { FormErrors, FormOptions } from '@appTypes/form'
 import { checkMatchingFormType, setFormConfigOptions } from '@helpers/util/form'
 import { requestMethods } from '@constants/fetch'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { putGroupMemberRole } from '@services/putGroupMemberRole'
 import { deleteGroupMember } from '@services/deleteGroupMember'
+import { getServiceErrorDataValidationErrors } from '@services/index'
 
 const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef'
 const props: Partial<Props> = {}
@@ -46,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     getServerSideProps: async (
                         context: GetServerSidePropsContext
                     ) => {
-                        
+
                         const user: User = selectUser(context)
                         const csrfToken: string = selectCsrfToken(context)
                         const currentValues: any = selectFormData(context)
@@ -69,6 +70,10 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                         const form: any =
                             props.forms[formTypes.UPDATE_GROUP_MEMBER]
+
+                        const deleteMemberForm: any =
+                            props.forms[formTypes.DELETE_GROUP_MEMBER]
+
 
                         /**
                          * Get data from services
@@ -107,7 +112,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             }
 
 
-
                             /**
                              * Handle server-side form post
                              */
@@ -117,10 +121,10 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             ) {
 
                                 const headers =
-                                getStandardServiceHeaders({
-                                    csrfToken,
-                                    etag,
-                                });
+                                    getStandardServiceHeaders({
+                                        csrfToken,
+                                        etag,
+                                    });
 
                                 const isRoleForm = checkMatchingFormType(currentValues, updatedRolesForm.id)
                                 const isDeleteForm = checkMatchingFormType(currentValues, formTypes.DELETE_GROUP_MEMBER)
@@ -136,11 +140,12 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                         groupId,
                                         memberId
                                     })
+
                                 }
 
                                 if (isDeleteForm) {
 
-                                    await deleteGroupMember({groupId, groupUserId: memberId, headers, user})
+                                    await deleteGroupMember({ groupId, groupUserId: memberId, headers, user })
 
                                 }
 
@@ -150,22 +155,32 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                         destination: `${props.routes.groupMembersRoot}`,
                                     },
                                 }
+
                             }
 
-                        
-                        } catch(error) {
-                        return handleSSRErrorProps({ props, error })
-                    }
+
+                        } catch (error) {
+
+                            const validationErrors: FormErrors =
+                                getServiceErrorDataValidationErrors(error)
+
+                            if (validationErrors) {
+                                deleteMemberForm.errors = validationErrors
+                            } else {
+                                return handleSSRErrorProps({ props, error })
+                            }
+
+                        }
 
                         /**
                          * Return data to page template
                          */
                         return handleSSRSuccessProps({ props })
-                },
+                    },
                 }),
+            }),
         }),
     }),
-}),
 })
 
 /**
