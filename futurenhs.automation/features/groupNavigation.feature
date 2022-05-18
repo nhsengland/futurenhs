@@ -51,8 +51,6 @@ Scenario: FNHS15 -  Group user home validation
     When I select the 'Automation Admin Group' group card
     Then the 'Automation Admin Group' header is displayed
     And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
-    And the 'This is the group homepage. Administrators will soon be able to update group homepages to tell you more about their group. Whilst this is being developed why don't you connect with someone in the forum or share a file with another group member.' textual value is displayed
-    And the 'Feel free to feedback on your experience to help us improve FutureNHS.' textual value is displayed
     When I open the 'Actions' accordion
     Then the 'Page manager' link is not displayed
  

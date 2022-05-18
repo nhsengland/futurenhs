@@ -75,6 +75,6 @@ Scenario Outline: FNHS36 - Edit group information change logo error validation
     Then the '<error message>' error summary is displayed
     And the '<error message>' textual value is displayed
 Examples:
-    | image                    | error message                                 |    
-    | /media/test.gif          | The selected file must be a JPG or PNG        |
-    | /media/toolargeimage.png | The selected file must be smaller than 500KB  |
+    | image                    | error message                     |    
+    | /media/test.gif          | Image must be a JPG or PNG        |
+    | /media/toolargeimage.png | Image must be smaller than 5MB    |

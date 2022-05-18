@@ -2,7 +2,6 @@
     var exec = require('child-process-promise').exec;
     let obj = {
         "core": `wdio wdio.headless.conf.js --suite=smokeTest --cucumberOpts.tagExpression="@Core and not @Pending and not @NotLocal"`,
-        "pipeline": `wdio wdio.headless.conf.js --suite=fullRegression`,
         "local": `wdio wdio.headless.conf.js --baseUrl=http://localhost:5000/ --suite=fullRegression --cucumberOpts.tagExpression="not @Pending and not @NotInLocal"`,
         "devTest": `wdio wdio.headless.conf.js --baseUrl=https://collaborate-dev.future.nhs.uk/ --suite=fullRegression`,
         "uat": `wdio wdio.headless.conf.js --baseUrl=https://collaborate-uat.future.nhs.uk/ --suite=fullRegression`,

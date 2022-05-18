@@ -133,21 +133,23 @@ class formPage extends basePage{
      */
     autoSuggestSelect(option, label){
         // Input first 3 digits into the input field
-        var input = option.slice(0, 3)
-        var fieldLabel = this.findLabel(label);
-        var fieldInput = fieldLabel.parentElement().$('input');
-        helpers.waitForLoaded(fieldInput)
-        fieldInput.setValue(input);
-        // Choose item from the suggestion list
-        var suggestDropdown = fieldLabel.parentElement().$(`./div/ul`);
-        helpers.waitForLoaded(suggestDropdown);
-        var suggestList = suggestDropdown.$$('li')
-        suggestList.forEach(suggestion => {
-            if(suggestion.getText() === option){
-                helpers.click(suggestion);
-                return
-            }   
-        });
+        if(option != null){
+            var input = option.slice(0, 3)
+            var fieldLabel = this.findLabel(label);
+            var fieldInput = fieldLabel.parentElement().$('input');
+            helpers.waitForLoaded(fieldInput)
+            fieldInput.setValue(input);
+            // Choose item from the suggestion list
+            var suggestDropdown = fieldLabel.parentElement().$(`./div/ul`);
+            helpers.waitForLoaded(suggestDropdown);
+            var suggestList = suggestDropdown.$$('li')
+            suggestList.forEach(suggestion => {
+                if(suggestion.getText() === option){
+                    helpers.click(suggestion);
+                    return
+                }   
+            });
+        }
     }
 
     /**
