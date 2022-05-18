@@ -36,6 +36,7 @@ jobs:
       inputs:
         testResultsFiles: '**/wdio-*.log'
         mergeTestResults: true
+        testRunTitle: Automated Front-End Regression
     - task: DeleteFiles@1
       inputs:
         SourceFolder: '$(Build.SourcesDirectory)/futurenhs.automation/junitResults'
