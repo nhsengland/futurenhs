@@ -50,7 +50,7 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         formTypes.DELETE_GROUP_MEMBER
     )
 
-    const [errors, setErrors] = useState(updateFormConfig.errors)
+    const [errors, setErrors] = useState(updateFormConfig.errors || deleteFormConfig.errors)
 
     const {
         secondaryHeading,
