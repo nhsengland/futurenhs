@@ -38,7 +38,7 @@ jobs:
         mergeTestResults: true
     - task: DeleteFiles@1
       inputs:
-        SourceFolder: 'junitResults'
+        SourceFolder: '$(Build.SourcesDirectory)/futurenhs.automation/junitResults'
         Contents: '**/wdio-*.log'
     
     - script: 'npm run scenario wdio.headless.conf.js Url=$(ENVURL) FNHS:FED02'
