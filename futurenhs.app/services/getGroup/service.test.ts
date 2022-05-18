@@ -65,6 +65,7 @@ describe('getGroup service', () => {
             },
             imageId: undefined,
             themeId: undefined,
+            isPublic: undefined,
         })
     })
 })

@@ -115,24 +115,27 @@ export const Form: (props: Props) => JSX.Element = ({
                     component,
                     fields,
                     className,
+                    shouldRender = true,
                     ...rest
                 }) => {
-                    return (
-                        <Field
-                            key={name}
-                            instanceId={instanceId}
-                            name={name}
-                            inputType={inputType}
-                            type={inputType}
-                            text={text}
-                            component={formComponents[component]}
-                            context={context}
-                            className={className}
-                            {...rest}
-                        >
-                            {renderFields(fields)}
-                        </Field>
-                    )
+                    if (shouldRender) {
+                        return (
+                                    <Field
+                                        key={name}
+                                        instanceId={instanceId}
+                                        name={name}
+                                        inputType={inputType}
+                                        type={inputType}
+                                        text={text}
+                                        component={formComponents[component]}
+                                        context={context}
+                                        className={className}
+                                        {...rest}
+                                    >
+                                        {renderFields(fields)}
+                                    </Field>
+                        )
+                    }
                 }
             )
         },

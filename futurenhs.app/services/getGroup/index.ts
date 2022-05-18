@@ -85,6 +85,7 @@ export const getGroup = async (
             : null,
         imageId: apiData.imageId,
         themeId: apiData.themeId,
+        isPublic: apiData.isPublic
     }
 
     return serviceResponse

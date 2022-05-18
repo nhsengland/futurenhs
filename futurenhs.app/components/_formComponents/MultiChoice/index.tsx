@@ -17,6 +17,12 @@ export const MultiChoice: Function = ({
     className,
     optionClassName,
 }: Props): JSX.Element => {
+    const checkbox: string = 'checkbox'
+    const radio: string = 'radio'
+
+    // https://github.com/erikras/redux-form/issues/2880
+    const elementType: string =
+        inputType === 'checkBox' ? checkbox : radio
     /**
      * Render out checkboxes/ radio buttons and bind event handler to update values
      */
@@ -28,12 +34,6 @@ export const MultiChoice: Function = ({
         return (
             <>
                 {options.map(({ label, value }, index) => {
-                    const checkbox: string = 'checkbox'
-                    const radio: string = 'radio'
-
-                    // https://github.com/erikras/redux-form/issues/2880
-                    const elementType: string =
-                        inputType === 'checkBox' ? checkbox : radio
                     const childId: string = `${name}[${index}]`
                     const childName: string =
                         inputType === checkbox ? childId : name
@@ -41,15 +41,22 @@ export const MultiChoice: Function = ({
                         currentValues.length && currentValues.includes(value)
 
                     const generatedClasses: any = {
-                        inputWrapper: classNames(
-                            'nhsuk-radios__item',
+                        inputWrapper: classNames({
+                            ['nhsuk-radios__item']: elementType === radio,
+                            ['nhsuk-checkboxes__item']: elementType === checkbox
+                        },
                             optionClassName
                         ),
-                        input: classNames('nhsuk-radios__input', {
+                        input: classNames({
                             ['nhsuk-radios__input--validation-failed']:
                                 hasError,
+                            ['nhsuk-radios__input']: elementType === radio,
+                            ['nhsuk-checkboxes__input']: elementType === checkbox
                         }),
-                        label: classNames('nhsuk-label', `nhsuk-radios__label`),
+                        label: classNames('nhsuk-label', {
+                            [`nhsuk-radios__label`]: elementType === radio,
+                            ['nhsuk-checkboxes__label']: elementType === checkbox
+                        }),
                     }
 
                     const handleBlur = (): Function => onBlur(currentValues)
@@ -113,10 +120,11 @@ export const MultiChoice: Function = ({
     const generatedClasses: any = {
         wrapper: classNames(
             'nhsuk-form-group',
-            'nhsuk-radios',
-            'nhsuk-radios--inline',
             className,
             {
+                ['nhsuk-checkboxes']: elementType === checkbox,
+                ['nhsuk-radios']: elementType === radio,
+                ['nhsuk-radios--inline']: elementType === radio,
                 ['nhsuk-form-group--error']: hasError,
             }
         ),
