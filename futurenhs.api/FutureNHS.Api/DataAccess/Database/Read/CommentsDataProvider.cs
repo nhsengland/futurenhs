@@ -4,6 +4,7 @@ using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.DataAccess.Models.User;
+using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
 {
@@ -182,6 +183,50 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
 
             return (totalCount, GenerateCommentModelFromData(commentsData));
+        }
+
+        public async Task<CommentCreatorDetails> GetCommentCreatorDetailsAsync(Guid commentId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(CommentCreatorDetails.CommentId)}]            = comment.Entity_Id,
+                                [{nameof(CommentCreatorDetails.DiscussionId)}]         = discussion.Entity_Id,
+                                [{nameof(CommentCreatorDetails.GroupSlug)}]            = groups.Slug,
+                                [{nameof(CommentCreatorDetails.CreatedAtUtc)}]         = FORMAT(comment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(CommentCreatorDetails.CreatedById)}]          = comment.CreatedBy,
+                                [{nameof(CommentCreatorDetails.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
+                                [{nameof(CommentCreatorDetails.CreatedByEmail)}]       = createdByUser.Email
+                    
+                    FROM        [Comment] comment
+
+                    JOIN        [Discussion] discussion
+                    ON          discussion.Entity_Id = comment.Parent_EntityId
+
+                    JOIN        [Group] groups 
+                    ON          groups.Id = discussion.Group_Id
+
+                    LEFT JOIN   [MembershipUser] createdByUser 
+                    ON          createdByUser.Id = comment.CreatedBy
+                    
+                    WHERE       comment.Entity_Id = @Id 
+                    AND         comment.IsDeleted = 0;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Id = commentId
+            }, cancellationToken: cancellationToken);
+
+            var result = await dbConnection.QuerySingleOrDefaultAsync<CommentCreatorDetails>(commandDefinition);
+
+            if (result is null)
+            {
+                _logger.LogError("Error: User request to get a comment was not successful", commandDefinition);
+                throw new DBConcurrencyException("Error: User request to get a comment was not successful");
+            }
+
+            return result;
         }
 
         private IEnumerable<Comment> GenerateCommentModelFromData(IEnumerable<CommentData> commentData)
