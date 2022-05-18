@@ -5,6 +5,8 @@ import { groupFolderForm } from './group-folder'
 import { createFileForm } from './create-file'
 import { createGroupForm } from './create-group'
 import { updateGroupForm } from './update-group'
+import { acceptGroupMemberForm } from './accept-group-member';
+import { rejectGroupMemberForm } from './reject-group-member';
 import { deleteGroupMemberForm } from './delete-group-member'
 import { updateGroupMemberForm } from './update-group-member'
 import { inviteUserForm } from './invite-user'
@@ -25,6 +27,9 @@ export default {
     [formTypes.CREATE_GROUP]: createGroupForm,
     [formTypes.UPDATE_GROUP]: updateGroupForm,
     [formTypes.UPDATE_GROUP_MEMBER]: updateGroupMemberForm,
+    [formTypes.DELETE_GROUP_MEMBER]: deleteGroupMemberForm,
+    [formTypes.ACCEPT_GROUP_MEMBER]: acceptGroupMemberForm,
+    [formTypes.REJECT_GROUP_MEMBER]: rejectGroupMemberForm,
     [formTypes.INVITE_USER]: inviteUserForm,
     [formTypes.UPDATE_SITE_USER]: updateSiteMemberForm,
     [formTypes.UPDATE_SITE_USER_ROLE]: updateSiteUserRoleForm,
@@ -32,5 +37,4 @@ export default {
     [formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER]:
         contentBlockQuickLinksWrapper,
     [formTypes.CONTENT_BLOCK_QUICK_LINK]: contentBlockQuickLink,
-    [formTypes.DELETE_GROUP_MEMBER]: deleteGroupMemberForm,
 }

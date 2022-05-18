@@ -2,6 +2,7 @@ import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen, cleanup } from '@jestMocks/index'
 
+import forms from '@formConfigs/index'
 import { actions } from '@constants/actions'
 import { routes } from '@jestMocks/generic-props'
 import { GroupMemberListingTemplate } from './index'
@@ -20,6 +21,9 @@ describe('Group member listing template', () => {
         tabId: 'members',
         user: undefined,
         actions: [],
+        forms: {
+            initial: {}
+        },
         contentText: {
             pendingMemberRequestsHeading: 'Mock pending members heading',
             membersHeading: 'Mock members heading',

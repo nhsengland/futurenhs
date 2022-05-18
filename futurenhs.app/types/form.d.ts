@@ -7,7 +7,7 @@ declare type InputType = string;
 declare type ValidatorType = string;
 
 export interface FormOptions {
-    value: string;
+    value: string | number | boolean;
     label: string;
 }
 
@@ -23,6 +23,7 @@ export interface FormField {
     fields?: Array<FormField>;
     options?: Array<FormOptions>;
     initialError?: string;
+    shouldRender?: boolean;
     shouldRenderAsRte?: boolean;
     shouldPreventFreeText?: boolean;
     shouldRenderRemainingCharacterCount?: boolean;
@@ -46,10 +47,10 @@ export interface FormStep {
 }
 
 export interface FormConfig {
-    id: string;
+    id?: string;
     initialValues?: Record<string, any>;
     errors?: Record<string, string>;
-    steps: Array<FormStep>;
+    steps?: Array<FormStep>;
 }
 
 export type FormErrors = Record<string, string>;

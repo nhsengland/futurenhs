@@ -12,6 +12,7 @@ export interface Group {
     totalMemberCount?: number;
     owner?: Partial<User>;
     isDeleted?: boolean;
+    isPublic?: boolean;
 }
 
 export interface GroupMember extends Member {}

@@ -52,6 +52,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                     const form: any = props.forms[createGroupForm.id]
 
+                    /**
+                     * Ticks checkbox by default
+                     */
+                    form.initialValues = {
+                        isPublic: true
+                    }
+
                     props.layoutId = layoutIds.ADMIN
 
                     if (

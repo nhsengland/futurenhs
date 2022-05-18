@@ -42,6 +42,7 @@ export const withGroup = (
             ])
 
             props.groupId = groupId
+            props.isPublic = groupData.data.isPublic
             props.themeId = groupData.data.themeId ?? defaultThemeId
             props.entityText = groupData.data.text ?? {}
             props.image = groupData.data.image ?? defaultGroupLogos.small
@@ -53,8 +54,9 @@ export const withGroup = (
             /**
              * TODO: Determine whether user has access to group when back-end permissions work is complete
              */
-            const hasAccessToGroup: boolean = true
-            const isAboutPage: boolean = context.resolvedUrl?.endsWith('/about')
+            const hasAccessToGroup: boolean = true;
+            const isAboutPage: boolean = context.resolvedUrl?.startsWith(props.routes.groupAboutRoot)
+ 
 
             if (!hasAccessToGroup && !isAboutPage) {
                 return {

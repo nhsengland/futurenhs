@@ -1,7 +1,7 @@
 const FormData = require('form-data')
 
 import { genericMessages } from '@constants/text'
-import { FormConfig, FormErrors, FormOptions } from '@appTypes/form'
+import { FormConfig, FormErrors, FormField, FormOptions } from '@appTypes/form'
 
 /**
  * Converts a form submission object submitted via express-form-data into a basic server-side FormData object
@@ -126,4 +126,27 @@ export const checkMatchingFormType = (
     formId: string
 ): boolean => {
     return Boolean(formData.body?.['_form-id'] === formId)
+
+}
+
+/**
+ * Returns first field in FormConfig with passed name
+ */
+export const getFormField = (form: FormConfig, name: string): FormField => {
+    
+    let field: FormField;
+
+    form.steps.some((step) => {
+
+        const fieldMatch: FormField = step.fields.find((field) => field.name === name)
+
+        if (fieldMatch){
+            field = fieldMatch
+        }
+
+        return fieldMatch
+    })
+
+    return field;
+
 }

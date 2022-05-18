@@ -1,10 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 
 import { actions as userActions } from '@constants/actions'
 import { Link } from '@components/Link'
 import { ActionLink } from '@components/ActionLink'
-import { SVGIcon } from '@components/SVGIcon'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { DataGrid } from '@components/DataGrid'
 import { PaginationWithStatus } from '@components/PaginationWithStatus'
@@ -13,6 +12,18 @@ import { dateTime } from '@helpers/formatters/dateTime'
 import { capitalise } from '@helpers/formatters/capitalise'
 
 import { Props } from './interfaces'
+import { formTypes } from '@constants/forms'
+import { FormConfig, FormErrors } from '@appTypes/form'
+import { Form } from '@components/Form'
+import { selectForm, selectFormErrors } from '@selectors/forms'
+import { getStandardServiceHeaders } from '@helpers/fetch'
+import { postGroupMemberAccept } from '@services/postGroupMemberAccept'
+import { getGenericFormError } from '@helpers/util/form'
+import { getServiceErrorDataValidationErrors } from '@services/index'
+import { ErrorSummary } from '@components/ErrorSummary'
+import { postGroupMemberReject } from '@services/postGroupMemberReject'
+import { getPendingGroupMembers } from '@services/getPendingGroupMembers'
+import { PendingMemberActions } from '@components/PendingMemberActions'
 
 /**
  * Group member listing template
@@ -26,9 +37,17 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     members,
     contentText,
     pagination,
+    isPublic,
+    csrfToken,
+    forms,
 }) => {
     const [membersList, setMembersList] = useState(members)
     const [dynamicPagination, setPagination] = useState(pagination)
+    const [pendingMembersList, setPendingMembersList] = useState(pendingMembers)
+
+    const errorSummaryRef: any = useRef()
+
+    const [errors, setErrors] = useState(forms.initial.errors ?? {})
 
     const {
         pendingMemberRequestsHeading,
@@ -43,7 +62,78 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
     const shouldRenderMemberEditColumn: Boolean = actions?.includes(
         userActions.GROUPS_MEMBERS_EDIT
     )
-    const shouldRenderPendingMembersList: Boolean = false // disabled for the moment for private beta //actions?.includes(userActions.GROUPS_MEMBERS_PENDING_VIEW);
+    const shouldRenderPendingMembersList: Boolean = actions?.includes(userActions.GROUPS_MEMBERS_PENDING_VIEW) && !isPublic;
+
+
+    /**
+    * Handle client-side accept member submission
+    */
+    const handleAcceptMember = async (formData: FormData): Promise<FormErrors> => {
+        return new Promise((resolve) => {
+
+            const headers = getStandardServiceHeaders({ csrfToken })
+
+            postGroupMemberAccept({ user, groupId, body: formData, headers })
+                .then(async () => {
+
+                    const [updatedPendingMembers, updatedMembers] = await Promise.all([
+                        getPendingGroupMembers({user, groupId}),
+                        getGroupMembers({user, groupId, pagination})
+                    ])
+                    setPendingMembersList(updatedPendingMembers.data)
+                    setMembersList(updatedMembers.data)
+
+                    resolve({})
+                })
+                .catch((error) => {
+                    const errors: FormErrors =
+                        getServiceErrorDataValidationErrors(error) ||
+                        getGenericFormError(error)
+
+                    setErrors(errors)
+                    errorSummaryRef.current?.focus?.()
+                    resolve(errors)
+                })
+
+            resolve({})
+
+        })
+    }
+
+    /**
+    * Handle client-side reject member submission
+    */
+    const handleRejectMember = async (formData: FormData): Promise<FormErrors> => {
+        return new Promise((resolve) => {
+
+            const headers = getStandardServiceHeaders({ csrfToken })
+
+            postGroupMemberReject({ user, groupId, body: formData, headers })
+                .then(async () => {
+
+                    const [updatedPendingMembers, updatedMembers] = await Promise.all([
+                        getPendingGroupMembers({user, groupId}),
+                        getGroupMembers({user, groupId, pagination})
+                    ])
+                    setPendingMembersList(updatedPendingMembers.data)
+                    setMembersList(updatedMembers.data)
+                    
+                    resolve({})
+                })
+                .catch((error) => {
+                    const errors: FormErrors =
+                        getServiceErrorDataValidationErrors(error) ||
+                        getGenericFormError(error)
+
+                    setErrors(errors)
+                    errorSummaryRef.current?.focus?.()
+                    resolve(errors)
+                })
+
+            resolve({})
+
+        })
+    }
 
     const pendingMemberColumnList = [
         {
@@ -62,7 +152,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
     const pendingMemberRowList = useMemo(
         () =>
-            pendingMembers?.map(({ fullName, email, requestDate }) => {
+            pendingMembersList?.map(({ fullName, email, requestDate, id }) => {
                 const generatedCellClasses = {
                     name: classNames({
                         ['u-justify-between u-w-full tablet:u-w-1/4']: true,
@@ -111,10 +201,15 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
                     },
                     {
                         children: (
-                            <span className="u-flex u-justify-between u-w-full">
-                                <a href="#">{acceptMember}</a>
-                                <a href="#">{rejectMember}</a>
-                            </span>
+                            <PendingMemberActions
+                                acceptAction={handleAcceptMember}
+                                rejectAction={handleRejectMember}
+                                memberId={id}
+                                text={{
+                                    acceptMember,
+                                    rejectMember
+                                }}
+                             />
                         ),
                         className: generatedCellClasses.actions,
                         headerClassName: generatedHeaderCellClasses.actions,
@@ -123,7 +218,7 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
                 return rows
             }),
-        [pendingMembers]
+        [pendingMembersList]
     )
 
     const memberColumnList = [
@@ -271,6 +366,11 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             <LayoutColumn className="c-page-body">
                 {shouldRenderPendingMembersList && (
                     <div className="u-mb-12">
+                        <ErrorSummary
+                            ref={errorSummaryRef}
+                            errors={errors}
+                            className="u-mb-10"
+                        />
                         <h2 className="nhsuk-heading-l">
                             {pendingMemberRequestsHeading}
                         </h2>

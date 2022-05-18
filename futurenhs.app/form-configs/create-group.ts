@@ -162,14 +162,22 @@ export const createGroupForm: FormConfig = {
                     ],
                 },
                 {
-                    name: 'public',
-                    component: 'checkBox',
-                    inputType: 'checkbox',
+                    name: 'isPublic',
+                    component: 'multiChoice',
+                    inputType: 'checkBox',
                     text: {
                         label: 'Group is public?',
+                        hint: 'If unselected, the group will be set to private. This cannot be undone.'
                     },
+                    options: [
+                        {
+                            value: true,
+                            label: ''
+                        }
+                    ]
                 },
             ],
         },
     ],
 }
+

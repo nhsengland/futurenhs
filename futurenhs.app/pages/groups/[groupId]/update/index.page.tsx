@@ -47,9 +47,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
             getServerSideProps: withTextContent({
                 props,
                 routeId,
-                getServerSideProps: withForms({
-                    props,
-                    routeId,
                     getServerSideProps: async (
                         context: GetServerSidePropsContext
                     ) => {
@@ -64,8 +61,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const requestMethod: requestMethods =
                             selectRequestMethod(context)
 
-                        const form: any = props.forms[formTypes.UPDATE_GROUP]
+                        const formId: string = formTypes.UPDATE_GROUP
 
+                        props.csrfToken = csrfToken
                         props.layoutId = layoutIds.GROUP
                         props.tabId = groupTabIds.INDEX
                         props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
@@ -89,18 +87,23 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             const etag = group.headers.get('etag')
 
                             props.etag = etag
-
-                            form.initialValues = {
-                                Name: group.data.text.title,
-                                Strapline: group.data.text.strapLine,
-                                ImageId: group.data.imageId,
-                                ThemeId:
-                                    group.data.themeId &&
-                                    themes[group.data.themeId]
-                                        ? [group.data.themeId]
-                                        : [defaultThemeId],
+                            props.isPublic = group.data.isPublic
+                            props.forms = {
+                                [formId]: {
+                                    initialValues: {
+                                        Name: group.data.text.title,
+                                        Strapline: group.data.text.strapLine,
+                                        ImageId: group.data.imageId,
+                                        ThemeId:
+                                            group.data.themeId &&
+                                            themes[group.data.themeId]
+                                                ? [group.data.themeId]
+                                                : [defaultThemeId],
+                                        isPublic: [group.data.isPublic]
+                                    }
+                                }
                             }
-
+                         
                             /**
                              * Handle server-side form post
                              */
@@ -108,7 +111,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 submission &&
                                 requestMethod === requestMethods.POST
                             ) {
-                                form.initialValues = currentValues.getAll()
+
+                                props.forms[formId].initialValues = currentValues.getAll();
 
                                 const headers = {
                                     ...getStandardServiceHeaders({
@@ -137,7 +141,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 getServiceErrorDataValidationErrors(error)
 
                             if (validationErrors) {
-                                form.errors = validationErrors
+                                props.forms[formId].errors = validationErrors
                             } else {
                                 return handleSSRErrorProps({ props, error })
                             }
@@ -152,7 +156,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             }),
                         }
                     },
-                }),
             }),
         }),
     }),

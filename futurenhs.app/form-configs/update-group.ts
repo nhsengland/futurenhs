@@ -122,6 +122,21 @@ export const updateGroupForm: FormConfig = {
                     ],
                     optionClassName: 'tablet:u-w-2/5',
                 },
+                {
+                    name: 'isPublic',
+                    component: 'multiChoice',
+                    inputType: 'checkBox',
+                    text: {
+                        label: 'Group is public?',
+                        hint: 'If unselected, the group will be set to private. This cannot be undone.'
+                    },
+                    options: [
+                        {
+                            value: true,
+                            label: ''
+                        }
+                    ]
+                }
                 // {
                 //     name: 'features',
                 //     text: {
