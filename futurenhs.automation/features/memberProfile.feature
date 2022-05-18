@@ -13,9 +13,8 @@ Background:
 Scenario: FNHS78 - View my profile page
     And the 'AU' textual value is displayed
     And the profile values are displayed
-    | First name | autoEdit                |
-    | Last name  | User                    |
-    | Email      | autoEditUser@test.co.uk |
+    | First name | autoEdit |
+    | Last name  | User     |
     And the 'Edit profile' link is displayed
 
 
@@ -24,29 +23,29 @@ Scenario: FNHS13 - Edit my profile page validation
     When I click the 'Edit profile' link
     Then the 'Edit profile' header is displayed
     And the 'Image' label is displayed
-    And the 'First name' label is displayed
-    And the 'Last name (optional)' label is displayed
+    And the 'The selected file must be a JPG or PNG and must be smaller than 5MB.' textual value is displayed
+    And the 'First name' field contains 'autoEdit'
+    And the 'Last name (optional)' field contains 'User'
     And the 'Preferred pronouns (optional)' label is displayed
     And the 'Please confirm that all changes are in line with the platforms terms and conditions' textual value is displayed
     And the 'Discard changes' link is displayed
     And the 'Save changes' button is displayed
 
-@Pending
+
 Scenario: FNHS79 - Edit my profile avatar upload
     When I click the 'Edit profile' link
     Then the 'Edit profile' header is displayed
     And the 'Image' label is displayed
-    And I upload the '/media/test.png' file
-    Then the image file '/media/test.png' is uploaded and ready
+    And I upload the '/media/largeimage.png' file
+    Then the image file '/media/largeimage.png' is uploaded and ready
     And I select the 'Please confirm that all changes are in line with the platforms terms and conditions' checkbox
     And I click the 'Save changes' button
     Then the 'User Profile' header is displayed
     And the profile values are displayed
-    | First name | autoEdit                |
-    | Last name  | User                    |
-    | Email      | autoEditUser@test.co.uk |
+    | First name | autoEdit |
+    | Last name  | User     |
 
-@Pending
+
 Scenario Outline: FNHS80 - Edit my profile
     When I click the 'Edit profile' link
     Then the 'Edit profile' header is displayed    
@@ -54,8 +53,7 @@ Scenario Outline: FNHS80 - Edit my profile
     And I select the 'Please confirm that all changes are in line with the platforms terms and conditions' checkbox
     And I click the 'Save changes' button
     Then the 'User Profile' header is displayed
-    And the profile values are displayed
-    | <label> | <input> |
+    And the '<input>' textual value is displayed
 Examples:
     | input         | label              |
     | him           | Preferred pronouns |
@@ -84,7 +82,6 @@ Examples:
 
 
 Scenario: FNHS82 - Edit my profile w/o accepting T&Cs
-	And I have logged in as an 'user' and accept the cookies
 	Then the 'My Groups' header is displayed
     When I open the 'User Menu' accordion
     And I click the 'My profile' link

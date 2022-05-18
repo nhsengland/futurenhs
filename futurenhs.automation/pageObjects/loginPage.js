@@ -43,7 +43,7 @@ class loginPage extends basePage{
         helpers.waitForLoaded('//input[@id="UserName"]').setValue(username);
         helpers.waitForLoaded('//input[@id="Password"]').setValue(password);
         helpers.click('//button[@class="c-button c-button--min-width"]');
-        helpers.waitForLoaded(`//summary[contains(normalize-space(.), "${user.fullName}")]`);
+        helpers.waitForLoaded(`//div[@id="user-accordion"]`);
     }
 
     /**

@@ -104,6 +104,7 @@ BEGIN TRANSACTION
 		FirstName = 'autoEdit', 
 		Surname = 'User',
 		Initials = 'AU',
+		ImageId = NULL,
 		Pronouns = ''
 	WHERE Id = @editUser;
 
@@ -128,4 +129,4 @@ BEGIN TRANSACTION
     -- Re-enable constraints for all tables:
     EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';	
 
-rollback TRANSACTION
+ROLLBACK TRANSACTION
