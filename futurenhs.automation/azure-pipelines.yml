@@ -1,11 +1,12 @@
-trigger:
-  branches:
-    include:
-    - SPRINT
-
-  paths:
-    include:
-    - futurenhs.automation/*
+trigger: none
+resources:
+  pipelines:
+  - pipeline: Dacpac-Pipeline-Execution
+    source: dev.nhsimprovement.futurenhsopen-dacpac
+    trigger:
+      branches:
+        include:
+        - SPRINT
 
 jobs:
 - job:
