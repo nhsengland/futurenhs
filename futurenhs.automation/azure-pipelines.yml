@@ -1,10 +1,14 @@
-trigger:
-  branches:
-    include:
-    - SPRINT
+trigger: none
+resources:
+  pipelines:
+  - pipeline: Dacpac-Pipeline-Execution
+    source: dev.nhsimprovement.futurenhsopen-dacpac
+    trigger:
+      branches:
+        include:
+        - SPRINT
 
 jobs:
-- template: $(Build.SourcesDirectory)/futurenhs.data/azure-pipeline.yml
 - job:
   pool:
     vmImage: windows-latest
