@@ -1,21 +1,21 @@
 const helpers = require('../util/helpers');
 const basePage = require('./basePage');
 
-class table extends basePage{
+class table extends basePage {
     /**
      * Function to select the desired table from an object based on the input in the script
      * @param {string} tableName - name declared in the script, this is manipulated into a single string value to then match the name in the tables object
      * @returns - the xpath of the desired table to interact with in the function 
      */
-    getTable(tableName){
+    getTable(tableName) {
         var desiredTable = tableName.toLowerCase().replace(' ', '');
         var tables = {
-            groupmembers:$('//table[@id="group-table-members"]'),
-            pendingmembers:$('//table[@id="group-table-pending-members"]'),
-            groupfiles:$('//table[@id="group-table-files"]'),
-            filedetails:$('//table[@id="group-table-file"]'),
-            adminusers:$('//table[@id="admin-table-users"]'),
-            admingroups:$('//table[@id="admin-table-groups"]'),
+            groupmembers: $('//table[@id="group-table-members"]'),
+            pendingmembers: $('//table[@id="group-table-pending-members"]'),
+            groupfiles: $('//table[@id="group-table-files"]'),
+            filedetails: $('//table[@id="group-table-file"]'),
+            adminusers: $('//table[@id="admin-table-users"]'),
+            admingroups: $('//table[@id="admin-table-groups"]'),
         }
         var chosenTable = tables[desiredTable]
         return chosenTable
@@ -35,9 +35,9 @@ class table extends basePage{
     tableParser(tableName, mobile) {
         var table = this.getTable(tableName);
         helpers.waitForLoaded(table);
-        var tableValues = [] 
+        var tableValues = []
 
-        if(!mobile){
+        if (!mobile) {
             var headerElements = table.$$('th');
             var tableHeaders = []
             headerElements.forEach(element => {
@@ -47,21 +47,21 @@ class table extends basePage{
             tableValues.push(tableHeaders);
         }
 
-        var rowElements = table.$$('tr'); 
+        var rowElements = table.$$('tr');
         var tableRow = []
         rowElements.forEach(element => {
-            var rowValues = element.$$('td');   
-            rowValues.forEach(item => { 
+            var rowValues = element.$$('td');
+            rowValues.forEach(item => {
                 var rowText = item.getText();
                 tableRow.push(rowText);
-            })  
+            })
             tableRow = []
-            tableValues.push(tableRow);  
+            tableValues.push(tableRow);
         });
         tableValues.pop();
         // NHS Specific, when mobile is truthy, it will convert the parsed mobile table to cleanly match the output of the desktop version
         // This provides consistent output for testing across the other functions
-        if(mobile){
+        if (mobile) {
             var mobileTable = [];
             tableValues.forEach(item => {
                 var outputData = item.map(item => item.toString().split('\n'));
@@ -76,12 +76,12 @@ class table extends basePage{
      * Simple validation check to ensure table exists within a page
      * @param {string} tableName - name of the desired table, used as object name with known xpath 
      */
-    tableIsExisting(tableName){
+    tableIsExisting(tableName) {
         var table = this.getTable(tableName);
         try {
-            helpers.waitForLoaded(table); 
+            helpers.waitForLoaded(table);
         } catch (error) {
-            throw new Error (`Could not find "${tableName}" table : ${error}`);
+            throw new Error(`Could not find "${tableName}" table : ${error}`);
         }
     }
 
@@ -90,17 +90,17 @@ class table extends basePage{
      * @param {string} tableName - name of the desired table, used as object name with known xpath 
      * @param {Array} expectedTable - Array of the expected table, to validate against the parser
      */
-    tableValidation(tableName, expectedTable, mobile){
+    tableValidation(tableName, expectedTable, mobile) {
         var actualTable = this.tableParser(tableName, mobile);
         expectedTable.forEach((expectedRow, rowIndex) => {
             expectedRow.forEach((expectedCell, cellIndex) => {
-                if(expectedCell === '[PrettyDate]') {                    
+                if (expectedCell === '[PrettyDate]') {
                     try {
                         expect(this.dateValidator(actualTable[rowIndex][cellIndex])).toEqual(true);
                     } catch (error) {
                         throw new Error(`Unable to match '${actualTable[rowIndex][cellIndex]}' to any known Pretty Date value`);
                     }
-                } else if(expectedCell === ''){
+                } else if (expectedCell === '') {
                     return
                 } else {
                     expect(expectedCell).toEqual(actualTable[rowIndex][cellIndex]);
@@ -114,11 +114,48 @@ class table extends basePage{
      * @param {string} rowValue - known value within the desired row, to help locate the row required.
      * @param {string} tableName - name of the desired table, used as object name with known xpath
      */
-    tableRowExists(rowValue, tableName){
+    tableRowExists(rowValue, tableName) {
         var table = this.getTable(tableName);
         helpers.waitForLoaded(table);
         var tableRow = table.$(`./tbody/tr[*[contains(normalize-space(.), "${rowValue}")]]`);
         expect(tableRow.isExisting()).toEqual(true);
+    }
+
+    /**
+     * Validates a row within a table cell by cell to ensure exact match to expected values
+     * @param {*} tableName - name of table used to locate known table selectors
+     * @param {*} expectedRows - Array of values that represent the row to be validated
+     * @param {*} mobile - truthy value for tableParser to use to parse into FNHS Table Format
+     */
+    rowValidation(tableName, expectedRows, mobile) {
+        var table = this.getTable(tableName);
+        helpers.waitForLoaded(table);
+        var actualTable = this.tableParser(tableName, mobile);
+        expectedRows.forEach((expectedRow) => {
+            var rowMatch
+            actualTable.forEach((actualRow) => {
+                try {
+                    if (actualRow[0].includes(expectedRow[0])) {
+                        return rowMatch = actualRow
+                    }
+                } catch (error) {
+                    throw new Error(`Unable to match a row in the ${tableName} table with the provided values`)
+                }
+            });
+            expectedRow.forEach((expectedCell, cellIndex) => {
+                if (expectedCell === '[PrettyDate]') {
+                    try {
+                        expect(this.dateValidator(rowMatch[cellIndex])).toEqual(true);
+                    } catch (error) {
+                        throw new Error(`Unable to match '${rowMatch[cellIndex]}' to any known Pretty Date value`);
+                    }
+                } else if (expectedCell === '') {
+                    return
+                } else {
+                    expect(expectedCell).toEqual(rowMatch[cellIndex]);
+                }
+            });
+        })
     }
 
     /**
@@ -127,13 +164,13 @@ class table extends basePage{
      * @param {string} rowKey - Key value used to determine the required row.
      * @param {string} tableName - name of the desired table, used as object name with known xpath
      */
-    tableLinkClick(linkText, rowKey, tableName){
+    tableLinkClick(linkText, rowKey, tableName) {
         var tableRow
         var table = this.tableParser(tableName);
         table.shift();
-        for(var i = 0; i <= table.length; i++){
-            if(table[i].includes(rowKey) === true){
-                tableRow = i+1
+        for (var i = 0; i <= table.length; i++) {
+            if (table[i].includes(rowKey) === true) {
+                tableRow = i + 1
                 break;
             }
         }
@@ -148,7 +185,7 @@ class table extends basePage{
      * @param {string} tableName - name of the desired table, used as object name with known xpath
      * @param {string} rowCount - expected number of rows on the table
      */
-    rowCounter(tableName, rowCount){
+    rowCounter(tableName, rowCount) {
         var expectedRows = parseInt(rowCount);
         var table = this.tableParser(tableName);
         table.shift()
@@ -160,7 +197,7 @@ class table extends basePage{
      * negative validation when expecting a table to not exist
      * @param {string} tableName - name of the desired table, used as object name with known xpath
      */
-    tableNotExisting(tableName){
+    tableNotExisting(tableName) {
         var table = this.getTable(tableName);
         expect(table.isExisting()).toEqual(false);
     }
