@@ -27,7 +27,7 @@ jobs:
         customCommand: 'i'
         workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
 
-    - script: 'wdio wdio.headless.conf.js --baseUrl=$(ENVURL) --suite=fullRegression'
+    - script: '"./node_modules/.bin/wdio" wdio.headless.conf.js --baseUrl=$(ENVURL) --suite=fullRegression'
       workingDirectory: '$(Build.SourcesDirectory)/futurenhs.automation'
       displayName: 'Execute Tests'
       continueOnError: true
