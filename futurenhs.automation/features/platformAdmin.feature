@@ -116,7 +116,7 @@ Feature: Group Create
         Then the 'Automation Created Group' header is displayed
         And the 'A group created to test group creation' textual value is displayed
 
-    Scenario Outline: FNHS122 - Manage Member Edit Role
+    Scenario Outline: FNHS123 - Manage Member Edit Role
         When I click the 'Manage users' link
         Then the 'Users' header is displayed
         When I click 'Edit' on the 'auto User' row of the 'admin users' table
