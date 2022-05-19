@@ -32,7 +32,7 @@ jobs:
         command: custom
         workingDir: $(Build.SourcesDirectory)/futurenhs.automation
         verbose: false
-        customCommand: 'npm test $(TESTSUITE)'
+        customCommand: 'test $(TESTSUITE)'
       continueOnError: true
     
     - task: PublishTestResults@2
