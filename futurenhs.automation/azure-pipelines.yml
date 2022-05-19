@@ -1,4 +1,3 @@
-trigger: none
 resources:
   pipelines:
   - pipeline: Dacpac-Pipeline-Execution
