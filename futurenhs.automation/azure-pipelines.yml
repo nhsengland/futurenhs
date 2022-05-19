@@ -2,12 +2,9 @@ trigger:
   branches:
     include:
     - SPRINT
-  paths:
-    include:
-    - futurenhs.automation/*
 
 jobs:
-- template: $(Build.SourcesDirectory)../futurenhs.data/azure-pipeline.yml
+- template: $(Build.SourcesDirectory)/futurenhs.data/azure-pipeline.yml
 - job:
   pool:
     vmImage: windows-latest
