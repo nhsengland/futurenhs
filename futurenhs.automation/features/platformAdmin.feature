@@ -81,7 +81,7 @@ Feature: Group Create
         Examples:
             | groupname                | strapline                              |
             | Automation Created Group | A group created to test group creation |
-            | [STRING: 255]            | Automation group name char length test |
+            | [STRING: 255]            | name char length test                  |
             | Auto 255 Strapline Test  | [STRING: 255]                          |
 
 
