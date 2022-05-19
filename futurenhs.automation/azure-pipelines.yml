@@ -25,10 +25,14 @@ jobs:
         verbose: false
         customCommand: 'i'
         workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
-        
-    - script: 'npm test $(TESTSUITE)'
-      workingDirectory: '$(Build.SourcesDirectory)/futurenhs.automation'
-      displayName: 'Execute Tests'
+
+    - task: Npm@1
+      displayName: 'npm custom'
+      inputs:
+        command: custom
+        workingDir: $(Build.SourcesDirectory)/futurenhs.automation
+        verbose: false
+        customCommand: 'npm test $(TESTSUITE)'
       continueOnError: true
     
     - task: PublishTestResults@2
