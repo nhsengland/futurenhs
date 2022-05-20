@@ -209,11 +209,11 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
                 text={{
                     cancelButton: 'Cancel',
                     confirmButton: 'Yes, remove',
+                    heading: 'Remove member'
                 }}
                 cancelAction={handleDeleteMemberSubmitCancel}
                 confirmAction={handleDeleteMemberSubmitConfirm}
             >
-                <h3>Remove member</h3>
                 <p className="u-text-bold">
                     This member will be removed from the group. Are you sure you
                     wish to proceed?

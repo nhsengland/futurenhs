@@ -1,7 +1,7 @@
 import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
-    title: 'Future NHS | My groups',
+    title: 'FutureNHS | My groups',
     metaDescription: 'A list of groups you belong to',
     mainHeading: 'My Groups',
     intro: 'Connect, share and learn.',

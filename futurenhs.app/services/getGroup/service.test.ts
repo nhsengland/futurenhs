@@ -52,7 +52,7 @@ describe('getGroup service', () => {
         await expect(response.data).toStrictEqual({
             text: {
                 mainHeading: 'mockNameText',
-                metaDescription: 'A Future NHS group',
+                metaDescription: 'A FutureNHS group',
                 strapLine:
                     'Testing unreleased features of the FutureNHS platform',
                 title: 'mockNameText',

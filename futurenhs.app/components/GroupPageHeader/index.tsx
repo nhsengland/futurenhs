@@ -34,7 +34,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     className,
 }) => {
     const router = useRouter()
-
+    
     const [isActionsAccordionOpen] = useState(false)
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true)
     const [isLeaveGroupModalOpen, setIsLeaveGroupModalOpen] = useState(false)
@@ -306,6 +306,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                                                         'Cancel',
                                                                     confirmButton:
                                                                         'Yes, leave group',
+                                                                    heading: 'Leave this group'
                                                                 }}
                                                                 cancelAction={
                                                                     handleLeaveGroupCancel
@@ -314,10 +315,6 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                                                     handleLeaveGroupConfirm
                                                                 }
                                                             >
-                                                                <h3>
-                                                                    Leave this
-                                                                    group
-                                                                </h3>
                                                                 <p className="u-text-bold">
                                                                     Are you sure
                                                                     you would
@@ -369,6 +366,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                 ariaLabel: navMenuTitle,
                             }}
                             navMenuList={navMenuList}
+                            shouldFocusActiveLink={isDesktop}
                         />
                     </Accordion>
                 )}
