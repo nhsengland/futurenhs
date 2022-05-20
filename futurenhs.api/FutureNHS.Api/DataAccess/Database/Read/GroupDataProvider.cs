@@ -400,6 +400,41 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return member;
         }
 
+        public async Task<IEnumerable<GroupMemberDetails>> GetGroupAdminsAsync(string groupSlug, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(GroupMemberDetails.Id)}]                   = member.Id,
+                                [{nameof(GroupMemberDetails.Slug)}]                 = member.Slug, 
+                                [{nameof(GroupMemberDetails.FirstName)}]            = member.FirstName,
+                                [{nameof(GroupMemberDetails.LastName)}]             = member.Surname,
+                                [{nameof(GroupMemberDetails.Email)}]                = member.Email, 
+                                [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
+                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName,
+                                [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id
+
+                    FROM        GroupUser groupUser
+                    JOIN        [Group] groups 
+                    ON          groups.Id = groupUser.Group_Id
+                    JOIN        MembershipUser member 
+                    ON          member.Id = groupUser.MembershipUser_Id
+                    JOIN        MembershipRole memberRoles 
+                    ON          memberRoles.Id = groupUser.MembershipRole_Id 
+                    WHERE       groups.Slug = @GroupSlug
+                    AND         groupUser.MembershipRole_Id = (SELECT Id FROM MembershipRole WHERE RoleName = 'Admin')";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var member = await dbConnection.QueryAsync<GroupMemberDetails>(query, new
+            {
+                GroupSlug = groupSlug
+            });
+
+            return member;
+        }
+
         public async Task<GroupSite> GetGroupSiteDataAsync(Guid groupId, CancellationToken cancellationToken)
         {
             const string query =

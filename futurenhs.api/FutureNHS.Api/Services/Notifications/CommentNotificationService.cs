@@ -23,12 +23,12 @@ namespace FutureNHS.Api.Services.Notifications
             IDiscussionDataProvider discussionDataProvider,
             ICommentsDataProvider commentsDataProvider)
         {
-            _logger = logger;
-            _emailService = emailService;
-            _fqdn = gatewayConfig.Value.FQDN;
-            _discussionDataProvider = discussionDataProvider;
-            _govNotifyConfiguration = notifyConfig.Value;
-            _commentsDataProvider = commentsDataProvider;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _fqdn = gatewayConfig.Value.FQDN ?? throw new ArgumentNullException(nameof(gatewayConfig.Value.FQDN));
+            _discussionDataProvider = discussionDataProvider ?? throw new ArgumentNullException(nameof(discussionDataProvider));
+            _govNotifyConfiguration = notifyConfig.Value ?? throw new ArgumentNullException(nameof(notifyConfig.Value));
+            _commentsDataProvider = commentsDataProvider ?? throw new ArgumentNullException(nameof(commentsDataProvider));
         }
 
         public async Task SendNotificationToDiscussionCreatorAsync(Guid posterId, Guid discussionId, CancellationToken cancellationToken)
