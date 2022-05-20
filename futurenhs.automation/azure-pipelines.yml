@@ -54,4 +54,7 @@ jobs:
         testResultsFiles: '**/wdio-*.log'
         mergeTestResults: true
         testRunTitle: Accessibility
-
+      
+    - task: PublishHtmlReport@1
+      inputs:
+        reportDir: '$(Build.SourcesDirectory)/futurenhs.automation/axeResults'
