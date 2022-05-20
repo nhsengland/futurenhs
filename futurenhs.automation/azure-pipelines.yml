@@ -57,4 +57,4 @@ jobs:
       
     - task: PublishHtmlReport@1
       inputs:
-        reportDir: '$(Build.SourcesDirectory)/futurenhs.automation/axeResults'
+        reportDir: '$(Build.SourcesDirectory)/futurenhs.automation/axeResults/'
