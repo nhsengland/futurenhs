@@ -128,7 +128,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                 src="/images/logo.svg"
                                 height={41}
                                 width={231}
-                                alt="Future NHS home page"
+                                alt="FutureNHS home page"
                             />
                         </a>
                     </Link>
@@ -315,6 +315,8 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                                 logOutCancel,
                                                                             confirmButton:
                                                                                 logOutConfirm,
+                                                                            heading:
+                                                                                logOutHeading
                                                                         }}
                                                                         cancelAction={
                                                                             handleLogoutCancel
@@ -323,11 +325,6 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                             handleLogoutConfirm
                                                                         }
                                                                     >
-                                                                        <h3>
-                                                                            {
-                                                                                logOutHeading
-                                                                            }
-                                                                        </h3>
                                                                         <p className="u-text-bold">
                                                                             {
                                                                                 logOutBody

@@ -1,6 +1,6 @@
 import '../UI/scss/screen.scss';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import App from 'next/app';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -33,6 +33,25 @@ const CustomApp = ({ Component, pageProps }) => {
         ).length > 0
     let hasFormErrors: boolean = false
     let headTitle: string = pageProps.pageTitle || pageProps.contentText?.title
+
+    useEffect(() => {
+
+            router.events.on('routeChangeComplete', () => {
+                /*
+                 * This is needed for the focus to be moved back to the beginning of the page after
+                 * client-side routing by next-router.
+                 */
+                document.body.setAttribute('tabIndex', '-1');
+                document.body.focus()
+              });
+          
+              document.body.addEventListener('blur', () => {
+
+                document.body.removeAttribute('tabIndex');
+
+              });
+
+    }, [])
 
     if (pageProps.forms) {
         for (const form in pageProps.forms) {

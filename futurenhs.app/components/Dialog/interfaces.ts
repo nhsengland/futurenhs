@@ -15,6 +15,7 @@ export interface Props {
     text: {
         confirmButton: string
         cancelButton?: string
+        heading?: string
     }
     /**
      * Function to be called upon selecting confirm button

@@ -47,6 +47,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     props.minLength = minLength
                     props.resultsList = searchResults.data ?? []
                     props.pagination = searchResults.pagination
+                    props.pageTitle = `${props.contentText?.mainHeading}: "${term ? term : ''}" - ${searchResults.pagination?.totalRecords ?? 0} results found`
                 } catch (error) {
                     return handleSSRErrorProps({ props, error })
                 }

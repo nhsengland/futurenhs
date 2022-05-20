@@ -380,6 +380,7 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                                                 'Cancel',
                                                             confirmButton:
                                                                 'Yes, discard',
+                                                            heading: 'Folder will be deleted'
                                                         }}
                                                         cancelAction={
                                                             handleDeleteFolderCancel
@@ -388,10 +389,6 @@ export const GroupFolderContentsTemplate: (props: Props) => JSX.Element = ({
                                                             handleDeleteFolderConfirm
                                                         }
                                                     >
-                                                        <h3>
-                                                            Folder will be
-                                                            deleted
-                                                        </h3>
                                                         <p className="u-text-bold">
                                                             Any folder contents
                                                             will also be

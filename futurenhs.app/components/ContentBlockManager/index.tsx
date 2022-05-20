@@ -681,11 +681,11 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 text={{
                     cancelButton: 'Cancel',
                     confirmButton: 'Yes, discard',
+                    heading: 'Changed Data will be lost'
                 }}
                 cancelAction={handleDiscardChangesCancel}
                 confirmAction={handleDiscardChangesConfirm}
             >
-                <h3>Changed Data will be lost</h3>
                 <p className="u-text-bold">
                     All changes will be
                     discarded. Are you sure you wish to

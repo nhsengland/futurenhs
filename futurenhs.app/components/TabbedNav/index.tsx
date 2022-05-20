@@ -3,17 +3,35 @@ import classNames from 'classnames'
 import { Link } from '@components/Link'
 
 import { Props } from './interfaces'
+import { useEffect, useRef } from 'react'
 
 export const TabbedNav: (props: Props) => JSX.Element = ({
     text,
     navMenuList,
+    shouldFocusActiveLink,
 }) => {
     const { ariaLabel } = text
+    const activeLinkRef = useRef(null)
 
     const generatedClasses: any = {
         wrapper: classNames('c-tabbed-nav'),
         item: classNames('c-tabbed-nav_item'),
     }
+
+    useEffect(() => {
+
+        if (shouldFocusActiveLink) {
+
+            const activeLink = activeLinkRef.current
+            activeLink.setAttribute('tabindex', '-1')
+            activeLink.classList.add('focus:u-outline-none')
+            activeLink.addEventListener('blur', () => {
+                activeLink.removeAttribute('tabindex')
+            })
+            activeLink.focus()
+        }
+
+    }, [activeLinkRef.current])
 
     return (
         <nav className="c-tabbed-nav_nav" aria-label={ariaLabel}>
@@ -29,6 +47,7 @@ export const TabbedNav: (props: Props) => JSX.Element = ({
                             key={index}
                             role="none"
                             className={generatedClasses.item}
+                            ref={isActive ? activeLinkRef : null}
                         >
                             <Link href={url}>
                                 <a

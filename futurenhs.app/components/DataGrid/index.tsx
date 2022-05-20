@@ -86,7 +86,6 @@ export const DataGrid: (props: Props) => JSX.Element = ({
                                         >
                                             {shouldRenderCellHeader && (
                                                 <span
-                                                    aria-hidden={true}
                                                     className={
                                                         generatedCellClasses.bodyCellLabel
                                                     }

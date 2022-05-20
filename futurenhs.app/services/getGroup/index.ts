@@ -71,7 +71,7 @@ export const getGroup = async (
     serviceResponse.data = {
         text: {
             title: apiData.name ?? null,
-            metaDescription: 'A Future NHS group',
+            metaDescription: 'A FutureNHS group',
             mainHeading: apiData.name ?? null,
             strapLine: apiData?.strapline ?? null,
         },

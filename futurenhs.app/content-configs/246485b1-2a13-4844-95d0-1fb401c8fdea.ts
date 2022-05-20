@@ -1,7 +1,7 @@
 import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
-    metaDescription: 'Search Future NHS',
+    metaDescription: 'Search FutureNHS',
     title: 'Search',
     mainHeading: 'Searching',
     noResults: 'Sorry no results found',

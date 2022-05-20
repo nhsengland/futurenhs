@@ -28,7 +28,7 @@ const Index: (props) => JSX.Element = ({}) => {
                     </p>
                     <p className="u-text-lead">
                         Alternatively, return to the{' '}
-                        <Link href="/">Future NHS homepage</Link>.
+                        <Link href="/">FutureNHS homepage</Link>.
                     </p>
                 </LayoutColumn>
             </LayoutColumnContainer>

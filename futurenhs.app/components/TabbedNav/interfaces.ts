@@ -7,4 +7,5 @@ export interface Props {
         text: string
         isActive?: boolean
     }>
+    shouldFocusActiveLink?: boolean
 }

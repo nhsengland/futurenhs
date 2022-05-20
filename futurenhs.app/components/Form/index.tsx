@@ -345,11 +345,11 @@ export const Form: (props: Props) => JSX.Element = ({
                                         text={{
                                             cancelButton: 'Cancel',
                                             confirmButton: 'Yes, discard',
+                                            heading: 'Entered Data will be lost'
                                         }}
                                         cancelAction={handleDiscardFormCancel}
                                         confirmAction={handleDiscardFormConfirm}
                                     >
-                                        <h3>Entered Data will be lost</h3>
                                         <p className="u-text-bold">
                                             Any entered details will be
                                             discarded. Are you sure you wish to
