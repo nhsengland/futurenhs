@@ -24,7 +24,7 @@ namespace FutureNHS.Api.Services
         private readonly IPermissionsService _permissionsService;
         private readonly IGroupMemberNotificationService _groupMemberNotificationService;
 
-        public GroupMembershipService(ILogger<GroupMembershipService> logger, 
+        public GroupMembershipService(ILogger<GroupMembershipService> logger,
             ISystemClock systemClock,
             IGroupCommand groupCommand,
             IRolesCommand rolesCommand,
@@ -206,7 +206,14 @@ namespace FutureNHS.Api.Services
                 throw new KeyNotFoundException("Error: Group not found for slug");
             }
 
-            var groupUser = new GroupUserDto
+            var groupUser = await _groupCommand.GetGroupUserAsync(userId, group.Id, cancellationToken);
+
+            if (groupUser is not null)
+            {
+                throw new ValidationException(nameof(groupUser.MembershipUser), "User has already requested access to this group");
+            }
+
+            groupUser = new GroupUserDto
             {
                 Group = group.Id,
                 MembershipUser = userId,
@@ -218,6 +225,11 @@ namespace FutureNHS.Api.Services
             };
 
             await _groupCommand.UserJoinGroupAsync(groupUser, cancellationToken);
+
+            if (!group.IsPublic)
+            {
+                _ = Task.Run(() => _groupMemberNotificationService.SendApplicationNotificationToGroupAdminAsync(slug, cancellationToken), cancellationToken);
+            }
         }
 
         public async Task UserLeaveGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
