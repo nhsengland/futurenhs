@@ -77,7 +77,6 @@ Feature: Group Create
         And I click the 'Save and create group' button
         Then the 'Groups' header is not displayed
         And the 'Admin groups' table exists
-        And the '<groupname>' row is displayed on the 'Admin groups' table
         Examples:
             | groupname                | strapline                              |
             | Automation Created Group | A group created to test group creation |

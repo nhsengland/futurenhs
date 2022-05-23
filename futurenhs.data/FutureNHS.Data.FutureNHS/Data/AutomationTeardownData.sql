@@ -33,9 +33,8 @@ BEGIN
     );
 
 	DELETE FROM [dbo].[Image]
-	WHERE [Id] IN (
-		(SELECT ImageId FROM [MembershipUser] WHERE email = 'autoEditUser@test.co.uk'),
-		(SELECT ImageId FROM [Group] WHERE Name = 'Automation Edited Group')
+	WHERE [CreatedBy] IN (
+		 SELECT [Id] FROM #autoUsers
 	)
 
 	DELETE FROM [dbo].[Entity] 

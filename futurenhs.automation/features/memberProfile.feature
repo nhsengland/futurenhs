@@ -93,10 +93,6 @@ Feature: Member Profile
 
 
     Scenario: FNHS82 - Edit my profile w/o accepting T&Cs
-        Then the 'My Groups' header is displayed
-        When I open the 'User Menu' accordion
-        And I click the 'My profile' link
-        Then the 'User Profile' header is displayed
         When I click the 'Edit profile' link
         Then the 'Edit profile' header is displayed
         When I click the 'Save changes' button
