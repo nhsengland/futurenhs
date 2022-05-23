@@ -55,6 +55,7 @@ jobs:
         mergeTestResults: true
         testRunTitle: Accessibility
         failTaskOnFailedTests: true
+      continueOnError: true
 
     - task: PublishHtmlReport@1
       inputs:
