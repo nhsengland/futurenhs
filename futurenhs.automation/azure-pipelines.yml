@@ -54,6 +54,7 @@ jobs:
         testResultsFiles: '**/wdio-*.log'
         mergeTestResults: true
         testRunTitle: Accessibility
+        failTaskOnFailedTests: true
 
     - task: PublishHtmlReport@1
       inputs:
@@ -70,7 +71,7 @@ jobs:
       continueOnError: true
       failOnStderr: true
     - task: PublishTestResults@2
-      displayName: 'Publish Accessibility Test Results'
+      displayName: 'Publish Lighthouse Test Results'
       inputs:
         testResultsFiles: '**/wdio-*.log'
         mergeTestResults: true
