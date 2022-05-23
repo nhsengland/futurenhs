@@ -287,7 +287,6 @@ export const Form: (props: Props) => JSX.Element = ({
                     >
                         <Field
                             key="_csrf"
-                            id={`_csrf${instanceId ?? ''}`}
                             name="_csrf"
                             component={formComponents.hidden}
                             initialValue={csrfToken}
@@ -295,7 +294,6 @@ export const Form: (props: Props) => JSX.Element = ({
                         />
                         <Field
                             key="_form-id"
-                            id={`_form-id${instanceId ?? ''}`}
                             name="_form-id"
                             component={formComponents.hidden}
                             initialValue={formId}

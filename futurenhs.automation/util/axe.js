@@ -112,9 +112,12 @@ class axeCore{
      */
     shouldIgnoreIssue(issue) {
         let shouldIgnore = false;
-        // aXe returns a false positive on olour contrast for elements with a pseudo-element which has a background colour
-        console.log(issue.id)
-        if(issue.id === 'color-contrast'){
+        console.log(issue)
+        // aXe returns a false positive on colour contrast for elements with a pseudo-element which has a background colour
+        if (issue.id === 'color-contrast' ||
+        // Known issue with govuk autocomplete component, aria value is false until an option is selected
+            (issue.id === 'aria-valid-attr-value' && issue.nodes[0]?.failureSummary?.includes('aria-activedescendant="false"'))
+        ) {
             shouldIgnore = true;
         }
         return shouldIgnore;
