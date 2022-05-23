@@ -97,16 +97,13 @@ Feature: Search
 
     @NotInLocal
     Scenario: FNHS105 - Search for a File by File Description
-        When I search for 'Test doc'
-        And there are '3' search results displayed
+        When I search for 'Test doc FNHS105'
+        And there are '1' search results displayed
         And the 'DocTest' search result card is displayed
             | File on Automation Admin Group group |
-            | Test doc                             |
-        And the 'Test doc' search result card is displayed
-            | File on Automation Visual Regression Group group |
-            | Test doc                                         |
-        When I select the 'Test doc' search result card
-        Then the 'test doc' header is displayed
+            | Test doc FNHS105                     |
+        When I select the 'DocTest' search result card
+        Then the 'docTest' header is displayed
 
 
     Scenario: FNHS106 - Search for a Folder by Folder Name
