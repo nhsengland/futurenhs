@@ -181,7 +181,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
                     {hasUsers
 
                         ? <DynamicListContainer
-                            containerElementType="ul"
+                            containerElementType="div"
                             shouldEnableLoadMore={shouldEnableLoadMore}
                             className="u-list-none u-p-0">
                             <DataGrid

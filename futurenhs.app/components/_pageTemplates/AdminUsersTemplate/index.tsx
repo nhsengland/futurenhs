@@ -178,7 +178,7 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                     <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                     {hasUsers ? (
                         <DynamicListContainer
-                            containerElementType="ul"
+                            containerElementType="div"
                             shouldEnableLoadMore={shouldEnableLoadMore}
                             className="u-list-none u-p-0"
                         >
