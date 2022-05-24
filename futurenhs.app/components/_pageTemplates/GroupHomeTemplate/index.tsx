@@ -1,154 +1,46 @@
-import { useState, useRef } from 'react';
-import classNames from 'classnames';
+import classNames from 'classnames'
 
-import { getServiceErrorDataValidationErrors } from '@services/index';
-import { getGenericFormError } from '@helpers/util/form';
-import { actions as actionConstants } from '@constants/actions';
-import { ErrorSummary } from '@components/ErrorSummary';
-import { ContentBlockManager } from '@components/ContentBlockManager';
-import { NoScript } from '@components/NoScript';
-import { LayoutColumn } from '@components/LayoutColumn';
-import { getCmsPageContent } from '@services/getCmsPageContent';
-import { putCmsPageContent } from '@services/putCmsPageContent';
-import { postCmsPageContent } from '@services/postCmsPageContent';
+import { themes } from '@constants/themes'
+import { selectTheme } from '@selectors/themes'
+import { LayoutColumn } from '@components/LayoutColumn'
+import { Theme } from '@appTypes/theme'
 
-import { Props } from './interfaces';
-import { CmsContentBlock } from '@appTypes/contentBlock';
-import { FormErrors } from '@appTypes/form';
+import { Props } from './interfaces'
+import { RichText } from '@components/RichText'
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
-    user,
-    actions,
-    contentPageId,
-    contentTemplate,
-    contentBlocks,
-    themeId
+    themeId,
+    contentText,
 }) => {
+    const { bodyHtml } = contentText ?? {}
 
-    const errorSummaryRef: any = useRef()
-
-    const [blocks, setBlocks] = useState(contentBlocks);
-    const [errors, setErrors] = useState({});
-
-    const isGroupAdmin: boolean = actions.includes(actionConstants.GROUPS_EDIT) || actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT);
+    const { background }: Theme = selectTheme(themes, themeId)
 
     const generatedClasses: any = {
-        wrapper: classNames('c-page-body')
-    };
-
-    const handleClearErrors = () => {
-
-        if(Object.keys(errors).length > 0){
-
-            setErrors({});
-
-        }
-
+        wrapper: classNames('c-page-body'),
+        adminCallOut: classNames(
+            'nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full',
+            `u-border-l-theme-${background}`
+        ),
+        adminCallOutText: classNames('nhsuk-heading-m u-text-bold'),
+        adminCallOutButton: classNames(
+            'c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0'
+        ),
+        previewButton: classNames(
+            'c-button c-button-outline c-button--min-width u-w-full u-mt-4 u-drop-shadow tablet:u-mt-0 tablet:u-mr-5'
+        ),
+        publishButton: classNames(
+            'c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0'
+        ),
     }
 
-    const handleSaveBlocks = (blocks: Array<CmsContentBlock>, localErrors: FormErrors): Promise<FormErrors> => {
-
-        return new Promise((resolve) => {
-
-            if(Object.keys(localErrors).length){
-
-                setErrors(localErrors)
-                window.scrollTo(0, 0)
-                errorSummaryRef?.current?.focus?.()
-
-                resolve(localErrors)
-
-            } else {
-
-                putCmsPageContent({ 
-                    user, 
-                    pageId: contentPageId, 
-                    pageBlocks: blocks 
-                })
-                .then(() => {
-    
-                    postCmsPageContent({ 
-                        user, 
-                        pageId: contentPageId
-                    })
-                    .then(() => {
-    
-                        getCmsPageContent({
-                            user,
-                            pageId: contentPageId
-                        })
-                        .then((response) => {
-        
-                            const updatedBlocks: Array<CmsContentBlock> = response.data;
-        
-                            setBlocks(updatedBlocks);
-                            setErrors({});
-                            resolve({})
-        
-                        });
-    
-                    });
-            
-                })
-                .catch((error) => {
-    
-                    const errors: FormErrors =
-                    getServiceErrorDataValidationErrors(error) ||
-                    getGenericFormError(error)
-
-                    setErrors(errors)
-                    window.scrollTo(0, 0)
-                    errorSummaryRef?.current?.focus?.()
-    
-                    resolve(errors)
-    
-                })
-
-            }
-
-        }) 
-
-    };
-
     return (
-
         <LayoutColumn tablet={12} className={generatedClasses.wrapper}>
-            <ErrorSummary 
-                ref={errorSummaryRef}
-                errors={errors} 
-                className="u-mb-6" />
-            {isGroupAdmin &&
-                <NoScript headingLevel={2} text={{
-                    heading: 'Important',
-                    body: 'JavaScript must be enabled in your browser to manage the content of this page'
-                }} />
-            }
-            <ContentBlockManager
-                blocks={blocks}
-                blocksTemplate={contentTemplate}
-                text={{
-                    headerReadBody: "You are a Group Admin of this page. Please click edit to switch to editing mode.",
-                    headerPreviewBody: "You are previewing the group homepage in editing mode.",
-                    headerCreateHeading: "Add content block",
-                    headerCreateBody: "Choose a content block to add to your group homepage",
-                    headerUpdateHeading: "Editing group homepage",
-                    headerUpdateBody: "Welcome to your group homepage. You are currently in editing mode. You can save a draft at any time, preview your page, or publish your changes. Once published, you can edit your page in the group actions. For more information and help, see our quick guide. For some inspiration, visit our knowledge hub.",
-                    headerEnterUpdateButton: "Edit page",
-                    headerLeaveUpdateButton: "Stop editing page",
-                    headerDiscardUpdateButton: "Discard updates",
-                    headerPreviewUpdateButton: "Preview page",
-                    headerPublishUpdateButton: "Publish group page",
-                    createButton: "Add content block",
-                    cancelCreateButton: "Cancel"
-                }}
-                shouldRenderEditingHeader={isGroupAdmin}
-                discardUpdateAction={handleClearErrors}
-                stateChangeAction={handleClearErrors}
-                blocksChangeAction={handleClearErrors}
-                saveBlocksAction={handleSaveBlocks}
-                themeId={themeId} />
+            <RichText
+                wrapperElementType="div"
+                bodyHtml={bodyHtml}
+                className="u-text-lead u-text-theme-7"
+            />
         </LayoutColumn>
-
     )
-
 }
