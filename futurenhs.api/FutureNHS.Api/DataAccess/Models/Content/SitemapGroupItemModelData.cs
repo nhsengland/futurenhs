@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace FutureNHS.Api.Models.Content
+namespace FutureNHS.Api.DataAccess.Models.Content
 {
-    public class SitemapGroupItemModel
+    public sealed class SitemapGroupItemModelData
     {
         /// <summary>
         /// Gets or sets the name.

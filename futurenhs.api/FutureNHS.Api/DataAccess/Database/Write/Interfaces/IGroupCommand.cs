@@ -10,7 +10,7 @@ public interface IGroupCommand
     Task UserLeaveGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default);
     Task<Guid?> GetGroupIdForSlugAsync(string slug, CancellationToken cancellationToken = default);
     Task<GroupData> GetGroupAsync(string slug, CancellationToken cancellationToken = default);
-    Task CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken);
+    Task<Guid> CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken);
     Task UpdateGroupAsync(GroupDto groupDto, CancellationToken cancellationToken = default);
     Task CreateGroupSiteAsync(GroupSiteDto groupContentDto, CancellationToken cancellationToken);
     Task DeleteGroupSiteAsync(Guid contentId, CancellationToken cancellationToken);

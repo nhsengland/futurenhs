@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
@@ -9,6 +8,7 @@ using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
@@ -162,7 +162,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return group;
         }
 
-        public async Task CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken)
+        public async Task<Guid> CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken)
         {
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
@@ -270,7 +270,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             await connection.CloseAsync();
 
-            return;
+            return groupId;
         }
 
         public async Task UpdateGroupAsync(GroupDto groupDto, CancellationToken cancellationToken = default)

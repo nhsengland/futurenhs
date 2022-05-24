@@ -1,6 +1,7 @@
 ﻿using FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces;
+using FutureNHS.Api.DataAccess.Models.Content;
+using FutureNHS.Api.DataAccess.Models.Content.Responses;
 using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
-using FutureNHS.Api.Models.Content;
 
 namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
 {
@@ -14,33 +15,33 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<ContentModel>> GetContentAsync(Guid contentId)
+        public Task<ApiResponse<ContentModelData>> GetContentAsync(Guid contentId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/content/{contentId}");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModelData>>(HttpMethod.Get, $"api/content/{contentId}");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<ContentModel>> GetContentPublishedAsnyc(Guid contentId)
+        public Task<ApiResponse<ContentModelData>> GetContentPublishedAsnyc(Guid contentId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/content/{contentId}/published");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModelData>>(HttpMethod.Get, $"api/content/{contentId}/published");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<ContentModel>> GetContentDraftAsnyc(Guid contentId)
+        public Task<ApiResponse<ContentModelData>> GetContentDraftAsnyc(Guid contentId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/content/{contentId}/draft");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModelData>>(HttpMethod.Get, $"api/content/{contentId}/draft");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<ContentModel>> GetBlockAsync(Guid blockId)
+        public Task<ApiResponse<ContentModelData>> GetBlockAsync(Guid blockId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/block/{blockId}");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModelData>>(HttpMethod.Get, $"api/block/{blockId}");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<IEnumerable<ContentModel>>> GetAllBlocksAsync()
+        public Task<ApiResponse<IEnumerable<ContentModelData>>> GetAllBlocksAsync()
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModel>>>(HttpMethod.Get, "api/block");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModelData>>>(HttpMethod.Get, "api/block");
         }
 
         /// <inheritdoc />
@@ -68,21 +69,21 @@ namespace FutureNHS.Api.DataAccess.ContentApi.Handlers
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<IEnumerable<SitemapGroupItemModel>>> GetSiteMapAsync(Guid contentId)
+        public Task<ApiResponse<IEnumerable<SitemapGroupItemModelData>>> GetSiteMapAsync(Guid contentId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<SitemapGroupItemModel>>>(HttpMethod.Get, $"api/sitemap/{contentId}");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<SitemapGroupItemModelData>>>(HttpMethod.Get, $"api/sitemap/{contentId}");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<ContentModel>> GetTemplateAsync(Guid templateId)
+        public Task<ApiResponse<ContentModelData>> GetTemplateAsync(Guid templateId)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModel>>(HttpMethod.Get, $"api/template/{templateId}");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<ContentModelData>>(HttpMethod.Get, $"api/template/{templateId}");
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<IEnumerable<ContentModel>>> GetTemplatesAsync()
+        public Task<ApiResponse<IEnumerable<ContentModelData>>> GetTemplatesAsync()
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModel>>>(HttpMethod.Get, "api/template");
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<IEnumerable<ContentModelData>>>(HttpMethod.Get, "api/template");
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Content;
+    using Umbraco9ContentApi.Core.Models.Requests;
     using Umbraco9ContentApi.Core.Models.Response;
 
     public interface IFutureNhsContentHandler
@@ -9,11 +10,10 @@
         /// <summary>
         /// Creates the content asynchronous.
         /// </summary>
-        /// <param name="pageName">Name of the page.</param>
-        /// <param name="pageParentId">The page parent identifier.</param>
+        /// <param name="generalWebPageCreateRequest">The general web page create request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> CreateContentAsync(string pageName, string pageParentId, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> CreateContentAsync(GeneralWebPageCreateRequest generalWebPageCreateRequest, CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates the content asynchronous.

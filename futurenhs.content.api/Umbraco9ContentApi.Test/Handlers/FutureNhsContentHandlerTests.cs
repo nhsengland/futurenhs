@@ -13,6 +13,7 @@
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Dto;
+    using Umbraco9ContentApi.Core.Models.Requests;
 
     /// <summary>
     /// Futrue Nhs Content Handler Tests.
@@ -57,8 +58,9 @@
                 .Setup(x => x.CreateContentAsync(It.IsAny<GeneralWebPageDto>(), cancellationToken))
                 .ReturnsAsync(mockContent.Object);
 
+            var generalWebPageCreateRequest = new GeneralWebPageCreateRequest();
             // Act
-            var contentResult = await contentHandler.CreateContentAsync(newPageName, null, cancellationToken);
+            var contentResult = await contentHandler.CreateContentAsync(generalWebPageCreateRequest, cancellationToken);
 
             // Assert
             Assert.IsNotNull(contentResult);

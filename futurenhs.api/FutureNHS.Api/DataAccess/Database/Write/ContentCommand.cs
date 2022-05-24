@@ -1,7 +1,8 @@
-﻿using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
+﻿using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Content.Responses;
+using FutureNHS.Api.DataAccess.Models.Requests;
+using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
-using FutureNHS.Api.Models.Content;
-using FutureNHS.Api.Models.Content.Requests;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Write
 {
@@ -17,15 +18,15 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> CreateContentAsync(GeneralWebPageCreateRequest createRequest, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> CreateContentAsync(ContentDto content, CancellationToken cancellationToken)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, "api/content/create", JsonContent.Create(createRequest));
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, "api/content/create", JsonContent.Create(content));
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> UpdateContentAsync(Guid contentId, PageContentModel pageContent, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> UpdateContentAsync(Guid contentId, GeneralWebPageUpdateRequest updateRequest, CancellationToken cancellationToken)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Put, $"api/content/{contentId}", JsonContent.Create(pageContent));
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Put, $"api/content/{contentId}", JsonContent.Create(updateRequest));
         }
 
         /// <inheritdoc />

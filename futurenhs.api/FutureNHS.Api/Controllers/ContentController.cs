@@ -1,7 +1,8 @@
 using FutureNHS.Api.DataAccess.ContentApi.Handlers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.Models.Content;
-using FutureNHS.Api.Models.Content.Requests;
+using FutureNHS.Api.DataAccess.Models.Content;
+using FutureNHS.Api.DataAccess.Models.Content.Responses;
+using FutureNHS.Api.DataAccess.Models.Requests;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +45,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("page/{pageId:guid}/published")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModelData>))]
         public async Task<IActionResult> GetPagePublishedAsync(Guid pageId)
         {
             var page = await _contentDataProvider.GetContentPublishedAsnyc(pageId);
@@ -53,7 +54,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("page/{pageId:guid}/draft")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModelData>))]
         public async Task<IActionResult> GetPageDraftAsync(Guid pageId)
         {
             var page = await _contentDataProvider.GetContentDraftAsnyc(pageId);
@@ -63,9 +64,9 @@ namespace FutureNHS.Api.Controllers
         [HttpPut]
         [Route("page/{pageId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
-        public async Task<IActionResult> UpdatePageAsync(Guid? userId, Guid pageId, [FromBody] PageContentModel pageContent, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdatePageAsync(Guid? userId, Guid pageId, [FromBody] GeneralWebPageUpdateRequest updateRequest, CancellationToken cancellationToken)
         {
-            var pageGuid = await _contentService.UpdateContentAsync(userId, pageId, pageContent, cancellationToken);
+            var pageGuid = await _contentService.UpdateContentAsync(userId, pageId, updateRequest, cancellationToken);
             return new JsonResult(pageGuid);
         }
 
@@ -89,7 +90,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("block")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModelData>>))]
         public async Task<IActionResult> GetAllBlocks()
         {
             var blocks = await _contentDataProvider.GetAllBlocksAsync();
@@ -98,7 +99,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("block/{blockId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModelData>))]
         public async Task<IActionResult> GetBlockAsync(Guid blockId)
         {
             var block = await _contentDataProvider.GetBlockAsync(blockId);
@@ -143,7 +144,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("template/{templateId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModelData>))]
         public async Task<IActionResult> GetTemplateAsync(Guid templateId)
         {
             var template = await _contentDataProvider.GetTemplateAsync(templateId);
@@ -152,7 +153,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("template")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModelData>>))]
         public async Task<IActionResult> GetTemplatesAsync()
         {
             var templates = await _contentDataProvider.GetTemplatesAsync();
@@ -161,7 +162,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("sitemap/{pageId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<SitemapGroupItemModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<SitemapGroupItemModelData>))]
         public async Task<IActionResult> GetSiteMapAsync(Guid pageId)
         {
             var sitemap = await _contentDataProvider.GetSiteMapAsync(pageId);

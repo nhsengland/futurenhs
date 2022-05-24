@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FutureNHS.Api.Models.Content
+namespace FutureNHS.Api.DataAccess.Models.Content.Responses
 {
     public class ApiResponse<T> where T : class
     {

@@ -7,6 +7,7 @@
     using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Models.Dto;
+    using Umbraco9ContentApi.Core.Models.Requests;
     using Umbraco9ContentApi.Core.Models.Response;
 
     /// <summary>
@@ -28,32 +29,34 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> CreateContentAsync(string pageName, string pageParentId, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> CreateContentAsync(GeneralWebPageCreateRequest generalWebPageCreateRequest, CancellationToken cancellationToken)
         {
             ApiResponse<string> response = new ApiResponse<string>();
             Guid pageParentGuid;
             var pageFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
 
             // If a parent page id is supplied and is a valid guid, set that page as the page parent. Else use the pages folder.
-            Guid parentId = pageParentId is not null && Guid.TryParse(pageParentId, out pageParentGuid)
+            Guid parentId = generalWebPageCreateRequest.PageParentId is not null && Guid.TryParse(generalWebPageCreateRequest.PageParentId, out pageParentGuid)
                 ? pageParentGuid
                 : pageFolderGuid;
 
             var generalWebPageDto = new GeneralWebPageDto()
             {
-                PageName = pageName,
+                PageName = generalWebPageCreateRequest.PageName,
                 PageParentId = parentId,
             };
 
-            var result = _futureNhsContentService.CreateContentAsync(generalWebPageDto, cancellationToken).Result;
+            var content = await _futureNhsContentService.CreateContentAsync(generalWebPageDto, cancellationToken);
 
-            if (result is null)
+            if (content is null)
             {
                 errorList.Add("Content creation failed.");
                 return response.Failure(errorList, "Failed.");
             }
 
-            return response.Success(result.Key.ToString(), "Success.");
+            await _futureNhsContentService.SaveAndPublishContentAsync(content, cancellationToken);
+
+            return response.Success(content.Key.ToString(), "Success.");
         }
 
         /// <inheritdoc />

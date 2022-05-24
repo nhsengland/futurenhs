@@ -61,8 +61,8 @@
         public async Task<IContent?> CreateContentAsync(GeneralWebPageDto generalWebPage, CancellationToken cancellationToken)
         {
             var parentContent = _contentService.GetById(generalWebPage.PageParentId);
-            var result = _contentService.CreateAndSave(generalWebPage.PageName, parentContent, generalWebPage.DocumentTypeAlias);
-            return result;
+            var content = _contentService.CreateAndSave(generalWebPage.PageName, parentContent, generalWebPage.DocumentTypeAlias);
+            return content;
         }
 
         /// <inheritdoc />

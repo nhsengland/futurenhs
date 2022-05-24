@@ -107,9 +107,7 @@
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
         public async Task<ActionResult> CreateContentAsync([FromBody] GeneralWebPageCreateRequest createRequest, CancellationToken cancellationToken)
         {
-            var result = await _futureNhsContentHandler.CreateContentAsync(createRequest.PageName,
-                createRequest.PageParentId,
-                cancellationToken);
+            var result = await _futureNhsContentHandler.CreateContentAsync(createRequest, cancellationToken);
 
             if (result.Succeeded)
             {
