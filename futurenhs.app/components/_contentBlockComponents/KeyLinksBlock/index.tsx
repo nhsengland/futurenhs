@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import classNames from 'classnames'
 import FlipMove from 'react-flip-move';
 
@@ -23,6 +24,7 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
     headingLevel,
     themeId,
     isEditable,
+    isPreview,
     createAction,
     changeAction,
     initialErrors,
@@ -33,14 +35,14 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
     const blockId: string = block?.item?.id;
     const { title, blocks } = block?.content ?? {};
 
-    const hasLinks: boolean = block?.content?.blocks?.length > 0;
-    const hasMaxLinks: boolean = block?.content?.blocks?.length === maxLinks;
+    const hasLinks: boolean = blocks?.length > 0;
+    const hasMaxLinks: boolean = blocks?.length === maxLinks;
 
     const { background, content: contentTheme }: Theme = useTheme(themeId);
     const csrfToken: string = useCsrf();
     const formConfig: FormConfig = useFormConfig(formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER, {
         [`title-${blockId}`]: title
-    }, initialErrors);
+    }, initialErrors[blockId] ?? {});
 
     const generatedClasses: any = {
         wrapper: classNames(className),
@@ -68,7 +70,7 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
     
                 updatedBlock.content.blocks.push(newBlock);
     
-                changeAction?.({ block: updatedBlock, errors: null })
+                changeAction?.({ block: updatedBlock })
 
                 setTimeout(() => {
 
@@ -96,7 +98,7 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
         
         updatedBlock.content.blocks = updatedChildBlocks;
         
-        changeAction?.({ block: updatedBlock, errors: null })
+        changeAction?.({ block: updatedBlock })
 
         setTimeout(() => {
 
@@ -137,7 +139,7 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
 
         }
 
-        changeAction?.({ block: updatedBlock, errors })
+        changeAction?.({ block: updatedBlock, errors, childBlockId })
 
     }
 
@@ -167,11 +169,12 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
                             const { item, content } = childBlock;
 
                             const childBlockId: string = item.id;
+                            const key: string = `${childBlockId}-${index}`; 
 
                             const formConfig: FormConfig = useFormConfig(formTypes.CONTENT_BLOCK_QUICK_LINK, {
                                 [`linkText-${childBlockId}`]: content?.linkText,
                                 [`url-${childBlockId}`]: content?.url
-                            }, initialErrors);
+                            }, initialErrors[childBlockId] ?? {});
 
                             const shouldRenderMovePrevious: boolean = index > 0;
                             const shouldRenderMoveNext: boolean = index < block.content.blocks.length - 1;
@@ -187,6 +190,13 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
                                 if (childBlockIndex > -1) {
 
                                     updatedBlock.content.blocks = deleteArrayItem(childBlocks, childBlockIndex);
+
+                                    if(initialErrors[childBlockId]){
+
+                                        delete initialErrors[childBlockId];
+
+                                    }
+
                                     changeAction?.({ block: updatedBlock, errors: {} });
 
                                 }
@@ -220,11 +230,11 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
 
                             return (
 
-                                <li key={index + childBlockId} id={childBlockId} tabIndex={-1} className={generatedClasses.itemWrapper}>
-                                    <LayoutColumnContainer key={index} className="u-items-end">
+                                <li key={key} id={childBlockId} tabIndex={-1} className={generatedClasses.itemWrapper}>
+                                    <LayoutColumnContainer className="u-items-end">
                                         <LayoutColumn desktop={10}>
                                             <Form
-                                                key={childBlockId}
+                                                key={key}
                                                 csrfToken={csrfToken}
                                                 instanceId={childBlockId}
                                                 formConfig={formConfig}
@@ -261,7 +271,7 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
                     </ul>
                 </LayoutColumn>
                 <LayoutColumn>
-                    <button disabled={hasMaxLinks} onClick={handleAddChildBlock} className="c-button c-button--secondary">Add link</button>
+                    <button disabled={hasMaxLinks} onClick={handleAddChildBlock} className="c-button c-button--secondary">Add a link</button>
                 </LayoutColumn>
             </LayoutColumnContainer>
 
@@ -288,7 +298,13 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
 
                                     <li key={index} className={generatedClasses.itemWrapper}>
                                         <LayoutColumn tablet={6} desktop={4}>
-                                            <a href={content.url} className={generatedClasses.link} rel="noreferrer">{content.linkText}</a>
+                                            {isPreview 
+                                                
+                                                ?   <span className={generatedClasses.link}>{content.linkText}</span>
+
+                                                :   <a href={content.url} className={generatedClasses.link} rel="noreferrer">{content.linkText}</a>
+                                            
+                                            }
                                         </LayoutColumn>
                                     </li>
     

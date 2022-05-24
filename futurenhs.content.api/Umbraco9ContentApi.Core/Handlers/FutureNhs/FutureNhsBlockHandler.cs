@@ -31,7 +31,7 @@
 
             if (blocksFolderGuid == Guid.Empty)
             {
-                throw new NullReferenceException($"Placeholder blocks guid cannot be null.");
+                throw new NullReferenceException($"Placeholder blocks folder guid cannot be null.");
             };
 
             var placeholderBlocksFolder = _futureNhsContentService.GetPublishedContent(blocksFolderGuid, cancellationToken);

@@ -92,6 +92,41 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const PublishUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerPrimaryCallOutButton} onClick={handleUpdateBlockSubmit}>{headerPublishUpdateButton}</button>
 
     /**
+     * Get all nested block ids 
+     */
+    const getNestedBlockIds = (blockId: string): Array<string> => {
+
+        const ids: Array<string> = [blockId];
+        const block: CmsContentBlock = blocks.find((block) => block.item.id === blockId);
+
+        block?.content?.blocks?.forEach((block) => ids.push(block.item.id));
+
+        return ids;
+
+    }
+
+    /**
+     * Get all nested block ids 
+     */
+    const getHasBlockErrors = (blockId: string): boolean => {
+
+        const nestedBlockIds: Array<string> = getNestedBlockIds(blockId);
+
+        let hasErrors: boolean = false;
+        
+        nestedBlockIds.forEach((blockId) => {
+
+            if(localErrors.current[blockId]){
+                hasErrors = true;
+            }
+
+        });
+
+        return hasErrors;
+
+    }
+
+    /**
      * Handle creating a new block instance from the page template and adding it to the active block list
      */
     const handleCreateBlock = (blockContentTypeId: string, parentBlockId?: string): void => {
@@ -108,7 +143,14 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
             handleSetToUpdateMode();
             setBlocks(updatedBlocks);
+            setBlockIdsInEditMode([createdBlockId]);
             blocksChangeAction?.(updatedBlocks);
+
+            window.setTimeout(() => {
+
+                document.getElementById(createdBlockId)?.focus();
+
+            }, 50);
 
         });
 
@@ -119,28 +161,19 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleDeleteBlock = (blockId: string): void => {
 
+        const nestedBlockIds: Array<string> = getNestedBlockIds(blockId);
         const index: number = blocks.findIndex((block) => block.item.id === blockId);
-        const blockToDelete: CmsContentBlock = blocks[index];
-        const childBlocks: Array<CmsContentBlock> = blockToDelete?.content?.blocks ?? [];
         const updatedBlocks = deleteArrayItem(blocks, index);
 
-        if (localErrors.current[blockId]) {
+        nestedBlockIds.forEach((blockId) => {
 
-            delete localErrors.current[blockId];
+            if (localErrors.current[blockId]) {
 
-        }
-
-        childBlocks.forEach((childBlock) => {
-
-            const childBlockId: string = childBlock.item.id;
-
-            if(localErrors.current[childBlockId]){
-
-                delete localErrors.current[childBlockId]
-
+                delete localErrors.current[blockId];
+    
             }
 
-        });
+        })
 
         setBlocks(updatedBlocks);
         blocksChangeAction?.(updatedBlocks);
@@ -193,7 +226,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleSetEditableBlockToReadMode = (blockId: string): void => {
 
-        if (blockIdsInEditMode.includes(blockId) && !localErrors.current[blockId]) {
+        const hasErrors: boolean = getHasBlockErrors(blockId);
+
+        if (blockIdsInEditMode.includes(blockId) && !hasErrors) {
 
             const index: number = blockIdsInEditMode.findIndex((id) => id === blockId);
             const updatedBlockIdsInEditMode: Array<string> = deleteArrayItem(blockIdsInEditMode, index);
@@ -300,35 +335,29 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Handle updates from blocks in edit mode
      */
-    const handleUpdateBlock = ({ block, errors }): void => {
+    const handleUpdateBlock = ({ block, errors, childBlockId }): void => {
 
         const blockId: string = block.item.id;
+        const errorsId: string = childBlockId ?? blockId;
 
-        if (errors && !hasKeys(errors) && localErrors.current.hasOwnProperty(blockId)) {
-
-            delete localErrors.current[blockId]
-
-        } else if (errors && hasKeys(errors)) {
-
-            localErrors.current[blockId] = errors;
-
-        }
-
-        blockUpdateCache.current[blockId] = Object.assign({}, blockUpdateCache.current[blockId], block);
-
-        processBlockUpdateCache();
-
-    };
-
-    /**
-     * Process the update cache
-     * Avoids individual updates to form fields causing full blocks rerender
-     */
-    const processBlockUpdateCache = (): void => {
-
+        /**
+         * Process the update cache
+         * Avoids individual updates to form fields causing full blocks rerender
+         */
         window.clearTimeout(blockUpdateCacheTimeOut.current);
 
+        blockUpdateCache.current[blockId] = Object.assign({}, blockUpdateCache.current[blockId], block);
         blockUpdateCacheTimeOut.current = window.setTimeout(() => {
+
+            if (errors && !hasKeys(errors) && localErrors.current.hasOwnProperty(errorsId)) {
+
+                delete localErrors.current[errorsId]
+    
+            } else if (errors && hasKeys(errors)) {
+    
+                localErrors.current[errorsId] = errors;
+    
+            }
 
             if (blockUpdateCache.current && hasKeys(blockUpdateCache.current)) {
 
@@ -357,45 +386,21 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     const handleDocumentClick = (event): void => {
 
-        if (mode === cprud.UPDATE && blockIdsInEditMode.length > 0) {
+        let isEventInActiveBlock: boolean = false;
 
-            const updatedBlockIdsInEditMode: Array<string> = [];
+        blockIdsInEditMode.forEach((blockId: string) => {
 
-            blockIdsInEditMode.forEach((blockId: string) => {
+            if(document.getElementById(blockId)?.contains(event.target)){
 
-                const isEventInBlock: boolean = document.getElementById(blockId)?.contains(event.target);
-                const hasErrors: boolean = localErrors.current.hasOwnProperty(blockId);
-
-                if (isEventInBlock || hasErrors) {
-
-                    updatedBlockIdsInEditMode.push(blockId);
-
-                } else {
-
-                    for(let i = 0; i < blocks.length; i++){
-
-                        const block: CmsContentBlock = blocks[i];
-                        const blockId: string = block.item.id;
-                        const isEventInBlock: boolean = document.getElementById(blockId)?.contains(event.target);
-
-                        if(isEventInBlock){
-
-                            updatedBlockIdsInEditMode.push(blockId);
-                            break;
-
-                        }
-
-                    };
-
-                }
-
-            });
-
-            if (!deepEquals(blockIdsInEditMode, updatedBlockIdsInEditMode)) {
-
-                setBlockIdsInEditMode(updatedBlockIdsInEditMode);
+                isEventInActiveBlock = true;
 
             }
+
+        });
+
+        if (mode === cprud.UPDATE && blockIdsInEditMode.length > 0 && Object.keys(localErrors.current).length === 0 && !isEventInActiveBlock) {
+
+            setBlockIdsInEditMode([]);
 
         }
 
@@ -410,7 +415,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         const { id } = item;
 
         const isInEditMode: boolean = blockIdsInEditMode.includes(id);
-        const initialErrors: FormErrors = localErrors.current[id];
+        const isInPreviewMode: boolean = mode === cprud.CREATE || mode === cprud.UPDATE
 
         if (item.contentType === cmsBlocks.TEXT) {
 
@@ -420,7 +425,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     isEditable={isInEditMode}
                     headingLevel={3}
                     block={block}
-                    initialErrors={initialErrors}
+                    initialErrors={localErrors.current}
                     changeAction={handleUpdateBlock} />
 
             )
@@ -433,10 +438,11 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                 <KeyLinksBlock
                     isEditable={isInEditMode}
+                    isPreview={isInPreviewMode}
                     headingLevel={3}
                     block={block}
                     themeId={themeId}
-                    initialErrors={initialErrors}
+                    initialErrors={localErrors.current}
                     createAction={createBlockAction}
                     changeAction={handleUpdateBlock} />
 
@@ -492,11 +498,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     useEffect(() => {
 
         document.addEventListener('click', handleDocumentClick, false);
-        document.addEventListener('focus', handleDocumentClick, false);
 
         return () => {
             document.removeEventListener('click', handleDocumentClick, false);
-            document.addEventListener('focus', handleDocumentClick, false);
         }
 
     }, [mode, blockIdsInEditMode]);
@@ -635,15 +639,14 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                 duration={100}>
                                     {blocks?.map((block: CmsContentBlock, index: number) => {
 
-                                        const { item } = block;
-                                        const { id } = item;
+                                        const blockId: string = block.item.id;
 
-                                        const key: string = index + id;
+                                        const key: string = index + blockId;
                                         const shouldRenderMovePrevious: boolean = index > 0;
                                         const shouldRenderMoveNext: boolean = index < blocks.length - 1;
-                                        const isInEditMode: boolean = blockIdsInEditMode.includes(id);
+                                        const isInEditMode: boolean = blockIdsInEditMode.includes(blockId);
                                         const isEditable: boolean = mode !== cprud.READ && mode !== cprud.PREVIEW;
-                                        const hasErrors: boolean = localErrors.current[id];
+                                        const hasErrors: boolean = getHasBlockErrors(blockId);
 
                                         return (
 

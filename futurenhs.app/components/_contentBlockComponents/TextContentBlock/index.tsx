@@ -30,7 +30,7 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
     const formConfig: FormConfig = useFormConfig(formTypes.CONTENT_BLOCK_TEXT, {
         [`title-${blockId}`]: title,
         [`mainText-${blockId}`]: mainText
-    }, initialErrors);
+    }, initialErrors[blockId] ?? {});
 
     const generatedClasses: any = {
         wrapper: classNames(className),

@@ -69,7 +69,8 @@ export const Form: (props: Props) => JSX.Element = ({
 
         templatedFields.forEach((field) => {
             field.name = instanceId ? field.name + '-' + instanceId : field.name
-            field.initialError = initialErrors?.[field.name] || null
+            field.initialError = initialErrors?.[field.name] || null;
+            console.log(field, initialErrors, initialErrors?.[field.name]);
         })
 
         return templatedFields
