@@ -3,7 +3,7 @@ BEGIN TRANSACTION
 	-- Disable constraints for all tables:
     EXEC sp_msforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT all'
 
-    SELECT [Id] INTO #autoUsers FROM [dbo].[MembershipUser] WHERE [Email] IN ('autoAdmin@test.co.uk', 'autoGroupAdmin@test.co.uk', 'autoUser@test.co.uk', 'autoUser2@test.co.uk', 'autoUser3@test.co.uk', 'autoTest@email.com', 'VisRegUser@email.com', 'autoEditUser@test.co.uk');
+    SELECT [Id] INTO #autoUsers FROM [dbo].[MembershipUser] WHERE [Email] IN ('autoAdmin@test.co.uk', 'autoGroupAdmin@test.co.uk', 'autoRemoveUser@test.co.uk', 'autoUser@test.co.uk', 'autoUser2@test.co.uk', 'autoUser3@test.co.uk', 'autoTest@email.com', 'VisRegUser@email.com', 'autoEditUser@test.co.uk');
 	DECLARE @groupAdmin AS uniqueidentifier;
     SELECT @groupAdmin = id FROM [dbo].[MembershipUser] WHERE Email = 'autoGroupAdmin@test.co.uk';
     DECLARE @autoUser AS uniqueidentifier;
