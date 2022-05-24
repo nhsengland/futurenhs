@@ -56,10 +56,6 @@ jobs:
         testRunTitle: Accessibility
         failTaskOnFailedTests: true
       continueOnError: true
-
-    - task: PublishHtmlReport@1
-      inputs:
-        reportDir: '$(Build.SourcesDirectory)/futurenhs.automation/axeResults/'
       
     - task: DeleteFiles@1
       inputs:
