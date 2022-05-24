@@ -3,6 +3,7 @@ using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Models.Group.Request;
+using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -173,6 +174,24 @@ namespace FutureNHS.Api.Controllers
             var pagedResponse = PaginationHelper.CreatePagedResponse(pendingGroupMembers, filter, total, route);
 
             return Ok(pagedResponse);
+        }
+
+        [HttpPost]
+        [Route("users/{userId:guid}/groups/{slug}/members/accept")]
+        public async Task<IActionResult> AcceptPendingGroupMemberAsync(Guid userId, string slug, [FromBody] MemberRequest memberRequest, CancellationToken cancellationToken)
+        {
+            await _groupMembershipService.ApproveGroupUserAsync(userId, slug, memberRequest.MembershipUserId, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("users/{userId:guid}/groups/{slug}/members/reject")]
+        public async Task<IActionResult> RejectPendingGroupMemberAsync(Guid userId, string slug, [FromBody] MemberRequest memberRequest, CancellationToken cancellationToken)
+        {
+            await _groupMembershipService.RejectGroupUserAsync(userId, slug, memberRequest.MembershipUserId, cancellationToken);
+
+            return Ok();
         }
 
         [HttpGet]

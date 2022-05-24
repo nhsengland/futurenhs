@@ -180,7 +180,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,[ThemeId]
                                 ,[Slug]
                                 ,[CreatedBy]
-                                ,[ImageId])
+                                ,[ImageId]
+                                ,[PublicGroup])
    
                     VALUES
                                 (@Id
@@ -191,7 +192,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,@ThemeId
                                 ,@Slug
                                 ,@CreatedBy
-                                ,@ImageId)";
+                                ,@ImageId
+                                ,@IsPublic)";
 
             await connection.OpenAsync(cancellationToken);
 
@@ -208,6 +210,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 Slug = groupDto.Slug,
                 CreatedBy = userId,
                 ImageId = groupDto.ImageId,
+                IsPublic = groupDto.IsPublic,
             }, transaction: transaction);
 
             foreach (var groupUser in groupDto.GroupAdminUsers)
@@ -281,7 +284,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                  [Name]         = @Name,
                                  [Subtitle]     = @Subtitle,
                                  [ThemeId]      = @Theme,
-                                 [ImageId]      = @Image
+                                 [ImageId]      = @Image,
+                                 [IsPublic]     = @IsPublic
                     WHERE 
                                  [Slug]         = @Slug
                     AND          [RowVersion]   = @RowVersion";
@@ -473,6 +477,46 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                         
                    WHERE        [Id]                  = @groupUserId
                    AND          [RowVersion]          = @RowVersion";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                GroupUserId = groupUserId,
+                RowVersion = rowVersion
+            }, cancellationToken: cancellationToken);
+
+            await dbConnection.ExecuteAsync(commandDefinition);
+        }
+
+        public async Task ApproveGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @" UPDATE       [dbo].[GroupUser]
+                   SET          [Approved]          = 1
+
+                   WHERE        [Id]                = @groupUserId
+                   AND          [RowVersion]        = @RowVersion";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                GroupUserId = groupUserId,
+                RowVersion = rowVersion
+            }, cancellationToken: cancellationToken);
+
+            await dbConnection.ExecuteAsync(commandDefinition);
+        }
+
+        public async Task RejectGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @" UPDATE       [dbo].[GroupUser]
+                   SET          [Rejected]          = 1
+
+                   WHERE        [Id]                = @groupUserId
+                   AND          [RowVersion]        = @RowVersion";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
