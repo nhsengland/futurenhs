@@ -8,8 +8,8 @@ export interface Props {
     headingLevel: number;
     changeAction: (config: {
         block: CmsContentBlock;
-        errors: FormErrors;
+        errors?: FormErrors;
     }) => void
-    initialErrors?: FormErrors;
+    initialErrors?: Record<string, FormErrors>;
     className?: string
 }

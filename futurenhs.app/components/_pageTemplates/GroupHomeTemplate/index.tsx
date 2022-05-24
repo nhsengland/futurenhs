@@ -37,15 +37,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         wrapper: classNames('c-page-body')
     };
 
-    const handleClearErrors = () => {
-
-        if (Object.keys(errors).length > 0) {
-
-            setErrors({});
-
-        }
-
-    }
+    const handleClearErrors = () => setErrors({});
 
     const handleCreateBlock = (blockContentTypeId: string, parentBlockId?: string): Promise<string> => {
 

@@ -17,6 +17,11 @@ export const contentBlockQuickLink: FormConfig = {
                         {
                             type: 'required',
                             message: 'Enter the link title',
+                        },
+                        {
+                            type: 'maxLength',
+                            maxLength: 30,
+                            message: 'Enter 30 or fewer characters',
                         }
                     ],
                     className: 'u-grow tablet:u-mr-3'
