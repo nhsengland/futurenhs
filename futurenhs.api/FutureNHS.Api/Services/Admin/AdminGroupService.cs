@@ -296,6 +296,9 @@ namespace FutureNHS.Api.Services.Admin
                     }
                 }
 
+                formValues.TryGetValue("public", out var publicGroup);
+                var isPublic = bool.TryParse(publicGroup, out var isPublicBool) ? isPublicBool : false;
+
                 groupDto = new GroupDto
                 {
                     Slug = Guid.NewGuid().ToString(),
@@ -307,7 +310,8 @@ namespace FutureNHS.Api.Services.Admin
                     GroupAdminUsers = groupAdminGuids,
                     ModifiedBy = userId,
                     ModifiedAtUtc = now,
-                    CreatedAtUtc = now
+                    CreatedAtUtc = now,
+                    IsPublic = isPublic,
                 };
             }
 

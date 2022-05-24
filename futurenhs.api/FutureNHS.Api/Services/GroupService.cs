@@ -117,7 +117,7 @@ namespace FutureNHS.Api.Services
                 throw new PreconditionFailedExeption("Precondition Failed: Group has changed prior to submission");
             }
 
-            var (group, image) = await UploadGroupImageMultipartContent(userId, slug, requestBody, rowVersion, contentType, cancellationToken);
+            var (group, image) = await UploadGroupImageMultipartContent(groupDto, userId, slug, requestBody, rowVersion, contentType, cancellationToken);
 
             var groupValidator = new GroupValidator();
             var groupValidationResult = await groupValidator.ValidateAsync(group, cancellationToken);
@@ -162,7 +162,7 @@ namespace FutureNHS.Api.Services
 
         /// based on microsoft example https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/mvc/models/file-uploads/samples/
         /// and large file streaming example https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0#upload-large-files-with-streaming
-        private async Task<(GroupDto, ImageDto?)> UploadGroupImageMultipartContent(Guid userId, string slug, Stream requestBody, byte[] rowVersion, string? contentType, CancellationToken cancellationToken)
+        private async Task<(GroupDto, ImageDto?)> UploadGroupImageMultipartContent(GroupData groupData, Guid userId, string slug, Stream requestBody, byte[] rowVersion, string? contentType, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -292,26 +292,21 @@ namespace FutureNHS.Api.Services
                 var nameFound = formValues.TryGetValue("name", out var name);
                 if (nameFound is false)
                 {
-                    throw new ArgumentNullException($"Name was not provided");
+                    throw new ValidationException("Name", "Name was not provided");
                 }
                 var straplineFound = formValues.TryGetValue("strapline", out var strapline);
                 if (straplineFound is false)
                 {
-                    throw new ArgumentNullException($"Strap Line was not provided");
+                    throw new ValidationException("Strapline", "Strapline was not provided");
                 }
-                var themeFound = formValues.TryGetValue("themeid", out var theme);
-                if (themeFound is false)
-                {
-                    throw new ArgumentNullException($"theme was not provided");
-                }
-                
-                formValues.TryGetValue("imageid", out var image);
 
+                formValues.TryGetValue("themeid", out var theme);
                 if (Guid.TryParse(theme, out var themeId) is false || themeId == new Guid())
                 {
-                    throw new ValidationException(nameof(GroupDto.ThemeId), "Enter the theme");
+                    throw new ValidationException(nameof(GroupDto.ThemeId), "Theme was not provided");
                 }
 
+                formValues.TryGetValue("imageid", out var image);
                 var imageId = Guid.TryParse(image, out var imageGuid) ? (Guid?)imageGuid : null;
                 if (imageId.HasValue)
                 {
@@ -321,6 +316,16 @@ namespace FutureNHS.Api.Services
                     }
                 }
 
+                formValues.TryGetValue("isPublic", out var publicGroup);
+                var isPublic = bool.TryParse(publicGroup, out var isPublicBool) ? isPublicBool : false;
+                if (!groupData.IsPublic)
+                {
+                    if (isPublic != groupData.IsPublic)
+                    {
+                        throw new ValidationException("isPublic", "Cannot make a private group public");
+                    }
+                }
+                
                 groupDto = new GroupDto
                 {
                     Slug = slug,
@@ -330,9 +335,9 @@ namespace FutureNHS.Api.Services
                     ImageId = imageId,
                     ModifiedBy = userId,
                     ModifiedAtUtc = now,
+                    IsPublic = isPublic,
                     RowVersion = rowVersion
-                };
-               
+                };               
             }
             return (groupDto, imageDto);
         }

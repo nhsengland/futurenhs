@@ -2,10 +2,9 @@
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Exceptions;
-using FutureNHS.Api.Models.User;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Validation;
 using Microsoft.AspNetCore.Authentication;
-using System.Security;
 
 namespace FutureNHS.Api.Services
 {
@@ -14,6 +13,7 @@ namespace FutureNHS.Api.Services
         private const string DefaultRole = "Standard Members";
 
         private const string EditUserRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/members/edit";
+        private const string AddUserRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/members/add";
 
         private readonly ILogger<GroupMembershipService> _logger;
         private readonly ISystemClock _systemClock;
@@ -83,7 +83,7 @@ namespace FutureNHS.Api.Services
                 FirstName = userResult.FirstName,
                 LastName = userResult.Surname,
                 Initials = userResult.Initials,
-                Email = userResult.Email,                
+                Email = userResult.Email,
                 DateJoinedUtc = groupUserResult.ApprovedDateUTCAsString,
                 LastLoginUtc = userResult.LastLoginDateUtc,
                 RoleId = roleResult.Id,
@@ -190,9 +190,9 @@ namespace FutureNHS.Api.Services
             var now = _systemClock.UtcNow.UtcDateTime;
 
             var defaultRole = await _rolesCommand.GetRoleAsync(DefaultRole, cancellationToken);
-            var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
+            var group = await _groupCommand.GetGroupAsync(slug, cancellationToken);
 
-            if (!groupId.HasValue)
+            if (group is null)
             {
                 _logger.LogError($"Error: UserJoinGroupAsync - Group not found for slug:{0}", slug);
                 throw new KeyNotFoundException("Error: Group not found for slug");
@@ -200,13 +200,13 @@ namespace FutureNHS.Api.Services
 
             var groupUser = new GroupUserDto
             {
-                Group = groupId.Value,
+                Group = group.Id,
                 MembershipUser = userId,
                 RequestToJoinDateUTC = now,
-                Approved = true,
-                ApprovingMembershipUser = userId,
-                ApprovedDateUTC = now,
-                MembershipRole = defaultRole.Id,                
+                Approved = group.IsPublic,
+                ApprovingMembershipUser = group.IsPublic ? userId : null,
+                ApprovedDateUTC = group.IsPublic ? now : null,
+                MembershipRole = defaultRole.Id,
             };
 
             await _groupCommand.UserJoinGroupAsync(groupUser, cancellationToken);
@@ -226,6 +226,66 @@ namespace FutureNHS.Api.Services
             }
 
             await _groupCommand.UserLeaveGroupAsync(userId, groupId.Value, cancellationToken);
+        }
+
+        public async Task ApproveGroupUserAsync(Guid userId, string slug, Guid targetUserId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+            if (Guid.Empty == targetUserId) throw new ArgumentOutOfRangeException(nameof(targetUserId));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddUserRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: ApproveGroupUserAsync - User:{0} does not have permission to add a new user to this group:{1}(slug)", userId, slug);
+                throw new ForbiddenException($"Error: User does not have access");
+            }            
+
+            var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
+            if (!groupId.HasValue)
+            {
+                _logger.LogError($"Error: ApproveGroupUserAsync - Group not found for slug:{0}", slug);
+                throw new KeyNotFoundException("Error: Group not found for slug");
+            }
+
+            var groupUser = await _groupCommand.GetGroupUserAsync(targetUserId, groupId.Value, cancellationToken);
+
+            var groupUserApplicationValidator = new GroupUserApplicationValidator();
+            var validationResult = await groupUserApplicationValidator.ValidateAsync(groupUser, cancellationToken);
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
+
+            await _groupCommand.ApproveGroupUserAsync(groupUser.Id, groupUser.RowVersion, cancellationToken);
+        }
+
+        public async Task RejectGroupUserAsync(Guid userId, string slug, Guid targetUserId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+            if (Guid.Empty == targetUserId) throw new ArgumentOutOfRangeException(nameof(targetUserId));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddUserRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: RejectGroupUserAsync - User:{0} does not have permission to add a new user to this group:{1}(slug)", userId, slug);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
+            if (!groupId.HasValue)
+            {
+                _logger.LogError($"Error: RejectGroupUserAsync - Group not found for slug:{0}", slug);
+                throw new KeyNotFoundException("Error: Group not found for slug");
+            }
+
+            var groupUser = await _groupCommand.GetGroupUserAsync(targetUserId, groupId.Value, cancellationToken);
+
+            var groupUserApplicationValidator = new GroupUserApplicationValidator();
+            var validationResult = await groupUserApplicationValidator.ValidateAsync(groupUser, cancellationToken);
+            if (validationResult.Errors.Count > 0)
+                throw new ValidationException(validationResult);
+
+            await _groupCommand.RejectGroupUserAsync(groupUser.Id, groupUser.RowVersion, cancellationToken);
         }
     }
 }

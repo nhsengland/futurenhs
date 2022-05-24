@@ -7,7 +7,7 @@ namespace FutureNHS.Api.Services.Admin.Interfaces
     public interface IAdminUserService
     {
         Task<MemberProfile> GetMemberAsync(Guid adminUserId, Guid targetUserId, CancellationToken cancellationToken);
-        Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid adminUserId, uint offset, uint limit, string sort,
+        Task<(uint, IEnumerable<DataAccess.Models.User.Member>)> GetMembersAsync(Guid adminUserId, uint offset, uint limit, string sort,
             CancellationToken cancellationToken);
         Task<IEnumerable<RoleDto>> GetMemberRolesAsync(Guid adminUserId, CancellationToken cancellationToken);
         Task<MemberRole> GetMemberRoleAsync(Guid adminUserId, Guid targetUserId, CancellationToken cancellationToken);

@@ -5,7 +5,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 
 public interface IGroupCommand
 {
-    Task<GroupUserDto> GetGroupUserAsync(Guid groupUserId, Guid groupId, CancellationToken cancellationToken = default);
+    Task<GroupUserDto> GetGroupUserAsync(Guid membershipUserId, Guid groupId, CancellationToken cancellationToken = default);
     Task UserJoinGroupAsync(GroupUserDto groupUser, CancellationToken cancellationToken = default);
     Task UserLeaveGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default);
     Task<Guid?> GetGroupIdForSlugAsync(string slug, CancellationToken cancellationToken = default);
@@ -17,4 +17,6 @@ public interface IGroupCommand
     Task<IEnumerable<GroupRoleDto>> GetAllGroupRolesAsync(CancellationToken cancellationToken = default);
     Task UpdateUserGroupRolesAsync(Guid groupUserId, Guid groupId, byte[] rowVersion, CancellationToken cancellationToken = default);
     Task DeleteUserFromGroupAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
+    Task ApproveGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
+    Task RejectGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
 }
