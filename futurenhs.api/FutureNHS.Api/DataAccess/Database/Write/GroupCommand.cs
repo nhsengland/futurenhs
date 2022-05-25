@@ -281,14 +281,14 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             const string query =
                  @" UPDATE       [dbo].[Group]
                     SET
-                                 [Name]         = @Name,
-                                 [Subtitle]     = @Subtitle,
-                                 [ThemeId]      = @Theme,
-                                 [ImageId]      = @Image,
-                                 [IsPublic]     = @IsPublic
+                                 [Name]          = @Name,
+                                 [Subtitle]      = @Subtitle,
+                                 [ThemeId]       = @Theme,
+                                 [ImageId]       = @Image,
+                                 [PublicGroup]   = @IsPublic
                     WHERE 
-                                 [Slug]         = @Slug
-                    AND          [RowVersion]   = @RowVersion";
+                                 [Slug]          = @Slug
+                    AND          [RowVersion]    = @RowVersion";
 
             var queryDefinition = new CommandDefinition(query, new
             {
