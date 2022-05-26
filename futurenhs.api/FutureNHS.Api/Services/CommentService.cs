@@ -22,22 +22,18 @@ namespace FutureNHS.Api.Services
         private readonly ICommentCommand _commentCommand;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
-        private readonly IEtagService _etagService;
         private readonly ICommentNotificationService _commentNotificationService;
 
         public CommentService(ISystemClock systemClock, 
             ILogger<CommentService> logger,
             IPermissionsService permissionsService,
             ICommentCommand commentCommand,
-            IEtagService etagService,
-            IEntityCommand entityCommand,
             ICommentNotificationService  commentNotificationService)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
             _commentCommand = commentCommand ?? throw new ArgumentNullException(nameof(commentCommand));
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _etagService = etagService ?? throw new ArgumentNullException(nameof(etagService));
             _commentNotificationService = commentNotificationService ?? throw new ArgumentNullException(nameof(commentNotificationService));
         }
 
@@ -77,10 +73,12 @@ namespace FutureNHS.Api.Services
 
             if (validationResult.Errors.Count > 0)
                 throw new ValidationException(validationResult);
+            
+            var createdComment = await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
 
-            _ = Task.Run(async () => await _commentNotificationService.SendNotificationToDiscussionCreatorAsync(userId, parentEntityId, cancellationToken));
+            _ = Task.Run(() => _commentNotificationService.SendNotificationToDiscussionCreatorAsync(userId, parentEntityId, cancellationToken), cancellationToken);
 
-            return await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
+            return createdComment;
         }
 
         public async Task<Guid> CreateCommentReplyAsync(Guid userId, string slug, Guid parentEntityId, Guid replyingToComment, Comment comment, CancellationToken cancellationToken)
@@ -128,9 +126,11 @@ namespace FutureNHS.Api.Services
             if (validationResult.Errors.Count > 0)
                 throw new ValidationException(validationResult);
 
-            _ = Task.Run(async () => await _commentNotificationService.SendNotificationToCommentCreatorAsync(userId, replyingToComment, cancellationToken));
+            var createdComment = await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
 
-            return await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
+            _ = Task.Run(() => _commentNotificationService.SendNotificationToCommentCreatorAsync(userId, replyingToComment, cancellationToken), cancellationToken);
+
+            return createdComment;
         }
 
         public async Task UpdateCommentAsync(Guid userId, string slug, Guid parentEntityId, Guid commentId, Comment comment, byte[] rowVersion, CancellationToken cancellationToken)

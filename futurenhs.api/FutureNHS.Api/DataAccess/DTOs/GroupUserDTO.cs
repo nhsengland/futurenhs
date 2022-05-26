@@ -21,17 +21,5 @@ namespace FutureNHS.Api.DataAccess.DTOs
         public Guid MembershipUser { get; set; }
         public Guid Group { get; set; }
         public byte[] RowVersion { get; set; }
-
-        [ContractInvariantMethod]
-        private void ClassInvariant()
-        {
-            Contract.Assert(MembershipRole != Guid.Empty);
-            Contract.Assert(MembershipUser != Guid.Empty);
-            Contract.Assert(Group != Guid.Empty);
-            Contract.Assert(Approved && Rejected is false && Locked is false && Banned is false);
-            Contract.Assert(Rejected && Approved is false && Locked is false && Banned is false);
-            Contract.Assert(Locked && Approved is false && Rejected is false && Banned is false);
-            Contract.Assert(Banned && Approved is false && Rejected is false && Locked is false);
-        }
     }
 }

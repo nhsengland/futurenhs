@@ -454,7 +454,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                    SET
                                 [MembershipRole_Id]         = @groupRoleId
                    WHERE 
-                                [Id]                        = @groupUserId
+                                [Id]                        = @GroupUserId
                    AND          [RowVersion]                = @RowVersion";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
@@ -475,7 +475,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 @" DELETE       
                    FROM         [dbo].[GroupUser]
                         
-                   WHERE        [Id]                  = @groupUserId
+                   WHERE        [Id]                  = @GroupUserId
                    AND          [RowVersion]          = @RowVersion";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
@@ -489,21 +489,25 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             await dbConnection.ExecuteAsync(commandDefinition);
         }
 
-        public async Task ApproveGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default)
+        public async Task ApproveGroupUserAsync(GroupUserDto groupUserDto, CancellationToken cancellationToken = default)
         {
             const string query =
                 @" UPDATE       [dbo].[GroupUser]
-                   SET          [Approved]          = 1
+                   SET          [Approved]                    = 1,
+                                [ApprovedToJoinDateUTC]       = @ApprovedDateUtc,
+                                [ApprovingMembershipUser_Id]  = @ApprovingMembershipUserId
 
-                   WHERE        [Id]                = @groupUserId
+                   WHERE        [Id]                = @GroupUserId
                    AND          [RowVersion]        = @RowVersion";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
             var commandDefinition = new CommandDefinition(query, new
             {
-                GroupUserId = groupUserId,
-                RowVersion = rowVersion
+                GroupUserId = groupUserDto.Id,
+                ApprovedDateUtc = groupUserDto.ApprovedDateUTC,
+                ApprovingMembershipUserId = groupUserDto.ApprovingMembershipUser,
+                RowVersion = groupUserDto.RowVersion
             }, cancellationToken: cancellationToken);
 
             await dbConnection.ExecuteAsync(commandDefinition);
@@ -515,7 +519,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 @" UPDATE       [dbo].[GroupUser]
                    SET          [Rejected]          = 1
 
-                   WHERE        [Id]                = @groupUserId
+                   WHERE        [Id]                = @GroupUserId
                    AND          [RowVersion]        = @RowVersion";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);

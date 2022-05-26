@@ -27,6 +27,7 @@ namespace FutureNHS.Api.Services
             services.AddScoped<IFileServerService, FileServerService>();
 
             services.AddScoped<ICommentNotificationService, CommentNotificationService>();
+            services.AddScoped<IGroupMemberNotificationService, GroupMemberNotificationService>();
 
             services.AddScoped<IAdminGroupService, AdminGroupService>();
             services.AddScoped<IAdminUserService, AdminUserService>(); 
