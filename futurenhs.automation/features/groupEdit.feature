@@ -73,8 +73,7 @@ Scenario Outline: FNHS36 - Edit group information change logo error validation
     When I upload the '<image>' file
     And I click the 'Save and close' button
     Then the '<error message>' error summary is displayed
-    And the '<error message>' textual value is displayed
 Examples:
-    | image                    | error message                     |    
-    | /media/test.gif          | Image must be a JPG or PNG        |
-    | /media/toolargeimage.png | Image must be smaller than 5MB    |
+    | image                    | error message                          |    
+    | /media/test.gif          | The image is not in an accepted format |
+    | /media/toolargeimage.png | Image must be smaller than 5MB         |

@@ -32,8 +32,6 @@ Feature: groupPublic
             | auto Admin |
             | 0 likes    |
         And the 'Add Comment' button is not displayed
-        And I have navigated to '/groups/automation-public-group'
-        Then the 'Automation Public Group' header is displayed
 
 
     Scenario: FNHS44 - View Files and Folders of Public Group
@@ -56,8 +54,6 @@ Feature: groupPublic
             | Name    | Modified by | Last update | Actions  |
             | docTest | auto Admin  | 10 Jan 2022 | Download |
         And the 'Download' link is displayed
-        And I have navigated to '/groups/automation-public-group'
-        Then the 'Automation Public Group' header is displayed
 
     @Core
     Scenario: FNHS45 - Join a public group
@@ -67,23 +63,15 @@ Feature: groupPublic
         When I click the 'Members' tab
         Then the 'auto User' row is displayed on the 'Group Members' table
 
-        And I have navigated to '/groups/automation-public-group'
-        Then the 'Automation Public Group' header is displayed
 
     Scenario: FNHS46 - Cancel leaving a group
-        And I have navigated to '/groups/automation-public-group'
-        Then the 'Automation Public Group' header is displayed
-        When I select the 'Automation Public Group' group card
         When I select 'Leave group' from the actions accordion
         Then I cancel this on the open 'Leave group' dialog
         When I open the 'Actions' accordion
         And the 'Leave group' link is displayed
 
-        And I have navigated to '/groups/automation-public-group'
-        Then the 'Automation Public Group' header is displayed
     @Core
     Scenario: FNHS47 - Leave a group
-        When I select the 'Automation Public Group' group card
         When I select 'Leave group' from the actions accordion
         Then I confirm this on the open 'Leave group' dialog
         And the 'Join Group' link is displayed

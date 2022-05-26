@@ -90,7 +90,7 @@ Feature: Search
         When I search for 'docTest'
         And there are '2' search results displayed
         And the 'DocTest' search result card is displayed
-            | File on Automation Admin Group group |
+            | File on Automation Public Group group |
             | Test doc                             |
         When I select the 'DocTest' search result card
         Then the 'docTest' header is displayed
