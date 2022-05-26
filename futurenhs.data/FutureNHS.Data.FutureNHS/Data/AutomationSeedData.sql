@@ -45,7 +45,12 @@ BEGIN
 	INSERT [dbo].[Group] ([Id], [Name], [Description], [IsLocked], [ModerateDiscussions], [ModerateComments], [SortOrder], [CreatedAtUtc], [Slug], [PublicGroup], [GroupOwner], [Subtitle], [Introduction], [AboutUs]) VALUES (N'61de48cf-686e-483d-84cf-ad95010721d3', N'Automation Public Group', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', 0, 0, 0, 0, CAST(N'2021-08-31 15:58:02.087' AS DateTime2), N'automation-public-group', 1, N'd74ed860-9ea5-4c95-9394-ad3a00924fa5', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', NULL)
 	INSERT [dbo].[Group] ([Id], [Name], [Description], [IsLocked], [ModerateDiscussions], [ModerateComments], [SortOrder], [CreatedAtUtc], [Slug], [PublicGroup], [GroupOwner], [Subtitle], [Introduction], [AboutUs]) VALUES (N'41234726-7e93-4767-afbe-adda00f560a2', N'Automation Visual Regression Group', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', 0, 0, 0, 0, CAST(N'2021-11-08 14:53:23.520' AS DateTime2), N'automation-visual-regression-group', 0, N'd74ed860-9ea5-4c95-9394-ad3a00924fa5', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', NULL)
 	INSERT [dbo].[Group] ([Id], [Name], [Description], [IsLocked], [ModerateDiscussions], [ModerateComments], [SortOrder], [CreatedAtUtc], [Slug], [PublicGroup], [GroupOwner], [Subtitle], [Introduction], [AboutUs]) VALUES (N'b8c36360-ecbe-4ade-a3c2-adfd00f01faf', N'Automation Editable Group', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', 0, 0, 0, 0, CAST(N'2021-12-13 14:34:15.833' AS DateTime2), N'automation-editable-group', 0, N'd74ed860-9ea5-4c95-9394-ad3a00924fa5', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', N'DO NOT USE - This group is reserved solely for use by our automated test scripts', NULL)
-	
+
+	/** 
+	*	INSERT AUTOMATION GROUPSITES
+	*/
+	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ('b8c36360-ecbe-4ade-a3c2-adfd00f01faf', '1ffeeb7b-afe6-4e83-aea5-25dab93dda45', '49019191-6ACD-4CC4-9BC0-06027C65563E', GETDATE())
+
 	/**
 	* INSERT AUTOMATION MEMBERSHIPUSERS
 	*/
