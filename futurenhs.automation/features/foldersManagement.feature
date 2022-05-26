@@ -29,12 +29,12 @@ Scenario: FNHS65 - Folder page validation
     And the 'Edit Folder' link is displayed
     # And the 'Delete Folder' link is displayed 
     And the 'Group Files' table is displayed
-    | Type | Name       | Description | Modified                                      | Actions                     |
-    |      | Folder 1   |             |                                               |                             |
-    |      | docTest    | test doc    | 10 Jan 2022\nBy auto Admin\nAuthor auto Admin | Download file\nView details |
-    |      | pdfTest    | test pdf    | 16 Dec 2021\nAuthor auto Admin                | Download file\nView details |
-    |      | test excel | test excel  | 05 Nov 2021\nAuthor auto Admin                | Download file\nView details |
-    |      | test ppt   | test ppt    | 05 Nov 2021\nAuthor auto Admin                | Download file\nView details |
+    | Type | Name       | Description      | Modified                                      | Actions                     |
+    |      | Folder 1   |                  |                                               |                             |
+    |      | docTest    | Test doc FNHS105 | 10 Jan 2022\nBy auto Admin\nAuthor auto Admin | Download file\nView details |
+    |      | pdfTest    | test pdf         | 16 Dec 2021\nAuthor auto Admin                | Download file\nView details |
+    |      | test excel | test excel       | 05 Nov 2021\nAuthor auto Admin                | Download file\nView details |
+    |      | test ppt   | test ppt         | 05 Nov 2021\nAuthor auto Admin                | Download file\nView details |
 
 
 Scenario: FNHS92 - Empty Folder page validation

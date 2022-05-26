@@ -91,7 +91,7 @@ Feature: groupMembers
         Then the 'Automation Admin Group' header is displayed
         When I click the 'Members' tab
         Then the 'Group members' table exists
-        When I click 'Edit' on the 'auto User' row of the 'Group Members' table
+        When I click 'Edit' on the 'auto RemoveUser' row of the 'Group Members' table
         Then the 'Member Profile' header is displayed
         And the profile values are displayed
             | First name | auto                      |
