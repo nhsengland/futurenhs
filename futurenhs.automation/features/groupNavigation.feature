@@ -12,7 +12,7 @@ Scenario: FNHS09 - My groups validation
     And the 'Connect, share and learn.' textual value is displayed
     And the 'Automation Admin Group' group card is displayed
     | DO NOT USE - This group is reserved solely for use by our automated test scripts |
-    | Members: 2Discussions: 7                                                         |
+    | Members: 3Discussions: 7                                                         |
 
 @Core 
 Scenario: FNHS10 - Discover new groups validation
@@ -93,6 +93,7 @@ Scenario: FNHS21 - Group Members, Table Validation
     And the 'Group Members' table is displayed
     | Name            | Role             | Date joined  | Last logged in |
     | Auto GroupAdmin | Admin            | [PrettyDate] | [PrettyDate]   |
+    | auto RemoveUser | Standard Members | [PrettyDate] | [PrettyDate]   |
     # | auto Test  | Standard Members | [PrettyDate] | [PrettyDate]   |
     | auto User       | Standard Members | [PrettyDate] | [PrettyDate]   |
 
