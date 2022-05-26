@@ -6,7 +6,7 @@ using Umbraco.Extensions;
 using Umbraco9ContentApi.Core.Models.Content;
 using Umbraco9ContentApi.Core.Resolvers.Interfaces;
 using UmbracoContentApi.Core.Builder;
-using ContentModel = Umbraco9ContentApi.Core.Models.Content.ContentModel;
+using ContentModelData = Umbraco9ContentApi.Core.Models.Content.ContentModelData;
 
 namespace UmbracoContentApi.Core.Resolvers
 {
@@ -31,13 +31,13 @@ namespace UmbracoContentApi.Core.Resolvers
             _contentTypeService = contentTypeService;
         }
 
-        public ContentModel ResolveContent(IPublishedElement content, string propertyGroupAlias, Dictionary<string, object>? options = null)
+        public ContentModelData ResolveContent(IPublishedElement content, string propertyGroupAlias, Dictionary<string, object>? options = null)
         {
             try
             {
                 if (content == null)
                 {
-                    return new ContentModel();
+                    return new ContentModelData();
                 }
 
                 var contentType = _contentTypeService.Get(content.ContentType.Alias);
@@ -49,9 +49,9 @@ namespace UmbracoContentApi.Core.Resolvers
                     throw new ArgumentNullException(nameof(groupProperties));
                 }
 
-                var contentModel = new ContentModel
+                var contentModel = new ContentModelData
                 {
-                    Item = new ContentModelItem
+                    Item = new ContentModelItemData
                     {
                         Id = content.Key,
                         ContentType = content.ContentType.Alias,
@@ -118,13 +118,13 @@ namespace UmbracoContentApi.Core.Resolvers
             }
         }
 
-        public ContentModel ResolveContent(IContent content, string propertyGroupAlias, Dictionary<string, object>? options = null)
+        public ContentModelData ResolveContent(IContent content, string propertyGroupAlias, Dictionary<string, object>? options = null)
         {
             try
             {
                 if (content == null)
                 {
-                    return new ContentModel();
+                    return new ContentModelData();
                 }
 
                 var contentType = _contentTypeService.Get(content.ContentType.Alias);
@@ -136,9 +136,9 @@ namespace UmbracoContentApi.Core.Resolvers
                     throw new ArgumentNullException(nameof(groupProperties));
                 }
 
-                var contentModel = new ContentModel
+                var contentModel = new ContentModelData
                 {
-                    Item = new ContentModelItem
+                    Item = new ContentModelItemData
                     {
                         Id = content.Key,
                         ContentType = content.ContentType.Alias,

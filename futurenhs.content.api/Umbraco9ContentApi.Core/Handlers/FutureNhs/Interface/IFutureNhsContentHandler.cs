@@ -26,7 +26,7 @@
         /// <param name="id">The identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        ApiResponse<ContentModel> GetPublishedContent(Guid id, CancellationToken cancellationToken);
+        ApiResponse<ContentModelData> GetPublishedContent(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the content draft.
@@ -34,7 +34,7 @@
         /// <param name="id">The identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        ApiResponse<ContentModel> GetDraftContent(Guid id, CancellationToken cancellationToken);
+        ApiResponse<ContentModelData> GetDraftContent(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Discards the draft content.

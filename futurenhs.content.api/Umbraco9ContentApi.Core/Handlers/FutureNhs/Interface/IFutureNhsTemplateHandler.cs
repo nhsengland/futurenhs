@@ -11,13 +11,13 @@
         /// <param name="id">The identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        ApiResponse<ContentModel> GetTemplate(Guid id, CancellationToken cancellationToken);
+        ApiResponse<ContentModelData> GetTemplate(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets all templates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        ApiResponse<IEnumerable<ContentModel>> GetAllTemplates(CancellationToken cancellationToken);
+        ApiResponse<IEnumerable<ContentModelData>> GetAllTemplates(CancellationToken cancellationToken);
     }
 }

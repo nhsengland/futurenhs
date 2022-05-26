@@ -25,7 +25,7 @@ namespace FutureNHS.Api.Controllers
         private readonly IGroupService _groupService;
         private readonly IEtagService _etagService;
 
-        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService, 
+        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider, IPermissionsService permissionsService,
             IGroupMembershipService groupMembershipService, IGroupService groupService, IEtagService etagService)
         {
             _logger = logger;
@@ -227,7 +227,7 @@ namespace FutureNHS.Api.Controllers
             var rowVersion = _etagService.GetIfMatch();
 
             await _groupMembershipService.UpdateGroupMembershipUserRoleAsync(userId, slug, targetUserId, updateGroupUserRoleRequest.GroupUserRoleId, rowVersion, cancellationToken);
-                        
+
             return Ok();
         }
 
@@ -274,10 +274,10 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("groups/{groupId:guid}/site")]
-        public async Task<IActionResult> GetGroupSiteAsync(Guid groupId, CancellationToken cancellationToken)
+        [Route("groups/{groupSlug:guid}/site")]
+        public async Task<IActionResult> GetGroupSiteAsync(string groupSlug, CancellationToken cancellationToken)
         {
-            var groupSiteData = await _groupDataProvider.GetGroupSiteDataAsync(groupId, cancellationToken);
+            var groupSiteData = await _groupDataProvider.GetGroupSiteDataAsync(groupSlug, cancellationToken);
 
             if (groupSiteData is null)
                 return NotFound();

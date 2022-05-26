@@ -25,7 +25,7 @@
         }
 
         /// <inheritdoc />
-        public ApiResponse<IEnumerable<ContentModel>> GetAllBlocks(CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<ContentModelData>> GetAllBlocks(CancellationToken cancellationToken)
         {
             var blocksFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:PlaceholderBlocks");
 
@@ -36,7 +36,7 @@
 
             var placeholderBlocksFolder = _futureNhsContentService.GetPublishedContent(blocksFolderGuid, cancellationToken);
 
-            var contentModelList = new List<ContentModel>();
+            var contentModelList = new List<ContentModelData>();
 
             if (placeholderBlocksFolder.Children is not null && placeholderBlocksFolder.Children.Any())
             {
@@ -46,15 +46,15 @@
                 }
             }
 
-            return new ApiResponse<IEnumerable<ContentModel>>().Success(contentModelList, "Success.");
+            return new ApiResponse<IEnumerable<ContentModelData>>().Success(contentModelList, "Success.");
         }
 
         /// <inheritdoc />
-        public ApiResponse<ContentModel> GetBlock(Guid blockId, CancellationToken cancellationToken)
+        public ApiResponse<ContentModelData> GetBlock(Guid blockId, CancellationToken cancellationToken)
         {
-            ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
+            ApiResponse<ContentModelData> response = new ApiResponse<ContentModelData>();
             var block = _futureNhsContentService.GetPublishedContent(blockId, cancellationToken);
-            return new ApiResponse<ContentModel>().Success(_futureNhsContentService.ResolvePublishedContent(block, "content", cancellationToken), "Retrieved block successfully.");
+            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolvePublishedContent(block, "content", cancellationToken), "Retrieved block successfully.");
         }
 
         /// <inheritdoc />

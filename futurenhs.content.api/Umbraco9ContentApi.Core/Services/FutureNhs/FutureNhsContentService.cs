@@ -7,7 +7,7 @@
     using Umbraco.Cms.Core.Services;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using static Umbraco.Cms.Core.Constants;
-    using ContentModel = Models.Content.ContentModel;
+    using ContentModelData = Models.Content.ContentModelData;
 
     /// <inheritdoc />
     public sealed class FutureNhsContentService : IFutureNhsContentService
@@ -46,13 +46,13 @@
         }
 
         /// <inheritdoc />
-        public ContentModel ResolvePublishedContent(IPublishedContent publishedContent, string propertyGroupAlias, CancellationToken cancellationToken)
+        public ContentModelData ResolvePublishedContent(IPublishedContent publishedContent, string propertyGroupAlias, CancellationToken cancellationToken)
         {
             return _contentResolver.Value.ResolveContent(publishedContent, propertyGroupAlias);
         }
 
         /// <inheritdoc />
-        public ContentModel ResolveDraftContent(IContent content, CancellationToken cancellationToken)
+        public ContentModelData ResolveDraftContent(IContent content, CancellationToken cancellationToken)
         {
             return _contentResolver.Value.ResolveContent(content);
         }
@@ -81,9 +81,9 @@
         }
 
         /// <inheritdoc />
-        public List<ContentModel> GetTemplateBlocks(Guid templateId, CancellationToken cancellationToken)
+        public List<ContentModelData> GetTemplateBlocks(Guid templateId, CancellationToken cancellationToken)
         {
-            var contentModelList = new List<ContentModel>();
+            var contentModelList = new List<ContentModelData>();
 
             var template = _publishedContent.Content(templateId);
 
@@ -181,7 +181,7 @@
         }
 
         /// <inheritdoc />
-        public IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModel> contentModelList, IEnumerable<ContentModel> comparedcontentModelList)
+        public IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModelData> contentModelList, IEnumerable<ContentModelData> comparedcontentModelList)
         {
             return contentModelList.Select(x => x.Item.Id).Where(cm => !comparedcontentModelList.Select(ccm => ccm.Item.Id).Contains(cm)).ToList();
         }

@@ -1,8 +1,8 @@
 ﻿using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Content.Requests;
+using FutureNHS.Api.DataAccess.Models.Content.Responses;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
-using FutureNHS.Api.Models.Content;
-using FutureNHS.Api.Models.Content.Requests;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 
@@ -25,47 +25,31 @@ namespace FutureNHS.Api.Services
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> CreatePageAsync(Guid userId, Guid groupId, CreatePageRequest createRequest, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> CreatePageAsync(Guid userId, Guid groupId, GeneralWebPageCreateRequest createRequest, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == groupId) throw new ArgumentOutOfRangeException(nameof(groupId));
 
-            var now = _systemClock.UtcNow.UtcDateTime;
-
-            // If parentId is not null, it's a child to a current site. We update the CMS content only.
-            // Else, Its a new group site. Therefore, we create a new db entry and update the content CMS.
-            if (!string.IsNullOrEmpty(createRequest.ParentId))
+            ContentDto content = new()
             {
-                return await _contentCommand.CreatePageAsync(createRequest, cancellationToken);
-            }
+                PageName = $"group:{groupId.ToString().Replace("-", "")}",
+                PageParentId = createRequest?.PageParentId
+            };
 
-            var response = await _contentCommand.CreatePageAsync(createRequest, cancellationToken);
-
-            await _groupCommand.CreateGroupSiteAsync(new GroupSiteDto()
-            {
-                GroupId = groupId,
-                ContentRootId = Guid.Parse(response.Data),
-                CreatedAtUTC = now,
-                CreatedBy = userId,
-                ModifiedBy = null,
-                ModifiedAtUTC = null,
-            },
-                cancellationToken);
-
-            return response;
+            return await _contentCommand.CreatePageAsync(content, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> UpdatePageAsync(Guid userId, Guid contentId, PageModel pageContent, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> UpdatePageAsync(Guid userId, Guid contentId, GeneralWebPageUpdateRequest updateRequest, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == contentId) throw new ArgumentOutOfRangeException(nameof(contentId));
 
-            return await _contentCommand.UpdatePageAsync(contentId, pageContent, cancellationToken);
+            return await _contentCommand.UpdatePageAsync(contentId, updateRequest, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> CreateBlockAsync(Guid userId, CreateBlockRequest createRequest, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> CreateBlockAsync(Guid userId, BlockCreateRequest createRequest, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
 

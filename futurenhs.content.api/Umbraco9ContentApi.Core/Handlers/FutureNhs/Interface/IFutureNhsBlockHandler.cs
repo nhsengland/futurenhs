@@ -12,13 +12,13 @@
         /// <param name="blockId">The block identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        ApiResponse<ContentModel> GetBlock(Guid blockId, CancellationToken cancellationToken);
+        ApiResponse<ContentModelData> GetBlock(Guid blockId, CancellationToken cancellationToken);
         /// <summary>
         /// Gets all blocks.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        ApiResponse<IEnumerable<ContentModel>> GetAllBlocks(CancellationToken cancellationToken);
+        ApiResponse<IEnumerable<ContentModelData>> GetAllBlocks(CancellationToken cancellationToken);
         /// <summary>
         /// Gets the block placeholder values.
         /// </summary>

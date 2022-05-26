@@ -12,7 +12,7 @@ namespace Umbraco9ContentApi.Test.Handler
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco9ContentApi.Core.Models.Content;
     using Assert = Xunit.Assert;
-    using ContentModel = Core.Models.Content.ContentModel;
+    using ContentModel = Core.Models.Content.ContentModelData;
 
     [TestFixture]
     public class FutureNhsBlockHandlerTests
@@ -51,7 +51,7 @@ namespace Umbraco9ContentApi.Test.Handler
                .Returns(mockContent.Object);
 
             _mockFutureNhsContentService.SetupSequence(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), "content", cancellationToken))
-                .Returns(new ContentModel() { Item = new ContentModelItem() { Id = contentId } });
+                .Returns(new ContentModel() { Item = new ContentModelItemData() { Id = contentId } });
 
             // Act
             var contentResult = contentHandler.GetAllBlocks(cancellationToken);

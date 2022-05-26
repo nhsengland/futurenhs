@@ -1,24 +1,21 @@
-﻿using FutureNHS.Api.Configuration;
-using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
+﻿using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
+using FutureNHS.Api.Exceptions;
+using FutureNHS.Api.Helpers;
+using FutureNHS.Api.Helpers.Interfaces;
 using FutureNHS.Api.Services.Admin.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
 using FutureNHS.Api.Services.Validation;
-using FutureNHS.Api.Exceptions;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Options;
-using System.Security;
-using System.Data;
-using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
-using FutureNHS.Api.Helpers.Interfaces;
 using Ganss.XSS;
-using FutureNHS.Api.Helpers;
+using HeyRed.Mime;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
+using System.Data;
 using System.Net;
-using HeyRed.Mime;
+using System.Security;
 using System.Text;
 
 namespace FutureNHS.Api.Services.Admin
@@ -35,6 +32,7 @@ namespace FutureNHS.Api.Services.Admin
         private readonly IGroupCommand _groupCommand;
         private readonly IGroupImageService _imageService;
         private readonly IHtmlSanitizer _htmlSanitizer;
+        private readonly IContentService _contentService;
 
         // Notification template Ids
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
@@ -47,7 +45,8 @@ namespace FutureNHS.Api.Services.Admin
             IFileTypeValidator fileTypeValidator,
             IGroupImageService imageService,
             IGroupCommand groupCommand,
-            IHtmlSanitizer htmlSanitizer)
+            IHtmlSanitizer htmlSanitizer,
+            IContentService contentService)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
             _blobStorageProvider = blobStorageProvider ?? throw new ArgumentNullException(nameof(blobStorageProvider));
@@ -57,10 +56,13 @@ namespace FutureNHS.Api.Services.Admin
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
             _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
+            _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
         }
 
         public async Task CreateGroupAsync(Guid userId, Stream requestBody, string? contentType, CancellationToken cancellationToken)
         {
+            var now = _systemClock.UtcNow.UtcDateTime;
+
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AddGroupRole, cancellationToken);
             if (userCanPerformAction is not true)
             {
@@ -69,9 +71,9 @@ namespace FutureNHS.Api.Services.Admin
             }
 
             var (group, image) = await AdminUploadGroupImageMultipartContent(userId, requestBody, contentType, cancellationToken);
- 
+
             if (image is not null)
-            {                
+            {
                 try
                 {
                     var imageId = await _imageService.CreateImageAsync(image);
@@ -93,9 +95,16 @@ namespace FutureNHS.Api.Services.Admin
             var groupValidationResult = await groupValidator.ValidateAsync(group, cancellationToken);
             if (groupValidationResult.Errors.Count > 0)
                 throw new ValidationException(groupValidationResult);
+
+            var groupSiteDto = new GroupSiteDto()
+            {
+                CreatedAtUTC = now,
+                CreatedBy = userId,
+            };
+
             try
             {
-                await _groupCommand.CreateGroupAsync(userId, group, cancellationToken);
+                groupSiteDto.GroupId = await _groupCommand.CreateGroupAsync(userId, group, cancellationToken);
             }
             catch (DBConcurrencyException ex)
             {
@@ -108,6 +117,27 @@ namespace FutureNHS.Api.Services.Admin
                 throw new DBConcurrencyException("Error: User request to create a group was not successful");
             }
 
+            // Create the group homepage content in Umbraco
+            var createContentResponse = await _contentService.CreatePageAsync(userId, groupSiteDto.GroupId, null, cancellationToken);
+
+            // If the create content request fails, delete the associated group
+            if (!createContentResponse.Succeeded)
+            {
+                //TODO: rollback/delete group (feature: 75323)
+                _logger.LogError($"Error: CreatePageAsync - Error creating group homepage content {groupSiteDto.GroupId}");
+                throw new HttpRequestException($"Error: CreatePageAsync - Error creating group homepage content {groupSiteDto.GroupId}");
+            }
+
+            try
+            {
+                groupSiteDto.ContentRootId = Guid.Parse(createContentResponse.Data);
+                await _groupCommand.CreateGroupSiteAsync(groupSiteDto, cancellationToken);
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, $"Error: CreateGroupSiteAsync - Error creating group site {0}");
+                throw new DBConcurrencyException("Error: User request to create a group site was not successful");
+            }
         }
 
 
@@ -162,7 +192,7 @@ namespace FutureNHS.Api.Services.Admin
                             }
 
                             var compressedImage = _imageService.TransformImageForGroupHeader(section.Body);
-                           
+
                             try
                             {
                                 await _blobStorageProvider.UploadFileAsync(compressedImage.Image, uniqueFileName,

@@ -11,7 +11,7 @@ namespace Umbraco9ContentApi.Core.Extensions
         /// </summary>
         /// <param name="contentModel">The content model.</param>
         /// <returns></returns>
-        public static string GetUdi(this ContentModel contentModel)
+        public static string GetUdi(this ContentModelData contentModel)
         {
             return Udi.Create(UdiEntityType.Document, contentModel.Item.Id).ToString();
         }

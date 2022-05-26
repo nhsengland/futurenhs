@@ -7,7 +7,7 @@
     using Umbraco9ContentApi.Core.Extensions;
     using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Response;
-    using ContentModel = Models.Content.ContentModel;
+    using ContentModelData = Models.Content.ContentModelData;
 
     /// <summary>
     /// The handler that handles page methods.
@@ -61,7 +61,7 @@
             var pageModelBlockChildBlocks = _futureNhsBlockService.GetChildBlocks(pageModel.Blocks, cancellationToken);
 
             // Remove any blocks that were on the latest saved draft but not the new incoming draft
-            if (resolvedDraftBlocks is not null && resolvedDraftBlocks is IEnumerable<ContentModel> draftBlocks && draftBlocks.Any())
+            if (resolvedDraftBlocks is not null && resolvedDraftBlocks is IEnumerable<ContentModelData> draftBlocks && draftBlocks.Any())
             {
                 // Get latest saved draft block child blocks
                 var savedDraftBlocksChildBlocks = _futureNhsBlockService.GetChildBlocks(draftBlocks, cancellationToken);
@@ -107,9 +107,9 @@
         }
 
         /// <inheritdoc />
-        public ApiResponse<IEnumerable<ContentModel>> GetAllPages(CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<ContentModelData>> GetAllPages(CancellationToken cancellationToken)
         {
-            var contentModels = new List<ContentModel>();
+            var contentModels = new List<ContentModelData>();
             var pagesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
             var publishedContent = _futureNhsContentService.GetPublishedContent(pagesFolderGuid, cancellationToken).Children;
 
@@ -121,7 +121,7 @@
                 }
             }
 
-            return new ApiResponse<IEnumerable<ContentModel>>().Success(contentModels, "All pages retrieved successfully.");
+            return new ApiResponse<IEnumerable<ContentModelData>>().Success(contentModels, "All pages retrieved successfully.");
         }
 
         /// <inheritdoc />

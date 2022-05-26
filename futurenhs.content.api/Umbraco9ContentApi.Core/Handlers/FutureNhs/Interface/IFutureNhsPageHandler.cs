@@ -19,7 +19,7 @@ namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        ApiResponse<IEnumerable<ContentModel>> GetAllPages(CancellationToken cancellationToken);
+        ApiResponse<IEnumerable<ContentModelData>> GetAllPages(CancellationToken cancellationToken);
         /// <summary>
         /// Updates the content of the user editing.
         /// </summary>

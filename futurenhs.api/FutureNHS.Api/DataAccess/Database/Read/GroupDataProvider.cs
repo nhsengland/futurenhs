@@ -400,6 +400,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return member;
         }
 
+
         public async Task<IEnumerable<GroupMemberDetails>> GetGroupAdminsAsync(string groupSlug, CancellationToken cancellationToken = default)
         {
             const string query =
@@ -435,22 +436,25 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return member;
         }
 
-        public async Task<GroupSite> GetGroupSiteDataAsync(Guid groupId, CancellationToken cancellationToken)
+        public async Task<GroupSite> GetGroupSiteDataAsync(string groupSlug, CancellationToken cancellationToken)
         {
             const string query =
                     @$"SELECT 
-                                [{nameof(GroupSite.Id)}],
-                                [{nameof(GroupSite.GroupId)}],
-                                [{nameof(GroupSite.ContentRootId)}]
+                                gs.Id,
+                                gs.GroupId,
+                                gs.ContentRootId,
+								g.Slug
 
-                    FROM [GroupSite]
-                    WHERE GroupId = @GroupId;";
+                    FROM [GroupSite] gs
+					JOIN        [Group] g
+                    ON          g.Id = gs.GroupId
+					WHERE Slug = @GroupSlug;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
             var reader = await dbConnection.QueryMultipleAsync(query, new
             {
-                GroupId = groupId
+                GroupSlug = groupSlug
             });
 
             var groupSiteData = await reader.ReadSingleOrDefaultAsync<GroupSite>();
@@ -458,5 +462,4 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return groupSiteData;
         }
     }
-
 }

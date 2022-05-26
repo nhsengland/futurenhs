@@ -1,7 +1,8 @@
-﻿using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
+﻿using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Content.Requests;
+using FutureNHS.Api.DataAccess.Models.Content.Responses;
+using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
-using FutureNHS.Api.Models.Content;
-using FutureNHS.Api.Models.Content.Requests;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Write
 {
@@ -17,19 +18,19 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> CreatePageAsync(CreatePageRequest createRequest, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> CreatePageAsync(ContentDto content, CancellationToken cancellationToken)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, "api/page", JsonContent.Create(createRequest));
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, "api/page", JsonContent.Create(content));
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> CreateBlockAsync(CreateBlockRequest createRequest, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> CreateBlockAsync(BlockCreateRequest createRequest, CancellationToken cancellationToken)
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, $"api/block", JsonContent.Create(createRequest));
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> UpdatePageAsync(Guid contentId, PageModel pageModel, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> UpdatePageAsync(Guid contentId, GeneralWebPageUpdateRequest pageModel, CancellationToken cancellationToken)
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Put, $"api/page/{contentId}", JsonContent.Create(pageModel));
         }

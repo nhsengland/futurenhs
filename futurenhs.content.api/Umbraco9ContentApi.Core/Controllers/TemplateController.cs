@@ -28,7 +28,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{templateId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModelData))]
         public ActionResult GetTemplate(Guid templateId, CancellationToken cancellationToken)
         {
             var result = _futureNhsTemplateHandler.GetTemplate(templateId, cancellationToken);
@@ -47,7 +47,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModelData>))]
         public ActionResult GetAllTemplates(CancellationToken cancellationToken)
         {
             var result = _futureNhsTemplateHandler.GetAllTemplates(cancellationToken);

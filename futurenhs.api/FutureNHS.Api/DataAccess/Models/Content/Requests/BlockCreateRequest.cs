@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace FutureNHS.Api.Models.Content.Requests
+namespace FutureNHS.Api.DataAccess.Models.Content.Requests
 {
-    public class CreateBlockRequest
+    public class BlockCreateRequest
     {
         /// <summary>
         /// Gets or sets the type of the content.

@@ -16,7 +16,7 @@
     using Umbraco.Cms.Web.Common.PublishedModels;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using Umbraco9ContentApi.Core.Services.FutureNhs;
-    using ContentModel = Core.Models.Content.ContentModel;
+    using ContentModelData = Core.Models.Content.ContentModelData;
 
     /// <summary>
     /// Futrue Nhs Content Handler Tests.
@@ -36,9 +36,9 @@
         private IConfiguration _config;
         private CancellationToken cancellationToken;
 
-        private static ContentModel contentModelTextBlock = new();
-        private static ContentModel contentModelKeyLinksBlock = new();
-        private static List<ContentModel> contentModelList = new();
+        private static ContentModelData contentModelTextBlock = new();
+        private static ContentModelData contentModelKeyLinksBlock = new();
+        private static List<ContentModelData> contentModelList = new();
 
         /// <summary>
         /// Setups this instance.
@@ -250,9 +250,9 @@ _mockFutureNhsContentResolver.Object, _mockContentService.Object);
         public void CompareContentModelLists_WithDifference_Success()
         {
             // Arrange          
-            Mock<List<ContentModel>> originalContentModelList = GetMockContentModelList();
-            Mock<List<ContentModel>> contentModelList = new();
-            Mock<List<ContentModel>> comparedContentModelList = new();
+            Mock<List<ContentModelData>> originalContentModelList = GetMockContentModelList();
+            Mock<List<ContentModelData>> contentModelList = new();
+            Mock<List<ContentModelData>> comparedContentModelList = new();
             contentModelList.Object.AddRange(originalContentModelList.Object);
             comparedContentModelList.Object.AddRange(originalContentModelList.Object);
 
@@ -278,9 +278,9 @@ _mockFutureNhsContentResolver.Object, _mockContentService.Object);
         public void CompareContentModelLists_NoDifference_Success()
         {
             // Arrange          
-            Mock<List<ContentModel>> originalContentModelList = GetMockContentModelList();
-            Mock<List<ContentModel>> contentModelList = new();
-            Mock<List<ContentModel>> comparedContentModelList = new();
+            Mock<List<ContentModelData>> originalContentModelList = GetMockContentModelList();
+            Mock<List<ContentModelData>> contentModelList = new();
+            Mock<List<ContentModelData>> comparedContentModelList = new();
             contentModelList.Object.AddRange(originalContentModelList.Object);
             comparedContentModelList.Object.AddRange(originalContentModelList.Object);
 
@@ -303,14 +303,14 @@ _mockFutureNhsContentResolver.Object, _mockContentService.Object);
         /// </summary>
         /// <param name="contentType">Type of the content.</param>
         /// <returns></returns>
-        private Mock<ContentModel> GetMockBlockContentModel(string contentType)
+        private Mock<ContentModelData> GetMockBlockContentModel(string contentType)
         {
             var dict = new Dictionary<string, object>()
             {
                 { "Field", "Value" },
             };
 
-            var mockContentModel = new Mock<ContentModel>();
+            var mockContentModel = new Mock<ContentModelData>();
             mockContentModel.Setup(x => x.Item.Id).Returns(Guid.NewGuid());
             mockContentModel.Setup(x => x.Item.ContentType).Returns(contentType);
             mockContentModel.Setup(x => x.Content).Returns(dict);
@@ -366,13 +366,13 @@ _mockFutureNhsContentResolver.Object, _mockContentService.Object);
             return mockPropertyCollection.Object;
         }
 
-        private Mock<List<ContentModel>> GetMockContentModelList()
+        private Mock<List<ContentModelData>> GetMockContentModelList()
         {
-            Mock<List<ContentModel>> contentModelList = new();
+            Mock<List<ContentModelData>> contentModelList = new();
 
-            Mock<ContentModel> block1 = GetMockBlockContentModel(TextBlock.ModelTypeAlias);
-            Mock<ContentModel> block2 = GetMockBlockContentModel(TextBlock.ModelTypeAlias);
-            Mock<ContentModel> block3 = GetMockBlockContentModel(KeyLinksBlock.ModelTypeAlias);
+            Mock<ContentModelData> block1 = GetMockBlockContentModel(TextBlock.ModelTypeAlias);
+            Mock<ContentModelData> block2 = GetMockBlockContentModel(TextBlock.ModelTypeAlias);
+            Mock<ContentModelData> block3 = GetMockBlockContentModel(KeyLinksBlock.ModelTypeAlias);
 
             contentModelList.Object.Add(block1.Object);
             contentModelList.Object.Add(block2.Object);
