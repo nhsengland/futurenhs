@@ -42,6 +42,10 @@ const helpers = require('../util/helpers');
     search.search(inputVal)
   });
 
+  When(/^I select '([^"]*)' from the (group menu|menu|actions|group pages) accordion$/, function (linkText, groupOption) {
+    genericPage.selectAccordionItem(linkText, groupOption);
+  })
+
   // FormPage Steps
 
   When(/^I enter '([^"]*)' into the ('([^"]*)' )?(field|text area|text editor)$/, function (inputTxt, label, inputType) {
@@ -81,7 +85,3 @@ const helpers = require('../util/helpers');
   When(/^I click reply on the '([^"]*)' (comment|reply) card$/, function(cardText, cardType) {
     forumPage.replyToPostClick(cardText, cardType);
   });
-
-  When(/^I select '([^"]*)' from the (group menu|menu|actions|group pages) accordion$/, function (linkText, groupOption) {
-    genericPage.selectAccordionItem(linkText, groupOption);
-  })
