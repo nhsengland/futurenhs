@@ -3,6 +3,7 @@ using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Api.Services.Notifications.Interfaces;
 using FutureNHS.Api.Services.Validation;
 using Microsoft.AspNetCore.Authentication;
 
@@ -21,9 +22,15 @@ namespace FutureNHS.Api.Services
         private readonly IRolesCommand _rolesCommand;
         private readonly IUserCommand _userCommand;
         private readonly IPermissionsService _permissionsService;
+        private readonly IGroupMemberNotificationService _groupMemberNotificationService;
 
-        public GroupMembershipService(ILogger<GroupMembershipService> logger, ISystemClock systemClock, IGroupCommand groupCommand,
-            IRolesCommand rolesCommand, IUserCommand userCommand, IPermissionsService permissionsService)
+        public GroupMembershipService(ILogger<GroupMembershipService> logger, 
+            ISystemClock systemClock,
+            IGroupCommand groupCommand,
+            IRolesCommand rolesCommand,
+            IUserCommand userCommand,
+            IPermissionsService permissionsService,
+            IGroupMemberNotificationService groupMemberNotificationService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
@@ -31,6 +38,7 @@ namespace FutureNHS.Api.Services
             _rolesCommand = rolesCommand ?? throw new ArgumentNullException(nameof(rolesCommand));
             _userCommand = userCommand ?? throw new ArgumentNullException(nameof(userCommand));
             _permissionsService = permissionsService ?? throw new ArgumentNullException(nameof(permissionsService));
+            _groupMemberNotificationService = groupMemberNotificationService ?? throw new ArgumentNullException(nameof(groupMemberNotificationService));
         }
 
         public async Task<GroupMemberDetails> GetGroupMembershipUserAsync(Guid userId, Guid targetUserId, string slug, CancellationToken cancellationToken)
@@ -234,6 +242,8 @@ namespace FutureNHS.Api.Services
             if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
             if (Guid.Empty == targetUserId) throw new ArgumentOutOfRangeException(nameof(targetUserId));
 
+            var now = _systemClock.UtcNow.UtcDateTime;
+
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddUserRole, cancellationToken);
             if (!userCanPerformAction)
             {
@@ -241,21 +251,26 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }            
 
-            var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
-            if (!groupId.HasValue)
+            var group = await _groupCommand.GetGroupAsync(slug, cancellationToken);
+            if (group is null)
             {
                 _logger.LogError($"Error: ApproveGroupUserAsync - Group not found for slug:{0}", slug);
                 throw new KeyNotFoundException("Error: Group not found for slug");
             }
 
-            var groupUser = await _groupCommand.GetGroupUserAsync(targetUserId, groupId.Value, cancellationToken);
+            var groupUser = await _groupCommand.GetGroupUserAsync(targetUserId, group.Id, cancellationToken);
 
             var groupUserApplicationValidator = new GroupUserApplicationValidator();
             var validationResult = await groupUserApplicationValidator.ValidateAsync(groupUser, cancellationToken);
             if (validationResult.Errors.Count > 0)
                 throw new ValidationException(validationResult);
 
-            await _groupCommand.ApproveGroupUserAsync(groupUser.Id, groupUser.RowVersion, cancellationToken);
+            groupUser.ApprovedDateUTC = now;
+            groupUser.ApprovingMembershipUser = userId;
+
+            await _groupCommand.ApproveGroupUserAsync(groupUser, cancellationToken);
+
+            _ = Task.Run(() => _groupMemberNotificationService.SendAcceptNotificationToMemberAsync(targetUserId, group.Name, cancellationToken), cancellationToken);
         }
 
         public async Task RejectGroupUserAsync(Guid userId, string slug, Guid targetUserId, CancellationToken cancellationToken)
@@ -271,14 +286,14 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var groupId = await _groupCommand.GetGroupIdForSlugAsync(slug, cancellationToken);
-            if (!groupId.HasValue)
+            var group = await _groupCommand.GetGroupAsync(slug, cancellationToken);
+            if (group is null)
             {
                 _logger.LogError($"Error: RejectGroupUserAsync - Group not found for slug:{0}", slug);
                 throw new KeyNotFoundException("Error: Group not found for slug");
             }
 
-            var groupUser = await _groupCommand.GetGroupUserAsync(targetUserId, groupId.Value, cancellationToken);
+            var groupUser = await _groupCommand.GetGroupUserAsync(targetUserId, group.Id, cancellationToken);
 
             var groupUserApplicationValidator = new GroupUserApplicationValidator();
             var validationResult = await groupUserApplicationValidator.ValidateAsync(groupUser, cancellationToken);
@@ -286,6 +301,8 @@ namespace FutureNHS.Api.Services
                 throw new ValidationException(validationResult);
 
             await _groupCommand.RejectGroupUserAsync(groupUser.Id, groupUser.RowVersion, cancellationToken);
+
+            _ = Task.Run(() => _groupMemberNotificationService.SendRejectNotificationToMemberAsync(targetUserId, group.Name, cancellationToken), cancellationToken);
         }
     }
 }

@@ -17,6 +17,6 @@ public interface IGroupCommand
     Task<IEnumerable<GroupRoleDto>> GetAllGroupRolesAsync(CancellationToken cancellationToken = default);
     Task UpdateUserGroupRolesAsync(Guid groupUserId, Guid groupId, byte[] rowVersion, CancellationToken cancellationToken = default);
     Task DeleteUserFromGroupAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
-    Task ApproveGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
+    Task ApproveGroupUserAsync(GroupUserDto groupUserDto, CancellationToken cancellationToken = default);
     Task RejectGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
 }
