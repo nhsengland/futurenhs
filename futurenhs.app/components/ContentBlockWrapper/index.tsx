@@ -134,13 +134,13 @@ export const ContentBlockWrapper: (props: Props) => JSX.Element = ({
                 id="dialog-discard-cms-block"
                 isOpen={isDeleteModalOpen}
                 text={{
+                    heading: 'Entered Data will be lost',
                     cancelButton: 'Cancel',
                     confirmButton: 'Yes, discard',
                 }}
                 cancelAction={handleDeleteCancel}
                 confirmAction={handleDeleteConfirm}
             >
-                <h3>Entered Data will be lost</h3>
                 <p className="u-text-bold">
                     Any entered details will be
                     discarded. Are you sure you wish to
