@@ -27,13 +27,17 @@ Examples:
     | You must be a member of this group to access this content |
 
 
-Scenario: FNHS112 - Group Home page manager available
-    When I select the 'Automation Admin Group' group card
-    Then the 'Automation Admin Group' header is displayed
-    And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
-    # And the '' textual value is displayed
-    When I open the 'Actions' accordion
-    Then the 'Page manager' link is displayed
+Scenario Outline: FNHS114 - Edit Page Permissions Validation
+        Given I have logged off as the current user
+        And I have logged in as a '<user>'
+        And I have navigated to '/groups/automation-editable-group'
+        And the 'You are a Group Admin of this page. Please click edit to switch to edit mode' textual value <visibility> displayed
+        And the 'Edit page' button <visibility> displayed
+        Examples:
+            | user        | visibility |
+            | group admin | is         |
+            | admin       | is         |
+            | user        | is not     |
 
 
 Scenario: FNHS113 - Group Members table admin validation    
