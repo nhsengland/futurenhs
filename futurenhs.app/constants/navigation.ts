@@ -21,6 +21,11 @@ export const footerNavMenuList = [
         text: 'Terms and conditions',
         isActive: false,
     },
+    {
+        url: routes.ACCESSIBILITY,
+        text: 'Accessibility statement',
+        isActive: false,
+    },
 ]
 
 export const mainNavMenuList = [
