@@ -296,7 +296,7 @@ namespace FutureNHS.Api.Services.Admin
                     }
                 }
 
-                formValues.TryGetValue("public", out var publicGroup);
+                formValues.TryGetValue("isPublic", out var publicGroup);
                 var isPublic = bool.TryParse(publicGroup, out var isPublicBool) ? isPublicBool : false;
 
                 groupDto = new GroupDto
