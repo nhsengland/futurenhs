@@ -1,11 +1,18 @@
 import { GetServerSideProps } from 'next'
 
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
-import { layoutIds, groupTabIds } from '@constants/routes'
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
+import { layoutIds, groupTabIds, routeParams } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withGroup } from '@hofs/withGroup'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
+import { withForms } from '@hofs/withForms'
+import { User } from '@appTypes/user'
+import { selectUser, selectParam } from '@selectors/context'
+import { getGroupHomePageCmsContentIds } from '@services/getGroupHomePageCmsContentIds'
+import { getCmsPageTemplate } from '@services/getCmsPageTemplate'
+import { getCmsPageContent } from '@services/getCmsPageContent'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
 import { GroupHomeTemplate } from '@components/_pageTemplates/GroupHomeTemplate'
@@ -24,23 +31,56 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: withGroup({
             props,
             routeId,
-            getServerSideProps: withTextContent({
+            getServerSideProps: withForms({
                 props,
-                routeId,
-                getServerSideProps: async (
-                    context: GetServerSidePropsContext
-                ) => {
-                    props.layoutId = layoutIds.GROUP
-                    props.tabId = groupTabIds.INDEX
-                    props.pageTitle = props.entityText.title
+                getServerSideProps: withTextContent({
+                    props,
+                    routeId,
+                    getServerSideProps: async (
+                        context: GetServerSidePropsContext
+                    ) => {
 
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props })
-                },
+                        const user: User = selectUser(context)
+                        const groupId: string = selectParam(context, routeParams.GROUPID)
+
+                        props.layoutId = layoutIds.GROUP
+                        props.tabId = groupTabIds.INDEX
+                        props.pageTitle = props.entityText.title
+
+                        /**
+                         * Get data from services
+                         */
+                        try {
+
+                            const contentTemplateId: string = '0b955a4a-9e26-43e8-bb4b-51010e264d64';
+                            const groupHomePageCmsContentIds = await getGroupHomePageCmsContentIds({ user, groupId });
+                            const contentPageId: string = groupHomePageCmsContentIds.data.contentRootId;
+
+                            const [contentBlocks, contentTemplate] =
+                                await Promise.all([
+                                    getCmsPageContent({ user, pageId: contentPageId }),
+                                    getCmsPageTemplate({ user, templateId: contentTemplateId })
+                                ])
+
+                            props.contentPageId = contentPageId,
+                            props.contentTemplateId = contentTemplateId;
+                            props.contentBlocks = contentBlocks.data
+                            props.contentTemplate = contentTemplate.data
+
+                        } catch (error) {
+                            console.log(error);
+                            return handleSSRErrorProps({ props, error, shouldSurface: false })
+                        }
+
+                        /**
+                         * Return data to page template
+                         */
+                        return handleSSRSuccessProps({ props })
+                    },
+                }),
             }),
-        }),
+
+        })
     }),
 })
 
