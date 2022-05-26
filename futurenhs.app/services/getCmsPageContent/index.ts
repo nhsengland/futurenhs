@@ -48,6 +48,8 @@ export const getCmsPageContent = async (
 
     const { headers, ok, status, statusText } = apiMeta
 
+    console.log(apiData);
+
     if (!ok) {
         throw new ServiceError(
             'An unexpected error occurred when attempting to get the cms page content',
