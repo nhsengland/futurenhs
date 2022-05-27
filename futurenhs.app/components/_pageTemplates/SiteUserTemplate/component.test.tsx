@@ -1,20 +1,20 @@
 import { render, screen, cleanup } from '@jestMocks/index'
 import { SiteUserTemplate } from './index'
 import { Props } from './interfaces'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import forms from '@formConfigs/index'
 import { routes } from '@jestMocks/generic-props'
 import { actions } from '@constants/actions'
 
+jest.mock('next/router', () => require('next-router-mock'));
 
 describe('Site User Template', () => {
-    
+
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/users/userId');
+    });
+
     afterEach(cleanup)
-    
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/users/userId',
-    }))
 
     const props: Props = {
         id: '',
