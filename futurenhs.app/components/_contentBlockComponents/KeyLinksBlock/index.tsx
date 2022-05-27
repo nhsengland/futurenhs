@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import classNames from 'classnames'
 import FlipMove from 'react-flip-move';
 
@@ -31,6 +31,8 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
     maxLinks = 10,
     className,
 }) => {
+
+    const elementIdToFocus = useRef(null);
 
     const blockId: string = block?.item?.id;
     const { title, blocks } = block?.content ?? {};
@@ -69,14 +71,9 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
                 }
     
                 updatedBlock.content.blocks.push(newBlock);
+                elementIdToFocus.current = createdBlockId;
     
                 changeAction?.({ block: updatedBlock })
-
-                setTimeout(() => {
-
-                    document.getElementById(createdBlockId)?.focus()
-        
-                }, 50)
     
             });
 
@@ -97,14 +94,9 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
         const updatedChildBlocks: Array<CmsContentBlock> = moveArrayItem(childBlocks, index, targetIndex);
         
         updatedBlock.content.blocks = updatedChildBlocks;
+        elementIdToFocus.current = blockId;
         
         changeAction?.({ block: updatedBlock })
-
-        setTimeout(() => {
-
-            document.getElementById(blockId)?.focus()
-
-        }, 0)
 
     };
 
@@ -142,6 +134,17 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
         changeAction?.({ block: updatedBlock, errors, childBlockId })
 
     }
+
+    useEffect(() => {
+
+        if(elementIdToFocus.current){
+
+            document.getElementById(blockId).focus();
+            elementIdToFocus.current = null;
+    
+        }
+
+    }, [block]);
 
     if (isEditable) {
 

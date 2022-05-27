@@ -150,7 +150,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                 document.getElementById(createdBlockId)?.focus();
 
-            }, 50);
+            }, 0);
 
         });
 
