@@ -42,15 +42,16 @@ export const ContentBlockWrapper: (props: Props) => JSX.Element = ({
     };
 
     const generatedClasses: any = {
-        wrapper: classNames('c-content-block', 'focus:u-outline-none', {
-            ['c-content-block--editable']: mode === cprud.CREATE || mode === cprud.UPDATE
+        wrapper: classNames('c-content-block-wrapper', 'focus:u-outline-none', {
+            ['c-content-block-wrapper--update']: mode === cprud.CREATE || mode === cprud.UPDATE,
         }, className),
-        header: classNames('c-content-block_header', 'tablet:u-flex', 'tablet:u-justify-between'),
+        header: classNames('c-content-block-wrapper_header', 'tablet:u-flex', 'tablet:u-justify-between'),
         headerTitle: classNames('u-block', 'u-mb-5', 'tablet:u-mb-0'),
-        headerButton: classNames('c-content-block_header-button', 'o-link-button', 'u-mt-2', 'tablet:u-mt-0', 'tablet:u-ml-10'),
+        headerButton: classNames('c-content-block-wrapper_header-button', 'o-link-button', 'u-mt-2', 'tablet:u-mt-0', 'tablet:u-ml-10'),
         headerButtonIcon: classNames('u-mr-3', 'u-w-4', 'u-h-4', 'tablet:u-w-6', 'tablet:u-h-6'),
-        body: classNames('c-content-block_body', {
-            ['c-content-block_body--editable']: mode === cprud.CREATE || mode === cprud.UPDATE
+        body: classNames('c-content-block-wrapper_body', {
+            ['c-content-block-wrapper_body--update']: mode === cprud.CREATE || mode === cprud.UPDATE,
+            ['c-content-block-wrapper_body--updatable']: shouldEnableEnterUpdate || mode === cprud.CREATE
         }),
     }
 
@@ -70,7 +71,8 @@ export const ContentBlockWrapper: (props: Props) => JSX.Element = ({
 
     const handleBodyClick = () => {
 
-        !isInEditMode && handleSetToUpdateMode(null);
+        (!isInEditMode && mode === cprud.UPDATE) && handleSetToUpdateMode(null);
+        (mode === cprud.CREATE) && handleCreate(null);
 
     }
 
