@@ -1,6 +1,6 @@
 ﻿using Umbraco.Cms.Core.Models;
 using Umbraco9ContentApi.Core.Models.Requests;
-using ContentModel = Umbraco9ContentApi.Core.Models.Content.ContentModel;
+using ContentModelData = Umbraco9ContentApi.Core.Models.Content.ContentModelData;
 
 namespace Umbraco9ContentApi.Core.Services.FutureNhs.Interface
 {
@@ -8,7 +8,7 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs.Interface
     {
         IEnumerable<string> GetBlockPlaceholderValues(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
         IContent CreateBlock(CreateBlockRequest createRequest, CancellationToken cancellationToken);
-        IContent UpdateBlock(ContentModel block, CancellationToken cancellationToken);
-        IEnumerable<ContentModel> GetChildBlocks(IEnumerable<ContentModel> blocks, CancellationToken cancellationToken);
+        IContent UpdateBlock(ContentModelData block, CancellationToken cancellationToken);
+        IEnumerable<ContentModelData> GetChildBlocks(IEnumerable<ContentModelData> blocks, CancellationToken cancellationToken);
     }
 }

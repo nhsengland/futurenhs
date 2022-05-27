@@ -51,7 +51,7 @@
             // Act
             var result = controller.GetAllTemplates(cancellationToken);
             var itemResult = result as OkObjectResult;
-            var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModel>>;
+            var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModelData>>;
 
             // Assert
             Assert.NotNull(itemResult);
@@ -102,7 +102,7 @@
             // Act
             var result = controller.GetTemplate(contentId, cancellationToken);
             var itemResult = result as OkObjectResult;
-            var payloadResult = itemResult.Value as ApiResponse<ContentModel>;
+            var payloadResult = itemResult.Value as ApiResponse<ContentModelData>;
 
 
             // Assert
@@ -155,23 +155,23 @@
         /// Gets the test model.
         /// </summary>
         /// <returns></returns>
-        private ApiResponse<ContentModel> GetTemplate_Found(Guid contentId)
+        private ApiResponse<ContentModelData> GetTemplate_Found(Guid contentId)
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
 
-            var model = new ContentModel()
+            var model = new ContentModelData()
             {
-                Item = new ContentModelItem
+                Item = new ContentModelItemData
                 {
                     Id = contentId,
                 },
                 Content = mockDictionary
             };
 
-            var apiResponse = new Mock<ApiResponse<ContentModel>>();
+            var apiResponse = new Mock<ApiResponse<ContentModelData>>();
             apiResponse.Setup(x => x.Data).Returns(model);
 
             return apiResponse.Object;
@@ -181,33 +181,33 @@
         /// Gets the test model.
         /// </summary>
         /// <returns></returns>
-        private ApiResponse<IEnumerable<ContentModel>> GetTestTemplates_Found()
+        private ApiResponse<IEnumerable<ContentModelData>> GetTestTemplates_Found()
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
 
-            var model = new List<ContentModel>()
+            var model = new List<ContentModelData>()
             {
-                new ContentModel() {Content = mockDictionary}
+                new ContentModelData() {Content = mockDictionary}
             };
 
-            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModelData>>>();
             apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;
         }
 
-        private ApiResponse<IEnumerable<ContentModel>> GetTestTemplates_NotFound()
+        private ApiResponse<IEnumerable<ContentModelData>> GetTestTemplates_NotFound()
         {
-            var model = new List<ContentModel>()
+            var model = new List<ContentModelData>()
             {
 
             };
 
-            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModelData>>>();
             apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 

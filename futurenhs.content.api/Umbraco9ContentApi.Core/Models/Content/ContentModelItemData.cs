@@ -2,7 +2,7 @@
 
 namespace Umbraco9ContentApi.Core.Models.Content
 {
-    public class ContentModelItem
+    public class ContentModelItemData
     {
         public virtual Guid Id { get; set; }
         public string? Name { get; set; }

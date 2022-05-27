@@ -49,7 +49,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{blockId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ContentModelData>))]
         public ActionResult GetBlock(Guid blockId, CancellationToken cancellationToken)
         {
             var result = _futureNhsContentHandler.GetPublishedContent(blockId, cancellationToken);
@@ -68,7 +68,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModel>>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModelData>>))]
         public ActionResult GetAllBlocks(CancellationToken cancellationToken)
         {
             var result = _futureNhsBlockHandler.GetAllBlocks(cancellationToken);

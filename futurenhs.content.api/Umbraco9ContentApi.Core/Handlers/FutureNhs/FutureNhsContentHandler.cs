@@ -32,8 +32,8 @@
                 var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(draftContent, cancellationToken);
                 var resolvedPublishedContent = _futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken);
 
-                var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModel>)c.Value).FirstOrDefault();
-                var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModel>)c.Value).FirstOrDefault();
+                var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModelData>)c.Value).FirstOrDefault();
+                var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModelData>)c.Value).FirstOrDefault();
 
 
                 if (publishedBlocks is not null && draftBlocks is not null)
@@ -81,17 +81,17 @@
         }
 
         /// <inheritdoc />
-        public ApiResponse<ContentModel> GetPublishedContent(Guid contentId, CancellationToken cancellationToken)
+        public ApiResponse<ContentModelData> GetPublishedContent(Guid contentId, CancellationToken cancellationToken)
         {
             var publishedContent = _futureNhsContentService.GetPublishedContent(contentId, cancellationToken);
-            return new ApiResponse<ContentModel>().Success(_futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken), "Published content found.");
+            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken), "Published content found.");
         }
 
         /// <inheritdoc />
-        public ApiResponse<ContentModel> GetDraftContent(Guid contentId, CancellationToken cancellationToken)
+        public ApiResponse<ContentModelData> GetDraftContent(Guid contentId, CancellationToken cancellationToken)
         {
             var publishedContent = _futureNhsContentService.GetDraftContent(contentId, cancellationToken);
-            return new ApiResponse<ContentModel>().Success(_futureNhsContentService.ResolveDraftContent(publishedContent, cancellationToken), "Draft content found.");
+            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolveDraftContent(publishedContent, cancellationToken), "Draft content found.");
         }
 
         /// <inheritdoc />
@@ -113,8 +113,8 @@
                 var resolvedPublishedContent = _futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken);
 
                 // Get context content blocks
-                var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault() as IEnumerable<ContentModel>;
-                var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault() as IEnumerable<ContentModel>;
+                var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault() as IEnumerable<ContentModelData>;
+                var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault() as IEnumerable<ContentModelData>;
 
                 // For each block rollback to published version
                 if (publishedBlocks is not null && draftBlocks is not null)

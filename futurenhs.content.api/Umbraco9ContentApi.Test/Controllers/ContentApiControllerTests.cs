@@ -47,7 +47,7 @@ namespace Umbraco9ContentApi.Test.Controller
             // Act
             var result = controller.GetPublishedContent(contentId, cancellationToken);
             var itemResult = result as OkObjectResult;
-            var modelItem = itemResult.Value as ApiResponse<ContentModel>;
+            var modelItem = itemResult.Value as ApiResponse<ContentModelData>;
 
             // Assert
             Assert.NotNull(itemResult);
@@ -65,7 +65,7 @@ namespace Umbraco9ContentApi.Test.Controller
         public async Task GetContent_Failure()
         {
             // Arrange
-            _mockFutureNhsContentHandler.Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken)).Returns(() => new ApiResponse<ContentModel>().Failure(null, null));
+            _mockFutureNhsContentHandler.Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken)).Returns(() => new ApiResponse<ContentModelData>().Failure(null, null));
             var controller = GetController();
             var contentId = new Guid("8E87CC7B-26BD-4543-906D-53652F5B6F02");
 
@@ -209,23 +209,23 @@ namespace Umbraco9ContentApi.Test.Controller
         /// </summary>
         /// <param name="contentId">The content identifier.</param>
         /// <returns></returns>
-        private ApiResponse<ContentModel> GetContent_Found(Guid contentId)
+        private ApiResponse<ContentModelData> GetContent_Found(Guid contentId)
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
 
-            var model = new ContentModel()
+            var model = new ContentModelData()
             {
-                Item = new ContentModelItem
+                Item = new ContentModelItemData
                 {
                     Id = contentId,
                 },
                 Content = mockDictionary
             };
 
-            var apiResponse = new Mock<ApiResponse<ContentModel>>();
+            var apiResponse = new Mock<ApiResponse<ContentModelData>>();
             apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
@@ -248,19 +248,19 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Gets the test contents found.
         /// </summary>
         /// <returns></returns>
-        private ApiResponse<IEnumerable<ContentModel>> GetContents_Found()
+        private ApiResponse<IEnumerable<ContentModelData>> GetContents_Found()
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
 
-            var model = new List<ContentModel>()
+            var model = new List<ContentModelData>()
             {
-                new ContentModel() {Content = mockDictionary}
+                new ContentModelData() {Content = mockDictionary}
             };
 
-            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModelData>>>();
             apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
@@ -271,10 +271,10 @@ namespace Umbraco9ContentApi.Test.Controller
         /// Gets the test contents not found.
         /// </summary>
         /// <returns></returns>
-        private ApiResponse<IEnumerable<ContentModel>> GetContents_NotFound()
+        private ApiResponse<IEnumerable<ContentModelData>> GetContents_NotFound()
         {
-            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
-            apiResponse.Setup(x => x.Data).Returns(new List<ContentModel>());
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModelData>>>();
+            apiResponse.Setup(x => x.Data).Returns(new List<ContentModelData>());
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;

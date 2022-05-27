@@ -27,7 +27,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{contentId:guid}/published")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModelData))]
         public IActionResult GetPublishedContent(Guid contentId, CancellationToken cancellationToken)
         {
             var result = _futureNhsContentHandler.GetPublishedContent(contentId, cancellationToken);
@@ -52,7 +52,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{contentId:guid}/draft")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContentModelData))]
         public ActionResult GetDraftContent(Guid contentId, CancellationToken cancellationToken)
         {
             var result = _futureNhsContentHandler.GetDraftContent(contentId, cancellationToken);

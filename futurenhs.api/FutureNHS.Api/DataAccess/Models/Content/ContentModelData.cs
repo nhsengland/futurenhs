@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace FutureNHS.Api.Models.Content
+namespace FutureNHS.Api.DataAccess.Models.Content
 {
-    public class ContentModel
+    public sealed class ContentModelData
     {
         [JsonProperty("item")]
-        public ContentModelItem? Item { get; set; }
+        public ContentModelItemData? Item { get; set; }
         [JsonProperty("content")]
         public Dictionary<string, object>? Content { get; set; }
     }

@@ -49,7 +49,7 @@
             // Act
             var result = controller.GetAllBlocks(cancellationToken);
             var itemResult = result as OkObjectResult;
-            var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModel>>;
+            var payloadResult = itemResult.Value as ApiResponse<IEnumerable<ContentModelData>>;
 
             // Assert
             Assert.NotNull(itemResult);
@@ -102,19 +102,19 @@
         /// Gets the test blocks found.
         /// </summary>
         /// <returns></returns>
-        private ApiResponse<IEnumerable<ContentModel>> GetBlocks_Found()
+        private ApiResponse<IEnumerable<ContentModelData>> GetBlocks_Found()
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "Test text." }
             };
 
-            var model = new List<ContentModel>()
+            var model = new List<ContentModelData>()
             {
-                new ContentModel() {Content = mockDictionary}
+                new ContentModelData() {Content = mockDictionary}
             };
 
-            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModelData>>>();
             apiResponse.Setup(x => x.Data).Returns(model);
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
@@ -125,10 +125,10 @@
         /// Gets the test blocks not found.
         /// </summary>
         /// <returns></returns>
-        private ApiResponse<IEnumerable<ContentModel>> GetTestBlocks_NotFound()
+        private ApiResponse<IEnumerable<ContentModelData>> GetTestBlocks_NotFound()
         {
-            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModel>>>();
-            apiResponse.Setup(x => x.Data).Returns(new List<ContentModel>());
+            var apiResponse = new Mock<ApiResponse<IEnumerable<ContentModelData>>>();
+            apiResponse.Setup(x => x.Data).Returns(new List<ContentModelData>());
             apiResponse.Setup(x => x.Succeeded).Returns(true);
 
             return apiResponse.Object;

@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
-    using ContentModel = Models.Content.ContentModel;
+    using ContentModelData = Models.Content.ContentModelData;
 
     public interface IFutureNhsContentService
     {
@@ -28,13 +28,13 @@
         /// <param name="publishedContent">The content.</param>
         /// <param name="propertyGroupAlias">The property group alias.</param>
         /// <returns></returns>
-        ContentModel ResolvePublishedContent(IPublishedContent publishedContent, string propertyGroupAlias, CancellationToken cancellationToken);
+        ContentModelData ResolvePublishedContent(IPublishedContent publishedContent, string propertyGroupAlias, CancellationToken cancellationToken);
         /// <summary>
         /// Resolves the draft content.
         /// </summary>
         /// <param name="draftContent">The content.</param>
         /// <returns></returns>
-        ContentModel ResolveDraftContent(IContent draftContent, CancellationToken cancellationToken);
+        ContentModelData ResolveDraftContent(IContent draftContent, CancellationToken cancellationToken);
         /// <summary>
         /// Creates the content.
         /// </summary>
@@ -60,7 +60,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        List<ContentModel> GetTemplateBlocks(Guid id, CancellationToken cancellationToken);
+        List<ContentModelData> GetTemplateBlocks(Guid id, CancellationToken cancellationToken);
         /// <summary>
         /// Sets the content property value.
         /// </summary>
@@ -106,6 +106,6 @@
         /// <param name="contentModelList">The content model list.</param>
         /// <param name="comparedcontentModelList">The comparedcontent model list.</param>
         /// <returns></returns>
-        IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModel> contentModelList, IEnumerable<ContentModel> comparedcontentModelList);
+        IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModelData> contentModelList, IEnumerable<ContentModelData> comparedcontentModelList);
     }
 }

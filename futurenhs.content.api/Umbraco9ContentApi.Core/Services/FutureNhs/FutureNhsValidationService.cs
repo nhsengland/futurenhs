@@ -14,7 +14,7 @@
             _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
         }
 
-        public void ValidateContentModel(ContentModel contentModel)
+        public void ValidateContentModel(ContentModelData contentModel)
         {
             var contentType = _contentTypeService.Get(contentModel.Item?.ContentType);
 

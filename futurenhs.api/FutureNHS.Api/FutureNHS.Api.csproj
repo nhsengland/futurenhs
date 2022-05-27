@@ -57,6 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Content\Requests\" />
     <Folder Include="Models\Search\" />
   </ItemGroup>
 

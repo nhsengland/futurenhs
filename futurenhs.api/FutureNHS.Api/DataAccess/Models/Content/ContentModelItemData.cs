@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace FutureNHS.Api.Models.Content
+namespace FutureNHS.Api.DataAccess.Models.Content
 {
-    public class ContentModelItem
+    public sealed class ContentModelItemData
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }

@@ -74,7 +74,7 @@
                 .Returns(mockContent.Object);
 
             _mockFutureNhsContentService.Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), "content", cancellationToken))
-                .Returns(new ContentModel() { Item = new ContentModelItem() { Id = contentId } });
+                .Returns(new ContentModelData() { Item = new ContentModelItemData() { Id = contentId } });
 
             // Act
             var contentResult = contentHandler.GetAllTemplates(cancellationToken);
@@ -105,14 +105,14 @@
         /// Gets the test model.
         /// </summary>
         /// <returns></returns>
-        private ContentModel GetTestModel()
+        private ContentModelData GetTestModel()
         {
             var mockDictionary = new Dictionary<string, object>()
             {
                 { "Title", "This is a title." }
             };
 
-            var model = new ContentModel()
+            var model = new ContentModelData()
             {
                 Content = mockDictionary
             };

@@ -6,7 +6,7 @@ using Umbraco9ContentApi.Core.Extensions;
 using Umbraco9ContentApi.Core.Models.Requests;
 using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
 using UmbracoContentApi.Core.Builder;
-using ContentModel = Umbraco9ContentApi.Core.Models.Content.ContentModel;
+using ContentModelData = Umbraco9ContentApi.Core.Models.Content.ContentModelData;
 
 namespace Umbraco9ContentApi.Core.Services.FutureNhs
 {
@@ -55,7 +55,7 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
         }
 
         /// <inheritdoc />
-        public IContent UpdateBlock(ContentModel block, CancellationToken cancellationToken)
+        public IContent UpdateBlock(ContentModelData block, CancellationToken cancellationToken)
         {
             // Get block draft to update
             var blockToUpdate = _futureNhsContentService.GetDraftContent(block.Item.Id, cancellationToken);
@@ -74,7 +74,7 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
                 {
                     List<string> udiList = new();
                     var childBlockObjects = JsonConvert.SerializeObject(updateValue);
-                    var childBlocks = JsonConvert.DeserializeObject<List<ContentModel>>(childBlockObjects);
+                    var childBlocks = JsonConvert.DeserializeObject<List<ContentModelData>>(childBlockObjects);
 
                     if (childBlocks is not null && childBlocks.Any())
                     {
@@ -97,16 +97,16 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
             return _contentService.GetById(block.Item.Id);
         }
 
-        public IEnumerable<ContentModel> GetChildBlocks(IEnumerable<ContentModel> blocks, CancellationToken cancellationToken)
+        public IEnumerable<ContentModelData> GetChildBlocks(IEnumerable<ContentModelData> blocks, CancellationToken cancellationToken)
         {
-            List<ContentModel> contentModels = new();
+            List<ContentModelData> contentModels = new();
 
             foreach (var child in blocks)
             {
                 foreach (var content in child.Content.Where(x => x.Key == "blocks"))
                 {
                     var childBlockObjects = JsonConvert.SerializeObject(content.Value);
-                    var childBlocks = JsonConvert.DeserializeObject<List<ContentModel>>(childBlockObjects);
+                    var childBlocks = JsonConvert.DeserializeObject<List<ContentModelData>>(childBlockObjects);
                     if (childBlocks is not null && childBlocks.Any())
                     {
                         contentModels.AddRange(childBlocks);

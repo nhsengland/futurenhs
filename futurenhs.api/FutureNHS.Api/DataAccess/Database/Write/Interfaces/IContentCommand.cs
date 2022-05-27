@@ -1,23 +1,25 @@
-﻿using FutureNHS.Api.Models.Content;
-using FutureNHS.Api.Models.Content.Requests;
+﻿using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Content.Requests;
+using FutureNHS.Api.DataAccess.Models.Content.Responses;
 
 namespace FutureNHS.Api.DataAccess.Repositories.Write.Interfaces
 {
     public interface IContentCommand
     {
         /// <summary>
-        /// Creates the content asynchronous.
+        /// Creates the page asynchronous.
         /// </summary>
-        /// <param name="createRequest">The create request.</param>
+        /// <param name="content">The content.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> CreatePageAsync(CreatePageRequest createRequest, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> CreatePageAsync(ContentDto content, CancellationToken cancellationToken);
         /// <summary>
         /// Creates the block asynchronous.
         /// </summary>
         /// <param name="createRequest">The create request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> CreateBlockAsync(CreateBlockRequest createRequest, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> CreateBlockAsync(BlockCreateRequest createRequest, CancellationToken cancellationToken);
         /// <summary>
         /// Updates the content asynchronous.
         /// </summary>
@@ -25,7 +27,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write.Interfaces
         /// <param name="pageContent">Content of the page.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> UpdatePageAsync(Guid contentId, PageModel pageContent, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> UpdatePageAsync(Guid contentId, GeneralWebPageUpdateRequest pageContent, CancellationToken cancellationToken);
         /// <summary>
         /// Deletes the content asynchronous.
         /// </summary>

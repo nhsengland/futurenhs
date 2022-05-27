@@ -12,7 +12,7 @@
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco.Cms.Web.Common.PublishedModels;
-    using ContentModel = Core.Models.Content.ContentModel;
+    using ContentModelData = Core.Models.Content.ContentModelData;
 
     /// <summary>
     /// Futrue Nhs Content Handler Tests.
@@ -135,23 +135,23 @@
         /// </summary>
         /// <param name="contentType">Type of the content.</param>
         /// <returns></returns>
-        private ContentModel GetMockBlockContentModel(string contentType)
+        private ContentModelData GetMockBlockContentModel(string contentType)
         {
             var dict = new Dictionary<string, object>()
             {
                 { "Field", "Value" },
             };
 
-            var mockContentModel = new Mock<ContentModel>();
+            var mockContentModel = new Mock<ContentModelData>();
             mockContentModel.Setup(x => x.Item.Id).Returns(Guid.NewGuid());
             mockContentModel.Setup(x => x.Item.ContentType).Returns(contentType);
             mockContentModel.Setup(x => x.Content).Returns(dict);
             return mockContentModel.Object;
         }
 
-        private Mock<ContentModel> GetMockContentModelWithBlocks(bool withBlocks)
+        private Mock<ContentModelData> GetMockContentModelWithBlocks(bool withBlocks)
         {
-            List<ContentModel> blockContentModels = new();
+            List<ContentModelData> blockContentModels = new();
 
             if (withBlocks)
             {
@@ -164,7 +164,7 @@
                 { "blocks", blockContentModels },
             };
 
-            var mockPageContentModel = new Mock<ContentModel>();
+            var mockPageContentModel = new Mock<ContentModelData>();
             mockPageContentModel.Setup(x => x.Item.Id).Returns(Guid.NewGuid());
             mockPageContentModel.Setup(x => x.Item.ContentType).Returns(GeneralWebPage.ModelTypeAlias);
             mockPageContentModel.Setup(x => x.Content).Returns(dict);

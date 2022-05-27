@@ -30,7 +30,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModelData>))]
         public  ActionResult GetAllPages(CancellationToken cancellationToken)
         {
             var result = _futureNhsPageHandler.GetAllPages(cancellationToken);
@@ -121,7 +121,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("{pageId:guid}/editStatus")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModelData>))]
         public  ActionResult CheckPageEditStatus(Guid pageId, CancellationToken cancellationToken)
         {
             var result = _futureNhsPageHandler.CheckPageEditStatus(pageId, cancellationToken);

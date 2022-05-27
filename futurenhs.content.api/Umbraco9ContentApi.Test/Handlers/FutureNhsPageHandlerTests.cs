@@ -17,7 +17,7 @@
     using Umbraco9ContentApi.Core.Services.FutureNhs;
     using UmbracoContentApi.Core.Builder;
     using UmbracoContentApi.Core.Converters;
-    using ContentModel = Core.Models.Content.ContentModel;
+    using ContentModelData = Core.Models.Content.ContentModelData;
 
     /// <summary>
     /// Futrue Nhs Content Handler Tests.
@@ -94,7 +94,7 @@
         {
             // Arrange
             var contentId = Guid.NewGuid();
-            var pageModel = GetMockPageModel(new List<ContentModel>() {
+            var pageModel = GetMockPageModel(new List<ContentModelData>() {
                 GetMockContentModel(TextBlock.ModelTypeAlias),
                 GetMockContentModel(KeyLinksBlock.ModelTypeAlias)
             });
@@ -158,7 +158,7 @@
         /// </summary>
         /// <param name="pageBlocks">The page blocks.</param>
         /// <returns></returns>
-        private Mock<PageModel> GetMockPageModel(List<ContentModel> pageBlocks)
+        private Mock<PageModel> GetMockPageModel(List<ContentModelData> pageBlocks)
         {
             var mockPageModel = new Mock<PageModel>();
             mockPageModel.Setup(x => x.Blocks).Returns(pageBlocks);
@@ -170,21 +170,21 @@
         /// </summary>
         /// <param name="contentType">Type of the content.</param>
         /// <returns></returns>
-        private ContentModel GetMockContentModel(string contentType)
+        private ContentModelData GetMockContentModel(string contentType)
         {
             var dict = new Dictionary<string, object>()
             {
                 { "Field", "Value" }
             };
 
-            var mockContentModel = new Mock<ContentModel>();
+            var mockContentModel = new Mock<ContentModelData>();
             mockContentModel.Setup(x => x.Item.Id).Returns(Guid.NewGuid());
             mockContentModel.Setup(x => x.Item.ContentType).Returns(contentType);
             mockContentModel.Setup(x => x.Content).Returns(dict);
             return mockContentModel.Object;
         }
 
-        private ContentModel GetMockContentModelWithChildBlocks(string contentType)
+        private ContentModelData GetMockContentModelWithChildBlocks(string contentType)
         {
             var dict = new Dictionary<string, object>()
             {
@@ -192,7 +192,7 @@
                 { "blocks", GetMockContentModel(KeyLinksBlock.ModelTypeAlias) }
             };
 
-            var mockContentModel = new Mock<ContentModel>();
+            var mockContentModel = new Mock<ContentModelData>();
             mockContentModel.Setup(x => x.Item.Id).Returns(Guid.NewGuid());
             mockContentModel.Setup(x => x.Item.ContentType).Returns(contentType);
             mockContentModel.Setup(x => x.Content).Returns(dict);

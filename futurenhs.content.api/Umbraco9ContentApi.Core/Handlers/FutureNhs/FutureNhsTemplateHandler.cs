@@ -30,17 +30,17 @@
         }
 
         /// <inheritdoc />
-        public ApiResponse<ContentModel> GetTemplate(Guid id, CancellationToken cancellationToken)
+        public ApiResponse<ContentModelData> GetTemplate(Guid id, CancellationToken cancellationToken)
         {
             var template = _futureNhsContentService.GetPublishedContent(id, cancellationToken);
-            return new ApiResponse<ContentModel>().Success(_futureNhsContentService.ResolvePublishedContent(template, "content", cancellationToken), "Template retrieved successfully.");
+            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolvePublishedContent(template, "content", cancellationToken), "Template retrieved successfully.");
         }
 
         /// <inheritdoc />
-        public ApiResponse<IEnumerable<ContentModel>> GetAllTemplates(CancellationToken cancellationToken)
+        public ApiResponse<IEnumerable<ContentModelData>> GetAllTemplates(CancellationToken cancellationToken)
         {
-            ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
-            var contentModels = new List<ContentModel>();
+            ApiResponse<IEnumerable<ContentModelData>> response = new ApiResponse<IEnumerable<ContentModelData>>();
+            var contentModels = new List<ContentModelData>();
             var templatesFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Templates");
             var publishedTemplates = _futureNhsContentService.GetPublishedContent(templatesFolderGuid, cancellationToken).Children;
 
@@ -52,7 +52,7 @@
                 }
             }
 
-            return new ApiResponse<IEnumerable<ContentModel>>().Success(contentModels, "All templates retrieved successfully.");
+            return new ApiResponse<IEnumerable<ContentModelData>>().Success(contentModels, "All templates retrieved successfully.");
         }
     }
 }
