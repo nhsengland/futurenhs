@@ -4,22 +4,20 @@ import { ServiceError } from '@services/index'
 
 declare interface Config {
     props: Record<any, any>
-    error: Partial<ServiceError>,
-    shouldSurface?: boolean;
+    error: Partial<ServiceError>
+    shouldSurface?: boolean
 }
 
-export const handleSSRErrorProps = ({ 
-    props, 
+export const handleSSRErrorProps = ({
+    props,
     error,
-    shouldSurface = true 
+    shouldSurface = true,
 }: Config): any => {
-
     console.log(error)
 
     //TODO - send to error logging service
 
-    if(shouldSurface){
-
+    if (shouldSurface) {
         if (error.name === 'ServiceError') {
             if (error.data?.status === 404) {
                 return {
@@ -39,7 +37,6 @@ export const handleSSRErrorProps = ({
                 },
             ]
         }
-
     }
 
     return getJsonSafeObject({

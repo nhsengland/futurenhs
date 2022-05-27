@@ -1,5 +1,5 @@
 import React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render, screen, cleanup } from '@jestMocks/index'
 
 import { groupFolderForm } from '@formConfigs/group-folder'
@@ -7,13 +7,12 @@ import { routes } from '@jestMocks/generic-props'
 import { GroupCreateUpdateFolderTemplate } from './index'
 import { Props } from './interfaces'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('Group folder create/update template', () => {
-
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/groups/group/files');
-    });
+        mockRouter.setCurrentUrl('/groups/group/files')
+    })
 
     const props: Props = {
         id: 'mockId',

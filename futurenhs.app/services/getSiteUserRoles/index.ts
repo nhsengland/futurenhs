@@ -31,7 +31,7 @@ export const getSiteUserRoles = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const { id } = user 
+    const { id } = user
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/users/roles`
     const apiResponse: FetchResponse = await fetchJSON(

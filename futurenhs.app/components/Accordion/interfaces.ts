@@ -5,7 +5,7 @@ export interface Props {
      */
     isDisabled?: boolean
     /**
-     * Determines whether accordion/details element is expanded 
+     * Determines whether accordion/details element is expanded
      */
     isOpen?: boolean
     /**

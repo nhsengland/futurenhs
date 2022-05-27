@@ -6,10 +6,16 @@ export default {
     component: Like,
     argTypes: {
         iconName: {
-          options: ['icon-thumbs-up', 'icon-star', 'icon-tick', 'icon-plus-circle', 'icon-like-fill'],
-          control: { type: 'select' },
+            options: [
+                'icon-thumbs-up',
+                'icon-star',
+                'icon-tick',
+                'icon-plus-circle',
+                'icon-like-fill',
+            ],
+            control: { type: 'select' },
         },
-      },
+    },
 }
 
 const Template = (args) => <Like {...args} />
@@ -25,7 +31,7 @@ Basic.args = {
         like: 'like',
         removeLike: 'Remove like',
     },
-    likeAction: () => true
+    likeAction: () => true,
 }
 
 export const Disabled = Template.bind({})
@@ -39,7 +45,7 @@ Disabled.args = {
         like: 'like',
         removeLike: 'Remove like',
     },
-    likeAction: () => true
+    likeAction: () => true,
 }
 
 export const Star = Template.bind({})
@@ -54,5 +60,5 @@ Star.args = {
         like: 'Add star',
         removeLike: 'Remove star',
     },
-    likeAction: () => true
+    likeAction: () => true,
 }

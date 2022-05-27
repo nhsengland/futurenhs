@@ -11,7 +11,7 @@ import { User } from '@appTypes/user'
 declare type Options = {
     headers?: any
     body: FormData
-    user: User,
+    user: User
     targetUserId: string
 }
 
@@ -28,7 +28,7 @@ export const putSiteUser = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const {id} = user
+    const { id } = user
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${targetUserId}/update`
     const apiResponse: any = await fetchJSON(

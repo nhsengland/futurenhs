@@ -8,11 +8,11 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { CmsContentBlock } from '@appTypes/contentBlock';
+import { CmsContentBlock } from '@appTypes/contentBlock'
 
 declare type Options = {
-    user: User;
-    templateId: string;
+    user: User
+    templateId: string
 }
 
 declare type Dependencies = {
@@ -59,10 +59,12 @@ export const getCmsPageTemplate = async (
         )
     }
 
-    const template = apiData.data?.find((template) => template.item.id === templateId);
-    
-    serviceResponse.headers = headers;
-    serviceResponse.data = template.content.blocks;
+    const template = apiData.data?.find(
+        (template) => template.item.id === templateId
+    )
+
+    serviceResponse.headers = headers
+    serviceResponse.data = template.content.blocks
 
     return serviceResponse
 }

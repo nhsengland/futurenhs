@@ -1,10 +1,10 @@
-import React from "react"
+import React from 'react'
 
-import { Footer } from "./index"
+import { Footer } from './index'
 
 export default {
     title: 'Footer',
-    component: Footer
+    component: Footer,
 }
 
 const Template = (args) => <Footer {...args} />
@@ -14,28 +14,28 @@ Basic.args = {
     text: {
         title: 'Footer navigation',
         copyright: 'Crown copyright',
-        navMenuAriaLabel: 'Footer legal links'
+        navMenuAriaLabel: 'Footer legal links',
     },
     navMenuList: [
         {
             isActive: false,
             text: 'Contact us',
-            url: '/contact-us'
+            url: '/contact-us',
         },
         {
             isActive: false,
             text: 'Cookies',
-            url: '/cookies'
+            url: '/cookies',
         },
         {
             isActive: false,
             text: 'Privacy policy',
-            url: '/privacy-policy'
+            url: '/privacy-policy',
         },
         {
             isActive: false,
             text: 'Terms and conditions',
-            url: '/terms-and-conditions'
+            url: '/terms-and-conditions',
         },
-    ]
+    ],
 }

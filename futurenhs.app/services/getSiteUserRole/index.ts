@@ -32,7 +32,7 @@ export const getSiteUserRole = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const { id } = user 
+    const { id } = user
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/users/${targetUserId}/roles`
     const apiResponse: FetchResponse = await fetchJSON(
@@ -48,7 +48,7 @@ export const getSiteUserRole = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the site user\'s role',
+            "An unexpected error occurred when attempting to get the site user's role",
             {
                 serviceId: services.GET_SITE_USER_ROLE,
                 status: status,

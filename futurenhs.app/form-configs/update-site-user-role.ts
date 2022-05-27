@@ -10,7 +10,7 @@ export const updateSiteUserRoleForm: FormConfig = {
                     name: 'newRoleId',
                     inputType: 'multiChoice',
                     text: {
-                        label: 'Choose user\'s platform role',
+                        label: "Choose user's platform role",
                     },
                     options: [
                         /**
@@ -27,7 +27,7 @@ export const updateSiteUserRoleForm: FormConfig = {
                 },
                 {
                     name: 'currentRoleId',
-                    component: 'hidden'
+                    component: 'hidden',
                 },
             ],
         },

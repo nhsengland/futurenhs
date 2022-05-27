@@ -36,16 +36,20 @@ export const getGroupMember = async (
 
     const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/${memberId}${isForEdit ? '/update' : ''}`
+    const apiUrl: string = `${
+        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
+    }/v1/users/${id}/groups/${groupId}/members/${memberId}${
+        isForEdit ? '/update' : ''
+    }`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
         defaultTimeOutMillis
     )
-    
+
     const apiData: ApiResponse<any> = apiResponse.json
     const apiMeta: any = apiResponse.meta
-    
+
     const { ok, status, statusText, headers } = apiMeta
 
     if (!ok) {

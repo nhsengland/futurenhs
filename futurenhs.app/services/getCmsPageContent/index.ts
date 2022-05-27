@@ -8,7 +8,7 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { CmsContentBlock } from '@appTypes/contentBlock';
+import { CmsContentBlock } from '@appTypes/contentBlock'
 
 declare type Options = {
     user: User
@@ -35,7 +35,9 @@ export const getCmsPageContent = async (
 
     const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${pageId}/${isPublished ? 'published' : 'draft'}`;
+    const apiUrl: string = `${
+        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
+    }/v1/page/${pageId}/${isPublished ? 'published' : 'draft'}`
 
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
@@ -61,7 +63,7 @@ export const getCmsPageContent = async (
     }
 
     serviceResponse.headers = headers
-    serviceResponse.data = apiData?.data?.content?.blocks;
+    serviceResponse.data = apiData?.data?.content?.blocks
 
     return serviceResponse
 }

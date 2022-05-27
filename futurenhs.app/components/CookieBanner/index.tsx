@@ -61,8 +61,17 @@ export const CookieBanner: (props: Props) => JSX.Element = ({
     if (shouldRenderBanner) {
         return (
             <LayoutWidthContainer>
-                <div className={generatedClasses.wrapper} role="region" aria-labelledby="banner-heading">
-                    <h2 className={generatedClasses.heading} id="banner-heading">{title}</h2>
+                <div
+                    className={generatedClasses.wrapper}
+                    role="region"
+                    aria-labelledby="banner-heading"
+                >
+                    <h2
+                        className={generatedClasses.heading}
+                        id="banner-heading"
+                    >
+                        {title}
+                    </h2>
                     {body?.map((paragraph, index) => {
                         return (
                             <RichText

@@ -47,7 +47,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             routeParams.MEMBERID
                         )
 
-
                         /**
                          * Get data from services
                          */
@@ -62,8 +61,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             props.pageTitle = `${props.entityText.title} - ${
                                 props.member.firstName ?? ''
                             } ${props.member.lastName ?? ''}`
-
-
                         } catch (error) {
                             return handleSSRErrorProps({ props, error })
                         }

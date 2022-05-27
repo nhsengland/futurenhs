@@ -39,9 +39,11 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     getServerSideProps: async (
                         context: GetServerSidePropsContext
                     ) => {
-
                         const user: User = selectUser(context)
-                        const groupId: string = selectParam(context, routeParams.GROUPID)
+                        const groupId: string = selectParam(
+                            context,
+                            routeParams.GROUPID
+                        )
 
                         props.layoutId = layoutIds.GROUP
                         props.tabId = groupTabIds.INDEX
@@ -51,25 +53,39 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          * Get data from services
                          */
                         try {
-
-                            const contentTemplateId: string = '0b955a4a-9e26-43e8-bb4b-51010e264d64';
-                            const groupHomePageCmsContentIds = await getGroupHomePageCmsContentIds({ user, groupId });
-                            const contentPageId: string = groupHomePageCmsContentIds.data.contentRootId;
+                            const contentTemplateId: string =
+                                '0b955a4a-9e26-43e8-bb4b-51010e264d64'
+                            const groupHomePageCmsContentIds =
+                                await getGroupHomePageCmsContentIds({
+                                    user,
+                                    groupId,
+                                })
+                            const contentPageId: string =
+                                groupHomePageCmsContentIds.data.contentRootId
 
                             const [contentBlocks, contentTemplate] =
                                 await Promise.all([
-                                    getCmsPageContent({ user, pageId: contentPageId }),
-                                    getCmsPageTemplate({ user, templateId: contentTemplateId })
+                                    getCmsPageContent({
+                                        user,
+                                        pageId: contentPageId,
+                                    }),
+                                    getCmsPageTemplate({
+                                        user,
+                                        templateId: contentTemplateId,
+                                    }),
                                 ])
 
-                            props.contentPageId = contentPageId,
-                            props.contentTemplateId = contentTemplateId;
+                            ;(props.contentPageId = contentPageId),
+                                (props.contentTemplateId = contentTemplateId)
                             props.contentBlocks = contentBlocks.data
                             props.contentTemplate = contentTemplate.data
-
                         } catch (error) {
-                            console.log(error);
-                            return handleSSRErrorProps({ props, error, shouldSurface: false })
+                            console.log(error)
+                            return handleSSRErrorProps({
+                                props,
+                                error,
+                                shouldSurface: false,
+                            })
                         }
 
                         /**
@@ -79,8 +95,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     },
                 }),
             }),
-
-        })
+        }),
     }),
 })
 

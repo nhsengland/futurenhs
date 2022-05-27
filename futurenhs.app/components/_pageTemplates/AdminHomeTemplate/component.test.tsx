@@ -1,5 +1,5 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { cleanup, render, screen } from '@jestMocks/index'
 import { actions as actionConstants } from '@constants/actions'
 
@@ -8,13 +8,12 @@ import { routes } from '@jestMocks/generic-props'
 
 import { Props } from './interfaces'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('Admin home template', () => {
-
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/admin/users');
-    });
+        mockRouter.setCurrentUrl('/admin/users')
+    })
 
     const props: Props = {
         id: 'mockId',

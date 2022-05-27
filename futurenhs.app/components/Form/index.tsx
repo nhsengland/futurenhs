@@ -69,7 +69,7 @@ export const Form: (props: Props) => JSX.Element = ({
 
         templatedFields.forEach((field) => {
             field.name = instanceId ? field.name + '-' + instanceId : field.name
-            field.initialError = initialErrors?.[field.name] || null;
+            field.initialError = initialErrors?.[field.name] || null
         })
 
         return templatedFields
@@ -143,9 +143,7 @@ export const Form: (props: Props) => JSX.Element = ({
      * Handle generic form life-cycle events
      */
     const handleChange = (props: any): void => {
-        
         changeAction?.(props)
-
     }
     const handleValidate = (submission: any): Record<string, string> =>
         validate(submission, fields)
@@ -173,11 +171,13 @@ export const Form: (props: Props) => JSX.Element = ({
      * json style form submissions, but we need to handle multi-part form submissions with file
      * included
      */
-    const handleSubmit = (finalFormSubmissionState: Record<string, any>): Promise<FormErrors> => {
+    const handleSubmit = (
+        finalFormSubmissionState: Record<string, any>
+    ): Promise<FormErrors> => {
         setIsProcessing(true)
 
-        const isFile = value => 'File' in window && value instanceof File;
-        const isBlob = value => 'Blob' in window && value instanceof Blob;
+        const isFile = (value) => 'File' in window && value instanceof File
+        const isBlob = (value) => 'Blob' in window && value instanceof Blob
 
         /**
          * Iterate through the final form submission data and overwrite the corresponding FormData property
@@ -186,14 +186,14 @@ export const Form: (props: Props) => JSX.Element = ({
          * field values
          */
         Object.keys(finalFormSubmissionState).forEach((key) => {
-
-            if(submission.current.has(key) && (!isFile(submission.current.get(key)) || !isBlob(submission.current.get(key)))){
-
+            if (
+                submission.current.has(key) &&
+                (!isFile(submission.current.get(key)) ||
+                    !isBlob(submission.current.get(key)))
+            ) {
                 submission.current.set(key, finalFormSubmissionState[key])
-
             }
-
-        });
+        })
 
         /**
          * Submit form data then deal with any errors which come back
@@ -217,10 +217,8 @@ export const Form: (props: Props) => JSX.Element = ({
     }
 
     useEffect(() => {
-
-        initAction?.(formInstance.current);
-
-    }, []);
+        initAction?.(formInstance.current)
+    }, [])
 
     /**
      * Render
@@ -231,8 +229,7 @@ export const Form: (props: Props) => JSX.Element = ({
             onSubmit={handleSubmit}
             validate={handleValidate}
             render={({ form, errors, handleSubmit, hasValidationErrors }) => {
-
-                formInstance.current = form;
+                formInstance.current = form
 
                 /**
                  * Handles opening a modal to confirm cancellation of a submission
@@ -352,7 +349,8 @@ export const Form: (props: Props) => JSX.Element = ({
                                         text={{
                                             cancelButton: 'Cancel',
                                             confirmButton: 'Yes, discard',
-                                            heading: 'Entered Data will be lost'
+                                            heading:
+                                                'Entered Data will be lost',
                                         }}
                                         cancelAction={handleDiscardFormCancel}
                                         confirmAction={handleDiscardFormConfirm}
@@ -365,7 +363,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                     </Dialog>
                                 </>
                             )}
-                            {shouldRenderSubmitButton &&
+                            {shouldRenderSubmitButton && (
                                 <button
                                     disabled={isProcessing}
                                     type="submit"
@@ -373,7 +371,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                 >
                                     {submitButton}
                                 </button>
-                            }
+                            )}
                         </div>
                         <FormSpy
                             subscription={{

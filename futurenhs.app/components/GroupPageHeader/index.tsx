@@ -34,7 +34,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     className,
 }) => {
     const router = useRouter()
-    
+
     const [isActionsAccordionOpen] = useState(false)
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true)
     const [isLeaveGroupModalOpen, setIsLeaveGroupModalOpen] = useState(false)
@@ -306,7 +306,8 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                                                         'Cancel',
                                                                     confirmButton:
                                                                         'Yes, leave group',
-                                                                    heading: 'Leave this group'
+                                                                    heading:
+                                                                        'Leave this group',
                                                                 }}
                                                                 cancelAction={
                                                                     handleLeaveGroupCancel

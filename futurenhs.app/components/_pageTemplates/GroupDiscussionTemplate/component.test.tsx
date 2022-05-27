@@ -1,5 +1,5 @@
 import React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render, screen, cleanup } from '@jestMocks/index'
 import { actions as userActions } from '@constants/actions'
 import { routes } from '@jestMocks/generic-props'
@@ -8,13 +8,12 @@ import formConfigs from '@formConfigs/index'
 import { GroupDiscussionTemplate } from './index'
 import { Props } from './interfaces'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('Group discussion template', () => {
-
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/groups/group/forum/1');
-    });
+        mockRouter.setCurrentUrl('/groups/group/forum/1')
+    })
 
     const props: Props = {
         id: 'mockId',
@@ -43,8 +42,8 @@ describe('Group discussion template', () => {
                 createdBy: {
                     id: 'Mock userId',
                     text: {
-                        userName: 'Mock username'
-                    }
+                        userName: 'Mock username',
+                    },
                 },
                 text: {
                     body: 'Mock comment text',
@@ -58,8 +57,8 @@ describe('Group discussion template', () => {
                         createdBy: {
                             id: 'Mock userId',
                             text: {
-                                userName: 'Mock username'
-                            }
+                                userName: 'Mock username',
+                            },
                         },
                     },
                 ],

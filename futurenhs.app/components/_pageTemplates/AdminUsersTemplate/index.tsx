@@ -125,14 +125,18 @@ export const AdminUsersTemplate: (props: Props) => JSX.Element = ({
                             shouldRenderCellHeader: true,
                         },
                         {
-                            children: 
-                                <ActionLink 
+                            children: (
+                                <ActionLink
                                     href={`${routes.usersRoot}/${id}/update`}
                                     text={{
                                         body: 'Edit',
-                                        ariaLabel: `Edit user ${fullName || role}`
+                                        ariaLabel: `Edit user ${
+                                            fullName || role
+                                        }`,
                                     }}
-                                    iconName="icon-edit" />,
+                                    iconName="icon-edit"
+                                />
+                            ),
                             className:
                                 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                             headerClassName: 'u-hidden',

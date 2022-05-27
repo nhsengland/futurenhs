@@ -2,7 +2,7 @@ import { ActionLink } from './index'
 
 export default {
     title: 'ActionLink',
-    component: ActionLink
+    component: ActionLink,
 }
 
 const Template = (args) => <ActionLink {...args} />
@@ -12,7 +12,7 @@ Basic.args = {
     href: '/',
     text: {
         body: 'Edit',
-        ariaLabel: 'Edit user'
+        ariaLabel: 'Edit user',
     },
-    iconName: "icon-edit"
+    iconName: 'icon-edit',
 }

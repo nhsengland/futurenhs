@@ -25,7 +25,7 @@ export const contentBlockQuickLinksWrapper: FormConfig = {
                             message: 'Enter 255 or fewer characters',
                         },
                     ],
-                }
+                },
             ],
         },
     ],
