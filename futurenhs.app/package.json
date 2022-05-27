@@ -4,6 +4,7 @@
   "scripts": {
     "kill": "kill-port --port 5000",
     "build": "rimraf ./public && gulp build && next build",
+    "build:analyze": "node node_modules/cross-env/src/bin/cross-env.js NODE_ENV=ANALYZE rimraf ./public && gulp build && next build",
     "start:dev": "node node_modules/cross-env/src/bin/cross-env.js NODE_ENV=development node server.js",
     "start:prod": "node node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production node server.js",
     "start": "npm run start:prod",
@@ -37,7 +38,7 @@
     "js-cookie": "^3.0.1",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.4",
-    "next": "^12.0.10",
+    "next": "^12.1.6",
     "next-applicationinsights": "^1.0.4",
     "next-compose-plugins": "^2.2.1",
     "next-env": "^1.1.1",
