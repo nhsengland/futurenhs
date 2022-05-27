@@ -1,18 +1,17 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { cleanup, render, screen } from '@jestMocks/index'
 
 import { GroupListingTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
 import { Props } from './interfaces'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('GroupListingTemplate', () => {
-
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/groups');
-    });
+        mockRouter.setCurrentUrl('/groups')
+    })
 
     const props: Props = {
         id: 'mockPageId',

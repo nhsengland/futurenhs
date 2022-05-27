@@ -2,7 +2,7 @@ import { MainNav } from './index'
 
 export default {
     title: 'MainNav',
-    component: MainNav
+    component: MainNav,
 }
 
 const Template = (args) => <MainNav {...args} />
@@ -15,8 +15,8 @@ const mainNavMenuList = [
         isActiveRoot: false,
         meta: {
             themeId: 8,
-            iconName: 'icon-home'
-        }
+            iconName: 'icon-home',
+        },
     },
     {
         url: '/',
@@ -32,5 +32,5 @@ const mainNavMenuList = [
 
 export const Basic = Template.bind({})
 Basic.args = {
-    navMenuList: mainNavMenuList
+    navMenuList: mainNavMenuList,
 }

@@ -9,5 +9,5 @@ export default {
     emailLabel: 'Email',
     editHeading: 'Edit profile',
     editButtonLabel: 'Edit profile',
-    editRoleHeading: 'Edit user role'
+    editRoleHeading: 'Edit user role',
 } as GenericPageTextContent

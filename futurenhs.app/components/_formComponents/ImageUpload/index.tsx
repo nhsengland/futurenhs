@@ -23,10 +23,8 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
         useState(false)
     const [shouldDisableClearFileInput, setShouldDisableClearFileInput] =
         useState(false)
-    const [shouldClearFile, setShouldClearFile] =
-        useState(false)
-    const [hasClearedFile, setHasClearedFile] =
-        useState(false)
+    const [shouldClearFile, setShouldClearFile] = useState(false)
+    const [hasClearedFile, setHasClearedFile] = useState(false)
 
     const { label, hint } = text ?? {}
 
@@ -68,7 +66,7 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
     const handleClearFile = (event: any) => {
         event.preventDefault()
 
-        setShouldClearFile(true);
+        setShouldClearFile(true)
     }
 
     useEffect(() => {
@@ -118,26 +116,21 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
                     Clear existing image
                 </button>
             )}
-            {relatedFields?.fileId &&
+            {relatedFields?.fileId && (
                 <Field name={relatedFields.fileId} subscription={{}}>
                     {({ input: { onChange } }) => {
-    
-                        if(shouldClearFile && !hasClearedFile){
-        
+                        if (shouldClearFile && !hasClearedFile) {
                             setTimeout(() => {
-
-                                onChange('');
-                                setHasClearedFile(true);
+                                onChange('')
+                                setHasClearedFile(true)
                                 setShouldRenderClearFileInput(false)
-
-                            }, 0);
-    
+                            }, 0)
                         }
-    
-                        return (null)
+
+                        return null
                     }}
                 </Field>
-            }
+            )}
         </div>
     )
 }

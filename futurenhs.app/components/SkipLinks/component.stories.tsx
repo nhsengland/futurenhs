@@ -4,7 +4,7 @@ import { SkipLinks } from './index'
 
 export default {
     title: 'SkipLinks',
-    component: SkipLinks
+    component: SkipLinks,
 }
 
 const Template = (args) => {
@@ -21,11 +21,11 @@ Basic.args = {
     linkList: [
         {
             id: '#main-nav',
-            text: 'Skip to main navigation'
+            text: 'Skip to main navigation',
         },
         {
             id: '#main',
-            text: 'Skip to main content'
-        }
-    ]
+            text: 'Skip to main content',
+        },
+    ],
 }

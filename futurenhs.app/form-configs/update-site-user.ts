@@ -10,16 +10,16 @@ export const updateSiteMemberForm: FormConfig = {
                     name: 'image',
                     text: {
                         label: 'Image',
-                        hint: 'The selected file must be a JPG or PNG and must be smaller than 5MB.'
+                        hint: 'The selected file must be a JPG or PNG and must be smaller than 5MB.',
                     },
                     component: 'imageUpload',
                     relatedFields: {
-                        fileId: 'imageId'
-                    }
+                        fileId: 'imageId',
+                    },
                 },
                 {
                     name: 'imageId',
-                    component: 'hidden'
+                    component: 'hidden',
                 },
                 {
                     name: 'firstName',
@@ -37,8 +37,8 @@ export const updateSiteMemberForm: FormConfig = {
                         {
                             type: 'maxLength',
                             maxLength: 255,
-                            message: 'Enter 255 or fewer characters'
-                        }
+                            message: 'Enter 255 or fewer characters',
+                        },
                     ],
                 },
                 {
@@ -53,16 +53,16 @@ export const updateSiteMemberForm: FormConfig = {
                         {
                             type: 'maxLength',
                             maxLength: 255,
-                            message: 'Enter 255 or fewer characters'
-                        }
-                    ]
+                            message: 'Enter 255 or fewer characters',
+                        },
+                    ],
                 },
                 {
                     name: 'pronouns',
                     inputType: 'text',
                     text: {
                         label: 'Preferred pronouns (optional)',
-                        hint: 'Example: she/her, he/him, they/them'
+                        hint: 'Example: she/her, he/him, they/them',
                     },
                     component: 'input',
                     shouldRenderRemainingCharacterCount: true,
@@ -70,24 +70,25 @@ export const updateSiteMemberForm: FormConfig = {
                         {
                             type: 'maxLength',
                             maxLength: 255,
-                            message: 'Enter 255 or fewer characters'
-                        }
-                    ]
+                            message: 'Enter 255 or fewer characters',
+                        },
+                    ],
                 },
                 {
                     name: 'terms',
                     component: 'checkBox',
                     inputType: 'checkbox',
                     text: {
-                        label: 'Please confirm that all changes are in line with the platforms <a href="/terms-and-conditions">terms and conditions</a>'
+                        label: 'Please confirm that all changes are in line with the platforms <a href="/terms-and-conditions">terms and conditions</a>',
                     },
                     validators: [
                         {
                             type: 'required',
-                            message: 'Select to confirm the terms and conditions',
+                            message:
+                                'Select to confirm the terms and conditions',
                         },
-                    ]
-                }
+                    ],
+                },
             ],
         },
     ],

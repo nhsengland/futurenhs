@@ -98,27 +98,32 @@ export const getGenericFormError = (error: any): FormErrors => {
     }
 }
 
-
 /**
  * Returns a new form config object with new list of options
  */
-export const setFormConfigOptions = (formConfig: FormConfig, step = 0, name: string, options: Array<FormOptions>): FormConfig => {
+export const setFormConfigOptions = (
+    formConfig: FormConfig,
+    step = 0,
+    name: string,
+    options: Array<FormOptions>
+): FormConfig => {
+    const configCopy = JSON.parse(JSON.stringify(formConfig))
 
-    const configCopy = JSON.parse(JSON.stringify(formConfig));
-
-    const targetField = configCopy.steps[step].fields.find((field) => field.name === name);
+    const targetField = configCopy.steps[step].fields.find(
+        (field) => field.name === name
+    )
 
     targetField.options = options
-    
-    return configCopy
 
+    return configCopy
 }
 
 /**
  * Checks if server side form submission is the expected form
  */
-export const checkMatchingFormType = (formData: Record<any, any>, formId: string): boolean => {
-
+export const checkMatchingFormType = (
+    formData: Record<any, any>,
+    formId: string
+): boolean => {
     return Boolean(formData.body?.['_form-id'] === formId)
-
 }

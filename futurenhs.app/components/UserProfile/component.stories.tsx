@@ -1,15 +1,15 @@
 import React from 'react'
 import { UserProfile } from './index'
-import { defaultGroupLogos } from '@constants/icons';
+import { defaultGroupLogos } from '@constants/icons'
 
 export default {
     title: 'UserProfile',
     component: UserProfile,
     argTypes: {
         image: {
-            control: { type: '' }
-        }
-    }
+            control: { type: '' },
+        },
+    },
 }
 
 const Template = (args) => <UserProfile {...args} />
@@ -21,14 +21,14 @@ Basic.args = {
         firstNameLabel: 'First name',
         lastNameLabel: 'Last name',
         pronounsLabel: 'Preferred pronouns',
-        emailLabel: 'Email'
+        emailLabel: 'Email',
     },
     profile: {
         firstName: 'Stephen',
         lastName: 'Stephenson',
         pronouns: 'he/him',
-        email: 'stephen.stephenson@example.com'
-    }
+        email: 'stephen.stephenson@example.com',
+    },
 }
 
 export const NamesOnly = Template.bind({})
@@ -38,12 +38,12 @@ NamesOnly.args = {
         firstNameLabel: 'First name',
         lastNameLabel: 'Last name',
         pronounsLabel: 'Preferred pronouns',
-        emailLabel: 'Email'
+        emailLabel: 'Email',
     },
     profile: {
         firstName: 'Stephen',
         lastName: 'Stephenson',
-    }
+    },
 }
 
 export const Image = Template.bind({})
@@ -53,13 +53,13 @@ Image.args = {
         firstNameLabel: 'First name',
         lastNameLabel: 'Last name',
         pronounsLabel: 'Preferred pronouns',
-        emailLabel: 'Email'
+        emailLabel: 'Email',
     },
     profile: {
         firstName: 'Stephen',
         lastName: 'Stephenson',
         pronouns: 'he/him',
-        email: 'stephen.stephenson@example.com'
+        email: 'stephen.stephenson@example.com',
     },
-    image: defaultGroupLogos.large
+    image: defaultGroupLogos.large,
 }

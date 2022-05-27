@@ -222,14 +222,18 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
 
                     if (shouldRenderMemberEditColumn) {
                         rows.push({
-                            children: 
-                                <ActionLink 
+                            children: (
+                                <ActionLink
                                     href={`${routes.groupMembersRoot}/${id}/update`}
                                     text={{
                                         body: editMember,
-                                        ariaLabel: `Edit member ${fullName || role}`
+                                        ariaLabel: `Edit member ${
+                                            fullName || role
+                                        }`,
                                     }}
-                                    iconName="icon-edit" />,
+                                    iconName="icon-edit"
+                                />
+                            ),
                             className:
                                 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                             headerClassName: 'u-hidden',

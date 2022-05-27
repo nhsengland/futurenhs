@@ -1,27 +1,25 @@
-import React from 'react';
+import React from 'react'
 import { Props } from './interfaces'
 
-import { Comment } from './index';
+import { Comment } from './index'
 
 export default {
     title: 'Comment',
     component: Comment,
     argTypes: {
         csrfToken: {
-            control: { type: '' }
+            control: { type: '' },
         },
         image: {
-            control: { type: '' }
+            control: { type: '' },
         },
         initialErrors: {
-            control: { type: '' }
-        }
-    }
+            control: { type: '' },
+        },
+    },
 }
 
-const Template = (args) => <Comment {...args}/>
-
-
+const Template = (args) => <Comment {...args} />
 
 const basicArgs: Props = {
     commentId: 'commentId',
@@ -31,7 +29,7 @@ const basicArgs: Props = {
     text: {
         userName: 'Stephen Stephenson',
         initials: 'SS',
-        body: 'This is a comment'
+        body: 'This is a comment',
     },
     userProfileLink: '/',
     date: '9 May 2022',
@@ -41,12 +39,12 @@ const basicArgs: Props = {
     isLiked: false,
 }
 
-export const Basic = Template.bind({});
+export const Basic = Template.bind({})
 Basic.args = Object.assign({}, basicArgs)
 
 export const Reply = Template.bind({})
 Reply.args = Object.assign({}, basicArgs, {
-    shouldEnableReplies: true
+    shouldEnableReplies: true,
 })
 
 export const OriginComment = Template.bind({})
@@ -55,11 +53,11 @@ OriginComment.args = Object.assign({}, basicArgs, {
         commentId: 'originId',
         createdBy: {
             text: {
-                userName: 'John Johnson'
-            }
+                userName: 'John Johnson',
+            },
         },
         text: {
-            body: 'Origin comment'
-        }
-    }
+            body: 'Origin comment',
+        },
+    },
 })

@@ -1,25 +1,30 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import classNames from 'classnames'
-import deepEquals from 'fast-deep-equal';
-import FlipMove from 'react-flip-move';
+import deepEquals from 'fast-deep-equal'
+import FlipMove from 'react-flip-move'
 
-import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName';
-import { useTheme } from '@hooks/useTheme';
-import { moveArrayItem, deleteArrayItem, simpleClone, hasKeys } from '@helpers/util/data'
+import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName'
+import { useTheme } from '@hooks/useTheme'
+import {
+    moveArrayItem,
+    deleteArrayItem,
+    simpleClone,
+    hasKeys,
+} from '@helpers/util/data'
 import { cprud } from '@constants/cprud'
-import { cmsBlocks } from '@constants/blocks';
+import { cmsBlocks } from '@constants/blocks'
 import { SVGIcon } from '@components/SVGIcon'
 import { Dialog } from '@components/Dialog'
 import { ContentBlockWrapper } from '@components/ContentBlockWrapper'
-import { CmsContentBlock } from '@appTypes/contentBlock';
-import { RichText } from '@components/RichText';
-import { TextContentBlock } from '@components/_contentBlockComponents/TextContentBlock';
-import { KeyLinksBlock } from '@components/_contentBlockComponents/KeyLinksBlock';
+import { CmsContentBlock } from '@appTypes/contentBlock'
+import { RichText } from '@components/RichText'
+import { TextContentBlock } from '@components/_contentBlockComponents/TextContentBlock'
+import { KeyLinksBlock } from '@components/_contentBlockComponents/KeyLinksBlock'
 
 import { Props } from './interfaces'
 import { FormErrors } from '@appTypes/form'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
-import { LayoutColumn } from '@components/LayoutColumn';
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
+import { LayoutColumn } from '@components/LayoutColumn'
 
 /**
  * Generic CMS content block manager
@@ -39,7 +44,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     className,
 }) => {
 
-    const getTypeSafeBlockList: any = (sourceBlock: Array<CmsContentBlock>): Array<CmsContentBlock> => Array.isArray(sourceBlocks) ? sourceBlocks : [];
+    const getTypeSafeBlockList: any = (sourceBlocks: Array<CmsContentBlock>): Array<CmsContentBlock> => Array.isArray(sourceBlocks) ? sourceBlocks : [];
 
     const localErrors: any = useRef({});
     const blockUpdateCache: any = useRef({});
@@ -74,10 +79,17 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames(className),
         header: classNames('u-mb-14', 'u-no-js-hidden'),
-        headerCallOut: classNames('nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full', `u-border-l-theme-${background}`),
+        headerCallOut: classNames(
+            'nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full',
+            `u-border-l-theme-${background}`
+        ),
         headerCallOutText: classNames('nhsuk-heading-m u-text-bold'),
-        headerCallOutButton: classNames('c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0 tablet:u-ml-5'),
-        headerPrimaryCallOutButton: classNames('c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0 tablet:u-ml-5'),
+        headerCallOutButton: classNames(
+            'c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0 tablet:u-ml-5'
+        ),
+        headerPrimaryCallOutButton: classNames(
+            'c-button c-button--min-width u-w-full u-mt-4 tablet:u-mt-0 tablet:u-ml-5'
+        ),
         createBlock: classNames('c-page-manager-block', 'u-text-center'),
         block: classNames('c-page-manager-block'),
         blockHeader: classNames('c-page-manager-block_header', 'u-text-bold'),
@@ -87,248 +99,283 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     /**
      * Action buttons
      */
-    const EnterUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerCallOutButton} onClick={handleSetToUpdateMode}>{headerEnterUpdateButton}</button>
-    const LeaveUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerCallOutButton} onClick={handleSetToReadMode}>{headerLeaveUpdateButton}</button>
-    const DiscardUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerCallOutButton} onClick={handleDiscardUpdates}>{headerDiscardUpdateButton}</button>
-    const PreviewUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerCallOutButton} onClick={handleSetToPreviewMode}>{headerPreviewUpdateButton}</button>
-    const PublishUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({ isDisabled }) => <button disabled={isDisabled} className={generatedClasses.headerPrimaryCallOutButton} onClick={handleUpdateBlockSubmit}>{headerPublishUpdateButton}</button>
+    const EnterUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({
+        isDisabled,
+    }) => (
+        <button
+            disabled={isDisabled}
+            className={generatedClasses.headerCallOutButton}
+            onClick={handleSetToUpdateMode}
+        >
+            {headerEnterUpdateButton}
+        </button>
+    )
+    const LeaveUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({
+        isDisabled,
+    }) => (
+        <button
+            disabled={isDisabled}
+            className={generatedClasses.headerCallOutButton}
+            onClick={handleSetToReadMode}
+        >
+            {headerLeaveUpdateButton}
+        </button>
+    )
+    const DiscardUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({
+        isDisabled,
+    }) => (
+        <button
+            disabled={isDisabled}
+            className={generatedClasses.headerCallOutButton}
+            onClick={handleDiscardUpdates}
+        >
+            {headerDiscardUpdateButton}
+        </button>
+    )
+    const PreviewUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({
+        isDisabled,
+    }) => (
+        <button
+            disabled={isDisabled}
+            className={generatedClasses.headerCallOutButton}
+            onClick={handleSetToPreviewMode}
+        >
+            {headerPreviewUpdateButton}
+        </button>
+    )
+    const PublishUpdateButton: ({ isDisabled: boolean }) => JSX.Element = ({
+        isDisabled,
+    }) => (
+        <button
+            disabled={isDisabled}
+            className={generatedClasses.headerPrimaryCallOutButton}
+            onClick={handleUpdateBlockSubmit}
+        >
+            {headerPublishUpdateButton}
+        </button>
+    )
 
     /**
-     * Get all nested block ids 
+     * Get all nested block ids
      */
     const getNestedBlockIds = (blockId: string): Array<string> => {
+        const ids: Array<string> = [blockId]
+        const block: CmsContentBlock = blocks.find(
+            (block) => block.item.id === blockId
+        )
 
-        const ids: Array<string> = [blockId];
-        const block: CmsContentBlock = blocks.find((block) => block.item.id === blockId);
+        block?.content?.blocks?.forEach((block) => ids.push(block.item.id))
 
-        block?.content?.blocks?.forEach((block) => ids.push(block.item.id));
-
-        return ids;
-
+        return ids
     }
 
     /**
-     * Get all nested block ids 
+     * Get all nested block ids
      */
     const getHasBlockErrors = (blockId: string): boolean => {
+        const nestedBlockIds: Array<string> = getNestedBlockIds(blockId)
 
-        const nestedBlockIds: Array<string> = getNestedBlockIds(blockId);
+        let hasErrors: boolean = false
 
-        let hasErrors: boolean = false;
-        
         nestedBlockIds.forEach((blockId) => {
-
-            if(localErrors.current[blockId]){
-                hasErrors = true;
+            if (localErrors.current[blockId]) {
+                hasErrors = true
             }
+        })
 
-        });
-
-        return hasErrors;
-
+        return hasErrors
     }
 
     /**
      * Handle creating a new block instance from the page template and adding it to the active block list
      */
-    const handleCreateBlock = (blockContentTypeId: string, parentBlockId?: string): void => {
+    const handleCreateBlock = (
+        blockContentTypeId: string,
+        parentBlockId?: string
+    ): void => {
+        createBlockAction?.(blockContentTypeId, parentBlockId).then(
+            (createdBlockId: string) => {
+                const updatedBlocks: Array<CmsContentBlock> = [...blocks]
+                const block: CmsContentBlock = simpleClone(
+                    blocksTemplate.find(
+                        (block) => block.item.contentType === blockContentTypeId
+                    )
+                )
 
-        createBlockAction?.(blockContentTypeId, parentBlockId).then((createdBlockId: string) => {
+                block.item.id = createdBlockId
+                block.content.blocks = []
 
-            const updatedBlocks: Array<CmsContentBlock> = [...blocks];
-            const block: CmsContentBlock = simpleClone(blocksTemplate.find((block) => block.item.contentType === blockContentTypeId));
+                updatedBlocks.push(block)
 
-            block.item.id = createdBlockId;
-            block.content.blocks = [];
+                handleSetToUpdateMode()
+                setBlocks(updatedBlocks)
+                setBlockIdsInEditMode([createdBlockId])
+                blocksChangeAction?.(updatedBlocks)
 
-            updatedBlocks.push(block)
-
-            handleSetToUpdateMode();
-            setBlocks(updatedBlocks);
-            setBlockIdsInEditMode([createdBlockId]);
-            blocksChangeAction?.(updatedBlocks);
-
-            window.setTimeout(() => {
-
-                document.getElementById(createdBlockId)?.focus();
-
-            }, 0);
-
-        });
-
+                window.setTimeout(() => {
+                    document.getElementById(createdBlockId)?.focus()
+                }, 0)
+            }
+        )
     }
 
     /**
      * Handle deleting a block instance from the active block list
      */
     const handleDeleteBlock = (blockId: string): void => {
-
-        const nestedBlockIds: Array<string> = getNestedBlockIds(blockId);
-        const index: number = blocks.findIndex((block) => block.item.id === blockId);
-        const updatedBlocks = deleteArrayItem(blocks, index);
+        const nestedBlockIds: Array<string> = getNestedBlockIds(blockId)
+        const index: number = blocks.findIndex(
+            (block) => block.item.id === blockId
+        )
+        const updatedBlocks = deleteArrayItem(blocks, index)
 
         nestedBlockIds.forEach((blockId) => {
-
             if (localErrors.current[blockId]) {
-
-                delete localErrors.current[blockId];
-    
+                delete localErrors.current[blockId]
             }
-
         })
 
-        setBlocks(updatedBlocks);
-        blocksChangeAction?.(updatedBlocks);
-
+        setBlocks(updatedBlocks)
+        blocksChangeAction?.(updatedBlocks)
     }
 
     /**
      * Handle moving a block instance one index backwards in the active block list
      */
     const handleMoveBlockPrevious = (blockId: string): void => {
-
-        handleMoveBlock(blockId, -1);
-
+        handleMoveBlock(blockId, -1)
     }
 
     /**
      * Handle moving a block instance one index forwards in the active block list
      */
     const handleMoveBlockNext = (blockId: string): void => {
-
-        handleMoveBlock(blockId, 1);
-
-    };
+        handleMoveBlock(blockId, 1)
+    }
 
     /**
      * Handle moving a block instance in the active block list
      */
     const handleMoveBlock = (blockId: string, offSet: number): void => {
+        const index: number = blocks.findIndex(
+            (block) => block.item.id === blockId
+        )
+        const targetIndex: number = index + offSet
+        const updatedBlocks: Array<CmsContentBlock> = moveArrayItem(
+            blocks,
+            index,
+            targetIndex
+        )
 
-        const index: number = blocks.findIndex((block) => block.item.id === blockId);
-        const targetIndex: number = index + offSet;
-        const updatedBlocks: Array<CmsContentBlock> = moveArrayItem(blocks, index, targetIndex);
+        setBlocks(updatedBlocks)
 
-        setBlocks(updatedBlocks);
-
-        blocksChangeAction?.(updatedBlocks);
+        blocksChangeAction?.(updatedBlocks)
 
         setTimeout(() => {
-
-            const targetSelector: string = updatedBlocks[targetIndex].item.id;
+            const targetSelector: string = updatedBlocks[targetIndex].item.id
 
             document.getElementById(targetSelector)?.focus()
-
         }, 0)
-
-    };
+    }
 
     /**
      * Handle setting an editable block instance to read mode
      */
     const handleSetEditableBlockToReadMode = (blockId: string): void => {
-
-        const hasErrors: boolean = getHasBlockErrors(blockId);
+        const hasErrors: boolean = getHasBlockErrors(blockId)
 
         if (blockIdsInEditMode.includes(blockId) && !hasErrors) {
+            const index: number = blockIdsInEditMode.findIndex(
+                (id) => id === blockId
+            )
+            const updatedBlockIdsInEditMode: Array<string> = deleteArrayItem(
+                blockIdsInEditMode,
+                index
+            )
 
-            const index: number = blockIdsInEditMode.findIndex((id) => id === blockId);
-            const updatedBlockIdsInEditMode: Array<string> = deleteArrayItem(blockIdsInEditMode, index);
-
-            setBlockIdsInEditMode(updatedBlockIdsInEditMode);
-
+            setBlockIdsInEditMode(updatedBlockIdsInEditMode)
         }
-
-    };
+    }
 
     /**
      * Handle setting an editable block instance to update mode
      */
     const handleSetEditableBlockToUpdateMode = (blockId: string): void => {
-
-        const updatedBlockIdsInEditMode: Array<string> = [...blockIdsInEditMode];
+        const updatedBlockIdsInEditMode: Array<string> = [...blockIdsInEditMode]
 
         if (!updatedBlockIdsInEditMode.includes(blockId)) {
-
-            updatedBlockIdsInEditMode.push(blockId);
-            setBlockIdsInEditMode(updatedBlockIdsInEditMode);
-
+            updatedBlockIdsInEditMode.push(blockId)
+            setBlockIdsInEditMode(updatedBlockIdsInEditMode)
         }
-
-    };
+    }
 
     /**
      * Handle setting the active mode to create
      */
     const handleSetToCreateMode = useCallback((): void => {
-        setMode(cprud.CREATE);
+        setMode(cprud.CREATE)
         stateChangeAction?.(cprud.CREATE)
-    }, []);
+    }, [])
 
     /**
      * Handle setting the active mode to read
      */
     const handleSetToReadMode = useCallback((): void => {
-        setMode(cprud.READ);
+        setMode(cprud.READ)
         stateChangeAction?.(cprud.READ)
-    }, []);
+    }, [])
 
     /**
      * Handle setting the active mode to preview
      */
     const handleSetToPreviewMode = useCallback((event): void => {
-        setMode(cprud.PREVIEW);
+        setMode(cprud.PREVIEW)
         stateChangeAction?.(cprud.PREVIEW)
-    }, []);
+    }, [])
 
     /**
      * Handle setting the active mode to update
      */
     const handleSetToUpdateMode = useCallback((): void => {
-        setMode(cprud.UPDATE);
+        setMode(cprud.UPDATE)
         stateChangeAction?.(cprud.UPDATE)
-    }, []);
+    }, [])
 
     /**
      * Handle resetting updates to initial state
      */
-    const handleDiscardUpdates = (): void => setIsDiscardChangesModalOpen(true);
-    const handleDiscardChangesCancel = () => setIsDiscardChangesModalOpen(false);
+    const handleDiscardUpdates = (): void => setIsDiscardChangesModalOpen(true)
+    const handleDiscardChangesCancel = () => setIsDiscardChangesModalOpen(false)
     const handleDiscardChangesConfirm = () => {
+        discardUpdateAction?.()
+        setIsDiscardChangesModalOpen(false)
+        setMode(cprud.READ)
+        setBlocks(referenceBlocks)
 
-        discardUpdateAction?.();
-        setIsDiscardChangesModalOpen(false);
-        setMode(cprud.READ);
-        setBlocks(referenceBlocks);
-
-        localErrors.current = {};
-
+        localErrors.current = {}
     }
 
     /**
      * Handle submitting the current block list data to the API
      */
     const handleUpdateBlockSubmit = async (): Promise<FormErrors> => {
-
-        let serverErrors: FormErrors = {};
-        let formattedLocalErrors: FormErrors = {};
+        let serverErrors: FormErrors = {}
+        let formattedLocalErrors: FormErrors = {}
 
         if (saveBlocksAction) {
-
             Object.keys(localErrors.current).forEach((blockId) => {
+                formattedLocalErrors = Object.assign(
+                    {},
+                    formattedLocalErrors,
+                    localErrors.current[blockId]
+                )
+            })
 
-                formattedLocalErrors = Object.assign({}, formattedLocalErrors, localErrors.current[blockId]);
-
-            });
-
-            serverErrors = await saveBlocksAction(blocks, formattedLocalErrors);
-
+            serverErrors = await saveBlocksAction(blocks, formattedLocalErrors)
         }
 
         if (!hasKeys(serverErrors)) {
-
-            setMode(cprud.READ);
-
+            setMode(cprud.READ)
         }
 
         return serverErrors
@@ -338,106 +385,98 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      * Handle updates from blocks in edit mode
      */
     const handleUpdateBlock = ({ block, errors, childBlockId }): void => {
-
-        const blockId: string = block.item.id;
-        const errorsId: string = childBlockId ?? blockId;
+        const blockId: string = block.item.id
+        const errorsId: string = childBlockId ?? blockId
 
         /**
          * Process the update cache
          * Avoids individual updates to form fields causing full blocks rerender
          */
-        window.clearTimeout(blockUpdateCacheTimeOut.current);
+        window.clearTimeout(blockUpdateCacheTimeOut.current)
 
-        blockUpdateCache.current[blockId] = Object.assign({}, blockUpdateCache.current[blockId], block);
+        blockUpdateCache.current[blockId] = Object.assign(
+            {},
+            blockUpdateCache.current[blockId],
+            block
+        )
         blockUpdateCacheTimeOut.current = window.setTimeout(() => {
-
-            if (errors && !hasKeys(errors) && localErrors.current.hasOwnProperty(errorsId)) {
-
+            if (
+                errors &&
+                !hasKeys(errors) &&
+                localErrors.current.hasOwnProperty(errorsId)
+            ) {
                 delete localErrors.current[errorsId]
-    
             } else if (errors && hasKeys(errors)) {
-    
-                localErrors.current[errorsId] = errors;
-    
+                localErrors.current[errorsId] = errors
             }
 
             if (blockUpdateCache.current && hasKeys(blockUpdateCache.current)) {
-
-                const updatedBlocks: Array<CmsContentBlock> = simpleClone(blocks);
+                const updatedBlocks: Array<CmsContentBlock> =
+                    simpleClone(blocks)
 
                 Object.keys(blockUpdateCache.current).forEach((blockId) => {
+                    const targetBlockIndex: number = updatedBlocks.findIndex(
+                        (block) => block.item?.id === blockId
+                    )
 
-                    const targetBlockIndex: number = updatedBlocks.findIndex((block) => block.item?.id === blockId);
-
-                    updatedBlocks[targetBlockIndex] = blockUpdateCache.current[blockId];
-
+                    updatedBlocks[targetBlockIndex] =
+                        blockUpdateCache.current[blockId]
                 })
 
-                blockUpdateCache.current = {};
+                blockUpdateCache.current = {}
 
-                setBlocks(updatedBlocks);
-
+                setBlocks(updatedBlocks)
             }
-
-        }, 250);
-
-    };
+        }, 250)
+    }
 
     /**
      * Set non-active blocks to read mode if they have no errors
      */
     const handleDocumentClick = (event): void => {
-
-        let isEventInActiveBlock: boolean = false;
+        let isEventInActiveBlock: boolean = false
 
         blockIdsInEditMode.forEach((blockId: string) => {
-
-            if(document.getElementById(blockId)?.contains(event.target)){
-
-                isEventInActiveBlock = true;
-
+            if (document.getElementById(blockId)?.contains(event.target)) {
+                isEventInActiveBlock = true
             }
+        })
 
-        });
-
-        if (mode === cprud.UPDATE && blockIdsInEditMode.length > 0 && Object.keys(localErrors.current).length === 0 && !isEventInActiveBlock) {
-
-            setBlockIdsInEditMode([]);
-
+        if (
+            mode === cprud.UPDATE &&
+            blockIdsInEditMode.length > 0 &&
+            Object.keys(localErrors.current).length === 0 &&
+            !isEventInActiveBlock
+        ) {
+            setBlockIdsInEditMode([])
         }
-
-    };
+    }
 
     /**
      * Render block content
      */
     const renderBlockContent = (block: CmsContentBlock): JSX.Element => {
+        const { item } = block
+        const { id } = item
 
-        const { item } = block;
-        const { id } = item;
-
-        const isInEditMode: boolean = blockIdsInEditMode.includes(id);
-        const isInPreviewMode: boolean = mode === cprud.CREATE || mode === cprud.UPDATE
+        const isInEditMode: boolean = blockIdsInEditMode.includes(id)
+        const isInPreviewMode: boolean =
+            mode === cprud.CREATE || mode === cprud.UPDATE
 
         if (item.contentType === cmsBlocks.TEXT) {
-
             return (
-
                 <TextContentBlock
                     isEditable={isInEditMode}
                     headingLevel={3}
                     block={block}
                     initialErrors={localErrors.current}
-                    changeAction={handleUpdateBlock} />
-
+                    changeAction={handleUpdateBlock}
+                />
             )
-
         }
 
         if (item.contentType === cmsBlocks.KEY_LINKS) {
-
             return (
-
                 <KeyLinksBlock
                     isEditable={isInEditMode}
                     isPreview={isInPreviewMode}
@@ -446,12 +485,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     themeId={themeId}
                     initialErrors={localErrors.current}
                     createAction={createBlockAction}
-                    changeAction={handleUpdateBlock} />
-
+                    changeAction={handleUpdateBlock}
+                />
             )
-
         }
-
     }
 
     /**
@@ -460,29 +497,26 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     useDynamicElementClassName({
         elementSelector: mode === cprud.READ ? null : 'main',
         addClass: 'u-bg-theme-1',
-        removeClass: 'u-bg-theme-3'
-    });
+        removeClass: 'u-bg-theme-3',
+    })
 
     /**
      * On active block data change, compare with source data from API to determine if there are changes
      */
     useEffect(() => {
-
-        const isLocalBlockStateMatchingSource: boolean = deepEquals(blocks, referenceBlocks);
+        const isLocalBlockStateMatchingSource: boolean = deepEquals(
+            blocks,
+            referenceBlocks
+        )
 
         if (isLocalBlockStateMatchingSource && hasEditedBlocks) {
-
-            setHasEditedBlocks(false);
-
+            setHasEditedBlocks(false)
         } else if (!isLocalBlockStateMatchingSource && !hasEditedBlocks) {
-
-            setHasEditedBlocks(true);
-
+            setHasEditedBlocks(true)
         }
 
-        return () => window.clearTimeout(blockUpdateCacheTimeOut.current);
-
-    }, [blocks]);
+        return () => window.clearTimeout(blockUpdateCacheTimeOut.current)
+    }, [blocks])
 
     /**
      * Reset the active block data to the API block data if it is updated
@@ -498,129 +532,158 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      * Leave edit mode on click outside
      */
     useEffect(() => {
-
-        document.addEventListener('click', handleDocumentClick, false);
+        document.addEventListener('click', handleDocumentClick, false)
 
         return () => {
-            document.removeEventListener('click', handleDocumentClick, false);
+            document.removeEventListener('click', handleDocumentClick, false)
         }
-
-    }, [mode, blockIdsInEditMode]);
+    }, [mode, blockIdsInEditMode])
 
     /**
      * Conditionally reset blocks from edit mode
      */
     useEffect(() => {
-
-        if (blockIdsInEditMode.length > 0 && (mode === cprud.READ || mode === cprud.PREVIEW)) {
-
-            setBlockIdsInEditMode([]);
-
+        if (
+            blockIdsInEditMode.length > 0 &&
+            (mode === cprud.READ || mode === cprud.PREVIEW)
+        ) {
+            setBlockIdsInEditMode([])
         }
-
-    }, [mode]);
+    }, [mode])
 
     /**
      * Render
      */
     return (
         <div className={generatedClasses.wrapper}>
-            {shouldRenderEditingHeader &&
+            {shouldRenderEditingHeader && (
                 <header className={generatedClasses.header}>
-                    {(mode === cprud.READ) &&
+                    {mode === cprud.READ && (
                         <LayoutColumnContainer>
                             <LayoutColumn tablet={9}>
                                 <div className={generatedClasses.headerCallOut}>
-                                    {headerReadBody &&
-                                        <h2 className={generatedClasses.headerCallOutText}>{headerReadBody}</h2>
-                                    }
+                                    {headerReadBody && (
+                                        <h2
+                                            className={
+                                                generatedClasses.headerCallOutText
+                                            }
+                                        >
+                                            {headerReadBody}
+                                        </h2>
+                                    )}
                                 </div>
                             </LayoutColumn>
-                            <LayoutColumn tablet={3} className="u-flex u-items-center">
+                            <LayoutColumn
+                                tablet={3}
+                                className="u-flex u-items-center"
+                            >
                                 <EnterUpdateButton isDisabled={false} />
                             </LayoutColumn>
                         </LayoutColumnContainer>
-                    }
-                    {(mode === cprud.PREVIEW) &&
+                    )}
+                    {mode === cprud.PREVIEW && (
                         <LayoutColumnContainer>
                             <LayoutColumn tablet={6}>
                                 <div className={generatedClasses.headerCallOut}>
-                                    {headerPreviewBody &&
-                                        <h2 className="nhsuk-heading-l u-m-0">{headerPreviewBody}</h2>
-                                    }
+                                    {headerPreviewBody && (
+                                        <h2 className="nhsuk-heading-l u-m-0">
+                                            {headerPreviewBody}
+                                        </h2>
+                                    )}
                                 </div>
                             </LayoutColumn>
-                            <LayoutColumn tablet={6} className="u-flex u-items-center">
+                            <LayoutColumn
+                                tablet={6}
+                                className="u-flex u-items-center"
+                            >
                                 <EnterUpdateButton isDisabled={false} />
                                 <PublishUpdateButton isDisabled={false} />
                             </LayoutColumn>
                         </LayoutColumnContainer>
-                    }
-                    {(mode === cprud.CREATE) &&
+                    )}
+                    {mode === cprud.CREATE && (
                         <>
-                            {headerCreateHeading &&
-                                <h2 className="nhsuk-heading-xl u-mb-8">{headerCreateHeading}</h2>
-                            }
-                            {headerCreateBody &&
-                                <RichText wrapperElementType="p" bodyHtml={headerCreateBody} className="u-text-lead u-text-theme-7" />
-                            }
+                            {headerCreateHeading && (
+                                <h2 className="nhsuk-heading-xl u-mb-8">
+                                    {headerCreateHeading}
+                                </h2>
+                            )}
+                            {headerCreateBody && (
+                                <RichText
+                                    wrapperElementType="p"
+                                    bodyHtml={headerCreateBody}
+                                    className="u-text-lead u-text-theme-7"
+                                />
+                            )}
                         </>
-                    }
-                    {(mode === cprud.UPDATE) &&
+                    )}
+                    {mode === cprud.UPDATE && (
                         <div className={generatedClasses.adminCallOut}>
                             <LayoutColumnContainer className="u-mb-6">
-                                <LayoutColumn tablet={hasEditedBlocks ? 5 : 9} className="u-flex u-items-center">
-                                    {headerUpdateHeading &&
-                                        <h2 className="nhsuk-heading-l u-m-0">{headerUpdateHeading}</h2>
-                                    }
+                                <LayoutColumn
+                                    tablet={hasEditedBlocks ? 5 : 9}
+                                    className="u-flex u-items-center"
+                                >
+                                    {headerUpdateHeading && (
+                                        <h2 className="nhsuk-heading-l u-m-0">
+                                            {headerUpdateHeading}
+                                        </h2>
+                                    )}
                                 </LayoutColumn>
-                                <LayoutColumn tablet={hasEditedBlocks ? 7 : 3} className="tablet:u-flex u-items-center">
-                                    {!hasEditedBlocks &&
+                                <LayoutColumn
+                                    tablet={hasEditedBlocks ? 7 : 3}
+                                    className="tablet:u-flex u-items-center"
+                                >
+                                    {!hasEditedBlocks && (
                                         <LeaveUpdateButton isDisabled={false} />
-                                    }
-                                    {hasEditedBlocks &&
+                                    )}
+                                    {hasEditedBlocks && (
                                         <>
-                                            <DiscardUpdateButton isDisabled={false} />
-                                            <PreviewUpdateButton isDisabled={hasKeys(localErrors.current)} />
-                                            <PublishUpdateButton isDisabled={false} />
+                                            <DiscardUpdateButton
+                                                isDisabled={false}
+                                            />
+                                            <PreviewUpdateButton
+                                                isDisabled={hasKeys(
+                                                    localErrors.current
+                                                )}
+                                            />
+                                            <PublishUpdateButton
+                                                isDisabled={false}
+                                            />
                                         </>
-                                    }
+                                    )}
                                 </LayoutColumn>
                             </LayoutColumnContainer>
-                            {headerUpdateBody &&
+                            {headerUpdateBody && (
                                 <RichText
                                     wrapperElementType="div"
                                     bodyHtml={headerUpdateBody}
-                                    className="u-text-lead u-text-theme-7" />
-                            }
+                                    className="u-text-lead u-text-theme-7"
+                                />
+                            )}
                         </div>
-                    }
+                    )}
                 </header>
-            }
-            {(mode === cprud.CREATE && hasTemplateBlocks) && (
+            )}
+            {mode === cprud.CREATE && hasTemplateBlocks && (
                 <>
-                    {hasTemplateBlocks &&
+                    {hasTemplateBlocks && (
                         <ul className="u-list-none u-p-0">
                             {blocksTemplate?.map((block, index) => {
-
                                 return (
-
                                     <li key={index} className="u-mb-10">
                                         <ContentBlockWrapper
                                             mode={mode}
                                             block={block}
-                                            createAction={handleCreateBlock}>
-                                                {renderBlockContent(block)}
+                                            createAction={handleCreateBlock}
+                                        >
+                                            {renderBlockContent(block)}
                                         </ContentBlockWrapper>
                                     </li>
-
-
                                 )
-
                             })}
-
                         </ul>
-                    }
+                    )}
                     <button
                         onClick={handleSetToUpdateMode}
                         className="c-button c-button-outline u-drop-shadow"
@@ -629,64 +692,100 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     </button>
                 </>
             )}
-            {(mode === cprud.UPDATE || mode === cprud.READ || mode === cprud.PREVIEW) && (
+            {(mode === cprud.UPDATE ||
+                mode === cprud.READ ||
+                mode === cprud.PREVIEW) && (
                 <>
-                    {hasBlocks &&
+                    {hasBlocks && (
                         <ul className="u-list-none u-p-0 u-relative">
                             <FlipMove
                                 typeName={null}
                                 disableAllAnimations={mode !== cprud.UPDATE}
                                 enterAnimation="fade"
                                 leaveAnimation="fade"
-                                duration={100}>
-                                    {blocks?.map((block: CmsContentBlock, index: number) => {
+                                duration={100}
+                            >
+                                {blocks?.map(
+                                    (block: CmsContentBlock, index: number) => {
+                                        const blockId: string = block.item.id
 
-                                        const blockId: string = block.item.id;
-
-                                        const key: string = index + blockId;
-                                        const shouldRenderMovePrevious: boolean = index > 0;
-                                        const shouldRenderMoveNext: boolean = index < blocks.length - 1;
-                                        const isInEditMode: boolean = blockIdsInEditMode.includes(blockId);
-                                        const isEditable: boolean = mode !== cprud.READ && mode !== cprud.PREVIEW;
-                                        const hasErrors: boolean = getHasBlockErrors(blockId);
+                                        const key: string = index + blockId
+                                        const shouldRenderMovePrevious: boolean =
+                                            index > 0
+                                        const shouldRenderMoveNext: boolean =
+                                            index < blocks.length - 1
+                                        const isInEditMode: boolean =
+                                            blockIdsInEditMode.includes(blockId)
+                                        const isEditable: boolean =
+                                            mode !== cprud.READ &&
+                                            mode !== cprud.PREVIEW
+                                        const hasErrors: boolean =
+                                            getHasBlockErrors(blockId)
 
                                         return (
-
                                             <li key={key} className="u-mb-10">
-                                                {isEditable 
-                                                
-                                                    ?   <ContentBlockWrapper
-                                                            key={key}
-                                                            mode={mode}
-                                                            block={block}
-                                                            isInEditMode={isInEditMode}
-                                                            shouldRenderMovePrevious={shouldRenderMovePrevious}
-                                                            shouldRenderMoveNext={shouldRenderMoveNext}
-                                                            shouldEnableMovePrevious={!hasBlockInEditMode}
-                                                            shouldEnableMoveNext={!hasBlockInEditMode}
-                                                            shouldEnableDelete={!hasBlockInEditMode || isInEditMode}
-                                                            shouldEnableEnterUpdate={!hasBlockInEditMode}
-                                                            shouldEnableEnterRead={isInEditMode && !hasErrors}
-                                                            movePreviousAction={handleMoveBlockPrevious}
-                                                            moveNextAction={handleMoveBlockNext}
-                                                            deleteAction={handleDeleteBlock}
-                                                            enterReadModeAction={handleSetEditableBlockToReadMode}
-                                                            enterUpdateModeAction={handleSetEditableBlockToUpdateMode}>
-                                                                {renderBlockContent(block)}
-                                                        </ContentBlockWrapper>
-
-                                                    :   renderBlockContent(block)
-                                                
-                                                } 
+                                                {isEditable ? (
+                                                    <ContentBlockWrapper
+                                                        key={key}
+                                                        mode={mode}
+                                                        block={block}
+                                                        isInEditMode={
+                                                            isInEditMode
+                                                        }
+                                                        shouldRenderMovePrevious={
+                                                            shouldRenderMovePrevious
+                                                        }
+                                                        shouldRenderMoveNext={
+                                                            shouldRenderMoveNext
+                                                        }
+                                                        shouldEnableMovePrevious={
+                                                            !hasBlockInEditMode
+                                                        }
+                                                        shouldEnableMoveNext={
+                                                            !hasBlockInEditMode
+                                                        }
+                                                        shouldEnableDelete={
+                                                            !hasBlockInEditMode ||
+                                                            isInEditMode
+                                                        }
+                                                        shouldEnableEnterUpdate={
+                                                            !hasBlockInEditMode
+                                                        }
+                                                        shouldEnableEnterRead={
+                                                            isInEditMode &&
+                                                            !hasErrors
+                                                        }
+                                                        movePreviousAction={
+                                                            handleMoveBlockPrevious
+                                                        }
+                                                        moveNextAction={
+                                                            handleMoveBlockNext
+                                                        }
+                                                        deleteAction={
+                                                            handleDeleteBlock
+                                                        }
+                                                        enterReadModeAction={
+                                                            handleSetEditableBlockToReadMode
+                                                        }
+                                                        enterUpdateModeAction={
+                                                            handleSetEditableBlockToUpdateMode
+                                                        }
+                                                    >
+                                                        {renderBlockContent(
+                                                            block
+                                                        )}
+                                                    </ContentBlockWrapper>
+                                                ) : (
+                                                    renderBlockContent(block)
+                                                )}
                                             </li>
-
                                         )
-
-                                    })}
+                                    }
+                                )}
                             </FlipMove>
                         </ul>
-                    }
-                    {(mode === cprud.UPDATE && hasTemplateBlocks) &&
+                    )}
+                    {mode === cprud.UPDATE && hasTemplateBlocks && (
                         <div className={generatedClasses.createBlock}>
                             <div className={generatedClasses.blockBody}>
                                 <button
@@ -704,7 +803,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                 </button>
                             </div>
                         </div>
-                    }
+                    )}
                 </>
             )}
             <Dialog
@@ -713,14 +812,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 text={{
                     cancelButton: 'Cancel',
                     confirmButton: 'Yes, discard',
-                    heading: 'Changed Data will be lost'
+                    heading: 'Changed Data will be lost',
                 }}
                 cancelAction={handleDiscardChangesCancel}
                 confirmAction={handleDiscardChangesConfirm}
             >
                 <p className="u-text-bold">
-                    All changes will be
-                    discarded. Are you sure you wish to
+                    All changes will be discarded. Are you sure you wish to
                     proceed?
                 </p>
             </Dialog>

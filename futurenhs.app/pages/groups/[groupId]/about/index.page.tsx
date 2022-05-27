@@ -31,12 +31,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 getServerSideProps: async (
                     context: GetServerSidePropsContext
                 ) => {
-
-
                     props.layoutId = layoutIds.GROUP
                     props.tabId = groupTabIds.ABOUT
                     props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
-
 
                     /**
                      * Return data to page template
@@ -45,7 +42,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 },
             }),
         }),
-
     }),
 })
 

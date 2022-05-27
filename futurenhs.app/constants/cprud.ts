@@ -3,5 +3,5 @@ export const enum cprud {
     PREVIEW = 'preview',
     READ = 'read',
     UPDATE = 'update',
-    DELETE = 'delete'
+    DELETE = 'delete',
 }

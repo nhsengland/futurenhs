@@ -1,12 +1,11 @@
 import { LayoutColumn } from '@components/LayoutColumn'
 import { Props } from './interfaces'
 
-export const GroupAboutUsTemplate: (props:Props) => JSX.Element = ({
+export const GroupAboutUsTemplate: (props: Props) => JSX.Element = ({
     user,
     actions,
-    contentText
+    contentText,
 }) => {
-
     const { secondaryHeading } = contentText
 
     return (

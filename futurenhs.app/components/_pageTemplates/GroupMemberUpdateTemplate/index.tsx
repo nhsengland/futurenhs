@@ -32,7 +32,7 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
     routes,
     user,
     groupId,
-    etag
+    etag,
 }) => {
     const router = useRouter()
     const errorSummaryRef: any = useRef()
@@ -50,7 +50,9 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         formTypes.DELETE_GROUP_MEMBER
     )
 
-    const [errors, setErrors] = useState(updateFormConfig.errors || deleteFormConfig.errors)
+    const [errors, setErrors] = useState(
+        updateFormConfig.errors || deleteFormConfig.errors
+    )
 
     const {
         secondaryHeading,
@@ -60,9 +62,9 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         emailLabel,
     } = contentText ?? {}
 
-
-    const shouldRenderDeleteForm: boolean =
-        actions.includes(actionsConstants.GROUPS_MEMBERS_DELETE)
+    const shouldRenderDeleteForm: boolean = actions.includes(
+        actionsConstants.GROUPS_MEMBERS_DELETE
+    )
 
     /**
      * Handle client-side validation failure in forms
@@ -79,10 +81,15 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         formData: FormData
     ): Promise<FormErrors> => {
         return new Promise((resolve) => {
-
             const headers = getStandardServiceHeaders({ csrfToken, etag })
 
-            putGroupMemberRole({ user, headers, body: formData, groupId, memberId: member.id })
+            putGroupMemberRole({
+                user,
+                headers,
+                body: formData,
+                groupId,
+                memberId: member.id,
+            })
                 .then(() => {
                     router.replace(`${routes.groupMembersRoot}`)
                     resolve({})
@@ -104,13 +111,10 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
      * Handle client-side delete submission
      */
     const handleDeleteMemberSubmit = async (): Promise<FormErrors> => {
-
         return new Promise((resolve) => {
-
             setIsDeleteUserConfirmationModalOpen(true)
 
             resolve({})
-
         })
     }
 
@@ -125,10 +129,14 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
      */
     const handleDeleteMemberSubmitConfirm = async (): Promise<FormErrors> => {
         return new Promise((resolve) => {
-
             const headers = getStandardServiceHeaders({ csrfToken, etag })
 
-            deleteGroupMember({ groupId, groupUserId: member.id, user, headers })
+            deleteGroupMember({
+                groupId,
+                groupUserId: member.id,
+                user,
+                headers,
+            })
                 .then(() => {
                     setIsDeleteUserConfirmationModalOpen(false)
                     router.replace(`${routes.groupMembersRoot}`)
@@ -145,7 +153,6 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
                 })
 
             resolve({})
-
         })
     }
 
@@ -209,7 +216,7 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
                 text={{
                     cancelButton: 'Cancel',
                     confirmButton: 'Yes, remove',
-                    heading: 'Remove member'
+                    heading: 'Remove member',
                 }}
                 cancelAction={handleDeleteMemberSubmitCancel}
                 confirmAction={handleDeleteMemberSubmitConfirm}

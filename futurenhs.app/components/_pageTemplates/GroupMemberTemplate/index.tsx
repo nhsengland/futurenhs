@@ -5,7 +5,6 @@ import { LayoutColumn } from '@components/LayoutColumn'
 import { BackLink } from '@components/BackLink'
 import { UserProfile } from '@components/UserProfile'
 
-
 import { Props } from './interfaces'
 
 /**
@@ -25,7 +24,6 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
         pronounsLabel,
         emailLabel,
     } = contentText ?? {}
-
 
     /**
      * Render
@@ -50,8 +48,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
                             emailLabel: emailLabel,
                         }}
                         className="tablet:u-justify-center tablet:u-mt-16"
-                    >
-                    </UserProfile>
+                    ></UserProfile>
                 </LayoutColumn>
             </LayoutColumnContainer>
         </LayoutColumn>

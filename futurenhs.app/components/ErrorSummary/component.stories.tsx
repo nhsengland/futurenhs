@@ -1,8 +1,8 @@
-import {ErrorSummary} from './index'
+import { ErrorSummary } from './index'
 
 export default {
     title: 'ErrorSummary',
-    component: ErrorSummary
+    component: ErrorSummary,
 }
 
 const Template = (args) => <ErrorSummary {...args} />
@@ -10,9 +10,9 @@ const Template = (args) => <ErrorSummary {...args} />
 export const Basic = Template.bind({})
 Basic.args = {
     errors: {
-        name: 'Enter a name'
+        name: 'Enter a name',
     },
     text: {
-        body: 'There is a problem'
-    }
+        body: 'There is a problem',
+    },
 }

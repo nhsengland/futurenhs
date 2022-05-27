@@ -8,7 +8,6 @@ import forms from '@formConfigs/index'
 import { Props } from './interfaces'
 
 describe('Admin users invite template', () => {
-    
     afterEach(cleanup)
 
     const props: Props = {
@@ -20,17 +19,13 @@ describe('Admin users invite template', () => {
         image: null,
         entityText: null,
         contentText: {
-            secondaryHeading: 'Mock secondary heading'
-        }
-
+            secondaryHeading: 'Mock secondary heading',
+        },
     }
 
     it('renders correctly', () => {
+        render(<AdminUsersInviteTemplate {...props} />)
 
-        render(<AdminUsersInviteTemplate {...props}/>)
-
-        expect(screen.getAllByText('Mock secondary heading').length).toBe(1);
-
+        expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
     })
-
-});
+})

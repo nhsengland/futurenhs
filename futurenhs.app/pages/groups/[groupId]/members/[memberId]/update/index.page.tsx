@@ -12,7 +12,13 @@ import { withForms } from '@hofs/withForms'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupMember } from '@services/getGroupMember'
 import { getGroupRoles } from '@services/getGroupRoles'
-import { selectUser, selectParam, selectCsrfToken, selectFormData, selectRequestMethod } from '@selectors/context'
+import {
+    selectUser,
+    selectParam,
+    selectCsrfToken,
+    selectFormData,
+    selectRequestMethod,
+} from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 
@@ -47,13 +53,15 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     getServerSideProps: async (
                         context: GetServerSidePropsContext
                     ) => {
-
                         const user: User = selectUser(context)
                         const csrfToken: string = selectCsrfToken(context)
                         const currentValues: any = selectFormData(context)
-                        const requestMethod: requestMethods = selectRequestMethod(context)
+                        const requestMethod: requestMethods =
+                            selectRequestMethod(context)
 
-                        if (!props.actions.includes(actions.GROUPS_MEMBERS_EDIT)) {
+                        if (
+                            !props.actions.includes(actions.GROUPS_MEMBERS_EDIT)
+                        ) {
                             return {
                                 notFound: true,
                             }
@@ -74,43 +82,56 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const deleteMemberForm: any =
                             props.forms[formTypes.DELETE_GROUP_MEMBER]
 
-
                         /**
                          * Get data from services
                          */
                         try {
                             const [memberData, groupRoles] = await Promise.all([
-                                getGroupMember({ groupId, user, memberId, isForEdit: true }),
-                                getGroupRoles({ groupId, user })
+                                getGroupMember({
+                                    groupId,
+                                    user,
+                                    memberId,
+                                    isForEdit: true,
+                                }),
+                                getGroupRoles({ groupId, user }),
                             ])
-                            const etag = memberData.headers?.get('etag');
+                            const etag = memberData.headers?.get('etag')
                             props.etag = etag
 
                             props.member = memberData.data
                             props.layoutId = layoutIds.GROUP
                             props.tabId = groupTabIds.MEMBERS
-                            props.pageTitle = `${props.entityText.title} - ${props.member.firstName ?? ''
-                                } ${props.member.lastName ?? ''} - Edit`
+                            props.pageTitle = `${props.entityText.title} - ${
+                                props.member.firstName ?? ''
+                            } ${props.member.lastName ?? ''} - Edit`
 
                             /**
-                             * Handle setting role options for multi-choice 
+                             * Handle setting role options for multi-choice
                              */
-                            const roleOptions: Array<FormOptions> = groupRoles?.data?.map((role) => {
-                                return {
-                                    value: role.id,
-                                    label: role.name
-                                }
-                            })
+                            const roleOptions: Array<FormOptions> =
+                                groupRoles?.data?.map((role) => {
+                                    return {
+                                        value: role.id,
+                                        label: role.name,
+                                    }
+                                })
 
-                            const updatedRolesForm = setFormConfigOptions(form, 0, 'groupUserRoleId', roleOptions);
-                            const usersCurrentRole = groupRoles.data?.find((role) => role.name === props.member?.role)
+                            const updatedRolesForm = setFormConfigOptions(
+                                form,
+                                0,
+                                'groupUserRoleId',
+                                roleOptions
+                            )
+                            const usersCurrentRole = groupRoles.data?.find(
+                                (role) => role.name === props.member?.role
+                            )
 
-                            props.forms[formTypes.UPDATE_GROUP_MEMBER] = updatedRolesForm;
+                            props.forms[formTypes.UPDATE_GROUP_MEMBER] =
+                                updatedRolesForm
 
                             updatedRolesForm.initialValues = {
                                 groupUserRoleId: usersCurrentRole?.id,
                             }
-
 
                             /**
                              * Handle server-side form post
@@ -119,34 +140,40 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 currentValues &&
                                 requestMethod === requestMethods.POST
                             ) {
+                                const headers = getStandardServiceHeaders({
+                                    csrfToken,
+                                    etag,
+                                })
 
-                                const headers =
-                                    getStandardServiceHeaders({
-                                        csrfToken,
-                                        etag,
-                                    });
-
-                                const isRoleForm = checkMatchingFormType(currentValues, updatedRolesForm.id)
-                                const isDeleteForm = checkMatchingFormType(currentValues, formTypes.DELETE_GROUP_MEMBER)
+                                const isRoleForm = checkMatchingFormType(
+                                    currentValues,
+                                    updatedRolesForm.id
+                                )
+                                const isDeleteForm = checkMatchingFormType(
+                                    currentValues,
+                                    formTypes.DELETE_GROUP_MEMBER
+                                )
 
                                 if (isRoleForm) {
-
-                                    updatedRolesForm.initialValues = currentValues.getAll();
+                                    updatedRolesForm.initialValues =
+                                        currentValues.getAll()
 
                                     await putGroupMemberRole({
                                         headers,
                                         user,
                                         body: currentValues,
                                         groupId,
-                                        memberId
+                                        memberId,
                                     })
-
                                 }
 
                                 if (isDeleteForm) {
-
-                                    await deleteGroupMember({ groupId, groupUserId: memberId, headers, user })
-
+                                    await deleteGroupMember({
+                                        groupId,
+                                        groupUserId: memberId,
+                                        headers,
+                                        user,
+                                    })
                                 }
 
                                 return {
@@ -155,12 +182,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                         destination: `${props.routes.groupMembersRoot}`,
                                     },
                                 }
-
                             }
-
-
                         } catch (error) {
-
                             const validationErrors: FormErrors =
                                 getServiceErrorDataValidationErrors(error)
 
@@ -169,7 +192,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             } else {
                                 return handleSSRErrorProps({ props, error })
                             }
-
                         }
 
                         /**

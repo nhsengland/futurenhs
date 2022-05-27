@@ -3,7 +3,7 @@ export interface Props {
         name: string
         value: any
         onChange: any
-        onFocus: any;
+        onFocus: any
         onBlur
     }
     meta: {
@@ -19,7 +19,7 @@ export interface Props {
     }
     shouldRenderAsRte?: boolean
     shouldRenderRemainingCharacterCount?: boolean
-    rteToolBarOptions?: string;
+    rteToolBarOptions?: string
     validators?: Array<any>
     minHeight?: number
     className?: string

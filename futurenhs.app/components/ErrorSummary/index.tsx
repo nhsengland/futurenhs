@@ -73,7 +73,9 @@ export const ErrorSummary = React.forwardRef(
                                         rteInstance.focus()
                                     } else {
                                         const element: HTMLElement =
-                                            document.getElementById(`${key}[0]`) || document.getElementById(key)
+                                            document.getElementById(
+                                                `${key}[0]`
+                                            ) || document.getElementById(key)
 
                                         scrollToComponentAndSetFocus(
                                             element,

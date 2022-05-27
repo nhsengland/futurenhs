@@ -23,7 +23,6 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     pageTitle,
     ...rest
 }) => {
-
     /**
      * TODO: Determine whether user has access to group when back-end permissions work is complete
      */
@@ -32,7 +31,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     const navMenuList = getGroupNavMenuList({
         groupRoute: routes.groupRoot,
         activeId: tabId,
-        isRestricted: !hasAccessToGroup
+        isRestricted: !hasAccessToGroup,
     })
 
     const currentRoutePathElements: Array<string> =

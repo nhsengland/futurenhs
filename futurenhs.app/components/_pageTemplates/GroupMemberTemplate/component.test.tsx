@@ -1,5 +1,5 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
 
 import { GroupMemberTemplate } from './index'
@@ -7,13 +7,12 @@ import { routes } from '@jestMocks/generic-props'
 import forms from '@formConfigs/index'
 import { Props } from './interfaces'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('Group member template', () => {
-
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/groups/group/members/member');
-    });
+        mockRouter.setCurrentUrl('/groups/group/members/member')
+    })
 
     const props: Props = {
         id: 'mockPageId',

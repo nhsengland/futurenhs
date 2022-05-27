@@ -22,7 +22,13 @@ export const Avatar: (props: Props) => JSX.Element = ({
     return (
         <span className={generatedClasses.wrapper}>
             {image ? (
-                <Image src={src} height={height} width={width} alt={altText} className={generatedClasses.image}/>
+                <Image
+                    src={src}
+                    height={height}
+                    width={width}
+                    alt={altText}
+                    className={generatedClasses.image}
+                />
             ) : (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -9,10 +9,10 @@ import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 
 declare type Options = {
-    user: User;
-    blockContentTypeId: string;
+    user: User
+    blockContentTypeId: string
     pageId?: string
-    parentBlockId?: string;
+    parentBlockId?: string
 }
 
 declare type Dependencies = {
@@ -30,14 +30,14 @@ export const postCmsBlock = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/block/${id}`;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/block/${id}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
             body: {
                 contentType: blockContentTypeId,
-                parentId: parentBlockId ?? pageId
+                parentId: parentBlockId ?? pageId,
             },
         }),
         defaultTimeOutMillis
@@ -60,5 +60,5 @@ export const postCmsBlock = async (
         )
     }
 
-    return apiData;
+    return apiData
 }
