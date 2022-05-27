@@ -1,16 +1,18 @@
 import * as React from 'react'
 import { cleanup, render, screen } from '@jestMocks/index'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 
 import { routes } from '@jestMocks/generic-props'
 import { SearchListingTemplate } from './index'
 import { Props } from './interfaces'
 
+jest.mock('next/router', () => require('next-router-mock'));
+
 describe('Search listing template', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/search',
-    }))
+    
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/search');
+    });
 
     const props: Props = {
         id: 'mockPageId',

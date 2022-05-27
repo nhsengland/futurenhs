@@ -1,5 +1,5 @@
 import React from 'react'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { render, screen, cleanup } from '@jestMocks/index'
 import { actions as userActions } from '@constants/actions'
 
@@ -7,15 +7,13 @@ import { GroupFolderContentsTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
 import { Props } from './interfaces'
 
+jest.mock('next/router', () => require('next-router-mock'));
+
 describe('Group folders template', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/groups/group/folders',
-        query: {
-            groupId: 'group',
-            folderId: 'folder',
-        },
-    }))
+
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/groups/group/folder');
+    });
 
     const props: Props = {
         id: 'mockId',

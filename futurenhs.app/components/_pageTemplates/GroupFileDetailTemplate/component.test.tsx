@@ -1,19 +1,18 @@
 import React from 'react'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { render, screen, cleanup } from '@jestMocks/index'
 
 import { GroupFileDetailTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
 import { Props } from './interfaces'
 
+jest.mock('next/router', () => require('next-router-mock'));
+
 describe('Group file detail template', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/groups/group/files',
-        query: {
-            groupId: 'group',
-        },
-    }))
+
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/groups/group/files');
+    });
 
     const props: Props = {
         id: 'mockId',

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { cleanup, render, screen } from '@jestMocks/index'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { actions as actionConstants } from '@constants/actions'
 
 import { AdminGroupsTemplate } from './index'
@@ -8,11 +8,13 @@ import { routes } from '@jestMocks/generic-props'
 
 import { Props } from './interfaces'
 
+jest.mock('next/router', () => require('next-router-mock'));
+
 describe('Admin Groups Template', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/groups',
-    }))
+
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/admin/groups');
+    });
 
     const props: Props = {
         id: 'mockId',

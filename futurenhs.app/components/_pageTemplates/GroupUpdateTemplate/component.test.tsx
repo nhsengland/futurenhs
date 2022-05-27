@@ -1,5 +1,5 @@
 import React from 'react'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { render, screen } from '@jestMocks/index'
 
 import { GroupUpdateTemplate } from './index'
@@ -7,14 +7,13 @@ import { routes } from '@jestMocks/generic-props'
 import forms from '@formConfigs/index'
 import { Props } from './interfaces'
 
+jest.mock('next/router', () => require('next-router-mock'));
+
 describe('Group update template', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/groups/group/update',
-        query: {
-            groupId: 'group',
-        },
-    }))
+
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/groups/group/update');
+    });
 
     const props: Props = {
         id: 'mockId',
