@@ -10,8 +10,8 @@ namespace Umbraco9ContentApi.Core.Models.Requests
         /// <value>
         /// The name.
         /// </value>
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("pageName")]
+        public string PageName { get; set; }
 
         /// <summary>
         /// Gets or sets the parent identifier.
@@ -19,7 +19,7 @@ namespace Umbraco9ContentApi.Core.Models.Requests
         /// <value>
         /// The parent identifier.
         /// </value>
-        [JsonProperty("parentId")]
-        public string ParentId { get; set; }
+        [JsonProperty("pageParentId")]
+        public string PageParentId { get; set; }
     }
 }

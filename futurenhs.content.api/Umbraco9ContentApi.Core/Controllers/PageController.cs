@@ -31,7 +31,7 @@
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModelData>))]
-        public  ActionResult GetAllPages(CancellationToken cancellationToken)
+        public ActionResult GetAllPages(CancellationToken cancellationToken)
         {
             var result = _futureNhsPageHandler.GetAllPages(cancellationToken);
 
@@ -56,7 +56,7 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         [HttpPut("{pageId:guid}")]
-        public  IActionResult UpdatePage(Guid pageId, PageModel pageModel, CancellationToken cancellationToken)
+        public IActionResult UpdatePage(Guid pageId, PageModel pageModel, CancellationToken cancellationToken)
         {
             var result = _futureNhsPageHandler.UpdatePage(
                     pageId,
@@ -79,10 +79,10 @@
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
-        public  ActionResult CreatePage([FromBody] CreatePageRequest createRequest, CancellationToken cancellationToken)
+        public ActionResult CreatePage([FromBody] CreatePageRequest createRequest, CancellationToken cancellationToken)
         {
-            var result = _futureNhsPageHandler.CreatePage(createRequest.Name,
-                createRequest.ParentId,
+            var result = _futureNhsPageHandler.CreatePage(createRequest.PageName,
+                createRequest.PageParentId,
                 cancellationToken);
 
             if (result.Succeeded)
@@ -102,7 +102,7 @@
         /// <returns></returns>
         [HttpPut("{userId:guid}/{pageId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
-        public  ActionResult UpdateUserEditingContent(Guid userId, Guid pageId, CancellationToken cancellationToken)
+        public ActionResult UpdateUserEditingContent(Guid userId, Guid pageId, CancellationToken cancellationToken)
         {
             var result = _futureNhsPageHandler.UpdateUserEditingContent(userId, pageId, cancellationToken);
 
@@ -122,7 +122,7 @@
         /// <returns></returns>
         [HttpGet("{pageId:guid}/editStatus")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContentModelData>))]
-        public  ActionResult CheckPageEditStatus(Guid pageId, CancellationToken cancellationToken)
+        public ActionResult CheckPageEditStatus(Guid pageId, CancellationToken cancellationToken)
         {
             var result = _futureNhsPageHandler.CheckPageEditStatus(pageId, cancellationToken);
 
