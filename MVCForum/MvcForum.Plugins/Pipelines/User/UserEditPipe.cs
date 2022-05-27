@@ -89,7 +89,7 @@
                 {
                     if (_membershipService.GetUser(input.EntityToProcess.UserName) != null)
                     {
-                        input.AddError(_localizationService.GetResourceString("Members.Errors.DuplicateUserName"));
+                        input.AddError("This email address is already registered.  Please provide another email address or login.");
                         return input;
                     }
                     changedUsername = true;
@@ -105,7 +105,7 @@
                     // Add get by email address
                     if (_membershipService.GetUserByEmail(input.EntityToProcess.Email) != null)
                     {
-                        input.AddError(_localizationService.GetResourceString("Members.Errors.DuplicateEmail"));
+                        input.AddError("This email address is already registered.  Please provide another email address or login.");
                         return input;
                     }
                 }
@@ -117,7 +117,7 @@
                 var saved = await context.SaveChangesAsync();
                 if (saved <= 0)
                 {
-                    input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
+                    input.AddError("Sorry an error occured");
                 }
             }
             catch (System.Exception ex)
