@@ -1,3 +1,4 @@
+IF '$(RunAutomatedScripts)' = 'true'
 BEGIN
 
 	-- Disable constraints for all tables:
