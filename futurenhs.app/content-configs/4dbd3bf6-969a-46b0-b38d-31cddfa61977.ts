@@ -4,9 +4,9 @@ export default {
     title: 'Accessibility Statement',
     metaDescription: 'Accessibility statement',
     mainHeading: 'Accessibility',
-    bodyHtml: `<h2>Accessibility statement for collaborate-dev.future.nhs.uk</h2>
+    bodyHtml: `<h2>Accessibility statement for collaborate.future.nhs.uk</h2>
 
-    <p>This accessibility statement applies to collaborate-dev.future.nhs.uk</p>
+    <p>This accessibility statement applies to collaborate.future.nhs.uk</p>
 
     <p>This website is run by Future NHS. We want as many people as possible to be able to use this website. For example, that means you should be able to:</p>
     
