@@ -530,7 +530,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                             <LayoutColumn tablet={9}>
                                 <div className={generatedClasses.headerCallOut}>
                                     {headerReadBody &&
-                                        <RichText bodyHtml={headerReadBody} wrapperElementType="p" className={generatedClasses.headerCallOutText} />
+                                        <h2 className={generatedClasses.headerCallOutText}>{headerReadBody}</h2>
                                     }
                                 </div>
                             </LayoutColumn>
@@ -544,7 +544,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                             <LayoutColumn tablet={6}>
                                 <div className={generatedClasses.headerCallOut}>
                                     {headerPreviewBody &&
-                                        <RichText bodyHtml={headerPreviewBody} wrapperElementType="p" className={generatedClasses.headerCallOutText} />
+                                        <h2 className="nhsuk-heading-l u-m-0">{headerPreviewBody}</h2>
                                     }
                                 </div>
                             </LayoutColumn>

@@ -1,5 +1,3 @@
-import { randomBytes } from 'crypto';
-
 /**
  * Evaluates whether a property is defined and not null
  */
@@ -36,11 +34,6 @@ export const moveArrayItem = (array: Array<any>, fromIndex: number, toIndex: num
     return newArray;
 
 }
-
-/**
- * Creates a unique Id suitable for use in HTML
- */
-export const createHtmlSafeId = (): string => randomBytes(6).toString('hex');
 
 /**
  * Clones a serialisable object/array
