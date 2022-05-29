@@ -126,16 +126,16 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [Route("block/{userId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ContentModelData>>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> CreateBlockAsync(Guid userId, [FromBody] BlockCreateRequest createRequest, CancellationToken cancellationToken)
         {
-            var pageGuid = await _contentService.CreateBlockAsync(userId, createRequest, cancellationToken);
-            return new JsonResult(pageGuid);
+            var blockGuid = await _contentService.CreateBlockAsync(userId, createRequest, cancellationToken);
+            return new JsonResult(blockGuid); ;
         }
 
         [HttpDelete]
         [Route("block/{userId:guid}/{blockId:guid}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
         public async Task<IActionResult> DeleteBlockAsync(Guid userId, Guid blockId, CancellationToken cancellationToken, int? contentLevel = null)
         {
             var response = await _contentService.DeleteContentAsync(userId, blockId, contentLevel, cancellationToken);
