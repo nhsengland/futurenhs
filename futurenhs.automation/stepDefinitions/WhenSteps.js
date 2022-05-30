@@ -64,7 +64,7 @@ const helpers = require('../util/helpers');
     formPage.autoSuggestSelect(inputValue, autoSuggestLabel);
   });
 
-  When(/^I select the ('([^"]*)' )?checkbox$/, function (label) {
+  When(/^I select the '([^"]*)' checkbox$/, function (label) {
     formPage.checkboxSelect(label);
   });
 
