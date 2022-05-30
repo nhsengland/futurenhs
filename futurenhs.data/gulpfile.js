@@ -90,7 +90,7 @@ const deployFutureNHSDatabase = (done) => {
         '/TargetPassword:password',
         '/DeployReportPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Report.xml',
         '/DeployScriptPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Publish.sql',
-        '/Profile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS-automated.publish.xml',
+        '/Profile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml',
     ], {
         cwd: process.cwd()
     });
