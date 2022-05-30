@@ -43,11 +43,6 @@ BEGIN
         SELECT * FROM @entityTable
     );
 
-	DELETE FROM [dbo].[MembershipUser]
-    WHERE [Id] IN (
-        SELECT * FROM #autoUsers
-    );
-
     DELETE FROM [dbo].[File] 
     WHERE [CreatedBy] IN (
         SELECT * FROM #autoUsers
@@ -66,6 +61,11 @@ BEGIN
     --);
 
     DELETE FROM [dbo].[GroupUser] 
+    WHERE [MembershipUser_Id] IN (
+        SELECT * FROM #autoUsers
+    );
+    
+    DELETE FROM [dbo].[GroupSite] 
     WHERE [MembershipUser_Id] IN (
         SELECT * FROM #autoUsers
     );
@@ -88,6 +88,11 @@ BEGIN
         SELECT * FROM #autoUsers
     );
 	
+    DELETE FROM [dbo].[MembershipUser]
+    WHERE [Id] IN (
+        SELECT * FROM #autoUsers
+    );
+    
 	DROP TABLE #autoUsers
 
     -- Re-enable constraints for all tables:
