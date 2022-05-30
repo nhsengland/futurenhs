@@ -32,7 +32,7 @@ namespace FutureNHS.Api.Services
 
             ContentDto content = new()
             {
-                PageName = $"group:{groupId.ToString().Replace("-", "")}",
+                PageName = $"group:{groupId}",
                 PageParentId = createRequest?.PageParentId
             };
 
