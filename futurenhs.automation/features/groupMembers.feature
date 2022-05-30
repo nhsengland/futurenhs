@@ -6,7 +6,7 @@ Feature: groupMembers
         And I have logged in as a 'group admin' and accept the cookies
         Then the 'My Groups' header is displayed
 
-    @Pending
+    
     Scenario: FNHS26 - Accept group member request
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
@@ -16,7 +16,7 @@ Feature: groupMembers
         Then the 'Auto User2' link is displayed
         And the 'Auto User2' row is displayed on the 'Group Members' table
 
-    @Pending
+    
     Scenario: FNHS27 - Reject group member request
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
@@ -85,7 +85,7 @@ Feature: groupMembers
             | Admin            |
             | Standard Members |
 
-    #NEED NEW USER TO REMOVE FROM GROUP
+    
     Scenario: FNHS94 - Remove member from a group
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
