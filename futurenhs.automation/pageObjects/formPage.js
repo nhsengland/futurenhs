@@ -118,12 +118,13 @@ class formPage extends basePage{
      * @param {*} label - textual value of the checkbox to select
      */
     checkboxSelect(label){
-        try{
-            var checkbox = this.findLabel(label)
-            checkbox.$(`../input[@type="checkbox"]`).click();
-        } catch (error){
-            throw new Error(`Unable to locate the '${label}' checkbox : '${error}'`);
+        if(label.includes('public?')){
+            var checkbox = $(`//label[@for="isPublic[0]"]`);
+            helpers.waitForLoaded(checkbox);
+        } else {
+            checkbox = this.findLabel(label);
         }
+        checkbox.$(`../input[@type="checkbox"]`).click();
     }
 
     /**
