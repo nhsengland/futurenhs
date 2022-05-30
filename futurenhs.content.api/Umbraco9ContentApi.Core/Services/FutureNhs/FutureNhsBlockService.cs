@@ -101,7 +101,7 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
         {
             List<ContentModelData> contentModels = new();
 
-            foreach (var child in blocks)
+            foreach (var child in blocks.Where(x=> x.Content != null))
             {
                 foreach (var content in child.Content.Where(x => x.Key == "blocks"))
                 {

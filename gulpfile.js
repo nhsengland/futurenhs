@@ -83,6 +83,8 @@ const activateNoApi = series(activateDb,activateContentDb, buildAutomationDb, ac
 
 const activateNoUmbraco = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApi, activateApp);
 
+const activateNoUmbracoNoApi = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApp);
+
 const deactivate = series(mvcforum.stopSite, api.stopSite, contentApi.stopSite, app.stopSite);
 
 module.exports = {
@@ -92,6 +94,7 @@ module.exports = {
 	activateNoUmbraco,
     activateApi,
 	activateContentApi,
+    activateNoUmbracoNoApi,
     activateMvcForum,
     activateDb,
     buildAutomationDb,

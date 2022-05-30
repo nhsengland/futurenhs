@@ -57,31 +57,31 @@
 
         #region Create Page Tests
 
-        /// <summary>
-        /// Creates the content page name success.
-        /// </summary>
-        [Test]
-        public async Task CreatePage_PageName_Success()
-        {
-            // Arrange
-            var newPageName = "Test Page";
-            var contentId = Guid.NewGuid();
-            var mockContent = GetMockContent(contentId);
-            var pageHandler = GetHandler(_config, _mockFutureNhsContentService.Object,
-                _mockFutureNhsBlockService.Object, _futureNhsValidationService);
+        ///// <summary>
+        ///// Creates the content page name success.
+        ///// </summary>
+        //[Test]
+        //public async Task CreatePage_PageName_Success()
+        //{
+        //    // Arrange
+        //    var newPageName = "Test Page";
+        //    var contentId = Guid.NewGuid();
+        //    var mockContent = GetMockContent(contentId);
+        //    var pageHandler = GetHandler(_config, _mockFutureNhsContentService.Object,
+        //        _mockFutureNhsBlockService.Object, _futureNhsValidationService);
 
-            _mockFutureNhsContentService
-                .Setup(x => x.CreateContent(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), cancellationToken))
-                .Returns(mockContent.Object);
+        //    _mockFutureNhsContentService
+        //        .Setup(x => x.CreateContent(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), cancellationToken))
+        //        .Returns(mockContent.Object);
 
-            // Act
-            var contentResult = pageHandler.CreatePage(newPageName, null, cancellationToken);
+        //    // Act
+        //    var contentResult = pageHandler.CreatePage(newPageName, null, cancellationToken);
 
-            // Assert
-            Assert.IsNotNull(contentResult);
-            Assert.True(contentResult.Succeeded);
-            Assert.AreEqual(contentResult.Data, contentId.ToString());
-        }
+        //    // Assert
+        //    Assert.IsNotNull(contentResult);
+        //    Assert.True(contentResult.Succeeded);
+        //    Assert.AreEqual(contentResult.Data, contentId.ToString());
+        //}
 
         #endregion
 

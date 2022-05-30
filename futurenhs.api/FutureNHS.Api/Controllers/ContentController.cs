@@ -66,6 +66,15 @@ namespace FutureNHS.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
         public async Task<IActionResult> UpdatePageAsync(Guid userId, Guid pageId, [FromBody] GeneralWebPageUpdateRequest updateRequest, CancellationToken cancellationToken)
         {
+            if (updateRequest.Blocks != null)
+                foreach (var block in updateRequest.Blocks)
+                {
+                    if (block.Item.ContentType == "textBlock" && block.Content.ContainsKey("blocks"))
+                    {
+                        block.Content.Remove("blocks");
+                    }
+                }
+
             var pageGuid = await _contentService.UpdatePageAsync(userId, pageId, updateRequest, cancellationToken);
             return new JsonResult(pageGuid);
         }
