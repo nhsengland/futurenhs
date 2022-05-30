@@ -11,7 +11,7 @@ import { User } from '@appTypes/user'
 declare type Options = {
     headers?: any
     body: FormData
-    user: User,
+    user: User
     targetUserId: string
 }
 
@@ -28,10 +28,10 @@ export const putSiteUserRole = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const {id} = user
+    const { id } = user
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/users/${targetUserId}/roles`
-    
+
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
@@ -52,7 +52,7 @@ export const putSiteUserRole = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to update the user\'s role',
+            "An unexpected error occurred when attempting to update the user's role",
             {
                 serviceId: services.PUT_SITE_USER_ROLE,
                 status: status,

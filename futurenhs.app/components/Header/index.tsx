@@ -316,7 +316,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                             confirmButton:
                                                                                 logOutConfirm,
                                                                             heading:
-                                                                                logOutHeading
+                                                                                logOutHeading,
                                                                         }}
                                                                         cancelAction={
                                                                             handleLogoutCancel

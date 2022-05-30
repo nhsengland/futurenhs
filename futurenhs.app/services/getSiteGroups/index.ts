@@ -74,7 +74,6 @@ export const getSiteGroups: Service = async (
     }
 
     apiData.data?.forEach((datum) => {
-
         serviceResponse.data.push({
             text: {
                 mainHeading: datum.nameText ?? null,
@@ -95,8 +94,8 @@ export const getSiteGroups: Service = async (
                 : null,
             owner: {
                 id: datum?.owner?.id,
-                fullName: datum?.owner?.name
-            }
+                fullName: datum?.owner?.name,
+            },
         })
     })
 

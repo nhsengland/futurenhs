@@ -127,11 +127,11 @@ export const timer = (delay: number) =>
 export const getStandardServiceHeaders = ({
     csrfToken,
     etag,
-    propertyToUse
+    propertyToUse,
 }: {
     csrfToken: string
-    etag?: string | Record<string, string>;
-    propertyToUse?: string;
+    etag?: string | Record<string, string>
+    propertyToUse?: string
 }) => {
     const headers: Record<string, string> = {}
 
@@ -140,9 +140,9 @@ export const getStandardServiceHeaders = ({
     }
 
     if (etag) {
-
-        typeof etag === 'object' ? headers['If-Match'] = etag[propertyToUse] :  headers['If-Match'] = etag 
-        
+        typeof etag === 'object'
+            ? (headers['If-Match'] = etag[propertyToUse])
+            : (headers['If-Match'] = etag)
     }
 
     return headers

@@ -45,9 +45,7 @@ const DocumentHead: (props: Props) => JSX.Element = ({ assetPath = '' }) => {
             />
             <meta name="description" content={``} />
             <noscript>
-                <style>
-                    {`.u-no-js-hidden { display: none !important }`}
-                </style>
+                <style>{`.u-no-js-hidden { display: none !important }`}</style>
             </noscript>
         </Head>
     )

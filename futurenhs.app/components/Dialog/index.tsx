@@ -25,12 +25,14 @@ export const Dialog: (props: Props) => JSX.Element = ({
             className="c-dialog"
             isOpen={isOpen}
             appElement={appElement}
-            aria={{labelledby: `dialog-header-${id}`}}
+            aria={{ labelledby: `dialog-header-${id}` }}
         >
             <div className="c-dialog_content" role="main">
-                {heading &&
-                    <h1 id={`dialog-header-${id}`} className="nhsuk-heading-l">{heading}</h1>
-                }
+                {heading && (
+                    <h1 id={`dialog-header-${id}`} className="nhsuk-heading-l">
+                        {heading}
+                    </h1>
+                )}
                 {children}
                 {cancelAction && cancelButton && (
                     <button

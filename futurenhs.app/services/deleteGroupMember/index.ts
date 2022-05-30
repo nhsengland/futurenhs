@@ -42,7 +42,7 @@ export const deleteGroupMember = async (
         apiUrl,
         setFetchOptions({
             method: requestMethods.DELETE,
-            headers: headers
+            headers: headers,
         }),
         defaultTimeOutMillis
     )

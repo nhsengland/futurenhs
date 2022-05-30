@@ -25,16 +25,23 @@ export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
     forms,
     csrfToken,
     routes,
-    etag
+    etag,
 }) => {
+    const router = useRouter()
+    const errorSummaryRef: any = useRef()
 
-    const router = useRouter();
-    const errorSummaryRef: any = useRef();
+    const shouldRenderRoleForm: boolean = actions.includes(
+        actionsConstants.SITE_ADMIN_MEMBERS_EDIT
+    )
 
-    const shouldRenderRoleForm: boolean = actions.includes(actionsConstants.SITE_ADMIN_MEMBERS_EDIT);
-
-    const profileFormConfig: FormConfig = selectForm(forms, formTypes.UPDATE_SITE_USER);
-    const roleFormConfig: FormConfig = selectForm(forms, formTypes.UPDATE_SITE_USER_ROLE);
+    const profileFormConfig: FormConfig = selectForm(
+        forms,
+        formTypes.UPDATE_SITE_USER
+    )
+    const roleFormConfig: FormConfig = selectForm(
+        forms,
+        formTypes.UPDATE_SITE_USER_ROLE
+    )
 
     const [errors, setErrors] = useState(
         Object.assign(
@@ -44,12 +51,11 @@ export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
         )
     )
 
-    const siteUserInitials: string = initials({ value: `${siteUser.firstName} ${siteUser.lastName}` });
+    const siteUserInitials: string = initials({
+        value: `${siteUser.firstName} ${siteUser.lastName}`,
+    })
 
-    const {
-        editHeading,
-        editRoleHeading
-    } = contentText ?? {}
+    const { editHeading, editRoleHeading } = contentText ?? {}
 
     /**
      * Handle client-side validation failure in forms
@@ -62,15 +68,24 @@ export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side update submission for profile details
      */
-    const handleProfileSubmit = async (formData: FormData): Promise<FormErrors> => {
-
+    const handleProfileSubmit = async (
+        formData: FormData
+    ): Promise<FormErrors> => {
         return new Promise((resolve) => {
+            const etagToUse: string =
+                typeof etag === 'object' ? etag.profileEtag : etag
 
-            const etagToUse: string = typeof etag === 'object' ? etag.profileEtag : etag;
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag: etagToUse,
+            })
 
-            const headers = getStandardServiceHeaders({ csrfToken, etag: etagToUse })
-
-            putSiteUser({ body: formData, user, headers, targetUserId: siteUser.id })
+            putSiteUser({
+                body: formData,
+                user,
+                headers,
+                targetUserId: siteUser.id,
+            })
                 .then(() => {
                     setErrors({})
                     resolve({})
@@ -86,21 +101,29 @@ export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
                     resolve(errors)
                 })
         })
-
-    };
+    }
 
     /**
      * Handle client-side update submission for profile details
      */
-    const handleRoleSubmit = async (formData: FormData): Promise<FormErrors> => {
-
+    const handleRoleSubmit = async (
+        formData: FormData
+    ): Promise<FormErrors> => {
         return new Promise((resolve) => {
+            const etagToUse: string =
+                typeof etag === 'object' ? etag.roleEtag : etag
 
-            const etagToUse: string = typeof etag === 'object' ? etag.roleEtag : etag;
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag: etagToUse,
+            })
 
-            const headers = getStandardServiceHeaders({ csrfToken, etag: etagToUse })
-
-            putSiteUserRole({ body: formData, user, headers, targetUserId: siteUser.id })
+            putSiteUserRole({
+                body: formData,
+                user,
+                headers,
+                targetUserId: siteUser.id,
+            })
                 .then(() => {
                     setErrors({})
                     resolve({})
@@ -116,9 +139,7 @@ export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
                     resolve(errors)
                 })
         })
-
-    };
-
+    }
 
     /**
      * Render
@@ -143,14 +164,14 @@ export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
                         formConfig={profileFormConfig}
                         text={{
                             submitButton: 'Save changes',
-                            cancelButton: 'Discard changes'
+                            cancelButton: 'Discard changes',
                         }}
                         submitAction={handleProfileSubmit}
                         cancelHref={`${routes.usersRoot}/${siteUser.id}`}
                         validationFailAction={handleValidationFailure}
                     />
 
-                    {shouldRenderRoleForm &&
+                    {shouldRenderRoleForm && (
                         <>
                             <h2 className="u-mt-20">{editRoleHeading}</h2>
                             <Form
@@ -158,16 +179,14 @@ export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
                                 formConfig={roleFormConfig}
                                 validationFailAction={handleValidationFailure}
                                 text={{
-                                    submitButton: 'Update role'
+                                    submitButton: 'Update role',
                                 }}
                                 submitAction={handleRoleSubmit}
-
                             />
                         </>
-                    }
+                    )}
                 </LayoutColumn>
             </LayoutColumnContainer>
         </LayoutColumn>
     )
-
 }

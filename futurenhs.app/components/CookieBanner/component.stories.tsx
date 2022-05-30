@@ -5,14 +5,14 @@ export default {
     component: CookieBanner,
     argTypes: {
         text: {
-            control: { type: '' }
-        }
-    }
+            control: { type: '' },
+        },
+    },
 }
 
 const Template = (args) => <CookieBanner {...args} />
 
-export const Basic = Template.bind({});
+export const Basic = Template.bind({})
 Basic.args = {
-    cookieName: Date.now().toString()
+    cookieName: Date.now().toString(),
 }

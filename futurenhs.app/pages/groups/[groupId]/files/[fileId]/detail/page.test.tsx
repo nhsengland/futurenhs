@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { render, screen } from '@jestMocks/index'
 import { routes } from '@jestMocks/generic-props'
 
@@ -36,16 +36,16 @@ const props: Props = {
     routes: routes,
 }
 
-beforeAll(() => mswServer.listen())
-afterEach(() => mswServer.resetHandlers())
-afterAll(() => mswServer.close())
+jest.mock('next/router', () => require('next-router-mock'));
 
 describe('file detail page', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/files',
-        query: { fileId: 'fileId' },
-    }))
+
+    beforeAll(() => mswServer.listen())
+    afterEach(() => mswServer.resetHandlers())
+    afterAll(() => mswServer.close())
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/files');
+    });
 
     it('renders correctly', () => {
         render(<GroupFileDetailTemplate {...props} />)

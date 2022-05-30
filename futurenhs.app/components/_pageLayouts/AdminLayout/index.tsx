@@ -23,11 +23,11 @@ export const AdminLayout: (props: Props) => JSX.Element = ({
             <Head>
                 <meta name="description" content={metaDescription} />
             </Head>
-            {mainHeading &&
+            {mainHeading && (
                 <div className="u-pt-10 tablet:u-px-4">
                     <h1 className="u-m-0">{mainHeading}</h1>
                 </div>
-            }
+            )}
             {children}
         </StandardLayout>
     )

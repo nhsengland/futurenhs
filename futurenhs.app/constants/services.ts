@@ -45,7 +45,7 @@ export const enum services {
     PUT_GROUP_DISCUSSION_COMMENT_LIKE = 'putGroupDiscussionCommentLike',
     PUT_SITE_USER = 'putSiteUser',
     PUT_SITE_USER_ROLE = 'putSiteUserRole',
-    PUT_GROUP_MEMBER_ROLE ='putGroupMemberRole',
+    PUT_GROUP_MEMBER_ROLE = 'putGroupMemberRole',
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
 }

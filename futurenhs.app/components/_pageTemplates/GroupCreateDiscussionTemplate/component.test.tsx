@@ -1,5 +1,5 @@
 import React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
 
 import { createDiscussionForm } from '@formConfigs/create-discussion'
@@ -7,13 +7,12 @@ import { routes } from '@jestMocks/generic-props'
 import { GroupCreateDiscussionTemplate } from './index'
 import { Props } from './interfaces'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('Group create discussion template', () => {
-
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/groups/group/forum/create');
-    });
+        mockRouter.setCurrentUrl('/groups/group/forum/create')
+    })
 
     const props: Props = {
         id: 'mockId',

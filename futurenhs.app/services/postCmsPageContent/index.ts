@@ -8,7 +8,7 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { CmsContentBlock } from '@appTypes/contentBlock';
+import { CmsContentBlock } from '@appTypes/contentBlock'
 
 declare type Options = {
     user: User
@@ -59,7 +59,7 @@ export const postCmsPageContent = async (
     }
 
     serviceResponse.headers = headers
-    serviceResponse.data = apiData?.data?.content?.pageContent?.blocks;
+    serviceResponse.data = apiData?.data?.content?.pageContent?.blocks
 
     return serviceResponse
 }

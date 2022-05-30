@@ -4,12 +4,11 @@ import { Header } from './index'
 export default {
     title: 'Header',
     component: Header,
-    
-};
+}
 
-const Template = (args) => <Header {...args}/>
+const Template = (args) => <Header {...args} />
 
-export const Basic = Template.bind({});
+export const Basic = Template.bind({})
 Basic.args = {
     text: {
         admin: 'Admin',
@@ -27,12 +26,13 @@ Basic.args = {
         },
         image: null,
     },
-    navMenuList: [{
+    navMenuList: [
+        {
             isActive: false,
             url: '/',
             text: 'Groups',
-        }],
+        },
+    ],
     shouldRenderSearch: true,
     shouldRenderNavigation: true,
 }
-  

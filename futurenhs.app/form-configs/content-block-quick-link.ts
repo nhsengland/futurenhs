@@ -22,9 +22,9 @@ export const contentBlockQuickLink: FormConfig = {
                             type: 'maxLength',
                             maxLength: 30,
                             message: 'Enter 30 or fewer characters',
-                        }
+                        },
                     ],
-                    className: 'u-grow tablet:u-mr-3'
+                    className: 'u-grow tablet:u-mr-3',
                 },
                 {
                     name: 'url',
@@ -37,10 +37,10 @@ export const contentBlockQuickLink: FormConfig = {
                         {
                             type: 'required',
                             message: 'Enter the link',
-                        }
+                        },
                     ],
-                    className: 'u-grow'
-                }
+                    className: 'u-grow',
+                },
             ],
         },
     ],

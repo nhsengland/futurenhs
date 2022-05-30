@@ -6,25 +6,24 @@ export default {
     component: Dialog,
     argTypes: {
         id: {
-            control: { type: '' }
+            control: { type: '' },
         },
         children: {
-            control: { type: '' }
+            control: { type: '' },
         },
         appElement: {
-            control: { type: '' }
+            control: { type: '' },
         },
         confirmAction: {
-            control: { type: '' }
+            control: { type: '' },
         },
         cancelAction: {
-            control: { type: '' }
+            control: { type: '' },
         },
-    }
+    },
 }
 
 const Template = (args) => {
-
     const [isOpen, setIsOpen] = useState(false)
 
     const toggleModal = () => {
@@ -33,13 +32,19 @@ const Template = (args) => {
 
     return (
         <>
-            <button className="c-button" onClick={() => setIsOpen(true)}>Open Dialog</button>
-            <Dialog confirmAction={toggleModal} cancelAction={toggleModal} isOpen={isOpen} {...args}>
+            <button className="c-button" onClick={() => setIsOpen(true)}>
+                Open Dialog
+            </button>
+            <Dialog
+                confirmAction={toggleModal}
+                cancelAction={toggleModal}
+                isOpen={isOpen}
+                {...args}
+            >
                 <h3>Entered Data will be lost</h3>
                 <p className="u-text-bold">
-                    Any entered details will be
-                    discarded. Are you sure you wish to
-                    proceed?
+                    Any entered details will be discarded. Are you sure you wish
+                    to proceed?
                 </p>
             </Dialog>
         </>
@@ -51,6 +56,6 @@ Basic.args = {
     id: 'id',
     text: {
         confirmButton: 'Confirm',
-        cancelButton: 'Cancel'
+        cancelButton: 'Cancel',
     },
 }

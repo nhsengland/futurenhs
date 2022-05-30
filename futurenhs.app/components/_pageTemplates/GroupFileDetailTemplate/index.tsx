@@ -166,14 +166,16 @@ export const GroupFileDetailTemplate: (props: Props) => JSX.Element = ({
                                     generatedHeaderCellClasses.lastUpdate,
                             },
                             {
-                                children: 
-                                    <ActionLink 
+                                children: (
+                                    <ActionLink
                                         href={fileDownloadPath}
                                         text={{
                                             body: 'Download',
-                                            ariaLabel: `Download ${name}`
+                                            ariaLabel: `Download ${name}`,
                                         }}
-                                        iconName="icon-download" />,
+                                        iconName="icon-download"
+                                    />
+                                ),
                                 shouldRenderCellHeader: false,
                                 className: generatedCellClasses.actions,
                             },

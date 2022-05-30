@@ -19,9 +19,7 @@ export const TabbedNav: (props: Props) => JSX.Element = ({
     }
 
     useEffect(() => {
-
         if (shouldFocusActiveLink) {
-
             const activeLink = activeLinkRef.current
             activeLink.setAttribute('tabindex', '-1')
             activeLink.classList.add('focus:u-outline-none')
@@ -30,7 +28,6 @@ export const TabbedNav: (props: Props) => JSX.Element = ({
             })
             activeLink.focus()
         }
-
     }, [activeLinkRef.current])
 
     return (

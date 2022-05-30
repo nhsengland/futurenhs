@@ -6,20 +6,20 @@ export default {
     component: Accordion,
     argTypes: {
         id: {
-            control: { type: '' }
+            control: { type: '' },
         },
         children: {
-            control: { type: '' }
+            control: { type: '' },
         },
         toggleAction: {
-            control: { type: '' }
+            control: { type: '' },
         },
-    }
+    },
 }
 
 const Template = (args) => {
     return (
-        <Accordion id={'123'}{...args}>
+        <Accordion id={'123'} {...args}>
             <p>Content inside accordion</p>
         </Accordion>
     )
@@ -28,5 +28,5 @@ const Template = (args) => {
 export const Basic = Template.bind({})
 Basic.args = {
     toggleOpenChildren: 'Close accordion',
-    toggleClosedChildren: 'Open accordion'
+    toggleClosedChildren: 'Open accordion',
 }

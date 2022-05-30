@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { render } from '@jestMocks/index'
 
 import GroupHomeTemplate, { getServerSideProps } from './index.page'
@@ -9,16 +9,16 @@ import { routes } from '@jestMocks/generic-props'
 import { mswServer } from '../../../jest-mocks/msw-server'
 import { handlers } from '../../../jest-mocks/handlers'
 
-beforeAll(() => mswServer.listen())
-afterEach(() => mswServer.resetHandlers())
-afterAll(() => mswServer.close())
+jest.mock('next/router', () => require('next-router-mock'));
 
 describe.only('group (groups/[groupId]) page', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/groups',
-        query: {},
-    }))
+
+    beforeAll(() => mswServer.listen())
+    afterEach(() => mswServer.resetHandlers())
+    afterAll(() => mswServer.close())
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/groups');
+    });
 
     //Only rendering layout so far -- TO BE COMPLETED
 

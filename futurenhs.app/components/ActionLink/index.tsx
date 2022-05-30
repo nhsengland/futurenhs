@@ -21,12 +21,12 @@ export const ActionLink: (props: Props) => JSX.Element = ({
     return (
         <Link href={href}>
             <a className={generatedClasses.wrapper} aria-label={ariaLabel}>
-                {iconName &&
+                {iconName && (
                     <SVGIcon
                         name={iconName}
                         className={generatedClasses.icon}
                     />
-                }
+                )}
                 {body}
             </a>
         </Link>

@@ -16,7 +16,6 @@ export const Input: (props: Props) => JSX.Element = ({
     validators,
     className,
 }) => {
-
     const { label, hint } = text ?? {}
     const id: string = input.name
     const shouldRenderError: boolean =

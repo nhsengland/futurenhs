@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { fireEvent, render, screen } from '@jestMocks/index'
 
 import { routes } from '@jestMocks/generic-props'
@@ -71,19 +71,16 @@ const props: Props = {
     routes: routes,
 }
 
-beforeAll(() => mswServer.listen())
-afterEach(() => mswServer.resetHandlers())
-afterAll(() => mswServer.close())
+jest.mock('next/router', () => require('next-router-mock'));
 
 describe('folders/folderId page', () => {
-    const push = jest.fn()
 
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/folders',
-        query: { folderId: 'folderId' },
-        push,
-    }))
+    beforeAll(() => mswServer.listen())
+    afterEach(() => mswServer.resetHandlers())
+    afterAll(() => mswServer.close())
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/folders/folderId');
+    });
 
     it('renders correctly', () => {
         render(<GroupFolderContentsTemplate {...props} />)

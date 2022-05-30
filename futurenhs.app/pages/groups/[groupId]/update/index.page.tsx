@@ -108,8 +108,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 submission &&
                                 requestMethod === requestMethods.POST
                             ) {
-
-                                form.initialValues = currentValues.getAll();
+                                form.initialValues = currentValues.getAll()
 
                                 const headers = {
                                     ...getStandardServiceHeaders({
@@ -134,7 +133,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 }
                             }
                         } catch (error: any) {
-
                             const validationErrors: FormErrors =
                                 getServiceErrorDataValidationErrors(error)
 

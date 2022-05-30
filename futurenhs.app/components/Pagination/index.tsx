@@ -23,7 +23,7 @@ export const Pagination: (props: Props) => JSX.Element = ({
     getPageAction,
     className,
 }) => {
-    const { query } = useRouter()
+    const query: Record<string, any> = useRouter()?.query ?? {};
     const [isLoadMoreEnabled, setIsLoadMoreEnabled] = useState(false)
 
     const { loadMore, previous, next } = text

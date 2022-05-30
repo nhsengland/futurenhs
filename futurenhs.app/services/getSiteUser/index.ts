@@ -33,7 +33,7 @@ export const getSiteUser = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const { id } = user 
+    const { id } = user
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${targetUserId}/update`
     const apiResponse: FetchResponse = await fetchJSON(
@@ -68,14 +68,14 @@ export const getSiteUser = async (
         pronouns: apiData.pronouns ?? '',
         role: apiData.roleId ?? '',
         image: apiData.image
-        ? {
-              src: `${apiData.image?.source}`,
-              height: apiData?.image?.height,
-              width: apiData?.image?.width,
-              altText: 'Profile image',
-          }
-        : null,
-        imageId: apiData.imageId ?? ''
+            ? {
+                  src: `${apiData.image?.source}`,
+                  height: apiData?.image?.height,
+                  width: apiData?.image?.width,
+                  altText: 'Profile image',
+              }
+            : null,
+        imageId: apiData.imageId ?? '',
     }
 
     return serviceResponse

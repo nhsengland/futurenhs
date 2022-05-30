@@ -1,18 +1,17 @@
 import { render, screen, cleanup } from '@jestMocks/index'
 import { SiteUserTemplate } from './index'
 import { Props } from './interfaces'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import forms from '@formConfigs/index'
 import { routes } from '@jestMocks/generic-props'
 import { actions } from '@constants/actions'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('Site User Template', () => {
-
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/users/userId');
-    });
+        mockRouter.setCurrentUrl('/users/userId')
+    })
 
     afterEach(cleanup)
 
@@ -21,8 +20,8 @@ describe('Site User Template', () => {
         user: {
             id: 'userId',
             text: {
-                userName: 'username'
-            }
+                userName: 'username',
+            },
         },
         siteUser: {
             id: 'string',
@@ -36,36 +35,31 @@ describe('Site User Template', () => {
             firstNameLabel: 'First name',
             lastNameLabel: 'Last name',
             pronounsLabel: 'he/him',
-            emailLabel: 'Email'
+            emailLabel: 'Email',
         },
         actions: [],
         forms: forms,
-        routes: routes
+        routes: routes,
     }
 
     it('renders correctly', () => {
-        render(<SiteUserTemplate { ...props }/>)
+        render(<SiteUserTemplate {...props} />)
 
         expect(screen.getAllByText(props.siteUser.firstName).length).toBe(1)
         expect(screen.getAllByText(props.siteUser.lastName).length).toBe(1)
     })
 
     it('conditionally renders edit profile button', () => {
+        render(<SiteUserTemplate {...props} />)
 
-        render(<SiteUserTemplate { ...props }/>);
-
-        expect(screen.queryByText('Edit button')).toBeNull();
+        expect(screen.queryByText('Edit button')).toBeNull()
 
         const propsCopy: Props = Object.assign({}, props, {
-            actions: [
-                actions.SITE_ADMIN_MEMBERS_EDIT
-            ]
+            actions: [actions.SITE_ADMIN_MEMBERS_EDIT],
         })
 
-        render(<SiteUserTemplate { ...propsCopy }/>);
+        render(<SiteUserTemplate {...propsCopy} />)
 
-        expect(screen.getAllByText('Edit button').length).toBe(1);
-
+        expect(screen.getAllByText('Edit button').length).toBe(1)
     })
-
 })

@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from '@jestMocks/index'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 
 import { GroupHomeTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
@@ -25,13 +25,12 @@ const props: Props = {
     },
 }
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('Group home template', () => {
-
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/groups/group');
-    });
+        mockRouter.setCurrentUrl('/groups/group')
+    })
 
     it('renders correctly', () => {
         render(<GroupHomeTemplate {...props} />)

@@ -21,7 +21,6 @@ export const TextArea: (props: Props) => JSX.Element = ({
     minHeight = 200,
     className,
 }) => {
-
     const editorRef = useRef(null)
     const textAreaRef = useRef(null)
 
@@ -51,7 +50,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const handleRteInit = (_, editor) => (editorRef.current = editor)
     const handleRteChange = (value: any) => input.onChange(value)
     const handleRteFocus = () => {
-        input.onFocus();
+        input.onFocus()
         setIsRteFocussed(true)
     }
     const handleRteBlur = () => setIsRteFocussed(false)
@@ -60,7 +59,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
         hint: `${id}-hint`,
         errorLabel: `${id}-error`,
         remainingCharacters: `${id}-remaining-characters`,
-        label: `${id}-label`
+        label: `${id}-label`,
     }
 
     const generatedClasses: any = {
@@ -97,7 +96,11 @@ export const TextArea: (props: Props) => JSX.Element = ({
 
     return (
         <div className={generatedClasses.wrapper}>
-            <label htmlFor={id} className={generatedClasses.label} id={generatedIds.label}>
+            <label
+                htmlFor={id}
+                className={generatedClasses.label}
+                id={generatedIds.label}
+            >
                 {label}
             </label>
             {hint && (
@@ -116,7 +119,11 @@ export const TextArea: (props: Props) => JSX.Element = ({
             {shouldLoadRte ? (
                 <div
                     className={generatedClasses.inputWrapper}
-                    style={{ minHeight: editorRef.current ? 'auto' : elementMinHeight }}
+                    style={{
+                        minHeight: editorRef.current
+                            ? 'auto'
+                            : elementMinHeight,
+                    }}
                     aria-labelledby={generatedIds.label}
                     tabIndex={0}
                 >
@@ -145,7 +152,11 @@ export const TextArea: (props: Props) => JSX.Element = ({
             ) : (
                 <div
                     className={generatedClasses.inputWrapper}
-                    style={{ minHeight: editorRef.current ? 'auto' : elementMinHeight }}
+                    style={{
+                        minHeight: editorRef.current
+                            ? 'auto'
+                            : elementMinHeight,
+                    }}
                 >
                     <textarea
                         {...input}

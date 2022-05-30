@@ -5,9 +5,7 @@ export const deleteGroupMemberForm: FormConfig = {
     id: formTypes.DELETE_GROUP_MEMBER,
     steps: [
         {
-            fields: [
-                
-            ],
+            fields: [],
         },
     ],
 }

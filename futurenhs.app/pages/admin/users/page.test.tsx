@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { render, screen } from '@jestMocks/index'
 
 import AdminUsersTemplate, { getServerSideProps } from './index.page'
@@ -50,16 +50,16 @@ const props: Props = {
     ],
 }
 
-beforeAll(() => mswServer.listen())
-afterEach(() => mswServer.resetHandlers())
-afterAll(() => mswServer.close())
+jest.mock('next/router', () => require('next-router-mock'));
 
 describe('admin/users page', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/admin/groups',
-        query: {},
-    }))
+
+    beforeAll(() => mswServer.listen())
+    afterEach(() => mswServer.resetHandlers())
+    afterAll(() => mswServer.close())
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/admin/groups');
+    });
 
     it('renders correctly', () => {
         render(<AdminUsersTemplate {...props} />)
