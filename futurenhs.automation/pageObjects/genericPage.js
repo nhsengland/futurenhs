@@ -115,7 +115,8 @@ class genericPage extends basePage{
             leavegroup:$('//div[@id="dialog-leave-group"]'),
             deletefolder:$('//div[@id="dialog-delete-folder"]'),
             discardinvite:$(`//div[@id="dialog-discard-discussion"]`),
-            removemember:$(`//div[@id="dialog-delete-group-member"]`)
+            removemember:$(`//div[@id="dialog-delete-group-member"]`),
+            groupprivacy:$(`//div[@id="dialog-change-group-privacy"]`)
         }
         var chosenDialog = dialogs[desiredDialog]
         browser.waitUntil(() => chosenDialog.isDisplayed() === true,{timeout: 5000, timeoutMsg: `Unable to locate the "${dialogName}" open dialog`});
