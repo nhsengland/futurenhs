@@ -1,17 +1,17 @@
 import React from 'react'
 import { render, screen, cleanup } from '@jestMocks/index'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 
 import { Pagination } from './index'
 import { Props } from './interfaces'
 
+jest.mock('next/router', () => require('next-router-mock'));
+
 describe('Pagination', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        query: {
-            pageQuery: '',
-        },
-    }))
+
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/');
+    });
 
     const props: Props = {
         id: 'Mock id',
