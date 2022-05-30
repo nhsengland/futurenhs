@@ -20,14 +20,14 @@ namespace FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProvider
             {
                 // REMOVES SSL - FOR DEVELOPMENT ONLY
                 var httpClientHandler = new HttpClientHandler();
-                httpClientHandler.ServerCertificateCustomValidationCallback = (
-                    message,
-                    cert,
-                    chain,
-                    sslPolicyErrors) =>
-                {
-                    return true;
-                };
+                //httpClientHandler.ServerCertificateCustomValidationCallback = (
+                //    message,
+                //    cert,
+                //    chain,
+                //    sslPolicyErrors) =>
+                //{
+                //    return true;
+                //};
 
                 var baseUrl = _configuration.GetValue<Uri>("ContentApi:ContentApiUrl");
                 var absoluteUrl = new Uri(baseUrl + requestUrl);
