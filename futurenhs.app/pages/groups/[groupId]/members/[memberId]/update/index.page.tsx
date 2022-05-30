@@ -98,7 +98,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     groupId,
                                     user,
                                     memberId,
-                                    isForEdit: true,
+                                    isForUpdate: true,
                                 }),
                                 getGroupRoles({ groupId, user }),
                             ])

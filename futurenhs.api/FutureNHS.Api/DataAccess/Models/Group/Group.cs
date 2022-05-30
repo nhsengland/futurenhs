@@ -13,6 +13,5 @@
         public Guid OwnerId { get; init; }
         public string OwnerFirstName { get; init; }
         public string OwnerSurname { get; init; }
-
     }
 }
