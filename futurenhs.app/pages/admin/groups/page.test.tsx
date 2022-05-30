@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as nextRouter from 'next/router'
+import mockRouter from 'next-router-mock';
 import { render, screen } from '@jestMocks/index'
 
 import AdminGroupsTemplate, { getServerSideProps } from './index.page'
@@ -10,6 +10,8 @@ import { Props } from '@components/_pageTemplates/AdminGroupsTemplate/interfaces
 import { mswServer } from '../../../jest-mocks/msw-server'
 import { handlers } from '../../../jest-mocks/handlers'
 import { actions } from '@constants/actions'
+
+jest.mock('next/router', () => require('next-router-mock'));
 
 const props: Props = {
     id: 'mockId',
@@ -46,17 +48,13 @@ const props: Props = {
     ],
 }
 
-beforeAll(() => mswServer.listen())
-afterEach(() => mswServer.resetHandlers())
-afterAll(() => mswServer.close())
-
 describe('groups page', () => {
-    ;(nextRouter as any).useRouter = jest.fn()
-    ;(nextRouter as any).useRouter.mockImplementation(() => ({
-        asPath: '/admin/groups',
-        query: {},
-    }))
 
+    beforeAll(() => mswServer.listen())
+    afterAll(() => mswServer.close())
+    beforeEach(() => {
+        mockRouter.setCurrentUrl('/admin/groups');
+    });
     afterEach(() => mswServer.resetHandlers())
 
     it('renders correctly', () => {

@@ -250,7 +250,7 @@
         <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.Convert(System.Object,System.Collections.Generic.Dictionary{System.String,System.Object})">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Extensions.ExtensionMethods.GetUdi(Umbraco9ContentApi.Core.Models.Content.ContentModel)">
+        <member name="M:Umbraco9ContentApi.Core.Extensions.ExtensionMethods.GetUdi(Umbraco9ContentApi.Core.Models.Content.ContentModelData)">
             <summary>
             Gets the udi of the content model.
             </summary>
@@ -557,7 +557,7 @@
             The page identifier.
             </value>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Requests.CreatePageRequest.Name">
+        <member name="P:Umbraco9ContentApi.Core.Models.Requests.CreatePageRequest.PageName">
             <summary>
             Gets or sets the name.
             </summary>
@@ -565,7 +565,7 @@
             The name.
             </value>
         </member>
-        <member name="P:Umbraco9ContentApi.Core.Models.Requests.CreatePageRequest.ParentId">
+        <member name="P:Umbraco9ContentApi.Core.Models.Requests.CreatePageRequest.PageParentId">
             <summary>
             Gets or sets the parent identifier.
             </summary>
@@ -614,7 +614,7 @@
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsBlockService.CreateBlock(Umbraco9ContentApi.Core.Models.Requests.CreateBlockRequest,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsBlockService.UpdateBlock(Umbraco9ContentApi.Core.Models.Content.ContentModel,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsBlockService.UpdateBlock(Umbraco9ContentApi.Core.Models.Content.ContentModelData,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService">
@@ -662,7 +662,7 @@
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SetContentPropertyValue(Umbraco.Cms.Core.Models.IContent,System.String,System.Object,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.CompareContentModelLists(System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModel},System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModel})">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.CompareContentModelLists(System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModelData},System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModelData})">
             <inheritdoc />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedContent(System.Guid,System.Threading.CancellationToken)">
@@ -769,7 +769,7 @@
             <param name="draftContent">Content of the draft.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.CompareContentModelLists(System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModel},System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModel})">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.CompareContentModelLists(System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModelData},System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModelData})">
             <summary>
             Compares the content model lists.
             </summary>

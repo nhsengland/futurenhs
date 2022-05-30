@@ -26,8 +26,8 @@ import { LayoutColumn } from '@components/LayoutColumn';
  */
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
     themeId,
-    blocks: sourceBlocks,
-    blocksTemplate,
+    blocks: sourceBlocks = [],
+    blocksTemplate = [],
     initialState = cprud.READ,
     text,
     shouldRenderEditingHeader,
@@ -39,13 +39,15 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     className,
 }) => {
 
+    const getTypeSafeBlockList: any = (sourceBlock: Array<CmsContentBlock>): Array<CmsContentBlock> => Array.isArray(sourceBlocks) ? sourceBlocks : [];
+
     const localErrors: any = useRef({});
     const blockUpdateCache: any = useRef({});
     const blockUpdateCacheTimeOut: any = useRef(null);
 
     const [mode, setMode] = useState(initialState);
-    const [referenceBlocks, setReferenceBlocks] = useState(sourceBlocks);
-    const [blocks, setBlocks] = useState(sourceBlocks);
+    const [referenceBlocks, setReferenceBlocks] = useState(getTypeSafeBlockList(sourceBlocks));
+    const [blocks, setBlocks] = useState(getTypeSafeBlockList(sourceBlocks));
     const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
     const [isDiscardChangesModalOpen, setIsDiscardChangesModalOpen] = useState(false);
     const [blockIdsInEditMode, setBlockIdsInEditMode] = useState([]);
@@ -55,18 +57,18 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const hasBlockInEditMode: boolean = blockIdsInEditMode.length > 0;
 
     const { headerReadBody,
-        headerPreviewBody,
-        headerCreateHeading,
-        headerCreateBody,
-        headerUpdateHeading,
-        headerUpdateBody,
-        headerEnterUpdateButton,
-        headerLeaveUpdateButton,
-        headerDiscardUpdateButton,
-        headerPreviewUpdateButton,
-        headerPublishUpdateButton,
-        createButton,
-        cancelCreateButton } = text ?? {};
+            headerPreviewBody,
+            headerCreateHeading,
+            headerCreateBody,
+            headerUpdateHeading,
+            headerUpdateBody,
+            headerEnterUpdateButton,
+            headerLeaveUpdateButton,
+            headerDiscardUpdateButton,
+            headerPreviewUpdateButton,
+            headerPublishUpdateButton,
+            createButton,
+            cancelCreateButton } = text ?? {};
     const { background } = useTheme(themeId);
 
     const generatedClasses: any = {
@@ -487,8 +489,8 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        setBlocks(sourceBlocks);
-        setReferenceBlocks(sourceBlocks);
+        setBlocks(getTypeSafeBlockList(sourceBlocks));
+        setReferenceBlocks(getTypeSafeBlockList(sourceBlocks));
 
     }, [sourceBlocks]);
 
