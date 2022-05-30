@@ -43,7 +43,7 @@ Then(/^the '([^"]*)' (header|textual value|link|button|option|label|fieldset) is
   genericPage.contentValidation(contentType, textValue);
 });
 
-Then(/^the '([^"]*)' (header|textual value|link|button|option) is not displayed$/, function (textValue, contentType) {
+Then(/^the '([^"]*)' (header|textual value|link|button|option|label|fieldset) is not displayed$/, function (textValue, contentType) {
   genericPage.contentNotDisplayed(contentType, textValue);
 });
 
