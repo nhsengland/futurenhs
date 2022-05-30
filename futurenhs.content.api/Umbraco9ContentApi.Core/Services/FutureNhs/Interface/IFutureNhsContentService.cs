@@ -107,5 +107,8 @@
         /// <param name="comparedcontentModelList">The comparedcontent model list.</param>
         /// <returns></returns>
         IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModelData> contentModelList, IEnumerable<ContentModelData> comparedcontentModelList);
+
+        IContent CreateContentFromBluePrint(string name, Guid parentId, Guid bluePrintId,
+            CancellationToken cancellationToken);
     }
 }

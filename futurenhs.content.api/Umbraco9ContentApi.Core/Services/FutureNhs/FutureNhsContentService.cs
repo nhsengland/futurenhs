@@ -56,11 +56,21 @@
         {
             return _contentResolver.Value.ResolveContent(content);
         }
+        public IContent CreateContentFromBluePrint(string name, Guid parentId, Guid bluePrintId, CancellationToken cancellationToken)
+        {
+            var parent = _contentService.GetById(parentId);
+            var bluePrint = _contentService.GetBlueprintById(bluePrintId);
+            var clonedContent = _contentService.CreateContentFromBlueprint(bluePrint, name);
+            clonedContent.ParentId = parent.Id;
+            var result = _contentService.SaveAndPublish(clonedContent);
+            return result.Content;
+        }
 
         /// <inheritdoc />
         public IContent CreateContent(string name, Guid parentId, string documentTypeAlias, CancellationToken cancellationToken)
         {
-            var parentContent = _contentService.GetById(parentId);
+
+               var parentContent = _contentService.GetById(parentId);
             return _contentService.CreateAndSave(name, parentContent, documentTypeAlias);
         }
 
@@ -183,7 +193,7 @@
         /// <inheritdoc />
         public IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModelData> contentModelList, IEnumerable<ContentModelData> comparedcontentModelList)
         {
-            return contentModelList.Select(x => x.Item.Id).Where(cm => !comparedcontentModelList.Select(ccm => ccm.Item.Id).Contains(cm)).ToList();
+            return contentModelList.Where(x=> x.Item != null).Select(x => x.Item.Id).Where(cm => !comparedcontentModelList.Select(ccm => ccm.Item.Id).Contains(cm)).ToList();
         }
     }
 }
