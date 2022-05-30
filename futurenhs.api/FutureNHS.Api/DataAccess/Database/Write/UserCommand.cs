@@ -78,7 +78,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 @$" SELECT
                                 [{nameof(MemberProfile.Id)}]                = member.Id,
                                 [{nameof(MemberProfile.FirstName)}]         = member.FirstName,
-                                [{nameof(MemberProfile.Surname)}]           = member.Surname,
+                                [{nameof(MemberProfile.LastName)}]           = member.Surname,
                                 [{nameof(MemberProfile.Pronouns)}]          = member.Pronouns,
                                 [{nameof(MemberProfile.ImageId)}]           = member.ImageId,
                                 [{nameof(MemberProfile.RoleId)}]            = memberInRole.RoleIdentifier,
@@ -229,7 +229,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(UserDto.LastLoginDateUtc)}]    = FORMAT(membershipUser.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(UserDto.Slug)}]                = membershipUser.Slug,
                                 [{nameof(UserDto.FirstName)}]           = membershipUser.FirstName,
-                                [{nameof(UserDto.Surname)}]             = membershipUser.Surname,
+                                [{nameof(UserDto.LastName)}]             = membershipUser.Surname,
                                 [{nameof(UserDto.Initials)}]            = membershipUser.Initials
 
                     FROM        [MembershipUser] membershipUser

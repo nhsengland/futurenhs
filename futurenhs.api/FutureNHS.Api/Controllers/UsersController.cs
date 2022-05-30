@@ -41,6 +41,18 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
+        [Route("users/{userId:guid}/users/{targetUserId:guid}")]
+        public async Task<IActionResult> GetMemberAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
+        {
+            var member = await _userDataProvider.GetMemberProfileAsync(targetUserId, cancellationToken);
+
+            if (member is null)
+                return NotFound();
+
+            return Ok(member);
+        }
+
+        [HttpGet]
         [Route("users/{userId:guid}/users/{targetUserId:guid}/update")]
         [TypeFilter(typeof(ETagFilter))]
         public async Task<IActionResult> GetMemberForUpdateAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)

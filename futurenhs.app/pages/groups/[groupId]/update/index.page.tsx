@@ -82,7 +82,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         try {
                             const [group] = await Promise.all([
-                                getGroup({ user, groupId, isForEdit: true }),
+                                getGroup({ user, groupId, isForUpdate: true }),
                             ])
                             const etag = group.headers.get('etag')
 

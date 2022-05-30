@@ -88,7 +88,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                      */
                     try {
                         const [userData] = await Promise.all([
-                            getSiteUser({ user, targetUserId }),
+                            getSiteUser({ user, targetUserId, isForUpdate: true }),
                         ])
 
                         props.siteUser = userData.data

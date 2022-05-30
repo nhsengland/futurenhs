@@ -97,7 +97,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                         user,
                                         groupId,
                                         folderId,
-                                        isForEdit: true,
+                                        isForUpdate: true,
                                     }),
                                 ])
                                 const etag = groupFolder.headers.get('etag')

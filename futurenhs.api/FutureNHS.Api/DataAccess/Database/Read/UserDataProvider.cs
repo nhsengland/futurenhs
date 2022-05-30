@@ -3,7 +3,10 @@ using FutureNHS.Api.Application.Application.HardCodedSettings;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.User;
+using FutureNHS.Api.Exceptions;
+using FutureNHS.Api.Models.Member;
 using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
@@ -93,6 +96,57 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             });
 
             return member;
+        }
+
+        public async Task<MemberProfile> GetMemberProfileAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(MemberProfile.Id)}]                = member.Id,
+                                [{nameof(MemberProfile.FirstName)}]         = member.FirstName,
+                                [{nameof(MemberProfile.LastName)}]           = member.Surname,
+                                [{nameof(MemberProfile.Pronouns)}]          = member.Pronouns,
+                                [{nameof(MemberProfile.ImageId)}]           = member.ImageId,
+                                [{nameof(ImageData.Id)}]                    = image.Id,
+                                [{nameof(ImageData.Height)}]                = image.Height,
+                                [{nameof(ImageData.Width)}]                 = image.Width,
+                                [{nameof(ImageData.FileName)}]              = image.FileName,
+                                [{nameof(ImageData.MediaType)}]             = image.MediaType
+				    
+                    FROM        [MembershipUser] member
+                    LEFT JOIN   Image image
+                        ON          image.Id = member.ImageId
+                    WHERE
+                                member.[Id] = @Id";
+
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                Id = userId,
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryAsync<MemberProfile, Image, MemberProfile>(query,
+                (group, image) =>
+                {
+                    if (image is not null)
+                    {
+                        var groupWithImage = @group with { Image = new ImageData(image, _options) };
+
+                        return groupWithImage;
+                    }
+
+                    return @group;
+
+                }, new
+                {
+                    Id = userId,
+                }, splitOn: "id");
+
+            var memberProfile = reader.FirstOrDefault() ?? throw new NotFoundException("Member not found.");
+
+            return memberProfile;
         }
     }
 }

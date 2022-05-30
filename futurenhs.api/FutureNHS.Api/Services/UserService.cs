@@ -280,11 +280,8 @@ namespace FutureNHS.Api.Services
                 {
                     throw new ArgumentNullException($"First name was not provided");
                 }
-                var lastNameFound = formValues.TryGetValue("lastName", out var surname);
-                if (lastNameFound is false)
-                {
-                    throw new ArgumentNullException($"Last name was not provided");
-                }
+                formValues.TryGetValue("lastName", out var surname);
+
                 var pronoundsFound = formValues.TryGetValue("pronouns", out var pronouns);
                 if (pronoundsFound is false)
                 {
