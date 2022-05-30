@@ -60,9 +60,7 @@ class loginPage extends basePage{
      * Function to logout the user and log in as a different one
      */
      switchUser(desiredUser){
-        helpers.click('//summary[@class="c-accordion_toggle c-site-header-nav_root-nav-trigger"]');
-        helpers.click('//a[@href="/log-out"]');
-        genericPage.selectDialogButton('confirm', 'logout');
+        this.logoutUser()
         this.loginUser(desiredUser)
     }
 }
