@@ -586,7 +586,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                             <LayoutColumn tablet={6}>
                                 <div className={generatedClasses.headerCallOut}>
                                     {headerPreviewBody && (
-                                        <h2 className="nhsuk-heading-l u-m-0">
+                                        <h2 className="nhsuk-heading-m u-m-0">
                                             {headerPreviewBody}
                                         </h2>
                                     )}
