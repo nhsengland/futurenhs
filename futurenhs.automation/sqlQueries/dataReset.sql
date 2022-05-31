@@ -151,7 +151,7 @@ BEGIN
 	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-public-group'), N'71f9a6ee-3e9e-4333-875c-86298d85d061', '49019191-6ACD-4CC4-9BC0-06027C65563E', (SELECT CreatedAtUTC FROM [dbo].[Group] WHERE [Slug] = 'automation-public-group'))
 	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-visual-regression-group'), N'70dae1a1-d322-422f-9a37-9b656c52bd45', '49019191-6ACD-4CC4-9BC0-06027C65563E', (SELECT CreatedAtUTC FROM [dbo].[Group] WHERE [Slug] = 'automation-visual-regression-group'))
 	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-editable-group'), N'2b0204c5-b8a2-4d17-8519-416bc8d358fd', '49019191-6ACD-4CC4-9BC0-06027C65563E', (SELECT CreatedAtUTC FROM [dbo].[Group] WHERE [Slug] = 'automation-editable-group'))
-	--INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-gtbr-group'), N'XXXXXXXXXXXXXXXX', '49019191-6ACD-4CC4-9BC0-06027C65563E', (SELECT CreatedAtUTC FROM [dbo].[Group] WHERE [Slug] = 'automation-gtbr-group')))
+	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-gtbr-group'), N'92c986bf-01f1-4fdb-9b6a-6ec495578b72', '49019191-6ACD-4CC4-9BC0-06027C65563E', (SELECT CreatedAtUTC FROM [dbo].[Group] WHERE [Slug] = 'automation-gtbr-group')))
 
 	/**
 	* INSERT AUTOMATION MEMBERSHIPUSERS
