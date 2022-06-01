@@ -77,8 +77,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             ;(props.contentPageId = contentPageId),
                                 (props.contentTemplateId = contentTemplateId)
-                            props.contentBlocks = contentBlocks.data
-                            props.contentTemplate = contentTemplate.data
+                            props.contentBlocks = contentBlocks?.data
+                            props.contentTemplate = contentTemplate?.data
                         } catch (error) {
                             console.log(error)
                             return handleSSRErrorProps({
