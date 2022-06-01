@@ -180,7 +180,7 @@ export const ContentBlockWrapper: (props: Props) => JSX.Element = ({
                                         }
                                     >
                                         <SVGIcon
-                                            name="icon-close"
+                                            name="icon-tick-circle"
                                             className={
                                                 generatedClasses.headerButtonIcon
                                             }
