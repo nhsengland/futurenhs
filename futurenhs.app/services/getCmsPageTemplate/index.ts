@@ -59,12 +59,12 @@ export const getCmsPageTemplate = async (
         )
     }
 
-    const template = apiData.data?.find(
+    const template = apiData?.data?.find(
         (template) => template.item.id === templateId
     )
 
-    serviceResponse.headers = headers
-    serviceResponse.data = template.content.blocks
+    serviceResponse.headers = headers;
+    serviceResponse.data = template?.content?.blocks ?? [];
 
     return serviceResponse
 }

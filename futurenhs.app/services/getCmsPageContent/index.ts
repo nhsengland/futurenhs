@@ -62,8 +62,8 @@ export const getCmsPageContent = async (
         )
     }
 
-    serviceResponse.headers = headers
-    serviceResponse.data = apiData?.data?.content?.blocks
+    serviceResponse.headers = headers;
+    serviceResponse.data = apiData?.data?.content?.blocks ?? [];
 
     return serviceResponse
 }

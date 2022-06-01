@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
     background-color: $color_nhsuk-blue;
-    z-index: 999;
+    z-index: 10;
 
     @include respond-to(desktop) {
         height: auto;
