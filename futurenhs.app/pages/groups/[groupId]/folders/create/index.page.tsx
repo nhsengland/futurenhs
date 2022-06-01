@@ -11,7 +11,7 @@ import { actions as actionConstants } from '@constants/actions'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import {
     selectCsrfToken,
     selectFormData,
@@ -26,7 +26,7 @@ import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { FormErrors } from '@appTypes/form'
 
-import { groupFolderForm } from '@formConfigs/group-folder'
+import { formTypes } from '@constants/forms'
 import { GroupCreateUpdateFolderTemplate } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate'
 import { Props } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate/interfaces'
 import { withTextContent } from '@hofs/withTextContent'
@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: withGroup({
             props,
-            getServerSideProps: withForms({
+            getServerSideProps: withTokens({
                 props,
                 routeId,
                 getServerSideProps: withTextContent({
@@ -68,7 +68,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const requestMethod: string =
                             selectRequestMethod(context)
 
-                        const form: any = props.forms[groupFolderForm.id]
+                        props.forms = {
+                            [formTypes.GROUP_FOLDER]: {}
+                        }
 
                         props.layoutId = layoutIds.GROUP
                         props.tabId = groupTabIds.FILES
@@ -105,7 +107,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          * handle server-side form POST
                          */
                         if (formData && requestMethod === requestMethods.POST) {
-                            form.initialValues = formData.getAll()
+                            props.forms[formTypes.GROUP_FOLDER].initialValues = formData.getAll()
 
                             const headers = getStandardServiceHeaders({
                                 csrfToken,
@@ -134,7 +136,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     getServiceErrorDataValidationErrors(error)
 
                                 if (validationErrors) {
-                                    form.errors = validationErrors
+                                    props.forms[formTypes.GROUP_FOLDER].errors = validationErrors
                                 } else {
                                     return handleSSRErrorProps({ props, error })
                                 }

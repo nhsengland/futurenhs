@@ -35,10 +35,7 @@ export const GroupUpdateTemplate: (props: Props) => JSX.Element = ({
     const [isChangeGroupPrivacyModalOpen, setIsChangeGroupPrivacyModalOpen] = useState(false)
     const [groupEditFormData, setGroupEditFormData] = useState({})
 
- 
-    const updateGroupFormValues: FormConfig = forms[formTypes.UPDATE_GROUP]
-
-    const formConfig: FormConfig = useFormConfig(formTypes.UPDATE_GROUP, updateGroupFormValues.initialValues, updateGroupFormValues.errors)
+    const formConfig: FormConfig = useFormConfig(formTypes.UPDATE_GROUP, forms[formTypes.UPDATE_GROUP])
     const [errors, setErrors] = useState(formConfig?.errors)
 
     const groupPrivacyField: FormField = getFormField(formConfig, 'isPublic');

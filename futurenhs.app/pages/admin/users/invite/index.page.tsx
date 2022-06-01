@@ -9,7 +9,7 @@ import { actions as actionConstants } from '@constants/actions'
 import { layoutIds } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import {
     selectFormData,
     selectCsrfToken,
@@ -21,7 +21,7 @@ import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { FormErrors } from '@appTypes/form'
 
-import { inviteUserForm } from '@formConfigs/invite-user'
+import { formTypes } from '@constants/forms'
 import { AdminUsersInviteTemplate } from '@components/_pageTemplates/AdminUsersInviteTemplate'
 import { Props } from '@components/_pageTemplates/GroupCreateDiscussionTemplate/interfaces'
 import { withTextContent } from '@hofs/withTextContent'
@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withForms({
+        getServerSideProps: withTokens({
             props,
             routeId,
             getServerSideProps: withTextContent({
@@ -52,7 +52,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const requestMethod: requestMethods =
                         selectRequestMethod(context)
 
-                    const form: any = props.forms[inviteUserForm.id]
+                    props.forms = {
+                        [formTypes.INVITE_USER]: {}
+                    }
 
                     props.layoutId = layoutIds.ADMIN
 
@@ -73,7 +75,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                      * Handle server-side form post
                      */
                     if (formData && requestMethod === requestMethods.POST) {
-                        form.initialValues = formData
+                        props.forms[formTypes.INVITE_USER].initialValues = formData
 
                         try {
                             const headers: any = getStandardServiceHeaders({
@@ -94,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 getServiceErrorDataValidationErrors(error)
 
                             if (validationErrors) {
-                                form.errors = validationErrors
+                                props.forms[formTypes.INVITE_USER].errors = validationErrors
                             } else {
                                 return handleSSRErrorProps({ props, error })
                             }

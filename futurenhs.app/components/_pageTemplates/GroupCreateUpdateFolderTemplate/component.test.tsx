@@ -6,6 +6,7 @@ import { groupFolderForm } from '@formConfigs/group-folder'
 import { routes } from '@jestMocks/generic-props'
 import { GroupCreateUpdateFolderTemplate } from './index'
 import { Props } from './interfaces'
+import forms from '@formConfigs/index'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -28,9 +29,7 @@ describe('Group folder create/update template', () => {
         },
         user: undefined,
         actions: [],
-        forms: {
-            'group-folder': groupFolderForm,
-        },
+        forms: forms,
         contentText: null,
         entityText: null,
         image: null,

@@ -44,9 +44,9 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
     const formConfig: FormConfig = useFormConfig(
         formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER,
         {
-            [`title-${blockId}`]: title,
+            initialValues: { [`title-${blockId}`]: title },
+            errors: initialErrors[blockId] ?? {}
         },
-        initialErrors[blockId] ?? {}
     )
 
     const generatedClasses: any = {
@@ -114,8 +114,8 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
         const blockIdToUse: string = childBlockId ?? blockId
         const content: Record<string, any> = childBlockId
             ? updatedBlock.content.blocks.find(
-                  (block) => block.item.id === childBlockId
-              )?.content ?? {}
+                (block) => block.item.id === childBlockId
+            )?.content ?? {}
             : updatedBlock.content
 
         /**
@@ -175,11 +175,13 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
                                 const formConfig: FormConfig = useFormConfig(
                                     formTypes.CONTENT_BLOCK_QUICK_LINK,
                                     {
-                                        [`linkText-${childBlockId}`]:
-                                            content?.linkText,
-                                        [`url-${childBlockId}`]: content?.url,
+                                        initialValues: {
+                                            [`linkText-${childBlockId}`]:
+                                                content?.linkText,
+                                            [`url-${childBlockId}`]: content?.url,
+                                        },
+                                        errors: initialErrors[childBlockId] ?? {}
                                     },
-                                    initialErrors[childBlockId] ?? {}
                                 )
 
                                 const shouldRenderMovePrevious: boolean =

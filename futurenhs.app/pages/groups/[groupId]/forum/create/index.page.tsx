@@ -11,7 +11,7 @@ import { actions as actionConstants } from '@constants/actions'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import {
     selectFormData,
     selectCsrfToken,
@@ -20,11 +20,11 @@ import {
     selectRequestMethod,
 } from '@selectors/context'
 import { postGroupDiscussion } from '@services/postGroupDiscussion'
+import { formTypes } from '@constants/forms'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { FormErrors } from '@appTypes/form'
 
-import { createDiscussionForm } from '@formConfigs/create-discussion'
 import { GroupCreateDiscussionTemplate } from '@components/_pageTemplates/GroupCreateDiscussionTemplate'
 import { Props } from '@components/_pageTemplates/GroupCreateDiscussionTemplate/interfaces'
 import { withTextContent } from '@hofs/withTextContent'
@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: withGroup({
             props,
-            getServerSideProps: withForms({
+            getServerSideProps: withTokens({
                 props,
                 routeId,
                 getServerSideProps: withTextContent({
@@ -62,7 +62,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const requestMethod: requestMethods =
                             selectRequestMethod(context)
 
-                        const form: any = props.forms[createDiscussionForm.id]
+                        props.forms = {
+                            [formTypes.CREATE_DISCUSSION]: {}
+                        }
 
                         props.layoutId = layoutIds.GROUP
                         props.tabId = groupTabIds.FORUM
@@ -85,7 +87,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          * Handle server-side form post
                          */
                         if (formData && requestMethod === requestMethods.POST) {
-                            form.initialValues = formData
+                            props.forms[formTypes.CREATE_DISCUSSION].initialValues = formData
 
                             try {
                                 const headers: any = getStandardServiceHeaders({
@@ -111,7 +113,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     getServiceErrorDataValidationErrors(error)
 
                                 if (validationErrors) {
-                                    form.errors = validationErrors
+                                    props.forms[formTypes.CREATE_DISCUSSION].errors = validationErrors
                                 } else {
                                     return handleSSRErrorProps({ props, error })
                                 }

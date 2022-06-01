@@ -7,7 +7,7 @@ import { withUser } from '@hofs/withUser'
 import { withGroup } from '@hofs/withGroup'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import { User } from '@appTypes/user'
 import { selectUser, selectParam } from '@selectors/context'
 import { getGroupHomePageCmsContentIds } from '@services/getGroupHomePageCmsContentIds'
@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: withGroup({
             props,
             routeId,
-            getServerSideProps: withForms({
+            getServerSideProps: withTokens({
                 props,
                 getServerSideProps: withTextContent({
                     props,

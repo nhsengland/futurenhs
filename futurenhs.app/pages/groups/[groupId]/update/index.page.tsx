@@ -14,7 +14,7 @@ import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
 import { withGroup } from '@hofs/withGroup'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import {
     selectFormData,
     selectMultiPartFormData,
@@ -47,6 +47,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
             getServerSideProps: withTextContent({
                 props,
                 routeId,
+                getServerSideProps: withTokens({
+                    props,
+                    routeId,
                     getServerSideProps: async (
                         context: GetServerSidePropsContext
                     ) => {
@@ -96,14 +99,14 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                         ImageId: group.data.imageId,
                                         ThemeId:
                                             group.data.themeId &&
-                                            themes[group.data.themeId]
+                                                themes[group.data.themeId]
                                                 ? [group.data.themeId]
                                                 : [defaultThemeId],
                                         isPublic: [group.data.isPublic]
                                     }
                                 }
                             }
-                         
+
                             /**
                              * Handle server-side form post
                              */
@@ -156,6 +159,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             }),
                         }
                     },
+                }),
             }),
         }),
     }),

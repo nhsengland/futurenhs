@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment'
 import { postGroupDiscussionCommentReply } from '@services/postGroupDiscussionCommentReply'
 import { putGroupDiscussionCommentLike } from '@services/putGroupDiscussionCommentLike'
-import { selectForm, selectFormErrors } from '@selectors/forms'
+import { selectFormErrors } from '@selectors/forms'
 import { actions as actionsConstants } from '@constants/actions'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { getGenericFormError } from '@helpers/util/form'
@@ -34,6 +34,7 @@ import { DiscussionComment } from '@appTypes/discussion'
 
 import { Props } from './interfaces'
 import { getStandardServiceHeaders } from '@helpers/fetch'
+import { useFormConfig } from '@hooks/useForm'
 
 /**
  * Group discussion template
@@ -61,10 +62,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const router = useRouter()
     const errorSummaryRef: any = useRef()
 
-    const commentFormConfig: FormConfig = selectForm(
-        forms,
-        formTypes.CREATE_DISCUSSION_COMMENT
-    )
+    const commentFormConfig: FormConfig = useFormConfig(formTypes.CREATE_DISCUSSION_COMMENT, forms[formTypes.CREATE_DISCUSSION_COMMENT])
     const [errors, setErrors] = useState(
         Object.assign(
             {},
@@ -122,8 +120,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const createdDate: string = dateTime({ value: created })
     const lastCommentUserName: string = modifiedBy?.text?.userName
     const lastCommentDate: string = dateTime({ value: modified })
-    const createCommentfields =
-        forms?.[formTypes.CREATE_DISCUSSION_COMMENT]?.steps[0]?.fields
+
 
     /**
      * Handle likes on comments

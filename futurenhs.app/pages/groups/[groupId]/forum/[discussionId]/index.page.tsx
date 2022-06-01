@@ -9,7 +9,7 @@ import { layoutIds, groupTabIds } from '@constants/routes'
 import { requestMethods } from '@constants/fetch'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import { withGroup } from '@hofs/withGroup'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupDiscussion } from '@services/getGroupDiscussion'
@@ -48,7 +48,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: withGroup({
             props,
-            getServerSideProps: withForms({
+            getServerSideProps: withTokens({
                 props,
                 routeId,
                 getServerSideProps: withTextContent({
@@ -73,10 +73,16 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             selectRequestMethod(context)
                         const csrfToken: string = selectCsrfToken(context)
 
+                        
+                        props.forms = {
+                            [formTypes.CREATE_DISCUSSION_COMMENT]: {},
+                            [formTypes.CREATE_DISCUSSION_COMMENT_REPLY]: {}
+                        }
+                        
                         const commentForm: any =
-                            props.forms[createDiscussionCommentForm.id]
+                            props.forms[formTypes.CREATE_DISCUSSION_COMMENT]
                         const replyForm: any =
-                            props.forms[createDiscussionCommentReplyForm.id]
+                            props.forms[formTypes.CREATE_DISCUSSION_COMMENT_REPLY]
 
                         props.discussionId = discussionId
                         props.layoutId = layoutIds.GROUP

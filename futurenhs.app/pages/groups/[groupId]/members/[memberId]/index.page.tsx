@@ -7,7 +7,7 @@ import { layoutIds, groupTabIds } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupMember } from '@services/getGroupMember'
 import { selectUser, selectParam } from '@selectors/context'
@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: withGroup({
             props,
-            getServerSideProps: withForms({
+            getServerSideProps: withTokens({
                 props,
                 getServerSideProps: withTextContent({
                     props,
