@@ -27,7 +27,8 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 }) => {
     const errorSummaryRef: any = useRef()
 
-    const [blocks, setBlocks] = useState(contentBlocks)
+    const [blocks, setBlocks] = useState(contentBlocks ?? [])
+    const [template, setTemplate] = useState(contentTemplate ?? [])
     const [errors, setErrors] = useState({})
 
     const isGroupAdmin: boolean =
@@ -136,7 +137,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
             )}
             <ContentBlockManager
                 blocks={blocks}
-                blocksTemplate={contentTemplate}
+                blocksTemplate={template}
                 text={{
                     headerReadBody:
                         'You are a Group Admin of this page. Please click edit to switch to editing mode.',

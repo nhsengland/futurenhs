@@ -44,15 +44,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     className,
 }) => {
 
-    const getTypeSafeBlockList: any = (sourceBlocks: Array<CmsContentBlock>): Array<CmsContentBlock> => Array.isArray(sourceBlocks) ? sourceBlocks : [];
-
     const localErrors: any = useRef({});
     const blockUpdateCache: any = useRef({});
     const blockUpdateCacheTimeOut: any = useRef(null);
 
     const [mode, setMode] = useState(initialState);
-    const [referenceBlocks, setReferenceBlocks] = useState(getTypeSafeBlockList(sourceBlocks));
-    const [blocks, setBlocks] = useState(getTypeSafeBlockList(sourceBlocks));
+    const [referenceBlocks, setReferenceBlocks] = useState(sourceBlocks);
+    const [blocks, setBlocks] = useState(sourceBlocks);
     const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
     const [isDiscardChangesModalOpen, setIsDiscardChangesModalOpen] = useState(false);
     const [blockIdsInEditMode, setBlockIdsInEditMode] = useState([]);
@@ -74,14 +72,12 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
             headerPublishUpdateButton,
             createButton,
             cancelCreateButton } = text ?? {};
-    const { background } = useTheme(themeId);
 
     const generatedClasses: any = {
         wrapper: classNames(className),
         header: classNames('u-mb-14', 'u-no-js-hidden'),
         headerCallOut: classNames(
-            'nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full',
-            `u-border-l-theme-${background}`
+            'nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full'
         ),
         headerCallOutText: classNames('nhsuk-heading-m u-text-bold'),
         headerCallOutButton: classNames(
@@ -202,8 +198,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     )
                 )
 
-                block.item.id = createdBlockId
-                block.content.blocks = []
+                block.item.id = createdBlockId;
+
+                if(block.content.blocks){
+
+                    block.content.blocks = [];
+                    
+                }
 
                 updatedBlocks.push(block)
 
@@ -431,28 +432,6 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     }
 
     /**
-     * Set non-active blocks to read mode if they have no errors
-     */
-    const handleDocumentClick = (event): void => {
-        let isEventInActiveBlock: boolean = false
-
-        blockIdsInEditMode.forEach((blockId: string) => {
-            if (document.getElementById(blockId)?.contains(event.target)) {
-                isEventInActiveBlock = true
-            }
-        })
-
-        if (
-            mode === cprud.UPDATE &&
-            blockIdsInEditMode.length > 0 &&
-            Object.keys(localErrors.current).length === 0 &&
-            !isEventInActiveBlock
-        ) {
-            setBlockIdsInEditMode([])
-        }
-    }
-
-    /**
      * Render block content
      */
     const renderBlockContent = (block: CmsContentBlock): JSX.Element => {
@@ -523,26 +502,16 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        setBlocks(getTypeSafeBlockList(sourceBlocks));
-        setReferenceBlocks(getTypeSafeBlockList(sourceBlocks));
+        setBlocks(sourceBlocks);
+        setReferenceBlocks(sourceBlocks);
 
     }, [sourceBlocks]);
-
-    /**
-     * Leave edit mode on click outside
-     */
-    useEffect(() => {
-        document.addEventListener('click', handleDocumentClick, false)
-
-        return () => {
-            document.removeEventListener('click', handleDocumentClick, false)
-        }
-    }, [mode, blockIdsInEditMode])
 
     /**
      * Conditionally reset blocks from edit mode
      */
     useEffect(() => {
+
         if (
             blockIdsInEditMode.length > 0 &&
             (mode === cprud.READ || mode === cprud.PREVIEW)
