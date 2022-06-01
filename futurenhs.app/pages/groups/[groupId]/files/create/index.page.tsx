@@ -11,7 +11,7 @@ import { actions as actionConstants } from '@constants/actions'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import {
     selectCsrfToken,
     selectMultiPartFormData,
@@ -25,7 +25,7 @@ import { getGroupFolder } from '@services/getGroupFolder'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 
-import { createFileForm } from '@formConfigs/create-file'
+import { formTypes } from '@constants/forms'
 import { GroupCreateFileTemplate } from '@components/_pageTemplates/GroupCreateFileTemplate'
 import { Props } from '@components/_pageTemplates/GroupCreateFileTemplate/interfaces'
 import { withTextContent } from '@hofs/withTextContent'
@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: withGroup({
             props,
             routeId,
-            getServerSideProps: withForms({
+            getServerSideProps: withTokens({
                 props,
                 routeId,
                 getServerSideProps: withTextContent({
@@ -67,7 +67,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         const requestMethod: requestMethods =
                             selectRequestMethod(context)
 
-                        const form: any = props.forms[createFileForm.id]
+                        props.forms = {
+                            [formTypes.CREATE_FILE]: {}
+                        }
 
                         props.layoutId = layoutIds.GROUP
                         props.tabId = groupTabIds.FILES
@@ -127,7 +129,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 getServiceErrorDataValidationErrors(error)
 
                             if (validationErrors) {
-                                form.errors = validationErrors
+                                props.forms[formTypes.CREATE_FILE].errors = validationErrors
                             } else {
                                 return handleSSRErrorProps({ props, error })
                             }

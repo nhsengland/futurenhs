@@ -9,7 +9,7 @@ import { requestMethods } from '@constants/fetch'
 import { actions as actionConstants } from '@constants/actions'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import { withTextContent } from '@hofs/withTextContent'
 import {
     selectCsrfToken,
@@ -22,9 +22,9 @@ import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { FormErrors } from '@appTypes/form'
 
-import { createGroupForm } from '@formConfigs/create-group'
 import { AdminCreateGroupTemplate } from '@components/_pageTemplates/AdminCreateGroupTemplate'
 import { Props } from '@components/_pageTemplates/AdminCreateGroupTemplate/interfaces'
+import { formTypes } from '@constants/forms'
 
 const routeId: string = '3436b6a3-6cb0-4b76-982d-dfc0c487bc52'
 const props: Partial<Props> = {}
@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withForms({
+        getServerSideProps: withTokens({
             props,
             routeId,
             getServerSideProps: withTextContent({
@@ -50,7 +50,10 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     const formData: FormData = selectMultiPartFormData(context)
                     const requestMethod: string = selectRequestMethod(context)
 
-                    const form: any = props.forms[createGroupForm.id]
+                    props.forms = {
+                        [formTypes.CREATE_GROUP]: {}
+                    }
+                    const form: any = props.forms[formTypes.CREATE_GROUP]
 
                     /**
                      * Ticks checkbox by default

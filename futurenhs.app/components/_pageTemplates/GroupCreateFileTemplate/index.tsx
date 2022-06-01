@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { formTypes } from '@constants/forms'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { getGenericFormError } from '@helpers/util/form'
-import { selectForm } from '@selectors/forms'
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
@@ -13,6 +12,7 @@ import { postGroupFile } from '@services/postGroupFile'
 import { FormErrors, FormConfig } from '@appTypes/form'
 
 import { Props } from './interfaces'
+import { useFormConfig } from '@hooks/useForm'
 
 /**
  * Group create file template
@@ -29,7 +29,7 @@ export const GroupCreateFileTemplate: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
 
-    const formConfig: FormConfig = selectForm(forms, formTypes.CREATE_FILE)
+    const formConfig: FormConfig = useFormConfig(formTypes.CREATE_FILE, forms[formTypes.CREATE_FILE])
     const [errors, setErrors] = useState(formConfig?.errors)
 
     const { text } = folder ?? {}

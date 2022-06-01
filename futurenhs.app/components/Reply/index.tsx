@@ -5,11 +5,11 @@ import { formTypes } from '@constants/forms'
 import { Form } from '@components/Form'
 import { Accordion } from '@components/Accordion'
 import { SVGIcon } from '@components/SVGIcon'
-import { selectForm } from '@selectors/forms'
 import forms from '@formConfigs/index'
 import { FormConfig, FormErrors } from '@appTypes/form'
 
 import { Props } from './interfaces'
+import { useFormConfig } from '@hooks/useForm'
 
 export const Reply: (props: Props) => JSX.Element = ({
     targetId,
@@ -21,9 +21,9 @@ export const Reply: (props: Props) => JSX.Element = ({
 }) => {
     const wrapperRef = useRef()
 
-    const formConfig: FormConfig = selectForm(
-        forms,
-        formTypes.CREATE_DISCUSSION_COMMENT_REPLY
+    const formConfig: FormConfig = useFormConfig(
+        formTypes.CREATE_DISCUSSION_COMMENT_REPLY,
+        forms[formTypes.CREATE_DISCUSSION_COMMENT_REPLY]
     )
 
     const [isReplyAccordionOpen, setIsReplyAccordionOpen] = useState(false)

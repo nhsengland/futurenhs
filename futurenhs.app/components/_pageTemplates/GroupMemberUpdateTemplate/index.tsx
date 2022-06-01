@@ -19,6 +19,7 @@ import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { getGenericFormError } from '@helpers/util/form'
 import { putGroupMemberRole } from '@services/putGroupMemberRole'
+import { useFormConfig } from '@hooks/useForm'
 
 /**
  * Group member template
@@ -41,17 +42,12 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         setIsDeleteUserConfirmationModalOpen,
     ] = useState(false)
 
-    const updateFormConfig: FormConfig = selectForm(
-        forms,
-        formTypes.UPDATE_GROUP_MEMBER
-    )
-    const deleteFormConfig: FormConfig = selectForm(
-        forms,
-        formTypes.DELETE_GROUP_MEMBER
-    )
+    const updateFormConfig: FormConfig = forms[formTypes.UPDATE_GROUP_MEMBER]
+    
+    const deleteFormConfig: FormConfig = useFormConfig(formTypes.DELETE_GROUP_MEMBER, forms[formTypes.DELETE_GROUP_MEMBER])
 
     const [errors, setErrors] = useState(
-        updateFormConfig.errors || deleteFormConfig.errors
+        updateFormConfig?.errors || deleteFormConfig?.errors
     )
 
     const {

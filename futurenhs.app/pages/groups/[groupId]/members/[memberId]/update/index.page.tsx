@@ -8,7 +8,7 @@ import { layoutIds, groupTabIds } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupMember } from '@services/getGroupMember'
 import { getGroupRoles } from '@services/getGroupRoles'
@@ -32,6 +32,8 @@ import { getStandardServiceHeaders } from '@helpers/fetch'
 import { putGroupMemberRole } from '@services/putGroupMemberRole'
 import { deleteGroupMember } from '@services/deleteGroupMember'
 import { getServiceErrorDataValidationErrors } from '@services/index'
+import { selectForm } from '@selectors/forms'
+import formConfigs from '@formConfigs/index'
 
 const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef'
 const props: Partial<Props> = {}
@@ -45,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: withGroup({
             props,
-            getServerSideProps: withForms({
+            getServerSideProps: withTokens({
                 props,
                 getServerSideProps: withTextContent({
                     props,
@@ -76,12 +78,17 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             routeParams.MEMBERID
                         )
 
+                        props.forms = {
+                            [formTypes.UPDATE_GROUP_MEMBER]: selectForm(formConfigs, formTypes.UPDATE_GROUP_MEMBER),
+                            [formTypes.DELETE_GROUP_MEMBER]: {}
+                        }
+                        
                         const form: any =
                             props.forms[formTypes.UPDATE_GROUP_MEMBER]
 
                         const deleteMemberForm: any =
                             props.forms[formTypes.DELETE_GROUP_MEMBER]
-
+                            
                         /**
                          * Get data from services
                          */
@@ -97,7 +104,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             ])
                             const etag = memberData.headers?.get('etag')
                             props.etag = etag
-
+                            
                             props.member = memberData.data
                             props.layoutId = layoutIds.GROUP
                             props.tabId = groupTabIds.MEMBERS

@@ -15,8 +15,8 @@ export const PendingMemberActions: (props: Props) => JSX.Element = ({
 
     const { acceptMember, rejectMember } = text
 
-    const acceptForm: FormConfig = useFormConfig(formTypes.ACCEPT_GROUP_MEMBER, { MembershipUserId: memberId })
-    const rejectForm: FormConfig = useFormConfig(formTypes.REJECT_GROUP_MEMBER, { MembershipUserId: memberId })
+    const acceptForm: FormConfig = useFormConfig(formTypes.ACCEPT_GROUP_MEMBER, { initialValues: { MembershipUserId: memberId } })
+    const rejectForm: FormConfig = useFormConfig(formTypes.REJECT_GROUP_MEMBER, { initialValues: { MembershipUserId: memberId } })
     const csrfToken: string = useCsrf()
 
 

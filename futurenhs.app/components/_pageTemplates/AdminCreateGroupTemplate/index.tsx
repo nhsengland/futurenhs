@@ -12,6 +12,7 @@ import { postGroup } from '@services/postGroup'
 import { FormConfig, FormErrors } from '@appTypes/form'
 
 import { Props } from './interfaces'
+import { useFormConfig } from '@hooks/useForm'
 
 /**
  * Admin create group template
@@ -28,7 +29,7 @@ export const AdminCreateGroupTemplate: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
 
-    const formConfig: FormConfig = selectForm(forms, formTypes.CREATE_GROUP)
+    const formConfig: FormConfig = useFormConfig(formTypes.CREATE_GROUP, forms[formTypes.CREATE_GROUP])
     const [errors, setErrors] = useState(formConfig.errors)
 
     const { secondaryHeading } = contentText ?? {}

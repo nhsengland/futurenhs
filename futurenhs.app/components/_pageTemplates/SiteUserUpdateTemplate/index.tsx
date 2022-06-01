@@ -16,6 +16,7 @@ import { getServiceErrorDataValidationErrors } from '@services/index'
 import { getGenericFormError } from '@helpers/util/form'
 import { useRouter } from 'next/router'
 import { putSiteUserRole } from '@services/putSiteUserRole'
+import { useFormConfig } from '@hooks/useForm'
 
 export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
     contentText,
@@ -34,14 +35,9 @@ export const SiteUserUpdateTemplate: (props: Props) => JSX.Element = ({
         actionsConstants.SITE_ADMIN_MEMBERS_EDIT
     )
 
-    const profileFormConfig: FormConfig = selectForm(
-        forms,
-        formTypes.UPDATE_SITE_USER
-    )
-    const roleFormConfig: FormConfig = selectForm(
-        forms,
-        formTypes.UPDATE_SITE_USER_ROLE
-    )
+    const profileFormConfig: FormConfig = useFormConfig(formTypes.UPDATE_SITE_USER, forms[formTypes.UPDATE_SITE_USER])
+
+    const roleFormConfig: FormConfig = forms[formTypes.UPDATE_SITE_USER_ROLE]
 
     const [errors, setErrors] = useState(
         Object.assign(

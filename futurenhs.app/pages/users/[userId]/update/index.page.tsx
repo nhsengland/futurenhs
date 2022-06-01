@@ -21,7 +21,7 @@ import { formTypes } from '@constants/forms'
 import { FormConfig, FormOptions } from '@appTypes/form'
 import { setFormConfigOptions } from '@helpers/util/form'
 import { Props } from '@components/_pageTemplates/SiteUserTemplate/interfaces'
-import { withForms } from '@hofs/withForms'
+import { withTokens } from '@hofs/withTokens'
 import { requestMethods } from '@constants/fetch'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { putSiteUser } from '@services/putSiteUser'
@@ -32,6 +32,8 @@ import { SiteUserUpdateTemplate } from '@components/_pageTemplates/SiteUserUpdat
 import { actions } from '@constants/actions'
 import { putSiteUserRole } from '@services/putSiteUserRole'
 import { getSiteUserRoles } from '@services/getSiteUserRoles'
+import { selectForm } from '@selectors/forms'
+import formConfigs from '@formConfigs/index'
 
 const routeId: string = '9e86c5cc-6836-4319-8d9d-b96249d4c909'
 const props: Partial<Props> = {}
@@ -43,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withForms({
+        getServerSideProps: withTokens({
             props,
             getServerSideProps: withTextContent({
                 props,
@@ -76,6 +78,10 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         selectRequestMethod(context)
 
                     props.layoutId = layoutIds.ADMIN
+                    props.forms = {
+                        [formTypes.UPDATE_SITE_USER]: {},
+                        [formTypes.UPDATE_SITE_USER_ROLE]: selectForm(formConfigs, formTypes.UPDATE_SITE_USER_ROLE)
+                    }
 
                     const profileForm: FormConfig =
                         props.forms[formTypes.UPDATE_SITE_USER]
@@ -135,7 +141,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     }
                                 })
 
-                            const updatedRolesForm = setFormConfigOptions(
+                            const updatedRolesForm: FormConfig = setFormConfigOptions(
                                 roleForm,
                                 0,
                                 'newRoleId',
@@ -188,7 +194,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         ) {
                             if (
                                 currentValues.body?.['_form-id'] ===
-                                profileForm.id
+                                formTypes.UPDATE_SITE_USER
                             ) {
                                 profileForm.initialValues =
                                     currentValues.getAll()

@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { getGenericFormError } from '@helpers/util/form'
-import { selectForm } from '@selectors/forms'
 import { formTypes } from '@constants/forms'
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
@@ -11,6 +10,7 @@ import { postSiteUserInvite } from '@services/postSiteUserInvite'
 import { FormConfig, FormErrors } from '@appTypes/form'
 
 import { Props } from './interfaces'
+import { useFormConfig } from '@hooks/useForm'
 
 /**
  * Admin invite user template
@@ -25,8 +25,9 @@ export const AdminUsersInviteTemplate: (props: Props) => JSX.Element = ({
         postSiteUserInvite: postSiteUserInvite,
     },
 }) => {
-    const formConfig: FormConfig = selectForm(forms, formTypes.INVITE_USER)
-    const [errors, setErrors] = useState(formConfig.errors)
+    
+    const formConfig: FormConfig = useFormConfig(formTypes.INVITE_USER, forms[formTypes.INVITE_USER])
+    const [errors, setErrors] = useState(formConfig?.errors)
 
     const { secondaryHeading } = contentText ?? {}
 

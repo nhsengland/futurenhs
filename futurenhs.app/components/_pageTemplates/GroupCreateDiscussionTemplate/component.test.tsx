@@ -6,6 +6,7 @@ import { createDiscussionForm } from '@formConfigs/create-discussion'
 import { routes } from '@jestMocks/generic-props'
 import { GroupCreateDiscussionTemplate } from './index'
 import { Props } from './interfaces'
+import forms from '@formConfigs/index'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -21,9 +22,7 @@ describe('Group create discussion template', () => {
         folderId: 'mockId',
         user: undefined,
         actions: [],
-        forms: {
-            'create-discussion': createDiscussionForm,
-        },
+        forms: forms,
         contentText: {
             secondaryHeading: 'Mock secondary heading',
         },
