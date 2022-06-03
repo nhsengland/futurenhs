@@ -1,4 +1,4 @@
 export interface Props {
-    timeOut?: number;
+    speed?: 'slow' | 'medium' | 'fast';
     className?: string;
 }
