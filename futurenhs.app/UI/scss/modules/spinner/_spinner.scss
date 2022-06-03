@@ -1,0 +1,41 @@
+.c-spinner {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background-color: $white;
+    border-radius: 50%;
+    opacity: 95%;
+    box-shadow: 0 0 $nhsuk-spacing-point-1 0 $black-tint;
+
+    &_item {
+        display: block;
+        position: absolute;
+        top: 40%;
+        left: 40%;
+        width: 20%;
+        height: 20%;
+
+        &:nth-child(1) {
+            transform: rotate(90deg) translate(-170%) rotate(135deg);
+            fill: $grass;
+            opacity: 40%;
+        }
+
+        &:nth-child(2) {
+            transform: rotate(135deg) translate(-170%) rotate(135deg);
+            fill: $grass;
+            opacity: 75%;
+        }
+
+        &:nth-child(3) {
+            transform: rotate(180deg) translate(-170%) rotate(135deg);
+            fill: $grass;
+        }
+
+        &:nth-child(4) {
+            transform: rotate(225deg) translate(-170%) rotate(135deg);
+            fill: $blue;
+        }
+    }
+}

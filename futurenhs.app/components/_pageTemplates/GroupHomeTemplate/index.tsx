@@ -25,6 +25,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     contentBlocks,
     themeId,
 }) => {
+
     const errorSummaryRef: any = useRef()
 
     const [blocks, setBlocks] = useState(contentBlocks ?? [])
@@ -32,8 +33,8 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     const [errors, setErrors] = useState({})
 
     const isGroupAdmin: boolean =
-        actions.includes(actionConstants.GROUPS_EDIT) ||
-        actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT)
+    actions.includes(actionConstants.GROUPS_EDIT) ||
+    actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT)
 
     const generatedClasses: any = {
         wrapper: classNames('c-page-body'),

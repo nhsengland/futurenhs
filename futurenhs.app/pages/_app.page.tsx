@@ -1,6 +1,6 @@
 import '../UI/scss/screen.scss'
 
-import React, { useEffect, useState, useRef, lazy, Suspense } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import App from 'next/app'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
@@ -9,6 +9,7 @@ import ErrorPage from '@pages/500.page'
 import { StandardLayout } from '@components/_pageLayouts/StandardLayout'
 import { GroupLayout } from '@components/_pageLayouts/GroupLayout'
 import { AdminLayout } from '@components/_pageLayouts/AdminLayout'
+import { Loader } from '@components/Loader';
 import { layoutIds } from '@constants/routes'
 import formConfigs from '@formConfigs/index'
 import { themes } from '@constants/themes'
@@ -17,6 +18,7 @@ import { ThemesContext, FormsContext } from '@contexts/index'
 const CustomApp = ({ Component, pageProps }) => {
 
     const activeRequests: any = useRef([]);
+    const loadingTimeOut: any = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter()
@@ -38,8 +40,6 @@ const CustomApp = ({ Component, pageProps }) => {
     let hasFormErrors: boolean = false
     let headTitle: string = pageProps.pageTitle || pageProps.contentText?.title;
 
-    const Loading = lazy(() => import('../components/Loading/index'))
-
     useEffect(() => {
 
         /*
@@ -56,18 +56,20 @@ const CustomApp = ({ Component, pageProps }) => {
         });
 
         /*
- * Listen for fetch events and render loading component on long running requests
- */
+        * Listen for fetch events and render loading component on long running requests
+        */
         (function (proxy, fetch): void {
 
             proxy.fetch = function (url: string) {
                 var out = fetch.apply(this, arguments);
 
                 activeRequests.current.push(url);
+                loadingTimeOut.current = window.setTimeout(() => setIsLoading(true), 1000);
                 setIsLoading(true);
 
                 out.then(() => {
 
+                    loadingTimeOut.current = null;
                     activeRequests.current = activeRequests.current.filter(item => item !== url);
                     !activeRequests.current.length && setIsLoading(false);
 
@@ -99,9 +101,7 @@ const CustomApp = ({ Component, pageProps }) => {
                         <ErrorPage statusCode={500} />
                     </StandardLayout>
                     {isLoading &&
-                        <Suspense fallback={() => { }}>
-                            <Loading />
-                        </Suspense>
+                        <Loader />
                     }
                 </FormsContext.Provider>
             </ThemesContext.Provider>
@@ -119,9 +119,7 @@ const CustomApp = ({ Component, pageProps }) => {
                         <Component {...pageProps} key={router.asPath} />
                     </GroupLayout>
                     {isLoading &&
-                        <Suspense fallback={() => { }}>
-                            <Loading />
-                        </Suspense>
+                        <Loader />
                     }
                 </FormsContext.Provider>
             </ThemesContext.Provider>
@@ -139,9 +137,7 @@ const CustomApp = ({ Component, pageProps }) => {
                         <Component {...pageProps} key={router.asPath} />
                     </AdminLayout>
                     {isLoading &&
-                        <Suspense fallback={() => { }}>
-                            <Loading />
-                        </Suspense>
+                        <Loader />
                     }
                 </FormsContext.Provider>
             </ThemesContext.Provider>
@@ -158,9 +154,7 @@ const CustomApp = ({ Component, pageProps }) => {
                     <Component {...pageProps} key={router.asPath} />
                 </StandardLayout>
                 {isLoading &&
-                    <Suspense fallback={() => { }}>
-                        <Loading />
-                    </Suspense>
+                    <Loader />
                 }
             </FormsContext.Provider>
         </ThemesContext.Provider>
