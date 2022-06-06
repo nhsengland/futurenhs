@@ -9,6 +9,7 @@ import { PhaseBanner } from '@components/PhaseBanner'
 import { BreadCrumb } from '@components/BreadCrumb'
 import { Footer } from '@components/Footer'
 import { MainNav } from '@components/MainNav'
+import { Loader } from '@components/Loader'
 import { LayoutWidthContainer } from '@components/LayoutWidthContainer'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
@@ -18,6 +19,7 @@ import { mainNavMenuList, footerNavMenuList } from '@constants/navigation'
 import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb'
 import { BreadCrumbList } from '@appTypes/routing'
 import { useMediaQuery } from '@hooks/useMediaQuery'
+import { useLoading } from '@hooks/useLoading'
 
 import { Props } from './interfaces'
 
@@ -36,6 +38,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE)
+    const isLoading: boolean = useLoading().isLoading;
 
     const currentPathName: string = router?.pathname
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || ''
@@ -83,6 +86,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames(
             'u-flex-grow',
+            'u-relative',
             {
                 ['u-bg-theme-3']: user,
                 ['u-bg-theme-1']: !user,
@@ -128,6 +132,9 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 searchTerm={searchTerm}
             />
             <main className={generatedClasses.wrapper}>
+                {isLoading &&
+                    <Loader delay={1000} />
+                }
                 {shouldRenderPhaseBanner && (
                     <div className="u-bg-theme-3">
                         <LayoutWidthContainer>
