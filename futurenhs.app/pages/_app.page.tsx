@@ -13,12 +13,11 @@ import { Loader } from '@components/Loader';
 import { layoutIds } from '@constants/routes'
 import formConfigs from '@formConfigs/index'
 import { themes } from '@constants/themes'
-import { ThemesContext, FormsContext } from '@contexts/index'
+import { ThemesContext, FormsContext, LoadingContext } from '@contexts/index'
 
 const CustomApp = ({ Component, pageProps }) => {
 
     const activeRequests: any = useRef([]);
-    const loadingTimeOut: any = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter()
@@ -31,6 +30,13 @@ const CustomApp = ({ Component, pageProps }) => {
 
     const themesContextConfig: Record<string, any> = {
         themes: themes,
+    }
+
+    const loadingContextConfig: Record<string, any> = {
+        isLoading,
+        text: {
+            loadingMessage: ''
+        }
     }
 
     const hasServerError: boolean =
@@ -61,15 +67,13 @@ const CustomApp = ({ Component, pageProps }) => {
         (function (proxy, fetch): void {
 
             proxy.fetch = function (url: string) {
-                var out = fetch.apply(this, arguments);
+                const out = fetch.apply(this, arguments);
 
                 activeRequests.current.push(url);
-                loadingTimeOut.current = window.setTimeout(() => setIsLoading(true), 1000);
                 setIsLoading(true);
 
                 out.then(() => {
 
-                    loadingTimeOut.current = null;
                     activeRequests.current = activeRequests.current.filter(item => item !== url);
                     !activeRequests.current.length && setIsLoading(false);
 
@@ -97,12 +101,11 @@ const CustomApp = ({ Component, pageProps }) => {
         return (
             <ThemesContext.Provider value={themesContextConfig}>
                 <FormsContext.Provider value={formsContextConfig}>
-                    <StandardLayout {...pageProps} user={null}>
-                        <ErrorPage statusCode={500} />
-                    </StandardLayout>
-                    {isLoading &&
-                        <Loader />
-                    }
+                    <LoadingContext.Provider value={loadingContextConfig}>
+                        <StandardLayout {...pageProps} user={null}>
+                            <ErrorPage statusCode={500} />
+                        </StandardLayout>
+                    </LoadingContext.Provider>
                 </FormsContext.Provider>
             </ThemesContext.Provider>
         )
@@ -112,15 +115,14 @@ const CustomApp = ({ Component, pageProps }) => {
         return (
             <ThemesContext.Provider value={themesContextConfig}>
                 <FormsContext.Provider value={formsContextConfig}>
-                    <GroupLayout {...pageProps}>
-                        <Head>
-                            <title>{headTitle}</title>
-                        </Head>
-                        <Component {...pageProps} key={router.asPath} />
-                    </GroupLayout>
-                    {isLoading &&
-                        <Loader />
-                    }
+                    <LoadingContext.Provider value={loadingContextConfig}>
+                        <GroupLayout {...pageProps}>
+                            <Head>
+                                <title>{headTitle}</title>
+                            </Head>
+                            <Component {...pageProps} key={router.asPath} />
+                        </GroupLayout>
+                    </LoadingContext.Provider>
                 </FormsContext.Provider>
             </ThemesContext.Provider>
         )
@@ -130,15 +132,14 @@ const CustomApp = ({ Component, pageProps }) => {
         return (
             <ThemesContext.Provider value={themesContextConfig}>
                 <FormsContext.Provider value={formsContextConfig}>
+                    <LoadingContext.Provider value={loadingContextConfig}>
                     <AdminLayout {...pageProps}>
                         <Head>
                             <title>{headTitle}</title>
                         </Head>
                         <Component {...pageProps} key={router.asPath} />
                     </AdminLayout>
-                    {isLoading &&
-                        <Loader />
-                    }
+                    </LoadingContext.Provider>
                 </FormsContext.Provider>
             </ThemesContext.Provider>
         )
@@ -147,15 +148,14 @@ const CustomApp = ({ Component, pageProps }) => {
     return (
         <ThemesContext.Provider value={themesContextConfig}>
             <FormsContext.Provider value={formsContextConfig}>
+                <LoadingContext.Provider value={loadingContextConfig}>
                 <StandardLayout {...pageProps}>
                     <Head>
                         <title>{headTitle}</title>
                     </Head>
                     <Component {...pageProps} key={router.asPath} />
                 </StandardLayout>
-                {isLoading &&
-                    <Loader />
-                }
+                </LoadingContext.Provider>
             </FormsContext.Provider>
         </ThemesContext.Provider>
     )
