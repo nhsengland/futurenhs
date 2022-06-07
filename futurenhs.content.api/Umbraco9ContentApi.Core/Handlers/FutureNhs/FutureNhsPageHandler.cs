@@ -42,7 +42,9 @@
                 ? pageParentGuid
                 : pageFolderGuid;
 
-            return new ApiResponse<string>().Success(_futureNhsContentService.CreateContent(pageName, parentId, GeneralWebPage.ModelTypeAlias, cancellationToken).Key.ToString(), "Page created successfully.");
+            var content = _futureNhsContentService.CreateContent(pageName, parentId, GeneralWebPage.ModelTypeAlias, cancellationToken);
+
+            return new ApiResponse<string>().Success(content.Key.ToString(), "Page created successfully.");
         }
 
         /// <inheritdoc />
