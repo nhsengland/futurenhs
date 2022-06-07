@@ -47,7 +47,7 @@ Feature: Search
 
 
     Scenario: FNHS100 - Search for a Group That Doesn't Exist
-        When I search for 'Automation Group'
+        When I search for 'Automaton Group'
         And there are '0' search results displayed
         And the 'Sorry no results found' textual value is displayed
 

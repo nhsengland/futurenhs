@@ -22,7 +22,6 @@ Feature: groupAdmin
         And the 'This group currently has no outstanding membership requests' textual value is displayed
         And the 'Group Members' table exists
 
-
     Scenario Outline: FNHS114 - Edit Page Permissions Validation
         Given I have logged off as the current user
         And I have logged in as a '<user>'

@@ -25,7 +25,6 @@ Feature: mobileNavigation
         And the 'Collaborate without boundaries' header is displayed
         And the 'Automation Admin Group' group card is displayed
             | DO NOT USE - This group is reserved solely for use by our automated test scripts |
-            | Members: 3Discussions: 7                                                         |
         When I select 'Discover new groups' from the group pages accordion
         Then the 'Discover new Groups' header is displayed
         And the 'Supercharge your knowledge' header is displayed
@@ -41,12 +40,10 @@ Feature: mobileNavigation
             | Role            | Admin            |
             | Date joined     | [PrettyDate]     |
             | Last logged in  | [PrettyDate]     |
-            | Edit            |                  |
             | auto User       |                  |
             | Role            | Standard Members |
             | Date joined     | [PrettyDate]     |
             | Last logged in  | [PrettyDate]     |
-            | Edit            |                  |
     
     
     Scenario: FNHS:M04 - Search for a group
@@ -126,12 +123,15 @@ Feature: mobileNavigation
             And the 'Add Folder' link is displayed
             And the 'Group Files' mobile table is displayed
                 | Folder                 |
-                | Automation Test Folder |
-                |                        |
+                | 4000DescTest           |
+                | Description            |
                 |                        |
                 | Folder                 |
-                | DeleteFolder           |
+                | AutoFolder             |
                 | Description            |
+                |                        |
+                | Folder                 |
+                | Automation Test Folder |
             When I click the 'Automation Test Folder' link
             Then the 'Automation Test Folder' header is displayed
             And the 'Add Folder' link is displayed
