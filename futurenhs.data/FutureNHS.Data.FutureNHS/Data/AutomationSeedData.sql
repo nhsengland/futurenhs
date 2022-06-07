@@ -49,12 +49,12 @@ BEGIN
 	/** 
 	*	INSERT AUTOMATION GROUPSITES
 	*/
-	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'aa'), N'b222860d-533b-428d-aa6c-0546874f5ca3', (SELECT CreatedBy FROM [dbo].[Group] WHERE [Id] = ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'aa'))), GETDATE())
-	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'autopendinggroup'), N'2ec758dd-ddf8-4bc3-8f87-c51c8a2b460c', (SELECT CreatedBy FROM [dbo].[Group] WHERE [Id] = ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'autopendinggroup'))), GETDATE())
-	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-private-group'), N'91161cd8-5b22-461f-94af-14ed82042c7c', (SELECT CreatedBy FROM [dbo].[Group] WHERE [Id] = ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-private-group'))), GETDATE())
-	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-public-group'), N'71f9a6ee-3e9e-4333-875c-86298d85d061', (SELECT CreatedBy FROM [dbo].[Group] WHERE [Id] = ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-public-group'))), GETDATE())
-	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-visual-regression-group'), N'70dae1a1-d322-422f-9a37-9b656c52bd45', (SELECT CreatedBy FROM [dbo].[Group] WHERE [Id] = ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-visual-regression-group'))), GETDATE())
-	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-editable-group'), N'2b0204c5-b8a2-4d17-8519-416bc8d358fd', (SELECT CreatedBy FROM [dbo].[Group] WHERE [Id] = ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-editable-group'))), GETDATE())
+	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'aa'), N'b222860d-533b-428d-aa6c-0546874f5ca3', '49019191-6ACD-4CC4-9BC0-06027C65563E', GETDATE())
+	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'autopendinggroup'), N'2ec758dd-ddf8-4bc3-8f87-c51c8a2b460c', '49019191-6ACD-4CC4-9BC0-06027C65563E', GETDATE())
+	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-private-group'), N'91161cd8-5b22-461f-94af-14ed82042c7c', '49019191-6ACD-4CC4-9BC0-06027C65563E', GETDATE())
+	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-public-group'), N'71f9a6ee-3e9e-4333-875c-86298d85d061', '49019191-6ACD-4CC4-9BC0-06027C65563E', GETDATE())
+	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-visual-regression-group'), N'70dae1a1-d322-422f-9a37-9b656c52bd45', '49019191-6ACD-4CC4-9BC0-06027C65563E', GETDATE())
+	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-editable-group'), N'2b0204c5-b8a2-4d17-8519-416bc8d358fd', '49019191-6ACD-4CC4-9BC0-06027C65563E', GETDATE())
 
 	/**
 	* INSERT AUTOMATION MEMBERSHIPUSERS
