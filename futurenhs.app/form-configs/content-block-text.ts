@@ -11,14 +11,11 @@ export const contentBlockTextForm: FormConfig = {
                     inputType: 'text',
                     text: {
                         label: 'Subtitle',
+                        hint: 'Add a title to the block. Eg. Welcome'
                     },
                     component: 'input',
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
-                        {
-                            type: 'required',
-                            message: 'Enter the subtitle',
-                        },
                         {
                             type: 'maxLength',
                             maxLength: 255,
@@ -30,9 +27,10 @@ export const contentBlockTextForm: FormConfig = {
                     name: 'mainText',
                     text: {
                         label: 'Main text',
+                        hint: 'This could be an introduction to your group, remember to include key words so that this group can be found in search'
                     },
                     component: 'textArea',
-                    rteToolBarOptions: 'bold | bullist numlist | link unlink',
+                    rteToolBarOptions: 'bold italic underline | bullist numlist | hr | link unlink',
                     shouldRenderAsRte: true,
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
