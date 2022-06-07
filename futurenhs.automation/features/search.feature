@@ -133,7 +133,7 @@ Feature: Search
 
     Scenario: FNHS108 - Search for a Group By the Strapline
         When I search for 'DO NOT USE - This group is reserved solely for use by our automated test scripts'
-        Then there are '6' search results displayed
+        Then there are '7' search results displayed
         And the 'Automation Admin Group' search result card is displayed
             | Group                                                                            |
             | DO NOT USE - This group is reserved solely for use by our automated test scripts |
