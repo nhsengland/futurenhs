@@ -28,6 +28,12 @@ BEGIN
     INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Comment] WHERE CreatedBy = @autoUser;
     INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Discussion] WHERE CreatedBy = @groupAdmin;
 	
+    SELECT [Id] INTO #autoGroups FROM [dbo].[Group] WHERE [Name] LIKE '%Auto%';
+	DELETE FROM [dbo].[GroupSite] 
+    WHERE [GroupId] IN (
+        SELECT * FROM #autoGroups
+    );
+
 	DELETE FROM [dbo].[Group] 
     WHERE [GroupOwner] IN (
         SELECT * FROM #autoUsers
@@ -61,11 +67,6 @@ BEGIN
     --);
 
     DELETE FROM [dbo].[GroupUser] 
-    WHERE [MembershipUser_Id] IN (
-        SELECT * FROM #autoUsers
-    );
-    
-    DELETE FROM [dbo].[GroupSite] 
     WHERE [MembershipUser_Id] IN (
         SELECT * FROM #autoUsers
     );
