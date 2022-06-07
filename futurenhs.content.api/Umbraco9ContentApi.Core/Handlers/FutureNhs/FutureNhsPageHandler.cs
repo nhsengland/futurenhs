@@ -60,13 +60,13 @@
             var resolvedDraftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault();
 
             // Get page model block child blocks
-            var pageModelBlockChildBlocks = _futureNhsBlockService.GetChildBlocks(pageModel.Blocks, cancellationToken);
+            var pageModelBlockChildBlocks = _futureNhsBlockService.GetBlocksAllChildBlocks(pageModel.Blocks, cancellationToken);
 
             // Remove any blocks that were on the latest saved draft but not the new incoming draft
             if (resolvedDraftBlocks is not null && resolvedDraftBlocks is IEnumerable<ContentModelData> draftBlocks && draftBlocks.Any())
             {
                 // Get latest saved draft block child blocks
-                var savedDraftBlocksChildBlocks = _futureNhsBlockService.GetChildBlocks(draftBlocks, cancellationToken);
+                var savedDraftBlocksChildBlocks = _futureNhsBlockService.GetBlocksAllChildBlocks(draftBlocks, cancellationToken);
 
                 // Find the difference between saved draft and incoming page model block child blocks
                 var blocksToRemove = _futureNhsContentService.CompareContentModelLists(savedDraftBlocksChildBlocks, pageModelBlockChildBlocks);

@@ -5,9 +5,9 @@
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco.Cms.Core.Services;
+    using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using static Umbraco.Cms.Core.Constants;
-    using ContentModelData = Models.Content.ContentModelData;
 
     /// <inheritdoc />
     public sealed class FutureNhsContentService : IFutureNhsContentService
