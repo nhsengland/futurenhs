@@ -9,6 +9,6 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs.Interface
         IEnumerable<string> GetBlockPlaceholderValues(Guid blockId, string propertyGroupAlias, CancellationToken cancellationToken);
         IContent CreateBlock(CreateBlockRequest createRequest, CancellationToken cancellationToken);
         IContent UpdateBlock(ContentModelData block, CancellationToken cancellationToken);
-        IEnumerable<ContentModelData> GetChildBlocks(IEnumerable<ContentModelData> blocks, CancellationToken cancellationToken);
+        IEnumerable<ContentModelData> GetBlocksAllChildBlocks(IEnumerable<ContentModelData> blocks, CancellationToken cancellationToken);
     }
 }

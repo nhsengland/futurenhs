@@ -97,11 +97,11 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
             return _contentService.GetById(block.Item.Id);
         }
 
-        public IEnumerable<ContentModelData> GetChildBlocks(IEnumerable<ContentModelData> blocks, CancellationToken cancellationToken)
+        public IEnumerable<ContentModelData> GetBlocksAllChildBlocks(IEnumerable<ContentModelData> blocks, CancellationToken cancellationToken)
         {
             List<ContentModelData> contentModels = new();
 
-            foreach (var child in blocks.Where(x=> x.Content != null))
+            foreach (var child in blocks.Where(x => x.Content != null))
             {
                 foreach (var content in child.Content.Where(x => x.Key == "blocks"))
                 {
@@ -109,7 +109,7 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
                     var childBlocks = JsonConvert.DeserializeObject<List<ContentModelData>>(childBlockObjects);
                     if (childBlocks is not null && childBlocks.Any())
                     {
-                        contentModels.AddRange(childBlocks);
+                        contentModels.AddRange(childBlocks.Where(x => x.Item != null));
                     }
                 }
             }
