@@ -121,7 +121,7 @@ namespace FutureNHS.Api.Services.Admin
             var createContentResponse = await _contentService.CreatePageAsync(userId, groupSiteDto.GroupId, null, cancellationToken);
 
             // If the create content request fails, delete the associated group
-            if (!createContentResponse.Succeeded)
+            if (createContentResponse is null || !createContentResponse.Succeeded)
             {
                 //TODO: rollback/delete group (feature: 75323)
                 _logger.LogError($"Error: CreatePageAsync - Error creating group homepage content {groupSiteDto.GroupId}");
