@@ -84,13 +84,17 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
 
     return (
         <div id={blockId} className={generatedClasses.wrapper}>
-            <Heading
-                headingLevel={headingLevel}
-                className={generatedClasses.heading}
-            >
-                {title}
-            </Heading>
-            <RichText bodyHtml={mainText} wrapperElementType="div" />
+            {title &&
+                <Heading
+                    headingLevel={headingLevel}
+                    className={generatedClasses.heading}
+                >
+                    {title}
+                </Heading>
+            }
+            {mainText && 
+                <RichText bodyHtml={mainText} wrapperElementType="div" />
+            }
         </div>
     )
 }

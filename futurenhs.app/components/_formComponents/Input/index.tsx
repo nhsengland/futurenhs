@@ -83,7 +83,6 @@ export const Input: (props: Props) => JSX.Element = ({
                 {...ariaInputProps}
                 id={id}
                 type={inputType}
-                maxLength={maxLength}
                 className={generatedClasses.input}
             />
             {shouldRenderRemainingCharacterCount && maxLength && (

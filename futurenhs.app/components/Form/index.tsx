@@ -58,7 +58,7 @@ export const Form: (props: Props) => JSX.Element = ({
     /**
      * Create unique field instances from the supplied fields template
      */
-    const [fields] = useState(() => {
+    const generateFields = () => {
         let templatedFields: Array<FormField>
 
         try {
@@ -68,12 +68,14 @@ export const Form: (props: Props) => JSX.Element = ({
         }
 
         templatedFields.forEach((field) => {
-            field.name = instanceId ? field.name + '-' + instanceId : field.name
+            field.name = instanceId ? field.name + '-' + instanceId : field.name;
             field.initialError = initialErrors?.[field.name] || null
         })
 
         return templatedFields
-    })
+    }
+
+    const [fields, setFields] = useState(generateFields())
 
     const generatedClasses: any = {
         wrapper: classNames('c-form', className),
@@ -120,20 +122,20 @@ export const Form: (props: Props) => JSX.Element = ({
                 }) => {
                     if (shouldRender) {
                         return (
-                                    <Field
-                                        key={name}
-                                        instanceId={instanceId}
-                                        name={name}
-                                        inputType={inputType}
-                                        type={inputType}
-                                        text={text}
-                                        component={formComponents[component]}
-                                        context={context}
-                                        className={className}
-                                        {...rest}
-                                    >
-                                        {renderFields(fields)}
-                                    </Field>
+                            <Field
+                                key={name}
+                                instanceId={instanceId}
+                                name={name}
+                                inputType={inputType}
+                                type={inputType}
+                                text={text}
+                                component={formComponents[component]}
+                                context={context}
+                                className={className}
+                                {...rest}
+                            >
+                                {renderFields(fields)}
+                            </Field>
                         )
                     }
                 }

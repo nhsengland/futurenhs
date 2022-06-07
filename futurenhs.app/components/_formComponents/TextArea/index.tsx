@@ -48,12 +48,15 @@ export const TextArea: (props: Props) => JSX.Element = ({
     const elementMinHeight: string = `${minHeight}px`
 
     const handleRteInit = (_, editor) => (editorRef.current = editor)
-    const handleRteChange = (value: any) => input.onChange(value)
+    const handleRteChange = (value: any) => { input.onChange(value) }
     const handleRteFocus = () => {
         input.onFocus()
         setIsRteFocussed(true)
     }
-    const handleRteBlur = () => setIsRteFocussed(false)
+    const handleRteBlur = () => {
+        input.onBlur();
+        setIsRteFocussed(false)
+    }
 
     const generatedIds: any = {
         hint: `${id}-hint`,

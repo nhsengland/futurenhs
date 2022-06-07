@@ -4,7 +4,6 @@ import deepEquals from 'fast-deep-equal'
 import FlipMove from 'react-flip-move'
 
 import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName'
-import { useTheme } from '@hooks/useTheme'
 import {
     moveArrayItem,
     deleteArrayItem,
@@ -200,10 +199,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                 block.item.id = createdBlockId;
 
-                if(block.content.blocks){
+                for(const key in block.content){
 
-                    block.content.blocks = [];
-                    
+                    block.content[key] = null;
+
                 }
 
                 updatedBlocks.push(block)
@@ -237,6 +236,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         })
 
         setBlocks(updatedBlocks)
+        setBlockIdsInEditMode([])
         blocksChangeAction?.(updatedBlocks)
     }
 

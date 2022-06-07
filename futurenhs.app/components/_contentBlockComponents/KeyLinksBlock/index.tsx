@@ -71,6 +71,7 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
                         },
                     }
 
+                    updatedBlock.content.blocks = Array.isArray(updatedBlock.content?.blocks) ? updatedBlock.content.blocks : [];
                     updatedBlock.content.blocks.push(newBlock)
                     elementIdToFocus.current = createdBlockId
 
