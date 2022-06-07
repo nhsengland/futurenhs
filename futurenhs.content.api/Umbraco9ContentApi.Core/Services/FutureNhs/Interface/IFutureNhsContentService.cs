@@ -12,14 +12,12 @@
         /// Gets the published content.
         /// </summary>
         /// <param name="id">The identifier.</param>
-
         /// <returns></returns>
         IPublishedContent GetPublishedContent(Guid id, CancellationToken cancellationToken);
         /// <summary>
         /// Gets the content.
         /// </summary>
         /// <param name="contentId">The identifier.</param>
-
         /// <returns></returns>
         IContent GetDraftContent(Guid contentId, CancellationToken cancellationToken);
         /// <summary>

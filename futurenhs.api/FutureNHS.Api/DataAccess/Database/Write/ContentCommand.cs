@@ -18,7 +18,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> CreatePageAsync(ContentDto content, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> CreatePageAsync(PageDto content, CancellationToken cancellationToken)
         {
             return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, "api/page", JsonContent.Create(content));
         }
