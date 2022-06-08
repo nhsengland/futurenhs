@@ -298,3 +298,7 @@ axeReports/reportResults.json
 /futurenhs.app/.env.production.local
 /futurenhs.app/.vercel
 /futurenhs.app/storybook-static
+
+# Umbraco Content Api
+/futurenhs.content.api/Umbraco9ContentApi.Umbraco/uSync/v9/Content
+

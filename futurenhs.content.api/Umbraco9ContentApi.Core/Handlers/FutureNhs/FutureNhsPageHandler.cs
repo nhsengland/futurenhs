@@ -42,9 +42,7 @@
                 ? pageParentGuid
                 : pageFolderGuid;
 
-            var content = _futureNhsContentService.CreateContentFromBluePrint(pageName, parentId, Guid.Parse("CA0A2D59-E455-472D-BF9E-5E7303F55AB1"), cancellationToken);
-
-            return new ApiResponse<string>().Success(content.Key.ToString(), "Page created successfully.");
+            return new ApiResponse<string>().Success(_futureNhsContentService.CreateContent(pageName, parentId, GeneralWebPage.ModelTypeAlias, cancellationToken).Key.ToString(), "Page created successfully.");
         }
 
         /// <inheritdoc />
