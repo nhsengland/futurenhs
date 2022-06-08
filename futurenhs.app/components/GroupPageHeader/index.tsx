@@ -45,6 +45,12 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const hasMenuItems: boolean = navMenuList?.length > 0
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE)
     const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP)
+
+    /**
+     * TODO: Boolean determined by API response
+     */
+    const isAwaitingApproval: boolean = false
+
     const shouldRenderGroupJoinLink: boolean = actions?.includes(
         actionsConstants.GROUPS_JOIN
     )
@@ -61,10 +67,10 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const { background, content }: Theme = shouldRenderActionsMenu
         ? useTheme(themeId)
         : {
-              background: 14,
-              content: 1,
-              accent: 1,
-          }
+            background: 14,
+            content: 1,
+            accent: 1,
+        }
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,
@@ -219,119 +225,131 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                             desktop={3}
                             className={generatedClasses.actionsWrapper}
                         >
-                            {shouldRenderGroupJoinLink ? (
-                                <a
-                                    href={routes.groupJoin}
-                                    onClick={handleJoinGroup}
-                                    className="c-button u-w-full u-border-2 u-border-theme-1"
-                                >
-                                    Join Group
-                                </a>
-                            ) : getActionNavMenuList().length > 0 ? (
-                                <Accordion
-                                    id={generatedIds.actionsAccordion}
-                                    isOpen={isActionsAccordionOpen}
-                                    shouldCloseOnLeave={true}
-                                    shouldCloseOnContentClick={true}
-                                    toggleClassName={
-                                        generatedClasses.actionsTrigger
-                                    }
-                                    toggleOpenChildren={
-                                        <>
-                                            {actionsMenuTitleText}
-                                            <SVGIcon
-                                                name={iconNames.CHEVRON_UP}
-                                                className={
-                                                    generatedClasses.actionsTriggerIcon
-                                                }
-                                            />
-                                        </>
-                                    }
-                                    toggleClosedChildren={
-                                        <>
-                                            {actionsMenuTitleText}
-                                            <SVGIcon
-                                                name={iconNames.CHEVRON_DOWN}
-                                                className={
-                                                    generatedClasses.actionsTriggerIcon
-                                                }
-                                            />
-                                        </>
-                                    }
-                                    className={generatedClasses.actions}
-                                >
-                                    <ul
-                                        className={
-                                            generatedClasses.actionsContent
-                                        }
+                            {shouldRenderGroupJoinLink ?
+
+                                isAwaitingApproval ?
+
+                                    <div className="nhsuk-body-m">
+                                        <SVGIcon 
+                                            name="icon-clock"
+                                            className="u-w-4 u-h-4 u-mr-2"
+                                        />
+                                        Awaiting Approval
+                                    </div>
+                                    :
+                                    <a
+                                        href={routes.groupJoin}
+                                        onClick={handleJoinGroup}
+                                        className="c-button u-w-full u-border-2 u-border-theme-1"
                                     >
-                                        {getActionNavMenuList().map(
-                                            ({ id, url, text }, index) => {
-                                                const handleActionMenuItemClick =
-                                                    (event: any) => {
-                                                        if (
-                                                            id ===
-                                                            actionsConstants.GROUPS_LEAVE
-                                                        ) {
-                                                            event.preventDefault()
+                                        Join Group
+                                    </a>
 
-                                                            handleLeaveGroup()
-                                                        }
+                                : getActionNavMenuList().length > 0 ? (
+                                    <Accordion
+                                        id={generatedIds.actionsAccordion}
+                                        isOpen={isActionsAccordionOpen}
+                                        shouldCloseOnLeave={true}
+                                        shouldCloseOnContentClick={true}
+                                        toggleClassName={
+                                            generatedClasses.actionsTrigger
+                                        }
+                                        toggleOpenChildren={
+                                            <>
+                                                {actionsMenuTitleText}
+                                                <SVGIcon
+                                                    name={iconNames.CHEVRON_UP}
+                                                    className={
+                                                        generatedClasses.actionsTriggerIcon
                                                     }
-
-                                                return (
-                                                    <li
-                                                        key={index}
-                                                        className="u-m-0"
-                                                    >
-                                                        <Link href={url}>
-                                                            <a
-                                                                className="c-page-header_actions-content-item u-m-0 u-block u-break-words"
-                                                                onClick={
-                                                                    handleActionMenuItemClick
-                                                                }
-                                                            >
-                                                                {text}
-                                                            </a>
-                                                        </Link>
-                                                        {id ===
-                                                            actionsConstants.GROUPS_LEAVE && (
-                                                            <Dialog
-                                                                id="dialog-leave-group"
-                                                                isOpen={
-                                                                    isLeaveGroupModalOpen
-                                                                }
-                                                                text={{
-                                                                    cancelButton:
-                                                                        'Cancel',
-                                                                    confirmButton:
-                                                                        'Yes, leave group',
-                                                                    heading:
-                                                                        'Leave this group',
-                                                                }}
-                                                                cancelAction={
-                                                                    handleLeaveGroupCancel
-                                                                }
-                                                                confirmAction={
-                                                                    handleLeaveGroupConfirm
-                                                                }
-                                                            >
-                                                                <p className="u-text-bold">
-                                                                    Are you sure
-                                                                    you would
-                                                                    like to
-                                                                    leave the
-                                                                    group?
-                                                                </p>
-                                                            </Dialog>
-                                                        )}
-                                                    </li>
-                                                )
+                                                />
+                                            </>
+                                        }
+                                        toggleClosedChildren={
+                                            <>
+                                                {actionsMenuTitleText}
+                                                <SVGIcon
+                                                    name={iconNames.CHEVRON_DOWN}
+                                                    className={
+                                                        generatedClasses.actionsTriggerIcon
+                                                    }
+                                                />
+                                            </>
+                                        }
+                                        className={generatedClasses.actions}
+                                    >
+                                        <ul
+                                            className={
+                                                generatedClasses.actionsContent
                                             }
-                                        )}
-                                    </ul>
-                                </Accordion>
-                            ) : null}
+                                        >
+                                            {getActionNavMenuList().map(
+                                                ({ id, url, text }, index) => {
+                                                    const handleActionMenuItemClick =
+                                                        (event: any) => {
+                                                            if (
+                                                                id ===
+                                                                actionsConstants.GROUPS_LEAVE
+                                                            ) {
+                                                                event.preventDefault()
+
+                                                                handleLeaveGroup()
+                                                            }
+                                                        }
+
+                                                    return (
+                                                        <li
+                                                            key={index}
+                                                            className="u-m-0"
+                                                        >
+                                                            <Link href={url}>
+                                                                <a
+                                                                    className="c-page-header_actions-content-item u-m-0 u-block u-break-words"
+                                                                    onClick={
+                                                                        handleActionMenuItemClick
+                                                                    }
+                                                                >
+                                                                    {text}
+                                                                </a>
+                                                            </Link>
+                                                            {id ===
+                                                                actionsConstants.GROUPS_LEAVE && (
+                                                                    <Dialog
+                                                                        id="dialog-leave-group"
+                                                                        isOpen={
+                                                                            isLeaveGroupModalOpen
+                                                                        }
+                                                                        text={{
+                                                                            cancelButton:
+                                                                                'Cancel',
+                                                                            confirmButton:
+                                                                                'Yes, leave group',
+                                                                            heading:
+                                                                                'Leave this group',
+                                                                        }}
+                                                                        cancelAction={
+                                                                            handleLeaveGroupCancel
+                                                                        }
+                                                                        confirmAction={
+                                                                            handleLeaveGroupConfirm
+                                                                        }
+                                                                    >
+                                                                        <p className="u-text-bold">
+                                                                            Are you sure
+                                                                            you would
+                                                                            like to
+                                                                            leave the
+                                                                            group?
+                                                                        </p>
+                                                                    </Dialog>
+                                                                )}
+                                                        </li>
+                                                    )
+                                                }
+                                            )}
+                                        </ul>
+                                    </Accordion>
+                                ) : null}
                         </LayoutColumn>
                     )}
                 </LayoutColumnContainer>
