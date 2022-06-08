@@ -52,7 +52,7 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
     const generatedClasses: any = {
         wrapper: classNames(className),
         heading: classNames('nhsuk-heading-m', 'u-mb-3'),
-        list: classNames('u-list-none u-p-0 u-w-full'),
+        list: classNames('u-list-none u-p-0 u-w-full u-m-0'),
     }
 
     const handleAddChildBlock = (): void => {
