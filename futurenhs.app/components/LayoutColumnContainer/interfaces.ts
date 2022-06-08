@@ -1,6 +1,6 @@
 export interface Props {
-    direction?: 'column' | 'column-reverse' | 'row' | 'row-reverse'
-    justify?: 'left' | 'centre' | 'right'
+    direction?: 'col' | 'col-reverse' | 'row' | 'row-reverse'
+    justify?: 'start' | 'centre' | 'end'
     children?: any
     className?: string
 }
