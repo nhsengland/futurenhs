@@ -133,7 +133,9 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
             />
             <main className={generatedClasses.wrapper}>
                 {isLoading &&
-                    <Loader delay={1000} />
+                    <Loader text={{
+                        loadingMessage: "Loading, please wait"
+                    }} delay={1000} />
                 }
                 {shouldRenderPhaseBanner && (
                     <div className="u-bg-theme-3">

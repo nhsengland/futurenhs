@@ -6,6 +6,7 @@ import { Spinner } from '@components/Spinner';
 import { Props } from './interfaces'
 
 export const Loader: (props: Props) => JSX.Element = ({
+    text,
     delay = 0,
     className,
 }) => {
@@ -13,18 +14,28 @@ export const Loader: (props: Props) => JSX.Element = ({
     const [shouldRender, setShouldRender] = useState(false);
     const loadingTimeOut: any = useRef(null);
 
+    const { loadingMessage } = text ?? {};
+
     const generatedClasses: any = {
         wrapper: classNames('c-loader', className),
-        spinner: classNames(`u-w-[180px] u-h-[180px]`)
+        content: classNames('c-loader_content'),
+        message: classNames('c-loader_message'),
+        spinner: classNames('c-loader_spinner')
     };
 
-    useEffect(() => {
+    const renderAfterDelay = (): void => {
 
         loadingTimeOut.current = window.setTimeout(() => {
 
             setShouldRender(true);
 
         }, delay);
+
+    }
+
+    useEffect(() => {
+
+        renderAfterDelay();
 
         return () => {
 
@@ -34,12 +45,20 @@ export const Loader: (props: Props) => JSX.Element = ({
 
     }, []);
 
+    useEffect(() => {
+
+        setShouldRender(false);
+        renderAfterDelay();
+
+    }, [delay]);
+
     if(shouldRender){
 
         return (
             <div className={generatedClasses.wrapper}>
-                <div className={generatedClasses.spinner}>
-                    <Spinner />
+                <div className={generatedClasses.content}>
+                    <p className={generatedClasses.message}>{loadingMessage}</p>
+                    <Spinner className={generatedClasses.spinner} />
                 </div>
             </div>
         )
