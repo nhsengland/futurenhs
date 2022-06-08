@@ -152,16 +152,16 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             pendingMembersList?.map(({ fullName, email, requestDate, id }) => {
                 const generatedCellClasses = {
                     name: classNames({
-                        ['u-justify-between u-w-full tablet:u-w-1/4']: true,
+                        ['u-justify-between u-w-full tablet:u-w-1/4 u-align-middle']: true,
                     }),
                     email: classNames({
-                        ['u-justify-between u-w-full tablet:u-w-1/4']: true,
+                        ['u-justify-between u-w-full tablet:u-w-1/4 u-align-middle']: true,
                     }),
                     requestDate: classNames({
-                        ['u-justify-between u-w-full tablet:u-w-1/6']: true,
+                        ['u-justify-between u-w-full tablet:u-w-1/4 u-align-middle']: true,
                     }),
                     actions: classNames({
-                        ['u-w-full tablet:u-w-1/6']: true,
+                        ['u-w-full tablet:u-w-1/4']: true,
                     }),
                 }
 
