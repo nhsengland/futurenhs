@@ -12,6 +12,10 @@ const Template = (args) => <div className="u-p-14"><LayoutColumnContainer classN
 
 export const Basic = Template.bind({})
 Basic.args = {
+    hasGutters: true,
+    mobile: 12,
+    tablet: 6,
+    desktop: 4,
     className: 'u-border-dashed u-border-4'
 }
 
