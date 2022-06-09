@@ -1,6 +1,8 @@
 using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Helpers;
+using FutureNHS.Api.Models.Identity.Request;
+using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -80,6 +82,43 @@ namespace FutureNHS.Api.Controllers
             await _userService.UpdateMemberAsync(userId, targetUserId, Request.Body, Request.ContentType, rowVersion, cancellationToken);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("/users/register")]
+        public async Task<IActionResult> RegisterMemberAsync(string emailAddress, CancellationToken cancellationToken)
+        {
+
+
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("/users/register")]
+        public async Task<IActionResult> RegisterMemberAsync([FromBody] MemberRegistrationRequest memberRegistrationRequest, CancellationToken cancellationToken)
+        {
+
+
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("/users/info")]
+        public async Task<IActionResult> MemberInfoAsync([FromBody] MemberIdentityRequest memberIdentity, CancellationToken cancellationToken)
+        {
+            var memberIdentityResponse = _userService.GetMemberIdentityAsync(memberIdentity.IdentityId, cancellationToken);
+            if (memberIdentityResponse is null)
+            {
+                return Ok(memberIdentityResponse);
+            }
+
+            var isMemberInvited = await _userService.IsMemberInvitedAsync(memberIdentity.EmailAddress, cancellationToken);
+            if (isMemberInvited)
+            {
+                return Redirect("/users/register");
+            }
+
+            return Forbid();
         }
     }
 }

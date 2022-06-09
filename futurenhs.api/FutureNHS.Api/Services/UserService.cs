@@ -6,6 +6,7 @@ using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Helpers;
+using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
 using FutureNHS.Api.Services.Interfaces;
 using FutureNHS.Api.Services.Validation;
@@ -34,6 +35,7 @@ namespace FutureNHS.Api.Services
         private readonly IPermissionsService _permissionsService;
         private readonly ISystemClock _systemClock;
         private readonly IUserCommand _userCommand;
+        private readonly IUserDataProvider _userDataProvider;
         private readonly IEmailService _emailService;
         private readonly IUserImageService _imageService;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
@@ -44,15 +46,16 @@ namespace FutureNHS.Api.Services
         // Notification template Ids
         private readonly string _registrationEmailId;
 
-        public UserService(ILogger<UserService> logger, 
-            ISystemClock systemClock, 
-            IPermissionsService permissionsService, 
-            IUserAdminDataProvider userAdminDataProvider, 
-            IUserCommand userCommand, 
-            IEmailService emailService, 
-            IOptionsSnapshot<GovNotifyConfiguration> notifyConfig, 
-            IOptionsSnapshot<ApplicationGateway> gatewayConfig, 
-            IUserImageService imageService, 
+        public UserService(ILogger<UserService> logger,
+            ISystemClock systemClock,
+            IPermissionsService permissionsService,
+            IUserAdminDataProvider userAdminDataProvider,
+            IUserCommand userCommand,
+            IUserDataProvider userDataProvider,
+            IEmailService emailService,
+            IOptionsSnapshot<GovNotifyConfiguration> notifyConfig,
+            IOptionsSnapshot<ApplicationGateway> gatewayConfig,
+            IUserImageService imageService,
             IImageBlobStorageProvider blobStorageProvider)
         {
             _permissionsService = permissionsService;
@@ -86,6 +89,13 @@ namespace FutureNHS.Api.Services
             return await _userCommand.GetMemberAsync(targetUserId, cancellationToken);
         }
 
+        public async Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid IdentityId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == IdentityId) throw new ArgumentOutOfRangeException(nameof(IdentityId));
+                        
+            return await _userDataProvider.GetMemberIdentityAsync(IdentityId, cancellationToken);
+        }
+
         public async Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
@@ -100,6 +110,13 @@ namespace FutureNHS.Api.Services
 
             return await _userAdminDataProvider.GetMembersAsync(offset, limit, sort, cancellationToken);
         }
+
+        //public async Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken)
+        //{
+        //    if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
+            
+        //    return await _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
+        //}
 
         public async Task UpdateMemberAsync(Guid userId, Guid targetUserId, Stream requestBody, string? contentType, byte[] rowVersion, CancellationToken cancellationToken)
         {
@@ -324,6 +341,13 @@ namespace FutureNHS.Api.Services
                 return Encoding.UTF8;
             }
             return mediaType.Encoding;
+        }
+
+        public Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
+
+            return _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
         }
     }
 }

@@ -28,57 +28,58 @@ export const getUser: GetUserService = async (
     { cookies = {} },
     dependencies
 ): Promise<ServiceResponse<User>> => {
-    const setFetchOptions =
-        dependencies?.setFetchOptions ?? setFetchOptionsHelper
-    const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const cookieHeader: string = getCsvStringFromObject({
-        object: cookies,
-        seperator: '; ',
-    })
+    // const setFetchOptions =
+    //     dependencies?.setFetchOptions ?? setFetchOptionsHelper
+    // const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
+    // const cookieHeader: string = getCsvStringFromObject({
+    //     object: cookies,
+    //     seperator: '; ',
+    // })
 
-    const apiUrl: string = process.env.NEXT_PUBLIC_MVC_FORUM_REFRESH_TOKEN_URL
-    const apiResponse: FetchResponse = await fetchJSON(
-        apiUrl,
-        setFetchOptions({
-            method: requestMethods.GET,
-            headers: {
-                Cookie: cookieHeader,
-            },
-        }),
-        1000
-    )
+    // const apiUrl: string = '';
+    // const apiResponse: FetchResponse = await fetchJSON(
+    //     apiUrl,
+    //     setFetchOptions({
+    //         method: requestMethods.GET,
+    //         headers: {
+    //             Cookie: cookieHeader,
+    //         },
+    //     }),
+    //     1000
+    // )
 
-    const apiData: ApiResponse<any> = apiResponse.json
-    const apiMeta: any = apiResponse.meta
+    // const apiData: ApiResponse<any> = apiResponse.json
+    // const apiMeta: any = apiResponse.meta
 
-    const { ok, status, statusText } = apiMeta
+    // const { ok, status, statusText } = apiMeta
 
-    if (!ok) {
-        throw new ServiceError(
-            'An unexpected error occurred when attempting to get the user',
-            {
-                serviceId: services.GET_USER,
-                status: status,
-                statusText: statusText,
-                body: apiData,
-            }
-        )
-    }
+    // if (!ok) {
+    //     throw new ServiceError(
+    //         'An unexpected error occurred when attempting to get the user',
+    //         {
+    //             serviceId: services.GET_USER,
+    //             status: status,
+    //             statusText: statusText,
+    //             body: apiData,
+    //         }
+    //     )
+    // }
 
-    return {
-        data: {
-            id: apiData?.Id ?? null,
-            text: {
-                userName: apiData?.FullName ?? null,
-            },
-            image: apiData?.UserAvatar
-                ? {
-                      src: apiData?.UserAvatar?.Source ?? null,
-                      height: apiData?.UserAvatar?.height ?? null,
-                      width: apiData?.UserAvatar?.width ?? null,
-                      altText: apiData?.UserAvatar?.AltText ?? null,
-                  }
-                : null,
-        },
-    }
+    // return {
+    //     data: {
+    //         id: apiData?.Id ?? null,
+    //         text: {
+    //             userName: apiData?.FullName ?? null,
+    //         },
+    //         image: apiData?.UserAvatar
+    //             ? {
+    //                   source: apiData?.UserAvatar?.Source ?? null,
+    //                   altText: apiData?.UserAvatar?.AltText ?? null,
+    //               }
+    //             : null,
+    //     },
+    // }
+
+    throw new Error('getUser is intentionally broken')
+
 }
