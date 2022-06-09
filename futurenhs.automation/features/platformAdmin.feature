@@ -75,7 +75,7 @@ Feature: Group Create
         And I choose 'auto Admin' from the 'Group owner' auto suggest list
         And I choose 'auto Admin' from the 'Group administrators' auto suggest list
         And I click the 'Save and create group' button
-        Then the 'Groups' header is not displayed
+        Then the 'Groups' header is displayed
         And the 'Admin groups' table exists
         Examples:
             | groupname                | strapline                              |
