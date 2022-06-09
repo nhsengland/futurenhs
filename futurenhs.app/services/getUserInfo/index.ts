@@ -44,10 +44,10 @@ export const getUserInfo: GetUserInfoService = async (
         1000
     )
 
-    const apiData: ApiResponse<any> = apiResponse.json
-    const apiMeta: any = apiResponse.meta
+    // const apiData: ApiResponse<any> = apiResponse.json
+    // const apiMeta: any = apiResponse.meta
 
-    const { ok, status, statusText } = apiMeta
+    // const { ok, status, statusText } = apiMeta
 
     if (!ok) {
         throw new ServiceError(

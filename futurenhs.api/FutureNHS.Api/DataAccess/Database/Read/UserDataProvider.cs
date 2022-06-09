@@ -171,6 +171,27 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return reader.SingleOrDefault();
         }
 
+        public async Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid identityId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(MemberIdentityResponse.MembershipUserId)}]  = member.Id,
+                                [{nameof(MemberIdentityResponse.FirstName)}]         = member.FirstName,
+                                [{nameof(MemberIdentityResponse.LastName)}]          = member.Surname,
+				    
+                    FROM        [MembershipUser] member
+                    WHERE       member.[IdentityId] = @IdentityId";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                IdentityId = identityId,
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            return await dbConnection.QuerySingleOrDefaultAsync<MemberIdentityResponse>(queryDefinition);
+        }
+
         public async Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken = default)
         {
             const string query =
