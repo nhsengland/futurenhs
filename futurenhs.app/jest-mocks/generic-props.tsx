@@ -8,6 +8,10 @@ export const routes: Routes = {
     adminUsersInvite: '/admin/users/invite',
     adminGroupsRoot: '/admin/groups',
     adminGroupsCreate: '/admin/users/create',
+    authApiSignInAzureB2C: '/api/auth/signin/azure-ad-b2c',
+    authApiSignOut: '/api/auth/signout',
+    authSignIn: '/auth/signin',
+    authSignOut: '/auth/signout',
     groupsRoot: '/groups',
     groupsDiscover: '/groups/discover',
     groupRoot: '/:groupId',
@@ -20,5 +24,5 @@ export const routes: Routes = {
     groupFolder: '/:groupId/folders/:folderId',
     groupFilesRoot: '/:groupId/files',
     groupMembersRoot: '/:groupId/members',
-    groupAboutRoot: '/:groupId/about',
-}
+    groupAboutRoot: '/:groupId/about'
+};

@@ -1,3 +1,6 @@
+import { GetServerSideProps } from 'next'
+import { getSession } from "next-auth/react"
+
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getSiteActions } from '@services/getSiteActions'
 import { getUser } from '@services/getUser'
@@ -25,24 +28,35 @@ export const withUser: Hof = async (
 
     let user: User = null;
 
-    try {
-        const { data } = await getUserService({
-            cookies: context.req?.cookies,
-        })
+        try {
 
-        user = data;
+            const session = await getSession(context);
 
-    } catch (error) {
-        if (isRequired) {
-            const returnUrl: string = encodeURI(
-                `${process.env.APP_URL}${context.resolvedUrl}`
-            )
+            if(!session){
 
-            return {
-                redirect: {
-                    permanent: false,
-                    destination: `${process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL}?ReturnUrl=${returnUrl}`,
-                },
+                throw new Error('No session')
+
+            }
+
+            console.log('session', session)
+
+            // const { data: user } = await getUserService({
+            //     cookies: context.req?.cookies,
+            // })
+
+            // props.user = user
+            // context.req.user = user
+
+        } catch (error) {
+            if (isRequired) {
+
+                return {
+                    redirect: {
+                        permanent: false,
+                        destination: `${process.env.APP_URL}/auth/signin`,
+                    }, 
+                }
+
             }
         }
     }
