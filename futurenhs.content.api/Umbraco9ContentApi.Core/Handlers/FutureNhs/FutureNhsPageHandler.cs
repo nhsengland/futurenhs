@@ -43,6 +43,7 @@
                 : pageFolderGuid;
 
             var content = _futureNhsContentService.CreateContent(pageName, parentId, GeneralWebPage.ModelTypeAlias, cancellationToken);
+            _futureNhsContentService.PublishContent(content, cancellationToken);
 
             return new ApiResponse<string>().Success(content.Key.ToString(), "Page created successfully.");
         }
