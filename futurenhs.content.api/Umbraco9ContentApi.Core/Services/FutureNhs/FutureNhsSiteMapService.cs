@@ -32,7 +32,7 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
         public IPublishedContent GetRoot(IPublishedContent page)
         {
             // Level 2 is the Groups folder so we seek level 3 which would
-            // be the root node for the current group.
+            // be the root/homepage node for the group.
             return page.Ancestors().Where(x => x.Level == 3).FirstOrDefault();
         }
     }

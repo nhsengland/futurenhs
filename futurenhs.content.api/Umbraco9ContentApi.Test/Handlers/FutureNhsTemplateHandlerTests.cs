@@ -73,7 +73,7 @@
                 .Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken))
                 .Returns(mockContent.Object);
 
-            _mockFutureNhsContentService.Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), "content", cancellationToken))
+            _mockFutureNhsContentService.Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>()))
                 .Returns(new ContentModelData() { Item = new ContentModelItemData() { Id = contentId } });
 
             // Act

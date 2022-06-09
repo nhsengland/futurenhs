@@ -71,7 +71,7 @@
                 _mockFutureNhsBlockService.Object, _futureNhsValidationService);
 
             _mockFutureNhsContentService
-                .Setup(x => x.CreateContent(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), cancellationToken))
+                .Setup(x => x.CreateContentFromTemplate(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<Guid>(), cancellationToken))
                     .Returns(mockContent.Object);
 
             // Act
@@ -107,7 +107,7 @@
                 .Returns(mockPageContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>(), cancellationToken))
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>()))
                 .Returns(GetMockContentModelWithChildBlocks(KeyLinksBlock.ModelTypeAlias));
 
             _mockFutureNhsContentService

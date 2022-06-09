@@ -30,10 +30,11 @@
         }
 
         /// <inheritdoc />
-        public ApiResponse<ContentModelData> GetTemplate(Guid id, CancellationToken cancellationToken)
+        public ApiResponse<ContentModelData> GetTemplate(Guid templateId, CancellationToken cancellationToken)
         {
-            var template = _futureNhsContentService.GetPublishedContent(id, cancellationToken);
-            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolvePublishedContent(template, "content", cancellationToken), "Template retrieved successfully.");
+            var template = _futureNhsContentService.GetPublishedContent(templateId, cancellationToken);
+            var contentModelData = _futureNhsContentService.ResolvePublishedContent(template);
+            return new ApiResponse<ContentModelData>().Success(contentModelData, "Template retrieved successfully.");
         }
 
         /// <inheritdoc />
@@ -48,7 +49,7 @@
             {
                 foreach (var templates in publishedTemplates)
                 {
-                    contentModels.Add(_futureNhsContentService.ResolvePublishedContent(templates, "content", cancellationToken));
+                    contentModels.Add(_futureNhsContentService.ResolvePublishedContent(templates));
                 }
             }
 
