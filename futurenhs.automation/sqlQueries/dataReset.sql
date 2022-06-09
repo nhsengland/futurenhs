@@ -28,30 +28,22 @@ BEGIN
     INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Comment] WHERE CreatedBy = @autoUser;
     INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Discussion] WHERE CreatedBy = @groupAdmin;
 	
-	SELECT [Id] INTO #autoGroups FROM [dbo].[Group] WHERE [Name] LIKE '%Auto%';
-	DELETE FROM [dbo].[GroupSite] 
-    WHERE [GroupId] IN (
-        SELECT * FROM #autoGroups
-    );
-
-	DELETE FROM [dbo].[Group] 
-    WHERE [GroupOwner] IN (
-        SELECT * FROM #autoUsers
-    );	
+    DELETE FROM [dbo].[GroupSite] 
+	WHERE [GroupId] IN (
+		SELECT Id FROM [dbo].[Group]
+		WHERE [GroupOwner] IN (
+			SELECT * FROM #autoUsers
+		)
+	);
 
 	DELETE FROM [dbo].[Image]
 	WHERE [CreatedBy] IN (
 		 SELECT [Id] FROM #autoUsers
-	)
+	);
 
 	DELETE FROM [dbo].[Entity] 
     WHERE [Id] IN (
         SELECT * FROM @entityTable
-    );
-
-	DELETE FROM [dbo].[MembershipUser]
-    WHERE [Id] IN (
-        SELECT * FROM #autoUsers
     );
 
     DELETE FROM [dbo].[File] 
@@ -63,13 +55,6 @@ BEGIN
     WHERE [CreatedBy] IN (
         SELECT * FROM #autoUsers
     );
-
-    --DELETE FROM [GroupPermissionForRole]
-	--WHERE [Group_Id] IN (
-	    --SELECT [Id]
-	    --FROM [Group] 
-	    --WHERE [MembershipUser_Id] IN (SELECT * FROM #autoUsers)
-    --);
 
     DELETE FROM [dbo].[GroupUser] 
     WHERE [MembershipUser_Id] IN (
@@ -94,6 +79,16 @@ BEGIN
         SELECT * FROM #autoUsers
     );
 	
+	DELETE FROM [dbo].[Group] 
+    WHERE [GroupOwner] IN (
+        SELECT * FROM #autoUsers
+    );
+
+    DELETE FROM [dbo].[MembershipUser]
+    WHERE [Id] IN (
+        SELECT * FROM #autoUsers
+    );
+    
 	DROP TABLE #autoUsers
 
     -- Re-enable constraints for all tables:
@@ -108,6 +103,18 @@ BEGIN
     DECLARE @admin AS uniqueidentifier;
     SELECT @admin = id FROM [dbo].[MembershipUser] WHERE Email = 'admin@futurenhs.co.uk'
 
+	/**
+	* INSERT AUTOMATION MEMBERSHIPUSERS
+	*/
+	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'd74ed860-9ea5-4c95-9394-ad3a00924fa5', N'autoAdmin@test.co.uk', N'vcf4NjFgrLG/mUdmP+pq4PfpMvuDWUijJ6ZtMzKIurI=', N'oYbbbqThocFtlwkwQLLHvfaBefwXGZrM', N'autoAdmin@test.co.uk', 1, 0, 0, CAST(N'2021-06-01 08:52:42.150' AS DateTime2), CAST(N'2022-01-11 16:23:43.493' AS DateTime2), CAST(N'2021-06-01 08:52:42.150' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 16:21:43.690' AS DateTime2), 0, 0, N'autoadmin', 1, 1, N'auto', N'Admin', N'AA')
+	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'16D4D237-4686-4B4F-AE05-1CFF3F8FB43A', N'autoGroupAdmin@test.co.uk', N'CnC6nl0+/sjVKTKeNeuHN5Yc2oPjNXtKbuRVdE9L6XU=', N'lgMfng4Ktdl7LWXHMfU2aULppquZADvj', N'autoGroupAdmin@test.co.uk', 1, 0, 0, CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'2022-01-11 16:25:11.010' AS DateTime2), CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 16:25:11.200' AS DateTime2), 0, 0, N'autogroupadmin', 1, 1, N'Auto', N'GroupAdmin', N'AG')
+	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'7db6f2c4-6bf3-4178-967f-ad3a0092a580', N'autoUser@test.co.uk', N'CnC6nl0+/sjVKTKeNeuHN5Yc2oPjNXtKbuRVdE9L6XU=', N'lgMfng4Ktdl7LWXHMfU2aULppquZADvj', N'autoUser@test.co.uk', 1, 0, 0, CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'2022-01-11 16:25:11.010' AS DateTime2), CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 16:25:11.200' AS DateTime2), 0, 0, N'autouser', 1, 1, N'auto', N'User', N'AU')
+	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (NEWID(), N'autoRemoveUser@test.co.uk', N'CnC6nl0+/sjVKTKeNeuHN5Yc2oPjNXtKbuRVdE9L6XU=', N'lgMfng4Ktdl7LWXHMfU2aULppquZADvj', N'autoRemoveUser@test.co.uk', 1, 0, 0, CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'2022-01-11 16:25:11.010' AS DateTime2), CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 16:25:11.200' AS DateTime2), 0, 0, N'autoremoveuser', 1, 1, N'auto', N'RemoveUser', N'AR')
+	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'2ccff73e-f897-424c-afcb-ad5000a368a8', N'autoUser2@test.co.uk', N'qzWIgd8jJjPsoDkJ8NOVP7Dz7DjoXTsZagRkMwztYPw=', N'0Sim4e4mRlskAZJ6kpn2iSrzXxJXPapy', N'autoUser2@test.co.uk', 1, 0, 0, CAST(N'2021-06-23 09:54:57.213' AS DateTime2), CAST(N'2021-11-08 14:59:36.647' AS DateTime2), CAST(N'2021-06-23 09:54:57.213' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2021-11-08 14:59:37.193' AS DateTime2), 0, 0, N'autouser2', 1, 1, N'Auto', N'User2', N'AU')
+	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'cb72fa31-e1b2-428a-8847-ad57009babd9', N'autoUser3@test.co.uk', N'Cd6U3nRQDqEbHa/V26rxOxyIL28wqfAjPdYzfN0JylU=', N'2gbwL74MNaZ8QK4dcaiedfP/fdJwdIpA', N'autoUser3@test.co.uk', 1, 0, 0, CAST(N'2021-06-30 09:26:46.923' AS DateTime2), CAST(N'2021-08-31 15:59:51.490' AS DateTime2), CAST(N'2021-06-30 09:26:46.923' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2021-08-31 15:59:51.873' AS DateTime2), 0, 0, N'autouser3', 1, 1, N'Auto', N'User3', N'AU')
+	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'a51c9076-cf85-42da-bb30-adda00f5b3c6', N'VisRegUser@email.com', N'wJuXPg5bhhTfTEaUVmSAanZvLvRQvi0eY7lhbv7UoS8=', N'e0ZQHTFeBgp5Bte3hq1QbXxkZv9FBULO', N'VisRegUser@email.com', 1, 0, 0, CAST(N'2021-11-08 14:54:34.483' AS DateTime2), CAST(N'2022-01-11 10:16:20.327' AS DateTime2), CAST(N'2021-11-08 14:54:34.483' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 10:16:20.567' AS DateTime2), 0, 0, N'visreguser-email-com', 1, 1, N'Vis', N'Reg', N'VR')
+	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'24949588-81c0-4ae0-8d67-ae04011f41b4', N'autoEditUser@test.co.uk', N'GoHbGkQpGB/jgY3jN0hb5jSl4DEwbuME4dsdRP41NJw=', N'ZBp81AWhmQ2Qar5zuh6mmVPF/Fl5J6gg', N'autoEditUser@test.co.uk', 1, 0, 0, CAST(N'2021-12-20 17:25:52.167' AS DateTime2), CAST(N'2022-01-11 12:23:55.377' AS DateTime2), CAST(N'2021-12-20 17:25:52.167' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 10:43:43.793' AS DateTime2), 0, 0, N'autoedituser-test-co-uk', 1, 1, N'autoEdit', N'User', N'AU')	
+	
 	/**
 	* INSERT AUTOMATION FILES
 	*/
@@ -159,18 +166,6 @@ BEGIN
 	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-editable-group'), N'2b0204c5-b8a2-4d17-8519-416bc8d358fd', (SELECT Id FROM [dbo].[MembershipUser] WHERE [Email] = 'autoGroupAdmin@test.co.uk'), (SELECT CreatedAtUTC FROM [dbo].[Group] WHERE [Slug] = 'automation-editable-group'))
 	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'automation-gtbr-group'), N'92c986bf-01f1-4fdb-9b6a-6ec495578b72', (SELECT Id FROM [dbo].[MembershipUser] WHERE [Email] = 'autoGroupAdmin@test.co.uk'), (SELECT CreatedAtUTC FROM [dbo].[Group] WHERE [Slug] = 'automation-gtbr-group'))
 
-	/**
-	* INSERT AUTOMATION MEMBERSHIPUSERS
-	*/
-	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'd74ed860-9ea5-4c95-9394-ad3a00924fa5', N'autoAdmin@test.co.uk', N'vcf4NjFgrLG/mUdmP+pq4PfpMvuDWUijJ6ZtMzKIurI=', N'oYbbbqThocFtlwkwQLLHvfaBefwXGZrM', N'autoAdmin@test.co.uk', 1, 0, 0, CAST(N'2021-06-01 08:52:42.150' AS DateTime2), CAST(N'2022-01-11 16:23:43.493' AS DateTime2), CAST(N'2021-06-01 08:52:42.150' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 16:21:43.690' AS DateTime2), 0, 0, N'autoadmin', 1, 1, N'auto', N'Admin', N'AA')
-	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'16D4D237-4686-4B4F-AE05-1CFF3F8FB43A', N'autoGroupAdmin@test.co.uk', N'CnC6nl0+/sjVKTKeNeuHN5Yc2oPjNXtKbuRVdE9L6XU=', N'lgMfng4Ktdl7LWXHMfU2aULppquZADvj', N'autoGroupAdmin@test.co.uk', 1, 0, 0, CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'2022-01-11 16:25:11.010' AS DateTime2), CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 16:25:11.200' AS DateTime2), 0, 0, N'autogroupadmin', 1, 1, N'Auto', N'GroupAdmin', N'AG')
-	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'7db6f2c4-6bf3-4178-967f-ad3a0092a580', N'autoUser@test.co.uk', N'CnC6nl0+/sjVKTKeNeuHN5Yc2oPjNXtKbuRVdE9L6XU=', N'lgMfng4Ktdl7LWXHMfU2aULppquZADvj', N'autoUser@test.co.uk', 1, 0, 0, CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'2022-01-11 16:25:11.010' AS DateTime2), CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 16:25:11.200' AS DateTime2), 0, 0, N'autouser', 1, 1, N'auto', N'User', N'AU')
-	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (NEWID(), N'autoRemoveUser@test.co.uk', N'CnC6nl0+/sjVKTKeNeuHN5Yc2oPjNXtKbuRVdE9L6XU=', N'lgMfng4Ktdl7LWXHMfU2aULppquZADvj', N'autoRemoveUser@test.co.uk', 1, 0, 0, CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'2022-01-11 16:25:11.010' AS DateTime2), CAST(N'2021-06-01 08:53:55.410' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 16:25:11.200' AS DateTime2), 0, 0, N'autoremoveuser', 1, 1, N'auto', N'RemoveUser', N'AR')
-	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'2ccff73e-f897-424c-afcb-ad5000a368a8', N'autoUser2@test.co.uk', N'qzWIgd8jJjPsoDkJ8NOVP7Dz7DjoXTsZagRkMwztYPw=', N'0Sim4e4mRlskAZJ6kpn2iSrzXxJXPapy', N'autoUser2@test.co.uk', 1, 0, 0, CAST(N'2021-06-23 09:54:57.213' AS DateTime2), CAST(N'2021-11-08 14:59:36.647' AS DateTime2), CAST(N'2021-06-23 09:54:57.213' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2021-11-08 14:59:37.193' AS DateTime2), 0, 0, N'autouser2', 1, 1, N'Auto', N'User2', N'AU')
-	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'cb72fa31-e1b2-428a-8847-ad57009babd9', N'autoUser3@test.co.uk', N'Cd6U3nRQDqEbHa/V26rxOxyIL28wqfAjPdYzfN0JylU=', N'2gbwL74MNaZ8QK4dcaiedfP/fdJwdIpA', N'autoUser3@test.co.uk', 1, 0, 0, CAST(N'2021-06-30 09:26:46.923' AS DateTime2), CAST(N'2021-08-31 15:59:51.490' AS DateTime2), CAST(N'2021-06-30 09:26:46.923' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2021-08-31 15:59:51.873' AS DateTime2), 0, 0, N'autouser3', 1, 1, N'Auto', N'User3', N'AU')
-	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'a51c9076-cf85-42da-bb30-adda00f5b3c6', N'VisRegUser@email.com', N'wJuXPg5bhhTfTEaUVmSAanZvLvRQvi0eY7lhbv7UoS8=', N'e0ZQHTFeBgp5Bte3hq1QbXxkZv9FBULO', N'VisRegUser@email.com', 1, 0, 0, CAST(N'2021-11-08 14:54:34.483' AS DateTime2), CAST(N'2022-01-11 10:16:20.327' AS DateTime2), CAST(N'2021-11-08 14:54:34.483' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 10:16:20.567' AS DateTime2), 0, 0, N'visreguser-email-com', 1, 1, N'Vis', N'Reg', N'VR')
-	INSERT [dbo].[MembershipUser] ([Id], [UserName], [Password], [PasswordSalt], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [Slug], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials]) VALUES (N'24949588-81c0-4ae0-8d67-ae04011f41b4', N'autoEditUser@test.co.uk', N'GoHbGkQpGB/jgY3jN0hb5jSl4DEwbuME4dsdRP41NJw=', N'ZBp81AWhmQ2Qar5zuh6mmVPF/Fl5J6gg', N'autoEditUser@test.co.uk', 1, 0, 0, CAST(N'2021-12-20 17:25:52.167' AS DateTime2), CAST(N'2022-01-11 12:23:55.377' AS DateTime2), CAST(N'2021-12-20 17:25:52.167' AS DateTime2), CAST(N'1753-01-01 00:00:00.000' AS DateTime2), CAST(N'2022-01-11 10:43:43.793' AS DateTime2), 0, 0, N'autoedituser-test-co-uk', 1, 1, N'autoEdit', N'User', N'AU')	
-	
 	/**
 	* INSERT AUTOMATION GROUPUSER RECORDS
 	*/

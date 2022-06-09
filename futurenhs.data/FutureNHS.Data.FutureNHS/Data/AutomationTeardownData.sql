@@ -28,21 +28,18 @@ BEGIN
     INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Comment] WHERE CreatedBy = @autoUser;
     INSERT INTO @entityTable SELECT Entity_Id FROM [dbo].[Discussion] WHERE CreatedBy = @groupAdmin;
 	
-    SELECT [Id] INTO #autoGroups FROM [dbo].[Group] WHERE [Name] LIKE '%Auto%';
-	DELETE FROM [dbo].[GroupSite] 
-    WHERE [GroupId] IN (
-        SELECT * FROM #autoGroups
-    );
-
-	DELETE FROM [dbo].[Group] 
-    WHERE [GroupOwner] IN (
-        SELECT * FROM #autoUsers
-    );
+    DELETE FROM [dbo].[GroupSite] 
+	WHERE [GroupId] IN (
+		SELECT Id FROM [dbo].[Group]
+		WHERE [GroupOwner] IN (
+			SELECT * FROM #autoUsers
+		)
+	);
 
 	DELETE FROM [dbo].[Image]
 	WHERE [CreatedBy] IN (
 		 SELECT [Id] FROM #autoUsers
-	)
+	);
 
 	DELETE FROM [dbo].[Entity] 
     WHERE [Id] IN (
@@ -58,13 +55,6 @@ BEGIN
     WHERE [CreatedBy] IN (
         SELECT * FROM #autoUsers
     );
-
-    --DELETE FROM [GroupPermissionForRole]
-	--WHERE [Group_Id] IN (
-	    --SELECT [Id]
-	    --FROM [Group] 
-	    --WHERE [MembershipUser_Id] IN (SELECT * FROM #autoUsers)
-    --);
 
     DELETE FROM [dbo].[GroupUser] 
     WHERE [MembershipUser_Id] IN (
@@ -89,6 +79,11 @@ BEGIN
         SELECT * FROM #autoUsers
     );
 	
+	DELETE FROM [dbo].[Group] 
+    WHERE [GroupOwner] IN (
+        SELECT * FROM #autoUsers
+    );
+
     DELETE FROM [dbo].[MembershipUser]
     WHERE [Id] IN (
         SELECT * FROM #autoUsers
