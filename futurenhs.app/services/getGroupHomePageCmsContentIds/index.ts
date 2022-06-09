@@ -34,7 +34,7 @@ export const getGroupHomePageCmsContentIds = async (
 
     const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/site`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/site`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),

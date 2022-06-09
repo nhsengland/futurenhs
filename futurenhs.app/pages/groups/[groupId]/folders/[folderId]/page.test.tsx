@@ -265,6 +265,8 @@ describe('folders/folderId page', () => {
     })
 
     it('gets required server side props', async () => {
+        mswServer.use(handlers.getGroupActions({ actions: [actions.GROUPS_VIEW] }))
+        
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie' },
             params: { groupId: 'mock-group-id', folderId: 'mock-folder-id' },

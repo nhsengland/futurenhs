@@ -8,6 +8,7 @@ import { Props } from '@components/_pageTemplates/GroupFileDetailTemplate/interf
 
 import { mswServer } from '../../../../../../jest-mocks/msw-server'
 import { handlers } from '../../../../../../jest-mocks/handlers'
+import { actions } from '@constants/actions';
 
 const props: Props = {
     id: 'mockId',
@@ -57,6 +58,9 @@ describe('file detail page', () => {
     })
 
     it('gets required server side props', async () => {
+
+        mswServer.use(handlers.getGroupActions({ actions: [actions.GROUPS_VIEW] }))
+
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie-101' },
         } as any)

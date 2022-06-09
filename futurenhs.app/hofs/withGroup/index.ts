@@ -10,6 +10,7 @@ import { GetGroupService } from '@services/getGroup'
 import { getGroupActions } from '@services/getGroupActions'
 import { GetGroupActionsService } from '@services/getGroupActions'
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next'
+import { actions } from '@constants/actions'
 import { User } from '@appTypes/user'
 
 export const withGroup = (
@@ -50,22 +51,24 @@ export const withGroup = (
                 ...(props.actions ?? []),
                 ...(actionsData.data ?? []),
             ]
+            
+            const openRoutes: Array<string> = [props.routes.groupAboutRoot, props.routes.groupJoin]
 
-            /**
-             * TODO: Determine whether user has access to group when back-end permissions work is complete
-             */
-            const hasAccessToGroup: boolean = true;
-            const isAboutPage: boolean = context.resolvedUrl?.startsWith(props.routes.groupAboutRoot)
- 
-
-            if (!hasAccessToGroup && !isAboutPage) {
-                return {
-                    props,
-                    redirect: {
-                        permanent: false,
-                        destination: props.routes.groupAboutRoot,
-                    },
+            const hasAccess: boolean = actionsData.data?.includes(actions.GROUPS_VIEW)
+            const isOpenRoute : boolean = openRoutes.some((route) => context.resolvedUrl?.startsWith(route))
+            
+            if (!props.isPublic) {
+                
+                if (!hasAccess && !isOpenRoute) {
+                    return {
+                        props,
+                        redirect: {
+                            permanent: false,
+                            destination: props.routes.groupAboutRoot,
+                        },
+                    }
                 }
+
             }
         } catch (error) {
             return handleSSRErrorProps({ props, error })

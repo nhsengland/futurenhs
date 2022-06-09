@@ -17,6 +17,7 @@ export interface Routes {
     groupFolder: string;
     groupFilesRoot: string;
     groupMembersRoot: string;
+    groupAboutRoot: string;
 }
 
 export interface BreadCrumbElement {
