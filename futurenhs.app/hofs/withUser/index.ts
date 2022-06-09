@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next'
+import { getSession } from "next-auth/react"
 
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getSiteActions } from '@services/getSiteActions'
@@ -24,25 +25,34 @@ export const withUser = (
         props.user = null
 
         try {
-            const { data: user } = await getUserService({
-                cookies: context.req?.cookies,
-            })
 
-            props.user = user
+            const session = await getSession(context);
 
-            context.req.user = user
+            if(!session){
+
+                throw new Error('No session')
+
+            }
+
+            console.log('session', session)
+
+            // const { data: user } = await getUserService({
+            //     cookies: context.req?.cookies,
+            // })
+
+            // props.user = user
+            // context.req.user = user
+
         } catch (error) {
             if (isRequired) {
-                const returnUrl: string = encodeURI(
-                    `${process.env.APP_URL}${context.resolvedUrl}`
-                )
 
                 return {
                     redirect: {
                         permanent: false,
-                        destination: `${process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL}?ReturnUrl=${returnUrl}`,
-                    },
+                        destination: `${process.env.APP_URL}/auth/signin`,
+                    }, 
                 }
+
             }
         }
 

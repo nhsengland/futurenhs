@@ -24,7 +24,7 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
             </Head>
             <LayoutColumnContainer>
                 <LayoutColumn>
-                    <PageBody>
+                    <PageBody className="tablet:u-px-0">
                         <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
                         <RichText bodyHtml={bodyHtml} />
                     </PageBody>

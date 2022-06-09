@@ -1,6 +1,7 @@
 ﻿using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.Models.Member;
 using FutureNHS.Api.DataAccess.Models.User;
+using FutureNHS.Api.Models.Identity.Response;
 
 namespace FutureNHS.Api.DataAccess.Database.Write.Interfaces
 {

@@ -55,7 +55,7 @@ export const hasKeys = (object: Record<any, any>): boolean => {
 }
 
 /**
- * Maps an object into a string
+ * Maps an object into a csv string
  */
 export const getCsvStringFromObject = ({
     object,
@@ -73,6 +73,29 @@ export const getCsvStringFromObject = ({
     })
 
     return string
+}
+
+/**
+ * Maps a csv string into an object
+ */
+ export const getObjectfromCsvString = ({
+    string,
+    seperator,
+}: {
+    string: string,
+    seperator: string,
+}): Record<any, any> => {
+    
+    let object: Record<any, any> = {}
+
+    const array: Array<string> = string.split(seperator);
+
+    array.forEach((kvPair, index) => {
+        const [key, value] = kvPair.split('=');
+        object[key] = value;
+    })
+
+    return object
 }
 
 /**

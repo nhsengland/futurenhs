@@ -1,4 +1,3 @@
-import { GetServerSidePropsResult } from 'next'
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject'
 import { ServiceError } from '@services/index'
 

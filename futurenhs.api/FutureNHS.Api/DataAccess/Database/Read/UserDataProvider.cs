@@ -5,6 +5,7 @@ using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.User;
+using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Member;
 using Microsoft.Extensions.Options;
@@ -96,6 +97,47 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             });
 
             return member;
+        }
+
+        public async Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid identityId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(MemberIdentityResponse.MembershipUserId)}]  = member.Id,
+                                [{nameof(MemberIdentityResponse.FirstName)}]         = member.FirstName,
+                                [{nameof(MemberIdentityResponse.LastName)}]          = member.Surname,
+				    
+                    FROM        [MembershipUser] member
+                    WHERE       member.[IdentityId] = @IdentityId";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                IdentityId = identityId,
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            return await dbConnection.QuerySingleOrDefaultAsync<MemberIdentityResponse>(queryDefinition);
+        }
+
+        public async Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT CASE WHEN EXISTS (
+	                    SELECT *
+	                    FROM GroupInvite
+	                    WHERE  LOWER(EmailAddress) = LOWER(@EmailAddress)
+	                    AND IsDeleted = 0
+                    )
+                    THEN CAST(1 AS BIT)
+                    ELSE CAST(0 AS BIT) END";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            return await dbConnection.QuerySingleOrDefaultAsync<bool>(query, new
+            {
+                EmailAddress = emailAddress
+            });
         }
 
         public async Task<MemberProfile> GetMemberProfileAsync(Guid userId, CancellationToken cancellationToken = default)

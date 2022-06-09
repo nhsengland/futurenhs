@@ -6,6 +6,7 @@ using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.Exceptions;
+using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -103,7 +104,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 Id = id,
             }, cancellationToken: cancellationToken);
 
-            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
             var reader = await dbConnection.QueryAsync<MemberProfile, Image, MemberProfile>(query,
                 (group, image) =>
@@ -139,13 +140,12 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     WHERE      
                                 UserIdentifier = @UserId";
 
-
             var queryDefinition = new CommandDefinition(query, new
             {
                 UserId = userId
             }, cancellationToken: cancellationToken);
 
-            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
             return await dbConnection.QuerySingleOrDefaultAsync<MemberRole>(queryDefinition);
         }

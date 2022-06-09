@@ -1,4 +1,5 @@
 export const enum services {
+    GET_AUTH_CSRF_DATA = 'getAuthCsrfData',
     GET_CMS_PAGE_TEMPLATE = 'getCmsPageTemplate',
     GET_CMS_PAGE_CONTENT = 'getCmsPageContent',
     GET_GROUPS = 'getGroups',
