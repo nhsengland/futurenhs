@@ -4,7 +4,8 @@
 	"description": "This repository contains artefacts pertinent to the development of the new FutureNHS sharing platform",
 	"main": "gulpfile.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"prepare": "husky install"
 	},
 	"author": "",
 	"license": "ISC",
@@ -105,5 +106,8 @@
 		"details-element-polyfill": "2.4.0",
 		"dialog-polyfill": "^0.5.6",
 		"whatwg-fetch": "3.6.2"
+	},
+	"lint-staged": {
+		"*": "prettier --write"
 	}
 }
