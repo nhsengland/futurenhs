@@ -62,7 +62,10 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const router = useRouter()
     const errorSummaryRef: any = useRef()
 
-    const commentFormConfig: FormConfig = useFormConfig(formTypes.CREATE_DISCUSSION_COMMENT, forms[formTypes.CREATE_DISCUSSION_COMMENT])
+    const commentFormConfig: FormConfig = useFormConfig(
+        formTypes.CREATE_DISCUSSION_COMMENT,
+        forms[formTypes.CREATE_DISCUSSION_COMMENT]
+    )
     const [errors, setErrors] = useState(
         Object.assign(
             {},
@@ -120,7 +123,6 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const createdDate: string = dateTime({ value: created })
     const lastCommentUserName: string = modifiedBy?.text?.userName
     const lastCommentDate: string = dateTime({ value: modified })
-
 
     /**
      * Handle likes on comments
