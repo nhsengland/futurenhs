@@ -1,12 +1,7 @@
-trigger: none
-resources:
-  pipelines:
-  - pipeline: Dacpac-Pipeline-Execution
-    source: dev.nhsimprovement.futurenhsopen-dacpac
-    trigger:
-      branches:
-        include:
-        - SPRINT
+trigger: 
+    branches:
+      include:
+      - SPRINT
 
 jobs:
 - job:
