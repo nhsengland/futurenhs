@@ -42,14 +42,14 @@ exports.config = {
     suites: {
         fullRegression: [
             './features/**/userAccess.feature',
-            './features/**/search.feature',
             './features/**/platformAdmin.feature',
+            './features/**/search.feature',
             './features/**/groupNavigation.feature',
             './features/**/groupMembers.feature',
             './features/**/groupAdmin.feature',
             './features/**/groupEdit.feature',
             './features/**/groupPublic.feature',
-            // './features/**/groupPrivate.feature',
+            './features/**/groupPrivate.feature',
             // './features/**/editablePagesValidation.feature',
             './features/**/forumNavigation.feature',
             './features/**/forumSubmission.feature',

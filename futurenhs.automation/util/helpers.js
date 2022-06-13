@@ -23,7 +23,7 @@ class Helpers{
    * @param {*} element - element or selector
    * @param {number} waitTime - the amount of time to wait in MS
    */ 
-  waitForLoaded(element, waitTime = 5000){
+  waitForLoaded(element, waitTime = 10000){
     element = this._resolveElement(element);
     element.waitForEnabled({timeout:waitTime});
     element.waitForDisplayed({timeout:waitTime});

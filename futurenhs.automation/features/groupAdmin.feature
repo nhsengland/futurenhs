@@ -22,11 +22,12 @@ Feature: groupAdmin
         And the 'This group currently has no outstanding membership requests' textual value is displayed
         And the 'Group Members' table exists
 
+@NotInLocal
     Scenario Outline: FNHS114 - Edit Page Permissions Validation
         Given I have logged off as the current user
         And I have logged in as a '<user>'
         And I have navigated to '/groups/automation-editable-group'
-        And the 'You are a Group Admin of this page. Please click edit to switch to edit mode' textual value <visibility> displayed
+        And the 'You are a Group Admin of this page. Please click edit to switch to editing mode' textual value <visibility> displayed
         And the 'Edit page' button <visibility> displayed
         Examples:
             | user        | visibility |

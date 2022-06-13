@@ -205,7 +205,7 @@ class table extends basePage {
      */
     tableNotExisting(tableName) {
         var table = this.getTable(tableName);
-        expect(table.isExisting()).toEqual(false);
+        browser.waitUntil(() => table.isExisting() === false);
     }
 }
 module.exports = new table();

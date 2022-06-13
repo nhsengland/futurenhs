@@ -28,6 +28,7 @@ Feature: forumAdmin
         Then the 'Create Discussion' header is displayed
         When I enter '<title>' into the 'Title' field
         And I enter '<comment>' into the 'Comment' text editor
+        And I click the 'Create Discussion' link
         And I pause the page for '2000' ms
         Then the '<error>' error message is displayed
         And the '<error>' error summary is displayed
