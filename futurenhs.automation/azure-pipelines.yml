@@ -10,8 +10,21 @@ jobs:
 - job:
   pool:
     vmImage: windows-latest
-
+    
   steps:
+  - task: NodeTool@0
+    displayName: 'Use Node 14.16.1'
+    inputs:
+      versionSpec: 14.16.1
+
+  - task: Npm@1
+    displayName: 'npm install'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'i'
+      workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
+      
   - task: CopyFiles@2
     displayName: 'Copy files for artifact'
     inputs:
