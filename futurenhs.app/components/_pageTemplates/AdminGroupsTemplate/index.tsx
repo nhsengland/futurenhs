@@ -109,6 +109,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
                             children: (
                                 <ActionLink
                                     href={`${routes.groupsRoot}/${groupId}`}
+                                    className="o-truncated-text-lines-3"
                                     text={{
                                         body: mainHeading,
                                         ariaLabel: `Go to group ${mainHeading}`,
@@ -136,6 +137,7 @@ export const AdminGroupsTemplate: (props: Props) => JSX.Element = ({
                             children: (
                                 <ActionLink
                                     href={`${routes.usersRoot}/${ownerId}`}
+                                    className="o-truncated-text-lines-3"
                                     text={{
                                         body: fullName,
                                         ariaLabel: `Go to group owner ${fullName} profile`,
