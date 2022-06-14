@@ -63,6 +63,7 @@ namespace FutureNHS.Api.Services
             _systemClock = systemClock;
             _logger = logger;
             _userCommand = userCommand;
+            _userDataProvider = userDataProvider;
             _emailService = emailService;
             _fqdn = gatewayConfig.Value.FQDN;
             _imageService = imageService;
@@ -89,11 +90,18 @@ namespace FutureNHS.Api.Services
             return await _userCommand.GetMemberAsync(targetUserId, cancellationToken);
         }
 
-        public async Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid IdentityId, CancellationToken cancellationToken)
+        public Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid IdentityId, CancellationToken cancellationToken)
         {
             if (Guid.Empty == IdentityId) throw new ArgumentOutOfRangeException(nameof(IdentityId));
-                        
-            return await _userDataProvider.GetMemberIdentityAsync(IdentityId, cancellationToken);
+            
+            return _userDataProvider.GetMemberIdentityAsync(IdentityId, cancellationToken);
+        }
+
+        public Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentOutOfRangeException(nameof(emailAddress));
+
+            return _userDataProvider.GetMemberByEmailAsync(emailAddress, cancellationToken);
         }
 
         public async Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort, CancellationToken cancellationToken)
@@ -111,12 +119,12 @@ namespace FutureNHS.Api.Services
             return await _userAdminDataProvider.GetMembersAsync(offset, limit, sort, cancellationToken);
         }
 
-        //public async Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken)
-        //{
-        //    if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
-            
-        //    return await _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
-        //}
+        public async Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
+
+            return await _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
+        }
 
         public async Task UpdateMemberAsync(Guid userId, Guid targetUserId, Stream requestBody, string? contentType, byte[] rowVersion, CancellationToken cancellationToken)
         {
@@ -341,13 +349,6 @@ namespace FutureNHS.Api.Services
                 return Encoding.UTF8;
             }
             return mediaType.Encoding;
-        }
-
-        public Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
-
-            return _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
         }
     }
 }
