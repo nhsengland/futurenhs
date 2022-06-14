@@ -108,14 +108,13 @@
     <Build Include="dbo\Tables\Comment.sql" />
     <Build Include="dbo\Tables\Entity_Like.sql" />
     <Build Include="dbo\Tables\Entity_Favourite.sql" />
-    <PreDeploy Include="Data\AutomationTeardownData.sql" />
+    <Build Include="dbo\Stored Procedures\AutomationTeardown.sql" />
+    <Build Include="dbo\Stored Procedures\AutomationSeed.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PostDeploy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " Include="Data\SeedData.sql" />
-    <PostDeploy Condition=" '$(Configuration)|$(Platform)' == 'Automation|AnyCPU' " Include="Data\AutomationSeedData.sql" />
+    <PostDeploy Include="Data\SeedData.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\AutomationSeedData.sql" />
     <None Include="FutureNHS.Data.FutureNHS.publish.xml" />
     <None Include="FutureNHS.Data.FutureNHS-automated.publish.xml" />
   </ItemGroup>

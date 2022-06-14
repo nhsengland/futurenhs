@@ -125,6 +125,11 @@ BEGIN
 	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = '0d1ea1e0-83f9-491f-b99a-ad4000df7f09'), N'b1d86638-3a50-4d03-ada4-676b200deef4', (SELECT CreatedBy FROM [dbo].[Group] WHERE [Id] = ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = '0d1ea1e0-83f9-491f-b99a-ad4000df7f09'))), GETDATE())
 	INSERT [dbo].[GroupSite] ([GroupId], [ContentRootId], [CreatedBy], [CreatedAtUTC]) VALUES ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'ccaead1d-e923-47f7-bdca-a406394128a7'), N'241f6080-dc90-428c-aa86-8a27c7c911ae', (SELECT CreatedBy FROM [dbo].[Group] WHERE [Id] = ((SELECT Id FROM [dbo].[Group] WHERE [Slug] = 'ccaead1d-e923-47f7-bdca-a406394128a7'))), GETDATE())
 
+	IF '$(RunAutomatedScripts)' = 'true'
+		DECLARE @Teardown AS INT
+		EXEC @Teardown = AutomationTeardown
+		IF @Teardown = 1
+			EXEC AutomationSeed
 
 	-- Re-enable constraints for all tables:
 	EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';	
