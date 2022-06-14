@@ -19,20 +19,17 @@ export default NextAuth({
     },
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
-            //console.log(user, account, profile, email, credentials)
-          return true
+            return true
         },
         async redirect({ url, baseUrl }) {
-          return baseUrl
+            return baseUrl
         },
         async session({ session, user, token }) {
-            console.log(user, session)
-
-          return session
+            session.sub = token.sub;
+            return session
         },
         async jwt({ token, user, account, profile, isNewUser }) {
-            //console.log(token, user, account, profile, isNewUser)
-          return token
+            return token
         }
     }
 })
