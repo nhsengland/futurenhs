@@ -14,32 +14,16 @@ jobs:
     vmImage: windows-latest
 
   steps:
-    - task: NodeTool@0
-      displayName: 'Use Node 14.16.1'
-      inputs:
-        versionSpec: 14.16.1
+  - task: CopyFiles@2
+    displayName: 'Copy files for artifact'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/futurenhs.automation'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-    - task: Npm@1
-      displayName: 'npm install'
-      inputs:
-        command: custom
-        verbose: false
-        customCommand: 'i'
-        workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
-
-    - script: '"./node_modules/.bin/wdio" wdio.headless.conf.js --baseUrl=$(ENVURL) --suite=fullRegression'
-      workingDirectory: '$(Build.SourcesDirectory)/futurenhs.automation'
-      displayName: 'Execute Tests'
-      continueOnError: true
-    
-    - task: PublishTestResults@2
-      displayName: 'Publish Test Results **/wdio-*.log'
-      inputs:
-        testResultsFiles: '**/wdio-*.log'
-        mergeTestResults: true
-        testRunTitle: Automated Front-End Regression
-    
-    - task: DeleteFiles@1
-      inputs:
-        SourceFolder: '$(Build.SourcesDirectory)/futurenhs.automation/junitResults'
-        Contents: '**/wdio-*.log'
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish artifact'
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'FNHSAutomation'
+      publishLocation: 'pipeline'
