@@ -79,7 +79,7 @@ const deployAutomationFutureNHSDatabase = (done) => {
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Automation/FutureNHS.Data.FutureNHS.dacpac',
+        '/SourceFile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac',
         '/TargetDatabaseName:FutureNHS',
         '/TargetServerName:localhost',
         '/TargetUser:sa',

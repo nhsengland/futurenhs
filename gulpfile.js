@@ -44,8 +44,6 @@ const activateAutomationDb = series(db.msbuild, db.deployAutomationFutureNHSData
 
  const activateContentDb = series(contentDb.msbuild, contentDb.deployFutureNHSContentDatabase);
 
- const buildContentAutomationDb = series(contentDb.msbuildAutomation, contentDb.deployAutomationFutureNHSContentDatabase);
-
 /**
  * APP TASKS
  */
@@ -75,17 +73,17 @@ const watchApp = (done) => {
  */
 const acivatecontentdb = series(activateContentDb);
 
-const activate = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApi, activateContentApi, activateApp);
+const activate = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApi, activateContentApi, activateApp);
 
-const activateNoApp = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApi, activateContentApi);
+const activateNoApp = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApi, activateContentApi);
 
-const activateNoApi = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApp, activateContentApi);
+const activateNoApi = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApp, activateContentApi);
 
-const activateNoUmbraco = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApi, activateApp);
+const activateNoUmbraco = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApi, activateApp);
 
-const activateNoUmbracoNoApi = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApp);
+const activateNoUmbracoNoApi = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApp);
 
-const activateNoAutomation = series(activateContentDb, activateDb, activateMvcForum, activateApi, activateContentApi, activateApp);
+const activateNoAutomation = series(activateDb, activateContentDb, activateMvcForum, activateApi, activateContentApi, activateApp);
 
 const deactivate = series(mvcforum.stopSite, api.stopSite, contentApi.stopSite, app.stopSite);
 
@@ -99,11 +97,10 @@ module.exports = {
     activateNoUmbracoNoApi,
     activateMvcForum,
     activateDb,
-    buildAutomationDb,
+    activateAutomationDb,
     activateNoAutomation,
     activateContentDb,
     activateApp,
     deactivate,
     watchApp
 }
-
