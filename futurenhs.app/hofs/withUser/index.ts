@@ -3,19 +3,19 @@ import { getSession } from "next-auth/react"
 
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getSiteActions } from '@services/getSiteActions'
-import { getUser } from '@services/getUser'
-import { GetUserService } from '@services/getUser'
+import { getUserInfo } from '@services/getUserInfo'
+import { GetUserInfoService } from '@services/getUserInfo'
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next'
 import { getSiteUser } from '@services/getSiteUser'
 
 export const withUser = (
     config: HofConfig,
     dependencies?: {
-        getUserService?: GetUserService
+        getUserInfoService?: GetUserInfoService
         getSiteActionsService?: any
     }
 ): GetServerSideProps => {
-    const getUserService = dependencies?.getUserService ?? getUser
+    const getUserInfoService = dependencies?.getUserInfoService ?? getUserInfo
     const getSiteActionsService =
         dependencies?.getSiteActionsService ?? getSiteActions
 
@@ -24,36 +24,44 @@ export const withUser = (
     return async (context: GetServerSidePropsContext): Promise<any> => {
         props.user = null
 
-        try {
+        const session = await getSession(context);
 
-            const session = await getSession(context);
+        if(!session && isRequired){
 
-            if(!session){
-
-                throw new Error('No session')
-
+            return {
+                redirect: {
+                    permanent: false,
+                    destination: `${process.env.APP_URL}/auth/signin`,
+                }, 
             }
 
-            console.log('session', session)
+        }
 
-            // const { data: user } = await getUserService({
-            //     cookies: context.req?.cookies,
-            // })
+        try {
 
-            // props.user = user
-            // context.req.user = user
+            const { data: user } = await getUserInfoService({
+                identityId: session.sub,
+                emailAddress: session.user?.email
+            })
+
+            props.user = user
+            context.req.user = user
 
         } catch (error) {
-            if (isRequired) {
+
+            console.log(error);
+
+            if(error.data?.status === 403 && isRequired){
 
                 return {
                     redirect: {
                         permanent: false,
-                        destination: `${process.env.APP_URL}/auth/signin`,
+                        destination: `${process.env.APP_URL}/auth/unregistered`,
                     }, 
                 }
 
             }
+            //return handleSSRErrorProps({ props, error })
         }
 
         /**

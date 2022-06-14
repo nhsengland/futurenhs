@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = withRoutes({
                 return {
                     redirect: {
                         permanent: false,
-                        destination: process.env.APP_URL,
+                        destination: `${process.env.APP_URL}/groups`,
                     }, 
                 }
 
