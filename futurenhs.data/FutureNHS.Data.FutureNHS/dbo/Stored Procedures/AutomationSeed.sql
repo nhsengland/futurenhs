@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[AutomationSeed]
+﻿CREATE PROC [dbo].[AutomationSeed]
 AS
 	-- Disable constraints for all tables:
 	EXEC sp_msforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT all'
@@ -218,4 +218,3 @@ AS
 	
     -- Re-enable constraints for all tables:
     EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';	
-RETURN 1
