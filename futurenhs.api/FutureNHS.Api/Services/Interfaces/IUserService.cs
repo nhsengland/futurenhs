@@ -7,6 +7,7 @@ namespace FutureNHS.Api.Services.Interfaces
     public interface IUserService
     {
         Task<MemberProfile> GetMemberAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken);
+        Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken);
         Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid IdentityId, CancellationToken cancellationToken);
         Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort,
             CancellationToken cancellationToken);

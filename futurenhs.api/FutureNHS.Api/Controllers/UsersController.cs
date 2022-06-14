@@ -85,16 +85,14 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/users/register")]
+        [Route("users/register/{emailAddress}")]
         public async Task<IActionResult> RegisterMemberAsync(string emailAddress, CancellationToken cancellationToken)
         {
-
-
             throw new NotImplementedException();
         }
 
         [HttpPost]
-        [Route("/users/register")]
+        [Route("users/register")]
         public async Task<IActionResult> RegisterMemberAsync([FromBody] MemberRegistrationRequest memberRegistrationRequest, CancellationToken cancellationToken)
         {
 
@@ -103,22 +101,33 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/users/info")]
+        [Route("users/info")]
         public async Task<IActionResult> MemberInfoAsync([FromBody] MemberIdentityRequest memberIdentity, CancellationToken cancellationToken)
         {
-            var memberIdentityResponse = _userService.GetMemberIdentityAsync(memberIdentity.IdentityId, cancellationToken);
-            if (memberIdentityResponse is null)
+            var memberIdentityResponse = await _userService.GetMemberIdentityAsync(memberIdentity.IdentityId, cancellationToken);
+            if (memberIdentityResponse is not null && memberIdentityResponse.IdentityId is not null)
             {
                 return Ok(memberIdentityResponse);
+            }
+
+            var memberDetailsResponse = await _userService.GetMemberByEmailAsync(memberIdentity.EmailAddress, cancellationToken);
+            if (memberDetailsResponse is not null)
+            {
+                return RedirectUserToCreateProfile();
             }
 
             var isMemberInvited = await _userService.IsMemberInvitedAsync(memberIdentity.EmailAddress, cancellationToken);
             if (isMemberInvited)
             {
-                return Redirect("/users/register");
+                return RedirectUserToCreateProfile();
             }
 
             return Forbid();
+
+            IActionResult RedirectUserToCreateProfile()
+            {
+                return Redirect($"/api/v1/users/register/{memberIdentity.EmailAddress}");
+            }
         }
     }
 }

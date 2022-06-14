@@ -91,9 +91,38 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var member = await dbConnection.QueryFirstOrDefaultAsync<MemberDetails>(query, new
+            var member = await dbConnection.QuerySingleOrDefaultAsync<MemberDetails>(query, new
             {
                 UserId = userId
+            });
+
+            return member;
+        }
+
+
+        public async Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(MemberDetails.Id)}]                   = member.Id,
+                                [{nameof(MemberDetails.Slug)}]                 = member.Slug, 
+                                [{nameof(MemberDetails.FirstName)}]            = member.FirstName,
+                                [{nameof(MemberDetails.LastName)}]             = member.Surname,
+                                [{nameof(MemberDetails.Initials)}]             = member.Initials, 
+                                [{nameof(MemberDetails.Email)}]                = member.Email, 
+                                [{nameof(MemberDetails.Pronouns)}]             = member.Pronouns, 
+                                [{nameof(MemberDetails.DateJoinedUtc)}]        = FORMAT(member.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(MemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
+
+                    FROM        MembershipUser member 
+                    WHERE       member.Email = @EmailAddress";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var member = await dbConnection.QuerySingleOrDefaultAsync<MemberDetails>(query, new
+            {
+                EmailAddress = emailAddress
             });
 
             return member;
@@ -104,8 +133,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                 @$" SELECT
                                 [{nameof(MemberIdentityResponse.MembershipUserId)}]  = member.Id,
+                                [{nameof(MemberIdentityResponse.IdentityId)}]        = member.IdentityId,
                                 [{nameof(MemberIdentityResponse.FirstName)}]         = member.FirstName,
-                                [{nameof(MemberIdentityResponse.LastName)}]          = member.Surname,
+                                [{nameof(MemberIdentityResponse.LastName)}]          = member.Surname
 				    
                     FROM        [MembershipUser] member
                     WHERE       member.[IdentityId] = @IdentityId";

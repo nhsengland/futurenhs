@@ -7,6 +7,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
     public interface IUserDataProvider
     {
         Task<MemberDetails?> GetMemberAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken = default);
         Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid identityId, CancellationToken cancellationToken = default);
         Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken = default);
         Task<MemberProfile> GetMemberProfileAsync(Guid userId, CancellationToken cancellationToken = default);
