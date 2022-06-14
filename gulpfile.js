@@ -36,7 +36,7 @@ const deactivate = (done) => {
 
 const activateDb = series(db.msbuild, db.deployFutureNHSDatabase);
 
-const buildAutomationDb = series(db.msbuildAutomation, db.deployAutomationFutureNHSDatabase);
+const activateAutomationDb = series(db.msbuild, db.deployAutomationFutureNHSDatabase);
 
 /**
  * CONTENT DATABASE TASKS
@@ -75,15 +75,17 @@ const watchApp = (done) => {
  */
 const acivatecontentdb = series(activateContentDb);
 
-const activate = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApi, activateContentApi, activateApp);
+const activate = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApi, activateContentApi, activateApp);
 
-const activateNoApp = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApi, activateContentApi);
+const activateNoApp = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApi, activateContentApi);
 
-const activateNoApi = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApp, activateContentApi);
+const activateNoApi = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApp, activateContentApi);
 
-const activateNoUmbraco = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApi, activateApp);
+const activateNoUmbraco = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApi, activateApp);
 
-const activateNoUmbracoNoApi = series(activateDb,activateContentDb, buildAutomationDb, activateMvcForum, activateApp);
+const activateNoUmbracoNoApi = series(activateContentDb, activateAutomationDb, activateMvcForum, activateApp);
+
+const activateNoAutomation = series(activateContentDb, activateDb, activateMvcForum, activateApi, activateContentApi, activateApp);
 
 const deactivate = series(mvcforum.stopSite, api.stopSite, contentApi.stopSite, app.stopSite);
 
@@ -98,6 +100,7 @@ module.exports = {
     activateMvcForum,
     activateDb,
     buildAutomationDb,
+    activateNoAutomation,
     activateContentDb,
     activateApp,
     deactivate,
