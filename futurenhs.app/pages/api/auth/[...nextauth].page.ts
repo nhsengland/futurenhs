@@ -25,10 +25,12 @@ export default NextAuth({
             return baseUrl
         },
         async session({ session, user, token }) {
-            session.sub = token.sub;
+            if(token?.sub) session.sub = token.sub;
+            if(token?.id_token) session.id_token = token.id_token;
             return session
         },
         async jwt({ token, user, account, profile, isNewUser }) {
+            if(account?.id_token) token.id_token = account.id_token;
             return token
         }
     }

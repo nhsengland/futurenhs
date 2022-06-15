@@ -24,7 +24,7 @@ export const withRoutes: Hof = (context) => {
                     adminGroupsRoot: '/admin/groups',
                     adminGroupsCreate: '/admin/users/create',
                     authApiSignInAzureB2C: '/api/auth/signin/azure-ad-b2c',
-                    authApiSignOut: '/api/auth/signout',
+                    authApiSignOut: '/api/auth/signout/azure-ad-b2c',
                     authSignIn: '/auth/signin',
                     authSignOut: '/auth/signout',
                     groupsRoot: '/groups',
