@@ -1,6 +1,7 @@
 import * as React from 'react'
 import mockRouter from 'next-router-mock';
 import { render, screen } from '@jestMocks/index'
+import { actions } from '@constants/actions';
 
 import { routes } from '@jestMocks/generic-props'
 import GroupFilePreviewTemplate, { getServerSideProps } from './index.page'
@@ -51,6 +52,9 @@ describe('file page', () => {
     })
 
     it('gets required server side props', async () => {
+
+        mswServer.use(handlers.getGroupActions({ actions: [actions.GROUPS_VIEW] }))
+        
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie-101' },
             params: {

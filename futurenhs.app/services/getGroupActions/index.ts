@@ -58,7 +58,6 @@ export const getGroupActions = async (
             }
         )
     }
-
     const data = apiData
 
     return {

@@ -8,6 +8,7 @@ import { Props } from '@components/_pageTemplates/GroupFolderContentsTemplate/in
 
 import { mswServer } from '../../../../jest-mocks/msw-server'
 import { handlers } from '../../../../jest-mocks/handlers'
+import { actions } from '@constants/actions';
 
 const props: Props = {
     id: 'mockId',
@@ -88,6 +89,9 @@ describe('folders page', () => {
     // TODO: Test only folders are rendered
 
     it('gets required server side props', async () => {
+
+        mswServer.use(handlers.getGroupActions({ actions: [actions.GROUPS_VIEW] }))
+
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie-101' },
         } as any)

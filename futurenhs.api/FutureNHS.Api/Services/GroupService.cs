@@ -25,6 +25,7 @@ namespace FutureNHS.Api.Services
     public class GroupService : IGroupService
     {
         private const string GroupEditRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/edit";
+        private const string GroupViewRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/view";
         private const string AdminViewRole = $"https://schema.collaborate.future.nhs.uk/admin/v1/view";
         private readonly ILogger<DiscussionService> _logger;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
@@ -40,7 +41,7 @@ namespace FutureNHS.Api.Services
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 5242880; // 5MB
 
-        public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, 
+        public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand,
             IImageBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupImageService imageService, IGroupCommand groupCommand,
             IHtmlSanitizer htmlSanitizer, IGroupDataProvider groupDataProvider)
         {
@@ -129,7 +130,7 @@ namespace FutureNHS.Api.Services
                 if (image is not null)
                 {
                     var imageId = await _imageService.CreateImageAsync(image);
-                    group = group with {ImageId = imageId};
+                    group = group with { ImageId = imageId };
                 }
             }
             catch (DBConcurrencyException ex)
@@ -213,7 +214,7 @@ namespace FutureNHS.Api.Services
                             }
 
                             var compressedImage = _imageService.TransformImageForGroupHeader(section.Body);
-                                                        
+
                             try
                             {
                                 await _blobStorageProvider.UploadFileAsync(compressedImage.Image, uniqueFileName,
@@ -287,7 +288,7 @@ namespace FutureNHS.Api.Services
             if (formAccumulator.HasValues)
             {
                 var formValues = formAccumulator.GetResults();
-                
+
                 // Get values from multipart form
                 var nameFound = formValues.TryGetValue("name", out var name);
                 if (nameFound is false)
@@ -325,7 +326,7 @@ namespace FutureNHS.Api.Services
                         throw new ValidationException("isPublic", "Cannot make a private group public");
                     }
                 }
-                
+
                 groupDto = new GroupDto
                 {
                     Slug = slug,
@@ -337,7 +338,7 @@ namespace FutureNHS.Api.Services
                     ModifiedAtUtc = now,
                     IsPublic = isPublic,
                     RowVersion = rowVersion
-                };               
+                };
             }
             return (groupDto, imageDto);
         }
@@ -355,5 +356,119 @@ namespace FutureNHS.Api.Services
             return mediaType.Encoding;
         }
 
+        public async Task<(uint, IEnumerable<GroupMember>)> GetGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupViewRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetGroupMembersAsync - User:{0} does not have permission to get members of this group:{1}(slug)", userId, slug);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            var groupMembers = await _groupDataProvider.GetGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
+
+            return groupMembers;
+        }
+
+        public async Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupViewRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetPendingGroupMembersAsync - User:{0} does not have permission to get pending group members of this group:{1}(slug)", userId, slug);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            var pendingGroupMembers = await _groupDataProvider.GetPendingGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
+
+            return pendingGroupMembers;
+        }
+
+        public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+
+            var group = await _groupDataProvider.GetGroupAsync(slug, userId, cancellationToken);
+
+            return group;
+        }
+
+        public async Task<GroupMemberDetails> GetGroupMemberAsync(Guid userId, string slug, Guid memberId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+            if (Guid.Empty == memberId) throw new ArgumentOutOfRangeException(nameof(memberId));
+
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupViewRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetGroupMemberAsync - User:{0} does not have permission to get group member:{1}(slug)", userId, slug);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            var groupMember = await _groupDataProvider.GetGroupMemberAsync(slug, memberId, cancellationToken);
+
+            return groupMember;
+        }
+
+        public async Task<GroupSite> GetGroupSiteDataAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupViewRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetGroupSiteDataAsync - User:{0} does not have permission to get group site for group:{1}(slug)", userId, slug);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            var groupMember = await _groupDataProvider.GetGroupSiteDataAsync(slug, cancellationToken);
+
+            return groupMember;
+        }
+
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, GroupViewRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetGroupsForUserAsync - User:{0} does not have permission to get groups for user", userId);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            var groupMember = await _groupDataProvider.GetGroupsForUserAsync(userId, offset, limit, cancellationToken);
+
+            return groupMember;
+        }
+
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> DiscoverGroupsForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, GroupViewRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: DiscoverGroupsForUserAsync - User:{0} does not have permission to discover groups for user", userId);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            var groupMember = await _groupDataProvider.DiscoverGroupsForUserAsync(userId, offset, limit, cancellationToken);
+
+            return groupMember;
+        }
     }
 }

@@ -461,5 +461,41 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             return groupSiteData;
         }
+
+        public async Task<bool> GetGroupPrivacyStatusAsync(string groupSlug, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                             @$"SELECT
+                                    PublicGroup
+                               FROM[Group]
+                               WHERE Slug = @Slug";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var isPublicGroup = await dbConnection.QuerySingleOrDefaultAsync<bool>(query, new
+            {
+                Slug = groupSlug
+            });
+
+            return isPublicGroup;
+        }
+
+        public async Task<bool> GetGroupPrivacyStatusAsync(Guid GroupId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                            @$"SELECT 
+                                    PublicGroup
+                               FROM [Group] 
+                               WHERE Id = @Id";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var isPublicGroup = await dbConnection.QuerySingleOrDefaultAsync<bool>(query, new
+            {
+                Id = GroupId
+            });
+
+            return isPublicGroup;
+        }
     }
 }

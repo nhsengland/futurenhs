@@ -22,10 +22,11 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
-            _ = new PermissionsService(null, permissionsDataProvider, permissionsServiceLogger);
+            _ = new PermissionsService(null, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
         }
 
         [TestMethod]
@@ -34,10 +35,11 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var rolesDataProvider = new Moq.Mock<IRolesDataProvider>().Object;
 
-            _ = new PermissionsService(rolesDataProvider, null, permissionsServiceLogger);
+            _ = new PermissionsService(rolesDataProvider, null, permissionsServiceLogger, groupDataProvider);
         }
 
         [TestMethod]
@@ -46,12 +48,13 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cancellationToken = CancellationToken.None;
             var rolesDataProvider = new Moq.Mock<IRolesDataProvider>().Object;
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
-            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var userId = Guid.Empty;
             var groupId = Guid.NewGuid();
@@ -65,12 +68,13 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cancellationToken = CancellationToken.None;
             var rolesDataProvider = new Mock<IRolesDataProvider>().Object;
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
-            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var userId = Guid.NewGuid();
             var groupId = Guid.Empty;
@@ -84,6 +88,7 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cts = new CancellationTokenSource();
 
@@ -94,7 +99,7 @@ namespace FutureNHS.Tests.Services
 
             cts.Cancel();
 
-            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
@@ -108,6 +113,7 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cts = new CancellationTokenSource();
 
@@ -127,7 +133,7 @@ namespace FutureNHS.Tests.Services
                     .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
             Assert.IsTrue(permissions is null);
@@ -138,6 +144,7 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cts = new CancellationTokenSource();
 
@@ -150,17 +157,17 @@ namespace FutureNHS.Tests.Services
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = new List<string> { "Admin" };
-            List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> ();
+            List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole>();
 
             rolesDataProvider.Setup(x =>
                     x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            
+
             Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
         }
 
@@ -169,6 +176,7 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cts = new CancellationTokenSource();
 
@@ -181,17 +189,17 @@ namespace FutureNHS.Tests.Services
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             List<string>? userRolesResponse = new List<string> { "Standard Members" };
-            List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Approved = true} };
+            List<GroupUserRole>? groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Approved = true } };
 
             rolesDataProvider.Setup(x =>
                     x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            
+
             Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
         }
 
@@ -219,10 +227,10 @@ namespace FutureNHS.Tests.Services
         //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
         //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            
+
         //    Assert.IsTrue(!permissions.Any());
         //}
 
@@ -250,7 +258,7 @@ namespace FutureNHS.Tests.Services
         //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
         //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
 
@@ -281,10 +289,10 @@ namespace FutureNHS.Tests.Services
         //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
         //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
-            
+
         //    Assert.IsTrue(!permissions.Any());
         //}
 
@@ -312,7 +320,7 @@ namespace FutureNHS.Tests.Services
         //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
         //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
 
@@ -324,6 +332,7 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cts = new CancellationTokenSource();
 
@@ -336,14 +345,14 @@ namespace FutureNHS.Tests.Services
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
             var userRolesResponse = new List<string> { "Standard Members", "Admin" };
-            var groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Approved = true}, new GroupUserRole { RoleName = "Standard Members", Approved = true} };
+            var groupRolesResponse = new List<GroupUserRole> { new GroupUserRole { RoleName = "Admin", Approved = true }, new GroupUserRole { RoleName = "Standard Members", Approved = true } };
 
             rolesDataProvider.Setup(x =>
                     x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
                 .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
 
@@ -375,7 +384,7 @@ namespace FutureNHS.Tests.Services
         //            x.GetUserAndGroupUserRolesAsync(userId, groupId, cancellationToken))
         //        .ReturnsAsync(new UserAndGroupRoles(userRolesResponse, groupRolesResponse));
 
-        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+        //    var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
         //    var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
 
@@ -388,13 +397,14 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cancellationToken = CancellationToken.None;
 
             var rolesDataProvider = new Mock<IRolesDataProvider>().Object;
             IPermissionsDataProvider permissionsDataProvider = new PermissionsDataProvider(permissionsDataProviderLogger);
 
-            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var userId = Guid.Empty;
 
@@ -408,6 +418,7 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cts = new CancellationTokenSource();
 
@@ -418,7 +429,7 @@ namespace FutureNHS.Tests.Services
 
             cts.Cancel();
 
-            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var userId = Guid.NewGuid();
 
@@ -429,6 +440,7 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cts = new CancellationTokenSource();
 
@@ -447,7 +459,7 @@ namespace FutureNHS.Tests.Services
                 .ReturnsAsync(userRolesResponse);
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var permissions = await permissionsService.GetUserPermissionsAsync(userId, cancellationToken);
             Assert.IsTrue(permissions is null);
@@ -458,6 +470,7 @@ namespace FutureNHS.Tests.Services
         {
             var permissionsDataProviderLogger = new Moq.Mock<ILogger<PermissionsDataProvider>>().Object;
             var permissionsServiceLogger = new Moq.Mock<ILogger<PermissionsService>>().Object;
+            var groupDataProvider = new Moq.Mock<IGroupDataProvider>().Object;
 
             var cts = new CancellationTokenSource();
 
@@ -476,7 +489,7 @@ namespace FutureNHS.Tests.Services
                 .ReturnsAsync(userRolesResponse);
 
 
-            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger);
+            var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
             var permissions = await permissionsService.GetUserPermissionsAsync(userId, cancellationToken);
             Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/admin/v1/view"));

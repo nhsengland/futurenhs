@@ -1,3 +1,4 @@
+import { actions as actionConstants } from '@constants/actions';
 import { rest } from 'msw';
 
 interface SearchResultsHandlerProps {
@@ -163,6 +164,15 @@ const getSiteActions = ({ actions = [] }: { actions?: Array<string> }) => rest.g
     async (req, res, ctx) => res(
         ctx.json(actions)
     ));
+
+/**
+ * mock getGroupActions
+ */
+const getGroupActions = ({ actions = [] }: { actions?: Array<string> }) => rest.get('*/v1/users/*/groups/*/actions',
+async (req, res, ctx) => res(
+    ctx.json(actions)
+));
+
 
 
 /**
@@ -475,6 +485,7 @@ export const handlers = {
     getSearchResultsHandler,
     getAuthHandler,
     getSiteActions,
+    getGroupActions,
     getGroup,
     getGroups,
     getGroupFolder,

@@ -19,4 +19,5 @@ export const routes: Routes = {
     groupFolder: '/:groupId/folders/:folderId',
     groupFilesRoot: '/:groupId/files',
     groupMembersRoot: '/:groupId/members',
+    groupAboutRoot: '/:groupId/about'
 };
