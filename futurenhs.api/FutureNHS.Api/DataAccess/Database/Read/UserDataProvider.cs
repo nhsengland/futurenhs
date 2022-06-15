@@ -135,9 +135,16 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(MemberIdentityResponse.MembershipUserId)}]  = member.Id,
                                 [{nameof(MemberIdentityResponse.IdentityId)}]        = member.IdentityId,
                                 [{nameof(MemberIdentityResponse.FirstName)}]         = member.FirstName,
-                                [{nameof(MemberIdentityResponse.LastName)}]          = member.Surname
+                                [{nameof(MemberIdentityResponse.LastName)}]          = member.Surname,
+                                [{nameof(ImageData.Id)}]                             = image.Id,
+                                [{nameof(ImageData.Height)}]                         = image.Height,
+                                [{nameof(ImageData.Width)}]                          = image.Width,
+                                [{nameof(ImageData.FileName)}]                       = image.FileName,
+                                [{nameof(ImageData.MediaType)}]                      = image.MediaType
 				    
                     FROM        [MembershipUser] member
+                    LEFT JOIN   Image image
+                        ON          image.Id = member.ImageId
                     WHERE       member.[IdentityId] = @IdentityId";
 
             var queryDefinition = new CommandDefinition(query, new
@@ -145,9 +152,26 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 IdentityId = identityId,
             }, cancellationToken: cancellationToken);
 
-            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            return await dbConnection.QuerySingleOrDefaultAsync<MemberIdentityResponse>(queryDefinition);
+            var reader = await dbConnection.QueryAsync<MemberIdentityResponse, Image, MemberIdentityResponse>(query,
+                (group, image) =>
+                {
+                    if (image is not null)
+                    {
+                        var groupWithImage = @group with { Image = new ImageData(image, _options) };
+
+                        return groupWithImage;
+                    }
+
+                    return @group;
+
+                }, new
+                {
+                    IdentityId = identityId,
+                }, splitOn: "id");
+
+            return reader.SingleOrDefault();
         }
 
         public async Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken = default)
@@ -176,7 +200,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 @$" SELECT
                                 [{nameof(MemberProfile.Id)}]                = member.Id,
                                 [{nameof(MemberProfile.FirstName)}]         = member.FirstName,
-                                [{nameof(MemberProfile.LastName)}]           = member.Surname,
+                                [{nameof(MemberProfile.LastName)}]          = member.Surname,
                                 [{nameof(MemberProfile.Pronouns)}]          = member.Pronouns,
                                 [{nameof(MemberProfile.ImageId)}]           = member.ImageId,
                                 [{nameof(ImageData.Id)}]                    = image.Id,
