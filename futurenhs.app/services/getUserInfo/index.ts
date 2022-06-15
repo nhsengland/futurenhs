@@ -49,6 +49,8 @@ export const getUserInfo: GetUserInfoService = async (
 
     // const { ok, status, statusText } = apiMeta
 
+    console.log(apiData, 10000);
+
     if (!ok) {
         throw new ServiceError(
             'An unexpected error occurred when attempting to get the user info',

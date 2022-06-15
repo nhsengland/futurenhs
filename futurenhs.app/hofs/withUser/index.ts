@@ -70,6 +70,8 @@ export const withUser: Hof = async (
                         }
                     }
                 }
+                
+                return handleSSRErrorProps({ props, error })
 
             }
         } catch (error) {

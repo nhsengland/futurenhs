@@ -45,6 +45,9 @@ export const getServerSideProps: GetServerSideProps = async (
                     const callbackUrl: string = `${process.env.APP_URL}${context.resolvedUrl}`
                     const idTokenHint: string = session.id_token as string
 
+                    const callbackUrl: string = `${process.env.APP_URL}${context.resolvedUrl}`;
+                    const idTokenHint: string = (session.id_token as string);
+
                     /**
                      * Get next-auth specific csrf token and associated cookie header
                      */
