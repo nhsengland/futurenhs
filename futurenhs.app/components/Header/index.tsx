@@ -73,7 +73,7 @@ export const Header: (props: Props) => JSX.Element = ({
     const userAccordionId: string = 'user-accordion'
     const headerImageSrc: string = useAssetPath('/images/logo.svg')
     const userProfileImage: ImageType = user?.image
-    const logOutRoute: string = routes.LOG_OUT
+    const signOutRoute: string = routes.SIGN_OUT
     const shouldRenderUserLink: boolean = Boolean(user?.id)
     const shouldRenderAdminLink: boolean = actions?.includes(
         actionTypes.SITE_ADMIN_VIEW
@@ -97,7 +97,7 @@ export const Header: (props: Props) => JSX.Element = ({
      */
     const handleLogoutConfirm = () => {
         setIsLogoutModalOpen(false)
-        window.location.href = logOutRoute
+        window.location.href = signOutRoute
     }
 
     /**
@@ -294,7 +294,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                 >
                                                                     <Link
                                                                         href={
-                                                                            logOutRoute
+                                                                            signOutRoute
                                                                         }
                                                                     >
                                                                         <a

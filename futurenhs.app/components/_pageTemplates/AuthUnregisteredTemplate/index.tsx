@@ -1,3 +1,4 @@
+import { Link } from '@components/Link';
 import { PageBody } from '@components/PageBody';
 import { RichText } from '@components/RichText';
 
@@ -11,13 +12,19 @@ export const AuthUnregisteredTemplate: (props: Props) => JSX.Element = ({
     contentText
 }) => {
 
-    const { mainHeading, bodyHtml } = contentText ?? {};
+    const { authSignOut } = routes;
+    const { mainHeading, bodyHtml, signOut } = contentText ?? {};
 
     return (
 
         <PageBody className="tablet:u-px-0">
             <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
-            <RichText wrapperElementType="div" bodyHtml={bodyHtml} />
+            <RichText wrapperElementType="div" className="u-mb-10" bodyHtml={bodyHtml} />
+            {signOut &&
+                <Link href={authSignOut}>
+                    <a className="c-button c-button-outline u-drop-shadow">{signOut}</a>
+                </Link>
+            }
         </PageBody>
 
     )
