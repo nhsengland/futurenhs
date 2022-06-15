@@ -214,10 +214,16 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                     AND         groupUser.Rejected = 0
                                                                                     AND         groupUser.Locked = 0
                                                                                     AND         groupUser.Banned = 0
-                                                                                    THEN        CAST(1 as bit) 
-                                                                                    ELSE        CAST(0 as bit) 
+                                                                                    THEN        'Approved'
+                                                                                    WHEN        groupUser.MembershipUser_Id = @UserId
+                                                                                    AND         groupUser.Approved = 0
+                                                                                    AND         groupUser.Rejected = 0 OR groupUser.Rejected = 1
+                                                                                    AND         groupUser.Locked = 0
+                                                                                    AND         groupUser.Banned = 0
+                                                                                    THEN        'Pending Approval'
+                                                                                    ELSE        'Non Member'
                                                                                     END
-                                                                                  ) AS IsMember,		
+                                                                                  ) AS MemberStatus,		
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName,  image.MediaType AS MediaType
 				FROM [Group] g
                 LEFT JOIN Image image ON image.Id = g.ImageId  
