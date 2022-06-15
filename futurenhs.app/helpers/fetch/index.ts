@@ -34,7 +34,8 @@ export const fetchJSON = (
 ): Promise<FetchResponse> => {
     return fetchWithTimeOut(url, options, timeOut).then(
         (response: Response) => {
-            const meta = response.clone()
+
+            const meta = response.clone();
 
             /**
              * Clear Next js page cache in service worker if any non-GET requests are made which would affect the cached GET data
@@ -49,6 +50,7 @@ export const fetchJSON = (
              * Return meta and JSON
              */
             return response.text().then((text) => {
+
                 let json: any = ''
 
                 try {

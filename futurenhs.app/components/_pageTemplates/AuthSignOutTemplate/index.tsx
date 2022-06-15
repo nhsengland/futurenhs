@@ -1,4 +1,6 @@
 import { PageBody } from '@components/PageBody';
+import { RichText } from '@components/RichText';
+import Link from 'next/link';
 
 import { Props } from './interfaces'
 
@@ -6,23 +8,25 @@ import { Props } from './interfaces'
  * Auth signout template
  */
 export const AuthSignOutTemplate: (props: Props) => JSX.Element = ({
-    csrfToken,
     routes,
     contentText
 }) => {
 
-    const { authApiSignOut } = routes ?? {};
-    const { mainHeading, signOut } = contentText ?? {};
+    const { authSignIn } = routes ?? {};
+    const { mainHeading, bodyHtml, signIn } = contentText ?? {};
 
     return (
 
         <PageBody className="tablet:u-px-0">
             <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
-            <form action={authApiSignOut} method="POST" encType="multipart/form-data">
-                <input type="hidden" name="csrfToken" value={csrfToken} />
-                <input type="hidden" name="callbackUrl" value="http://localhost:5000" />
-                <button type="submit" className="c-button">{signOut}</button>
-            </form>
+            {bodyHtml &&
+                <RichText wrapperElementType="div" className="u-mb-10" bodyHtml={bodyHtml} />
+            }
+            {signIn &&
+                <Link href={authSignIn}>
+                    <a className="c-button">{signIn}</a>
+                </Link>
+            }
         </PageBody>
 
     )

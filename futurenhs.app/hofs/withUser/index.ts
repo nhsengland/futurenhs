@@ -39,31 +39,35 @@ export const withUser: Hof = async (
 
         }
 
-        try {
+        if(session){
 
-            const { data: user } = await getUserInfoService({
-                identityId: session.sub,
-                emailAddress: session.user?.email
-            })
+            try {
 
-            props.user = user
-            context.req.user = user
-
-        } catch (error) {
-
-            console.log(error);
-
-            if(error.data?.status === 403 && isRequired){
-
-                return {
-                    redirect: {
-                        permanent: false,
-                        destination: `${process.env.APP_URL}/auth/unregistered`,
-                    }, 
+                const { data: user } = await getUserInfoService({
+                    identityId: (session.sub as string),
+                    emailAddress: session.user?.email
+                })
+    
+                props.user = user
+                context.req.user = user
+    
+            } catch (error) {
+        
+                if(error.data?.status === 403 && isRequired){
+    
+                    return {
+                        redirect: {
+                            permanent: false,
+                            destination: `${process.env.APP_URL}/auth/unregistered`,
+                        }, 
+                    }
+    
                 }
+                
+                return handleSSRErrorProps({ props, error })
 
             }
-            //return handleSSRErrorProps({ props, error })
+
         }
     }
 
