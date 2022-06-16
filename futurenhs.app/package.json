@@ -13,7 +13,7 @@
         "test-js": "jest",
         "test-changed": "jest --onlyChanged",
         "storybook": "start-storybook -p 6006",
-        "build-storybook": "build-storybook"
+        "build-storybook": "node node_modules/cross-env/src/bin/cross-env.js STORYBOOK_PUBLIC_ASSET_PREFIX=/sharing-platform-docs build-storybook"
     },
     "dependencies": {
         "@tinymce/tinymce-react": "^3.13.0",

@@ -1,6 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
 
+import { useAssetPath } from '@hooks/useAssetPath';
+
 import { Props } from './interfaces'
 
 export const SVGIcon: (props: Props) => JSX.Element = ({
@@ -8,9 +10,9 @@ export const SVGIcon: (props: Props) => JSX.Element = ({
     name,
     className,
 }) => {
-    const basePath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX
-    const fullUrl: string = basePath && url ? basePath + url : url ?? ''
-    const xlinkHref: string = fullUrl ? `${fullUrl}#${name}` : `#${name}`
+
+    const fullPath: string = useAssetPath(url);
+    const xlinkHref: string = fullPath ? `${fullPath}#${name}` : `#${name}`
 
     const generatedClasses: any = {
         wrapper: classNames('c-svg-icon', className),
