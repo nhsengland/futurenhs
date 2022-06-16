@@ -28,7 +28,19 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         public async Task UserJoinGroupAsync(GroupUserDto groupUser, CancellationToken cancellationToken = default)
         {
             const string query =
-                 @" INSERT INTO  [dbo].[GroupUser]
+                 @"IF EXISTS (SELECT [Id] FROM [dbo].[GroupUser] 
+                    WHERE        [MembershipUser_Id] = @UserId
+					AND	         [Group_Id]			 = @GroupId 
+					AND	         [Rejected]			 = 1)
+                    BEGIN
+                    UPDATE       [dbo].[GroupUser]
+                    SET          [Rejected]          = 0
+                    WHERE        [MembershipUser_Id] = @UserId
+                    AND          [Group_Id]	         = @GroupId
+                    END
+                    ELSE
+                    BEGIN
+                    INSERT INTO  [dbo].[GroupUser]
                                  ([Id]
                                 ,[Approved]
                                 ,[Rejected]
@@ -57,7 +69,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,@ApprovingUser
                                 ,@Role
                                 ,@UserId
-                                ,@GroupId)";
+                                ,@GroupId)
+                    END";
 
             var queryDefinition = new CommandDefinition(query, new
             {

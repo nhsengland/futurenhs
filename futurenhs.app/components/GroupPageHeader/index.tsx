@@ -21,6 +21,7 @@ import { useMediaQuery } from '@hooks/useMediaQuery'
 import { Theme } from '@appTypes/theme'
 
 import { Props } from './interfaces'
+import { groupMemberStatus } from '@constants/group-member-status'
 
 export const GroupPageHeader: (props: Props) => JSX.Element = ({
     id,
@@ -31,6 +32,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     actions,
     routes,
     shouldRenderActionsMenu = true,
+    memberStatus,
     className,
 }) => {
     const router = useRouter()
@@ -54,6 +56,8 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const shouldRenderGroupEditLink: boolean = actions?.includes(
         actionsConstants.GROUPS_EDIT
     )
+    const shouldRenderPendingMessage: boolean =
+        memberStatus === groupMemberStatus.PENDING
 
     const activeMenuItemText: string = navMenuList?.find(
         ({ isActive }) => isActive
@@ -219,6 +223,17 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                             desktop={3}
                             className={generatedClasses.actionsWrapper}
                         >
+                            {shouldRenderPendingMessage &&
+                                !shouldRenderGroupJoinLink && (
+                                    <div className="nhsuk-body-m">
+                                        <SVGIcon
+                                            name="icon-clock"
+                                            className="u-w-4 u-h-4 u-mr-2"
+                                        />
+                                        Awaiting Approval
+                                    </div>
+                                )}
+
                             {shouldRenderGroupJoinLink ? (
                                 <a
                                     href={routes.groupJoin}

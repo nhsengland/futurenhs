@@ -18,13 +18,13 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     entityText,
     image,
     actions,
+    memberStatus,
     routes,
     children,
     shouldRenderGroupHeader = true,
     pageTitle,
     ...rest
 }) => {
-
     const router: any = useRouter()
     const isAboutRoute: boolean = router.asPath === routes.groupAboutRoot
 
@@ -67,6 +67,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                             actions={actions}
                             routes={routes}
                             navMenuList={navMenuList}
+                            memberStatus={memberStatus}
                         />
                     </ErrorBoundary>
                 )}
