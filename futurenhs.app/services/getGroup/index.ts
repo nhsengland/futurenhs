@@ -66,7 +66,7 @@ export const getGroup = async (
             }
         )
     }
-
+    console.log(apiData)
     serviceResponse.headers = headers
     serviceResponse.data = {
         text: {
@@ -85,7 +85,7 @@ export const getGroup = async (
             : null,
         imageId: apiData.imageId,
         themeId: apiData.themeId,
-        isPublic: apiData.isPublic
+        isPublic: apiData.isPublic,
     }
 
     return serviceResponse
