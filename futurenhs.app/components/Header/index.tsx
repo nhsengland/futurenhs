@@ -23,6 +23,7 @@ import { routes } from '@constants/routes'
 import { capitalise } from '@helpers/formatters/capitalise'
 
 import { Props } from './interfaces'
+import { useAssetPath } from '@hooks/useAssetPath'
 
 /**
  * Site header
@@ -69,6 +70,7 @@ export const Header: (props: Props) => JSX.Element = ({
     const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP)
     const headerAccordionId: string = 'header-accordion'
     const userAccordionId: string = 'user-accordion'
+    const headerImageSrc: string = useAssetPath('/images/logo.svg');
     const logOutRoute: string = routes.LOG_OUT
     const shouldRenderUserLink: boolean = Boolean(user?.id)
     const shouldRenderAdminLink: boolean = actions?.includes(
@@ -125,7 +127,7 @@ export const Header: (props: Props) => JSX.Element = ({
                     <Link href="/">
                         <a className="c-site-header_logo u-focus-item">
                             <Image
-                                src="/images/logo.svg"
+                                src={headerImageSrc}
                                 height={41}
                                 width={231}
                                 alt="FutureNHS home page"
