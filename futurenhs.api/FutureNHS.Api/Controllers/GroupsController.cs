@@ -271,7 +271,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("groups/{userId:guid}/{groupSlug:guid}/site")]
+        [Route("users/{userId:guid}/groups/{slug}/site")]
         public async Task<IActionResult> GetGroupSiteAsync(Guid userId, string slug, CancellationToken cancellationToken)
         {
             var groupSiteData = await _groupService.GetGroupSiteDataAsync(userId, slug, cancellationToken);
