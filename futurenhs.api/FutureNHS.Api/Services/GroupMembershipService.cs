@@ -208,7 +208,7 @@ namespace FutureNHS.Api.Services
 
             var groupUser = await _groupCommand.GetGroupUserAsync(userId, group.Id, cancellationToken);
 
-            if (groupUser is not null)
+            if (groupUser is not null && !groupUser.Rejected)
             {
                 throw new ValidationException(nameof(groupUser.MembershipUser), "User has already requested access to this group");
             }
@@ -261,7 +261,7 @@ namespace FutureNHS.Api.Services
             {
                 _logger.LogError($"Error: ApproveGroupUserAsync - User:{0} does not have permission to add a new user to this group:{1}(slug)", userId, slug);
                 throw new ForbiddenException($"Error: User does not have access");
-            }            
+            }
 
             var group = await _groupCommand.GetGroupAsync(slug, cancellationToken);
             if (group is null)

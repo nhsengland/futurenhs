@@ -137,7 +137,7 @@ namespace FutureNHS.Api.Controllers
                 return NotFound();
             }
 
-            var permissions = await _permissionsService.GetUserPermissionsForGroupAsync(userId, group.Id, cancellationToken);
+            var permissions = await _permissionsService.GetUserPermissionsForGroupAsync(userId, group.Id, group.MemberStatus, cancellationToken);
 
             if (permissions is null)
             {

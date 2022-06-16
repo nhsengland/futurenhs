@@ -47,18 +47,25 @@ export const withGroup = (
             props.themeId = groupData.data.themeId ?? defaultThemeId
             props.entityText = groupData.data.text ?? {}
             props.image = groupData.data.image ?? defaultGroupLogos.small
+            props.memberStatus = actionsData.data.memberStatus
             props.actions = [
                 ...(props.actions ?? []),
-                ...(actionsData.data ?? []),
+                ...(actionsData.data?.actions ?? []),
             ]
-            
-            const openRoutes: Array<string> = [props.routes.groupAboutRoot, props.routes.groupJoin]
 
-            const hasAccess: boolean = actionsData.data?.includes(actions.GROUPS_VIEW)
-            const isOpenRoute : boolean = openRoutes.some((route) => context.resolvedUrl?.startsWith(route))
-            
+            const openRoutes: Array<string> = [
+                props.routes.groupAboutRoot,
+                props.routes.groupJoin,
+            ]
+
+            const hasAccess: boolean = actionsData.data?.actions?.includes(
+                actions.GROUPS_VIEW
+            )
+            const isOpenRoute: boolean = openRoutes.some((route) =>
+                context.resolvedUrl?.startsWith(route)
+            )
+
             if (!props.isPublic) {
-                
                 if (!hasAccess && !isOpenRoute) {
                     return {
                         props,
@@ -68,7 +75,6 @@ export const withGroup = (
                         },
                     }
                 }
-
             }
         } catch (error) {
             return handleSSRErrorProps({ props, error })

@@ -20,15 +20,20 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
+declare type ActionsAndStatus = {
+    actions: Array<actions>
+    memberStatus: string
+}
+
 export type GetGroupActionsService = (
     options: Options,
     dependencies?: Dependencies
-) => Promise<ServiceResponse<Array<actions>>>
+) => Promise<ServiceResponse<ActionsAndStatus>>
 
 export const getGroupActions = async (
     { groupId, user }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<Array<actions>>> => {
+): Promise<ServiceResponse<ActionsAndStatus>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
@@ -41,7 +46,6 @@ export const getGroupActions = async (
         setFetchOptions({ method: requestMethods.GET }),
         defaultTimeOutMillis
     )
-
     const apiData: ApiResponse<any> = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
@@ -58,9 +62,11 @@ export const getGroupActions = async (
             }
         )
     }
-    const data = apiData
 
     return {
-        data: data,
+        data: {
+            memberStatus: apiData.memberStatus,
+            actions: apiData.permissions,
+        },
     }
 }
