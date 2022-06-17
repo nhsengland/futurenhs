@@ -59,7 +59,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.Empty;
             var groupId = Guid.NewGuid();
 
-            _ = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+            _ = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, string.Empty, cancellationToken);
         }
 
         [TestMethod]
@@ -79,7 +79,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.Empty;
 
-            _ = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+            _ = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, string.Empty, cancellationToken);
         }
 
         [TestMethod]
@@ -104,7 +104,7 @@ namespace FutureNHS.Tests.Services
             var userId = Guid.NewGuid();
             var groupId = Guid.NewGuid();
 
-            _ = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+            _ = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, string.Empty, cancellationToken);
         }
 
 
@@ -135,7 +135,7 @@ namespace FutureNHS.Tests.Services
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, string.Empty, cancellationToken);
             Assert.IsTrue(permissions is null);
         }
 
@@ -166,9 +166,9 @@ namespace FutureNHS.Tests.Services
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+            var userGroupPermissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, string.Empty, cancellationToken);
 
-            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
+            Assert.IsTrue(userGroupPermissions.Permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
         }
 
         [TestMethod]
@@ -198,9 +198,9 @@ namespace FutureNHS.Tests.Services
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+            var userGroupPermissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, string.Empty, cancellationToken);
 
-            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
+            Assert.IsTrue(userGroupPermissions.Permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/add"));
         }
 
         //[TestMethod]
@@ -354,10 +354,10 @@ namespace FutureNHS.Tests.Services
 
             var permissionsService = new PermissionsService(rolesDataProvider.Object, permissionsDataProvider, permissionsServiceLogger, groupDataProvider);
 
-            var permissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+            var userGroupPermissions = await permissionsService.GetUserPermissionsForGroupAsync(userId, groupId, string.Empty, cancellationToken);
 
-            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/members/v1/add"));
-            Assert.IsTrue(permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/delete"));
+            Assert.IsTrue(userGroupPermissions.Permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/members/v1/add"));
+            Assert.IsTrue(userGroupPermissions.Permissions.Any(x => x == "https://schema.collaborate.future.nhs.uk/groups/v1/members/delete"));
 
         }
 

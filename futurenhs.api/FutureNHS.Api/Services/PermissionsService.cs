@@ -1,4 +1,5 @@
 ﻿using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Models.Permissions;
 using FutureNHS.Api.Services.Interfaces;
 
@@ -27,7 +28,7 @@ namespace FutureNHS.Api.Services
             _groupDataProvider = groupDataProvider ?? throw new ArgumentNullException(nameof(groupDataProvider));
         }
 
-        public async Task<IEnumerable<string>?> GetUserPermissionsForGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken)
+        public async Task<UserGroupPermissions> GetUserPermissionsForGroupAsync(Guid userId, Guid groupId, string memberStatus, CancellationToken cancellationToken)
         {
             if (userId == Guid.Empty) throw new ArgumentException("Cannot be EMPTY", nameof(userId));
             if (groupId == Guid.Empty) throw new ArgumentException("Cannot be EMPTY", nameof(groupId));
@@ -49,11 +50,11 @@ namespace FutureNHS.Api.Services
             permissions.AddRange(await GetSiteUserPermissionsForGroupRoles(userRoles));
 
             if (userRoles.Any(x => x == AdminRole))
-                return permissions.Distinct();
+                return new UserGroupPermissions() { MemberStatus = memberStatus, Permissions = permissions.Distinct() };
 
             permissions.AddRange(await GetUserPermissionsForGroupRoles(groupUserRoles, groupId, isPublicGroup));
 
-            return permissions.Distinct();
+            return new UserGroupPermissions() { MemberStatus = memberStatus, Permissions = permissions.Distinct() };
         }
 
         public async Task<IEnumerable<string>?> GetUserPermissionsForGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
@@ -112,9 +113,9 @@ namespace FutureNHS.Api.Services
 
         public async Task<bool> UserCanPerformActionAsync(Guid userId, Guid groupId, string action, CancellationToken cancellationToken)
         {
-            var roles = await GetUserPermissionsForGroupAsync(userId, groupId, cancellationToken);
+            var roles = await GetUserPermissionsForGroupAsync(userId, groupId, string.Empty, cancellationToken);
 
-            return roles is not null && roles.Any(x => x == action);
+            return roles is not null && roles.Permissions.Any(x => x == action);
         }
 
         public async Task<bool> UserCanPerformActionAsync(Guid userId, string slug, string action, CancellationToken cancellationToken)
