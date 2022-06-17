@@ -13,7 +13,7 @@ class genericPage extends basePage{
             case 'header' : return `//h1[contains(normalize-space(.), "${textValue}")]|//h2[contains(normalize-space(.), "${textValue}")]|//h3[contains(normalize-space(.), "${textValue}")]|//h4[contains(normalize-space(.), "${textValue}")]|//h5[contains(normalize-space(.), "${textValue}")]`
             case 'textual value' : return `//*[contains(normalize-space(.), "${textValue}")]`
             case 'link' : return `//a[normalize-space(text()) =  "${textValue}"]`
-            case 'button' : return `//button[contains(normalize-space(.), "${textValue}")]`
+            case 'button' : return `//button[starts-with(normalize-space(.), "${textValue}")]`
             case 'option' : return `//input[@value = "${textValue}"]`
             case "tab" : return `//a[@class="c-tabbed-nav_link"]/span[contains(normalize-space(.), "${textValue}")]`
             case "nav icon" : return `//li/a[@aria-label="${textValue}"]`

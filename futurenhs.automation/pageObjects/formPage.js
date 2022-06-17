@@ -61,6 +61,7 @@ class formPage extends basePage{
      * @param {string} valueToSet - textual value to set within the rich text editor
      */
     textEditorSet(valueToSet, label){
+        if(valueToSet == null){ return }
         var txtEditorLabel = helpers.getEnabledInstance(`//label[starts-with(normalize-space(.), "${label}")]`);
         //Find the unique ID for the desired text editor iFrame
         txtEditorLabel.scrollIntoView();
@@ -77,12 +78,9 @@ class formPage extends basePage{
             global.postedComment = valueToSet
         }
         //Set value and return to main frame of the page
-        txtEditor.setValue(valueToSet);
+        helpers.clearElement(txtEditor);
+        txtEditor.addValue(valueToSet);
         browser.switchToParentFrame();
-        //Find sumbit button of the editor
-        var submitbtn = txtEditorLabel.parentElement().parentElement().parentElement().$('./div[2]/button[starts-with(@class, "c-form_submit-button")]');
-        //Click submit button of the editor
-        helpers.click(submitbtn);
     }
 
     /**
