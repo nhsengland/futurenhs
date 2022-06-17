@@ -47,7 +47,20 @@ export const TextArea: (props: Props) => JSX.Element = ({
     )?.maxLength
     const elementMinHeight: string = `${minHeight}px`
 
-    const handleRteInit = (_, editor) => (editorRef.current = editor)
+    const handleRteInit = (_, editor) => { 
+        editorRef.current = editor;
+        editorRef.current?.on?.('CloseWindow', () => {
+
+            const { top } = editorRef.current?.contentAreaContainer.getBoundingClientRect() ?? {};
+
+            if(top) {
+
+                window.scrollTo(0, top);
+
+            }
+
+        })
+    }
     const handleRteChange = (value: any) => { input.onChange(value) }
     const handleRteFocus = () => {
         input.onFocus()
