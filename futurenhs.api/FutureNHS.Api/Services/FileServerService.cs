@@ -101,7 +101,7 @@ namespace FutureNHS.Api.Services
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, ViewFileRole, cancellationToken);
             if (userCanPerformAction is false)
             {
-                _logger.LogError($"Error: ViewFileAsync - User:{0} does not have access to group:{1}", userId, slug);
+                _logger.LogError($"Error: ViewFileAsync - User:{userId} does not have access to group:{slug}");
                 throw new SecurityException($"Error: User does not have access");
             }
 
@@ -111,7 +111,7 @@ namespace FutureNHS.Api.Services
 
             var hasCookies = requestCookies.Any();
 
-            if (!hasCookies) return Forbidden(HttpStatusCode.Forbidden,"There is no Cookie header attached to the request");
+            if (!hasCookies) return Forbidden(HttpStatusCode.Forbidden, "There is no Cookie header attached to the request");
 
 
             var httpClient = _httpClientFactory.CreateClient("fileserver-createurl");
@@ -126,7 +126,7 @@ namespace FutureNHS.Api.Services
             {
                 using var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
-                _logger?.LogDebug("Status code of response from file server is '{StatusCode}'", httpResponseMessage.StatusCode);
+                _logger?.LogDebug($"Status code of response from file server is '{httpResponseMessage.StatusCode}'");
 
                 if (!httpResponseMessage.IsSuccessStatusCode) return Forbidden(httpResponseMessage.StatusCode, "The GenerateCollaboraURL request sent to the file server returned a non-success status code");
 
@@ -134,12 +134,12 @@ namespace FutureNHS.Api.Services
 
                 var mediaType = httpContent.Headers.ContentType?.MediaType;
 
-                _logger?.LogDebug("Media Type of Response from file server FileServerCollaboraResponse = '{MediaType'", mediaType);
+                _logger?.LogDebug($"Media Type of Response from file server FileServerCollaboraResponse = '{mediaType}");
 
                 if (!mediaType?.Contains("application/json") ?? true) return Forbidden(httpResponseMessage.StatusCode, "The file server response is for a media type the File Server does not support");
 
                 await using var utf8JsonStream = await httpContent.ReadAsStreamAsync(cancellationToken);
- 
+
                 var options = new JsonSerializerOptions()
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
