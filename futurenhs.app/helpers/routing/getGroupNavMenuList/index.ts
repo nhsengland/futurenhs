@@ -22,7 +22,7 @@ export const getGroupNavMenuList = ({
               {
                   id: 'about',
                   url: `${groupRoute}/about`,
-                  text: 'About',
+                  text: 'About us',
               },
           ]
         : [
