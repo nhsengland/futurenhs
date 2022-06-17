@@ -38,8 +38,8 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE)
-    const isLoading: boolean = useLoading().isLoading;
-    
+    const isLoading: boolean = useLoading().isLoading
+
     const currentPathName: string = router?.pathname
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || ''
     const breadCrumbDescriptionHtml: string =
@@ -131,13 +131,15 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 navMenuList={mainNavMenuList}
                 searchTerm={searchTerm}
             />
-            <main className={generatedClasses.wrapper}>
-                    <Loader text={{
-                        loadingMessage: "Loading, please wait"
-                    }} delay={1000}
-                       remain={750} 
-                       isActive={isLoading}
-                    />
+            <main className={generatedClasses.wrapper} aria-live="polite">
+                <Loader
+                    text={{
+                        loadingMessage: 'Loading, please wait',
+                    }}
+                    delay={1000}
+                    remain={750}
+                    isActive={isLoading}
+                />
                 {shouldRenderPhaseBanner && (
                     <div className="u-bg-theme-3">
                         <LayoutWidthContainer>
