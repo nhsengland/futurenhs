@@ -54,8 +54,8 @@ Feature: Search
     Scenario: FNHS101 - Search for a Group Where Not a Member
         When I search for 'Automation Created Group'
         And the 'Automation Created Group' search result card is displayed
-            | Group                                  |
-            | A group created to test group creation |
+            | Group                                                                            |
+            | DO NOT USE - This group is reserved solely for use by our automated test scripts |
         When I select the 'Automation Created Group' search result card
         Then the 'Automation Created Group' header is displayed
 

@@ -16,6 +16,7 @@ Feature: forumAdmin
         Then the 'Create Discussion' header is displayed
         When I enter '<title>' into the 'Title' field
         And I enter '<comment>' into the 'Comment' text editor
+        And I click the 'Create Discussion' button
         Then the 'All Discussions' header is displayed
         Examples:
             | title              | comment                                  |
@@ -28,8 +29,7 @@ Feature: forumAdmin
         Then the 'Create Discussion' header is displayed
         When I enter '<title>' into the 'Title' field
         And I enter '<comment>' into the 'Comment' text editor
-        And I click the 'Create Discussion' link
-        And I pause the page for '2000' ms
+        And I click the 'Create Discussion' button
         Then the '<error>' error message is displayed
         And the '<error>' error summary is displayed
         When I click the 'Discard Discussion' link

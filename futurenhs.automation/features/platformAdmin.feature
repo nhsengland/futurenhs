@@ -78,10 +78,10 @@ Feature: Group Create
         Then the 'Groups' header is displayed
         And the 'Admin groups' table exists
         Examples:
-            | groupname                | strapline                              |
-            | Automation Created Group | A group created to test group creation |
-            | [STRING: 255]            | name char length test                  |
-            | Auto 255 Strapline Test  | [STRING: 255]                          |
+            | groupname                   | strapline                                                                        |
+            | Automation Created Group    | DO NOT USE - This group is reserved solely for use by our automated test scripts |
+            | [STRING: 255]               | DO NOT USE - This group is reserved solely for use by our automated test scripts |
+            | DO NOT USE - AUTOMATION 255 | [STRING: 255]                                                                    |
 
 
     Scenario Outline: FNHS24 - Create a group error validation
@@ -109,11 +109,11 @@ Feature: Group Create
     Scenario: FNHS25 - Created Group Homepage Validation
         Given I return to the homepage
         Then the 'Automation Created Group' group card is displayed
-            | A group created to test group creation |
-            | Members: 1Discussions: 0               |
+            | DO NOT USE - This group is reserved solely for use by our automated test scripts |
+            | Members: 1Discussions: 0                                                         |
         When I click the 'Automation Created Group' link
         Then the 'Automation Created Group' header is displayed
-        And the 'A group created to test group creation' textual value is displayed
+        And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
 
     Scenario Outline: FNHS123 - Manage Member Edit Role
         When I click the 'Manage users' link
