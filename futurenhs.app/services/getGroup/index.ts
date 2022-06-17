@@ -66,7 +66,7 @@ export const getGroup = async (
             }
         )
     }
-    console.log(apiData)
+
     serviceResponse.headers = headers
     serviceResponse.data = {
         text: {
