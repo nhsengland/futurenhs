@@ -38,4 +38,5 @@ export interface Props {
      */
     shouldRenderActionsMenu?: boolean
     className?: string
+    memberStatus?: string
 }

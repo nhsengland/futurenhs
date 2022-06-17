@@ -14,6 +14,7 @@ export interface Props {
     shouldRenderGroupHeader?: boolean
     user?: User
     actions?: any
+    memberStatus?: string
     themeId?: string
     className?: string
     entityText?: GroupsPageTextContent
