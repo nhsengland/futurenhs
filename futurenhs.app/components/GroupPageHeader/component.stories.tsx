@@ -192,37 +192,3 @@ Image.args = {
     routes: routes,
     image: defaultGroupLogos.large,
 }
-
-export const Truncate = Template.bind({})
-Truncate.args = {
-    text: {
-        mainHeading: 'Long group description',
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas convallis mi eget sollicitudin eleifend. Maecenas elementum orci id lectus lobortis auctor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.',
-        navMenuTitle: 'Nav menu aria label',
-    },
-    navMenuList: [
-        {
-            isActive: true,
-            text: 'Home',
-            url: '/',
-        },
-        {
-            isActive: false,
-            text: 'Forum',
-            url: '/forum',
-        },
-        {
-            isActive: false,
-            text: 'Files',
-            url: '/files',
-        },
-        {
-            isActive: false,
-            text: 'Members',
-            url: '/',
-        },
-    ],
-    actions: [actionsConstants.GROUPS_JOIN],
-    routes: routes,
-}

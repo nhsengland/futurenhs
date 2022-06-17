@@ -11,6 +11,7 @@ const Template = (args) => <div className="u-relative u-h-[400px]"><Loader {...a
 
 export const Basic = Template.bind({})
 Basic.args = {
+    isActive: true,
     delay: 1000,
     text: {
         loadingMessage: 'Loading, please wait'
