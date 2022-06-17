@@ -58,7 +58,6 @@ exports.config = {
             './features/**/filesManagement.feature',
             './features/**/memberProfile.feature',
             './features/**/cookies.feature',
-            './features/**/systemPages.feature',
             './features/**/mobileNavigation.feature'
         ],
         smokeTest: [
