@@ -1,8 +1,10 @@
 import React from 'react'
 import { GroupPageHeader } from './index'
 import { actions as actionsConstants } from '@constants/actions'
+import { useAssetPath } from '@hooks/useAssetPath';
 import { routes } from '@jestMocks/generic-props'
-import { defaultGroupLogos } from '@constants/icons'
+
+const exampleImageSrc: string = useAssetPath('/images/example-group-image.svg');
 
 export default {
     title: 'GroupPageHeader',
@@ -190,5 +192,10 @@ Image.args = {
     ],
     actions: [actionsConstants.GROUPS_LEAVE],
     routes: routes,
-    image: defaultGroupLogos.large,
+    image: {
+        src: exampleImageSrc,
+        altText: 'Group logo',
+        height: '180px',
+        width: '180px'
+    }
 }

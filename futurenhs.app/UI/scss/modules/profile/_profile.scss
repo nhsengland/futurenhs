@@ -10,6 +10,7 @@
         width: 96px;
         height: 96px;
         margin: 0 0 $nhsuk-spacing-point-3;
+        border-radius: 50%;
 
         @include respond-to(tablet){
             position: absolute;
