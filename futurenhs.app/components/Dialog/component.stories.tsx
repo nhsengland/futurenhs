@@ -51,11 +51,46 @@ const Template = (args) => {
     )
 }
 
+const TemplateConfirmOnly = (args) => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    const toggleModal = () => {
+        setIsOpen(!isOpen)
+    }
+
+    return (
+        <>
+            <button className="c-button" onClick={() => setIsOpen(true)}>
+                Upload file
+            </button>
+            <Dialog
+                confirmAction={toggleModal}
+                cancelAction={toggleModal}
+                isOpen={isOpen}
+                {...args}
+            >
+                <h3>Upload complete</h3>
+                <p className="u-text-bold">
+                    The file upload has been successful
+                </p>
+            </Dialog>
+        </>
+    )
+}
+
 export const Basic = Template.bind({})
 Basic.args = {
     id: 'id',
     text: {
         confirmButton: 'Confirm',
         cancelButton: 'Cancel',
+    },
+}
+
+export const ConfirmOnly = TemplateConfirmOnly.bind({})
+ConfirmOnly.args = {
+    id: 'id',
+    text: {
+        confirmButton: 'Ok'
     },
 }
