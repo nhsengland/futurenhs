@@ -15,7 +15,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     meta: { touched, error, submitError },
     text,
     shouldRenderAsRte,
-    rteToolBarOptions = 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
+    rteToolBarOptions = 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote | table emoticons charmap',
     shouldRenderRemainingCharacterCount,
     validators,
     minHeight = 200,
@@ -155,7 +155,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                         init={{
                             menubar: false,
                             plugins: [
-                                'autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap',
+                                'autosave link lists hr anchor wordcount visualblocks visualchars fullscreen nonbreaking autolink lists table emoticons charmap',
                             ],
                             toolbar: rteToolBarOptions,
                             content_style:
