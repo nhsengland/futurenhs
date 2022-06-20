@@ -1,4 +1,3 @@
-const { getLeadingCommentRanges } = require('typescript');
 const helpers = require('../util/helpers')
 
 class basePage {
