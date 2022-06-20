@@ -1,6 +1,5 @@
 ﻿CREATE TABLE [dbo].[MembershipUser] (
     [Id]                             UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
-    [IdentityId]                     UNIQUEIDENTIFIER NULL,
     [UserName]                       NVARCHAR (150)   NOT NULL,
     [Password]                       NVARCHAR (128)   NOT NULL,
     [PasswordSalt]                   NVARCHAR (128)   NULL,
@@ -44,7 +43,3 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_MembershipUser_Slug]
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [IX_MembershipUser_UserName]
     ON [dbo].[MembershipUser]([UserName] ASC);
-
-GO
-CREATE UNIQUE NONCLUSTERED INDEX [IX_MembershipUser_IdentityId]
-    ON [dbo].[MembershipUser]([IdentityId] ASC);

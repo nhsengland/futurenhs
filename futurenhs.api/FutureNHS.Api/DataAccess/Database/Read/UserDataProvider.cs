@@ -9,6 +9,7 @@ using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Member;
 using Microsoft.Extensions.Options;
+using FutureNHS.Api.DataAccess.Models.Identity;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
 {
@@ -128,47 +129,43 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return member;
         }
 
-        public async Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid identityId, CancellationToken cancellationToken)
+        public async Task<MemberInfoResponse> GetMemberInfoAsync(string subjectId, CancellationToken cancellationToken)
         {
             const string query =
-                @$" SELECT
-                                [{nameof(MemberIdentityResponse.MembershipUserId)}]  = member.Id,
-                                [{nameof(MemberIdentityResponse.IdentityId)}]        = member.IdentityId,
-                                [{nameof(MemberIdentityResponse.FirstName)}]         = member.FirstName,
-                                [{nameof(MemberIdentityResponse.LastName)}]          = member.Surname,
+                @$" SELECT                                
+                                [{nameof(Identity.MembershipUserId)}]                = id.MembershipUser_Id,
+                                [{nameof(Identity.SubjectId)}]                       = id.Subject_Id,
+                                [{nameof(Identity.Issuer)}]                          = id.Issuer,
+                                [{nameof(Member.Id)}]                                = member.Id,
+                                [{nameof(Member.FirstName)}]                         = member.FirstName,
+                                [{nameof(Member.LastName)}]                          = member.Surname,
                                 [{nameof(ImageData.Id)}]                             = image.Id,
                                 [{nameof(ImageData.Height)}]                         = image.Height,
                                 [{nameof(ImageData.Width)}]                          = image.Width,
                                 [{nameof(ImageData.FileName)}]                       = image.FileName,
                                 [{nameof(ImageData.MediaType)}]                      = image.MediaType
 				    
-                    FROM        [MembershipUser] member
-                    LEFT JOIN   Image image
-                        ON          image.Id = member.ImageId
-                    WHERE       member.[IdentityId] = @IdentityId";
-
-            var queryDefinition = new CommandDefinition(query, new
-            {
-                IdentityId = identityId,
-            }, cancellationToken: cancellationToken);
+                    FROM        [Identity] id
+                    INNER JOIN  [MembershipUser] member ON member.Id = id.MembershipUser_Id
+                    LEFT JOIN   [Image] image ON image.Id = member.ImageId
+                    WHERE       id.[Subject_Id] = @subjectId;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<MemberIdentityResponse, Image, MemberIdentityResponse>(query,
-                (group, image) =>
+            var reader = await dbConnection.QueryAsync<Identity, Member, Image, MemberInfoResponse>(query,
+                (identity, member, image) =>
                 {
-                    if (image is not null)
+                    return new MemberInfoResponse()
                     {
-                        var groupWithImage = @group with { Image = new ImageData(image, _options) };
-
-                        return groupWithImage;
-                    }
-
-                    return @group;
-
+                        MembershipUserId = identity.MembershipUserId,
+                        SubjectId = identity.SubjectId,
+                        FirstName = member.FirstName,
+                        LastName = member.LastName,
+                        Image = image is not null ? new ImageData(image, _options) : null
+                    };
                 }, new
                 {
-                    IdentityId = identityId,
+                    SubjectId = subjectId,
                 }, splitOn: "id");
 
             return reader.SingleOrDefault();
