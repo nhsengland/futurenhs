@@ -217,7 +217,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                     THEN        'Approved'
                                                                                     WHEN        groupUser.MembershipUser_Id = @UserId
                                                                                     AND         groupUser.Approved = 0
-                                                                                    AND         groupUser.Rejected = 0 OR groupUser.Rejected = 1
+                                                                                    AND         groupUser.Rejected = 0
                                                                                     AND         groupUser.Locked = 0
                                                                                     AND         groupUser.Banned = 0
                                                                                     THEN        'Pending Approval'
