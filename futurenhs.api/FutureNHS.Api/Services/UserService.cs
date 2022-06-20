@@ -6,6 +6,8 @@ using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Helpers;
+using FutureNHS.Api.Models.Identity.Enums;
+using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
 using FutureNHS.Api.Services.Interfaces;
@@ -90,11 +92,44 @@ namespace FutureNHS.Api.Services
             return await _userCommand.GetMemberAsync(targetUserId, cancellationToken);
         }
 
-        public Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid IdentityId, CancellationToken cancellationToken)
+        public async Task<MemberInfoResponse> GetMemberInfoAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
         {
-            if (Guid.Empty == IdentityId) throw new ArgumentOutOfRangeException(nameof(IdentityId));
-            
-            return _userDataProvider.GetMemberIdentityAsync(IdentityId, cancellationToken);
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.SubjectId)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.SubjectId));
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.EmailAddress)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.EmailAddress));
+
+
+            var memberInfo = await _userDataProvider.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
+            if (memberInfo is not null)
+            {
+                memberInfo.Status = MemberStatus.Member.ToString();
+                return memberInfo;
+            }
+
+            var memberDetailsResponse = await _userDataProvider.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
+            if (memberDetailsResponse is not null)
+            {
+                return new MemberInfoResponse
+                {
+                    FirstName = memberDetailsResponse.FirstName,
+                    LastName = memberDetailsResponse.LastName,
+                    MembershipUserId = memberDetailsResponse.Id,
+                    Status = MemberStatus.LegacyMember.ToString()
+                };
+            }
+
+            var isMemberInvited = await _userDataProvider.IsMemberInvitedAsync(memberIdentityRequest.EmailAddress, cancellationToken);
+            if (isMemberInvited)
+            {
+                return new MemberInfoResponse
+                {
+                    Status = MemberStatus.Invited.ToString()
+                };
+            }
+
+            return new MemberInfoResponse
+            {
+                Status = MemberStatus.Uninvited.ToString()
+            };
         }
 
         public Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken)
