@@ -1,7 +1,8 @@
-import { Image } from './image'
+export type UserStatus = 'Member' | 'LegacyMember' | 'Invited' | 'Uninvited'
 
 export interface User {
-    id: string
+    id: string;
+    status: UserStatus;
     text: {
         userName: string
     }

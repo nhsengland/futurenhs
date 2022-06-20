@@ -42,25 +42,50 @@ export const withUser = (
             try {
 
                 const { data: user } = await getUserInfoService({
-                    identityId: (session.sub as string),
+                    subjectId: (session.sub as string),
                     emailAddress: session.user?.email
                 })
     
                 props.user = user
                 context.req.user = user
+
+                if(isRequired){
     
-            } catch (error) {
-        
-                if(error.data?.status === 403 && isRequired){
-    
-                    return {
-                        redirect: {
-                            permanent: false,
-                            destination: `${process.env.APP_URL}/auth/unregistered`,
-                        }, 
+                    if(user.status === 'LegacyMember' || user.status === 'Invited'){
+
+                        const targetPath: string = `/users/${user.id}/create`;
+
+                        if(context.resolvedUrl !== targetPath){
+
+                            return {
+                                redirect: {
+                                    permanent: false,
+                                    destination: `${process.env.APP_URL}${targetPath}`,
+                                }, 
+                            }
+
+                        }
+
+                    } else if(user.status === 'Uninvited'){
+
+                        const targetPath: string = `/auth/unregistered`;
+
+                        if(context.resolvedUrl !== targetPath){
+
+                            return {
+                                redirect: {
+                                    permanent: false,
+                                    destination: `${process.env.APP_URL}${targetPath}`,
+                                }, 
+                            }
+
+                        }
+
                     }
     
                 }
+    
+            } catch (error) {
                 
                 return handleSSRErrorProps({ props, error })
 
