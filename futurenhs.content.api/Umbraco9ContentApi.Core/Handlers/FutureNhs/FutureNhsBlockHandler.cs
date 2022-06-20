@@ -42,19 +42,11 @@
             {
                 foreach (var block in placeholderBlocksFolder.Children)
                 {
-                    contentModelList.Add(_futureNhsContentService.ResolvePublishedContent(block, "content", cancellationToken));
+                    contentModelList.Add(_futureNhsContentService.ResolvePublishedContent(block));
                 }
             }
 
             return new ApiResponse<IEnumerable<ContentModelData>>().Success(contentModelList, "Success.");
-        }
-
-        /// <inheritdoc />
-        public ApiResponse<ContentModelData> GetBlock(Guid blockId, CancellationToken cancellationToken)
-        {
-            ApiResponse<ContentModelData> response = new ApiResponse<ContentModelData>();
-            var block = _futureNhsContentService.GetPublishedContent(blockId, cancellationToken);
-            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolvePublishedContent(block, "content", cancellationToken), "Retrieved block successfully.");
         }
 
         /// <inheritdoc />
@@ -68,28 +60,20 @@
         public ApiResponse<IEnumerable<string>> GetBlockContent(Guid blockId, CancellationToken cancellationToken)
         {
             var block = _futureNhsContentService.GetPublishedContent(blockId, cancellationToken);
-            return new ApiResponse<IEnumerable<string>>().Success(_futureNhsContentService.ResolvePublishedContent(block, "content", cancellationToken).Content.Keys, "Retrieved block content successfully.");
+            return new ApiResponse<IEnumerable<string>>().Success(_futureNhsContentService.ResolvePublishedContent(block).Content.Keys, "Retrieved block content successfully.");
         }
 
         /// <inheritdoc />
         public ApiResponse<IEnumerable<string>> GetBlockLabels(Guid blockId, CancellationToken cancellationToken)
         {
             var block = _futureNhsContentService.GetPublishedContent(blockId, cancellationToken);
-            return new ApiResponse<IEnumerable<string>>().Success(_futureNhsContentService.ResolvePublishedContent(block, "labels", cancellationToken).Content.Keys, "Retrieved block labels successfully.");
+            return new ApiResponse<IEnumerable<string>>().Success(_futureNhsContentService.ResolvePublishedContent(block, "labels").Content.Keys, "Retrieved block labels successfully.");
         }
 
         /// <inheritdoc />
         public ApiResponse<string> CreateBlock(CreateBlockRequest createRequest, CancellationToken cancellationToken)
         {
-            var parentContent = _futureNhsContentService.GetDraftContent(createRequest.parentId, cancellationToken);
             var createdBlock = _futureNhsBlockService.CreateBlock(createRequest, cancellationToken);
-
-            // Assign block to parent content (page or block).
-            parentContent = _futureNhsContentService.AssignBlockToContent(parentContent, createdBlock.Key, cancellationToken);
-
-            // Save parent content.
-            _futureNhsContentService.SaveContent(parentContent, cancellationToken);
-
             return new ApiResponse<string>().Success(createdBlock.Key.ToString(), "Block successfully created.");
         }
     }

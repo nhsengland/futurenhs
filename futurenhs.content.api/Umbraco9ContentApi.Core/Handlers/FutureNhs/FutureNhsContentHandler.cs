@@ -27,30 +27,18 @@
             var draftContent = _futureNhsContentService.GetDraftContent(contentId, cancellationToken);
             var publishedContent = _futureNhsContentService.GetPublishedContent(contentId, cancellationToken);
 
-            var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(draftContent, cancellationToken);
-            var resolvedPublishedContent = _futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken);
+            var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(draftContent);
+            var resolvedPublishedContent = _futureNhsContentService.ResolvePublishedContent(publishedContent);
 
-            var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModelData>)c.Value).FirstOrDefault() ?? new List<ContentModelData>();
-            var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModelData>)c.Value).FirstOrDefault() ?? new List<ContentModelData>();
+            // Get context content blocks
+            var draftBlocks = publishedContent.Children.Select(x => _futureNhsContentService.ResolveDraftContent(_futureNhsContentService.GetDraftContent(x.Key, cancellationToken)));
+            var publishedBlocks = publishedContent.Children.Select(x => _futureNhsContentService.ResolvePublishedContent(_futureNhsContentService.GetPublishedContent(x.Key, cancellationToken)));
 
             // Find the difference between published and draft contents list of blocks
             var blocksToRemove = _futureNhsContentService.CompareContentModelLists(publishedBlocks, draftBlocks);
 
-            foreach (var block in blocksToRemove)
-            {
-                var publishedBlock = _futureNhsContentService.GetPublishedContent(block, cancellationToken);
-
-                // Delete associated blocks
-                var publishedContentBlocks = _futureNhsContentService.GetAssociatedPublishedContentBlocks(publishedBlock, cancellationToken);
-
-                for (int i = 0; i < publishedContentBlocks.Count; i++)
-                {
-                    _futureNhsContentService.DeleteContent(publishedContentBlocks[i].Key, cancellationToken);
-                }
-
-                // Delete block
-                _futureNhsContentService.DeleteContent(block, cancellationToken);
-            }
+            // Delete blocks.
+            _futureNhsContentService.DeleteContent(blocksToRemove, cancellationToken);
 
             // Publish draft blocks
             foreach (var block in draftBlocks)
@@ -60,7 +48,7 @@
             }
 
             // Publish draft blocks child blocks
-            var draftBlocksChildBlocks = _futureNhsBlockService.GetBlocksAllChildBlocks(draftBlocks, cancellationToken);
+            var draftBlocksChildBlocks = _futureNhsBlockService.GetAllDescendentBlockIds(draftBlocks, cancellationToken);
 
             foreach (var block in draftBlocksChildBlocks)
             {
@@ -78,14 +66,14 @@
         public ApiResponse<ContentModelData> GetPublishedContent(Guid contentId, CancellationToken cancellationToken)
         {
             var publishedContent = _futureNhsContentService.GetPublishedContent(contentId, cancellationToken);
-            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken), "Published content found.");
+            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolvePublishedContent(publishedContent), "Published content found.");
         }
 
         /// <inheritdoc />
         public ApiResponse<ContentModelData> GetDraftContent(Guid contentId, CancellationToken cancellationToken)
         {
-            var publishedContent = _futureNhsContentService.GetDraftContent(contentId, cancellationToken);
-            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolveDraftContent(publishedContent, cancellationToken), "Draft content found.");
+            var draftContent = _futureNhsContentService.GetDraftContent(contentId, cancellationToken);
+            return new ApiResponse<ContentModelData>().Success(_futureNhsContentService.ResolveDraftContent(draftContent), "Draft content found.");
         }
 
         /// <inheritdoc />
@@ -103,12 +91,12 @@
             if (draftContent.ContentType.Alias == GeneralWebPage.ModelTypeAlias)
             {
                 var publishedContent = _futureNhsContentService.GetPublishedContent(contentId, cancellationToken);
-                var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(draftContent, cancellationToken);
-                var resolvedPublishedContent = _futureNhsContentService.ResolvePublishedContent(publishedContent, "content", cancellationToken);
+                var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(draftContent);
+                var resolvedPublishedContent = _futureNhsContentService.ResolvePublishedContent(publishedContent);
 
                 // Get context content blocks
-                var draftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModelData>)c.Value).FirstOrDefault() ?? new List<ContentModelData>();
-                var publishedBlocks = resolvedPublishedContent.Content.Where(x => x.Key == "blocks").Select(c => (IEnumerable<ContentModelData>)c.Value).FirstOrDefault() ?? new List<ContentModelData>();
+                var draftBlocks = publishedContent.Children.Select(x => _futureNhsContentService.ResolveDraftContent(_futureNhsContentService.GetDraftContent(x.Key, cancellationToken)));
+                var publishedBlocks = publishedContent.Children.Select(x => _futureNhsContentService.ResolvePublishedContent(_futureNhsContentService.GetPublishedContent(x.Key, cancellationToken)));
 
                 // For each block rollback to published version
                 foreach (var block in draftBlocks)
@@ -120,21 +108,8 @@
                 // Find the difference between draft and published contents list of blocks.
                 var blocksToRemove = _futureNhsContentService.CompareContentModelLists(draftBlocks, publishedBlocks);
 
-                foreach (var block in blocksToRemove)
-                {
-                    var publishedBlock = _futureNhsContentService.GetPublishedContent(block, cancellationToken);
-
-                    // Delete associated blocks.
-                    var publishedContentBlocks = _futureNhsContentService.GetAssociatedPublishedContentBlocks(publishedBlock, cancellationToken);
-
-                    for (int i = 0; i < publishedContentBlocks.Count; i++)
-                    {
-                        _futureNhsContentService.DeleteContent(publishedContentBlocks[i].Key, cancellationToken);
-                    }
-
-                    // Delete block.
-                    _futureNhsContentService.DeleteContent(block, cancellationToken);
-                }
+                // Delete blocks.
+                _futureNhsContentService.DeleteContent(blocksToRemove, cancellationToken);
             }
 
             // Rollback context content to published version.

@@ -223,7 +223,7 @@ _mockFutureNhsContentResolver.Object, _mockContentService.Object);
             GetFutureNhsContentService();
 
             //Action/Assert
-            Assert.DoesNotThrow(() => _futureNhsContentService.SaveAndPublishContent(mockDraftContent.Object, cancellationToken));
+            Assert.DoesNotThrow(() => _futureNhsContentService.PublishContent(mockDraftContent.Object, cancellationToken));
         }
 
         [Test]
@@ -241,7 +241,7 @@ _mockFutureNhsContentResolver.Object, _mockContentService.Object);
 
             //Action/Assert
             Assert.Throws(Is.TypeOf<KeyNotFoundException>()
-                 .And.Message.EqualTo(message), delegate { _futureNhsContentService.SaveAndPublishContent(mockDraftContent.Object, cancellationToken); });
+                 .And.Message.EqualTo(message), delegate { _futureNhsContentService.PublishContent(mockDraftContent.Object, cancellationToken); });
         }
 
 

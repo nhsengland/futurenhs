@@ -7,13 +7,6 @@
     public interface IFutureNhsBlockHandler
     {
         /// <summary>
-        /// Gets the block.
-        /// </summary>
-        /// <param name="blockId">The block identifier.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        ApiResponse<ContentModelData> GetBlock(Guid blockId, CancellationToken cancellationToken);
-        /// <summary>
         /// Gets all blocks.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>

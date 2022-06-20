@@ -486,3 +486,6 @@ $RECYCLE.BIN/
 # Umbraco Static Assets of Backoffice
 # Nuget package Umbraco.Cms.StaticAssets will copy them in during dotnet build
 **/wwwroot/umbraco/
+
+# uSync
+/uSync/v9/Content

@@ -12,7 +12,6 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         ApiResponse<ContentModelData> GetTemplate(Guid id, CancellationToken cancellationToken);
-
         /// <summary>
         /// Gets all templates.
         /// </summary>

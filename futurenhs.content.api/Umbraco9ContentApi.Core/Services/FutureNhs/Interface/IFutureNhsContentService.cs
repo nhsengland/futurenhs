@@ -26,13 +26,13 @@
         /// <param name="publishedContent">The content.</param>
         /// <param name="propertyGroupAlias">The property group alias.</param>
         /// <returns></returns>
-        ContentModelData ResolvePublishedContent(IPublishedContent publishedContent, string propertyGroupAlias, CancellationToken cancellationToken);
+        ContentModelData ResolvePublishedContent(IPublishedContent publishedContent, string propertyGroupAlias = "content");
         /// <summary>
         /// Resolves the draft content.
         /// </summary>
         /// <param name="draftContent">The content.</param>
         /// <returns></returns>
-        ContentModelData ResolveDraftContent(IContent draftContent, CancellationToken cancellationToken);
+        ContentModelData ResolveDraftContent(IContent draftContent);
         /// <summary>
         /// Creates the content.
         /// </summary>
@@ -42,23 +42,36 @@
         /// <returns></returns>
         IContent CreateContent(string Name, Guid parentId, string documentTypeAlias, CancellationToken cancellationToken);
         /// <summary>
+        /// Creates the content from template.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="parentId">The parent identifier.</param>
+        /// <param name="bluePrintId">The blue print identifier.</param>
+        /// <returns></returns>
+        IContent CreateContentFromTemplate(string name, Guid parentId, Guid bluePrintId, CancellationToken cancellationToken);
+        /// <summary>
         /// Deletes the.
         /// </summary>
         /// <param name="contentId">The identifier.</param>
         /// <returns></returns>
         void DeleteContent(Guid contentId, CancellationToken cancellationToken);
         /// <summary>
-        /// Publishes the.
+        /// Deletes the content.
+        /// </summary>
+        /// <param name="contentIds">The content ids.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        void DeleteContent(IEnumerable<Guid> contentIds, CancellationToken cancellationToken);
+        /// <summary>
+        /// Publishes the content.
         /// </summary>
         /// <param name="content">The identifier.</param>
         /// <returns></returns>
         void PublishContent(IContent content, CancellationToken cancellationToken);
         /// <summary>
-        /// Gets the template blocks.
+        /// Publishes the content with descendants.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns></returns>
-        List<ContentModelData> GetTemplateBlocks(Guid id, CancellationToken cancellationToken);
+        /// <param name="content">The content.</param>
+        void PublishContentWithDescendants(IContent content, CancellationToken cancellationToken);
         /// <summary>
         /// Sets the content property value.
         /// </summary>
@@ -74,25 +87,6 @@
         /// <returns></returns>
         void SaveContent(IContent content, CancellationToken cancellationToken);
         /// <summary>
-        /// Saves the and publish content.
-        /// </summary>
-        /// <param name="content">The content.</param>
-        /// <returns></returns>
-        void SaveAndPublishContent(IContent content, CancellationToken cancellationToken);
-        /// <summary>
-        /// Assigns the block to the content.
-        /// </summary>
-        /// <param name="parentContent">The parent content.</param>
-        /// <param name="blockId">The block identifier.</param>
-        /// <returns></returns>
-        IContent AssignBlockToContent(IContent parentContent, Guid blockId, CancellationToken cancellationToken);
-        /// <summary>
-        /// Gets the associated blocks.
-        /// </summary>
-        /// <param name="content">The content.</param>
-        /// <returns></returns>
-        List<IPublishedContent> GetAssociatedPublishedContentBlocks(IPublishedContent content, CancellationToken cancellationToken);
-        /// <summary>
         /// Rollbacks the draft content.
         /// </summary>
         /// <param name="draftContent">Content of the draft.</param>
@@ -104,6 +98,7 @@
         /// <param name="contentModelList">The content model list.</param>
         /// <param name="comparedcontentModelList">The comparedcontent model list.</param>
         /// <returns></returns>
-        IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModelData> contentModelList, IEnumerable<ContentModelData> comparedcontentModelList);
+        IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModelData> contentModelList,
+            IEnumerable<ContentModelData> comparedcontentModelList);
     }
 }

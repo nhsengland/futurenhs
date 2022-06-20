@@ -15,12 +15,10 @@
     [Route("api/page")]
     public sealed class PageController : UmbracoApiController
     {
-        private readonly IFutureNhsContentHandler _futureNhsContentHandler;
         private readonly IFutureNhsPageHandler _futureNhsPageHandler;
 
-        public PageController(IFutureNhsContentHandler futureNhsContentHandler, IFutureNhsPageHandler futureNhsPageHandler)
+        public PageController( IFutureNhsPageHandler futureNhsPageHandler)
         {
-            _futureNhsContentHandler = futureNhsContentHandler;
             _futureNhsPageHandler = futureNhsPageHandler;
         }
 

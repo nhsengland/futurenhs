@@ -59,11 +59,11 @@
                 .Returns(mockPublishedContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>(), cancellationToken))
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>()))
                 .Returns(mockContentModelWithBlocks.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>(), cancellationToken))
+                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>()))
                 .Returns(mockContentModelWithoutBlocks.Object);
 
             var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object);
@@ -95,11 +95,11 @@
                 .Returns(mockPublishedContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>(), cancellationToken))
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>()))
                 .Returns(mockContentModelWithoutBlocks.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>(), cancellationToken))
+                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>()))
                 .Returns(mockContentModelWithBlocks.Object);
 
             var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object);
@@ -131,11 +131,11 @@
                 .Returns(mockPublishedContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>(), cancellationToken))
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>()))
                 .Returns(mockContentModelWithoutBlocks.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>(), cancellationToken))
+                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>()))
                 .Returns(mockContentModelWithBlocks.Object);
 
             var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object);
