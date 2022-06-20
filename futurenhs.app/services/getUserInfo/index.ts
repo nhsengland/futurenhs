@@ -10,7 +10,7 @@ import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 
 export type Options = {
-    identityId: string;
+    subjectId: string;
     emailAddress: string;
 }
 
@@ -25,7 +25,7 @@ export type GetUserInfoService = (
 ) => Promise<ServiceResponse<User>>
 
 export const getUserInfo: GetUserInfoService = async (
-    { identityId, emailAddress },
+    { subjectId, emailAddress },
     dependencies
 ): Promise<ServiceResponse<User>> => {
     const setFetchOptions =
@@ -39,7 +39,7 @@ export const getUserInfo: GetUserInfoService = async (
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
-            body: { identityId, emailAddress }
+            body: { subjectId, emailAddress }
         }),
         1000
     )
@@ -48,8 +48,6 @@ export const getUserInfo: GetUserInfoService = async (
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText } = apiMeta
-
-    console.log(apiData, 10000);
 
     if (!ok) {
         throw new ServiceError(
@@ -66,6 +64,7 @@ export const getUserInfo: GetUserInfoService = async (
     return {
         data: {
             id: apiData?.membershipUserId ?? null,
+            status: apiData.status,
             text: {
                 userName: `${apiData?.firstName} ${apiData?.lastName}`,
             },
