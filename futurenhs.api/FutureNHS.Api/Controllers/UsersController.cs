@@ -88,15 +88,37 @@ namespace FutureNHS.Api.Controllers
         [Route("users/register/{emailAddress}")]
         public async Task<IActionResult> RegisterMemberAsync(string emailAddress, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var memberDetailsResponse = await _userService.GetMemberByEmailAsync(emailAddress, cancellationToken);
+            if (memberDetailsResponse is not null)
+            {
+                return Ok(memberDetailsResponse);
+            }
+
+            var isMemberInvited = await _userService.IsMemberInvitedAsync(emailAddress, cancellationToken);
+            if (isMemberInvited)
+            {
+                return Ok();
+            }
+
+            return Forbid();
         }
 
         [HttpPost]
         [Route("users/register")]
         public async Task<IActionResult> RegisterMemberAsync([FromBody] MemberRegistrationRequest memberRegistrationRequest, CancellationToken cancellationToken)
         {
+            if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+            {
+                return BadRequest("The data submitted is not in the multiform format");
+            }
 
+            var resp = memberRegistrationRequest;
 
+            var rowVersion = _etagService.GetIfMatch();
+
+            //await _userService.UpdateMemberAsync(userId, targetUserId, Request.Body, Request.ContentType, rowVersion, cancellationToken);
+
+            return Ok();
             throw new NotImplementedException();
         }
 
@@ -104,30 +126,9 @@ namespace FutureNHS.Api.Controllers
         [Route("users/info")]
         public async Task<IActionResult> MemberInfoAsync([FromBody] MemberIdentityRequest memberIdentity, CancellationToken cancellationToken)
         {
-            var memberIdentityResponse = await _userService.GetMemberIdentityAsync(memberIdentity.IdentityId, cancellationToken);
-            if (memberIdentityResponse is not null && memberIdentityResponse.IdentityId is not null)
-            {
-                return Ok(memberIdentityResponse);
-            }
-
-            var memberDetailsResponse = await _userService.GetMemberByEmailAsync(memberIdentity.EmailAddress, cancellationToken);
-            if (memberDetailsResponse is not null)
-            {
-                return RedirectUserToCreateProfile();
-            }
-
-            var isMemberInvited = await _userService.IsMemberInvitedAsync(memberIdentity.EmailAddress, cancellationToken);
-            if (isMemberInvited)
-            {
-                return RedirectUserToCreateProfile();
-            }
-
-            return Forbid();
-
-            IActionResult RedirectUserToCreateProfile()
-            {
-                return Redirect($"/api/v1/users/register/{memberIdentity.EmailAddress}");
-            }
+            var memberInfoResponse = await _userService.GetMemberInfoAsync(memberIdentity, cancellationToken);
+            
+            return Ok(memberInfoResponse);            
         }
     }
 }

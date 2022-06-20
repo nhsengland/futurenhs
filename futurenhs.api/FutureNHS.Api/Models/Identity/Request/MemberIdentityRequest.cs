@@ -2,7 +2,7 @@
 {
     public sealed class MemberIdentityRequest
     {
-        public Guid IdentityId { get; init; }
+        public string SubjectId { get; init; }
         public string EmailAddress { get; init; }
     }
 }

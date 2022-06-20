@@ -110,6 +110,7 @@
     <Build Include="dbo\Tables\Entity_Favourite.sql" />
     <Build Include="dbo\Stored Procedures\AutomationTeardown.sql" />
     <Build Include="dbo\Stored Procedures\AutomationSeed.sql" />
+    <Build Include="dbo\Tables\Identity.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Data\SeedData.sql" />
