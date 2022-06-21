@@ -101,7 +101,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
 
-            var reader = await dbConnection.QueryAsync<DiscussionData, Image, DiscussionData>(query,
+            var results = await dbConnection.QueryAsync<DiscussionData, Image, DiscussionData>(query,
                 (discussion, image) =>
                 {
                     if (image is not null)
@@ -118,9 +118,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     UserId = userId
                 }, splitOn: "id");
 
-            var totalCount = Convert.ToUInt32(reader.Count());
+            var totalCount = Convert.ToUInt32(results.Count());
 
-            return (totalCount, GenerateDiscussionModelFromData(reader));
+            return (totalCount, GenerateDiscussionModelFromData(results));
         }
 
 
@@ -184,7 +184,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<DiscussionData, Image, DiscussionData>(query,
+            var results = await dbConnection.QueryAsync<DiscussionData, Image, DiscussionData>(query,
                             (discussion, image) =>
                             {
                                 if (image is not null)
@@ -200,7 +200,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 UserId = userId
                             });
 
-            return GenerateDiscussionModelFromData(reader).FirstOrDefault();
+            return GenerateDiscussionModelFromData(results).FirstOrDefault();
         }
 
         public async Task<DiscussionCreatorDetails> GetDiscussionCreatorDetailsAsync(Guid discussionId, CancellationToken cancellationToken)

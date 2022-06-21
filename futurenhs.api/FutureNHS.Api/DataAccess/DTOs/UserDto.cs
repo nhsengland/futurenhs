@@ -14,5 +14,6 @@ namespace FutureNHS.Api.DataAccess.DTOs
         public string FirstName { get; init; }
         public string LastName { get; init; }
         public string Initials { get; init; }
+        public ImageData Image { get; init; }
     }
 }
