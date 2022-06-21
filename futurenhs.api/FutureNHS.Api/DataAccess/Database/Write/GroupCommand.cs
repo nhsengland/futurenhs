@@ -156,7 +156,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<GroupData, Image, GroupData>(query,
+            var group = await dbConnection.QueryAsync<GroupData, Image, GroupData>(query,
                 (group, image) =>
                 {
                     if (image is not null)
@@ -170,9 +170,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     Slug = slug
                 }, splitOn: "id");
 
-            var group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
-
-            return group;
+            return group.SingleOrDefault() ?? throw new NotFoundException("Group not found.");
         }
 
         public async Task<Guid> CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken)

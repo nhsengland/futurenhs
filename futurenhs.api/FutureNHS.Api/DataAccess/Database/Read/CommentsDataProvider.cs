@@ -104,7 +104,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<CommentData, Image, CommentData>(query,
+            var results = await dbConnection.QueryAsync<CommentData, Image, CommentData>(query,
                 (comment, image) =>
                 {
                     if (image is not null)
@@ -122,9 +122,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     UserId = userId
                 });
 
-            var totalCount = Convert.ToUInt32(reader.Count());
+            var totalCount = Convert.ToUInt32(results.Count());
 
-            return (totalCount, GenerateCommentModelFromData(reader));
+            return (totalCount, GenerateCommentModelFromData(results));
         }
 
 
@@ -198,7 +198,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<CommentData, Image, CommentData>(query,
+            var results = await dbConnection.QueryAsync<CommentData, Image, CommentData>(query,
                 (comment, image) =>
                 {
                     if (image is not null)
@@ -216,9 +216,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     UserId = userId
                 });
 
-            var totalCount = Convert.ToUInt32(reader.Count());
+            var totalCount = Convert.ToUInt32(results.Count());
 
-            return (totalCount, GenerateCommentModelFromData(reader));
+            return (totalCount, GenerateCommentModelFromData(results));
         }
 
         public async Task<CommentCreatorDetails> GetCommentCreatorDetailsAsync(Guid commentId, CancellationToken cancellationToken)

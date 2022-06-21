@@ -232,7 +232,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<Group, Image, Group>(query,
+            var group = await dbConnection.QueryAsync<Group, Image, Group>(query,
                 (group, image) =>
                 {
                     if (image is not null)
@@ -250,9 +250,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     UserId = userId
                 }, splitOn: "id");
 
-            var group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
-
-            return group;
+            return group.SingleOrDefault() ?? throw new NotFoundException("Group not found.");
         }
 
         public async Task<(uint, IEnumerable<GroupMember>)> GetGroupMembersAsync(string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken = default)
@@ -405,12 +403,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<GroupMemberDetails, Image, GroupMemberDetails>(query,
+            var groupMemberDetails = await dbConnection.QueryAsync<GroupMemberDetails, Image, GroupMemberDetails>(query,
                             (member, image) =>
                             {
                                 if (image is not null)
                                 {
-                                    return member with { ProfileImage = image };
+                                    return member with { Image = new ImageData(image, _options) };
                                 }
 
                                 return @member;
@@ -420,9 +418,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 Slug = slug
                             });
 
-            var groupMemberDetails = reader.SingleOrDefault() ?? throw new NotFoundException("Group member details not found."); ;
-
-            return groupMemberDetails;
+            return groupMemberDetails.SingleOrDefault() ?? throw new NotFoundException("Group member details not found.");
         }
 
 

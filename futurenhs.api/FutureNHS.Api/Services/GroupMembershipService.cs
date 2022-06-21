@@ -96,7 +96,8 @@ namespace FutureNHS.Api.Services
                 LastLoginUtc = userResult.LastLoginDateUtc,
                 RoleId = roleResult.Id,
                 Role = roleResult.Name,
-                RowVersion = groupUserResult.RowVersion
+                RowVersion = groupUserResult.RowVersion,
+                Image = userResult.Image
             };
 
             return membershipUser;

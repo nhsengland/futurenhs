@@ -127,7 +127,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<MemberProfile, Image, MemberProfile>(query,
+            var memberProfile = await dbConnection.QueryAsync<MemberProfile, Image, MemberProfile>(query,
                 (group, image) =>
                 {
                     if (image is not null)
@@ -144,9 +144,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     Id = userId,
                 }, splitOn: "id");
 
-            var memberProfile = reader.FirstOrDefault() ?? throw new NotFoundException("Member not found.");
-
-            return memberProfile;
+            return memberProfile.SingleOrDefault() ?? throw new NotFoundException("Member not found.");
         }
     }
 }
