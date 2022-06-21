@@ -48,7 +48,7 @@ namespace FutureNHS.Api.Controllers
 
         public async Task<IActionResult> GetDiscussionAsync(Guid? userId, string slug, Guid id, CancellationToken cancellationToken)
         {
-           var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
+            var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
 
             if (discussion is null)
             {

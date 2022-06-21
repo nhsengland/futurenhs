@@ -382,7 +382,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName,
-                                [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id
+                                [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id,
+                                [{nameof(ImageData.Id)}]		                    = [image].Id,
+                                [{nameof(ImageData.Height)}]	                    = [image].Height,
+                                [{nameof(ImageData.Width)}]		                    = [image].Width,
+                                [{nameof(ImageData.FileName)}]	                    = [image].FileName,
+                                [{nameof(ImageData.MediaType)}]	                    = [image].MediaType 
+
 
                     FROM        GroupUser groupUser
                     JOIN        [Group] groups 
@@ -391,19 +397,32 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          member.Id = groupUser.MembershipUser_Id
                     JOIN        MembershipRole memberRoles 
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
+                    LEFT JOIN   Image [image]
+                    ON          [image].Id = member.ImageId   
                     WHERE       groups.Slug = @Slug
                     AND         member.Id = @UserId
                     AND         groupUser.Approved = 1;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var member = await dbConnection.QueryFirstOrDefaultAsync<GroupMemberDetails>(query, new
-            {
-                UserId = userId,
-                Slug = slug
-            });
+            var reader = await dbConnection.QueryAsync<GroupMemberDetails, Image, GroupMemberDetails>(query,
+                            (member, image) =>
+                            {
+                                if (image is not null)
+                                {
+                                    return member with { ProfileImage = image };
+                                }
 
-            return member;
+                                return @member;
+                            }, new
+                            {
+                                UserId = userId,
+                                Slug = slug
+                            });
+
+            var groupMemberDetails = reader.SingleOrDefault() ?? throw new NotFoundException("Group member details not found."); ;
+
+            return groupMemberDetails;
         }
 
 

@@ -13,5 +13,6 @@
         public int RepliesCount { get; init; }
         public int Likes { get; init; }
         public bool LikedByThisUser { get; init; }
+        public ImageData Image { get; init; }
     }
 }

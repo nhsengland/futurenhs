@@ -18,6 +18,6 @@
         public bool IsSticky { get; init; }
         public int Views { get; init; }
         public int? TotalComments { get; init; }
-
+        public ImageData? Image { get; init; }
     }
 }
