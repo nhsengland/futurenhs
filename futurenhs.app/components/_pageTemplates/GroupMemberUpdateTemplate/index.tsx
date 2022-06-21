@@ -20,6 +20,7 @@ import { getServiceErrorDataValidationErrors } from '@services/index'
 import { getGenericFormError } from '@helpers/util/form'
 import { putGroupMemberRole } from '@services/putGroupMemberRole'
 import { useFormConfig } from '@hooks/useForm'
+import { Image } from '@appTypes/image'
 
 /**
  * Group member template
@@ -43,8 +44,11 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
     ] = useState(false)
 
     const updateFormConfig: FormConfig = forms[formTypes.UPDATE_GROUP_MEMBER]
-    
-    const deleteFormConfig: FormConfig = useFormConfig(formTypes.DELETE_GROUP_MEMBER, forms[formTypes.DELETE_GROUP_MEMBER])
+
+    const deleteFormConfig: FormConfig = useFormConfig(
+        formTypes.DELETE_GROUP_MEMBER,
+        forms[formTypes.DELETE_GROUP_MEMBER]
+    )
 
     const [errors, setErrors] = useState(
         updateFormConfig?.errors || deleteFormConfig?.errors
@@ -61,6 +65,8 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
     const shouldRenderDeleteForm: boolean = actions.includes(
         actionsConstants.GROUPS_MEMBERS_DELETE
     )
+
+    const memberProfileImage: Image = member.image
 
     /**
      * Handle client-side validation failure in forms
@@ -171,6 +177,7 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={11}>
                     <UserProfile
+                        image={memberProfileImage}
                         profile={member}
                         text={{
                             heading: secondaryHeading,

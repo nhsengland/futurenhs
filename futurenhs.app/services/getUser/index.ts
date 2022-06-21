@@ -73,7 +73,9 @@ export const getUser: GetUserService = async (
             },
             image: apiData?.UserAvatar
                 ? {
-                      source: apiData?.UserAvatar?.Source ?? null,
+                      src: apiData?.UserAvatar?.Source ?? null,
+                      height: apiData?.UserAvatar?.height ?? null,
+                      width: apiData?.UserAvatar?.width ?? null,
                       altText: apiData?.UserAvatar?.AltText ?? null,
                   }
                 : null,

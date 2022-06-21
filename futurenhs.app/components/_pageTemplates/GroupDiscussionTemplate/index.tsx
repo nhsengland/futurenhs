@@ -35,6 +35,7 @@ import { DiscussionComment } from '@appTypes/discussion'
 import { Props } from './interfaces'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { useFormConfig } from '@hooks/useForm'
+import { Image } from '@appTypes/image'
 
 /**
  * Group discussion template
@@ -118,6 +119,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const creatorUserInitials: string = initials({
         value: createdBy?.text?.userName,
     })
+    const creatorProfileImage: Image = createdBy?.image
     const creatorUserName: string = createdBy?.text?.userName
     const creatorUserId: string = createdBy?.id
     const createdDate: string = dateTime({ value: created })
@@ -301,6 +303,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 })
                 const replyingUserName: string = createdBy?.text?.userName
                 const replyingUserId: string = createdBy?.id
+                const replyingUserProfileImage: Image = createdBy?.image
                 const replyCreatedDate: string = dateTime({ value: created })
                 const shouldEnableLikes: boolean =
                     shouldRenderCommentAndReplyForms && createdBy.id !== id
@@ -328,6 +331,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     >
                         <Comment
                             id={formattedCommentId}
+                            image={replyingUserProfileImage}
                             commentId={commentId}
                             csrfToken={csrfToken}
                             initialErrors={errors}
@@ -392,7 +396,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 <LayoutColumnContainer>
                     <LayoutColumn tablet={8}>
                         <UserMeta
-                            image={null}
+                            image={creatorProfileImage}
                             text={{
                                 initials: creatorUserInitials,
                             }}
@@ -489,6 +493,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                         createdBy?.text?.userName
                                     const commenterUserId: string =
                                         createdBy?.id
+                                    const commenterProfileImage: Image =
+                                        createdBy?.image
                                     const commentCreatedDate: string = dateTime(
                                         { value: created }
                                     )
@@ -517,6 +523,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                 originComment={originDiscussion}
                                                 csrfToken={csrfToken}
                                                 initialErrors={errors}
+                                                image={commenterProfileImage}
                                                 text={{
                                                     userName: commenterUserName,
                                                     initials:

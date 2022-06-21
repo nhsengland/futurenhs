@@ -15,6 +15,7 @@ import { SVGIcon } from '@components/SVGIcon'
 import { getGroupDiscussions } from '@services/getGroupDiscussions'
 
 import { Props } from './interfaces'
+import { Image } from '@appTypes/image'
 
 /**
  * Group forum discussion listing template
@@ -129,6 +130,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                         })
                                     const creatorUserName: string =
                                         createdBy.text.userName
+                                    const profileImage: Image = createdBy.image
                                     const creatorUserId: string = createdBy.id
                                     const createdDate: string = dateTime({
                                         value: created,
@@ -170,7 +172,7 @@ export const GroupForumTemplate: (props: Props) => JSX.Element = ({
                                                     </Link>
                                                 </h3>
                                                 <UserMeta
-                                                    image={null}
+                                                    image={profileImage}
                                                     text={{
                                                         initials:
                                                             creatorUserInitials,

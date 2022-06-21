@@ -1,10 +1,9 @@
+import { Image } from './image'
+
 export interface User {
-    id: string;
+    id: string
     text: {
-        userName: string;
-    };
-    image?: {
-        source: string;
-        altText: string;
-    };    
+        userName: string
+    }
+    image?: Image
 }

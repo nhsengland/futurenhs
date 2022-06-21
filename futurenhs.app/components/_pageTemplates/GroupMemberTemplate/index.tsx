@@ -4,6 +4,7 @@ import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { BackLink } from '@components/BackLink'
 import { UserProfile } from '@components/UserProfile'
+import { Image } from '@appTypes/image'
 
 import { Props } from './interfaces'
 
@@ -25,6 +26,8 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
         emailLabel,
     } = contentText ?? {}
 
+    const memberProfileImage: Image = member.image
+
     /**
      * Render
      */
@@ -39,6 +42,7 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={11}>
                     <UserProfile
+                        image={memberProfileImage}
                         profile={member}
                         text={{
                             heading: secondaryHeading,

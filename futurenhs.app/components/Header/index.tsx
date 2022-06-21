@@ -24,6 +24,7 @@ import { capitalise } from '@helpers/formatters/capitalise'
 
 import { Props } from './interfaces'
 import { useAssetPath } from '@hooks/useAssetPath'
+import { Image as ImageType } from '@appTypes/image'
 
 /**
  * Site header
@@ -70,13 +71,13 @@ export const Header: (props: Props) => JSX.Element = ({
     const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP)
     const headerAccordionId: string = 'header-accordion'
     const userAccordionId: string = 'user-accordion'
-    const headerImageSrc: string = useAssetPath('/images/logo.svg');
+    const headerImageSrc: string = useAssetPath('/images/logo.svg')
+    const userProfileImage: ImageType = user?.image
     const logOutRoute: string = routes.LOG_OUT
     const shouldRenderUserLink: boolean = Boolean(user?.id)
     const shouldRenderAdminLink: boolean = actions?.includes(
         actionTypes.SITE_ADMIN_VIEW
     )
-
     /**
      * Handle expanding or collapsing accordions
      */
@@ -185,7 +186,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                 <span className="c-site-header-nav_root-nav-image">
                                                                     <Avatar
                                                                         image={
-                                                                            null
+                                                                            userProfileImage
                                                                         }
                                                                         initials={
                                                                             userInitials
@@ -212,7 +213,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                 <span className="c-site-header-nav_root-nav-image">
                                                                     <Avatar
                                                                         image={
-                                                                            null
+                                                                            userProfileImage
                                                                         }
                                                                         initials={
                                                                             userInitials
