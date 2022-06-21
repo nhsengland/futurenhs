@@ -1,10 +1,13 @@
 ﻿using Dapper;
 using FutureNHS.Api.Application.Application.HardCodedSettings;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.DataAccess.Models.Discussions;
 using FutureNHS.Api.DataAccess.Models.User;
+using Microsoft.Extensions.Options;
 using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
@@ -13,11 +16,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
     {
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<DiscussionDataProvider> _logger;
+        private readonly IOptions<AzureImageBlobStorageConfiguration> _options;
 
-        public DiscussionDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<DiscussionDataProvider> logger)
+        public DiscussionDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<DiscussionDataProvider> logger, IOptions<AzureImageBlobStorageConfiguration> options)
         {
             _logger = logger;
             _connectionFactory = connectionFactory;
+            _options = options;
         }
         public async Task<(uint total, IEnumerable<Discussion>?)> GetDiscussionsForGroupAsync(Guid? userId, string groupSlug, uint offset, uint limit, CancellationToken cancellationToken)
         {
@@ -46,14 +51,23 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
-								[{nameof(DiscussionData.Views)}]				= discussion.Views,
-								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Parent_EntityId = discussion.Entity_Id )
-                    
+                                [{nameof(DiscussionData.Views)}]				= discussion.Views,
+                                [{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Parent_EntityId = discussion.Entity_Id ),
+                                [{nameof(ImageData.Id)}]		                = [image].Id,
+                                [{nameof(ImageData.Height)}]	                = [image].Height,
+                                [{nameof(ImageData.Width)}]		                = [image].Width,
+                                [{nameof(ImageData.FileName)}]	                = [image].FileName,
+                                [{nameof(ImageData.MediaType)}]	                = [image].MediaType
+
                     FROM        Discussion discussion
 					JOIN        [Group] groups 
                     ON          groups.Id = discussion.Group_Id
+
                     LEFT JOIN   MembershipUser createdByUser 
                     ON          createdByUser.Id = discussion.CreatedBy
+
+					LEFT JOIN   Image [image]
+                    ON          [image].Id = createdByUser.ImageId   
 
 					LEFT JOIN   
                                 (
@@ -86,19 +100,27 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryMultipleAsync(query, new
-            {
-                Offset = Convert.ToInt32(offset),
-                Limit = Convert.ToInt32(limit),
-                Slug = groupSlug,
-                UserId = userId
-            });
 
-            var contents = await reader.ReadAsync<DiscussionData>();
+            var reader = await dbConnection.QueryAsync<DiscussionData, Image, DiscussionData>(query,
+                (discussion, image) =>
+                {
+                    if (image is not null)
+                    {
+                        return discussion with { Image = new ImageData(image, _options) };
+                    }
 
-            var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
+                    return @discussion;
+                }, new
+                {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
+                    Slug = groupSlug,
+                    UserId = userId
+                }, splitOn: "id");
 
-            return (totalCount, GenerateDiscussionModelFromData(contents));
+            var totalCount = Convert.ToUInt32(reader.Count());
+
+            return (totalCount, GenerateDiscussionModelFromData(reader));
         }
 
 
@@ -125,15 +147,23 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
                                 [{nameof(DiscussionData.IsSticky)}]				= discussion.IsSticky,
-								[{nameof(DiscussionData.Views)}]				= discussion.Views,
-								[{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Parent_EntityId = discussion.Entity_Id)
-                    
+                                [{nameof(DiscussionData.Views)}]				= discussion.Views,
+                                [{nameof(DiscussionData.TotalComments)}]		= (SELECT COUNT(*) FROM Comment WHERE Parent_EntityId = discussion.Entity_Id),
+                                [{nameof(ImageData.Id)}]		                = [image].Id,
+                                [{nameof(ImageData.Height)}]	                = [image].Height,
+                                [{nameof(ImageData.Width)}]		                = [image].Width,
+                                [{nameof(ImageData.FileName)}]	                = [image].FileName,
+                                [{nameof(ImageData.MediaType)}]	                = [image].MediaType
+
                     FROM        Discussion discussion
                     JOIN        [Group] groups 
                     ON          groups.Id = discussion.Group_Id
 
                     LEFT JOIN   MembershipUser createdByUser 
                     ON          createdByUser.Id = discussion.CreatedBy
+
+                    LEFT JOIN   Image [image]
+                    ON          [image].Id = createdByUser.ImageId   
           
 					LEFT JOIN   
                                 (
@@ -154,12 +184,21 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<DiscussionData>(query, new
-            {
-                Slug = groupSlug,
-                Id = id,
-                UserId = userId
-            });
+            var reader = await dbConnection.QueryAsync<DiscussionData, Image, DiscussionData>(query,
+                            (discussion, image) =>
+                            {
+                                if (image is not null)
+                                {
+                                    return discussion with { Image = new ImageData(image, _options) };
+                                }
+
+                                return @discussion;
+                            }, new
+                            {
+                                Slug = groupSlug,
+                                Id = id,
+                                UserId = userId
+                            });
 
             return GenerateDiscussionModelFromData(reader).FirstOrDefault();
         }
@@ -228,7 +267,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                         {
                             Id = item.CreatedById,
                             Name = item.CreatedByName,
-                            Slug = item.CreatedBySlug
+                            Slug = item.CreatedBySlug,
+                            Image = item.Image
+
                         }
                     }
                 };
@@ -245,7 +286,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                             {
                                 Id = item.LastCommenterId.GetValueOrDefault(),
                                 Name = item.LastCommenterName,
-                                Slug = item.LastCommenterSlug
+                                Slug = item.LastCommenterSlug,
+                                Image = item.Image
                             }
                         }
                     };
