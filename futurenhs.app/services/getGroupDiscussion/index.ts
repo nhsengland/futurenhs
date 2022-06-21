@@ -10,6 +10,7 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse } from '@appTypes/service'
 import { Discussion } from '@appTypes/discussion'
 import { User } from '@appTypes/user'
+import { mapToProfileImageObject } from '@helpers/util/data'
 
 declare type Options = {
     groupId: string
@@ -72,6 +73,7 @@ export const getGroupDiscussion = async (
             text: {
                 userName: apiData.firstRegistered?.by?.name ?? '',
             },
+            image: mapToProfileImageObject(apiData.firstRegistered?.by?.image, 'Profile image')
         },
         created: apiData.firstRegistered?.atUtc ?? '',
         modifiedBy: {

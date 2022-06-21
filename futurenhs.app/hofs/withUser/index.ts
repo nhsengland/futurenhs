@@ -5,6 +5,7 @@ import { getSiteActions } from '@services/getSiteActions'
 import { getUser } from '@services/getUser'
 import { GetUserService } from '@services/getUser'
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next'
+import { getSiteUser } from '@services/getSiteUser'
 
 export const withUser = (
     config: HofConfig,
@@ -28,6 +29,7 @@ export const withUser = (
             })
 
             props.user = user
+
             context.req.user = user
         } catch (error) {
             if (isRequired) {
@@ -44,7 +46,21 @@ export const withUser = (
             }
         }
 
+        /**
+         * Temporary solution until new auth is in place to fetch users profile image from a separate endpoint
+         */
         if (props.user) {
+            try {
+                const { data: profile } = await getSiteUser({
+                    user: props.user,
+                    targetUserId: props.user.id,
+                })
+
+                props.user.image = profile.image
+            } catch (error) {
+                console.log(error)
+            }
+
             try {
                 const { data: actions } = await getSiteActionsService({
                     user: props.user,

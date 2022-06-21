@@ -10,8 +10,10 @@ const mockUser = {
         initials: 'AU',
     },
     image: {
-        source: '/mockSrc',
+        src: '/mockSrc',
         altText: 'mockAltText',
+        height: 100,
+        width: 100,
     },
 }
 

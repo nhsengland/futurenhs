@@ -9,6 +9,7 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { GroupMember } from '@appTypes/group'
+import { mapToProfileImageObject } from '@helpers/util/data'
 
 declare type Options = {
     user: User
@@ -63,7 +64,7 @@ export const getGroupMember = async (
             }
         )
     }
-
+    console.log(apiData)
     serviceResponse.headers = headers
     serviceResponse.data = {
         id: apiData.id ?? '',
@@ -74,6 +75,7 @@ export const getGroupMember = async (
         role: apiData.role ?? '',
         joinDate: apiData.dateJoinedUtc ?? '',
         lastLogInDate: apiData.lastLoginUtc ?? '',
+        image: mapToProfileImageObject(apiData.image, 'Profile image')
     }
 
     return serviceResponse

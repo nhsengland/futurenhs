@@ -1,3 +1,5 @@
+import { Image } from "@appTypes/image"
+
 /**
  * Evaluates whether a property is defined and not null
  */
@@ -95,4 +97,17 @@ export const clearClientCaches = async (
             resolve()
         }
     })
+}
+
+export const mapToProfileImageObject = (
+    image: Record<string, any>,
+    altText?: string
+): Image => {
+    if (!image) return null
+    return {
+        src: image.source,
+        height: image.height,
+        width: image.width,
+        altText: altText ?? '',
+    }
 }
