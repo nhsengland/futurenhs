@@ -6,7 +6,7 @@ import { getGenericFormError } from '@helpers/util/form'
 import { actions as actionConstants } from '@constants/actions'
 import { ErrorSummary } from '@components/ErrorSummary'
 import { ContentBlockManager } from '@components/ContentBlockManager'
-import { NoScript } from '@components/NoScript'
+import { WarningCallout } from '@components/WarningCallout'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { getCmsPageContent } from '@services/getCmsPageContent'
 import { putCmsPageContent } from '@services/putCmsPageContent'
@@ -128,13 +128,15 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 className="u-mb-6"
             />
             {isGroupAdmin && (
-                <NoScript
-                    headingLevel={2}
-                    text={{
-                        heading: 'Important',
-                        body: 'JavaScript must be enabled in your browser to manage the content of this page',
-                    }}
-                />
+                <noscript>
+                    <WarningCallout
+                        headingLevel={2}
+                        text={{
+                            heading: 'Important',
+                            body: 'JavaScript must be enabled in your browser to manage the content of this page',
+                        }}
+                    />
+                </noscript>
             )}
             <ContentBlockManager
                 blocks={blocks}
