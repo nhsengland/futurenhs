@@ -225,12 +225,14 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         >
                             {shouldRenderPendingMessage &&
                                 !shouldRenderGroupJoinLink && (
-                                    <div className="nhsuk-body-m">
+                                    <div className="nhsuk-heading-s u-flex u-justify-end u-mb-0">
                                         <SVGIcon
                                             name="icon-clock"
-                                            className="u-w-4 u-h-4 u-mr-2"
+                                            className="u-w-6 u-h-6 u-mr-2"
                                         />
-                                        Awaiting Approval
+                                        <p className="u-mb-0">
+                                            Awaiting Approval
+                                        </p>
                                     </div>
                                 )}
 
