@@ -1,8 +1,7 @@
 import React from 'react'
-import { useAssetPath } from '@hooks/useAssetPath';
 import { SVGIcon } from './index'
 
-const iconsSrc: string = useAssetPath('/icons/icons.svg');
+const iconsSrc: string = '/icons/icons.svg';
 const iconNames: Array<string> = window.sessionStorage.getItem('sbSvgIconNames') ?  JSON.parse(window.sessionStorage.getItem('sbSvgIconNames')) : [];
 
 /**
