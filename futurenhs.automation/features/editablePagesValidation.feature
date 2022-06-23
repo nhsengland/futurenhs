@@ -85,9 +85,9 @@ Feature: editablePagesValidation
         Then the 'Edit page' button is displayed
         Examples:
             | main text              | subtitle      | error                          |
-            # |                        | subtitle      | Enter the main text            |
-            # | subtitle boundary test | [STRING: 256] | Enter 255 or fewer characters  |
-            # | [STRING: 4001]         | subtitle      | Enter 4000 or fewer characters |
+            |                        | subtitle      | Enter the main text            |
+            | subtitle boundary test | [STRING: 256] | Enter 255 or fewer characters  |
+            | [STRING: 4001]         | subtitle      | Enter 4000 or fewer characters |
 
 
     Scenario: FNHS119 - Blocks: Key Links Block
