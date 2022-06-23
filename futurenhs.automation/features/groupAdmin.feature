@@ -15,7 +15,7 @@ Feature: groupAdmin
         And the 'Group is public?' textual value is displayed
         When I select the 'Group is public?' checkbox
         And I click the 'Save and close' button
-        And I confirm this on the open 'group privacy' dialog
+        And I confirm this on the open dialog
         Then the 'Automation Group To Be Restricted' header is displayed
         When I click the 'Members' tab
         Then the 'Pending Members' header is displayed

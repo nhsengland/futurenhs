@@ -17,7 +17,7 @@ Feature: User Access
         Then the 'My Groups' header is displayed
         When I open the 'User Menu' accordion
         And I click the 'Log Off' link
-        Then I confirm this on the open 'Logout' dialog
+        Then I confirm this on the open dialog
         Then the 'Log In' header is displayed
         Examples:
             | email                | password   |

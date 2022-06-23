@@ -115,6 +115,7 @@ Feature: Group Create
         Then the 'Automation Created Group' header is displayed
         And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
 
+
     Scenario Outline: FNHS123 - Manage Member Edit Role
         When I click the 'Manage users' link
         Then the 'Users' header is displayed
