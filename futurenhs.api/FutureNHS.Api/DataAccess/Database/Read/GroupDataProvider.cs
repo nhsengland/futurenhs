@@ -208,7 +208,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS Strapline, g.PublicGroup AS IsPublic,( SELECT      CASE 
+                @"SELECT DISTINCT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS Strapline, g.PublicGroup AS IsPublic,( SELECT      CASE 
                                                                                     WHEN        groupUser.MembershipUser_Id = @UserId
                                                                                     AND         groupUser.Approved = 1
                                                                                     AND         groupUser.Rejected = 0
