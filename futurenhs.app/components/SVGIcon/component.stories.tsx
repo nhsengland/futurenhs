@@ -2,41 +2,45 @@ import React from 'react'
 import { useAssetPath } from '@hooks/useAssetPath';
 import { SVGIcon } from './index'
 
-const iconsSrc: string = useAssetPath('/icons/icons.svg');
-const iconsListSrc: string = '/icons/icons.svg';
-const iconNames: Array<string> = window.sessionStorage.getItem('sbSvgIconNames') ?  JSON.parse(window.sessionStorage.getItem('sbSvgIconNames')) : [];
+const sessionStorageKey: string = 'sbSvgIconNames';
+const iconsPath: string = '/icons/icons.svg';
+const iconsSrc: string = useAssetPath(iconsPath);
 
-/**
- * Seemingly necessary workaround - no obvious support in Storybook to asyncronously fetch config to pass into argTypes
- * Fetches the svgSprite and parses out the list of icon names, then saves in sessionStorage and reloads the story
- */
-if(!iconNames.length){
+let iconNames: Array<string> = [];
 
-    fetch(iconsListSrc).then((response) => {
+try {
 
-        if(response.ok){
+    iconNames = window.sessionStorage.getItem(sessionStorageKey) ?  JSON.parse(window.sessionStorage.getItem(sessionStorageKey)) : [];
 
-            response.text().then((svg) => {
+    /**
+     * Seemingly necessary workaround - no obvious support in Storybook to asyncronously fetch config to pass into argTypes
+     * Fetches the svgSprite and parses out the list of icon names, then saves in sessionStorage and reloads the story
+     */
+    if(!iconNames.length){
     
+        fetch(iconsPath).then((response) => {
+    
+            response.text().then((svg) => {
+        
                 const matches = Array.from(svg.matchAll(/<symbol id=".*" p/g));
-
-                if(matches.length > 0){
-
-                    for (const match of matches) {
-                        const parts = match[0].split('"');
-                        iconNames.push(parts[1]);
-                    }
-            
-                    window.sessionStorage.setItem('sbSvgIconNames', JSON.stringify(iconNames));
-                    window.location.reload();
-
+        
+                for (const match of matches) {
+                    const parts = match[0].split('"');
+                    iconNames.push(parts[1]);
                 }
+        
+                window.sessionStorage.setItem(sessionStorageKey, JSON.stringify(iconNames));
+                window.location.reload();
     
             })
-
-        }
+        
+        })
     
-    })
+    }
+
+} catch(error){
+
+    console.log(error);
 
 }
 
@@ -57,12 +61,12 @@ export const Basic = Template.bind({})
 Basic.args = {
     url: iconsSrc,
     name: iconNames?.[0] || '',
-    className: 'u-w-[200px] u-h-[200px] u-fill-theme-0'
+    className: 'u-w-[300px] u-h-[300px] u-fill-theme-0'
 }
 
 export const Themed = Template.bind({})
 Themed.args = {
     url: iconsSrc,
     name: iconNames?.[0] || '',
-    className: 'u-w-[200px] u-h-[200px] u-fill-theme-8'
+    className: 'u-w-[300px] u-h-[300px] u-fill-theme-8'
 }
