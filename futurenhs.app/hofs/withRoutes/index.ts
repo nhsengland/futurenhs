@@ -42,6 +42,9 @@ export const withRoutes = (
                     groupLeave: groupIndexRoute
                         ? `${groupIndexRoute}/leave`
                         : null,
+                    groupInvite: groupIndexRoute
+                        ? `${groupIndexRoute}/invite`
+                        : null,
                     groupForumRoot: groupIndexRoute
                         ? `${groupIndexRoute}/forum`
                         : null,

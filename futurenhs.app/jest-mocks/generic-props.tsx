@@ -1,4 +1,4 @@
-import { Routes } from "@appTypes/routing";
+import { Routes } from '@appTypes/routing'
 
 export const routes: Routes = {
     siteRoot: '/',
@@ -12,6 +12,7 @@ export const routes: Routes = {
     groupsDiscover: '/groups/discover',
     groupRoot: '/:groupId',
     groupUpdate: '/:groupId/update',
+    groupInvite: '/:groupId/invite',
     groupJoin: '/:groupId/join',
     groupLeave: '/:groupId/leave',
     groupForumRoot: '/:groupId/forum',
@@ -19,5 +20,5 @@ export const routes: Routes = {
     groupFolder: '/:groupId/folders/:folderId',
     groupFilesRoot: '/:groupId/files',
     groupMembersRoot: '/:groupId/members',
-    groupAboutRoot: '/:groupId/about'
-};
+    groupAboutRoot: '/:groupId/about',
+}

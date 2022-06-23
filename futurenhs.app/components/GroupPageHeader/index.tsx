@@ -56,6 +56,10 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const shouldRenderGroupEditLink: boolean = actions?.includes(
         actionsConstants.GROUPS_EDIT
     )
+    /**
+     * TODO: GROUPS_MEMBERS_INVITE action pending API, change to true to temporarily render
+     */
+    const shouldRenderGroupInviteLink: boolean = true //actions?.includes(actionsConstants.GROUPS_MEMBERS_INVITE)
     const shouldRenderPendingMessage: boolean =
         memberStatus === groupMemberStatus.PENDING
 
@@ -127,6 +131,14 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                 id: actionsConstants.GROUPS_LEAVE,
                 url: routes.groupLeave,
                 text: 'Leave group',
+            })
+        }
+
+        if (shouldRenderGroupInviteLink) {
+            actionsMenuList.push({
+                id: actionsConstants.GROUPS_MEMBERS_INVITE,
+                url: routes.groupInvite,
+                text: 'Invite',
             })
         }
 
