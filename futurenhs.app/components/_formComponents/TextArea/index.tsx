@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { Editor } from '@tinymce/tinymce-react'
 
+import { useAssetPath } from '@hooks/useAssetPath'
 import { RichText } from '@components/RichText'
 import { RemainingCharacterCount } from '@components/RemainingCharacterCount'
 import { getAriaFieldAttributes } from '@helpers/util/form'
@@ -144,7 +145,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                     tabIndex={0}
                 >
                     <Editor
-                        tinymceScriptSrc="/js/tinymce/tinymce.min.js"
+                        tinymceScriptSrc={useAssetPath("/js/tinymce/tinymce.min.js")}
                         textareaName={input.name}
                         id={id}
                         value={input.value}

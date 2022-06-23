@@ -1,7 +1,9 @@
 import React from 'react'
+import { useAssetPath } from '@hooks/useAssetPath';
 import { SVGIcon } from './index'
 
-const iconsSrc: string = '/icons/icons.svg';
+const iconsSrc: string = useAssetPath('/icons/icons.svg');
+const iconsListSrc: string = '/icons/icons.svg';
 const iconNames: Array<string> = window.sessionStorage.getItem('sbSvgIconNames') ?  JSON.parse(window.sessionStorage.getItem('sbSvgIconNames')) : [];
 
 /**
@@ -10,21 +12,29 @@ const iconNames: Array<string> = window.sessionStorage.getItem('sbSvgIconNames')
  */
 if(!iconNames.length){
 
-    fetch(iconsSrc).then((response) => {
+    fetch(iconsListSrc).then((response) => {
 
-        response.text().then((svg) => {
-    
-            const matches = Array.from(svg.matchAll(/<symbol id=".*" p/g));
-    
-            for (const match of matches) {
-                const parts = match[0].split('"');
-                iconNames.push(parts[1]);
-            }
-    
-            window.sessionStorage.setItem('sbSvgIconNames', JSON.stringify(iconNames));
-            window.location.reload();
+        if(response.ok){
 
-        })
+            response.text().then((svg) => {
+    
+                const matches = Array.from(svg.matchAll(/<symbol id=".*" p/g));
+
+                if(matches.length > 0){
+
+                    for (const match of matches) {
+                        const parts = match[0].split('"');
+                        iconNames.push(parts[1]);
+                    }
+            
+                    window.sessionStorage.setItem('sbSvgIconNames', JSON.stringify(iconNames));
+                    window.location.reload();
+
+                }
+    
+            })
+
+        }
     
     })
 
