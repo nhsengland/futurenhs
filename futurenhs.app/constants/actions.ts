@@ -25,4 +25,5 @@ export const enum actions {
     GROUPS_MEMBERS_ADD = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/add',
     GROUPS_MEMBERS_EDIT = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/edit',
     GROUPS_MEMBERS_DELETE = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/delete',
+    GROUPS_MEMBERS_INVITE = 'https://schema.collaborate.future.nhs.uk/groups/v1/members/invite',
 }
