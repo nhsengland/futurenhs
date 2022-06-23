@@ -41,12 +41,7 @@
 			}
 		]
 	},
-	"devDependencies": {
-
-	},
-	"dependencies": {
-
-	},
+	"devDependencies": {},
 	"lint-staged": {
 		"*": "prettier --write"
 	}
