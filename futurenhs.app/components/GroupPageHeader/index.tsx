@@ -59,7 +59,9 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     /**
      * TODO: GROUPS_MEMBERS_INVITE action pending API, change to true to temporarily render
      */
-    const shouldRenderGroupInviteLink: boolean = true //actions?.includes(actionsConstants.GROUPS_MEMBERS_INVITE)
+    const shouldRenderGroupInviteLink: boolean = actions?.includes(
+        actionsConstants.GROUPS_MEMBERS_INVITE
+    )
     const shouldRenderPendingMessage: boolean =
         memberStatus === groupMemberStatus.PENDING
 
