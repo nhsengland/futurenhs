@@ -99,5 +99,5 @@ Feature: groupMembers
             | Email      | autoRemoveUser@test.co.uk |
         And the 'Remove from group' button is displayed
         When I click the 'Remove from group' button
-        Then I confirm this on the open 'Remove member' dialog
+        Then I confirm this on the open dialog
         And the 'Group Members' table exists

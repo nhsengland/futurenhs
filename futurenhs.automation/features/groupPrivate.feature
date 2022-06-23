@@ -47,20 +47,22 @@ Feature: groupPrivate
         And I click the 'Save and close' button 
         Then the 'Change group privacy' header is displayed
         And the 'will set this group to private, restricting access to approved members only. This cannot be undone, are you sure you wish to continue?' textual value is displayed
-        And I cancel this on the open 'group privacy' dialog
+        And I cancel this on the open dialog
 
-    @Pending
-    # RESTRICTED VIEWS STILL WIP
+
     Scenario: FNHS40 - Non Member Group View Validation
         Given I have logged in as a 'user' and accept the cookies
         Then the 'My Groups' header is displayed
         And I have navigated to '/groups/automation-private-group'
         Then the 'Automation Private Group' header is displayed
-        # About tab validtion
-        # Other tabs are NOT displayed
+        And the 'About us' tab is displayed
+        And the 'About Us' header is displayed
+        And the 'Home' tab is not displayed
+        And the 'Forum' tab is not displayed
+        And the 'Files' tab is not displayed
+        And the 'Members' tab is not displayed
 
-    @Pending
-    # PENDING APPROVAL FEATURE STILL NOT IN DEVELOPMENT
+
     Scenario: FNHS41 - Join a private group
         Given I have logged in as a 'user' and accept the cookies
         Then the 'My Groups' header is displayed
@@ -68,4 +70,4 @@ Feature: groupPrivate
         Then the 'Automation Private Group' header is displayed
         And the 'Join Group' link is displayed
         When I click the 'Join Group' link
-        Then the 'Pending Approval' textual value is displayed
+        Then the 'Awaiting Approval' textual value is displayed
