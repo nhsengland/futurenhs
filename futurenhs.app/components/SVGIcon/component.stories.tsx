@@ -19,21 +19,29 @@ try {
     if(!iconNames.length){
     
         fetch(iconsPath).then((response) => {
-    
-            response.text().then((svg) => {
+
+            if(response.ok){
+
+                response.text().then((svg) => {
         
-                const matches = Array.from(svg.matchAll(/<symbol id=".*" p/g));
-        
-                for (const match of matches) {
-                    const parts = match[0].split('"');
-                    iconNames.push(parts[1]);
-                }
-        
-                window.sessionStorage.setItem(sessionStorageKey, JSON.stringify(iconNames));
-                window.location.reload();
-    
-            })
-        
+                    const matches = Array.from(svg.matchAll(/<symbol id=".*" p/g));
+            
+                    for (const match of matches) {
+                        const parts = match[0].split('"');
+                        iconNames.push(parts[1]);
+                    }
+
+                    if(iconNames.length){
+
+                        window.sessionStorage.setItem(sessionStorageKey, JSON.stringify(iconNames));
+                        window.location.reload();
+
+                    }
+            
+                })
+
+            }
+
         })
     
     }
