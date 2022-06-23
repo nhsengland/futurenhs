@@ -89,7 +89,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                      * Get data from services
                      */
                     try {
-
                         /**
                          * Handle server-side profile form post
                          */
@@ -106,7 +105,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                                 const headers = {
                                     ...getStandardServiceHeaders({
-                                        csrfToken
+                                        csrfToken,
                                     }),
                                     ...submission.getHeaders(),
                                 }
@@ -150,4 +149,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
 /**
  * Export page template
  */
-export default () => <h1>Create user form</h1>
+export default () => (
+    <div className="c-page-body u-w-full tablet:u-px-4 u-py-10 tablet:u-px-0">
+        <h1>Create user profile</h1>
+    </div>
+)
