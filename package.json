@@ -41,8 +41,12 @@
 			}
 		]
 	},
-	"devDependencies": {},
 	"lint-staged": {
 		"*": "prettier --write"
+	},
+	"dependencies": {
+		"gulp": "4.0.2",
+		"husky": "8.0.1",
+		"pm2": "^5.2.0"
 	}
 }

@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next'
-import { getSession } from "next-auth/react"
+import { getSession } from 'next-auth/react'
 
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getSiteActions } from '@services/getSiteActions'
@@ -26,73 +26,57 @@ export const withUser: Hof = async (
 
     let user: User = null;
 
-        const session = await getSession(context);
+        const session = await getSession(context)
 
-        if(!session && isRequired){
-
+        if (!session && isRequired) {
             return {
                 redirect: {
                     permanent: false,
                     destination: `${process.env.APP_URL}/auth/signin`,
-                }, 
+                },
             }
-
         }
 
-        if(session){
-
+        if (session) {
             try {
-
                 const { data: user } = await getUserInfoService({
-                    subjectId: (session.sub as string),
-                    emailAddress: session.user?.email
+                    subjectId: session.sub as string,
+                    emailAddress: session.user?.email,
                 })
-    
+
                 props.user = user
                 context.req.user = user
 
-                if(isRequired){
-    
-                    if(user.status === 'LegacyMember' || user.status === 'Invited'){
+                if (isRequired) {
+                    const { status } = user
 
-                        const targetPath: string = `/users/${user.id}/create`;
+                    if (status === 'LegacyMember' || status === 'Invited') {
+                        const targetPath: string = `/users/${user.id}/create`
 
-                        if(context.resolvedUrl !== targetPath){
-
+                        if (context.resolvedUrl !== targetPath) {
                             return {
                                 redirect: {
                                     permanent: false,
                                     destination: `${process.env.APP_URL}${targetPath}`,
-                                }, 
+                                },
                             }
-
                         }
+                    } else if (status === 'Uninvited') {
+                        const targetPath: string = `/auth/unregistered`
 
-                    } else if(user.status === 'Uninvited'){
-
-                        const targetPath: string = `/auth/unregistered`;
-
-                        if(context.resolvedUrl !== targetPath){
-
+                        if (context.resolvedUrl !== targetPath) {
                             return {
                                 redirect: {
                                     permanent: false,
                                     destination: `${process.env.APP_URL}${targetPath}`,
-                                }, 
+                                },
                             }
-
                         }
-
                     }
-    
                 }
-    
             } catch (error) {
-                
                 return handleSSRErrorProps({ props, error })
-
             }
-
         }
     }
 
