@@ -208,27 +208,25 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT DISTINCT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS Strapline, g.PublicGroup AS IsPublic,( SELECT      CASE 
-                                                                                    WHEN        groupUser.MembershipUser_Id = @UserId
-                                                                                    AND         groupUser.Approved = 1
-                                                                                    AND         groupUser.Rejected = 0
-                                                                                    AND         groupUser.Locked = 0
-                                                                                    AND         groupUser.Banned = 0
+                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS Strapline, g.PublicGroup AS IsPublic,( SELECT CASE 
+                                                                                    WHEN        gu.Approved = 1
+                                                                                    AND         gu.Rejected = 0
+                                                                                    AND         gu.Locked = 0
+                                                                                    AND         gu.Banned = 0
                                                                                     THEN        'Approved'
-                                                                                    WHEN        groupUser.MembershipUser_Id = @UserId
-                                                                                    AND         groupUser.Approved = 0
-                                                                                    AND         groupUser.Rejected = 0
-                                                                                    AND         groupUser.Locked = 0
-                                                                                    AND         groupUser.Banned = 0
+                                                                                    WHEN        gu.Approved = 0
+                                                                                    AND         gu.Rejected = 0
+                                                                                    AND         gu.Locked = 0
+                                                                                    AND         gu.Banned = 0
                                                                                     THEN        'Pending Approval'
                                                                                     ELSE        'Non Member'
                                                                                     END
                                                                                   ) AS MemberStatus,		
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName,  image.MediaType AS MediaType
 				FROM [Group] g
-                LEFT JOIN Image image ON image.Id = g.ImageId  
-                LEFT JOIN GroupUser groupUser ON GroupUser.Group_Id = g.Id  
-                WHERE g.Slug = @Slug AND g.IsDeleted = 0";
+                LEFT JOIN [Image] image ON image.Id = g.ImageId  
+                LEFT JOIN GroupUser gu ON (gu.Group_Id = g.Id and gu.MembershipUser_Id = @UserId)
+                WHERE g.Slug = @Slug AND g.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
