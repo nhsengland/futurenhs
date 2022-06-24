@@ -34,8 +34,8 @@ BEGIN
 	INSERT [dbo].[MembershipRole] ([RoleName]) VALUES (N'Standard Members')
 	INSERT [dbo].[MembershipRole] ([RoleName]) VALUES (N'Guest')
 
-	INSERT [dbo].[MembershipUsersInRoles] ([UserIdentifier], [RoleIdentifier]) VALUES ((SELECT Id FROM [dbo].[MembershipUser] WHERE [UserName] ='admin'), (SELECT Id FROM [dbo].[MembershipRole] WHERE [RoleName] = 'Admin'))
-	INSERT [dbo].[MembershipUsersInRoles] ([UserIdentifier], [RoleIdentifier]) VALUES ((SELECT Id FROM [dbo].[MembershipUser] WHERE [UserName] ='membershipuser'), (SELECT Id FROM [dbo].[MembershipRole] WHERE [RoleName] = 'Standard Members'))
+	INSERT [dbo].[MembershipUsersInRoles] ([UserIdentifier], [RoleIdentifier]) VALUES ((SELECT Id FROM [dbo].[MembershipUser] WHERE [UserName] ='admin@futurenhs.co.uk'), (SELECT Id FROM [dbo].[MembershipRole] WHERE [RoleName] = 'Admin'))
+	INSERT [dbo].[MembershipUsersInRoles] ([UserIdentifier], [RoleIdentifier]) VALUES ((SELECT Id FROM [dbo].[MembershipUser] WHERE [UserName] ='membershipuser@futurenhs.co.uk'), (SELECT Id FROM [dbo].[MembershipRole] WHERE [RoleName] = 'Standard Members'))
 
 	INSERT [dbo].[Language] ([Name], [LanguageCulture], [FlagImageFileName], [RightToLeft]) VALUES ( N'English (United Kingdom)', N'en-GB', NULL, 0)
 
