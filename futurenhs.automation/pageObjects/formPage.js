@@ -181,21 +181,13 @@ class formPage extends basePage{
      * Function to locate and validate an error message displayed within a form page
      * @param {string} messageTxt - textual value of the error message to validate against
      */
-    formErrorValidation(messageTxt, errorType) {
-        var foundErrors        
+    formErrorValidation(messageTxt) {
+        var foundErrors = $$(`//div[contains(@class, "c-error-summary")]/ul/li|//span[contains(@class, "error-message")]`);
         var errors = ''
-        if(errorType === 'summary'){
-            var summaryBody = $('//div[contains(@class, "c-error-summary")][*[normalize-space(.) = "There is a problem"]]/ul');
-            helpers.waitForLoaded(summaryBody);        
-            foundErrors = summaryBody.$$('./li');
-        } else {
-            foundErrors = $$('//span[contains(@class, "error-message")]');
-        }
         foundErrors.forEach(error => {
             errors = errors.concat(error.getText(), ', ');            
         });
         expect(errors.includes(messageTxt)).toEqual(true);
     }
-
 }
 module.exports = new formPage();

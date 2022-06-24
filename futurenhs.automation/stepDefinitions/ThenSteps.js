@@ -68,8 +68,8 @@ Then(/^the text editor is empty$/, function () {
     formPage.textEditorCleared();
 });
 
-Then(/^the '([^"]*)' error (message|summary) is displayed$/, function (messageTxt, errorType) {
-    formPage.formErrorValidation(messageTxt, errorType);
+Then(/^the '([^"]*)' error message is displayed$/, function (messageTxt) {
+    formPage.formErrorValidation(messageTxt);
 });
 
 Then(/^the '([^"]*)' (field|text area) contains '([^"]*)'$/, function (fieldLabel, fieldType, fieldValue) {
