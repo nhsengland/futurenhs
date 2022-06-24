@@ -20,6 +20,15 @@ AS
 	
 	SELECT [Id] INTO #seededUsers FROM [dbo].[MembershipUser] WHERE [Email] IN ('autoAdmin@test.co.uk', 'autoGroupAdmin@test.co.uk', 'autoRemoveUser@test.co.uk', 'autoUser@test.co.uk', 'autoUser2@test.co.uk', 'autoUser3@test.co.uk', 'autoTest@email.com', 'VisRegUser@email.com', 'autoEditUser@test.co.uk');
 	
+	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='autoAdmin@test.co.uk'), N'841db053-7c13-4b71-95f5-c8401a7177de', N'CDSB2CTEST.onmicrosoft.com');
+	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='autoGroupAdmin@test.co.uk'), N'f788abd9-4df3-4c3b-8964-f8f773233678', N'CDSB2CTEST.onmicrosoft.com');
+	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='autoUser@test.co.uk'), N'a2ede944-272b-4ff1-954c-8a0bd0041733', N'CDSB2CTEST.onmicrosoft.com');
+	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='autoUser2@test.co.uk'), N'f90e85a9-7d91-4788-9f63-af96f95e454b', N'CDSB2CTEST.onmicrosoft.com');
+	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='autoUser3@test.co.uk'), N'2d09e4c8-6015-493e-99e7-b71aee0b93b3', N'CDSB2CTEST.onmicrosoft.com');
+	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='autoEditUser@test.co.uk'), N'1cc65cdb-c831-4d06-b544-9131c890d3a5', N'CDSB2CTEST.onmicrosoft.com');
+	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='autoRemoveUser@test.co.uk'), N'b28529a2-e492-4780-8e78-1b2ee1424d48', N'CDSB2CTEST.onmicrosoft.com');
+	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='VisRegUser@email.com'), N'd263de28-19be-4701-ac5a-24ddd7701f3d', N'CDSB2CTEST.onmicrosoft.com');
+
 	/**
 	* INSERT AUTOMATION FILES
 	*/
