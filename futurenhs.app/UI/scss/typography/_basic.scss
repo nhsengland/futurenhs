@@ -5,19 +5,87 @@
     box-sizing: border-box;
 }
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
     margin: 0;
     padding: 0;
     border: 0;
@@ -26,8 +94,18 @@ time, mark, audio, video {
     -webkit-font-smoothing: antialiased;
 }
 
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section, main {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+main {
     display: block;
 }
 
@@ -45,7 +123,8 @@ html {
     height: 100%;
 }
 
-#__next { // sass-lint:disable-line no-ids
+#__next {
+    // sass-lint:disable-line no-ids
     display: flex;
     flex-direction: column;
     min-height: 100%;
@@ -67,6 +146,11 @@ body {
 main {
     display: flex;
     flex-direction: column;
+    width: 100%;
+}
+
+.content-main {
+    width: 100%;
 }
 
 em,
@@ -81,7 +165,6 @@ a {
     &:active {
         text-decoration: underline;
     }
-
 }
 
 .c-link {
@@ -129,7 +212,8 @@ select {
     -webkit-appearance: none; // sass-lint:disable-line no-vendor-prefixes
     -moz-appearance: none; // sass-lint:disable-line no-vendor-prefixes
 
-    &::-ms-expand { // sass-lint:disable-line no-vendor-prefixes
+    &::-ms-expand {
+        // sass-lint:disable-line no-vendor-prefixes
         display: none;
     }
 
@@ -152,7 +236,8 @@ img {
     max-height: 100%;
 }
 
-.gm-style img { // sass-lint:disable-line class-name-format
+.gm-style img {
+    // sass-lint:disable-line class-name-format
     max-width: none !important; // sass-lint:disable-line no-important
     max-height: none !important; // sass-lint:disable-line no-important
 }
@@ -164,12 +249,13 @@ summary {
         display: none;
     }
 
-    &::-webkit-details-marker { // sass-lint:disable-line no-vendor-prefixes
+    &::-webkit-details-marker {
+        // sass-lint:disable-line no-vendor-prefixes
         display: none;
     }
 
     &::marker {
-        content: "";
+        content: '';
     }
 
     &:hover,
@@ -177,7 +263,6 @@ summary {
         cursor: pointer;
         text-decoration: underline;
     }
-
 }
 
 svg {
