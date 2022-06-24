@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
 
-import { getSession } from 'next-auth/react';
-import { getAuthCsrfData } from '@services/getAuthCsrfData';
+import { getSession } from 'next-auth/react'
+import { getAuthCsrfData } from '@services/getAuthCsrfData'
 import { selectQuery } from '@selectors/context'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
@@ -9,10 +9,10 @@ import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
-import { AuthSignInTemplate } from '@components/_pageTemplates/AuthSignInTemplate';
-import { Props } from '@components/_pageTemplates/AuthSignInTemplate/interfaces';
+import { AuthSignInTemplate } from '@components/_pageTemplates/AuthSignInTemplate'
+import { Props } from '@components/_pageTemplates/AuthSignInTemplate/interfaces'
 
-const routeId: string = '46524db4-44eb-4296-964d-69dfc2279f01';
+const routeId: string = '46524db4-44eb-4296-964d-69dfc2279f01'
 const props: Partial<Props> = {}
 
 /**
@@ -24,61 +24,63 @@ export const getServerSideProps: GetServerSideProps = withRoutes({
         props,
         routeId,
         getServerSideProps: async (context: GetServerSidePropsContext) => {
-
-            const { query } = context;
-            const error: string = selectQuery(context, 'error');
-            const session = await getSession(context);
+            const { query } = context
+            const error: string = selectQuery(context, 'error')
+            const session = await getSession(context)
 
             /**
-             * Hide breadcrumbs
+             * Set base template properties
              */
-            (props as any).breadCrumbList = [];
+            ;(props as any).breadCrumbList = []
+            ;(props as any).shouldRenderMainNav = false
+            ;(props as any).className = 'u-bg-theme-3'
 
             /**
              * Redirect to site root if already signed in
              */
-            if(session){
-
+            if (session) {
                 return {
                     redirect: {
                         permanent: false,
                         destination: `${process.env.APP_URL}/groups`,
-                    }, 
+                    },
                 }
-
             }
 
             /**
              * Handle any returned OAuth errors
              */
             if (error) {
-
-                props.errors = [{
-                    [500]: error
-                }];
+                props.errors = [
+                    {
+                        [500]: error,
+                    },
+                ]
 
                 return handleSSRSuccessProps({ props })
-
             }
 
             /**
              * Get data from services
              */
             try {
-
                 /**
                  * Get next-auth specific csrf token and associated cookie header
                  */
-                const [csrfData] = await Promise.all([getAuthCsrfData({ query })]);
+                const [csrfData] = await Promise.all([
+                    getAuthCsrfData({ query }),
+                ])
 
-                props.csrfToken = csrfData.data;
+                props.csrfToken = csrfData.data
 
                 /**
                  * next-auth assumes a browser -> server request, so the returned set-cookie header needs
                  * passing through in order for the csrf token validation to succeed on form POST
                  */
-                context.res.setHeader('Set-Cookie', csrfData.headers.get('Set-Cookie'));
-
+                context.res.setHeader(
+                    'Set-Cookie',
+                    csrfData.headers.get('Set-Cookie')
+                )
             } catch (error) {
                 return handleSSRErrorProps({ props, error })
             }
@@ -88,7 +90,7 @@ export const getServerSideProps: GetServerSideProps = withRoutes({
              */
             return handleSSRSuccessProps({ props })
         },
-    })
+    }),
 })
 
 /**
