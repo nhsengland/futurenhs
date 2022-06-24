@@ -121,8 +121,8 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
         content: classNames({
             ['u-m-0']: shouldRenderMainNav && user && isMobile,
             ['u-max-w-full']: shouldRenderMainNav && user && isMobile,
+            ['u-w-full']: !shouldRenderMainNav && !user,
             ['u-w-0']: shouldRenderMainNav && user,
-            ['u-w-full']: !shouldRenderMainNav && user,
         }),
     }
 

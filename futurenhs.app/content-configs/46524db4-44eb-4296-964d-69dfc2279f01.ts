@@ -4,6 +4,9 @@ export default {
     title: 'Sign in',
     metaDescription: 'Sign in',
     mainHeading: 'Sign in',
-    bodyHtml: '<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>',
-    signIn: 'Sign in'
+    intro: '<p>Collaborate, connect, share and learn.</p>',
+    secondaryHeading: 'Register your interest',
+    bodyHtml:
+        '<p>Don\'t have an account? <a href="mailto:support@futurenhs.zendesk.com?subject=Register%20Interest">Register your interest</a>.</p>',
+    signIn: 'Sign in',
 } as GenericPageTextContent

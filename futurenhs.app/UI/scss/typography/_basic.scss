@@ -146,6 +146,11 @@ body {
 main {
     display: flex;
     flex-direction: column;
+    width: 100%;
+}
+
+.content-main {
+    width: 100%;
 }
 
 em,
