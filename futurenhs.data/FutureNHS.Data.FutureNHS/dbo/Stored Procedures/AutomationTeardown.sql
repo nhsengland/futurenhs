@@ -69,6 +69,11 @@ AS
         SELECT * FROM #autoUsers
     );
 
+    DELETE FROM [dbo].[Identity] 
+    WHERE [MembershipUser_Id] IN (
+        SELECT * FROM #autoUsers
+    );
+
     DELETE FROM [dbo].[MembershipUser]
     WHERE [Id] IN (
         SELECT * FROM #autoUsers
