@@ -43,7 +43,6 @@ Feature: groupMembers
         Then the 'Invite member' header is displayed
         When I enter '<input>' into the 'New member email address' field
         And I click the 'Add new member' option
-        Then the '<error message>' error summary is displayed
         Then the '<error message>' error message is displayed
         Examples:
             | input                | error message                                                                                                                                        |

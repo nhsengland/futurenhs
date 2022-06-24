@@ -52,7 +52,6 @@ Feature: User Access
         And I enter '<surname>' into the 'Last name' field
         And I click the 'Register now' button
         Then the 'There is a problem' header is displayed
-        Then the '<error message>' error summary is displayed
         Then the '<error message>' error message is displayed
         Examples:
             | email              | password    | repeatpassword | firstname | surname | error message                                                                           |
