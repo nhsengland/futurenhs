@@ -54,7 +54,6 @@ Feature: Group Create
         Then the 'Invite a new user' header is displayed
         When I enter '<email>' into the 'Email address' field
         And I click the 'Send invite' button
-        Then the '<error message>' error summary is displayed
         Then the '<error message>' error message is displayed
         Examples:
             | email      | error message               |
@@ -95,7 +94,6 @@ Feature: Group Create
         And I enter '<strapline>' into the 'Strap line' field
         And I choose '<owner>' from the 'Group owner' auto suggest list
         And I click the 'Save and create group' button
-        Then the '<error message>' error summary is displayed
         And the '<error message>' textual value is displayed
         Examples:
             | groupname     | strapline     | owner      | error message                 |

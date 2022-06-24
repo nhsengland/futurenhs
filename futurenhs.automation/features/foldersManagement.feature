@@ -72,7 +72,6 @@ Feature: forumAdmin
         And I enter '<description>' into the 'Enter a folder description' text area
         And I click the 'Save and continue' button
         Then the '<errorMsg>' error message is displayed
-        And the '<errorMsg>' error summary is displayed
         Examples:
             | title         | description                   | errorMsg                       |
             |               |                               | Enter the folder title         |
@@ -102,7 +101,6 @@ Feature: forumAdmin
         When I enter '<description>' into the 'Enter a folder description' text area
         And I click the 'Save and continue' button
         Then the '<errorMsg>' error message is displayed
-        Then the '<errorMsg>' error summary is displayed
         Examples:
             | foldertitle   | description    | errorMsg                       |
             |               |                | Enter the folder title         |

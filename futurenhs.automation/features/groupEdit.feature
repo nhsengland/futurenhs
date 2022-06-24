@@ -40,7 +40,6 @@ Scenario Outline: FNHS34 - Edit Group Information error validation
     And I enter '<strapline>' into the 'Strap line' field
     And I click the 'Save and close' button
     Then the 'There is a problem' textual value is displayed
-    Then the '<error message>' error summary is displayed
     And the '<error message>' textual value is displayed
 Examples:
     | name                    | strapline      | error message                  |
@@ -72,7 +71,7 @@ Scenario Outline: FNHS36 - Edit group information change logo error validation
     Then the 'Edit group information' header is displayed    
     When I upload the '<image>' file
     And I click the 'Save and close' button
-    Then the '<error message>' error summary is displayed
+    Then the '<error message>' error message is displayed
 Examples:
     | image                    | error message                          |    
     | /media/test.gif          | The image is not in an accepted format |

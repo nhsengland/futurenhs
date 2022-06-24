@@ -31,7 +31,6 @@ Feature: forumAdmin
         And I enter '<comment>' into the 'Comment' text editor
         And I click the 'Create Discussion' button
         Then the '<error>' error message is displayed
-        And the '<error>' error summary is displayed
         When I click the 'Discard Discussion' link
         Then the 'Entered Data will be lost' header is displayed
         When I click the 'Yes, discard' button

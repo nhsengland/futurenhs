@@ -75,7 +75,6 @@ Feature: Forum Submission
         And I click the 'Add Comment' button
         And I click the 'Add Comment' button
         Then the '<error>' error message is displayed
-        And the '<error>' error summary is displayed
         Examples:
             | input | error              |
             |       | Enter your comment |

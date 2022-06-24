@@ -64,7 +64,7 @@ Scenario Outline: FNHS74 - Upload a file, file error validation
 	When I enter '<File description>' into the 'Enter a file description' text area
 	When I upload the '<File to upload>' file
 	When I click the 'Upload File' button
-	Then the '<error message>' error summary is displayed
+	Then the '<error message>' error message is displayed
 Examples:
 	| File to upload | File name | File description | error message |
 	# | /media/JdDBz18tDwh1jC2pK3RZHzEJPyLLJUfA6qTcs23MBesG7kZfVvltwg5ixHk2zXEmc8xNYXpunGHL67QAX4EJ3yEAINQMjZp3cn257.pdf | Title            | Description   | The name of the file cannot be more than 100 characters                  |
@@ -82,7 +82,6 @@ Scenario Outline: FNHS75 - Upload a file, form error validation
 	When I enter '<File description>' into the 'Enter a file description' text area
 	When I upload the '<File to upload>' file
 	When I click the 'Upload File' button
-	Then the '<error message>' error summary is displayed
 	Then the '<error message>' error message is displayed
 Examples:
 	| File to upload     | File name    | File description | error message                 |
@@ -100,7 +99,6 @@ Scenario: FNHS76 - Upload without a file error validation
 	When I enter 'Description' into the 'Enter a file description' text area
 	When I click the 'Upload File' button
 	Then the 'Add a file' error message is displayed
-	Then the 'Add a file' error summary is displayed
 
 @Core
 Scenario Outline: FNHS77 - File download and verify
@@ -152,7 +150,6 @@ Scenario Outline: FNHS90 - Edit File error validation
 	And I enter '<Title>' into the 'Enter file title' field
 	And I enter '<Description>' into the 'Enter file description' text area
 	And I click the 'Save file details' option
-	Then the '<Error Message>' error summary is displayed
 	And the '<Error Message>' error message is displayed
 Examples:
 	| Title        | Description   | Error Message                 |
