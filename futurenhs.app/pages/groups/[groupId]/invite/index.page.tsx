@@ -30,6 +30,7 @@ import { postGroupMemberInvite } from '@services/postGroupMemberInvite'
 import { FormErrors } from '@appTypes/form'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
+import { notifications } from '@constants/notifications'
 
 const routeId: string = 'f872b71a-0449-4821-a8da-b75bbd451b2d'
 const props: Partial<Props> = {}
@@ -74,15 +75,15 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         /**
                          * Return page not found if user doesn't have permissions to invite a user - TODO: Pending API
                          */
-                        // if (
-                        //     !props.actions?.includes(
-                        //         actionConstants.GROUPS_MEMBERS_INVITE
-                        //     )
-                        // ) {
-                        //     return {
-                        //         notFound: true,
-                        //     }
-                        // }
+                        if (
+                            !props.actions?.includes(
+                                actionConstants.GROUPS_MEMBERS_INVITE
+                            )
+                        ) {
+                            return {
+                                notFound: true,
+                            }
+                        }
 
                         /**
                          * Handle server-side form post
@@ -102,6 +103,15 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     body: formData,
                                     groupId,
                                 })
+
+                                const emailAddress: string =
+                                    formData.get('Email')
+                                props.notifications = [
+                                    {
+                                        heading: notifications.SUCCESS,
+                                        main: `Invite sent to ${emailAddress}`,
+                                    },
+                                ]
 
                                 return {
                                     props: props,
