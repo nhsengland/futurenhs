@@ -7,6 +7,7 @@ import { FormConfig } from '@appTypes/form';
 import { Routes } from '@appTypes/routing';
 import { Service } from '@appTypes/service';
 import { ContentBlock } from '@components/ContentBlock';
+import { Notification } from '@components/NotificationBanner/interfaces';
 import { GenericPageTextContent, GroupsPageTextContent } from '@appTypes/content';
 import { User } from '@appTypes/user';
 
@@ -30,6 +31,7 @@ export interface Page {
     user?: User;
     className?: string;
     pageTitle?: string;
+    notifications?: Array<Notification>
 }
 
 export interface GroupPage extends Page {

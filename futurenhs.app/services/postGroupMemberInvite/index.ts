@@ -56,7 +56,7 @@ export const postGroupMemberInvite = async (
         throw new ServiceError(
             'An unexpected error occurred when attempting to invite a group member',
             {
-                serviceId: services.POST_SITE_USER_INVITE,
+                serviceId: services.POST_GROUP_MEMBER_INVITE,
                 status: status,
                 statusText: statusText,
                 body: apiData,
