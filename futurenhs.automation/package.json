@@ -22,6 +22,7 @@
     "csv-reader": "^1.0.8",
     "dotenv": "^10.0.0",
     "inquirer": "^8.1.2",
+    "lodash": "^4.17.21",
     "request": "^2.88.0",
     "selenium-standalone": "^7.1.0",
     "spec": "^1.0.1",

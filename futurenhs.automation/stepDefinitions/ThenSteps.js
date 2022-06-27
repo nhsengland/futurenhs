@@ -126,7 +126,7 @@ Then(/^the '([^"]*)' (mobile )?table is displayed$/, function (tableName, mobile
 
 Then(/^the '([^"]*)' row is displayed on the '([^"]*)' table$/, function (rowValue, tableName) {
     if (rowValue != null && rowValue.includes('[STRING: ')) {
-        srowValue = this.generatedString;
+        rowValue = this.generatedString;
     }
     tablePOM.tableRowExists(rowValue, tableName);
 });

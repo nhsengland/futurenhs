@@ -33,7 +33,7 @@ Feature: Groups
     Scenario: FNHS14 - Group tabs navigation
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
-        When I open the 'Actions' accordion
+        When I open the 'Group actions' accordion
         Then the 'Leave group' link is displayed
         When I click the 'Forum' tab
         Then the 'All Discussions' header is displayed
@@ -50,7 +50,7 @@ Feature: Groups
     Scenario: FNHS15 -  Group user home validation
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
-        When I open the 'Actions' accordion
+        When I open the 'Group actions' accordion
         Then the 'Edit group information' link is not displayed
         And the 'Leave group' link is displayed
         And the 'Welcome to FutureNHS' header is displayed

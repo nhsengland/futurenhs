@@ -42,7 +42,7 @@ When(/^I search for '([^"]*)'$/, function (inputVal) {
     search.search(inputVal);
 });
 
-When(/^I select '([^"]*)' from the (group menu|menu|actions|group pages) accordion$/, function (linkText, groupOption) {
+When(/^I select '([^"]*)' from the (group menu|menu|group actions|group pages) accordion$/, function (linkText, groupOption) {
     genericPage.selectAccordionItem(linkText, groupOption);
 });
 
