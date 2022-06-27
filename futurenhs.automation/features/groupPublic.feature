@@ -65,13 +65,13 @@ Feature: groupPublic
 
 
     Scenario: FNHS46 - Cancel leaving a group
-        When I select 'Leave group' from the actions accordion
+        When I select 'Leave group' from the group actions accordion
         Then I cancel this on the open dialog
-        When I open the 'Actions' accordion
+        When I open the 'Group actions' accordion
         And the 'Leave group' link is displayed
 
     @Core
     Scenario: FNHS47 - Leave a group
-        When I select 'Leave group' from the actions accordion
+        When I select 'Leave group' from the group actions accordion
         Then I confirm this on the open dialog
         And the 'Join Group' link is displayed

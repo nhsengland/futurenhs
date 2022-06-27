@@ -10,7 +10,7 @@ Feature: groupAdmin
     Scenario: FNHS32 - Make a Group Private
         When I select the 'Automation Group To Be Restricted' group card
         Then the 'Automation Group To Be Restricted' header is displayed
-        When I select 'Edit group information' from the actions accordion
+        When I select 'Edit group information' from the group actions accordion
         Then the 'Edit group information' header is displayed
         And the 'Group is public?' textual value is displayed
         When I select the 'Group is public?' checkbox

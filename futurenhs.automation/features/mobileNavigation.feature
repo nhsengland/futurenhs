@@ -70,7 +70,7 @@ Feature: mobileNavigation
     Scenario: FNHS:M06 - Leave a group
         And I have navigated to '/groups/automation-public-group'
         Then the 'Automation Public Group' header is displayed
-        When I select 'Leave group' from the actions accordion
+        When I select 'Leave group' from the group actions accordion
         Then I confirm this on the open dialog
         And the 'Join Group' link is displayed
 

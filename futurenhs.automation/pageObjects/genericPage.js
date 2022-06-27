@@ -62,16 +62,16 @@ class genericPage extends basePage {
     getAccordion(accordionName) {
         var desiredAccordion = accordionName.toLowerCase().replace(/ /g, '');
         const accordion = {
-            actions: $(`//div[@id="group-actions"]/..`),
-            mobilemenu: $(`//div[@id="header-accordion"]/../summary`),
-            usermenu: $(`//div[@id="user-accordion"]/..`),
-            grouppages: $(`//div[@id="my-groups-menu"]/..`),
-            groupmenu: $(`//div[@id="group-menu"]/..`),
-            showmorereplies: $(`//summary[span[text()="Show more replies"]]`),
-            editmember: $(`//div[@id="member-update-accordion"]/..`),
-        };
-        return accordion[desiredAccordion];
-    }
+            groupactions : $(`//div[@id="group-actions"]/..`),
+            mobilemenu : $(`//div[@id="header-accordion"]/..`),
+            usermenu : $(`//div[@id="user-accordion"]/..`),
+            grouppages : $(`//div[@id="my-groups-menu"]/..`),
+            groupmenu : $(`//div[@id="group-menu"]/..`),
+            showmorereplies : $(`//summary[span[text()="Show more replies"]]/..`),
+            editmember : $(`//div[@id="member-update-accordion"]/..`)
+        }
+        return accordion[desiredAccordion]
+    }   
 
     /**
      * Click to open the details element to show the available links
@@ -79,12 +79,8 @@ class genericPage extends basePage {
      */
     openAccordion(textValue) {
         var desiredAccordion = this.getAccordion(textValue);
-        helpers.click(desiredAccordion);
-        if (textValue === 'Show more replies' || textValue === 'Mobile Menu') {
-            expect(desiredAccordion.$('..').getProperty('open')).toEqual(true);
-        } else {
-            expect(desiredAccordion.getProperty('open')).toEqual(true);
-        }
+        helpers.click(desiredAccordion.$('summary'));
+        expect(desiredAccordion.getProperty('open')).toEqual(true);
     }
 
     /**
@@ -93,14 +89,8 @@ class genericPage extends basePage {
      */
     selectAccordionItem(linkValue, accordionName) {
         var chosenAccordion = this.getAccordion(accordionName);
-        helpers.click(chosenAccordion);
-        var accordionOptions = chosenAccordion.$$('//ul/li');
-        accordionOptions.forEach((elem) => {
-            if (elem.getText() === linkValue) {
-                helpers.click(elem);
-                return;
-            }
-        });
+        helpers.click(chosenAccordion.$('summary'));
+        helpers.click(chosenAccordion.$(`//div/ul/li/a[text() = "${linkValue}"]`));
     }
 
     /**

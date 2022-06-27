@@ -40,7 +40,7 @@ Feature: groupPrivate
         Then the 'My Groups' header is displayed
         When I select the 'Automation Public Group' group card
         Then the 'Automation Public Group' header is displayed
-        When I select 'Edit group information' from the actions accordion
+        When I select 'Edit group information' from the group actions accordion
         Then the 'Edit group information' header is displayed
         And the 'Group is public?' textual value is displayed
         Then I select the 'Group is public?' checkbox

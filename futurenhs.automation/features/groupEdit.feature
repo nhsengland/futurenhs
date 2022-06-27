@@ -10,7 +10,7 @@ Background:
 Scenario: FNHS31 - Edit Group Information Page Validation
     When I select the 'Automation Editable Group' group card
     Then the 'Automation Editable Group' header is displayed
-    When I select 'Edit group information' from the actions accordion
+    When I select 'Edit group information' from the group actions accordion
     Then the 'Edit group information' header is displayed
     And the 'Group name' field contains 'Automation Editable Group'
     And the 'Strap line' field contains 'DO NOT USE - This group is reserved solely for use by our automated test scripts'
@@ -22,7 +22,7 @@ Scenario: FNHS31 - Edit Group Information Page Validation
 Scenario: FNHS33 - Edit Group Information
     When I select the 'Automation Editable Group' group card
     Then the 'Automation Editable Group' header is displayed
-    When I select 'Edit group information' from the actions accordion
+    When I select 'Edit group information' from the group actions accordion
     Then the 'Edit group information' header is displayed
     When I enter 'Automation Edited Group' into the 'Group name' field
     And I enter 'Strapline' into the 'Strap line' field
@@ -34,7 +34,7 @@ Scenario: FNHS33 - Edit Group Information
 Scenario Outline: FNHS34 - Edit Group Information error validation
     When I select the 'Automation Edited Group' group card
     Then the 'Automation Edited Group' header is displayed
-    When I select 'Edit group information' from the actions accordion
+    When I select 'Edit group information' from the group actions accordion
     Then the 'Edit group information' header is displayed
     When I enter '<name>' into the 'Group name' field
     And I enter '<strapline>' into the 'Strap line' field
@@ -52,7 +52,7 @@ Examples:
 Scenario Outline: FNHS35 - Edit group information change logo
     When I select the 'Automation Edited Group' group card
     Then the 'Automation Edited Group' header is displayed
-    When I select 'Edit group information' from the actions accordion
+    When I select 'Edit group information' from the group actions accordion
     Then the 'Edit group information' header is displayed
     When I upload the '<image>' file
     Then the image file '<image>' is uploaded and ready
@@ -68,7 +68,7 @@ Examples:
 Scenario Outline: FNHS36 - Edit group information change logo error validation
     When I select the 'Automation Edited Group' group card
     Then the 'Automation Edited Group' header is displayed
-    When I select 'Edit group information' from the actions accordion
+    When I select 'Edit group information' from the group actions accordion
     Then the 'Edit group information' header is displayed    
     When I upload the '<image>' file
     And I click the 'Save and close' button
