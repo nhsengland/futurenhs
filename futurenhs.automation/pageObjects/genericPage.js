@@ -75,22 +75,23 @@ class genericPage extends basePage {
 
     /**
      * Click to open the details element to show the available links
-     * @param {string} detailsName - Text value used to locate the element we want to click
+     * @param {string} accordionName - Text value used to locate the element we want to click
      */
-    openAccordion(textValue) {
-        var desiredAccordion = this.getAccordion(textValue);
+    openAccordion(accordionName) {
+        var desiredAccordion = this.getAccordion(accordionName);
         helpers.click(desiredAccordion.$('summary'));
         expect(desiredAccordion.getProperty('open')).toEqual(true);
+        return desiredAccordion
     }
 
     /**
      * Function to select an option from an accordion list
+     * @param {string} accordionName - Text value used to locate the element we want to click
      * @param {string} linkValue - textual value of the desired link used as the selector
      */
     selectAccordionItem(linkValue, accordionName) {
-        var chosenAccordion = this.getAccordion(accordionName);
-        helpers.click(chosenAccordion.$('summary'));
-        helpers.click(chosenAccordion.$(`//div/ul/li/a[text() = "${linkValue}"]`));
+        var openAccordion = this.openAccordion(accordionName);
+        helpers.click(openAccordion.$(`./div//ul/li[contains(normalize-space(.), "${linkValue}")]`));
     }
 
     /**
