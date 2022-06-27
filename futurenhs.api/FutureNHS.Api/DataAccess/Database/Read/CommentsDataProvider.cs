@@ -24,7 +24,34 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             _options = options;
         }
 
-        public async Task<(uint total, IEnumerable<Comment>?)> GetCommentsForDiscussionAsync(Guid? userId, string groupSlug, Guid topicId, uint offset, uint limit, CancellationToken cancellationToken)
+        public async Task<uint> GetCommentsCountForDiscussionAsync(string groupSlug, Guid discussionId, CancellationToken cancellationToken)
+        {
+            const string query =
+                $@"
+                    SELECT          COUNT(*) 
+
+                    FROM            Comment comment		
+					Join		    Discussion discussion
+					ON			    discussion.Entity_Id = comment.Parent_EntityId
+					JOIN		    [Group] groups
+					ON			    groups.Id = discussion.Group_Id
+					WHERE           comment.Parent_EntityId = @DiscussionId 
+                    AND             comment.ThreadId IS NULL
+                    AND             groups.Slug = @Slug;
+                ";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Slug = groupSlug,
+                DiscussionId = discussionId
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleAsync<uint>(commandDefinition);
+        }
+
+        public async Task<IEnumerable<Comment>?> GetCommentsForDiscussionAsync(Guid? userId, string groupSlug, Guid topicId, uint offset, uint limit, CancellationToken cancellationToken)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
@@ -89,18 +116,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ORDER BY        comment.CreatedAtUTC
 
                     OFFSET          @Offset ROWS
-                    FETCH NEXT      @Limit ROWS ONLY;
-
-                    SELECT          COUNT(*) 
-
-                    FROM            Comment comment		
-					Join		    Discussion discussion
-					ON			    discussion.Entity_Id = comment.Parent_EntityId
-					JOIN		    [Group] groups
-					ON			    groups.Id = discussion.Group_Id
-					WHERE           comment.Parent_EntityId = @DiscussionId 
-                    AND             comment.ThreadId IS NULL
-                    AND             groups.Slug = @Slug";
+                    FETCH NEXT      @Limit ROWS ONLY;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -124,11 +140,36 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             var totalCount = Convert.ToUInt32(results.Count());
 
-            return (totalCount, GenerateCommentModelFromData(results));
+            return GenerateCommentModelFromData(results);
         }
 
+        public async Task<uint> GetRepliesCountForCommentAsync(string groupSlug, Guid commentId, CancellationToken cancellationToken)
+        {
+            const string query =
+                $@"
+                    SELECT          COUNT(*) 
 
-        public async Task<(uint total, IEnumerable<Comment>?)> GetRepliesForCommentAsync(Guid? userId, string groupSlug, Guid threadId, uint offset, uint limit, CancellationToken cancellationToken)
+                    FROM            Comment comment
+					JOIN		    Discussion discussion
+					ON			    discussion.Entity_Id = comment.Parent_EntityId
+					JOIN		    [Group] groups
+					ON			    groups.Id = discussion.Group_Id
+					WHERE           comment.ThreadId = @CommentId
+                    AND             groups.Slug = @Slug
+                ";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Slug = groupSlug,
+                CommentId = commentId
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleAsync<uint>(commandDefinition);
+        }
+
+        public async Task<IEnumerable<Comment>> GetRepliesForCommentAsync(Guid? userId, string groupSlug, Guid threadId, uint offset, uint limit, CancellationToken cancellationToken)
         {
             const string query =
                 @$"SELECT
@@ -218,7 +259,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             var totalCount = Convert.ToUInt32(results.Count());
 
-            return (totalCount, GenerateCommentModelFromData(results));
+            return GenerateCommentModelFromData(results);
         }
 
         public async Task<CommentCreatorDetails> GetCommentCreatorDetailsAsync(Guid commentId, CancellationToken cancellationToken)

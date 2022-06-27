@@ -48,13 +48,14 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("groups/{slug}/discussions/{id:guid}/comments")]
-        [Route("users/{userId}/groups/{slug}/discussions/{id:guid}/comments")]
-
-        public async Task<IActionResult> GetCommentsForDiscussionAsync(Guid? userId, string slug, Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        [Route("groups/{slug}/discussions/{discussionId:guid}/comments")]
+        [Route("users/{userId}/groups/{slug}/discussions/{discussionId:guid}/comments")]
+        public async Task<IActionResult> GetCommentsForDiscussionAsync(Guid? userId, string slug, Guid discussionId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
-            var (total, comments) = await _commentsDataProvider.GetCommentsForDiscussionAsync(userId, slug, id, filter.Offset, filter.Limit, cancellationToken);
+
+            var comments = await _commentsDataProvider.GetCommentsForDiscussionAsync(userId, slug, discussionId, filter.Offset, filter.Limit, cancellationToken);
+            var total = await _commentsDataProvider.GetCommentsCountForDiscussionAsync(slug, discussionId, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(comments, filter, total, route);
 
@@ -62,13 +63,14 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("groups/{slug}/discussions/{discussionId:guid}/comments/{id:guid}/replies")]
-        [Route("users/{userId}/groups/{slug}/discussions/{discussionId:guid}/comments/{id:guid}/replies")]
-
-        public async Task<IActionResult> GetDiscussionAsync(Guid? userId, string slug, Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        [Route("groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}/replies")]
+        [Route("users/{userId}/groups/{slug}/discussions/{discussionId:guid}/comments/{commentId:guid}/replies")]
+        public async Task<IActionResult> GetRepliesForCommentAsync(Guid? userId, string slug, Guid commentId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
-            var (total, replies) = await _commentsDataProvider.GetRepliesForCommentAsync(userId, slug, id, filter.Offset, filter.Limit, cancellationToken);
+
+            var replies = await _commentsDataProvider.GetRepliesForCommentAsync(userId, slug, commentId, filter.Offset, filter.Limit, cancellationToken);
+            var total = await _commentsDataProvider.GetRepliesCountForCommentAsync(slug, commentId, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(replies, filter, total, route);
 

@@ -24,7 +24,32 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             _connectionFactory = connectionFactory;
             _options = options;
         }
-        public async Task<(uint total, IEnumerable<Discussion>?)> GetDiscussionsForGroupAsync(Guid? userId, string groupSlug, uint offset, uint limit, CancellationToken cancellationToken)
+
+        public async Task<uint> GetDiscussionCountForGroupAsync(string groupSlug, CancellationToken cancellationToken)
+        {
+            const string query =
+                $@"
+                    SELECT      COUNT(*) 
+
+                    FROM        Discussion discussion
+					JOIN        [Group] groups
+                    ON          groups.Id = discussion.Group_Id
+					WHERE       groups.Slug = @Slug
+                    AND         discussion.IsDeleted = 0
+                    AND         groups.IsDeleted = 0;
+                ";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Slug = groupSlug
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleAsync<uint>(commandDefinition);
+        }
+
+        public async Task<IEnumerable<Discussion>?> GetDiscussionsForGroupAsync(Guid? userId, string groupSlug, uint offset, uint limit, CancellationToken cancellationToken)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
@@ -87,16 +112,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ORDER BY    discussion.IsSticky DESC, discussion.CreatedAtUTC DESC
 
                     OFFSET      @Offset ROWS
-                    FETCH NEXT  @Limit ROWS ONLY;
-
-                    SELECT      COUNT(*) 
-
-                    FROM        Discussion discussion
-					JOIN        [Group] groups
-                    ON          groups.Id = discussion.Group_Id
-					WHERE       groups.Slug = @Slug
-                    AND         discussion.IsDeleted = 0
-                    AND         groups.IsDeleted = 0;";
+                    FETCH NEXT  @Limit ROWS ONLY;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -118,11 +134,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     UserId = userId
                 }, splitOn: "id");
 
-            var totalCount = Convert.ToUInt32(results.Count());
-
-            return (totalCount, GenerateDiscussionModelFromData(results));
+            return GenerateDiscussionModelFromData(results);
         }
-
 
         public async Task<Discussion?> GetDiscussionAsync(Guid? userId, string groupSlug, Guid id, CancellationToken cancellationToken)
         {
@@ -201,7 +214,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                             });
 
             return GenerateDiscussionModelFromData(results).FirstOrDefault();
-        }
+        }        
 
         public async Task<DiscussionCreatorDetails> GetDiscussionCreatorDetailsAsync(Guid discussionId, CancellationToken cancellationToken)
         {
