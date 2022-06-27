@@ -6,6 +6,10 @@ import { getAriaFieldAttributes } from '@helpers/util/form'
 
 import { Props } from './interfaces'
 
+/**
+ * Derived from the NHS Design System Text Input component: https://service-manual.nhs.uk/design-system/components/text-input.
+ * Used to allow users to enter text that’s no longer than a single line, such as their name or phone number.
+ */
 export const Input: (props: Props) => JSX.Element = ({
     inputType,
     input,

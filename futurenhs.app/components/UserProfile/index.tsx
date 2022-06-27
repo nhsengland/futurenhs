@@ -7,6 +7,9 @@ import { Heading } from '@components/Heading'
 
 import { Props } from './interfaces'
 
+/**
+ * Displays basic user profile data with an avatar.
+ */
 export const UserProfile: (props: Props) => JSX.Element = ({
     profile,
     text,

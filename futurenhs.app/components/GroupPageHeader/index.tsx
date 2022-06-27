@@ -23,6 +23,9 @@ import { Theme } from '@appTypes/theme'
 import { Props } from './interfaces'
 import { groupMemberStatus } from '@constants/group-member-status'
 
+/**
+ * Header for group listings and for individual groups
+ */
 export const GroupPageHeader: (props: Props) => JSX.Element = ({
     id,
     themeId,
@@ -85,7 +88,8 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
         wrapper: classNames(
             'c-page-header',
             `u-bg-theme-${background}`,
-            `u-text-theme-${content}`
+            `u-text-theme-${content}`,
+            className
         ),
         header: classNames('c-page-header_header'),
         heading: classNames(

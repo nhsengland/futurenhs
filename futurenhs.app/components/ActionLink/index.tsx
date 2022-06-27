@@ -5,6 +5,9 @@ import { SVGIcon } from '@components/SVGIcon'
 
 import { Props } from './interfaces'
 
+/**
+ * A Next JS router compatible link component, incorporating an icon and accessible aria label.
+ */
 export const ActionLink: (props: Props) => JSX.Element = ({
     href,
     text,

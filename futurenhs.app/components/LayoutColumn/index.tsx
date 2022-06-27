@@ -4,7 +4,8 @@ import classNames from 'classnames'
 import { Props } from './interfaces'
 
 /**
- * Layout column
+ * A Flexbox column intended to be composed with a parent LayoutColumnContainer component to create a responsive grid.
+ * Column width configurable across media-query breakpoints. Gutters optional.
  */
 export const LayoutColumn: (props: Props) => JSX.Element = ({
     id,

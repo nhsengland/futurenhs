@@ -27,7 +27,8 @@ import { useAssetPath } from '@hooks/useAssetPath'
 import { Image as ImageType } from '@appTypes/image'
 
 /**
- * Site header
+ * Generic site header applied to all layouts.
+ * Renders logo, search input, user options and mobile navigation
  */
 export const Header: (props: Props) => JSX.Element = ({
     skipLinkList = [
