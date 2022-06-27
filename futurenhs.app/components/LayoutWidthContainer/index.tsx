@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { Props } from './interfaces'
 
 /**
- * Layout width container
+ * A wrapper to create a centered content area and restrain child components to a maximum width.
  */
 export const LayoutWidthContainer: (props: Props) => JSX.Element = ({
     children,

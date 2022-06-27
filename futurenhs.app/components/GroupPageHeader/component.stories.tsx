@@ -1,10 +1,10 @@
 import React from 'react'
 import { GroupPageHeader } from './index'
 import { actions as actionsConstants } from '@constants/actions'
-import { useAssetPath } from '@hooks/useAssetPath';
+import { useAssetPath } from '@hooks/useAssetPath'
 import { routes } from '@jestMocks/generic-props'
 
-const exampleImageSrc: string = useAssetPath('/images/example-group-image.svg');
+const exampleImageSrc: string = useAssetPath('/images/example-group-image.svg')
 
 export default {
     title: 'GroupPageHeader',
@@ -58,6 +58,7 @@ Basic.args = {
             url: '/',
         },
     ],
+    routes: routes,
 }
 
 export const GroupAdmin = Template.bind({})
@@ -91,7 +92,6 @@ GroupAdmin.args = {
     ],
     actions: [actionsConstants.GROUPS_EDIT],
     routes: routes,
-    themeId: '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56',
 }
 
 export const GroupMember = Template.bind({})
@@ -125,7 +125,6 @@ GroupMember.args = {
     ],
     actions: [actionsConstants.GROUPS_LEAVE],
     routes: routes,
-    themeId: '5053a8c6-ea4d-4125-9dc3-475e3e931fee',
 }
 
 export const JoinGroup = Template.bind({})
@@ -196,6 +195,74 @@ Image.args = {
         src: exampleImageSrc,
         altText: 'Group logo',
         height: '180px',
-        width: '180px'
-    }
+        width: '180px',
+    },
+}
+
+export const Theme2 = Template.bind({})
+Theme2.args = {
+    text: {
+        mainHeading: 'Name of group',
+        description: 'Group description. Example with image.',
+        navMenuTitle: 'Nav menu aria label',
+    },
+    navMenuList: [
+        {
+            isActive: true,
+            text: 'Home',
+            url: '/',
+        },
+        {
+            isActive: false,
+            text: 'Forum',
+            url: '/forum',
+        },
+        {
+            isActive: false,
+            text: 'Files',
+            url: '/files',
+        },
+        {
+            isActive: false,
+            text: 'Members',
+            url: '/',
+        },
+    ],
+    actions: [actionsConstants.GROUPS_LEAVE],
+    routes: routes,
+    themeId: '9a3c911b-c3d3-4f58-a32a-d541e0f5bf56',
+}
+
+export const Theme3 = Template.bind({})
+Theme3.args = {
+    text: {
+        mainHeading: 'Name of group',
+        description: 'Group description. Example with image.',
+        navMenuTitle: 'Nav menu aria label',
+    },
+    navMenuList: [
+        {
+            isActive: true,
+            text: 'Home',
+            url: '/',
+        },
+        {
+            isActive: false,
+            text: 'Forum',
+            url: '/forum',
+        },
+        {
+            isActive: false,
+            text: 'Files',
+            url: '/files',
+        },
+        {
+            isActive: false,
+            text: 'Members',
+            url: '/',
+        },
+    ],
+    actions: [actionsConstants.GROUPS_LEAVE],
+    routes: routes,
+    themeId: '5053a8c6-ea4d-4125-9dc3-475e3e931fee',
 }

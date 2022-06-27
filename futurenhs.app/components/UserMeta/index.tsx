@@ -3,6 +3,9 @@ import { Avatar } from '@components/Avatar'
 
 import { Props } from './interfaces'
 
+/**
+ * Associates meta-data with a user profile.
+ */
 export const UserMeta: (props: Props) => JSX.Element = ({
     image,
     text,

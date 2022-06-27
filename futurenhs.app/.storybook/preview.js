@@ -1,16 +1,16 @@
-import '../UI/scss/screen.scss';
-import * as NextImage from 'next/image';
+import '../UI/scss/screen.scss'
+import * as NextImage from 'next/image'
 
-import { themes } from '../constants/themes';
-import formConfigs from '@formConfigs/index';
+import { themes } from '../constants/themes'
+import formConfigs from '@formConfigs/index'
 import { ThemesContext, FormsContext, LoadingContext } from '../contexts/index'
 
-const OriginalNextImage = NextImage.default;
+const OriginalNextImage = NextImage.default
 
 Object.defineProperty(NextImage, 'default', {
     configurable: true,
     value: (props) => <OriginalNextImage {...props} unoptimized />,
-});
+})
 
 const formsContextConfig = {
     csrfToken: 'mockCsrfToken',
@@ -18,14 +18,14 @@ const formsContextConfig = {
 }
 
 const themesContextConfig = {
-    themes
+    themes,
 }
 
 const loadingContextConfig = {
     isLoading: true,
     text: {
-        loadingMessage: ''
-    }
+        loadingMessage: '',
+    },
 }
 
 export const parameters = {
@@ -39,7 +39,8 @@ export const parameters = {
     previewTabs: {
         'storybook/docs/panel': { index: -1 },
     },
-};
+    viewMode: 'docs',
+}
 
 export const decorators = [
     (Story) => (
@@ -50,5 +51,5 @@ export const decorators = [
                 </ThemesContext.Provider>
             </LoadingContext.Provider>
         </FormsContext.Provider>
-    )
-];
+    ),
+]

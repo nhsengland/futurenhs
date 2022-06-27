@@ -2,12 +2,16 @@ import classNames from 'classnames'
 import Link from 'next/link'
 
 import { defaultGroupLogos } from '@constants/icons'
+import { Heading } from '@components/Heading'
 import { Card } from '@components/Card'
 import { SVGIcon } from '@components/SVGIcon'
 import { useTheme } from '@hooks/useTheme'
 
 import { Props } from './interfaces'
 
+/**
+ * Group teaser link card for use in group listings
+ */
 export const GroupTeaser: (props: Props) => JSX.Element = ({
     image,
     text,
@@ -15,6 +19,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     themeId,
     totalDiscussionCount,
     totalMemberCount,
+    headingLevel = 3,
     className,
 }) => {
     const { mainHeading, strapLine } = text ?? {}
@@ -39,11 +44,14 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
             clickableHref={cardLinkHref}
             className={generatedClasses.wrapper}
         >
-            <h3 className="c-card_heading o-truncated-text-lines-3">
+            <Heading
+                level={headingLevel}
+                className="c-card_heading o-truncated-text-lines-3"
+            >
                 <Link href={cardLinkHref}>
                     <a>{mainHeading}</a>
                 </Link>
-            </h3>
+            </Heading>
             <div className="c-card_body">
                 <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
                     {strapLine}

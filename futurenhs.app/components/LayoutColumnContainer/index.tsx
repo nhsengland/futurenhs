@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { Props } from './interfaces'
 
 /**
- * Layout column container
+ * A Flexbox wrapper intended to be composed with child LayoutColumn components to create a responsive grid.
  */
 export const LayoutColumnContainer: (props: Props) => JSX.Element = ({
     direction = 'row',

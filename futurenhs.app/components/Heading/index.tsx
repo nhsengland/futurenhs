@@ -1,7 +1,8 @@
 import { Props } from './interfaces'
 
 /**
- * Read only heading component for use with Redux Form
+ * Heading with configurable level. Useful for use within other components where the correct heading level may depend on the current composition.
+ * Accepts components or strings as children.
  */
 export const Heading: Function = ({
     level = 3,

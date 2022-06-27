@@ -10,6 +10,11 @@ import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 
 import { Props } from './interfaces'
 
+/**
+ * Derived from the NHS Design System Textarea component: https://service-manual.nhs.uk/design-system/components/textarea.
+ * Used to allow users to enter an amount of text that’s longer than a single line.
+ * Supports progressive enhancement to a configurable rich text field powered with TinyMCE: https://www.tiny.cloud
+ */
 export const TextArea: (props: Props) => JSX.Element = ({
     input,
     initialError,
@@ -48,27 +53,27 @@ export const TextArea: (props: Props) => JSX.Element = ({
     )?.maxLength
     const elementMinHeight: string = `${minHeight}px`
 
-    const handleRteInit = (_, editor) => { 
-        editorRef.current = editor;
+    const handleRteInit = (_, editor) => {
+        editorRef.current = editor
         editorRef.current?.on?.('CloseWindow', () => {
+            const { top } =
+                editorRef.current?.contentAreaContainer.getBoundingClientRect() ??
+                {}
 
-            const { top } = editorRef.current?.contentAreaContainer.getBoundingClientRect() ?? {};
-
-            if(top) {
-
-                window.scrollTo(0, top);
-
+            if (top) {
+                window.scrollTo(0, top)
             }
-
         })
     }
-    const handleRteChange = (value: any) => { input.onChange(value) }
+    const handleRteChange = (value: any) => {
+        input.onChange(value)
+    }
     const handleRteFocus = () => {
         input.onFocus()
         setIsRteFocussed(true)
     }
     const handleRteBlur = () => {
-        input.onBlur();
+        input.onBlur()
         setIsRteFocussed(false)
     }
 
@@ -145,7 +150,9 @@ export const TextArea: (props: Props) => JSX.Element = ({
                     tabIndex={0}
                 >
                     <Editor
-                        tinymceScriptSrc={useAssetPath("/js/tinymce/tinymce.min.js")}
+                        tinymceScriptSrc={useAssetPath(
+                            '/js/tinymce/tinymce.min.js'
+                        )}
                         textareaName={input.name}
                         id={id}
                         value={input.value}

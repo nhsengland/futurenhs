@@ -7,6 +7,10 @@ import { LayoutWidthContainer } from '@components/LayoutWidthContainer'
 
 import { Props } from './interfaces'
 
+/**
+ * Derived from the NHS Design System Footer component: https://service-manual.nhs.uk/design-system/components/footer.
+ * Used to show users they are on an NHS service and to help them find links they expect at the bottom of pages.
+ */
 export const Footer: (props: Props) => JSX.Element = ({
     text,
     navMenuList,
