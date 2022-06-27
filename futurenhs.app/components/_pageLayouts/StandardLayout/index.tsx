@@ -22,6 +22,11 @@ import { useMediaQuery } from '@hooks/useMediaQuery'
 import { useLoading } from '@hooks/useLoading'
 
 import { Props } from './interfaces'
+import { NotificationBanner } from '@components/NotificationBanner'
+import { notifications } from '@constants/notifications'
+import { Notification } from '@components/NotificationBanner/interfaces'
+import { useContext, useEffect, useState } from 'react'
+import { NotificationsContext } from '@contexts/index'
 
 export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderSearch = true,
@@ -39,6 +44,17 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     const router = useRouter()
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE)
     const isLoading: boolean = useLoading().isLoading
+
+    const notificationsContext: any = useContext(NotificationsContext)
+    const shouldRenderNotification: boolean =
+        notificationsContext?.notifications?.length > 0
+    const mostRecentNotification: Notification =
+        notificationsContext?.notifications?.[
+            notificationsContext.notifications.length - 1
+        ]
+    const notificationId: number = notificationsContext?.notifications?.indexOf(
+        mostRecentNotification
+    )
 
     const currentPathName: string = router?.pathname
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || ''
@@ -200,6 +216,21 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                         id="main"
                                         className={generatedClasses.content}
                                     >
+                                        {shouldRenderNotification && (
+                                            <LayoutColumnContainer>
+                                                <LayoutColumn
+                                                    hasGutters={false}
+                                                >
+                                                    <NotificationBanner
+                                                        id={notificationId}
+                                                        text={
+                                                            mostRecentNotification
+                                                        }
+                                                    />
+                                                </LayoutColumn>
+                                            </LayoutColumnContainer>
+                                        )}
+
                                         {children}
                                     </LayoutColumn>
                                 </>

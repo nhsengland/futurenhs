@@ -3,11 +3,15 @@ import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { formTypes } from '@constants/forms'
+import { notifications } from '@constants/notifications'
+import { Notification } from '@components/NotificationBanner/interfaces'
+import { NotificationsContext } from '@contexts/index'
 import { getGenericFormError } from '@helpers/util/form'
 import { useFormConfig } from '@hooks/useForm'
+import { useNotification } from '@hooks/useNotification'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { postGroupMemberInvite } from '@services/postGroupMemberInvite'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Props } from './interfaces'
 
 /**
@@ -25,6 +29,9 @@ export const GroupMemberInviteTemplate: (props: Props) => JSX.Element = ({
         forms[formTypes.INVITE_USER]
     )
     const [errors, setErrors] = useState(formConfig?.errors)
+    const notificationsContext: any = useContext(NotificationsContext)
+
+    // useNotification('Test notification', notifications.SUCCESS)
 
     const { secondaryHeading } = contentText
 
@@ -32,23 +39,32 @@ export const GroupMemberInviteTemplate: (props: Props) => JSX.Element = ({
      * Client-side submission handler - TODO: Pending API
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
-        try {
-            await postGroupMemberInvite({
-                user,
-                body: formData as any,
-                groupId,
-            })
+        // try {
+        //     await postGroupMemberInvite({
+        //         user,
+        //         body: formData as any,
+        //         groupId,
+        //     })
 
-            return Promise.resolve({})
-        } catch (error) {
-            const errors: FormErrors =
-                getServiceErrorDataValidationErrors(error) ||
-                getGenericFormError(error)
+        //     return Promise.resolve({})
+        // } catch (error) {
+        //     const errors: FormErrors =
+        //         getServiceErrorDataValidationErrors(error) ||
+        //         getGenericFormError(error)
 
-            setErrors(errors)
+        //     setErrors(errors)
 
-            return Promise.resolve(errors)
-        }
+        //     return Promise.resolve(errors)
+        // }
+
+        const emailAddress: FormDataEntryValue = formData.get('Email')
+        useNotification(
+            notificationsContext,
+            `Invite sent to ${emailAddress}`,
+            notifications.SUCCESS
+        )
+
+        return Promise.resolve(errors)
     }
 
     /**
