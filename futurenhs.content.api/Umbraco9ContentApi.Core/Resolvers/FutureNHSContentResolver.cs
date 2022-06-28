@@ -50,7 +50,7 @@ namespace UmbracoContentApi.Core.Resolvers
                     {
                         Id = content.Key,
                         ContentType = content.ContentType.Alias,
-                        Type = content.ContentType.ItemType.ToString()
+                        Type = content.ContentType.ItemType.ToString(),
                     }
                 };
 
@@ -145,7 +145,8 @@ namespace UmbracoContentApi.Core.Resolvers
                         Id = content.Key,
                         ContentType = content.ContentType.Alias,
                         Name = content.Name,
-                        Type = content.ContentType.Name
+                        Type = content.ContentType.Name,
+                        EditedAt = content.UpdateDate
                     }
                 };
 
