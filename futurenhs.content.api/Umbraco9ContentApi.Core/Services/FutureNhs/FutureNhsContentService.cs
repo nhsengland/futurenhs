@@ -10,7 +10,6 @@
     using Umbraco9ContentApi.Core.Models.Content;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
 
-    /// <inheritdoc />
     public sealed class FutureNhsContentService : IFutureNhsContentService
     {
         private readonly Lazy<IFutureNhsContentResolver> _contentResolver;
@@ -29,34 +28,48 @@
         /// <inheritdoc />
         public IPublishedContent GetPublishedContent(Guid contentId, CancellationToken cancellationToken)
         {
-            var content = _publishedContent.Content(contentId);
-
-            if (content is null)
+            var publishedContent = _publishedContent.Content(contentId);
+            if (publishedContent is null)
+            {
+                _logger.LogError("Unable to get published content {ContentId}. Content does not exist.", contentId);
                 throw new KeyNotFoundException($"Unable to get published content {contentId}. Content does not exist.");
-
-            return content;
+            }
+            return publishedContent;
         }
 
         /// <inheritdoc />
         public IContent GetDraftContent(Guid contentId, CancellationToken cancellationToken)
         {
-            var content = _contentService.GetById(contentId);
-
-            if (content is null)
+            var draftContent = _contentService.GetById(contentId);
+            if (draftContent is null)
+            {
+                _logger.LogError("Unable to get draft content {ContentId}. Content does not exist.", contentId);
                 throw new KeyNotFoundException($"Unable to get draft content {contentId}. Content does not exist.");
-
-            return content;
+            }
+            return draftContent;
         }
 
         /// <inheritdoc />
         public ContentModelData ResolvePublishedContent(IPublishedContent publishedContent, string propertyGroupAlias = "content")
         {
+            if (publishedContent is null)
+            {
+                _logger.LogError("Unable to resolve content. Content does not exist.");
+                throw new KeyNotFoundException($"Unable to resolve content. Content does not exist.");
+            }
+
             return _contentResolver.Value.ResolveContent(publishedContent, propertyGroupAlias);
         }
 
         /// <inheritdoc />
         public ContentModelData ResolveDraftContent(IContent content)
         {
+            if (content is null)
+            {
+                _logger.LogError("Unable to resolve content. Content does not exist.");
+                throw new KeyNotFoundException($"Unable to resolve content. Content does not exist.");
+            }
+
             return _contentResolver.Value.ResolveContent(content);
         }
 
@@ -99,7 +112,8 @@
                 var publishedBlock = GetPublishedContent(block, cancellationToken);
 
                 // Delete child blocks
-                foreach (var child in publishedBlock.Children.Where(x => x.ContentType.Alias is not GeneralWebPage.ModelTypeAlias))
+                foreach (var child in publishedBlock.Children
+                    .Where(x => x.ContentType.Alias is not GeneralWebPage.ModelTypeAlias))
                 {
                     DeleteContent(child.Key, cancellationToken);
                 }
@@ -113,28 +127,40 @@
         public void PublishContent(IContent content, CancellationToken cancellationToken)
         {
             if (!_contentService.SaveAndPublish(content).Success)
+            {
+                _logger.LogError("Unable to save and publish content {ContentId}. Content does not exist.", content.Key);
                 throw new KeyNotFoundException($"Unable to save and publish content {content.Key}. Content does not exist.");
+            }
         }
 
         /// <inheritdoc />
         public void PublishContentWithDescendants(IContent content, CancellationToken cancellationToken)
         {
             if (!_contentService.SaveAndPublishBranch(content, true).All(x => x.Success))
+            {
+                _logger.LogError("Unable to save and publish content {ContentId} or it's descendants.", content.Key);
                 throw new KeyNotFoundException($"Unable to save and publish content {content.Key} or it's descendants.");
+            }
         }
 
         /// <inheritdoc />
         public void SaveContent(IContent content, CancellationToken cancellationToken)
         {
             if (!_contentService.Save(content).Success)
+            {
+                _logger.LogError("Unable to save content {ContentId}. Content does not exist.", content.Key);
                 throw new KeyNotFoundException($"Unable to save content {content.Key}. Content does not exist.");
+            }
         }
 
         /// <inheritdoc />
         public void RollbackDraftContent(IContent content, CancellationToken cancellationToken)
         {
             if (!_contentService.Rollback(content.Id, content.PublishedVersionId).Success)
+            {
+                _logger.LogError("Unable to rollback content {ContentId}. Content does not exist.", content.Key);
                 throw new KeyNotFoundException($"Unable to rollback content {content.Key}. Content does not exist.");
+            }
         }
 
         /// <inheritdoc />
@@ -147,14 +173,29 @@
             }
             catch (ArgumentOutOfRangeException ex)
             {
+                _logger.LogError(ex, "An exception occured when setting {PropertyAlias} value for {ContentId}, see the inner exception for details.", propertyAlias, content.Key);
                 throw new ArgumentOutOfRangeException($"An exception occured when setting {propertyAlias} value for {content.Key}, see the inner exception for details", ex);
             }
         }
 
         /// <inheritdoc />
-        public IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModelData> contentModelList, IEnumerable<ContentModelData> comparedcontentModelList)
+        public IEnumerable<Guid> CompareContentModelLists(IEnumerable<ContentModelData> newContentModelList, IEnumerable<ContentModelData> currentContentModelList)
         {
-            return contentModelList.Where(x => x.Item != null).Select(x => x.Item.Id).Where(cm => !comparedcontentModelList.Select(ccm => ccm.Item.Id).Contains(cm)).ToList();
+            try
+            {
+                return newContentModelList
+                        .Where(x => x.Item != null)
+                        .Select(x => x.Item.Id)
+                        .Where(ncml => !currentContentModelList
+                            .Select(ccml => ccml.Item.Id)
+                            .Contains(ncml))
+                        .ToList();
+            }
+            catch (StackOverflowException ex)
+            {
+                _logger.LogError(ex, "An exception occured while comparing draft blocks against published blocks, see inner exception for details");
+                throw new ArgumentOutOfRangeException("An exception occured while comparing draft blocks against published blocks, see inner exception for details");
+            }
         }
     }
 }

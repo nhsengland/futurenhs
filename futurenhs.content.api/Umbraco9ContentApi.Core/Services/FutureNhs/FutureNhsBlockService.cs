@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -11,19 +11,20 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
 {
     public class FutureNhsBlockService : IFutureNhsBlockService
     {
-        private readonly IConfiguration _config;
         private readonly ConverterCollection _converters;
         private readonly IFutureNhsContentService _futureNhsContentService;
         private readonly IContentTypeService _contentTypeService;
         private readonly IContentService _contentService;
+        private readonly ILogger<FutureNhsBlockService> _logger;
 
-        public FutureNhsBlockService(IConfiguration config, ConverterCollection converters, IFutureNhsContentService futureNhsContentService, IContentTypeService contentTypeService, IContentService contentService)
+
+        public FutureNhsBlockService(ConverterCollection converters, IFutureNhsContentService futureNhsContentService, IContentTypeService contentTypeService, IContentService contentService, ILogger<FutureNhsBlockService> logger)
         {
-            _config = config;
             _converters = converters;
             _futureNhsContentService = futureNhsContentService;
             _contentTypeService = contentTypeService;
             _contentService = contentService;
+            _logger = logger;
         }
 
         /// <inheritdoc />
