@@ -20,19 +20,20 @@ export const useNotification = ({
 
         notificationsContext.setNotifications([])
         
-        return;
+    } else {
+
+        const { heading, body } = text ?? {};
+    
+        const newNotification: Notification = {
+            heading: heading ? heading : notifications.IMPORTANT,
+            main: body,
+        }
+    
+        notificationsContext.setNotifications((currentNotifications) => [
+            ...currentNotifications,
+            newNotification,
+        ])
 
     }
     
-    const { heading, body } = text ?? {};
-    
-    const newNotification: Notification = {
-        heading: heading ? heading : notifications.IMPORTANT,
-        main: body,
-    }
-
-    notificationsContext.setNotifications((currentNotifications) => [
-        ...currentNotifications,
-        newNotification,
-    ])
 }

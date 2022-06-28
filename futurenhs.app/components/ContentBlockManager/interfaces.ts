@@ -1,9 +1,10 @@
-import { CmsContentBlock } from '@appTypes/contentBlock'
+import { CmsContentBlock } from '@appTypes/cmsContent'
 import { cprud } from '@constants/cprud'
 import { FormErrors } from '@appTypes/form'
 
 export interface Props {
-    blocks: Array<CmsContentBlock>
+    activeBlocks: Array<CmsContentBlock>
+    referenceBlocks: Array<CmsContentBlock>
     blocksTemplate: Array<CmsContentBlock>
     initialState?: cprud
     text: {
@@ -23,13 +24,13 @@ export interface Props {
     }
     shouldRenderEditingHeader?: boolean
     discardUpdateAction?: () => void
-    blocksChangeAction?: (blocks: Array<CmsContentBlock>) => void
     stateChangeAction?: (currentState: cprud) => void
     createBlockAction?: (
         blockTypeContentId: string,
         parentBlockId?: string
     ) => Promise<string>
-    saveBlocksAction?: (
+    changeBlocksAction?: (blocks: Array<CmsContentBlock>) => void
+    publishBlocksAction?: (
         blocks: Array<CmsContentBlock>,
         localErrors: FormErrors
     ) => Promise<FormErrors>

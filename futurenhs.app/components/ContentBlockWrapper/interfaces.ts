@@ -1,4 +1,4 @@
-import { CmsContentBlock } from '@appTypes/contentBlock'
+import { CmsContentBlock } from '@appTypes/cmsContent'
 import { cprud } from '@constants/cprud'
 
 export interface Props {

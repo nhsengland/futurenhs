@@ -15,7 +15,7 @@ import { Form } from '@components/Form'
 import { SVGIcon } from '@components/SVGIcon'
 import { Theme } from '@appTypes/theme'
 import { FormConfig } from '@appTypes/form'
-import { CmsContentBlock } from '@appTypes/contentBlock'
+import { CmsContentBlock } from '@appTypes/cmsContent'
 
 import { Props } from './interfaces'
 

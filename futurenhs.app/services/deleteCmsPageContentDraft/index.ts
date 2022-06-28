@@ -8,7 +8,7 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
-import { CmsContentBlock } from '@appTypes/cmsContent'
+import { CmsContentPage } from '@appTypes/cmsContent'
 
 declare type Options = {
     user: User
@@ -20,11 +20,12 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const postCmsPageContent = async (
+export const deleteCmsPageContentDraft = async (
     { user, pageId }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<any>> => {
-    const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
+): Promise<ServiceResponse<CmsContentPage>> => {
+
+    const serviceResponse: ServiceResponse<CmsContentPage> = {
         data: null,
     }
 
@@ -34,23 +35,26 @@ export const postCmsPageContent = async (
 
     const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${pageId}`
+    const apiUrl: string = `${
+        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
+    }/v1/page/${pageId}/discard`
+
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.POST }),
+        setFetchOptions({ method: requestMethods.DELETE }),
         defaultTimeOutMillis
     )
 
-    const apiData: ApiResponse<any> = apiResponse.json
+    const apiData: ApiResponse<CmsContentPage> = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
     const { headers, ok, status, statusText } = apiMeta
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to publish the cms page content',
+            'An unexpected error occurred when attempting to reset the draft cms page content',
             {
-                serviceId: services.POST_CMS_PAGE_CONTENT,
+                serviceId: services.DELETE_CMS_PAGE_CONTENT_DRAFT,
                 status: status,
                 statusText: statusText,
                 body: apiData,
@@ -58,8 +62,8 @@ export const postCmsPageContent = async (
         )
     }
 
-    serviceResponse.headers = headers
-    serviceResponse.data = apiData?.data?.content?.pageContent?.blocks
+    serviceResponse.headers = headers;
+    serviceResponse.data = apiData?.data ?? {};
 
     return serviceResponse
 }

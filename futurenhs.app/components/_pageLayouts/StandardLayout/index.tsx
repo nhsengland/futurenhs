@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
 
@@ -26,7 +26,7 @@ import { Props } from './interfaces'
 import { NotificationBanner } from '@components/NotificationBanner'
 import { Notification } from '@components/NotificationBanner/interfaces'
 import { NotificationsContext } from '@contexts/index'
-import { PageBody } from '@components/PageBody'
+import { useNotification } from '@hooks/useNotification'
 
 export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderSearch = true,
@@ -51,12 +51,13 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
         notificationsContext?.notifications?.length > 0
     const mostRecentNotification: Notification =
         notificationsContext?.notifications?.[
-            notificationsContext.notifications.length - 1
+        notificationsContext.notifications.length - 1
         ]
     const notificationId: number = notificationsContext?.notifications?.indexOf(
         mostRecentNotification
     )
 
+    const isClient: boolean = typeof window !== 'undefined';
     const currentPathName: string = router?.pathname
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || ''
     const breadCrumbDescriptionHtml: string =
@@ -118,12 +119,13 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
             'tablet:u-block'
         ),
         main: classNames('u-flex u-flex-grow'),
-        content: classNames({
+        content: classNames('u-relative', {
             ['u-m-0']: shouldRenderMainNav && user && isMobile,
             ['u-max-w-full']: shouldRenderMainNav && user && isMobile,
             ['u-w-0']: shouldRenderMainNav && user,
             ['u-w-full']: !shouldRenderMainNav && user,
         }),
+        notification: classNames('u-m-8')
     }
 
     return (
@@ -217,17 +219,15 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                         id="main"
                                         className={generatedClasses.content}
                                     >
-                                        {shouldRenderNotification && (
-                                            <PageBody>
-                                                <NotificationBanner
-                                                    id={notificationId}
-                                                    text={
-                                                        mostRecentNotification
-                                                    }
-                                                />
-                                            </PageBody>
-                                        )}
-
+                                        {shouldRenderNotification &&
+                                            <NotificationBanner
+                                                id={notificationId}
+                                                text={
+                                                    mostRecentNotification
+                                                }
+                                                className={generatedClasses.notification}
+                                            />
+                                        }   
                                         {children}
                                     </LayoutColumn>
                                 </>

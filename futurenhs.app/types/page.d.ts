@@ -13,28 +13,36 @@ import {
     GroupsPageTextContent,
 } from '@appTypes/content'
 import { User } from '@appTypes/user'
+import { CmsContentPage, CmsContentBlock } from '@appTypes/cmsContent'
 
 export interface Page {
-    id: string
-    routes: Routes
-    etag?: string | Record<string, string>
-    themeId?: string
-    layoutId?: layoutIds
-    actions?: Array<actions>
-    csrfToken?: string
-    forms?: Record<string, FormConfig>
-    services?: Record<string, Service>
-    pagination?: Pagination
-    errors?: Array<Record<string>>
-    contentText?: GenericPageTextContent
-    contentPageId?: string
-    contentTemplateId?: string
-    contentTemplate?: Array<ContentBlock>
-    contentBlocks?: Array<ContentBlock>
-    user?: User
-    className?: string
-    pageTitle?: string
-    notifications?: Array<Notification>
+    id: string;
+    routes: Routes;
+    etag?: string | Record<string, string>;
+    themeId?: string;
+    layoutId?: layoutIds;
+    actions?: Array<actions>;
+    csrfToken?: string;
+    forms?: Record<string, FormConfig>;
+    services?: Record<string, Service>;
+    notifications?: Array<{
+        id: string;
+        text: {
+            heading?: string;
+            main?: string;
+        }
+    }>;
+    pagination?: Pagination;
+    errors?: Array<Record<string>>;
+    contentText?: GenericPageTextContent;
+    contentPageId?: string;
+    contentPage?: CmsContentPage;
+    contentPageDraft?: CmsContentPage;
+    contentTemplateId?: string;
+    contentTemplate?: Array<CmsContentBlock>;
+    user?: User;
+    className?: string;
+    pageTitle?: string;
 }
 
 export interface GroupPage extends Page {

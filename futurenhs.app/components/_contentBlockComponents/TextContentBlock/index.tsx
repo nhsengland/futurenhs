@@ -10,7 +10,7 @@ import { LayoutColumn } from '@components/LayoutColumn'
 import { Form } from '@components/Form'
 import { formTypes } from '@constants/forms'
 import { FormConfig } from '@appTypes/form'
-import { CmsContentBlock } from '@appTypes/contentBlock'
+import { CmsContentBlock } from '@appTypes/cmsContent'
 
 import { Props } from './interfaces'
 
@@ -92,7 +92,7 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
                     {title}
                 </Heading>
             }
-            {mainText && 
+            {mainText &&
                 <RichText bodyHtml={mainText} wrapperElementType="div" />
             }
         </div>

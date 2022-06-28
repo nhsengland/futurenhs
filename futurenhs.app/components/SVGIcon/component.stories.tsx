@@ -10,7 +10,7 @@ let iconNames: Array<string> = [];
 
 try {
 
-    iconNames = window.sessionStorage.getItem(sessionStorageKey) ?  JSON.parse(window.sessionStorage.getItem(sessionStorageKey)) : [];
+    iconNames = window.sessionStorage.getItem(sessionStorageKey) ? JSON.parse(window.sessionStorage.getItem(sessionStorageKey)) : [];
 
     /**
      * Seemingly necessary workaround - no obvious support in Storybook to asyncronously fetch config to pass into argTypes
