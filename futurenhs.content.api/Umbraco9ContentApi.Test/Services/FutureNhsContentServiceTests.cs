@@ -2,6 +2,7 @@
 {
     using Core.Services.FutureNhs.Interface;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
     using System;
@@ -30,6 +31,7 @@
         private Mock<Lazy<IFutureNhsContentResolver>> _mockFutureNhsContentResolver = new();
         private Mock<IContentService> _mockContentService = new();
         private Mock<IPublishedSnapshotAccessor> _mockPublishedSnapshotAccessor = new();
+        private Mock<ILogger<FutureNhsContentService>> _mockLogger = new();
 
         private FutureNhsContentService _futureNhsContentService;
 
@@ -56,6 +58,7 @@
             _mockFutureNhsContentResolver = new Mock<Lazy<IFutureNhsContentResolver>>().SetupAllProperties();
             _mockContentService = new Mock<IContentService>().SetupAllProperties();
             _mockPublishedSnapshotAccessor = new Mock<IPublishedSnapshotAccessor>().SetupAllProperties();
+            _mockLogger = new Mock<ILogger<FutureNhsContentService>>().SetupAllProperties();
 
             contentModelTextBlock = GetMockBlockContentModel(TextBlock.ModelTypeAlias).Object;
             contentModelKeyLinksBlock = GetMockBlockContentModel(KeyLinksBlock.ModelTypeAlias).Object;
@@ -63,8 +66,11 @@
 
         public void GetFutureNhsContentService()
         {
-            _futureNhsContentService = new(_mockPublishedContentQuery.Object,
-_mockFutureNhsContentResolver.Object, _mockContentService.Object);
+            _futureNhsContentService = new(
+            _mockPublishedContentQuery.Object,
+            _mockFutureNhsContentResolver.Object,
+            _mockContentService.Object,
+            _mockLogger.Object);
         }
 
 
@@ -161,7 +167,7 @@ _mockFutureNhsContentResolver.Object, _mockContentService.Object);
         }
 
         [Test]
-        public void DeleteContent_ContentDeleteError_ThrowsException()
+        public void DeleteContent_ContentDeleteError_DoesNotThrowException()
         {
             //Arrange
             var contentId = Guid.NewGuid();
@@ -174,8 +180,7 @@ _mockFutureNhsContentResolver.Object, _mockContentService.Object);
             GetFutureNhsContentService();
 
             //Action/Assert
-            Assert.Throws(Is.TypeOf<KeyNotFoundException>()
-                 .And.Message.EqualTo(message), delegate { _futureNhsContentService.DeleteContent(contentId, cancellationToken); });
+            Assert.DoesNotThrow(() => _futureNhsContentService.DeleteContent(contentId, cancellationToken));
         }
 
         [Test]

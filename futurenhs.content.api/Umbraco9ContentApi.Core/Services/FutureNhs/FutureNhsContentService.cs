@@ -1,6 +1,7 @@
 ﻿namespace Umbraco9ContentApi.Core.Services.FutureNhs
 {
     using Interface;
+    using Microsoft.Extensions.Logging;
     using Umbraco.Cms.Core;
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
@@ -15,12 +16,14 @@
         private readonly Lazy<IFutureNhsContentResolver> _contentResolver;
         private readonly IPublishedContentQuery _publishedContent;
         private readonly IContentService _contentService;
+        private readonly ILogger<FutureNhsContentService> _logger;
 
-        public FutureNhsContentService(IPublishedContentQuery publishedContent, Lazy<IFutureNhsContentResolver> contentResolver, IContentService contentService)
+        public FutureNhsContentService(IPublishedContentQuery publishedContent, Lazy<IFutureNhsContentResolver> contentResolver, IContentService contentService, ILogger<FutureNhsContentService> logger)
         {
             _publishedContent = publishedContent ?? throw new ArgumentNullException(nameof(publishedContent));
             _contentResolver = contentResolver ?? throw new ArgumentNullException(nameof(contentResolver));
             _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <inheritdoc />
@@ -79,9 +82,13 @@
         public void DeleteContent(Guid contentId, CancellationToken cancellationToken)
         {
             var content = _contentService.GetById(contentId);
-
-            if (!_contentService.Delete(content).Success)
-                throw new KeyNotFoundException($"Unable to delete content {contentId}. Content does not exist.");
+            if (content is not null)
+            {
+                if (!_contentService.Delete(content).Success)
+                {
+                    _logger.LogWarning("Unable to delete content {ContentId}. Content does not exist.", contentId);
+                }
+            }
         }
 
         /// <inheritdoc />
