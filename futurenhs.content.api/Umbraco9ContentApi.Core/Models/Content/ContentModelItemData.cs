@@ -12,7 +12,6 @@ namespace Umbraco9ContentApi.Core.Models.Content
         public string? Type { get; set; }
         [JsonIgnore]
         public DateTime CreatedAt { get; set; }
-        [JsonIgnore]
         public DateTime EditedAt { get; set; }
         public virtual string? ContentType { get; set; }
         [JsonIgnore]
