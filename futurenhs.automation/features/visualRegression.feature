@@ -46,7 +46,7 @@ Examples:
 Scenario: FNHS:V03 - Group Forum validation
     Given I have navigated to '/'
     Then the 'Log In' header is displayed
-    And I have logged in as an 'visreguser'and accept the cookies
+    And I have logged in as an 'visreguser' and accept the cookies
     Then the 'My Groups' header is displayed
     When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
@@ -60,7 +60,7 @@ Scenario: FNHS:V03 - Group Forum validation
 Scenario: FNHS:V04 - Group Files validation
     Given I have navigated to '/'
     Then the 'Log In' header is displayed
-    And I have logged in as an 'visreguser'and accept the cookies
+    And I have logged in as an 'visreguser' and accept the cookies
     Then the 'My Groups' header is displayed
     When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
@@ -77,7 +77,7 @@ Scenario: FNHS:V04 - Group Files validation
 Scenario: FNHS:V05 - Group Member Profile validation
     Given I have navigated to '/'
     Then the 'Log In' header is displayed
-    And I have logged in as an 'visreguser'and accept the cookies
+    And I have logged in as an 'visreguser' and accept the cookies
     Then the 'My Groups' header is displayed
     When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
@@ -91,7 +91,7 @@ Scenario: FNHS:V05 - Group Member Profile validation
 Scenario: FNHS:V06 - Group Actions form pages validation
     Given I have navigated to '/'
     Then the 'Log In' header is displayed
-    And I have logged in as an 'visreguser'and accept the cookies
+    And I have logged in as an 'visreguser' and accept the cookies
     Then the 'My Groups' header is displayed
     When I select the 'Automation Visual Regression Group' group card
     Then the 'Automation Visual Regression Group' header is displayed
