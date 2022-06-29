@@ -31,8 +31,6 @@ export const GroupMemberInviteTemplate: (props: Props) => JSX.Element = ({
     const [errors, setErrors] = useState(formConfig?.errors)
     const notificationsContext: any = useContext(NotificationsContext)
 
-    // useNotification('Test notification', notifications.SUCCESS)
-
     const { secondaryHeading } = contentText
 
     /**
@@ -58,11 +56,13 @@ export const GroupMemberInviteTemplate: (props: Props) => JSX.Element = ({
         // }
 
         const emailAddress: FormDataEntryValue = formData.get('Email')
-        useNotification(
+        useNotification({
             notificationsContext,
-            `Invite sent to ${emailAddress}`,
-            notifications.SUCCESS
-        )
+            text: {
+                heading: notifications.SUCCESS,
+                body: `Invite sent to ${emailAddress}`
+            }
+        })
 
         return Promise.resolve(errors)
     }

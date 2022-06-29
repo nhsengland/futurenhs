@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useContext } from 'react'
 import classNames from 'classnames'
 
 import { getServiceErrorDataValidationErrors } from '@services/index'
@@ -14,6 +14,9 @@ import { postCmsPageContent } from '@services/postCmsPageContent'
 import { postCmsBlock } from '@services/postCmsBlock'
 import { FormErrors } from '@appTypes/form'
 import { CmsContentBlock } from '@appTypes/contentBlock'
+import { useNotification } from '@hooks/useNotification'
+import { notifications } from '@constants/notifications'
+import { NotificationsContext } from '@contexts/index'
 
 import { Props } from './interfaces'
 
@@ -26,6 +29,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     themeId,
 }) => {
 
+    const notificationsContext: any = useContext(NotificationsContext)
     const errorSummaryRef: any = useRef()
 
     const [blocks, setBlocks] = useState(contentBlocks ?? [])
@@ -41,6 +45,15 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     }
 
     const handleClearErrors = () => setErrors({})
+    const handleStateChange = () => {
+
+        handleClearErrors();
+        useNotification({
+            notificationsContext, 
+            shouldClearQueue: true
+        })
+
+    }
 
     const handleCreateBlock = (
         blockContentTypeId: string,
@@ -101,6 +114,15 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
 
                                 setBlocks(updatedBlocks)
                                 setErrors({})
+
+                                useNotification({
+                                    notificationsContext, 
+                                    text: {
+                                        heading: notifications.SUCCESS,
+                                        body: "Your changes have been published"
+                                    }
+                                })
+
                                 resolve({})
                             })
                         })
@@ -162,7 +184,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 }}
                 shouldRenderEditingHeader={isGroupAdmin}
                 discardUpdateAction={handleClearErrors}
-                stateChangeAction={handleClearErrors}
+                stateChangeAction={handleStateChange}
                 blocksChangeAction={handleClearErrors}
                 saveBlocksAction={handleSaveBlocks}
                 createBlockAction={handleCreateBlock}

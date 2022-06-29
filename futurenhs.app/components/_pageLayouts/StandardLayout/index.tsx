@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
 
@@ -23,10 +24,9 @@ import { useLoading } from '@hooks/useLoading'
 
 import { Props } from './interfaces'
 import { NotificationBanner } from '@components/NotificationBanner'
-import { notifications } from '@constants/notifications'
 import { Notification } from '@components/NotificationBanner/interfaces'
-import { useContext, useEffect, useState } from 'react'
 import { NotificationsContext } from '@contexts/index'
+import { PageBody } from '@components/PageBody'
 
 export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderSearch = true,
@@ -217,20 +217,16 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                         className={generatedClasses.content}
                                     >
                                         {shouldRenderNotification && (
-                                            <LayoutColumnContainer>
-                                                <LayoutColumn
-                                                    hasGutters={false}
-                                                >
-                                                    <NotificationBanner
-                                                        id={notificationId}
-                                                        text={
-                                                            mostRecentNotification
-                                                        }
-                                                    />
-                                                </LayoutColumn>
-                                            </LayoutColumnContainer>
+                                            <PageBody>
+                                                <NotificationBanner
+                                                    id={notificationId}
+                                                    text={
+                                                        mostRecentNotification
+                                                    }
+                                                    className="u-m-0"
+                                                />
+                                            </PageBody>
                                         )}
-
                                         {children}
                                     </LayoutColumn>
                                 </>
