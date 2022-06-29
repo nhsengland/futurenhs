@@ -93,26 +93,76 @@ Feature: editablePagesValidation
     Scenario: FNHS119 - Blocks: Key Links Block
         When I click the 'Edit page' button
         Then the 'Editing group homepage' header is displayed
-    # BLOCK EXISTS
-    # FORM FIELDS CONTAIN X
+        When I click the 'Add content block' button
+        Then the 'Add content block' header is displayed
+        When I click 'Add' on the key links block
+        Then the 'Editing group homepage' header is displayed
+        And the '2nd' key links block in edit mode is displayed
+        And the 'Discard updates' button is displayed
+        And the 'Subtitle' label is displayed
+        And the 'Add a link' button is displayed
+        And the 'Delete' button is availabe on the '2nd' key links block
+        When I enter 'Test Subtitle' into the 'Subtitle' field
+        Then the 'Finish editing, Delete' buttons are availabe on the '2nd' key links block
+        When I click the 'Add a link' button
+        Then the 'Link title' label is displayed
+        And the 'Link' label is displayed
+        And the 'Delete link' button is displayed
+        When I enter 'Test Link' into the 'Link title' field
+        And I enter 'https://www.google.com/' into the 'Link' field
+        Then the 'Finish editing, Delete' buttons are availabe on the '2nd' key links block
+        When I click 'Finish editing' on the '2nd' key links block
+        Then the 'Move block up, Edit, Delete' buttons are availabe on the '2nd' key links block
+        And the 'Test Subtitle' header is displayed
+        And the 'Test Link' textual value is displayed
+        And the 'Preview page' button is displayed
+        When I click 'Delete' on the '2nd' key links block
+        Then I confirm this on the open dialog
+        When I click the 'Stop editing' button
+        Then the 'Edit page' button is displayed
 
 
     Scenario Outline: FNHS120 - Blocks: Key Links Block Form Validation
         When I click the 'Edit page' button
         Then the 'Editing group homepage' header is displayed
-        # BLOCK EXISTS
-        # FIELD VALIDATION
-        # VALIDATE ERRORS
+        When I click the 'Add content block' button
+        Then the 'Add content block' header is displayed
+        When I click 'Add' on the key links block
+        Then the 'Editing group homepage' header is displayed
+        And the '2nd' key links block in edit mode is displayed
+        When I click the 'Add a link' button
+        Then the 'Link title' label is displayed
+        When I enter '<subtitle>' into the 'Subtitle' field
+        And I enter '<link title>' into the 'Link title' field
+        And I enter '<link>' into the 'Link' field
+        And I click the 'Publish group page' button
+        Then the '<error>' error message is displayed
         Examples:
-            | Header 1 | Header 2 | Header 3 |
-            | Value 1  | Value 2  | Value 3  |
+            | subtitle      | link title   | link       | error                         |
+            |               | Link Title   | Blank Link | Enter the subtitle            |
+            | Subtitle      |              | Blank Link | Enter the link title          |
+            | Subtitle      | Link Title   |            | Enter the link                |
+            | [STRING: 256] | Link Title   | Blank Link | Enter 255 or fewer characters |
+            | Subtitle      | [STRING: 31] | Blank Link | Enter 30 or fewer characters  |
 
 
-    Scenario: FNHS121 - Publish Changes
+    Scenario: FNHS121 - Preview Changes
         When I click the 'Edit page' button
         Then the 'Editing group homepage' header is displayed
-# PUBLISH NOT EXISTING
-# MAKE CHANGE
-# PUBLISH EXISTING
-# CLICK PUBLISH
-# VALIDATE CHANGE
+        When I click 'Edit' on the text block
+        Then the 'Subtitle' field contains 'Welcome to FutureNHS'
+        When I enter 'Welcome to my edited homepage' into the 'Subtitle' field
+        And I click 'Finish editing' on the text block
+        Then the 'Welcome to my edited homepage' header is displayed
+        And the 'Discard updates' button is displayed
+        And the 'Preview page' button is displayed
+        And the 'Publish group page' button is displayed
+        When I click the 'Preview page' button
+        Then the 'You are previewing the group homepage in editing mode' textual value is displayed
+        And the 'Edit page' button is displayed
+        And the 'Publish group page' button is displayed
+        And the 'Welcome to my edited homepage' header is displayed
+        When I click the 'Edit page' button
+        Then the 'Editing group homepage' header is displayed
+        When I click the 'Discard updates' button
+        Then the 'Edit page' button is displayed
