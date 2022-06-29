@@ -1,0 +1,32 @@
+.c-notification-banner {
+    margin: 0;
+    background-color: $color_nhsuk-blue;
+    border: 5px solid $color_nhsuk-blue;
+
+    &__header {
+        padding: $nhsuk-spacing-point-1 $nhsuk-spacing-point-4
+            $nhsuk-spacing-point-2;
+    }
+
+    &__title {
+        @include standard-text;
+        color: $white;
+        margin: 0;
+    }
+
+    &__content {
+        padding: $nhsuk-spacing-point-4;
+        background-color: $white;
+    }
+
+    &__heading {
+        font-size: $h3-font-size-desktop;
+        line-height: $h3-font-size-desktop;
+        font-weight: $nhsuk-font-bold;
+    }
+
+    &--success {
+        background-color: $color_nhsuk-green;
+        border: 5px solid $color_nhsuk-green;
+    }
+}

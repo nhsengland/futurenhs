@@ -227,10 +227,10 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                                     text={
                                                         mostRecentNotification
                                                     }
-                                                    className="u-m-0"
                                                 />
                                             </PageBody>
                                         )}
+
                                         {children}
                                     </LayoutColumn>
                                 </>
