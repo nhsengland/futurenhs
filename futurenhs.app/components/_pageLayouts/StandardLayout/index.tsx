@@ -211,7 +211,7 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                     <LayoutColumn hasGutters={false} mobile={0}>
                                         <MainNav
                                             navMenuList={mainNavMenuList}
-                                            />
+                                        />
                                     </LayoutColumn>
                                     <LayoutColumn
                                         id="main"
