@@ -23,10 +23,10 @@ import { useLoading } from '@hooks/useLoading'
 
 import { Props } from './interfaces'
 import { NotificationBanner } from '@components/NotificationBanner'
-import { notifications } from '@constants/notifications'
 import { Notification } from '@components/NotificationBanner/interfaces'
 import { useContext, useEffect, useState } from 'react'
 import { NotificationsContext } from '@contexts/index'
+import { PageBody } from '@components/PageBody'
 
 export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderSearch = true,
@@ -204,21 +204,19 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                     <LayoutColumn hasGutters={false} mobile={0}>
                                         <MainNav
                                             navMenuList={mainNavMenuList}
-                                            />
+                                        />
                                     </LayoutColumn>
                                     <LayoutColumn
                                         id="main"
                                         className={generatedClasses.content}
-                                        >
+                                    >
                                         {shouldRenderNotification &&
-                                                <LayoutColumnContainer>
-                                                    <LayoutColumn hasGutters={false}>
-                                                        <NotificationBanner
-                                                            id={notificationId}
-                                                            text={mostRecentNotification}
-                                                        />
-                                                    </LayoutColumn>
-                                                </LayoutColumnContainer>
+                                            <PageBody>
+                                                <NotificationBanner
+                                                    id={notificationId}
+                                                    text={mostRecentNotification}
+                                                />
+                                            </PageBody>
                                         }
 
                                         {children}

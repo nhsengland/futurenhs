@@ -9,4 +9,5 @@ export interface Props {
     id: number
     text: Notification
     className?: string
+    headingLevel?: number
 }

@@ -31,7 +31,6 @@ export const GroupMemberInviteTemplate: (props: Props) => JSX.Element = ({
     const [errors, setErrors] = useState(formConfig?.errors)
     const notificationsContext: any = useContext(NotificationsContext)
 
-    // useNotification('Test notification', notifications.SUCCESS)
     
    
 

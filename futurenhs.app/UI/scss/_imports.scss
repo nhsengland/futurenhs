@@ -13,8 +13,6 @@
 @import 'node_modules/nhsuk-frontend/packages/components/card/card';
 @import 'node_modules/nhsuk-frontend/packages/components/warning-callout/warning-callout';
 @import 'node_modules/nhsuk-frontend/packages/components/inset-text/inset-text';
-@import 'node_modules/govuk-frontend/govuk/base';
-@import 'node_modules/govuk-frontend/govuk/components/notification-banner/index';
 
 @import 'variables/variables';
 @import 'mixins/mixins';
@@ -60,6 +58,7 @@
 @import 'modules/content-block/content-block';
 @import 'modules/spinner/spinner';
 @import 'modules/loader/loader';
+@import 'modules/notification-banner/notification-banner';
 
 @import 'objects/objects';
 @import 'utilities/utilities';

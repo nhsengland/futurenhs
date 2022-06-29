@@ -4,11 +4,13 @@ import classNames from 'classnames'
 import { Props } from './interfaces'
 import { RichText } from '@components/RichText'
 import { notifications } from '@constants/notifications'
+import { Heading } from '@components/Heading'
 
 export const NotificationBanner: (props: Props) => JSX.Element = ({
     id,
     text,
     className,
+    headingLevel = 2
 }) => {
 
     const wrapperRef: any = useRef(null)
@@ -19,11 +21,11 @@ export const NotificationBanner: (props: Props) => JSX.Element = ({
     const isAlert: boolean = notificationHeading === notifications.SUCCESS
 
     const generatedClasses: any = {
-        wrapper: classNames('govuk-notification-banner', {['govuk-notification-banner--success']: isAlert}, 'u-mt-6', className),
-        header: classNames('govuk-notification-banner__header'),
-        title: classNames('govuk-notification-banner__title'),
-        body: classNames('govuk-notification-banner__content'),
-        bodyHeading: classNames('govuk-notification-banner__heading')
+        wrapper: classNames('c-notification-banner', {['c-notification-banner--success']: isAlert}, className),
+        header: classNames('c-notification-banner__header'),
+        title: classNames('c-notification-banner__title'),
+        body: classNames('c-notification-banner__content'),
+        bodyHeading: classNames('c-notification-banner__heading')
     }
 
     const generatedIds: any = {
@@ -50,7 +52,7 @@ export const NotificationBanner: (props: Props) => JSX.Element = ({
             ref={wrapperRef}
         >
             <div className={generatedClasses.header}>
-                <h2 className={generatedClasses.title} id={generatedIds.title}>{notificationHeading}</h2>
+                <Heading level={headingLevel} className={generatedClasses.title} id={generatedIds.title}>{notificationHeading}</Heading>
             </div>
             <div className={generatedClasses.body}>
                 <div className={generatedClasses.bodyHeading}>
