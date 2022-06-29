@@ -23,7 +23,6 @@ export const NotificationBanner: (props: Props) => JSX.Element = ({
         wrapper: classNames(
             'govuk-notification-banner',
             { ['govuk-notification-banner--success']: isAlert },
-            'u-mt-6',
             className
         ),
         header: classNames('govuk-notification-banner__header'),
