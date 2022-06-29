@@ -67,7 +67,7 @@ class editablePages extends basePage {
         browser.waitUntil(() => {
             enabledButtons = desiredBlock.$$(`./header//button`).filter((element => element.isClickable()));
             return enabledButtons.length === expectedButtons.length
-        },{}); 
+        },{ timeoutMsg: 'The found enabled buttons does not match the expected amount' }); 
         enabledButtons.forEach(button => foundButtons.push(button.getText()))                
         foundButtons.forEach((button, index) => {
             expect(button).toEqual(expectedButtons[index]);
