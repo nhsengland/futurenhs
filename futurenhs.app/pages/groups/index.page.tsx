@@ -40,6 +40,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                 props.isGroupMember = isMember
 
+                console.log('/groups:user', user);
+
                 /**
                  * Get data from services
                  */
@@ -48,9 +50,14 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         getGroups({ user, isMember, pagination }),
                     ])
 
+                    console.log('/groups:groupsList', groupsList);
+
                     props.groupsList = groupsList.data ?? []
                     props.pagination = groupsList.pagination
                 } catch (error) {
+
+                    console.log('/groups:error', error);
+
                     return handleSSRErrorProps({ props, error })
                 }
 

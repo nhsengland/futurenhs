@@ -29,6 +29,8 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     themeId,
 }) => {
 
+    console.log('GroupHomeTemplate');
+
     const notificationsContext: any = useContext(NotificationsContext)
     const errorSummaryRef: any = useRef()
 

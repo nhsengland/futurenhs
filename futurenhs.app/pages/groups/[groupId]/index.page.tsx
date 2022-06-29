@@ -39,11 +39,16 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     getServerSideProps: async (
                         context: GetServerSidePropsContext
                     ) => {
+
+                        console.log('/groups/:group');
+
                         const user: User = selectUser(context)
                         const groupId: string = selectParam(
                             context,
                             routeParams.GROUPID
                         )
+
+                        console.log('/groups/:group:user', user);
 
                         props.layoutId = layoutIds.GROUP
                         props.tabId = groupTabIds.INDEX
@@ -83,7 +88,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             props.contentTemplate = contentTemplate.data
 
                         } catch (error) {
-                            console.log(error)
+
+                            console.log('/groups/:group:error', error);
+
                             return handleSSRErrorProps({
                                 props,
                                 error,
