@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next'
 
-import formConfigs from '@formConfigs/index'
 import { selectCsrfToken } from '@selectors/context'
 import { GetServerSidePropsContext, HofConfig } from '@appTypes/next'
 

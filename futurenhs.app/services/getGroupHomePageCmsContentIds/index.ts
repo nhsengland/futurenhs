@@ -24,6 +24,9 @@ export const getGroupHomePageCmsContentIds = async (
     { user, groupId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
+
+    console.log('getGroupHomePageCmsContentIds');
+
     const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
         data: null,
     }
@@ -31,6 +34,8 @@ export const getGroupHomePageCmsContentIds = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
+
+    console.log('getGroupHomePageCmsContentIds:user', user);
 
     const id: string = user.id
 
@@ -60,6 +65,8 @@ export const getGroupHomePageCmsContentIds = async (
 
     serviceResponse.headers = headers
     serviceResponse.data = apiData
+
+    console.log('getGroupHomePageCmsContentIds:response', serviceResponse);
 
     return serviceResponse
 }

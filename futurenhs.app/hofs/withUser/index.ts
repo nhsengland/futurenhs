@@ -21,6 +21,9 @@ export const withUser = (
     const { props, isRequired = true, getServerSideProps } = config
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
+
+        console.log('withUser');
+
         props.user = null
 
         try {
@@ -29,8 +32,8 @@ export const withUser = (
             })
 
             props.user = user
-
             context.req.user = user
+
         } catch (error) {
             if (isRequired) {
                 const returnUrl: string = encodeURI(
@@ -50,11 +53,16 @@ export const withUser = (
          * Temporary solution until new auth is in place to fetch users profile image from a separate endpoint
          */
         if (props.user) {
+
+            console.log('withUser:props.user', props.user);
+
             try {
                 const { data: profile } = await getSiteUser({
                     user: props.user,
                     targetUserId: props.user.id,
                 })
+
+                console.log('withUser:profile', profile);
 
                 props.user.image = profile.image
             } catch (error) {
@@ -67,6 +75,9 @@ export const withUser = (
                 })
 
                 props.actions = actions
+
+                console.log('withUser:actions', actions);
+
             } catch (error) {
                 return handleSSRErrorProps({ props, error })
             }
