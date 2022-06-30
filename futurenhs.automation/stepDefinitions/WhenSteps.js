@@ -49,11 +49,13 @@ When(/^I select '([^"]*)' from the (group menu|menu|group actions|group pages) a
 // FormPage Steps
 
 When(/^I enter '([^"]*)' into the ('([^"]*)' )?(field|text area|text editor)$/, function (inputTxt, label, inputType) {
-        if (inputTxt != null && inputTxt.includes('[STRING: ')) {
-            inputTxt = helpers.randomStringGenerator(inputTxt);
-            this.generatedString = inputTxt;
-        }
-    formPage.formActionSelect(inputTxt, label, inputType);
+    if (inputTxt != null && inputTxt.includes('[STRING: ')) {
+        inputTxt = helpers.randomStringGenerator(inputTxt);
+        this.generatedString = inputTxt;
+    }
+    if (this.foundElements === undefined) { this.foundElements = [] }
+    var instance = formPage.findInstance(label, this.foundElements);
+    formPage.formActionSelect(inputTxt, label, inputType, instance);
 });
 
 When(/^I select '([^"]*)' from the '([^"]*)' dropdown$/, function (dropdownOption, dropdownLabel) {
