@@ -11,7 +11,7 @@ export const contentBlockTextForm: FormConfig = {
                     inputType: 'text',
                     text: {
                         label: 'Subtitle',
-                        hint: 'Add a title to the block. Eg. Welcome'
+                        hint: 'Add a title to the block e.g "Welcome"'
                     },
                     component: 'input',
                     shouldRenderRemainingCharacterCount: true,
