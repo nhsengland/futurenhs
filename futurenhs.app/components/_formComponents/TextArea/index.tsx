@@ -21,7 +21,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
     meta: { touched, error, submitError },
     text,
     shouldRenderAsRte,
-    rteToolBarOptions = 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote | table emoticons charmap',
+    rteToolBarOptions = 'bold italic | bullist numlist | link unlink',
     shouldRenderRemainingCharacterCount,
     validators,
     minHeight = 200,
