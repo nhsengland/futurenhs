@@ -31,8 +31,6 @@ export const getGroup = async (
     dependencies?: Dependencies
 ): Promise<ServiceResponse<Group>> => {
 
-    console.log('getGroup');
-
     const serviceResponse: ServiceResponse<Group> = {
         data: null,
     }
@@ -42,8 +40,6 @@ export const getGroup = async (
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
     const id: string = user.id
-
-    console.log('getGroup:user', user);
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
@@ -92,8 +88,6 @@ export const getGroup = async (
         themeId: apiData.themeId,
         isPublic: apiData.isPublic,
     }
-
-    console.log('getGroup:response', serviceResponse);
 
     return serviceResponse
 }

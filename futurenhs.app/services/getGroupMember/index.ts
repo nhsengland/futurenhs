@@ -64,7 +64,7 @@ export const getGroupMember = async (
             }
         )
     }
-    console.log(apiData)
+
     serviceResponse.headers = headers
     serviceResponse.data = {
         id: apiData.id ?? '',

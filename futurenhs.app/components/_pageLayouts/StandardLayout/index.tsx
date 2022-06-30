@@ -42,9 +42,6 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     children,
 }) => {
 
-    console.log('StandardLayout');
-    console.log('StandardLayout:user', user);
-
     const router = useRouter()
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE)
     const isLoading: boolean = useLoading().isLoading

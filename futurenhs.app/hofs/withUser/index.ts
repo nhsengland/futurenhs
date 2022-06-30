@@ -22,8 +22,6 @@ export const withUser = (
 
     return async (context: GetServerSidePropsContext): Promise<any> => {
 
-        console.log('withUser');
-
         props.user = null
 
         try {
@@ -54,19 +52,15 @@ export const withUser = (
          */
         if (props.user) {
 
-            console.log('withUser:props.user', props.user);
-
             try {
                 const { data: profile } = await getSiteUser({
                     user: props.user,
                     targetUserId: props.user.id,
                 })
 
-                console.log('withUser:profile', profile);
-
                 props.user.image = profile.image
             } catch (error) {
-                console.log(error)
+                return handleSSRErrorProps({ props, error })
             }
 
             try {
@@ -75,8 +69,6 @@ export const withUser = (
                 })
 
                 props.actions = actions
-
-                console.log('withUser:actions', actions);
 
             } catch (error) {
                 return handleSSRErrorProps({ props, error })

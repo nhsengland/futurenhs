@@ -33,8 +33,6 @@ export const getGroups: Service = async (
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<Group>>> => {
 
-    console.log('getGroups');
-
     const serviceResponse: ServicePaginatedResponse<Array<Group>> = {
         data: [],
     }
@@ -42,8 +40,6 @@ export const getGroups: Service = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-
-    console.log('/getGroups:user', user);
 
     const id: string = user.id
     const paginationQueryParams: string = getApiPaginationQueryParams({
@@ -105,8 +101,6 @@ export const getGroups: Service = async (
     serviceResponse.pagination = getClientPaginationFromApi({
         apiPaginatedResponse: apiData,
     })
-
-    console.log('getGroups:response', serviceResponse);
 
     return serviceResponse
 }

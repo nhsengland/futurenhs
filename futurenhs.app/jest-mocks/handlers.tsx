@@ -1,4 +1,3 @@
-import { actions as actionConstants } from '@constants/actions'
 import { rest } from 'msw'
 
 interface SearchResultsHandlerProps {
@@ -61,6 +60,10 @@ interface GroupFolderContent {
     additionalMetadata?: { fileExtension: string; mediaType: string }
 }
 
+const siteUserEndpoint = new RegExp(
+    /([A-Za-z0-9\-\"\:\/]+.+)?\/v1\/users\/[A-Za-z0-9\-\"]+\/users\/[A-Za-z0-9\-\"]+(\?[A-Za-z0-9\-\"]+.+)?$/,
+    'i'
+)
 const groupEndpoint = new RegExp(
     /([A-Za-z0-9\-\"\:\/]+.+)?\/v1\/users\/[A-Za-z0-9\-\"]+\/groups\/[A-Za-z0-9\-\"]+(\?[A-Za-z0-9\-\"]+.+)?$/,
     'i'
@@ -567,6 +570,23 @@ const getGroupFileDownload = ({ status = 200 }: { status?: number }) =>
     })
 
 /**
+ * mock file Download action /api/v1/users/userId/users/userId
+ */
+ const getSiteUser = ({ status = 200 }: { status?: number }) =>
+ rest.get(siteUserEndpoint, async (req, res, ctx) => {
+     return res(ctx.json({
+        id: 'mockId',
+        firstName: 'mockFirstName',
+        lastName: 'mockLastName',
+        email: 'mockEmail',
+        pronouns: 'mockPronouns',
+        role: 'mockRoleId',
+        image: null,
+        imageId: null,
+    }), ctx.status(status))
+ })
+
+/**
  * all handlers
  */
 export const handlers = {
@@ -581,6 +601,7 @@ export const handlers = {
     deleteFolder,
     getGroupFile,
     getGroupFileDownload,
+    getSiteUser
 }
 
 /**
@@ -598,4 +619,5 @@ export const defaultHandlers = [
     deleteFolder({}),
     getGroupFile({}),
     getGroupFileDownload({}),
+    getSiteUser({})
 ]

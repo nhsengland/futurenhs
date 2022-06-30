@@ -1,6 +1,6 @@
-import { GetServerSidePropsResult } from 'next'
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject'
 import { ServiceError } from '@services/index'
+import { serializeError } from '@helpers/util/errors/serializeError';
 
 declare interface Config {
     props: Record<any, any>
@@ -16,6 +16,7 @@ export const handleSSRErrorProps = ({
     console.log(error)
 
     //TODO - send to error logging service
+    const clonedProps: Record<any, any> = getJsonSafeObject({ object: props })
 
     if (shouldSurface) {
         if (error.name === 'ServiceError') {
@@ -24,24 +25,22 @@ export const handleSSRErrorProps = ({
                     notFound: true,
                 }
             } else {
-                props.errors = [
+                clonedProps.errors = [
                     {
-                        [error.data.status]: error.data.statusText,
+                        [error.data.status]: error.data
                     },
                 ]
             }
         } else {
-            props.errors = [
+            clonedProps.errors = [
                 {
-                    error: error.message,
+                    error: serializeError(error),
                 },
             ]
         }
     }
 
-    return getJsonSafeObject({
-        object: {
-            props: props,
-        },
-    })
+    return {
+        props: clonedProps,
+    }
 }

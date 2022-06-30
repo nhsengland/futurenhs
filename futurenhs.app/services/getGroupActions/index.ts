@@ -35,15 +35,11 @@ export const getGroupActions = async (
     dependencies?: Dependencies
 ): Promise<ServiceResponse<ActionsAndStatus>> => {
 
-    console.log('getGroupActions');
-
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
     const { id } = user
-
-    console.log('getGroupActions:user', user);
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/actions`
     const apiResponse: FetchResponse = await fetchJSON(
@@ -67,13 +63,6 @@ export const getGroupActions = async (
             }
         )
     }
-
-    console.log('getGroupActions: response', {
-        data: {
-            memberStatus: apiData.memberStatus,
-            actions: apiData.permissions,
-        },
-    });
 
     return {
         data: {
