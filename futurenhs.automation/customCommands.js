@@ -7,8 +7,8 @@
         "devTestAxe": `npm run scenario wdio.headless.conf.js Url=https://collaborate-dev.future.nhs.uk/ FNHS:FED02`,
         "devTestLighthouse": `run scenario wdio.headless.conf.js Url=https://collaborate-dev.future.nhs.uk/ FNHS:FED01`,
         "uat": `wdio wdio.headless.conf.js --baseUrl=https://collaborate-uat.future.nhs.uk/ --suite=fullRegression`,
-        "firefox": `wdio wdio.firefox.conf.js --suite=fullRegression`,
-        "msedge": `wdio wdio.msedge.conf.js --suite=fullRegression`,
+        "firefox": `wdio wdio.firefox.conf.js --suite=smokeTest`,
+        "msedge": `wdio wdio.msedge.conf.js --suite=smokeTest`,
         "visualRegression": `wdio --spec=./features/visualRegression.feature`,
         "AllureReport": `allure generate allureResults --clean -o allureReport`,
     }
