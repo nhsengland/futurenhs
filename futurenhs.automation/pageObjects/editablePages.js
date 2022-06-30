@@ -10,7 +10,6 @@ class editablePages extends basePage {
      * @param {*} instance - instance IF specified of the block
      */
     blockValidationSelect(blockType, blockState, instance) {
-        console.log('instance', instance)
         var foundBlock = this.blockSelect(blockType, instance);
         switch (blockState) {
             case 'preview mode': this.previewModeValidation(foundBlock);
