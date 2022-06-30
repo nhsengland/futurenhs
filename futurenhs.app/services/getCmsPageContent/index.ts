@@ -26,8 +26,6 @@ export const getCmsPageContent = async (
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
 
-    console.log('getCmsPageContent');
-
     const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
         data: null,
     }
@@ -35,8 +33,6 @@ export const getCmsPageContent = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-
-    console.log('getCmsPageContent:user', user);
 
     const id: string = user.id
 
@@ -69,8 +65,6 @@ export const getCmsPageContent = async (
 
     serviceResponse.headers = headers;
     serviceResponse.data = apiData?.data?.content?.blocks ?? [];
-
-    console.log('getCmsPageContent:response', serviceResponse);
 
     return serviceResponse
 }

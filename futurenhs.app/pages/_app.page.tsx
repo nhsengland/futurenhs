@@ -108,6 +108,9 @@ const CustomApp = ({ Component, pageProps }) => {
     }
 
     if (hasServerError) {
+
+        const errorsToRender: Record<string, any> = process.env.NEXT_PUBLIC_APP_DEBUG ? errors : null
+
         return (
             <NotificationsContext.Provider
                 value={{ notifications, setNotifications }}
@@ -116,7 +119,7 @@ const CustomApp = ({ Component, pageProps }) => {
                     <FormsContext.Provider value={formsContextConfig}>
                         <LoadingContext.Provider value={loadingContextConfig}>
                             <StandardLayout {...pageProps} user={null}>
-                                <ErrorPage statusCode={500} />
+                                <ErrorPage errors={errorsToRender} statusCode={500} />
                             </StandardLayout>
                         </LoadingContext.Provider>
                     </FormsContext.Provider>

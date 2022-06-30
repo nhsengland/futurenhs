@@ -21,8 +21,6 @@ export const withGroup = (
     }
 ): GetServerSideProps => {
 
-    console.log('withGroup');
-
     const getGroupService = dependencies?.getGroupService ?? getGroup
     const getGroupActionsService =
         dependencies?.getGroupActionsService ?? getGroupActions
@@ -36,12 +34,11 @@ export const withGroup = (
         const groupId: string = selectParam(context, routeParams.GROUPID)
         const user: User = selectUser(context)
 
-        console.log('withGroup:user', user);
-
         /**
          * Get data from services
          */
         try {
+
             const [groupData, actionsData] = await Promise.all([
                 getGroupService({ user, groupId }),
                 getGroupActionsService({ groupId, user }),
@@ -57,8 +54,6 @@ export const withGroup = (
                 ...(props.actions ?? []),
                 ...(actionsData.data?.actions ?? []),
             ]
-
-            console.log('withGroup:props', props);
 
             const openRoutes: Array<string> = [
                 props.routes.groupAboutRoot,
@@ -84,8 +79,6 @@ export const withGroup = (
                 }
             }
         } catch (error) {
-
-            console.log('withGroup:error', error);            
             return handleSSRErrorProps({ props, error })
         }
 
