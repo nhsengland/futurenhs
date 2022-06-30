@@ -69,7 +69,7 @@ Feature: Group Create
         Then the 'Create a group' header is displayed
         And the 'Discard group' link is displayed
         When I enter '<groupname>' into the 'Group name' field
-        And I enter '<strapline>' into the 'Strap line' field
+        And I enter '<strapline>' into the 'Strap line (optional)' field
         And I select the 'Theme' radio button for 'Choose your theme colour'
         And I choose 'auto Admin' from the 'Group owner' auto suggest list
         And I choose 'auto Admin' from the 'Group administrators' auto suggest list
@@ -91,7 +91,7 @@ Feature: Group Create
         Then the 'Create a group' header is displayed
         And the 'Discard group' link is displayed
         When I enter '<groupname>' into the 'Group name' field
-        And I enter '<strapline>' into the 'Strap line' field
+        And I enter '<strapline>' into the 'Strap line (optional)' field
         And I choose '<owner>' from the 'Group owner' auto suggest list
         And I click the 'Save and create group' button
         And the '<error message>' textual value is displayed

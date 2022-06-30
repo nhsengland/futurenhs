@@ -21,7 +21,7 @@ Feature: groupPrivate
         And I have navigated to '/admin/groups/create'
         Then the 'Create a group' header is displayed
         When I enter 'AutoNew Private Group' into the 'Group name' field
-        When I enter 'DO NOT USE - This group is reserved solely for use by our automated test scripts' into the 'Strap line' field
+        When I enter 'DO NOT USE - This group is reserved solely for use by our automated test scripts' into the 'Strap line (optional)' field
         And I select the 'Theme' radio button for 'Choose your theme colour'
         And I choose 'Auto GroupAdmin' from the 'Group owner' auto suggest list
         And I select the 'Group is public?' checkbox
