@@ -243,10 +243,10 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         >
                             {shouldRenderPendingMessage &&
                                 !shouldRenderGroupJoinLink && (
-                                    <div className="nhsuk-heading-s u-flex u-justify-end u-mb-0">
+                                    <div className="nhsuk-heading-s u-flex u-justify-end u-items-center u-mb-0">
                                         <SVGIcon
-                                            name="icon-clock"
-                                            className="u-w-6 u-h-6 u-mr-2"
+                                            name="icon-clock-bold"
+                                            className="u-w-10 u-h-10 u-mr-2 u-fill-theme-1"
                                         />
                                         <p className="u-mb-0">
                                             Awaiting Approval
