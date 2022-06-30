@@ -18,11 +18,11 @@ Feature: editablePagesValidation
         And the 'Preview page' button is not displayed
         And the 'Publish group page' button is not displayed
         And the text block in preview mode is displayed
-        And the 'Move block down, Edit, Delete' buttons are availabe on the text block
+        And the 'Move block down, Edit, Delete' buttons are available on the text block
         And the 'Welcome to FutureNHS' header is displayed
         And the 'A platform from the NHS, helping the health and social care sector connect and collaborate' textual value is displayed
         And the key links block in preview mode is displayed
-        Then the 'Move block up, Edit, Delete' buttons are availabe on the key links block
+        Then the 'Move block up, Edit, Delete' buttons are available on the key links block
         And the 'FutureNHS Support' textual value is displayed 
         And the 'NHS England' textual value is displayed 
         And the 'NHS Website' textual value is displayed 
@@ -37,9 +37,9 @@ Feature: editablePagesValidation
         And the 'Choose a content block to add to your group homepage' textual value is displayed
         And the 'Cancel' button is displayed
         And the text block in preview mode is displayed
-        Then the 'Add' button is availabe on the text block
+        Then the 'Add' button is available on the text block
         And the key links block in preview mode is displayed
-        Then the 'Add' button is availabe on the text block
+        Then the 'Add' button is available on the text block
 
 
     Scenario: FNHS117 - Blocks: Add Text Block Journey Validation
@@ -53,12 +53,12 @@ Feature: editablePagesValidation
         And the 'Discard updates' button is displayed
         And the 'Subtitle' label is displayed
         And the 'Main text' label is displayed
-        And the 'Delete' button is availabe on the '2nd' text block
+        And the 'Delete' button is available on the '2nd' text block
         When I enter 'Text Block Form Test' into the 'Main text' text editor
         And I enter 'Test Subtitle' into the 'Subtitle' field
-        Then the 'Finish editing, Delete' buttons are availabe on the '2nd' text block
+        Then the 'Finish editing, Delete' buttons are available on the '2nd' text block
         When I click 'Finish editing' on the '2nd' text block
-        Then the 'Move block up, Edit, Delete' buttons are availabe on the '2nd' text block
+        Then the 'Move block up, Edit, Delete' buttons are available on the '2nd' text block
         And the 'Test Subtitle' header is displayed
         And the 'Text Block Form Test' textual value is displayed
         And the 'Preview page' button is displayed
@@ -101,18 +101,18 @@ Feature: editablePagesValidation
         And the 'Discard updates' button is displayed
         And the 'Subtitle' label is displayed
         And the 'Add a link' button is displayed
-        And the 'Delete' button is availabe on the '2nd' key links block
+        And the 'Delete' button is available on the '2nd' key links block
         When I enter 'Test Subtitle' into the 'Subtitle' field
-        Then the 'Finish editing, Delete' buttons are availabe on the '2nd' key links block
+        Then the 'Finish editing, Delete' buttons are available on the '2nd' key links block
         When I click the 'Add a link' button
         Then the 'Link title' label is displayed
         And the 'Link' label is displayed
         And the 'Delete link' button is displayed
         When I enter 'Test Link' into the 'Link title' field
         And I enter 'https://www.google.com/' into the 'Link' field
-        Then the 'Finish editing, Delete' buttons are availabe on the '2nd' key links block
+        Then the 'Finish editing, Delete' buttons are available on the '2nd' key links block
         When I click 'Finish editing' on the '2nd' key links block
-        Then the 'Move block up, Edit, Delete' buttons are availabe on the '2nd' key links block
+        Then the 'Move block up, Edit, Delete' buttons are available on the '2nd' key links block
         And the 'Test Subtitle' header is displayed
         And the 'Test Link' textual value is displayed
         And the 'Preview page' button is displayed

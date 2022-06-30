@@ -113,7 +113,7 @@ Then(/^the ('(\d+).{2}' )?(key links|text) block in (preview mode|edit mode) is 
     editablePages.blockValidationSelect(blockType = blockType + ' Block', blockState, instance);
 });
 
-Then(/^the '([^"]*)' button.? (is|are) availabe on the ('(\d+).{2}' )?(text|key links) block$/, function (expectedButtons, arg, instance, blockType) {
+Then(/^the '([^"]*)' button.? (is|are) available on the ('(\d+).{2}' )?(text|key links) block$/, function (expectedButtons, arg, instance, blockType) {
     expectedButtons = expectedButtons.split(', ');
     editablePages.enabledActionsValidation(blockType = blockType + ' Block', expectedButtons, instance);
 })
