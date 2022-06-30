@@ -23,7 +23,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             const string query =
                 @$"SELECT
                                 [{nameof(FolderDto.Id)}]                = folder.Id,
-                                [{nameof(FolderDto.Title)}]             = folder.Title,
+                                [{nameof(FolderDto.Name)}]             = folder.Title,
                                 [{nameof(FolderDto.Description)}]       = folder.Description,
                                 [{nameof(FolderDto.CreatedBy)}]         = folder.CreatedBy,
                                 [{nameof(FolderDto.CreatedAtUTC)}]      = FORMAT(folder.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
@@ -81,7 +81,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                Title = folder.Title,
+                Title = folder.Name,
                 Description = folder.Description,
                 CreatedBy = folder.CreatedBy,
                 CreatedAtUTC = folder.CreatedAtUTC,
@@ -121,7 +121,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             var queryDefinition = new CommandDefinition(query, new
             {
                 FolderId = folder.Id,
-                Title = folder.Title,
+                Title = folder.Name,
                 Description = folder.Description,
                 ModifiedBy = folder.ModifiedBy,
                 ModifiedAtUTC = folder.ModifiedAtUTC,

@@ -55,7 +55,7 @@ namespace FutureNHS.Api.Services
 
             return new Folder
             {
-                Name = folderDto.Title,
+                Name = folderDto.Name,
                 Description = folderDto.Description,
                 RowVersion = folderDto.RowVersion
             };
@@ -86,7 +86,7 @@ namespace FutureNHS.Api.Services
 
             var folderDto = new FolderDto()
             {
-                Title = folder.Name,
+                Name = folder.Name,
                 Description = folder.Description,
                 CreatedAtUTC = now,
                 CreatedBy = userId,
@@ -131,7 +131,7 @@ namespace FutureNHS.Api.Services
 
             var folderDto = new FolderDto()
             {
-                Title = folder.Name,
+                Name = folder.Name,
                 Description = folder.Description,
                 CreatedAtUTC = now,
                 CreatedBy = userId,
@@ -182,7 +182,7 @@ namespace FutureNHS.Api.Services
             var folderDto = new FolderDto()
             {
                 Id = folderId,
-                Title = folder.Name,
+                Name = folder.Name,
                 Description = folder.Description,
                 ModifiedBy = userId,
                 ModifiedAtUTC = now,
