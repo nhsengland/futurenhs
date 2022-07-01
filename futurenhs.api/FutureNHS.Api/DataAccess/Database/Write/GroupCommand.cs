@@ -274,15 +274,70 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 }
             }
 
-            if (insertGroupResult != 1)
+            if (!groupDto.GroupAdminUsers.Contains(groupDto.GroupOwnerId))
             {
-                _logger.LogError("Error: User request to create a group was not successful.", insertGroup);
-                throw new DataException("Error: User request to create a group was not successful.");
+                const string insertGroupOwner =
+                   @"
+                    INSERT INTO [dbo].[GroupUser]
+                    (
+                        [Approved],
+                        [Rejected],
+                        [Locked],
+                        [Banned],
+                        [RequestToJoinDateUTC],
+                        [ApprovedToJoinDateUTC],
+                        [ApprovingMembershipUser_Id],
+                        [MembershipRole_Id],
+                        [MembershipUser_Id],
+                        [Group_Id]
+                    )
+                    VALUES
+                    (
+                        '1',
+                        '0',
+                        '0',
+                        '0',
+                        @CurrentDateUtc,
+                        @CurrentDateUtc,
+                        @ApprovingMemberId,
+                        (
+                            SELECT [Id]
+                            FROM   [dbo].[MembershipRole]
+                            WHERE  [RoleName] = 'Admin'
+                        ),
+                        @MembershipUserId,
+                        @GroupId
+                    )";
+
+                var insertGroupUserInRoles = await connection.ExecuteAsync(insertGroupOwner, new
+                {
+                    CurrentDateUtc = groupDto.CreatedAtUtc,
+                    ApprovingMemberId = userId,
+                    MembershipUserId = groupDto.GroupOwnerId,
+                    GroupId = groupId
+                }, transaction: transaction);
+
+                if (insertGroupUserInRoles != 1)
+                {
+                    _logger.LogError("Error: User request to create a group user in roles was not successful.", insertGroupUserInRoles);
+                    throw new DataException("Error: User request to create a group user in roles was not successful.");
+                }
             }
 
-            await transaction.CommitAsync(cancellationToken);
-
-            await connection.CloseAsync();
+            try
+            {
+                await transaction.CommitAsync(cancellationToken);
+            } 
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Create group failed for user:{UserID}", userId);
+                throw;
+            }
+            finally
+            {
+                await connection.CloseAsync();
+            }
 
             return groupId;
         }
