@@ -6,6 +6,10 @@ import { RichText } from '@components/RichText'
 import { notifications } from '@constants/notifications'
 import { Heading } from '@components/Heading'
 
+/**
+ * Derived from GOV UK Design System Notification Banner component: https://design-system.service.gov.uk/components/notification-banner/.
+ * Used to to tell the user about something they need to know about, but that’s not directly related to the page content.
+ */
 export const NotificationBanner: (props: Props) => JSX.Element = ({
     id,
     text,
