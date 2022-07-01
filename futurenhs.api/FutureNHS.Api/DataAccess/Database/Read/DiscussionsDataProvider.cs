@@ -84,26 +84,26 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(ImageData.FileName)}]	                = [image].FileName,
                                 [{nameof(ImageData.MediaType)}]	                = [image].MediaType
 
-                    FROM        Discussion discussion
+                    FROM        [Discussion] discussion
 					JOIN        [Group] groups 
                     ON          groups.Id = discussion.Group_Id
 
-                    LEFT JOIN   MembershipUser createdByUser 
+                    LEFT JOIN   [MembershipUser] createdByUser 
                     ON          createdByUser.Id = discussion.CreatedBy
 
-					LEFT JOIN   Image [image]
-                    ON          [image].Id = createdByUser.ImageId   
+					LEFT JOIN   [Image] image
+                    ON          image.Id = createdByUser.ImageId   
 
-					LEFT JOIN   
-                                (
-					            SELECT TOP 1 *
-					            FROM Comment 
-                                WHERE ThreadId IS NULL
-					            ORDER BY CreatedAtUTC
-					            ) 
-                                latestComment ON latestComment.Parent_EntityId = discussion.Entity_Id
+					LEFT JOIN   [Comment] latestComment
+					ON	        latestComment.Entity_Id = (
+									SELECT TOP 1 Entity_Id 
+									FROM [Comment]	
+									WHERE ThreadId IS NULL	
+									AND Parent_EntityId = discussion.Entity_Id
+									ORDER BY CreatedAtUtc DESC
+								)
 
-                    LEFT JOIN   MembershipUser lastCommentUser 
+                    LEFT JOIN   [MembershipUser] lastCommentUser 
                     ON          lastCommentUser.Id = latestComment.CreatedBy
 
                     WHERE       groups.Slug = @Slug
