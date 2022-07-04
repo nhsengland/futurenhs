@@ -17,15 +17,15 @@ try {
      * Fetches the svgSprite and parses out the list of icon names, then saves in sessionStorage and reloads the story
      */
     if(!iconNames.length){
-    
-        fetch(iconsPath).then((response) => {
+
+        fetch(iconsSrc).then((response) => {
 
             if(response.ok){
 
                 response.text().then((svg) => {
-        
+
                     const matches = Array.from(svg.matchAll(/<symbol id=".*" p/g));
-            
+
                     for (const match of matches) {
                         const parts = match[0].split('"');
                         iconNames.push(parts[1]);
@@ -37,13 +37,13 @@ try {
                         window.location.reload();
 
                     }
-            
+
                 })
 
             }
 
         })
-    
+
     }
 
 } catch(error){
@@ -63,18 +63,17 @@ export default {
     },
 }
 
-const Template = (args) => <SVGIcon {...args} />
+const Template = (args) => <SVGIcon  {...args} />
+
 
 export const Basic = Template.bind({})
 Basic.args = {
-    url: iconsSrc,
     name: iconNames?.[0] || '',
     className: 'u-w-[300px] u-h-[300px] u-fill-theme-0'
 }
 
 export const Themed = Template.bind({})
 Themed.args = {
-    url: iconsSrc,
     name: iconNames?.[0] || '',
     className: 'u-w-[300px] u-h-[300px] u-fill-theme-8'
 }
