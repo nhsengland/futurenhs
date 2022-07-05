@@ -53,26 +53,24 @@ export const withUser = (
         if (props.user) {
 
             try {
-                const { data: profile } = await getSiteUser({
-                    user: props.user,
-                    targetUserId: props.user.id,
-                })
 
-                props.user.image = profile.image
-            } catch (error) {
-                return handleSSRErrorProps({ props, error })
-            }
+                const [siteUser, siteActions] = await Promise.all([
+                    getSiteUser({ user: props.user, targetUserId: props.user.id }),
+                    getSiteActionsService({ user: props.user })
+                ])
 
-            try {
-                const { data: actions } = await getSiteActionsService({
-                    user: props.user,
-                })
+                if(siteUser?.data?.image){
 
-                props.actions = actions
+                    props.user.image = siteUser.data.image
+
+                }
+
+                props.actions = siteActions.data;
 
             } catch (error) {
                 return handleSSRErrorProps({ props, error })
             }
+
         }
 
         return await getServerSideProps(context)

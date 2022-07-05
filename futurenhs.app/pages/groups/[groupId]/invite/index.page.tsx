@@ -108,8 +108,11 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                     formData.get('Email')
                                 props.notifications = [
                                     {
-                                        heading: notifications.SUCCESS,
-                                        main: `Invite sent to ${emailAddress}`,
+                                        id: 'invite-success-notification',
+                                        text: {
+                                            heading: notifications.SUCCESS,
+                                            main: `Invite sent to ${emailAddress}`
+                                        }
                                     },
                                 ]
 

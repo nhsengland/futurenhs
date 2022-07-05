@@ -12,33 +12,62 @@ import { getCmsPageContent } from '@services/getCmsPageContent'
 import { putCmsPageContent } from '@services/putCmsPageContent'
 import { postCmsPageContent } from '@services/postCmsPageContent'
 import { postCmsBlock } from '@services/postCmsBlock'
+import { deleteCmsPageContentDraft } from '@services/deleteCmsPageContentDraft'
 import { FormErrors } from '@appTypes/form'
-import { CmsContentBlock } from '@appTypes/contentBlock'
+import { CmsContentBlock } from '@appTypes/cmsContent'
 import { useNotification } from '@hooks/useNotification'
 import { notifications } from '@constants/notifications'
 import { NotificationsContext } from '@contexts/index'
 
 import { Props } from './interfaces'
+import { cprud } from '@constants/cprud'
 
 export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
     user,
     actions,
     contentPageId,
     contentTemplate,
-    contentBlocks,
+    contentPage,
+    contentPageDraft,
     themeId,
 }) => {
-
-    const notificationsContext: any = useContext(NotificationsContext)
-    const errorSummaryRef: any = useRef()
-
-    const [blocks, setBlocks] = useState(contentBlocks ?? [])
-    const [template, setTemplate] = useState(contentTemplate ?? [])
-    const [errors, setErrors] = useState({})
 
     const isGroupAdmin: boolean =
     actions.includes(actionConstants.GROUPS_EDIT) ||
     actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT)
+
+    const isDraftPageLatest: () => boolean = () => {
+
+        try {
+
+            const draftEditedAtDate: Date = new Date(contentPageDraft.item.editedAt);
+            const publishedEditedAtDate: Date = new Date(contentPage.item.editedAt);
+
+            if(draftEditedAtDate > publishedEditedAtDate){
+
+                return true;
+
+            }
+
+        } catch(error){
+
+            return false    
+
+        }
+
+        return false
+
+    };
+    const publishedBlocks: Array<CmsContentBlock> = contentPage?.content?.blocks ?? [];
+    const draftBlocks: Array<CmsContentBlock> = contentPageDraft?.content?.blocks ?? [];
+    const getBlocks = (): Array<CmsContentBlock> => (isGroupAdmin && isDraftPageLatest()) ? draftBlocks : publishedBlocks;
+    const initialState: cprud = isGroupAdmin && isDraftPageLatest() ? cprud.UPDATE : cprud.READ; 
+
+    const errorSummaryRef: any = useRef()
+    const notificationsContext: any = useContext(NotificationsContext);
+    const [blocks, setBlocks] = useState(getBlocks() ?? [])
+    const [template] = useState(contentTemplate ?? [])
+    const [errors, setErrors] = useState({})
 
     const generatedClasses: any = {
         wrapper: classNames('c-page-body'),
@@ -52,7 +81,29 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
             notificationsContext, 
             shouldClearQueue: true
         })
+    
+    }
+    const handleDiscardUpdate = async () => {
 
+        handleClearErrors();
+
+        await deleteCmsPageContentDraft({
+            user,
+            pageId: contentPageId
+        })
+
+    }
+    
+    const handleChangeBlocks = (blocks: Array<CmsContentBlock>) => {
+        
+        handleClearErrors();
+
+        putCmsPageContent({
+            user,
+            pageId: contentPageId,
+            pageBlocks: blocks,
+        })
+    
     }
 
     const handleCreateBlock = (
@@ -83,7 +134,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
         })
     }
 
-    const handleSaveBlocks = (
+    const handlePublishBlocks = (
         blocks: Array<CmsContentBlock>,
         localErrors: FormErrors
     ): Promise<FormErrors> => {
@@ -110,7 +161,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                                 pageId: contentPageId,
                             }).then((response) => {
                                 const updatedBlocks: Array<CmsContentBlock> =
-                                    response.data
+                                    response.data.content.blocks
 
                                 setBlocks(updatedBlocks)
                                 setErrors({})
@@ -161,7 +212,9 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                 </noscript>
             )}
             <ContentBlockManager
-                blocks={blocks}
+                initialState={initialState}
+                activeBlocks={blocks}
+                referenceBlocks={publishedBlocks}
                 blocksTemplate={template}
                 text={{
                     headerReadBody:
@@ -173,7 +226,7 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                         'Choose a content block to add to your group homepage',
                     headerUpdateHeading: 'Editing group homepage',
                     headerUpdateBody:
-                        'Welcome to your group homepage. You are currently in editing mode. You can save a draft at any time, preview your page, or publish your changes. Once published, you can edit your page in the group actions. For more information and help, see our quick guide. For some inspiration, visit our knowledge hub.',
+                        'Welcome to your group homepage. You are currently in editing mode. Changes to your draft will be auto-saved. You can preview your page, or publish your changes at any time. Once published, you can edit your page in the group actions. For more information and help, see our quick guide. For some inspiration, visit our knowledge hub.',
                     headerEnterUpdateButton: 'Edit page',
                     headerLeaveUpdateButton: 'Stop editing page',
                     headerDiscardUpdateButton: 'Discard updates',
@@ -183,11 +236,11 @@ export const GroupHomeTemplate: (props: Props) => JSX.Element = ({
                     cancelCreateButton: 'Cancel',
                 }}
                 shouldRenderEditingHeader={isGroupAdmin}
-                discardUpdateAction={handleClearErrors}
+                discardUpdateAction={handleDiscardUpdate}
                 stateChangeAction={handleStateChange}
-                blocksChangeAction={handleClearErrors}
-                saveBlocksAction={handleSaveBlocks}
                 createBlockAction={handleCreateBlock}
+                changeBlocksAction={handleChangeBlocks}
+                publishBlocksAction={handlePublishBlocks}
                 themeId={themeId}
             />
         </LayoutColumn>

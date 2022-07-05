@@ -1,4 +1,4 @@
-import { CmsContentBlock } from '@appTypes/contentBlock'
+import { CmsContentBlock } from '@appTypes/cmsContent'
 import { FormErrors } from '@appTypes/form'
 
 export interface Props {

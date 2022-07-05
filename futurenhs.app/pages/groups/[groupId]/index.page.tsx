@@ -67,12 +67,17 @@ export const getServerSideProps: GetServerSideProps = withReset({
                                 const contentPageId: string =
                                     groupHomePageCmsContentIds.data.contentRootId
     
-                                const [contentBlocks, contentTemplate] =
+                                const [contentPage, contentPageDraft, contentTemplate] =
                                     await Promise.all([
                                         getCmsPageContent({
                                             user,
                                             pageId: contentPageId,
                                             isPublished: true
+                                        }),
+                                        getCmsPageContent({
+                                            user,
+                                            pageId: contentPageId,
+                                            isPublished: false
                                         }),
                                         getCmsPageTemplate({
                                             user,
@@ -83,7 +88,8 @@ export const getServerSideProps: GetServerSideProps = withReset({
                                 ;(props.contentPageId = contentPageId),
                                     (props.contentTemplateId = contentTemplateId)
     
-                                props.contentBlocks = contentBlocks.data
+                                props.contentPage = contentPage.data
+                                props.contentPageDraft = contentPageDraft.data
                                 props.contentTemplate = contentTemplate.data
     
                             } catch (error) {

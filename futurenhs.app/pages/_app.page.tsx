@@ -56,7 +56,7 @@ const CustomApp = ({ Component, pageProps }) => {
         /**
          * Empties notifications list on route change
          */
-        router.events.on('routeChangeComplete', () => {
+        router.events.on('routeChangeStart', () => {
             setNotifications([])
         })
 

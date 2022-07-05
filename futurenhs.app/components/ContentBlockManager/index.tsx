@@ -15,7 +15,7 @@ import { cmsBlocks } from '@constants/blocks'
 import { SVGIcon } from '@components/SVGIcon'
 import { Dialog } from '@components/Dialog'
 import { ContentBlockWrapper } from '@components/ContentBlockWrapper'
-import { CmsContentBlock } from '@appTypes/contentBlock'
+import { CmsContentBlock } from '@appTypes/cmsContent'
 import { RichText } from '@components/RichText'
 import { TextContentBlock } from '@components/_contentBlockComponents/TextContentBlock'
 import { KeyLinksBlock } from '@components/_contentBlockComponents/KeyLinksBlock'
@@ -30,16 +30,17 @@ import { LayoutColumn } from '@components/LayoutColumn'
  */
 export const ContentBlockManager: (props: Props) => JSX.Element = ({
     themeId,
-    blocks: sourceBlocks = [],
+    activeBlocks = [],
+    referenceBlocks = [],
     blocksTemplate = [],
     initialState = cprud.READ,
     text,
     shouldRenderEditingHeader,
-    blocksChangeAction,
     stateChangeAction,
     discardUpdateAction,
     createBlockAction,
-    saveBlocksAction,
+    changeBlocksAction,
+    publishBlocksAction,
     className,
 }) => {
 
@@ -48,8 +49,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const blockUpdateCacheTimeOut: any = useRef(null);
 
     const [mode, setMode] = useState(initialState);
-    const [referenceBlocks, setReferenceBlocks] = useState(sourceBlocks);
-    const [blocks, setBlocks] = useState(sourceBlocks);
+    const [blocks, setBlocks] = useState(activeBlocks);
     const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
     const [isDiscardChangesModalOpen, setIsDiscardChangesModalOpen] = useState(false);
     const [blockIdsInEditMode, setBlockIdsInEditMode] = useState([]);
@@ -210,7 +210,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 handleSetToUpdateMode()
                 setBlocks(updatedBlocks)
                 setBlockIdsInEditMode([createdBlockId])
-                blocksChangeAction?.(updatedBlocks)
+                changeBlocksAction?.(updatedBlocks)
 
                 window.setTimeout(() => {
                     document.getElementById(createdBlockId)?.focus()
@@ -237,7 +237,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
         setBlocks(updatedBlocks)
         setBlockIdsInEditMode([])
-        blocksChangeAction?.(updatedBlocks)
+        changeBlocksAction?.(updatedBlocks)
     }
 
     /**
@@ -269,8 +269,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         )
 
         setBlocks(updatedBlocks)
-
-        blocksChangeAction?.(updatedBlocks)
+        changeBlocksAction?.(updatedBlocks)
 
         setTimeout(() => {
             const targetSelector: string = updatedBlocks[targetIndex].item.id
@@ -363,7 +362,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         let serverErrors: FormErrors = {}
         let formattedLocalErrors: FormErrors = {}
 
-        if (saveBlocksAction) {
+        if (publishBlocksAction) {
             Object.keys(localErrors.current).forEach((blockId) => {
                 formattedLocalErrors = Object.assign(
                     {},
@@ -372,7 +371,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 )
             })
 
-            serverErrors = await saveBlocksAction(blocks, formattedLocalErrors)
+            serverErrors = await publishBlocksAction(blocks, formattedLocalErrors)
         }
 
         if (!hasKeys(serverErrors)) {
@@ -427,6 +426,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                 blockUpdateCache.current = {}
 
                 setBlocks(updatedBlocks)
+                changeBlocksAction(updatedBlocks)
             }
         }, 250)
     }
@@ -502,10 +502,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
 
-        setBlocks(sourceBlocks);
-        setReferenceBlocks(sourceBlocks);
+        setBlocks(activeBlocks);
 
-    }, [sourceBlocks]);
+    }, [activeBlocks]);
 
     /**
      * Conditionally reset blocks from edit mode

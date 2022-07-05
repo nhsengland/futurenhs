@@ -49,4 +49,5 @@ export const enum services {
     PUT_GROUP_MEMBER_ROLE = 'putGroupMemberRole',
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
+    DELETE_CMS_PAGE_CONTENT_DRAFT = 'deleteCmsPageContentDraft',
 }

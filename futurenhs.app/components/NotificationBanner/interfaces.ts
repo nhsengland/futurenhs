@@ -1,5 +1,3 @@
-import { notifications } from '@constants/notifications'
-
 export interface Notification {
     heading?: string
     main?: string
