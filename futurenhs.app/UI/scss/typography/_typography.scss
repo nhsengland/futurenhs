@@ -81,6 +81,11 @@ p {
     margin: 0 0 $nhsuk-spacing-point-3;
 }
 
+b,
+strong {
+    font-weight: $nhsuk-font-bold;
+}
+
 a {
     @extend %link-base;
     text-decoration: underline;
@@ -88,7 +93,7 @@ a {
     @include print {
         &:after {
             color: $color_nhsuk-black;
-            content: ' (Link: 'attr(href) ')';
+            content: ' (Link: ' attr(href) ')';
             font-size: 14pt;
         }
     }
