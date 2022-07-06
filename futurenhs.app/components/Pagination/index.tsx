@@ -7,6 +7,10 @@ import { SVGIcon } from '@components/SVGIcon'
 
 import { Props } from './interfaces'
 
+/**
+ * Derived from the Home Office pagination component: https://design.homeoffice.gov.uk/components?name=Pagination.
+ * Supports progressive enhancement to a load more button.
+ */
 export const Pagination: (props: Props) => JSX.Element = ({
     id,
     text = {

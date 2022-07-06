@@ -1,7 +1,7 @@
 import { requestMethods } from '@constants/fetch'
 
 export interface Props {
-    value?: any
+    value?: string;
     method: requestMethods
     action: string
     id: string
