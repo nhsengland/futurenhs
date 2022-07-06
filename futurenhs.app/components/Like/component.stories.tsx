@@ -6,13 +6,7 @@ export default {
     component: Like,
     argTypes: {
         iconName: {
-            options: [
-                'icon-thumbs-up',
-                'icon-star',
-                'icon-tick',
-                'icon-plus-circle',
-                'icon-like-fill',
-            ],
+            options: (window.parent as any).sbIconList,
             control: { type: 'select' },
         },
     },
