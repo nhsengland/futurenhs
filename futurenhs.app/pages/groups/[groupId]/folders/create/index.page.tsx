@@ -11,7 +11,6 @@ import { actions as actionConstants } from '@constants/actions'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
-import { withTokens } from '@hofs/withTokens'
 import {
     selectCsrfToken,
     selectFormData,
@@ -44,111 +43,107 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: withGroup({
             props,
-            getServerSideProps: withTokens({
+            getServerSideProps: withTextContent({
                 props,
                 routeId,
-                getServerSideProps: withTextContent({
-                    props,
-                    routeId,
-                    getServerSideProps: async (
-                        context: GetServerSidePropsContext
-                    ) => {
-                        const user: User = selectUser(context)
-                        const groupId: string = selectParam(
-                            context,
-                            routeParams.GROUPID
-                        )
-                        const folderId: string = selectQuery(
-                            context,
-                            routeParams.FOLDERID
-                        )
-                        const csrfToken: string = selectCsrfToken(context)
-                        const formData: ServerSideFormData =
-                            selectFormData(context)
-                        const requestMethod: string =
-                            selectRequestMethod(context)
+                getServerSideProps: async (
+                    context: GetServerSidePropsContext
+                ) => {
+                    const user: User = selectUser(context)
+                    const groupId: string = selectParam(
+                        context,
+                        routeParams.GROUPID
+                    )
+                    const folderId: string = selectQuery(
+                        context,
+                        routeParams.FOLDERID
+                    )
+                    const csrfToken: string = selectCsrfToken(context)
+                    const formData: ServerSideFormData = selectFormData(context)
+                    const requestMethod: string = selectRequestMethod(context)
 
-                        props.forms = {
-                            [formTypes.GROUP_FOLDER]: {}
+                    props.forms = {
+                        [formTypes.GROUP_FOLDER]: {},
+                    }
+
+                    props.layoutId = layoutIds.GROUP
+                    props.tabId = groupTabIds.FILES
+                    props.folderId = folderId
+                    props.folder = null
+                    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
+
+                    if (
+                        !props.actions?.includes(
+                            actionConstants.GROUPS_FOLDERS_ADD
+                        )
+                    ) {
+                        return {
+                            notFound: true,
                         }
+                    }
 
-                        props.layoutId = layoutIds.GROUP
-                        props.tabId = groupTabIds.FILES
-                        props.folderId = folderId
-                        props.folder = null
-                        props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
+                    /**
+                     * Get data from services
+                     */
+                    if (folderId) {
+                        try {
+                            const [groupFolder] = await Promise.all([
+                                getGroupFolder({ user, groupId, folderId }),
+                            ])
 
-                        if (
-                            !props.actions?.includes(
-                                actionConstants.GROUPS_FOLDERS_ADD
-                            )
-                        ) {
+                            props.folder = groupFolder.data
+                        } catch (error) {
+                            return handleSSRErrorProps({ props, error })
+                        }
+                    }
+
+                    /**
+                     * handle server-side form POST
+                     */
+                    if (formData && requestMethod === requestMethods.POST) {
+                        props.forms[formTypes.GROUP_FOLDER].initialValues =
+                            formData.getAll()
+
+                        const headers = getStandardServiceHeaders({
+                            csrfToken,
+                        })
+
+                        try {
+                            const newFolderId = await postGroupFolder({
+                                groupId,
+                                folderId,
+                                user,
+                                headers,
+                                body: formData,
+                            })
+
                             return {
-                                notFound: true,
+                                redirect: {
+                                    permanent: false,
+                                    destination: newFolderId
+                                        ? `${props.routes.groupFoldersRoot}/${newFolderId}`
+                                        : props.routes.groupFolder ||
+                                          props.routes.groupFoldersRoot,
+                                },
                             }
-                        }
+                        } catch (error) {
+                            const validationErrors: FormErrors =
+                                getServiceErrorDataValidationErrors(error)
 
-                        /**
-                         * Get data from services
-                         */
-                        if (folderId) {
-                            try {
-                                const [groupFolder] = await Promise.all([
-                                    getGroupFolder({ user, groupId, folderId }),
-                                ])
-
-                                props.folder = groupFolder.data
-                            } catch (error) {
+                            if (validationErrors) {
+                                props.forms[formTypes.GROUP_FOLDER].errors =
+                                    validationErrors
+                            } else {
                                 return handleSSRErrorProps({ props, error })
                             }
                         }
+                    }
 
-                        /**
-                         * handle server-side form POST
-                         */
-                        if (formData && requestMethod === requestMethods.POST) {
-                            props.forms[formTypes.GROUP_FOLDER].initialValues = formData.getAll()
-
-                            const headers = getStandardServiceHeaders({
-                                csrfToken,
-                            })
-
-                            try {
-                                const newFolderId = await postGroupFolder({
-                                    groupId,
-                                    folderId,
-                                    user,
-                                    headers,
-                                    body: formData,
-                                })
-
-                                return {
-                                    redirect: {
-                                        permanent: false,
-                                        destination: newFolderId
-                                            ? `${props.routes.groupFoldersRoot}/${newFolderId}`
-                                            : props.routes.groupFolder ||
-                                              props.routes.groupFoldersRoot,
-                                    },
-                                }
-                            } catch (error) {
-                                const validationErrors: FormErrors =
-                                    getServiceErrorDataValidationErrors(error)
-
-                                if (validationErrors) {
-                                    props.forms[formTypes.GROUP_FOLDER].errors = validationErrors
-                                } else {
-                                    return handleSSRErrorProps({ props, error })
-                                }
-                            }
-                        }
-
-                        /**
-                         * Return data to page template
-                         */
-                        return handleSSRSuccessProps({ props })
-                    },
-                }),
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props, context })
+                },
             }),
         }),
     }),

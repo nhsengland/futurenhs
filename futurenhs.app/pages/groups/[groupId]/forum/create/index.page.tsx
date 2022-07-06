@@ -11,7 +11,6 @@ import { actions as actionConstants } from '@constants/actions'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
-import { withTokens } from '@hofs/withTokens'
 import {
     selectFormData,
     selectCsrfToken,
@@ -42,90 +41,87 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: withGroup({
             props,
-            getServerSideProps: withTokens({
+            getServerSideProps: withTextContent({
                 props,
                 routeId,
-                getServerSideProps: withTextContent({
-                    props,
-                    routeId,
-                    getServerSideProps: async (
-                        context: GetServerSidePropsContext
-                    ) => {
-                        const user: User = selectUser(context)
-                        const groupId: string = selectParam(
-                            context,
-                            routeParams.GROUPID
+                getServerSideProps: async (
+                    context: GetServerSidePropsContext
+                ) => {
+                    const user: User = selectUser(context)
+                    const groupId: string = selectParam(
+                        context,
+                        routeParams.GROUPID
+                    )
+                    const csrfToken: string = selectCsrfToken(context)
+                    const formData: ServerSideFormData = selectFormData(context)
+                    const requestMethod: requestMethods =
+                        selectRequestMethod(context)
+
+                    props.forms = {
+                        [formTypes.CREATE_DISCUSSION]: {},
+                    }
+
+                    props.layoutId = layoutIds.GROUP
+                    props.tabId = groupTabIds.FORUM
+                    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
+
+                    /**
+                     * Return page not found if user doesn't have permissions to create a discussion
+                     */
+                    if (
+                        !props.actions?.includes(
+                            actionConstants.GROUPS_DISCUSSIONS_ADD
                         )
-                        const csrfToken: string = selectCsrfToken(context)
-                        const formData: ServerSideFormData =
-                            selectFormData(context)
-                        const requestMethod: requestMethods =
-                            selectRequestMethod(context)
-
-                        props.forms = {
-                            [formTypes.CREATE_DISCUSSION]: {}
+                    ) {
+                        return {
+                            notFound: true,
                         }
+                    }
 
-                        props.layoutId = layoutIds.GROUP
-                        props.tabId = groupTabIds.FORUM
-                        props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
+                    /**
+                     * Handle server-side form post
+                     */
+                    if (formData && requestMethod === requestMethods.POST) {
+                        props.forms[formTypes.CREATE_DISCUSSION].initialValues =
+                            formData
 
-                        /**
-                         * Return page not found if user doesn't have permissions to create a discussion
-                         */
-                        if (
-                            !props.actions?.includes(
-                                actionConstants.GROUPS_DISCUSSIONS_ADD
-                            )
-                        ) {
+                        try {
+                            const headers: any = getStandardServiceHeaders({
+                                csrfToken,
+                            })
+
+                            await postGroupDiscussion({
+                                groupId,
+                                user,
+                                headers,
+                                body: formData,
+                            })
+
                             return {
-                                notFound: true,
+                                redirect: {
+                                    permanent: false,
+                                    destination: props.routes.groupForumRoot,
+                                },
+                            }
+                        } catch (error) {
+                            const validationErrors: FormErrors =
+                                getServiceErrorDataValidationErrors(error)
+
+                            if (validationErrors) {
+                                props.forms[
+                                    formTypes.CREATE_DISCUSSION
+                                ].errors = validationErrors
+                            } else {
+                                return handleSSRErrorProps({ props, error })
                             }
                         }
+                    }
 
-                        /**
-                         * Handle server-side form post
-                         */
-                        if (formData && requestMethod === requestMethods.POST) {
-                            props.forms[formTypes.CREATE_DISCUSSION].initialValues = formData
-
-                            try {
-                                const headers: any = getStandardServiceHeaders({
-                                    csrfToken,
-                                })
-
-                                await postGroupDiscussion({
-                                    groupId,
-                                    user,
-                                    headers,
-                                    body: formData,
-                                })
-
-                                return {
-                                    redirect: {
-                                        permanent: false,
-                                        destination:
-                                            props.routes.groupForumRoot,
-                                    },
-                                }
-                            } catch (error) {
-                                const validationErrors: FormErrors =
-                                    getServiceErrorDataValidationErrors(error)
-
-                                if (validationErrors) {
-                                    props.forms[formTypes.CREATE_DISCUSSION].errors = validationErrors
-                                } else {
-                                    return handleSSRErrorProps({ props, error })
-                                }
-                            }
-                        }
-
-                        /**
-                         * Return data to page template
-                         */
-                        return handleSSRSuccessProps({ props })
-                    },
-                }),
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props, context })
+                },
             }),
         }),
     }),

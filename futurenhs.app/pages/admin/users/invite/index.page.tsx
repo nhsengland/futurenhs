@@ -9,7 +9,6 @@ import { actions as actionConstants } from '@constants/actions'
 import { layoutIds } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
-import { withTokens } from '@hofs/withTokens'
 import {
     selectFormData,
     selectCsrfToken,
@@ -37,78 +36,73 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withTokens({
+        getServerSideProps: withTextContent({
             props,
             routeId,
-            getServerSideProps: withTextContent({
-                props,
-                routeId,
-                getServerSideProps: async (
-                    context: GetServerSidePropsContext
-                ) => {
-                    const user: User = selectUser(context)
-                    const csrfToken: string = selectCsrfToken(context)
-                    const formData: ServerSideFormData = selectFormData(context)
-                    const requestMethod: requestMethods =
-                        selectRequestMethod(context)
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+                const user: User = selectUser(context)
+                const csrfToken: string = selectCsrfToken(context)
+                const formData: ServerSideFormData = selectFormData(context)
+                const requestMethod: requestMethods =
+                    selectRequestMethod(context)
 
-                    props.forms = {
-                        [formTypes.INVITE_USER]: {}
+                props.forms = {
+                    [formTypes.INVITE_USER]: {},
+                }
+
+                props.layoutId = layoutIds.ADMIN
+
+                /**
+                 * Return page not found if user doesn't have permissions to invite a user
+                 */
+                if (
+                    !props.actions?.includes(
+                        actionConstants.SITE_ADMIN_MEMBERS_ADD
+                    )
+                ) {
+                    return {
+                        notFound: true,
                     }
+                }
 
-                    props.layoutId = layoutIds.ADMIN
+                /**
+                 * Handle server-side form post
+                 */
+                if (formData && requestMethod === requestMethods.POST) {
+                    props.forms[formTypes.INVITE_USER].initialValues = formData
 
-                    /**
-                     * Return page not found if user doesn't have permissions to invite a user
-                     */
-                    if (
-                        !props.actions?.includes(
-                            actionConstants.SITE_ADMIN_MEMBERS_ADD
-                        )
-                    ) {
+                    try {
+                        const headers: any = getStandardServiceHeaders({
+                            csrfToken,
+                        })
+
+                        await postSiteUserInvite({
+                            user,
+                            headers,
+                            body: formData,
+                        })
+
                         return {
-                            notFound: true,
+                            props: props,
+                        }
+                    } catch (error) {
+                        const validationErrors: FormErrors =
+                            getServiceErrorDataValidationErrors(error)
+
+                        if (validationErrors) {
+                            props.forms[formTypes.INVITE_USER].errors =
+                                validationErrors
+                        } else {
+                            return handleSSRErrorProps({ props, error })
                         }
                     }
+                }
 
-                    /**
-                     * Handle server-side form post
-                     */
-                    if (formData && requestMethod === requestMethods.POST) {
-                        props.forms[formTypes.INVITE_USER].initialValues = formData
-
-                        try {
-                            const headers: any = getStandardServiceHeaders({
-                                csrfToken,
-                            })
-
-                            await postSiteUserInvite({
-                                user,
-                                headers,
-                                body: formData,
-                            })
-
-                            return {
-                                props: props,
-                            }
-                        } catch (error) {
-                            const validationErrors: FormErrors =
-                                getServiceErrorDataValidationErrors(error)
-
-                            if (validationErrors) {
-                                props.forms[formTypes.INVITE_USER].errors = validationErrors
-                            } else {
-                                return handleSSRErrorProps({ props, error })
-                            }
-                        }
-                    }
-
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props })
-                },
-            }),
+                /**
+                 * Return data to page template
+                 */
+                return handleSSRSuccessProps({ props, context })
+            },
         }),
     }),
 })

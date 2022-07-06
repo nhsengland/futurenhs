@@ -29,7 +29,7 @@ describe('GroupPageHeader', () => {
     it('conditionally renders group join link', () => {
         render(<GroupPageHeader {...testProps} />)
 
-        expect(screen.queryByText('Join Group')).toBeNull()
+        expect(screen.queryByText('Join group')).toBeNull()
 
         cleanup()
 
@@ -39,7 +39,7 @@ describe('GroupPageHeader', () => {
 
         render(<GroupPageHeader {...propsCopy} />)
 
-        expect(screen.getAllByText('Join Group').length).toBe(1)
+        expect(screen.getAllByText('Join group').length).toBe(1)
     })
 
     it('conditionally renders actions in actions menu', () => {
@@ -63,6 +63,5 @@ describe('GroupPageHeader', () => {
 
         expect(screen.getAllByText('Edit group information').length).toBe(1)
         expect(screen.getAllByText('Leave group').length).toBe(1)
-        //expect(screen.getAllByText('Page manager').length).toBe(1)
     })
 })

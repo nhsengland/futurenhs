@@ -146,8 +146,16 @@
 
     &_actions-content-item {
         @include standard-text;
+        @extend %link-base;
+        @extend %clear-button-styles;
         padding: 14px 20px;
+        cursor: default;
+        border: none;
+        background: none;
+        box-shadow: none;
+        font-weight: normal;
         text-decoration: none;
+        text-align: left;
 
         &:hover {
             text-decoration: underline;

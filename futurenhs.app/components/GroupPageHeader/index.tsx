@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import classNames from 'classnames'
 
+import { setFetchOpts, fetchJSON } from '@helpers/fetch'
 import { Link } from '@components/Link'
 import { cacheNames } from '@constants/caches'
 import { clearClientCaches } from '@helpers/util/data'
@@ -18,10 +19,12 @@ import { TabbedNav } from '@components/TabbedNav'
 import { mediaQueries } from '@constants/css'
 import { iconNames } from '@constants/icons'
 import { useMediaQuery } from '@hooks/useMediaQuery'
+import { useCsrf } from '@hooks/useCsrf'
 import { Theme } from '@appTypes/theme'
 
 import { Props } from './interfaces'
 import { groupMemberStatus } from '@constants/group-member-status'
+import { requestMethods } from '@constants/fetch'
 
 /**
  * Header for group listings and for individual groups
@@ -40,6 +43,8 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
 
+    const csrfToken: string = useCsrf();
+    
     const [isActionsAccordionOpen] = useState(false)
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true)
     const [isLeaveGroupModalOpen, setIsLeaveGroupModalOpen] = useState(false)
@@ -74,10 +79,10 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const { background, content }: Theme = shouldRenderActionsMenu
         ? useTheme(themeId)
         : {
-              background: 14,
-              content: 1,
-              accent: 1,
-          }
+            background: 14,
+            content: 1,
+            accent: 1,
+        }
 
     const generatedIds: any = {
         actionsAccordion: `${id}-actions`,
@@ -148,55 +153,36 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
             })
         }
 
-        // if (
-        //     actions?.includes(actionsConstants.SITE_ADMIN_GROUPS_EDIT) ||
-        //     actions?.includes(actionsConstants.GROUPS_EDIT)
-        // ) {
-        //     actionsMenuList.push({
-        //         id: actionsConstants.GROUPS_MEMBERS_ADD,
-        //         url: `${routes.groupRoot}?${queryParams.EDIT}=true`,
-        //         text: 'Page manager',
-        //     })
-        // }
-
-        // if (actions?.includes(actionsConstants.GROUPS_MEMBERS_ADD)) {
-
-        //     actionsMenuList.push({
-        //         id: actionsConstants.GROUPS_MEMBERS_ADD,
-        //         url: '/',
-        //         text: 'Add new member'
-        //     });
-
-        // }
-
-        // if (actions?.includes(actionsConstants.SITE_MEMBERS_ADD)) {
-
-        //     actionsMenuList.push({
-        //         id: actionsConstants.SITE_MEMBERS_ADD,
-        //         url: '/',
-        //         text: 'Invite new user'
-        //     });
-
-        // }
-
         return actionsMenuList
     }
 
-    const handleLeaveGroup = (): any => setIsLeaveGroupModalOpen(true)
+    const handleLeaveGroup = (event: any): any => {
+        event.preventDefault();
+        setIsLeaveGroupModalOpen(true)
+    }
     const handleLeaveGroupCancel = () => setIsLeaveGroupModalOpen(false)
-    const handleLeaveGroupConfirm = () => {
-        clearClientCaches([cacheNames.NEXT_DATA]).then(() => {
-            router.push(routes.groupLeave)
-            setIsLeaveGroupModalOpen(false)
-        })
+    const handleLeaveGroupConfirm = async () => {
+        setIsLeaveGroupModalOpen(false)
+        await clearClientCaches([cacheNames.NEXT_DATA])
+        await fetchJSON(routes.groupLeave, setFetchOpts({ 
+            method: requestMethods.POST,
+            body: {
+                ['_csrf']: csrfToken
+            } 
+        }), 30000)
+        router.reload()
     }
 
-    const handleJoinGroup = (event: any) => {
+    const handleJoinGroup = async (event: any) => {
         event.preventDefault()
-
-        clearClientCaches([cacheNames.NEXT_DATA]).then(() => {
-            router.push(routes.groupJoin)
-        })
+        await clearClientCaches([cacheNames.NEXT_DATA])
+        await fetchJSON(routes.groupJoin, setFetchOpts({ 
+            method: requestMethods.POST,
+            body: {
+                ['_csrf']: csrfToken
+            } 
+        }), 30000)
+        router.reload()
     }
 
     useEffect(() => {
@@ -255,13 +241,10 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                 )}
 
                             {shouldRenderGroupJoinLink ? (
-                                <a
-                                    href={routes.groupJoin}
-                                    onClick={handleJoinGroup}
-                                    className="c-button u-w-full u-border-2 u-border-theme-1"
-                                >
-                                    Join Group
-                                </a>
+                                <form action={routes.groupJoin} method={requestMethods.POST} encType="multipart/form-data" onSubmit={handleJoinGroup}>
+                                    <input type="hidden" name="_csrf" value={csrfToken} />
+                                    <button type="submit" className="c-button u-w-full u-border-2 u-border-theme-1">Join group</button>
+                                </form>
                             ) : getActionNavMenuList().length > 0 ? (
                                 <Accordion
                                     id={generatedIds.actionsAccordion}
@@ -302,64 +285,55 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                     >
                                         {getActionNavMenuList().map(
                                             ({ id, url, text }, index) => {
-                                                const handleActionMenuItemClick =
-                                                    (event: any) => {
-                                                        if (
-                                                            id ===
-                                                            actionsConstants.GROUPS_LEAVE
-                                                        ) {
-                                                            event.preventDefault()
-
-                                                            handleLeaveGroup()
-                                                        }
-                                                    }
-
                                                 return (
                                                     <li
                                                         key={index}
                                                         className="u-m-0"
                                                     >
-                                                        <Link href={url}>
+                                                        {id ===
+                                                            actionsConstants.GROUPS_LEAVE ? (
+                                                            <>
+                                                                <form action={routes.groupLeave} method={requestMethods.POST} encType="multipart/form-data" onSubmit={handleLeaveGroup}>
+                                                                    <input type="hidden" name="_csrf" value={csrfToken} />
+                                                                    <button type="submit" className="c-page-header_actions-content-item u-mb-0 u-block u-break-words">Leave group</button>
+                                                                </form>
+                                                                <Dialog
+                                                                    id="dialog-leave-group"
+                                                                    isOpen={
+                                                                        isLeaveGroupModalOpen
+                                                                    }
+                                                                    text={{
+                                                                        cancelButton:
+                                                                            'Cancel',
+                                                                        confirmButton:
+                                                                            'Yes, leave group',
+                                                                        heading:
+                                                                            'Leave this group',
+                                                                    }}
+                                                                    cancelAction={
+                                                                        handleLeaveGroupCancel
+                                                                    }
+                                                                    confirmAction={
+                                                                        handleLeaveGroupConfirm
+                                                                    }
+                                                                >
+                                                                    <p className="u-text-bold">
+                                                                        Are you sure
+                                                                        you would
+                                                                        like to
+                                                                        leave the
+                                                                        group?
+                                                                    </p>
+                                                                </Dialog>
+                                                            </>
+
+                                                        ) : <Link href={url}>
                                                             <a
                                                                 className="c-page-header_actions-content-item u-m-0 u-block u-break-words"
-                                                                onClick={
-                                                                    handleActionMenuItemClick
-                                                                }
                                                             >
                                                                 {text}
                                                             </a>
-                                                        </Link>
-                                                        {id ===
-                                                            actionsConstants.GROUPS_LEAVE && (
-                                                            <Dialog
-                                                                id="dialog-leave-group"
-                                                                isOpen={
-                                                                    isLeaveGroupModalOpen
-                                                                }
-                                                                text={{
-                                                                    cancelButton:
-                                                                        'Cancel',
-                                                                    confirmButton:
-                                                                        'Yes, leave group',
-                                                                    heading:
-                                                                        'Leave this group',
-                                                                }}
-                                                                cancelAction={
-                                                                    handleLeaveGroupCancel
-                                                                }
-                                                                confirmAction={
-                                                                    handleLeaveGroupConfirm
-                                                                }
-                                                            >
-                                                                <p className="u-text-bold">
-                                                                    Are you sure
-                                                                    you would
-                                                                    like to
-                                                                    leave the
-                                                                    group?
-                                                                </p>
-                                                            </Dialog>
-                                                        )}
+                                                        </Link>}
                                                     </li>
                                                 )
                                             }

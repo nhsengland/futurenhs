@@ -17,7 +17,7 @@ describe('withGroup hof', () => {
     const props: any = {}
 
     const getServerSideProps = async (context) => {
-        return handleSSRSuccessProps({ props })
+        return handleSSRSuccessProps({ props, context })
     }
 
     it('returns group data', async () => {

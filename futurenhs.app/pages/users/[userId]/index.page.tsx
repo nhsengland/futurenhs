@@ -6,10 +6,7 @@ import { routeParams } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withTextContent } from '@hofs/withTextContent'
 import { withRoutes } from '@hofs/withRoutes'
-import {
-    selectParam,
-    selectUser,
-} from '@selectors/context'
+import { selectParam, selectUser } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { getSiteUser } from '@services/getSiteUser'
 
@@ -30,13 +27,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: withTextContent({
             props,
             routeId,
-            getServerSideProps: async (
-                context: GetServerSidePropsContext
-            ) => {
-                const userId: string = selectParam(
-                    context,
-                    routeParams.USERID
-                )
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+                const userId: string = selectParam(context, routeParams.USERID)
                 const user: User = selectUser(context)
 
                 /**
@@ -48,8 +40,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     ])
 
                     props.siteUser = userData.data
-                    props.pageTitle = `${props.contentText.title} - ${props.siteUser.firstName ?? ''
-                        } ${props.siteUser.lastName ?? ''}`
+                    props.pageTitle = `${props.contentText.title} - ${
+                        props.siteUser.firstName ?? ''
+                    } ${props.siteUser.lastName ?? ''}`
                 } catch (error: any) {
                     return handleSSRErrorProps({ props, error })
                 }
@@ -57,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 /**
                  * Return data to page template
                  */
-                return handleSSRSuccessProps({ props })
+                return handleSSRSuccessProps({ props, context })
             },
         }),
     }),

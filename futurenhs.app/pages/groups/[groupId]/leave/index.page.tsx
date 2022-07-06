@@ -2,10 +2,11 @@ import { GetServerSideProps } from 'next'
 
 import { actions as actionConstants } from '@constants/actions'
 import { routeParams, layoutIds, groupTabIds } from '@constants/routes'
-import { selectParam, selectCsrfToken } from '@selectors/context'
+import { selectParam, selectCsrfToken, selectRequestMethod } from '@selectors/context'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
+import { requestMethods } from '@constants/fetch'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { deleteGroupMembership } from '@services/deleteGroupMembership'
 import { GetServerSidePropsContext } from '@appTypes/next'
@@ -25,6 +26,9 @@ export const getServerSideProps: GetServerSideProps = withUser({
         getServerSideProps: withGroup({
             props,
             getServerSideProps: async (context: GetServerSidePropsContext) => {
+
+                const requestMethod: requestMethods =
+                selectRequestMethod(context);
                 const csrfToken: string = selectCsrfToken(context)
                 const groupId: string = selectParam(
                     context,
@@ -41,6 +45,15 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     return {
                         notFound: true,
                     }
+                }
+
+                /**
+                 * Return error if request is not a POST
+                 */
+                if (requestMethod !== requestMethods.POST) {
+
+                    return handleSSRErrorProps({ props, error: new Error('405 Method Not Allowed') })
+
                 }
 
                 /**

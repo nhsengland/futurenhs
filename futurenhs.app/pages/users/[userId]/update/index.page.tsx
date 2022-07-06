@@ -21,7 +21,6 @@ import { formTypes } from '@constants/forms'
 import { FormConfig, FormOptions } from '@appTypes/form'
 import { setFormConfigOptions } from '@helpers/util/form'
 import { Props } from '@components/_pageTemplates/SiteUserTemplate/interfaces'
-import { withTokens } from '@hofs/withTokens'
 import { requestMethods } from '@constants/fetch'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { putSiteUser } from '@services/putSiteUser'
@@ -45,148 +44,116 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withTokens({
+        getServerSideProps: withTextContent({
             props,
-            getServerSideProps: withTextContent({
-                props,
-                routeId,
-                getServerSideProps: async (
-                    context: GetServerSidePropsContext
-                ) => {
-                    const targetUserId: string = selectParam(
-                        context,
-                        routeParams.USERID
-                    )
-                    const user: User = selectUser(context)
+            routeId,
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+                const targetUserId: string = selectParam(
+                    context,
+                    routeParams.USERID
+                )
+                const user: User = selectUser(context)
 
-                    const isAdmin = props.actions.includes(
-                        actions.SITE_ADMIN_MEMBERS_EDIT
-                    )
-                    const hasEditPermissions =
-                        isAdmin || targetUserId === user.id
+                const isAdmin = props.actions.includes(
+                    actions.SITE_ADMIN_MEMBERS_EDIT
+                )
+                const hasEditPermissions = isAdmin || targetUserId === user.id
 
-                    if (!hasEditPermissions) {
-                        return {
-                            notFound: true,
-                        }
+                if (!hasEditPermissions) {
+                    return {
+                        notFound: true,
+                    }
+                }
+
+                const csrfToken: string = selectCsrfToken(context)
+                const currentValues: any = selectFormData(context)
+                const submission: any = selectMultiPartFormData(context)
+                const requestMethod: requestMethods =
+                    selectRequestMethod(context)
+
+                props.layoutId = layoutIds.ADMIN
+                props.forms = {
+                    [formTypes.UPDATE_SITE_USER]: {},
+                    [formTypes.UPDATE_SITE_USER_ROLE]: selectForm(
+                        formConfigs,
+                        formTypes.UPDATE_SITE_USER_ROLE
+                    ),
+                }
+
+                const profileForm: FormConfig =
+                    props.forms[formTypes.UPDATE_SITE_USER]
+
+                const roleForm: FormConfig =
+                    props.forms[formTypes.UPDATE_SITE_USER_ROLE]
+
+                /**
+                 * Get data from services
+                 */
+                try {
+                    const [userData] = await Promise.all([
+                        getSiteUser({ user, targetUserId, isForUpdate: true }),
+                    ])
+
+                    props.siteUser = userData.data
+                    props.pageTitle = `${props.contentText.title} - ${
+                        props.siteUser.firstName ?? ''
+                    } ${props.siteUser.lastName ?? ''}`
+
+                    const profileEtag = userData?.headers.get('etag')
+
+                    props.etag = {
+                        profileEtag: profileEtag,
                     }
 
-                    const csrfToken: string = selectCsrfToken(context)
-                    const currentValues: any = selectFormData(context)
-                    const submission: any = selectMultiPartFormData(context)
-                    const requestMethod: requestMethods =
-                        selectRequestMethod(context)
-
-                    props.layoutId = layoutIds.ADMIN
-                    props.forms = {
-                        [formTypes.UPDATE_SITE_USER]: {},
-                        [formTypes.UPDATE_SITE_USER_ROLE]: selectForm(formConfigs, formTypes.UPDATE_SITE_USER_ROLE)
+                    profileForm.initialValues = {
+                        firstName: props.siteUser.firstName,
+                        lastName: props.siteUser.lastName,
+                        pronouns: props.siteUser.pronouns,
+                        id: props.siteUser.id,
+                        imageId: props.siteUser.imageId,
                     }
 
-                    const profileForm: FormConfig =
-                        props.forms[formTypes.UPDATE_SITE_USER]
-
-                    const roleForm: FormConfig =
-                        props.forms[formTypes.UPDATE_SITE_USER_ROLE]
-
-                    /**
-                     * Get data from services
-                     */
-                    try {
-                        const [userData] = await Promise.all([
-                            getSiteUser({ user, targetUserId, isForUpdate: true }),
+                    if (isAdmin) {
+                        /**
+                         * Get role data from services if user is a platform admin
+                         */
+                        const [userRole, userRolesList] = await Promise.all([
+                            getSiteUserRole({ user, targetUserId }),
+                            getSiteUserRoles({ user }),
                         ])
 
-                        props.siteUser = userData.data
-                        props.pageTitle = `${props.contentText.title} - ${
-                            props.siteUser.firstName ?? ''
-                        } ${props.siteUser.lastName ?? ''}`
+                        const roleEtag = userRole?.headers.get('etag')
+                        props.etag.roleEtag = roleEtag
 
-                        const profileEtag = userData?.headers.get('etag')
+                        /**
+                         * Handle setting role options for multi-choice
+                         */
+                        const roleOptions: Array<FormOptions> =
+                            userRolesList?.data?.map((role) => {
+                                return {
+                                    value: role.id,
+                                    label: role.name,
+                                }
+                            })
 
-                        props.etag = {
-                            profileEtag: profileEtag,
-                        }
-
-                        profileForm.initialValues = {
-                            firstName: props.siteUser.firstName,
-                            lastName: props.siteUser.lastName,
-                            pronouns: props.siteUser.pronouns,
-                            id: props.siteUser.id,
-                            imageId: props.siteUser.imageId,
-                        }
-
-                        if (isAdmin) {
-                            /**
-                             * Get role data from services if user is a platform admin
-                             */
-                            const [userRole, userRolesList] = await Promise.all(
-                                [
-                                    getSiteUserRole({ user, targetUserId }),
-                                    getSiteUserRoles({ user }),
-                                ]
-                            )
-
-                            const roleEtag = userRole?.headers.get('etag')
-                            props.etag.roleEtag = roleEtag
-
-                            /**
-                             * Handle setting role options for multi-choice
-                             */
-                            const roleOptions: Array<FormOptions> =
-                                userRolesList?.data?.map((role) => {
-                                    return {
-                                        value: role.id,
-                                        label: role.name,
-                                    }
-                                })
-
-                            const updatedRolesForm: FormConfig = setFormConfigOptions(
+                        const updatedRolesForm: FormConfig =
+                            setFormConfigOptions(
                                 roleForm,
                                 0,
                                 'newRoleId',
                                 roleOptions
                             )
 
-                            props.forms[formTypes.UPDATE_SITE_USER_ROLE] =
-                                updatedRolesForm
+                        props.forms[formTypes.UPDATE_SITE_USER_ROLE] =
+                            updatedRolesForm
 
-                            updatedRolesForm.initialValues = {
-                                newRoleId: userRole.data?.roleId,
-                                currentRoleId: userRole.data?.roleId,
-                            }
-
-                            /**
-                             * Handle server-side role form post
-                             */
-                            if (
-                                submission &&
-                                requestMethod === requestMethods.POST
-                            ) {
-                                if (
-                                    currentValues.body?.['_form-id'] ===
-                                    updatedRolesForm.id
-                                ) {
-                                    updatedRolesForm.initialValues =
-                                        currentValues.getAll()
-
-                                    const headers = getStandardServiceHeaders({
-                                        csrfToken,
-                                        etag: roleEtag,
-                                    })
-
-                                    await putSiteUserRole({
-                                        headers,
-                                        user,
-                                        body: currentValues,
-                                        targetUserId,
-                                    })
-                                }
-                            }
+                        updatedRolesForm.initialValues = {
+                            newRoleId: userRole.data?.roleId,
+                            currentRoleId: userRole.data?.roleId,
                         }
 
                         /**
-                         * Handle server-side profile form post
+                         * Handle server-side role form post
                          */
                         if (
                             submission &&
@@ -194,51 +161,75 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         ) {
                             if (
                                 currentValues.body?.['_form-id'] ===
-                                formTypes.UPDATE_SITE_USER
+                                updatedRolesForm.id
                             ) {
-                                profileForm.initialValues =
+                                updatedRolesForm.initialValues =
                                     currentValues.getAll()
 
-                                const headers = {
-                                    ...getStandardServiceHeaders({
-                                        csrfToken,
-                                        etag: profileEtag,
-                                    }),
-                                    ...submission.getHeaders(),
-                                }
+                                const headers = getStandardServiceHeaders({
+                                    csrfToken,
+                                    etag: roleEtag,
+                                })
 
-                                await putSiteUser({
+                                await putSiteUserRole({
                                     headers,
                                     user,
-                                    body: submission,
+                                    body: currentValues,
                                     targetUserId,
                                 })
                             }
-
-                            return {
-                                redirect: {
-                                    permanent: false,
-                                    destination: `${props.routes.usersRoot}/${targetUserId}`,
-                                },
-                            }
-                        }
-                    } catch (error: any) {
-                        const validationErrors: FormErrors =
-                            getServiceErrorDataValidationErrors(error)
-
-                        if (validationErrors) {
-                            profileForm.errors = validationErrors
-                        } else {
-                            return handleSSRErrorProps({ props, error })
                         }
                     }
 
                     /**
-                     * Return data to page template
+                     * Handle server-side profile form post
                      */
-                    return handleSSRSuccessProps({ props })
-                },
-            }),
+                    if (submission && requestMethod === requestMethods.POST) {
+                        if (
+                            currentValues.body?.['_form-id'] ===
+                            formTypes.UPDATE_SITE_USER
+                        ) {
+                            profileForm.initialValues = currentValues.getAll()
+
+                            const headers = {
+                                ...getStandardServiceHeaders({
+                                    csrfToken,
+                                    etag: profileEtag,
+                                }),
+                                ...submission.getHeaders(),
+                            }
+
+                            await putSiteUser({
+                                headers,
+                                user,
+                                body: submission,
+                                targetUserId,
+                            })
+                        }
+
+                        return {
+                            redirect: {
+                                permanent: false,
+                                destination: `${props.routes.usersRoot}/${targetUserId}`,
+                            },
+                        }
+                    }
+                } catch (error: any) {
+                    const validationErrors: FormErrors =
+                        getServiceErrorDataValidationErrors(error)
+
+                    if (validationErrors) {
+                        profileForm.errors = validationErrors
+                    } else {
+                        return handleSSRErrorProps({ props, error })
+                    }
+                }
+
+                /**
+                 * Return data to page template
+                 */
+                return handleSSRSuccessProps({ props, context })
+            },
         }),
     }),
 })

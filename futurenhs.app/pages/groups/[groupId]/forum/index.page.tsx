@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     /**
                      * Return data to page template
                      */
-                    return handleSSRSuccessProps({ props })
+                    return handleSSRSuccessProps({ props, context })
                 },
             }),
         }),
