@@ -9,7 +9,6 @@ import { layoutIds, groupTabIds } from '@constants/routes'
 import { requestMethods } from '@constants/fetch'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
-import { withTokens } from '@hofs/withTokens'
 import { withGroup } from '@hofs/withGroup'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupDiscussion } from '@services/getGroupDiscussion'
@@ -28,8 +27,6 @@ import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { Pagination } from '@appTypes/pagination'
 
-import { createDiscussionCommentForm } from '@formConfigs/create-discussion-comment'
-import { createDiscussionCommentReplyForm } from '@formConfigs/create-discussion-comment-reply'
 import { GroupDiscussionTemplate } from '@components/_pageTemplates/GroupDiscussionTemplate'
 import { Props } from '@components/_pageTemplates/GroupDiscussionTemplate/interfaces'
 import { formTypes } from '@constants/forms'
@@ -48,141 +45,131 @@ export const getServerSideProps: GetServerSideProps = withUser({
         props,
         getServerSideProps: withGroup({
             props,
-            getServerSideProps: withTokens({
+            getServerSideProps: withTextContent({
                 props,
                 routeId,
-                getServerSideProps: withTextContent({
-                    props,
-                    routeId,
-                    getServerSideProps: async (
-                        context: GetServerSidePropsContext
-                    ) => {
-                        const user: User = selectUser(context)
-                        const groupId: string = selectParam(
-                            context,
-                            routeParams.GROUPID
-                        )
-                        const discussionId: string = selectParam(
-                            context,
-                            routeParams.DISCUSSIONID
-                        )
-                        const pagination: Pagination = selectPagination(context)
-                        const formData: ServerSideFormData =
-                            selectFormData(context)
-                        const requestMethod: requestMethods =
-                            selectRequestMethod(context)
-                        const csrfToken: string = selectCsrfToken(context)
+                getServerSideProps: async (
+                    context: GetServerSidePropsContext
+                ) => {
+                    const user: User = selectUser(context)
+                    const groupId: string = selectParam(
+                        context,
+                        routeParams.GROUPID
+                    )
+                    const discussionId: string = selectParam(
+                        context,
+                        routeParams.DISCUSSIONID
+                    )
+                    const pagination: Pagination = selectPagination(context)
+                    const formData: ServerSideFormData = selectFormData(context)
+                    const requestMethod: requestMethods =
+                        selectRequestMethod(context)
+                    const csrfToken: string = selectCsrfToken(context)
 
-                        
-                        props.forms = {
-                            [formTypes.CREATE_DISCUSSION_COMMENT]: {},
-                            [formTypes.CREATE_DISCUSSION_COMMENT_REPLY]: {}
-                        }
-                        
-                        const commentForm: any =
-                            props.forms[formTypes.CREATE_DISCUSSION_COMMENT]
-                        const replyForm: any =
-                            props.forms[formTypes.CREATE_DISCUSSION_COMMENT_REPLY]
+                    props.forms = {
+                        [formTypes.CREATE_DISCUSSION_COMMENT]: {},
+                        [formTypes.CREATE_DISCUSSION_COMMENT_REPLY]: {},
+                    }
 
-                        props.discussionId = discussionId
-                        props.layoutId = layoutIds.GROUP
-                        props.tabId = groupTabIds.FORUM
+                    const commentForm: any =
+                        props.forms[formTypes.CREATE_DISCUSSION_COMMENT]
+                    const replyForm: any =
+                        props.forms[formTypes.CREATE_DISCUSSION_COMMENT_REPLY]
 
-                        if (formData && requestMethod === requestMethods.POST) {
-                            const formId = formData.get('_form-id')
-                            const commentId: string =
-                                formData.get('_instance-id')
-                            const headers = getStandardServiceHeaders({
-                                csrfToken,
-                            })
+                    props.discussionId = discussionId
+                    props.layoutId = layoutIds.GROUP
+                    props.tabId = groupTabIds.FORUM
 
-                            try {
+                    if (formData && requestMethod === requestMethods.POST) {
+                        const formId = formData.get('_form-id')
+                        const commentId: string = formData.get('_instance-id')
+                        const headers = getStandardServiceHeaders({
+                            csrfToken,
+                        })
+
+                        try {
+                            if (
+                                formId === formTypes.CREATE_DISCUSSION_COMMENT
+                            ) {
+                                commentForm.initialValues = formData.getAll()
+
+                                await postGroupDiscussionComment({
+                                    groupId,
+                                    discussionId,
+                                    user,
+                                    headers,
+                                    body: formData,
+                                })
+                            } else if (
+                                formId ===
+                                formTypes.CREATE_DISCUSSION_COMMENT_REPLY
+                            ) {
+                                replyForm.initialValues = formData.getAll()
+
+                                await postGroupDiscussionCommentReply({
+                                    groupId,
+                                    discussionId,
+                                    commentId,
+                                    user,
+                                    headers,
+                                    body: formData,
+                                })
+                            }
+                        } catch (error) {
+                            const validationErrors: FormErrors =
+                                getServiceErrorDataValidationErrors(error)
+
+                            if (validationErrors) {
                                 if (
                                     formId ===
                                     formTypes.CREATE_DISCUSSION_COMMENT
                                 ) {
-                                    commentForm.initialValues =
-                                        formData.getAll()
-
-                                    await postGroupDiscussionComment({
-                                        groupId,
-                                        discussionId,
-                                        user,
-                                        headers,
-                                        body: formData,
-                                    })
+                                    commentForm.errors = validationErrors
                                 } else if (
                                     formId ===
                                     formTypes.CREATE_DISCUSSION_COMMENT_REPLY
                                 ) {
-                                    replyForm.initialValues = formData.getAll()
-
-                                    await postGroupDiscussionCommentReply({
-                                        groupId,
-                                        discussionId,
-                                        commentId,
-                                        user,
-                                        headers,
-                                        body: formData,
-                                    })
+                                    replyForm.errors = validationErrors
                                 }
-                            } catch (error) {
-                                const validationErrors: FormErrors =
-                                    getServiceErrorDataValidationErrors(error)
-
-                                if (validationErrors) {
-                                    if (
-                                        formId ===
-                                        formTypes.CREATE_DISCUSSION_COMMENT
-                                    ) {
-                                        commentForm.errors = validationErrors
-                                    } else if (
-                                        formId ===
-                                        formTypes.CREATE_DISCUSSION_COMMENT_REPLY
-                                    ) {
-                                        replyForm.errors = validationErrors
-                                    }
-                                } else {
-                                    return handleSSRErrorProps({ props, error })
-                                }
+                            } else {
+                                return handleSSRErrorProps({ props, error })
                             }
                         }
+                    }
 
-                        /**
-                         * Get data from services
-                         */
-                        try {
-                            const [groupDiscussion, groupDiscussionComments] =
-                                await Promise.all([
-                                    getGroupDiscussion({
-                                        user,
-                                        groupId,
-                                        discussionId,
-                                    }),
-                                    getGroupDiscussionCommentsWithReplies({
-                                        user,
-                                        groupId,
-                                        discussionId,
-                                        pagination,
-                                    }),
-                                ])
+                    /**
+                     * Get data from services
+                     */
+                    try {
+                        const [groupDiscussion, groupDiscussionComments] =
+                            await Promise.all([
+                                getGroupDiscussion({
+                                    user,
+                                    groupId,
+                                    discussionId,
+                                }),
+                                getGroupDiscussionCommentsWithReplies({
+                                    user,
+                                    groupId,
+                                    discussionId,
+                                    pagination,
+                                }),
+                            ])
 
-                            props.discussion = groupDiscussion.data
-                            props.discussionCommentsList =
-                                groupDiscussionComments.data
-                            props.pagination =
-                                groupDiscussionComments.pagination
-                            props.pageTitle = `${props.entityText.title} - ${props.discussion.text.title}`
-                        } catch (error) {
-                            return handleSSRErrorProps({ props, error })
-                        }
+                        props.discussion = groupDiscussion.data
+                        props.discussionCommentsList =
+                            groupDiscussionComments.data
+                        props.pagination = groupDiscussionComments.pagination
+                        props.pageTitle = `${props.entityText.title} - ${props.discussion.text.title}`
+                    } catch (error) {
+                        return handleSSRErrorProps({ props, error })
+                    }
 
-                        /**
-                         * Return data to page template
-                         */
-                        return handleSSRSuccessProps({ props })
-                    },
-                }),
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props, context })
+                },
             }),
         }),
     }),

@@ -6,7 +6,7 @@ describe('withTokens hof', () => {
     const props: any = {}
 
     const getServerSideProps = async (context) => {
-        return handleSSRSuccessProps({ props })
+        return handleSSRSuccessProps({ props, context })
     }
 
     it('sets csrf prop', async () => {

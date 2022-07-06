@@ -9,7 +9,6 @@ import { requestMethods } from '@constants/fetch'
 import { actions as actionConstants } from '@constants/actions'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
-import { withTokens } from '@hofs/withTokens'
 import { withTextContent } from '@hofs/withTextContent'
 import {
     selectCsrfToken,
@@ -36,81 +35,75 @@ export const getServerSideProps: GetServerSideProps = withUser({
     props,
     getServerSideProps: withRoutes({
         props,
-        getServerSideProps: withTokens({
+        getServerSideProps: withTextContent({
             props,
             routeId,
-            getServerSideProps: withTextContent({
-                props,
-                routeId,
-                getServerSideProps: async (
-                    context: GetServerSidePropsContext
-                ) => {
-                    const user: User = selectUser(context)
-                    const csrfToken: string = selectCsrfToken(context)
-                    const formData: FormData = selectMultiPartFormData(context)
-                    const requestMethod: string = selectRequestMethod(context)
+            getServerSideProps: async (context: GetServerSidePropsContext) => {
+                const user: User = selectUser(context)
+                const csrfToken: string = selectCsrfToken(context)
+                const formData: FormData = selectMultiPartFormData(context)
+                const requestMethod: string = selectRequestMethod(context)
 
-                    props.forms = {
-                        [formTypes.CREATE_GROUP]: {}
+                props.forms = {
+                    [formTypes.CREATE_GROUP]: {},
+                }
+                const form: any = props.forms[formTypes.CREATE_GROUP]
+
+                /**
+                 * Ticks checkbox by default
+                 */
+                form.initialValues = {
+                    isPublic: true,
+                }
+
+                props.layoutId = layoutIds.ADMIN
+
+                if (
+                    !props.actions?.includes(
+                        actionConstants.SITE_ADMIN_GROUPS_ADD
+                    )
+                ) {
+                    return {
+                        notFound: true,
                     }
-                    const form: any = props.forms[formTypes.CREATE_GROUP]
+                }
 
-                    /**
-                     * Ticks checkbox by default
-                     */
-                    form.initialValues = {
-                        isPublic: true
-                    }
+                /**
+                 * handle server-side form POST
+                 */
+                if (formData && requestMethod === requestMethods.POST) {
+                    const headers = getStandardServiceHeaders({ csrfToken })
 
-                    props.layoutId = layoutIds.ADMIN
+                    try {
+                        const newGroupId = await postGroup({
+                            user,
+                            headers,
+                            body: formData,
+                        })
 
-                    if (
-                        !props.actions?.includes(
-                            actionConstants.SITE_ADMIN_GROUPS_ADD
-                        )
-                    ) {
                         return {
-                            notFound: true,
+                            redirect: {
+                                permanent: false,
+                                destination: `${props.routes.adminGroupsRoot}`,
+                            },
+                        }
+                    } catch (error) {
+                        const validationErrors: FormErrors =
+                            getServiceErrorDataValidationErrors(error)
+
+                        if (validationErrors) {
+                            form.errors = validationErrors
+                        } else {
+                            return handleSSRErrorProps({ props, error })
                         }
                     }
+                }
 
-                    /**
-                     * handle server-side form POST
-                     */
-                    if (formData && requestMethod === requestMethods.POST) {
-                        const headers = getStandardServiceHeaders({ csrfToken })
-
-                        try {
-                            const newGroupId = await postGroup({
-                                user,
-                                headers,
-                                body: formData,
-                            })
-
-                            return {
-                                redirect: {
-                                    permanent: false,
-                                    destination: `${props.routes.adminGroupsRoot}`,
-                                },
-                            }
-                        } catch (error) {
-                            const validationErrors: FormErrors =
-                                getServiceErrorDataValidationErrors(error)
-
-                            if (validationErrors) {
-                                form.errors = validationErrors
-                            } else {
-                                return handleSSRErrorProps({ props, error })
-                            }
-                        }
-                    }
-
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props })
-                },
-            }),
+                /**
+                 * Return data to page template
+                 */
+                return handleSSRSuccessProps({ props, context })
+            },
         }),
     }),
 })

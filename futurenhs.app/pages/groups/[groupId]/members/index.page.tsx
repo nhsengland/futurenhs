@@ -10,17 +10,22 @@ import { withGroup } from '@hofs/withGroup'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupMembers } from '@services/getGroupMembers'
 import { getPendingGroupMembers } from '@services/getPendingGroupMembers'
-import { selectUser, selectPagination, selectParam, selectCsrfToken, selectFormData, selectRequestMethod } from '@selectors/context'
+import {
+    selectUser,
+    selectPagination,
+    selectParam,
+    selectCsrfToken,
+    selectFormData,
+    selectRequestMethod,
+} from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
-import formConfigs from '@formConfigs/index'
 
 import { GroupMemberListingTemplate } from '@components/_pageTemplates/GroupMemberListingTemplate'
 import { Props } from '@components/_pageTemplates/GroupMemberListingTemplate/interfaces'
 import { formTypes } from '@constants/forms'
-import { selectForm } from '@selectors/forms'
-import { FormConfig, FormErrors } from '@appTypes/form'
+import { FormErrors } from '@appTypes/form'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { requestMethods } from '@constants/fetch'
 import { getStandardServiceHeaders } from '@helpers/fetch'
@@ -48,7 +53,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                 ) => {
                     const user: User = selectUser(context)
                     const csrfToken: string = selectCsrfToken(context)
-                    const requestMethod: requestMethods = selectRequestMethod(context)
+                    const requestMethod: requestMethods =
+                        selectRequestMethod(context)
                     const currentValues: any = selectFormData(context)
                     const groupId: string = selectParam(
                         context,
@@ -64,9 +70,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                     props.tabId = groupTabIds.MEMBERS
                     props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
 
-
                     props.forms = {
-                        initial: {}
+                        initial: {},
                     }
 
                     /**
@@ -90,47 +95,54 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             currentValues &&
                             requestMethod === requestMethods.POST
                         ) {
+                            const headers = getStandardServiceHeaders({
+                                csrfToken,
+                            })
 
-                            const headers =
-                                getStandardServiceHeaders({
-                                    csrfToken,
-                                });
+                            const isAcceptForm: boolean = checkMatchingFormType(
+                                currentValues,
+                                formTypes.ACCEPT_GROUP_MEMBER
+                            )
+                            const isRejectForm: boolean = checkMatchingFormType(
+                                currentValues,
+                                formTypes.REJECT_GROUP_MEMBER
+                            )
 
-
-                            const isAcceptForm: boolean = checkMatchingFormType(currentValues, formTypes.ACCEPT_GROUP_MEMBER)
-                            const isRejectForm: boolean = checkMatchingFormType(currentValues, formTypes.REJECT_GROUP_MEMBER)
-
-                            if(isAcceptForm) {
-
-                                await postGroupMemberAccept({groupId, user, headers, body: currentValues})
-
+                            if (isAcceptForm) {
+                                await postGroupMemberAccept({
+                                    groupId,
+                                    user,
+                                    headers,
+                                    body: currentValues,
+                                })
                             }
 
-                            if(isRejectForm) {
-
-                                await postGroupMemberReject({groupId, user, headers, body: currentValues})
-
-                            }
-
-                        }
-
-                        } catch (error) {
-                            const validationErrors: FormErrors =
-                                getServiceErrorDataValidationErrors(error)
-
-                            if (validationErrors) {
-                                props.forms.initial.errors = validationErrors
-                            } else {
-                                return handleSSRErrorProps({ props, error })
+                            if (isRejectForm) {
+                                await postGroupMemberReject({
+                                    groupId,
+                                    user,
+                                    headers,
+                                    body: currentValues,
+                                })
                             }
                         }
+                    } catch (error) {
+                        const validationErrors: FormErrors =
+                            getServiceErrorDataValidationErrors(error)
 
-                        /**
-                         * Return data to page template
-                         */
-                        return handleSSRSuccessProps({ props })
-                    },
-                }),
+                        if (validationErrors) {
+                            props.forms.initial.errors = validationErrors
+                        } else {
+                            return handleSSRErrorProps({ props, error })
+                        }
+                    }
+
+                    /**
+                     * Return data to page template
+                     */
+                    return handleSSRSuccessProps({ props, context })
+                },
+            }),
         }),
     }),
 })
