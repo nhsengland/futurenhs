@@ -5,6 +5,9 @@ import { SVGIcon } from '@components/SVGIcon'
 
 import { Props } from './interfaces'
 
+/**
+ * Generic search input
+ */
 export const Search: (props: Props) => JSX.Element = ({
     value,
     method,

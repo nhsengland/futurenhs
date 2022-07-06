@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Props } from './interfaces'
 
+/**
+ * Derived from the Home Office pagination component: https://design.homeoffice.gov.uk/components?name=Pagination.
+ * Supports progressive enhancement to work with a load more button.
+ */
 export const PaginationStatus: (props: Props) => JSX.Element = ({
     text = {
         prefix: 'Showing',
