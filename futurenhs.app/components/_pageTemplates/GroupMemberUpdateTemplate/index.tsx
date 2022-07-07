@@ -3,10 +3,8 @@ import { useRouter } from 'next/router'
 
 import { formTypes } from '@constants/forms'
 import { actions as actionsConstants } from '@constants/actions'
-import { selectForm } from '@selectors/forms'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
-import { BackLink } from '@components/BackLink'
 import { UserProfile } from '@components/UserProfile'
 import { Form } from '@components/Form'
 import { ErrorSummary } from '@components/ErrorSummary'
@@ -21,6 +19,7 @@ import { getGenericFormError } from '@helpers/util/form'
 import { putGroupMemberRole } from '@services/putGroupMemberRole'
 import { useFormConfig } from '@hooks/useForm'
 import { Image } from '@appTypes/image'
+import { ActionLink } from '@components/ActionLink'
 
 /**
  * Group member template
@@ -163,10 +162,13 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
      */
     return (
         <LayoutColumn className="c-page-body">
-            <BackLink
+            <ActionLink
                 href={routes.groupMembersRoot}
+                iconName="icon-chevron-left"
+                className="u-mb-8"
                 text={{
-                    link: 'Back',
+                    body: 'Back',
+                    ariaLabel: 'Go back to list of group members',
                 }}
             />
             <ErrorSummary

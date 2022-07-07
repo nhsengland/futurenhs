@@ -25,7 +25,6 @@ import { Form } from '@components/Form'
 import { ErrorSummary } from '@components/ErrorSummary'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { PaginationWithStatus } from '@components/PaginationWithStatus'
-import { BackLink } from '@components/BackLink'
 import { UserMeta } from '@components/UserMeta'
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies'
 import { getRouteToParam } from '@helpers/routing/getRouteToParam'
@@ -36,6 +35,7 @@ import { Props } from './interfaces'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { useFormConfig } from '@hooks/useForm'
 import { Image } from '@appTypes/image'
+import { ActionLink } from '@components/ActionLink'
 
 /**
  * Group discussion template
@@ -373,10 +373,14 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         className="u-mb-10"
                     />
                 )}
-                <BackLink
+
+                <ActionLink
                     href={backLinkHref}
+                    iconName="icon-chevron-left"
+                    className="u-mb-8"
                     text={{
-                        link: 'Back to discussions',
+                        body: 'Back to discussions',
+                        ariaLabel: 'Go back to list of group discussions',
                     }}
                 />
                 <div
