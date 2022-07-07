@@ -4,6 +4,9 @@ import classNames from 'classnames'
 
 import { Props } from './interfaces'
 
+/**
+ * Renders rich text content 
+ */
 export const RichText: (props: Props) => JSX.Element = ({
     id,
     bodyHtml,
@@ -15,9 +18,7 @@ export const RichText: (props: Props) => JSX.Element = ({
     shouldPadleft = false,
     stripHtmlPattern = null,
 }) => {
-    /**
-     * Renders HTML
-     */
+
     const createMarkup = (bodyHtml: string): any => ({ __html: bodyHtml })
 
     const basic = /\s?<!doctype html>|(<html\b[^>]*>|<body\b[^>]*>|<x-[^>]+>)+/i
