@@ -38,11 +38,6 @@ namespace UmbracoContentApi.Core.Resolvers
         {
             try
             {
-                if (content is null)
-                {
-                    return new ContentModelData();
-                }
-
                 var contentType = _contentTypeService.Get(content.ContentType.Alias);
                 var contentModel = new ContentModelData
                 {
@@ -132,11 +127,6 @@ namespace UmbracoContentApi.Core.Resolvers
         {
             try
             {
-                if (content is null)
-                {
-                    return new ContentModelData();
-                }
-
                 var contentType = _contentTypeService.Get(content.ContentType.Alias);
                 var contentModel = new ContentModelData
                 {

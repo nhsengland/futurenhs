@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 using Umbraco9ContentApi.Core.Services.FutureNhs.Interface;
@@ -9,11 +10,14 @@ namespace Umbraco9ContentApi.Core.Services.FutureNhs
     {
         private readonly IConfiguration _config;
         private readonly IFutureNhsContentService _futureNhsContentService;
+        private readonly ILogger<FutureNhsSiteMapService> _logger;
 
-        public FutureNhsSiteMapService(IFutureNhsContentService futureNhsContentService, IConfiguration config)
+
+        public FutureNhsSiteMapService(IFutureNhsContentService futureNhsContentService, IConfiguration config, ILogger<FutureNhsSiteMapService> logger)
         {
             _futureNhsContentService = futureNhsContentService;
             _config = config;
+            _logger = logger;
         }
 
         public bool IsRoot(IPublishedContent page)

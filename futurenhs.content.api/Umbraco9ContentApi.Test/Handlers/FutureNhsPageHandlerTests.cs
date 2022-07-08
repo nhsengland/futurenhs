@@ -3,6 +3,7 @@
     using Core.Handlers.FutureNhs;
     using Core.Services.FutureNhs.Interface;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
     using System;
@@ -15,8 +16,6 @@
     using Umbraco.Cms.Web.Common.PublishedModels;
     using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Services.FutureNhs;
-    using UmbracoContentApi.Core.Builder;
-    using UmbracoContentApi.Core.Converters;
     using ContentModelData = Core.Models.Content.ContentModelData;
 
     /// <summary>
@@ -31,11 +30,9 @@
         private Mock<IFutureNhsBlockService> _mockFutureNhsBlockService = new();
         private Mock<IContentService> _mockContentService = new();
         private Mock<IFutureNhsValidationService> _mockFutureNhsValidationService = new();
-
+        private Mock<ILogger<FutureNhsBlockService>> _mockLogger = new();
 
         // Variables
-        private FutureNhsBlockService _futureNhsBlockService;
-        private FutureNhsValidationService _futureNhsValidationService;
         private IConfiguration _config;
         private CancellationToken cancellationToken;
 
@@ -46,9 +43,6 @@
         public void Setup()
         {
             _mockFutureNhsContentService.SetupAllProperties();
-            _futureNhsBlockService = new FutureNhsBlockService(_config, new ConverterCollection(new Mock<Func<IEnumerable<IConverter>>>().Object),
-                _mockFutureNhsContentService.Object, _mockContentTypeService.Object, _mockContentService.Object);
-            _futureNhsValidationService = new(_mockContentTypeService.Object);
             var inMemorySettings = new Dictionary<string, string> { { "AppKeys:Folders:Groups", Guid.NewGuid().ToString() } };
             _config = new ConfigurationBuilder()
                .AddInMemoryCollection(inMemorySettings)
@@ -67,8 +61,10 @@
             var newPageName = "Test Page";
             var contentId = Guid.NewGuid();
             var mockContent = GetMockContent(contentId);
-            var pageHandler = GetHandler(_config, _mockFutureNhsContentService.Object,
-                _mockFutureNhsBlockService.Object, _futureNhsValidationService);
+            var pageHandler = GetHandler(_config,
+                _mockFutureNhsContentService.Object,
+                _mockFutureNhsBlockService.Object,
+                _mockFutureNhsValidationService.Object);
 
             _mockFutureNhsContentService
                 .Setup(x => x.CreateContentFromTemplate(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<Guid>(), cancellationToken))
@@ -89,6 +85,9 @@
 
         #region Update Page Success Tests
 
+        /// <summary>
+        /// Updates the page all information provided success.
+        /// </summary>
         [Test]
         public async Task UpdatePage_AllInformationProvided_Success()
         {
@@ -114,8 +113,10 @@
                 .Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken))
                 .Returns(mockPublishedContent.Object);
 
-            var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object,
-                _mockFutureNhsBlockService.Object, _mockFutureNhsValidationService.Object);
+            var contentHandler = GetHandler(_config,
+                _mockFutureNhsContentService.Object,
+                _mockFutureNhsBlockService.Object,
+                _mockFutureNhsValidationService.Object);
 
             // Act
             var contentResult = contentHandler.UpdatePage(contentId, pageModel.Object, cancellationToken);
