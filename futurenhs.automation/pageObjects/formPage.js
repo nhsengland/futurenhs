@@ -1,4 +1,3 @@
-const { elementTextContains } = require('selenium-webdriver/lib/until');
 const helpers = require('../util/helpers');
 const basePage = require('./basePage');
 
