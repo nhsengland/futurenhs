@@ -29,6 +29,13 @@ jobs:
     name: dotenv
     inputs:
       secureFile: '.env'
+      
+  - task: CopyFiles@2
+    displayName: 'Copy dot env file'
+    inputs:
+      SourceFolder: '$(Agent.TempDirectory)'
+      Contents: '.env'
+      TargetFolder: '$(Build.SourcesDirectory)/futurenhs.automation'
 
   - task: CopyFiles@2
     displayName: 'Copy files for artifact'
@@ -37,12 +44,6 @@ jobs:
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-  - task: CopyFiles@2
-    displayName: 'Copy dot env file'
-    inputs:
-      SourceFolder: '$(dotenv.securFilePath)'
-      Contents: '**'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)/futurenhs.automation'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish artifact'
