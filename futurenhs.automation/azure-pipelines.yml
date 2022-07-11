@@ -40,8 +40,8 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Copy dot env file'
     inputs:
-      SourceFolder: '$(Agent.TempDirectory)'
-      Contents: '$(dotenv.securFilePath)'
+      SourceFolder: '$(dotenv.securFilePath)'
+      Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)/futurenhs.automation'
 
   - task: PublishPipelineArtifact@1
