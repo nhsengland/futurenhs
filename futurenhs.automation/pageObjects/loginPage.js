@@ -4,29 +4,24 @@ const genericPage = require('./genericPage');
 
 const userTypes = { 
     admin:{
-        username: "autoAdmin@test.co.uk",
-        password: "Tempest070",
-        fullName: "Auto Admin"
+        username: process.env[`ADMIN_USERNAME`],
+        password: process.env[`ADMIN_PASSWORD`]
     },
     groupadmin:{
-        username: "autoGroupAdmin@test.co.uk",
-        password: "Tempest070",
-        fullName: "Auto GroupAdmin"
+        username: process.env[`GROUP_ADMIN_USERNAME`],
+        password: process.env[`GROUP_ADMIN_PASSWORD`]
     },
     user:{
-        username: "autoUser@test.co.uk",
-        password: "Tempest070",
-        fullName: "Auto User"
+        username: process.env[`USER_USERNAME`],
+        password: process.env[`USER_PASSWORD`]
     },
     visreguser:{
-        username: "VisRegUser@email.com",
-        password: "Tempest101",
-        fullName: "Vis Reg"
+        username: process.env[`VISUAL_REGRESSION_USERNAME`],
+        password: process.env[`VISUAL_REGRESSION_PASSWORD`]
     },
     edituser:{
-        username: "autoEditUser@test.co.uk",
-        password: "Tempest101",
-        fullName: "AutoEdit User"
+        username: process.env[`EDITABLE_USER_USERNAME`],
+        password: process.env[`EDITABLE_USER_PASSWORD`]
     }
 };
 
