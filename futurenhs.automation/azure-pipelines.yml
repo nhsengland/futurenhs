@@ -25,12 +25,24 @@ jobs:
       customCommand: 'i'
       workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
       
+  - task: DownloadSecureFile@1
+    name: dotenv
+    inputs:
+      secureFile: '.env'
+
   - task: CopyFiles@2
     displayName: 'Copy files for artifact'
     inputs:
       SourceFolder: '$(Build.SourcesDirectory)/futurenhs.automation'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: CopyFiles@2
+    displayName: 'Copy dot env file'
+    inputs:
+      SourceFolder: '$(Agent.TempDirectory)'
+      Contents: '$(dotenv.securFilePath)'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/futurenhs.automation'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish artifact'
