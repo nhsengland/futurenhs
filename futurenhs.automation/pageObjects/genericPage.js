@@ -91,7 +91,11 @@ class genericPage extends basePage {
      */
     selectAccordionItem(linkValue, accordionName) {
         var openAccordion = this.openAccordion(accordionName);
-        helpers.click(openAccordion.$(`./div//ul/li[contains(normalize-space(.), "${linkValue}")]`));
+        if(linkValue === "Leave group" || linkValue === "Join group") {
+            this.contentClick('button', linkValue);
+        } else {
+            helpers.click(openAccordion.$(`./div//ul/li[contains(normalize-space(.), "${linkValue}")]`));
+        }
     }
 
     /**
