@@ -214,7 +214,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                             });
 
             return GenerateDiscussionModelFromData(results).FirstOrDefault();
-        }        
+        }
 
         public async Task<DiscussionCreatorDetails> GetDiscussionCreatorDetailsAsync(Guid discussionId, CancellationToken cancellationToken)
         {

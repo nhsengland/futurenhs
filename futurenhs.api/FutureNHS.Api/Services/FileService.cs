@@ -168,9 +168,21 @@ namespace FutureNHS.Api.Services
                             {
                                 md5Hash = await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName, MimeTypesMap.GetMimeType(encodedFileName), cancellationToken);
                             }
-                            catch (Exception ex)
+                            catch (Exception uploadExeption)
                             {
-                                _logger.LogError(ex, "An error occurred uploading file to blob storage");
+                                try
+                                {
+                                    await _blobStorageProvider.DeleteFileAsync(uniqueFileName);
+                                }
+                                catch (Exception deleteExeption)
+                                {
+                                    AggregateException aggregateException = new AggregateException(new[] { uploadExeption, deleteExeption });
+
+                                    _logger.LogError(aggregateException, "An error occurred while uploading the file {uniqueFileName} to blob storage, and it was not possible to delete the file", uniqueFileName);
+
+                                    throw aggregateException;
+                                }
+                                _logger.LogError(uploadExeption, "An error occurred uploading the file {uniqueFileName} to blob storage", uniqueFileName);
                                 throw;
                             }
 
