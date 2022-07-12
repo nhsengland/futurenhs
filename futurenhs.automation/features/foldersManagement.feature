@@ -75,7 +75,7 @@ Feature: forumAdmin
         Examples:
             | title         | description                   | errorMsg                       |
             |               |                               | Enter the folder title         |
-            | Empty Folder  | automation folder description | Enter a unique folder title    |
+            | Empty Folder  | automation folder description | Enter a unique folder name     |
             | [STRING: 201] | description                   | Enter 200 or fewer characters  |
             | FolderName    | [STRING: 4001]                | Enter 4000 or fewer characters |
 
@@ -104,7 +104,7 @@ Feature: forumAdmin
         Examples:
             | foldertitle   | description    | errorMsg                       |
             |               |                | Enter the folder title         |
-            | Empty Folder  |                | Enter a unique folder title    |
+            | Empty Folder  |                | Enter a unique folder name     |
             | [STRING: 201] | description    | Enter 200 or fewer characters  |
             | FolderName    | [STRING: 4001] | Enter 4000 or fewer characters |
 

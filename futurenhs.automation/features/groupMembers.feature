@@ -26,6 +26,7 @@ Feature: groupMembers
         Then the 'Pending members' table is not displayed
 
     @Pending
+    # DEPRECATED, USER REGISTRATION JOURNEY STILL IN DESIGN
     Scenario: FNHS28 - Add Registered User
         When I select the 'Automation Public Group' group card
         Then the 'Automation Public Group' header is displayed
@@ -36,6 +37,7 @@ Feature: groupMembers
         Then the 'The email address belongs to a member of this group.' link is not displayed
 
     @Pending
+    # DEPRECATED, USER REGISTRATION JOURNEY STILL IN DESIGN
     Scenario Outline: FNHS29 - Add Registered User Error Validation
         When I select the 'Automation Public Group' group card
         Then the 'Automation Public Group' header is displayed

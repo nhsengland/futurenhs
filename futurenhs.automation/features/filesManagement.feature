@@ -10,7 +10,7 @@ Feature: filesManagement
 		When I click the 'Files' tab
 		Then the 'Files' header is displayed
 
-	@Core @NotInLocal
+	@Core
 	Scenario Outline: FNHS72 - Upload a file
 		When I click the 'Empty Folder' link
 		Then the 'Empty Folder' header is displayed

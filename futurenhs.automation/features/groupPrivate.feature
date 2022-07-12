@@ -68,6 +68,6 @@ Feature: groupPrivate
         Then the 'My Groups' header is displayed
         And I have navigated to '/groups/automation-private-group'
         Then the 'Automation Private Group' header is displayed
-        And the 'Join Group' link is displayed
-        When I click the 'Join Group' link
+        And the 'Join group' button is displayed
+        When I click the 'Join group' button
         Then the 'Awaiting Approval' textual value is displayed
