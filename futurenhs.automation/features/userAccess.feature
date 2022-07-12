@@ -40,8 +40,8 @@ Feature: User Access
         Given I have navigated to '/groups/aa/'
         Then the 'Log In' header is displayed
 
-    # MOVE TO NEW REGISTRATION FEATURE WHEN NEEDED
     @Pending
+    # DEPRECATED, USER REGISTRATION JOURNEY STILL IN DESIGN
     Scenario Outline: FNHS06 - User Registration Error Validation
         Given I have navigated to '/members/register' and accept the cookies
         Then the 'Register for an account' header is displayed
@@ -60,8 +60,8 @@ Feature: User Access
             | auto@test.co.uk    | password    | Password101    | auto      | test    | Your password must be at least 10 characters long                                       |
             | auto@test.co.uk    | Password101 | password111    | auto      | test    | Your passwords do not match                                                             |
             | auto@test.co.uk    | Password101 | Password101    |           | test    | Please provide your first name                                                          |
-    # MOVE TO NEW REGISTRATION FEATURE WHEN NEEDED
     @Core @Pending
+    # DEPRECATED, USER REGISTRATION JOURNEY STILL IN DESIGN
     Scenario: FNHS07 - Attempt to register as an uninvited user
         Given I have navigated to '/members/register' and accept the cookies
         Then the 'Register for an account' header is displayed

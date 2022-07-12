@@ -60,22 +60,14 @@ Feature: mobileNavigation
     Scenario: FNHS:M05 - Join a public group
         And I have navigated to '/groups/automation-public-group'
         Then the 'Automation Public Group' header is displayed
-        And the 'Join Group' link is displayed
-        When I click the 'Join Group' link
-        Then the 'Join Group' link is not displayed
+        And the 'Join group' button is displayed
+        When I click the 'Join group' button
+        Then the 'Join group' button is not displayed
         When I select 'Members' from the group menu accordion
         Then the 'auto User' row is displayed on the 'Group Members' table
 
     
-    Scenario: FNHS:M06 - Leave a group
-        And I have navigated to '/groups/automation-public-group'
-        Then the 'Automation Public Group' header is displayed
-        When I select 'Leave group' from the group actions accordion
-        Then I confirm this on the open dialog
-        And the 'Join Group' link is displayed
-
-    
-    Scenario: FNHS:M07 - View group member profile page
+    Scenario: FNHS:M06 - View group member profile page
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
         When I select 'Members' from the group menu accordion
@@ -88,7 +80,8 @@ Feature: mobileNavigation
             | Last name  | User                |
             | Email      | autoUser@test.co.uk |
 
-    Scenario: FNHS:M08 - View a forum discussion
+
+    Scenario: FNHS:M07 - View a forum discussion
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed 
         When I select 'Forum' from the group menu accordion
@@ -115,51 +108,58 @@ Feature: mobileNavigation
         When I open the 'Show more replies' accordion
 
         
-        Scenario: FNHS:M09 - Files and Folders page validation
-            When I select the 'Automation Admin Group' group card
-            Then the 'Automation Admin Group' header is displayed 
-            When I select 'Files' from the group menu accordion
-            Then the 'Files' header is displayed
-            And the 'Add Folder' link is displayed
-            And the 'Group Files' mobile table is displayed
-                | Folder                 |
-                | 4000DescTest           |
-                | Description            |
-                |                        |
-                | Folder                 |
-                | AutoFolder             |
-                | Description            |
-                |                        |
-                | Folder                 |
-                | Automation Test Folder |
-            When I click the 'Automation Test Folder' link
-            Then the 'Automation Test Folder' header is displayed
-            And the 'Add Folder' link is displayed
-            And the 'Upload File' link is displayed
-            And the 'Group Files' mobile table is displayed
-                | Folder |
-                | Folder 1 |
-                | |
-                | |
-                | |
-                | .doc |
-                | docTest |
-                | Description |
-                | |
-                | Download file |
-                | .pdf |
-                | pdfTest |
-                | Description |
-                | |
-                | Download file |
-                | .xlsx |
-                | test excel |
-                | Description |
-                | |
-                | Download file |
-                | .pptx |
-                | test ppt |
-                | Description |
-                | |
-                | Download file |
+    Scenario: FNHS:M08 - Files and Folders page validation
+        When I select the 'Automation Admin Group' group card
+        Then the 'Automation Admin Group' header is displayed 
+        When I select 'Files' from the group menu accordion
+        Then the 'Files' header is displayed
+        And the 'Add Folder' link is displayed
+        And the 'Group Files' mobile table is displayed
+            | Folder                 |
+            | 4000DescTest           |
+            | Description            |
+            |                        |
+            | Folder                 |
+            | AutoFolder             |
+            | Description            |
+            |                        |
+            | Folder                 |
+            | Automation Test Folder |
+        When I click the 'Automation Test Folder' link
+        Then the 'Automation Test Folder' header is displayed
+        And the 'Add Folder' link is displayed
+        And the 'Upload File' link is displayed
+        And the 'Group Files' mobile table is displayed
+            | Folder |
+            | Folder 1 |
+            | |
+            | |
+            | |
+            | .doc |
+            | docTest |
+            | Description |
+            | |
+            | Download file |
+            | .pdf |
+            | pdfTest |
+            | Description |
+            | |
+            | Download file |
+            | .xlsx |
+            | test excel |
+            | Description |
+            | |
+            | Download file |
+            | .pptx |
+            | test ppt |
+            | Description |
+            | |
+            | Download file |
 
+
+    Scenario: FNHS:M09 - Leave a group
+        And I have navigated to '/groups/aa'
+        Then the 'Automation Admin Group' header is displayed
+        When I select 'Leave group' from the group actions accordion
+        Then I confirm this on the open dialog
+        And the 'Join group' button is displayed

@@ -34,7 +34,7 @@ Feature: Groups
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
         When I open the 'Group actions' accordion
-        Then the 'Leave group' link is displayed
+        Then the 'Leave group' button is displayed
         When I click the 'Forum' tab
         Then the 'All Discussions' header is displayed
         When I click the 'Files' tab
@@ -52,7 +52,7 @@ Feature: Groups
         Then the 'Automation Admin Group' header is displayed
         When I open the 'Group actions' accordion
         Then the 'Edit group information' link is not displayed
-        And the 'Leave group' link is displayed
+        And the 'Leave group' button is displayed
         And the 'Welcome to FutureNHS' header is displayed
         And the 'A platform from the NHS, helping the health and social care sector connect and collaborate' textual value is displayed
         And the 'Key Links' header is displayed
@@ -82,10 +82,10 @@ Feature: Groups
         And the 'Group Members' table exists
 
     @Pending
-    # About Us, Deprecated and new work has removed it from general user view
     Scenario: FNHS18 - Group about us validation
-        When I select the 'Automation Admin Group' group card
-        Then the 'Automation Admin Group' header is displayed
+        Given I have navigated to '/groups/automation-private-group'
+        When I select the 'Automation Private Group' group card
+        Then the 'Automation Private Group' header is displayed
         When I click the 'About Us' tab
         Then the 'About Us' header is displayed
         And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
