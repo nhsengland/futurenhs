@@ -41,8 +41,6 @@ Feature: Groups
         Then the 'Files' header is displayed
         When I click the 'Members' tab
         Then the 'Group Members' table exists
-        # When I click the 'About Us' tab
-        # Then the 'About Us' header is displayed
         When I click the 'Home' tab
         Then the 'Welcome to FutureNHS' header is displayed
 
@@ -72,7 +70,7 @@ Feature: Groups
             | Created by Auto Admin [PRETTYDATE]      |
             | Last comment by Auto Admin [PRETTYDATE] |
             | Comments: 15                            |
-    # | Views: 0                                |
+    # | Views: 0                                | VIEWS DEPRECATED FEATURE AWAITING REQUIREMENTS
 
 
     Scenario: FNHS17 - Group Members validation
@@ -81,17 +79,14 @@ Feature: Groups
         When I click the 'Members' tab
         And the 'Group Members' table exists
 
-    @Pending
+    
     Scenario: FNHS18 - Group about us validation
         Given I have navigated to '/groups/automation-private-group'
-        When I select the 'Automation Private Group' group card
         Then the 'Automation Private Group' header is displayed
-        When I click the 'About Us' tab
+        When I click the 'About us' tab
         Then the 'About Us' header is displayed
-        And the 'DO NOT USE - This group is reserved solely for use by our automated test scripts' textual value is displayed
-        And the 'Group Rules' header is displayed
-        And the 'Baatezu subtype bonus creation subschool divination druid fear aura granted power lawful magical beast type mentalism domain nauseated sorcerer spell domain total concealment travel domain. Abjuration alignment alternate form blindsight construct type damage fate domain fly free action halfling domain improved evasion infection lawful melee miniature figure modifier natural reach plant type player character result spell descriptor spell immunity strength domain subschool suffering domain swarm subtype unarmed attack untrained.' textual value is displayed
-
+        And the 'Join group' button is displayed    
+    
 
     Scenario: FNHS21 - Group Members, Table Validation
         When I select the 'Automation Admin Group' group card
