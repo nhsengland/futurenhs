@@ -19,7 +19,7 @@ import { GroupHomeTemplate } from '@components/_pageTemplates/GroupHomeTemplate'
 import { Props } from '@components/_pageTemplates/GroupHomeTemplate/interfaces'
 
 const routeId: string = '7a9bdd18-45ea-4976-9810-2fcb66242e27'
-const props: Partial<Props> = {}
+let props: Partial<Props> = {}
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -53,6 +53,12 @@ export const getServerSideProps: GetServerSideProps = withReset({
                          * Get data from services
                          */
                         try {
+
+                            props.contentPageId = null
+                            props.contentTemplateId = null
+                            props.contentBlocks = []
+                            props.contentTemplate = []
+
                             const contentTemplateId: string =
                                 '0b955a4a-9e26-43e8-bb4b-51010e264d64'
                             const groupHomePageCmsContentIds =
