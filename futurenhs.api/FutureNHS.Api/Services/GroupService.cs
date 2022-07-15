@@ -36,14 +36,24 @@ namespace FutureNHS.Api.Services
         private readonly IGroupImageService _imageService;
         private readonly IHtmlSanitizer _htmlSanitizer;
         private readonly IGroupDataProvider _groupDataProvider;
+        private readonly IContentService _contentService;
+
 
 
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 5242880; // 5MB
 
-        public GroupService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand,
-            IImageBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupImageService imageService, IGroupCommand groupCommand,
-            IHtmlSanitizer htmlSanitizer, IGroupDataProvider groupDataProvider)
+        public GroupService(ISystemClock systemClock,
+            ILogger<DiscussionService> logger,
+            IPermissionsService permissionsService,
+            IFileCommand fileCommand,
+            IImageBlobStorageProvider blobStorageProvider,
+            IFileTypeValidator fileTypeValidator,
+            IGroupImageService imageService,
+            IGroupCommand groupCommand,
+            IHtmlSanitizer htmlSanitizer, 
+            IGroupDataProvider groupDataProvider, 
+            IContentService contentService)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
             _blobStorageProvider = blobStorageProvider ?? throw new ArgumentNullException(nameof(blobStorageProvider));
@@ -54,6 +64,7 @@ namespace FutureNHS.Api.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
             _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
+            _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
         }
 
         public async Task<(uint totalGroups, IEnumerable<AdminGroupSummary> groupSummaries)> AdminGetGroupsAsync(Guid userId, uint page = PaginationSettings.MinOffset, uint pageSize = PaginationSettings.DefaultPageSize, CancellationToken cancellationToken = default)
@@ -368,9 +379,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var groupMembers = await _groupDataProvider.GetGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
-
-            return groupMembers;
+            return await _groupDataProvider.GetGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
         }
 
         public async Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken)
@@ -385,9 +394,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var pendingGroupMembers = await _groupDataProvider.GetPendingGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
-
-            return pendingGroupMembers;
+            return await _groupDataProvider.GetPendingGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
         }
 
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
@@ -395,9 +402,7 @@ namespace FutureNHS.Api.Services
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
 
-            var group = await _groupDataProvider.GetGroupAsync(slug, userId, cancellationToken);
-
-            return group;
+            return await _groupDataProvider.GetGroupAsync(slug, userId, cancellationToken);
         }
 
         public async Task<GroupMemberDetails> GetGroupMemberAsync(Guid userId, string slug, Guid memberId, CancellationToken cancellationToken)
@@ -406,7 +411,6 @@ namespace FutureNHS.Api.Services
             if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
             if (Guid.Empty == memberId) throw new ArgumentOutOfRangeException(nameof(memberId));
 
-
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupViewRole, cancellationToken);
             if (!userCanPerformAction)
             {
@@ -414,16 +418,43 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var groupMember = await _groupDataProvider.GetGroupMemberAsync(slug, memberId, cancellationToken);
+            return await _groupDataProvider.GetGroupMemberAsync(slug, memberId, cancellationToken);
+        }
 
-            return groupMember;
+        public async Task<GroupSite> CreateGroupSiteDataAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupEditRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError("Error: CreateGroupSiteDataAsync - User: {User} does not have permission to create missing group site for group: {GroupSlug}", userId, slug);
+                throw new NotFoundException($"Site data for group slug: {slug} is missing");
+            }
+
+            var now = _systemClock.UtcNow.UtcDateTime;
+            var group = await _groupCommand.GetGroupAsync(slug, cancellationToken);
+            var createContentResponse = await _contentService.CreatePageAsync(userId, group.Id, null, cancellationToken);
+            var createdContentGuid = Guid.Parse(createContentResponse.Data);
+
+            var groupSiteDto = new GroupSiteDto()
+            {
+                GroupId = group.Id,
+                CreatedAtUTC = now,
+                CreatedBy = userId,
+                ContentRootId = createdContentGuid
+            };
+
+            await _groupCommand.CreateGroupSiteAsync(groupSiteDto, cancellationToken);
+
+            return await _groupDataProvider.GetGroupSiteDataAsync(slug, cancellationToken);
         }
 
         public async Task<GroupSite> GetGroupSiteDataAsync(Guid userId, string slug, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
-
 
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, GroupViewRole, cancellationToken);
             if (!userCanPerformAction)
@@ -432,15 +463,12 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var groupMember = await _groupDataProvider.GetGroupSiteDataAsync(slug, cancellationToken);
-
-            return groupMember;
+            return await _groupDataProvider.GetGroupSiteDataAsync(slug, cancellationToken);
         }
 
         public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
-
 
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, GroupViewRole, cancellationToken);
             if (!userCanPerformAction)
@@ -449,15 +477,12 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var groupMember = await _groupDataProvider.GetGroupsForUserAsync(userId, offset, limit, cancellationToken);
-
-            return groupMember;
+            return await _groupDataProvider.GetGroupsForUserAsync(userId, offset, limit, cancellationToken);
         }
 
         public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> DiscoverGroupsForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
-
 
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, GroupViewRole, cancellationToken);
             if (!userCanPerformAction)
@@ -466,9 +491,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var groupMember = await _groupDataProvider.DiscoverGroupsForUserAsync(userId, offset, limit, cancellationToken);
-
-            return groupMember;
+            return await _groupDataProvider.DiscoverGroupsForUserAsync(userId, offset, limit, cancellationToken);
         }
     }
 }

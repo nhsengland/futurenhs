@@ -277,7 +277,11 @@ namespace FutureNHS.Api.Controllers
             var groupSiteData = await _groupService.GetGroupSiteDataAsync(userId, slug, cancellationToken);
 
             if (groupSiteData is null)
-                return NotFound();
+            {
+                var createdGroupSiteData = await _groupService.CreateGroupSiteDataAsync(userId, slug, cancellationToken);
+                if (createdGroupSiteData is null) return NotFound();
+                return Ok(createdGroupSiteData);
+            }
 
             return Ok(groupSiteData);
         }
