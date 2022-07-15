@@ -10,8 +10,10 @@ import {
 import { User } from '@appTypes/user'
 import { Pagination } from '@appTypes/pagination'
 
-export const selectProps = (context: GetServerSidePropsContext): any =>
-    context.props ?? {}
+export const selectPage = (context: GetServerSidePropsContext): any =>
+    context.page ?? {}
+export const selectPageProps = (context: GetServerSidePropsContext): any =>
+    context.page.props ?? {}
 export const selectRequestMethod = (context: GetServerSidePropsContext): any =>
     context.req.method
 export const selectLocale = (context: GetServerSidePropsContext): string =>

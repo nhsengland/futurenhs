@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getServiceErrorDataValidationErrors } from '@services/index'
@@ -21,133 +22,127 @@ import {
 } from '@selectors/context'
 import { postGroupFolder } from '@services/postGroupFolder'
 import { getGroupFolder } from '@services/getGroupFolder'
+import { selectPageProps } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { FormErrors } from '@appTypes/form'
-
 import { formTypes } from '@constants/forms'
 import { GroupCreateUpdateFolderTemplate } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate'
-import { Props } from '@components/_pageTemplates/GroupCreateUpdateFolderTemplate/interfaces'
 import { withTextContent } from '@hofs/withTextContent'
 import { ServerSideFormData } from '@helpers/util/form'
-
-const routeId: string = 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2'
-const props: Partial<Props> = {}
 
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withUser({
-    props,
-    getServerSideProps: withRoutes({
-        props,
-        getServerSideProps: withGroup({
-            props,
-            getServerSideProps: withTextContent({
-                props,
-                routeId,
-                getServerSideProps: async (
-                    context: GetServerSidePropsContext
-                ) => {
-                    const user: User = selectUser(context)
-                    const groupId: string = selectParam(
-                        context,
-                        routeParams.GROUPID
-                    )
-                    const folderId: string = selectQuery(
-                        context,
-                        routeParams.FOLDERID
-                    )
-                    const csrfToken: string = selectCsrfToken(context)
-                    const formData: ServerSideFormData = selectFormData(context)
-                    const requestMethod: string = selectRequestMethod(context)
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => await pipeSSRProps(context, {
+    routeId: 'c1bc7b37-762f-4ed8-aed2-79fcd0e5d5d2'
+}, [
+    withUser,
+    withRoutes,
+    withGroup,
+    withTextContent
+], async (context: GetServerSidePropsContext) => {
 
-                    props.forms = {
-                        [formTypes.GROUP_FOLDER]: {},
-                    }
+    /**
+     * Get data from request context
+     */
+    const props: Partial<any> = selectPageProps(context);
+    const user: User = selectUser(context)
+    const groupId: string = selectParam(
+        context,
+        routeParams.GROUPID
+    )
+    const folderId: string = selectQuery(
+        context,
+        routeParams.FOLDERID
+    )
+    const csrfToken: string = selectCsrfToken(context)
+    const formData: ServerSideFormData = selectFormData(context)
+    const requestMethod: string = selectRequestMethod(context)
 
-                    props.layoutId = layoutIds.GROUP
-                    props.tabId = groupTabIds.FILES
-                    props.folderId = folderId
-                    props.folder = null
-                    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
+    props.forms = {
+        [formTypes.GROUP_FOLDER]: {},
+    }
 
-                    if (
-                        !props.actions?.includes(
-                            actionConstants.GROUPS_FOLDERS_ADD
-                        )
-                    ) {
-                        return {
-                            notFound: true,
-                        }
-                    }
+    props.layoutId = layoutIds.GROUP
+    props.tabId = groupTabIds.FILES
+    props.folderId = folderId
+    props.folder = null
+    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
 
-                    /**
-                     * Get data from services
-                     */
-                    if (folderId) {
-                        try {
-                            const [groupFolder] = await Promise.all([
-                                getGroupFolder({ user, groupId, folderId }),
-                            ])
+    if (
+        !props.actions?.includes(
+            actionConstants.GROUPS_FOLDERS_ADD
+        )
+    ) {
+        return {
+            notFound: true,
+        }
+    }
 
-                            props.folder = groupFolder.data
-                        } catch (error) {
-                            return handleSSRErrorProps({ props, error })
-                        }
-                    }
+    /**
+     * Get data from services
+     */
+    if (folderId) {
+        try {
+            const [groupFolder] = await Promise.all([
+                getGroupFolder({ user, groupId, folderId }),
+            ])
 
-                    /**
-                     * handle server-side form POST
-                     */
-                    if (formData && requestMethod === requestMethods.POST) {
-                        props.forms[formTypes.GROUP_FOLDER].initialValues =
-                            formData.getAll()
+            props.folder = groupFolder.data
+        } catch (error) {
+            return handleSSRErrorProps({ props, error })
+        }
+    }
 
-                        const headers = getStandardServiceHeaders({
-                            csrfToken,
-                        })
+    /**
+     * handle server-side form POST
+     */
+    if (formData && requestMethod === requestMethods.POST) {
+        props.forms[formTypes.GROUP_FOLDER].initialValues =
+            formData.getAll()
 
-                        try {
-                            const newFolderId = await postGroupFolder({
-                                groupId,
-                                folderId,
-                                user,
-                                headers,
-                                body: formData,
-                            })
+        const headers = getStandardServiceHeaders({
+            csrfToken,
+        })
 
-                            return {
-                                redirect: {
-                                    permanent: false,
-                                    destination: newFolderId
-                                        ? `${props.routes.groupFoldersRoot}/${newFolderId}`
-                                        : props.routes.groupFolder ||
-                                          props.routes.groupFoldersRoot,
-                                },
-                            }
-                        } catch (error) {
-                            const validationErrors: FormErrors =
-                                getServiceErrorDataValidationErrors(error)
+        try {
+            const newFolderId = await postGroupFolder({
+                groupId,
+                folderId,
+                user,
+                headers,
+                body: formData,
+            })
 
-                            if (validationErrors) {
-                                props.forms[formTypes.GROUP_FOLDER].errors =
-                                    validationErrors
-                            } else {
-                                return handleSSRErrorProps({ props, error })
-                            }
-                        }
-                    }
-
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props, context })
+            return {
+                redirect: {
+                    permanent: false,
+                    destination: newFolderId
+                        ? `${props.routes.groupFoldersRoot}/${newFolderId}`
+                        : props.routes.groupFolder ||
+                        props.routes.groupFoldersRoot,
                 },
-            }),
-        }),
-    }),
-})
+            }
+        } catch (error) {
+            const validationErrors: FormErrors =
+                getServiceErrorDataValidationErrors(error)
+
+            if (validationErrors) {
+                props.forms[formTypes.GROUP_FOLDER].errors =
+                    validationErrors
+            } else {
+                return handleSSRErrorProps({ props, error })
+            }
+        }
+    }
+
+    /**
+     * Return data to page template
+     */
+    return handleSSRSuccessProps({ props, context })
+
+});
 
 /**
  * Export page template
