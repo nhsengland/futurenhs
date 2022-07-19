@@ -3,8 +3,8 @@ import { authCookie } from '@constants/cookies'
 
 describe('withLogOut hof', () => {
     it('clears cookies', async () => {
-        const mockGetServerSideProps: any = jest.fn()
-        const mockContext: any = {
+
+        const mockContext = {
             req: {
                 cookies: {
                     cookie1: {},
@@ -14,14 +14,9 @@ describe('withLogOut hof', () => {
             res: {
                 cookie: jest.fn(),
             },
-        }
-
-        const withOutput = withLogOut({
-            props: {},
-            getServerSideProps: mockGetServerSideProps,
-        })
-
-        await withOutput(mockContext)
+        } as any
+        
+        const serverSideProps = await withLogOut(mockContext, {}, {})
 
         expect(mockContext.res.cookie).toHaveBeenCalledTimes(1)
     })

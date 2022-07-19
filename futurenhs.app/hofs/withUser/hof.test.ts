@@ -17,12 +17,19 @@ const mockUser = {
     },
 }
 
+const mockGetSiteUserService = () => new Promise((resolve) => resolve({ data: { image: {} } }))
+const mockGetSiteActionsService = () => new Promise((resolve) => resolve({ data: [] }))
+
 describe('withUser hof', () => {
     it('passes user data into the request context on successful auth', async () => {
-        const mockGetServerSideProps: any = jest.fn()
+
         const mockContext: any = {
             req: {},
-        }
+            res: {},
+            page: {
+                props: {}
+            }
+        } as any
 
         const mockGetUserService: GetUserService = () =>
             new Promise((resolve) => {
@@ -31,26 +38,28 @@ describe('withUser hof', () => {
                 })
             })
 
-        const withOutput = withUser(
-            {
-                props: {},
-                getServerSideProps: mockGetServerSideProps,
-            },
+        await withUser(
+            mockContext,
+            {},
             {
                 getUserService: mockGetUserService,
+                getSiteUserService: mockGetSiteUserService,
+                getSiteActionsService: mockGetSiteActionsService
             }
         )
-
-        const serverSideProps = await withOutput(mockContext)
 
         expect(mockContext.req).toHaveProperty('user')
     })
 
     it('returns redirect instructions on unsuccessful auth', async () => {
-        const mockGetServerSideProps: any = jest.fn()
+
         const mockContext: any = {
             req: {},
-        }
+            res: {},
+            page: {
+                props: {}
+            }
+        } as any
 
         const mockGetUserService: GetUserService = () =>
             new Promise((resolve) => {
@@ -61,18 +70,16 @@ describe('withUser hof', () => {
                 })
             })
 
-        const withOutput = withUser(
-            {
-                props: {},
-                getServerSideProps: mockGetServerSideProps,
-            },
+        const withOutput = await withUser(
+            mockContext,
+            {},
             {
                 getUserService: mockGetUserService,
+                getSiteUserService: mockGetSiteUserService,
+                getSiteActionsService: mockGetSiteActionsService
             }
         )
 
-        const serverSideProps = await withOutput(mockContext)
-
-        expect(serverSideProps).toHaveProperty('redirect')
+        expect(withOutput).toHaveProperty('redirect')
     })
 })

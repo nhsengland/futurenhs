@@ -1,26 +1,29 @@
 import { withTokens } from '.'
-import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 
 describe('withTokens hof', () => {
     const csrfToken = () => 'mock-csrf-token'
-    const props: any = {}
 
-    const getServerSideProps = async (context) => {
-        return handleSSRSuccessProps({ props, context })
-    }
+    const mockContext = {
+        req: {
+            csrfToken
+        },
+        res: {},
+        page: {
+            props: {}
+        }
+    } as any
 
     it('sets csrf prop', async () => {
-        const mockwithTokens = withTokens({ props, getServerSideProps })
-        const result = await mockwithTokens({ req: { csrfToken } } as any)
 
-        expect(result).toHaveProperty('props.csrfToken')
+        await withTokens(mockContext)
+
+        expect(mockContext.page.props).toHaveProperty('csrfToken')
     })
 
     it('returns form error when passed invalid props', async () => {
-        const mockwithTokens = withTokens({ props: null, getServerSideProps })
 
         try {
-            await mockwithTokens({ req: { csrfToken } } as any)
+            await withTokens({ req: {} } as any)
             expect(true).toBe(false)
         } catch (err) {
             expect(true).toBe(true)

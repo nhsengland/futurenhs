@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getServiceErrorDataValidationErrors } from '@services/index'
@@ -15,6 +16,7 @@ import {
     selectMultiPartFormData,
     selectRequestMethod,
     selectUser,
+    selectPageProps
 } from '@selectors/context'
 import { postGroup } from '@services/postGroup'
 import { GetServerSidePropsContext } from '@appTypes/next'
@@ -25,88 +27,88 @@ import { AdminCreateGroupTemplate } from '@components/_pageTemplates/AdminCreate
 import { Props } from '@components/_pageTemplates/AdminCreateGroupTemplate/interfaces'
 import { formTypes } from '@constants/forms'
 
-const routeId: string = '3436b6a3-6cb0-4b76-982d-dfc0c487bc52'
-const props: Partial<Props> = {}
-
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withUser({
-    props,
-    getServerSideProps: withRoutes({
-        props,
-        getServerSideProps: withTextContent({
-            props,
-            routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
-                const user: User = selectUser(context)
-                const csrfToken: string = selectCsrfToken(context)
-                const formData: FormData = selectMultiPartFormData(context)
-                const requestMethod: string = selectRequestMethod(context)
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => await pipeSSRProps(context, {
+    routeId: '3436b6a3-6cb0-4b76-982d-dfc0c487bc52'
+}, [
+    withUser,
+    withRoutes,
+    withTextContent
+], async (context: GetServerSidePropsContext) => {
 
-                props.forms = {
-                    [formTypes.CREATE_GROUP]: {},
-                }
-                const form: any = props.forms[formTypes.CREATE_GROUP]
+    /**
+     * Get data from request context
+     */
+    const props: Partial<Props> = selectPageProps(context);
+    const user: User = selectUser(context)
+    const csrfToken: string = selectCsrfToken(context)
+    const formData: FormData = selectMultiPartFormData(context)
+    const requestMethod: string = selectRequestMethod(context)
 
-                /**
-                 * Ticks checkbox by default
-                 */
-                form.initialValues = {
-                    isPublic: true,
-                }
+    props.forms = {
+        [formTypes.CREATE_GROUP]: {},
+    }
+    const form: any = props.forms[formTypes.CREATE_GROUP]
 
-                props.layoutId = layoutIds.ADMIN
+    /**
+     * Ticks checkbox by default
+     */
+    form.initialValues = {
+        isPublic: true,
+    }
 
-                if (
-                    !props.actions?.includes(
-                        actionConstants.SITE_ADMIN_GROUPS_ADD
-                    )
-                ) {
-                    return {
-                        notFound: true,
-                    }
-                }
+    props.layoutId = layoutIds.ADMIN
 
-                /**
-                 * handle server-side form POST
-                 */
-                if (formData && requestMethod === requestMethods.POST) {
-                    const headers = getStandardServiceHeaders({ csrfToken })
+    if (
+        !props.actions?.includes(
+            actionConstants.SITE_ADMIN_GROUPS_ADD
+        )
+    ) {
+        return {
+            notFound: true,
+        }
+    }
 
-                    try {
-                        const newGroupId = await postGroup({
-                            user,
-                            headers,
-                            body: formData,
-                        })
+    /**
+     * handle server-side form POST
+     */
+    if (formData && requestMethod === requestMethods.POST) {
+        const headers = getStandardServiceHeaders({ csrfToken })
 
-                        return {
-                            redirect: {
-                                permanent: false,
-                                destination: `${props.routes.adminGroupsRoot}`,
-                            },
-                        }
-                    } catch (error) {
-                        const validationErrors: FormErrors =
-                            getServiceErrorDataValidationErrors(error)
+        try {
+            
+            await postGroup({
+                user,
+                headers,
+                body: formData,
+            })
 
-                        if (validationErrors) {
-                            form.errors = validationErrors
-                        } else {
-                            return handleSSRErrorProps({ props, error })
-                        }
-                    }
-                }
+            return {
+                redirect: {
+                    permanent: false,
+                    destination: `${props.routes.adminGroupsRoot}`,
+                },
+            }
+        } catch (error) {
+            const validationErrors: FormErrors =
+                getServiceErrorDataValidationErrors(error)
 
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props, context })
-            },
-        }),
-    }),
-})
+            if (validationErrors) {
+                form.errors = validationErrors
+            } else {
+                return handleSSRErrorProps({ props, error })
+            }
+        }
+    }
+
+    /**
+     * Return data to page template
+     */
+    return handleSSRSuccessProps({ props, context })
+
+});
 
 /**
  * Export page template

@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { routeParams } from '@constants/routes'
@@ -9,52 +10,52 @@ import { withRoutes } from '@hofs/withRoutes'
 import { selectParam, selectUser } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { getSiteUser } from '@services/getSiteUser'
+import { selectPageProps } from '@selectors/context'
 
 import { SiteUserTemplate } from '@components/_pageTemplates/SiteUserTemplate'
 import { Props } from '@components/_pageTemplates/SiteUserTemplate/interfaces'
 import { User } from '@appTypes/user'
 
-const routeId: string = '9e86c5cc-6836-4319-8d9d-b96249d4c909'
-const props: Partial<Props> = {}
-
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withUser({
-    props,
-    getServerSideProps: withRoutes({
-        props,
-        getServerSideProps: withTextContent({
-            props,
-            routeId,
-            getServerSideProps: async (context: GetServerSidePropsContext) => {
-                const userId: string = selectParam(context, routeParams.USERID)
-                const user: User = selectUser(context)
+ export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => await pipeSSRProps(context, {
+    routeId: '9e86c5cc-6836-4319-8d9d-b96249d4c909'
+}, [
+    withUser,
+    withRoutes,
+    withTextContent
+], async (context: GetServerSidePropsContext) => {
 
-                /**
-                 * Get data from services
-                 */
-                try {
-                    const [userData] = await Promise.all([
-                        getSiteUser({ user, targetUserId: userId }),
-                    ])
+    /**
+     * Get data from request context
+     */
+    const props: Partial<Props> = selectPageProps(context);
+    const userId: string = selectParam(context, routeParams.USERID)
+    const user: User = selectUser(context)
 
-                    props.siteUser = userData.data
-                    props.pageTitle = `${props.contentText.title} - ${
-                        props.siteUser.firstName ?? ''
-                    } ${props.siteUser.lastName ?? ''}`
-                } catch (error: any) {
-                    return handleSSRErrorProps({ props, error })
-                }
+    /**
+     * Get data from services
+     */
+    try {
+        const [userData] = await Promise.all([
+            getSiteUser({ user, targetUserId: userId }),
+        ])
 
-                /**
-                 * Return data to page template
-                 */
-                return handleSSRSuccessProps({ props, context })
-            },
-        }),
-    }),
-})
+        props.siteUser = userData.data
+        props.pageTitle = `${props.contentText.title} - ${
+            props.siteUser.firstName ?? ''
+        } ${props.siteUser.lastName ?? ''}`
+    } catch (error: any) {
+        return handleSSRErrorProps({ props, error })
+    }
+
+    /**
+     * Return data to page template
+     */
+    return handleSSRSuccessProps({ props, context })
+
+});
 
 /**
  * Export page template

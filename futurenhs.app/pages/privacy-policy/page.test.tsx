@@ -27,7 +27,10 @@ describe('Privacy policy page', () => {
     })
 
     it('gets required server side props', async () => {
-        const serverSideProps = await getServerSideProps({} as any)
+        const serverSideProps = await getServerSideProps({
+            req: {},
+            res: {}
+        } as any)
 
         expect(serverSideProps).toHaveProperty('props.contentText')
     })
