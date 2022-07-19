@@ -162,7 +162,7 @@ LogOn.Button.Text,Log In
 LogOn.Error.UnableToLogIn.Text, Unable to log in. Please check your details.
 LogOn.Introduction.Text, Collaborate, connect, share and learn
 LogOn.ForgotPassword.Text, Forgot your password?
-LogOn.RegisterInterest.Link, mailto:support@futurenhs.zendesk.com?subject=Register Interest
+LogOn.RegisterInterest.Link, mailto:fnhs.testing@nhs.net?subject=Register Interest
 LogOn.Title.Text,Log In
 Member.HasNewPrivateMessages,You have new unread Private messages
 Member.ProfileUpdated,Profile Updated
