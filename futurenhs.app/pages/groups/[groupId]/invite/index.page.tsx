@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 
 import { actions as actionConstants } from '@constants/actions'
@@ -10,7 +11,6 @@ import { withRoutes } from '@hofs/withRoutes'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
 import { GroupMemberInviteTemplate } from '@components/_pageTemplates/GroupMemberInviteTemplate'
-import { Props } from '@components/_pageTemplates/GroupCreateDiscussionTemplate/interfaces'
 import { withTextContent } from '@hofs/withTextContent'
 import { withGroup } from '@hofs/withGroup'
 import { formTypes } from '@constants/forms'
@@ -20,6 +20,7 @@ import {
     selectParam,
     selectRequestMethod,
     selectUser,
+    selectPageProps
 } from '@selectors/context'
 import { User } from '@appTypes/user'
 import { ServerSideFormData } from '@helpers/util/form'
@@ -31,107 +32,102 @@ import { getServiceErrorDataValidationErrors } from '@services/index'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { notifications } from '@constants/notifications'
 
-const routeId: string = 'f872b71a-0449-4821-a8da-b75bbd451b2d'
-const props: Partial<Props> = {}
-
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withUser({
-    props,
-    getServerSideProps: withRoutes({
-        props,
-        getServerSideProps: withGroup({
-            props,
-            getServerSideProps: withTextContent({
-                props,
-                routeId,
-                getServerSideProps: async (
-                    context: GetServerSidePropsContext
-                ) => {
-                    const user: User = selectUser(context)
-                    const csrfToken: string = selectCsrfToken(context)
-                    const formData: ServerSideFormData = selectFormData(context)
-                    const groupId: string = selectParam(
-                        context,
-                        routeParams.GROUPID
-                    )
-                    const requestMethod: requestMethods =
-                        selectRequestMethod(context)
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => await pipeSSRProps(context, {
+    routeId: 'f872b71a-0449-4821-a8da-b75bbd451b2d'
+}, [
+    withUser,
+    withRoutes,
+    withGroup,
+    withTextContent
+], async (context: GetServerSidePropsContext) => {
 
-                    props.layoutId = layoutIds.GROUP
-                    props.tabId = groupTabIds.MEMBERS
-                    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
+    /**
+     * Get data from request context
+     */
+    const props: Partial<any> = selectPageProps(context);
+    const user: User = selectUser(context)
+    const csrfToken: string = selectCsrfToken(context)
+    const formData: ServerSideFormData = selectFormData(context)
+    const groupId: string = selectParam(
+        context,
+        routeParams.GROUPID
+    )
+    const requestMethod: requestMethods =
+        selectRequestMethod(context)
 
-                    props.forms = {
-                        [formTypes.INVITE_USER]: {},
-                    }
+    props.layoutId = layoutIds.GROUP
+    props.tabId = groupTabIds.MEMBERS
+    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
 
-                    /**
-                     * Return page not found if user doesn't have permissions to invite a user - TODO: Pending API
-                     */
-                    if (
-                        !props.actions?.includes(
-                            actionConstants.GROUPS_MEMBERS_INVITE
-                        )
-                    ) {
-                        return {
-                            notFound: true,
-                        }
-                    }
+    props.forms = {
+        [formTypes.INVITE_USER]: {},
+    }
 
-                    /**
-                     * Handle server-side form post
-                     */
-                    if (formData && requestMethod === requestMethods.POST) {
-                        props.forms[formTypes.INVITE_USER].initialValues =
-                            formData
+    /**
+     * Return page not found if user doesn't have permissions to invite a user - TODO: Pending API
+     */
+    if (
+        !props.actions?.includes(
+            actionConstants.GROUPS_MEMBERS_INVITE
+        )
+    ) {
+        return {
+            notFound: true,
+        }
+    }
 
-                        try {
-                            const headers: any = getStandardServiceHeaders({
-                                csrfToken,
-                            })
+    /**
+     * Handle server-side form post
+     */
+    if (formData && requestMethod === requestMethods.POST) {
+        props.forms[formTypes.INVITE_USER].initialValues =
+            formData
 
-                            await postGroupMemberInvite({
-                                user,
-                                headers,
-                                body: formData,
-                                groupId,
-                            })
+        try {
+            const headers: any = getStandardServiceHeaders({
+                csrfToken,
+            })
 
-                            const emailAddress: string = formData.get('Email')
-                            props.notifications = [
-                                {
-                                    heading: notifications.SUCCESS,
-                                    main: `Invite sent to ${emailAddress}`,
-                                },
-                            ]
+            await postGroupMemberInvite({
+                user,
+                headers,
+                body: formData,
+                groupId,
+            })
 
-                            return {
-                                props: props,
-                            }
-                        } catch (error) {
-                            const validationErrors: FormErrors =
-                                getServiceErrorDataValidationErrors(error)
-
-                            if (validationErrors) {
-                                props.forms[formTypes.INVITE_USER].errors =
-                                    validationErrors
-                            } else {
-                                return handleSSRErrorProps({ props, error })
-                            }
-                        }
-                    }
-
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props, context })
+            const emailAddress: string = formData.get('Email')
+            props.notifications = [
+                {
+                    heading: notifications.SUCCESS,
+                    main: `Invite sent to ${emailAddress}`,
                 },
-            }),
-        }),
-    }),
-})
+            ]
+
+            return {
+                props: props,
+            }
+        } catch (error) {
+            const validationErrors: FormErrors =
+                getServiceErrorDataValidationErrors(error)
+
+            if (validationErrors) {
+                props.forms[formTypes.INVITE_USER].errors =
+                    validationErrors
+            } else {
+                return handleSSRErrorProps({ props, error })
+            }
+        }
+    }
+
+    /**
+     * Return data to page template
+     */
+    return handleSSRSuccessProps({ props, context })
+
+});
 
 /**
  * Export page template

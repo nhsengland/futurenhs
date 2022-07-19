@@ -1,24 +1,16 @@
-import { GetServerSideProps } from 'next'
-
 import { selectCsrfToken } from '@selectors/context'
-import { GetServerSidePropsContext, HofConfig } from '@appTypes/next'
+import { Hof } from '@appTypes/hof'
 
-export const withTokens = (
-    config: HofConfig,
-    dependencies?: {}
-): GetServerSideProps => {
-    const { props, getServerSideProps } = config
+export const withTokens: Hof = async (context) => {
 
-    return async (context: GetServerSidePropsContext): Promise<any> => {
-        const csrfToken: string = selectCsrfToken(context)
+    const csrfToken: string = selectCsrfToken(context)
 
-        try {
+    try {
 
-            props.csrfToken = csrfToken
+        context.page.props.csrfToken = csrfToken
 
-            return await getServerSideProps(context)
-        } catch (error) {
-            console.log(error)
-        }
+    } catch (error) {
+        console.log(error)
     }
+
 }
