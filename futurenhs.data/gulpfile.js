@@ -2,16 +2,59 @@ const gulp = require('gulp')
       childProcess = require('child_process');
 
 /////////////////////////////////////
-//  MSBUILD TASKS
+//  DOTNET CLEAN TASKS
+/////////////////////////////////////
+// Clean .net solution
+const clean = (done) => {
+
+    process.env.PATH = `${process.env.PATH}`;
+
+    const proc = childProcess.spawn('dotnet', [
+        'clean',
+        'futurenhs.data\\FutureNHS.Data.FutureNHS\\FutureNHS.Data.FutureNHS.sqlproj',
+        '/p:NetCoreBuild=true',
+        '/p:SystemDacpacsLocation="FutureNHS.Data\\ExperimentalBuildTools"'
+    ], {
+        cwd: process.cwd()
+    });
+
+    const re = /SCS\d{4}/;
+    proc.stdout.on('data', (data) => {
+        console.log(data.toString());
+
+        const match = re.exec(data.toString());
+        if (match) {
+            return done(new Error('Security warning found when cleaning project'));
+        }
+    });
+
+    proc.stderr.on('data', (data) => {
+        console.log(data.toString());
+    });
+
+    proc.on('close', (code) => {
+        if (code !== 0) {
+            return done(new Error('Error cleaning project'));
+        }
+
+        return done();
+    });
+};
+
+
+/////////////////////////////////////
+//  DOTNET BUILD TASKS
 /////////////////////////////////////
 // Build .net solution
-const msbuild = (done) => {
+const dotnetBuild = (done) => {
 
-    process.env.PATH = `${process.env.PATH};C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin`;
+    process.env.PATH = `${process.env.PATH}`;
 
-    const proc = childProcess.spawn('msbuild.exe', [
-        'FutureNHS.Data\\FutureNHS.Data.sln',
-        '-t:rebuild'
+    const proc = childProcess.spawn('dotnet', [
+        'build',
+        'futurenhs.data\\FutureNHS.Data.FutureNHS\\FutureNHS.Data.FutureNHS.sqlproj',
+        '/p:NetCoreBuild=true',
+        '/p:SystemDacpacsLocation="FutureNHS.Data\\ExperimentalBuildTools"'
     ], {
         cwd: process.cwd()
     });
@@ -39,26 +82,30 @@ const msbuild = (done) => {
     });
 };
 
+// Build task - runs all the build tasks
+const build = gulp.series(clean, dotnetBuild);
 
 ///////////////////////////////////////
 //  FutureNHS DB TASKS
 //////////////////////////////////////
 
 const deployFutureNHSDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
-
-    var sqlPackage = childProcess.spawn('sqlpackage', [
+    process.env.PATH = `${process.env.PATH}`;
+    console.log(process.env.PATH);
+    
+    const sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac',
+        `/SourceFile:futurenhs.data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac`,
         '/TargetDatabaseName:FutureNHS',
         '/TargetServerName:localhost',
         '/TargetUser:sa',
-        '/TargetPassword:password',
-        '/DeployReportPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Report.xml',
-        '/DeployScriptPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Publish.sql',
-        '/Profile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml',
+        '/TargetPassword:9um#Qu&6d3t5',
+        `/DeployReportPath:futurenhs.data/FutureNHS.Data.FutureNHS/Report.xml`,
+        `/DeployScriptPath:futurenhs.data/FutureNHS.Data.FutureNHS/Publish.sql`,
+        `/Profile:futurenhs.data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml`,
     ], {
-        cwd: process.cwd()
+        cwd: process.cwd(), 
+      
     });
 
     sqlPackage.stdout.on('data', (data) => {
@@ -75,22 +122,23 @@ const deployFutureNHSDatabase = (done) => {
 };
 
 const deployAutomationFutureNHSDatabase = (done) => {
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin`;
+    process.env.PATH = `${process.env.PATH}`;
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac',
+	'/Diagnostics:True',
+        '/SourceFile:futurenhs.data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac',
         '/TargetDatabaseName:FutureNHS',
         '/TargetServerName:localhost',
         '/TargetUser:sa',
-        '/TargetPassword:password',
-        '/DeployReportPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Report.xml',
-        '/DeployScriptPath:./FutureNHS.Data/FutureNHS.Data.FutureNHS/Publish.sql',
-        '/Profile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS-automated.publish.xml',
+        '/TargetPassword:9um#Qu&6d3t5',
+        '/DeployReportPath:futurenhs.data/FutureNHS.Data.FutureNHS/Report.xml',
+        '/DeployScriptPath:futurenhs.data/FutureNHS.Data.FutureNHS/Publish.sql',
+        '/Profile:futurenhs.data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS-automated.publish.xml',
     ], {
         cwd: process.cwd()
     });
-
+console.log(process.env.PATH);
     sqlPackage.stdout.on('data', (data) => {
         console.log(data.toString());
     });
@@ -110,7 +158,7 @@ const dropFutureNHSDatabase = (done) => {
         '-U',
         'sa',
         '-P',
-        'password',
+        '9um#Qu&6d3t5',
         '-Q',
         'DROP DATABASE FutureNHS',
     ], {
@@ -132,7 +180,7 @@ const dropFutureNHSDatabase = (done) => {
 
 
 module.exports = {
-    msbuild,
+    build,
     deployFutureNHSDatabase,
     deployAutomationFutureNHSDatabase
 }

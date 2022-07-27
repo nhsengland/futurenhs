@@ -203,7 +203,7 @@ builder.Services.AddSingleton<ILoggerProvider>(
            return new AzureTableLoggerProvider(config.CurrentValue.ConnectionString, config.CurrentValue.TableName);
         }
 
-        return new EventLogLoggerProvider();
+        return new ColorConsoleLoggerProvider();
 
     });
 

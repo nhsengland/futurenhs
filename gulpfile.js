@@ -1,7 +1,7 @@
 const { series } = require('gulp'),
     db = require('./futurenhs.data/gulpfile'),
     api = require('./futurenhs.api/gulpfile'),
-	contentApi = require('./futurenhs.content.api/gulpfile'),
+    contentApi = require('./futurenhs.content.api/gulpfile'),
     contentDb = require('./futurenhs.content.data/gulpfile'),
     app = require('./futurenhs.app/gulpfile');
 
@@ -17,15 +17,15 @@ const { series } = require('gulp'),
  * DATABASE TASKS
  */
 
-const activateDb = series(db.msbuild, db.deployFutureNHSDatabase);
+const activateDb = series(db.build, db.deployFutureNHSDatabase);
 
-const activateAutomationDb = series(db.msbuild, db.deployAutomationFutureNHSDatabase);
+const activateAutomationDb = series(db.build, db.deployAutomationFutureNHSDatabase);
 
 /**
  * CONTENT DATABASE TASKS
  */
 
- const activateContentDb = series(contentDb.msbuild, contentDb.deployFutureNHSContentDatabase);
+ const activateContentDb = series(contentDb.build, contentDb.deployFutureNHSContentDatabase);
 
 /**
  * APP TASKS
@@ -74,9 +74,9 @@ module.exports = {
     activate,
     activateNoApp,
     activateNoApi,
-	activateNoUmbraco,
+    activateNoUmbraco,
     activateApi,
-	activateContentApi,
+    activateContentApi,
     activateNoUmbracoNoApi,
     activateDb,
     activateAutomationDb,
