@@ -88,6 +88,7 @@ jobs:
       command: 'custom'
       workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
       customCommand: 'run test-js'
+    continueOnError: true
   - task: ArchiveFiles@2
     inputs:
       rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app'
