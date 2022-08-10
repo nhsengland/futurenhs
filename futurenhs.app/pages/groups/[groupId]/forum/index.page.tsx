@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { layoutIds, groupTabIds } from '@constants/routes'
@@ -9,7 +10,7 @@ import { withRoutes } from '@hofs/withRoutes'
 import { withGroup } from '@hofs/withGroup'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupDiscussions } from '@services/getGroupDiscussions'
-import { selectUser, selectPagination, selectParam } from '@selectors/context'
+import { selectUser, selectPagination, selectParam, selectPageProps } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 
@@ -17,64 +18,56 @@ import { GroupForumTemplate } from '@components/_pageTemplates/GroupForumTemplat
 import { Props } from '@components/_pageTemplates/GroupForumTemplate/interfaces'
 import { Pagination } from '@appTypes/pagination'
 
-const routeId: string = 'd7752e9e-4f47-41ec-bc07-70508d8dcd9b'
-const props: Partial<Props> = {}
-
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withUser({
-    props,
-    getServerSideProps: withRoutes({
-        props,
-        getServerSideProps: withGroup({
-            props,
-            getServerSideProps: withTextContent({
-                props,
-                routeId,
-                getServerSideProps: async (
-                    context: GetServerSidePropsContext
-                ) => {
-                    /**
-                     * Get context data
-                     */
-                    const user: User = selectUser(context)
-                    const groupId: string = selectParam(
-                        context,
-                        routeParams.GROUPID
-                    )
-                    const pagination: Pagination = {
-                        pageNumber: selectPagination(context).pageNumber ?? 1,
-                        pageSize: selectPagination(context).pageSize ?? 5,
-                    }
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => await pipeSSRProps(context, {
+    routeId: 'd7752e9e-4f47-41ec-bc07-70508d8dcd9b'
+}, [
+    withUser,
+    withRoutes,
+    withGroup,
+    withTextContent
+], async (context: GetServerSidePropsContext) => {
 
-                    props.layoutId = layoutIds.GROUP
-                    props.tabId = groupTabIds.FORUM
-                    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
+    /**
+     * Get context data
+     */
+    const props: Partial<Props> = selectPageProps(context);
+    const user: User = selectUser(context)
+    const groupId: string = selectParam(
+        context,
+        routeParams.GROUPID
+    )
+    const pagination: Pagination = {
+        pageNumber: selectPagination(context).pageNumber ?? 1,
+        pageSize: selectPagination(context).pageSize ?? 5,
+    }
 
-                    /**
-                     * Get data from services
-                     */
-                    try {
-                        const [groupDiscussions] = await Promise.all([
-                            getGroupDiscussions({ user, groupId, pagination }),
-                        ])
+    props.layoutId = layoutIds.GROUP
+    props.tabId = groupTabIds.FORUM
+    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
 
-                        props.discussionsList = groupDiscussions.data
-                        props.pagination = groupDiscussions.pagination
-                    } catch (error) {
-                        return handleSSRErrorProps({ props, error })
-                    }
+    /**
+     * Get data from services
+     */
+    try {
+        const [groupDiscussions] = await Promise.all([
+            getGroupDiscussions({ user, groupId, pagination }),
+        ])
 
-                    /**
-                     * Return data to page template
-                     */
-                    return handleSSRSuccessProps({ props })
-                },
-            }),
-        }),
-    }),
-})
+        props.discussionsList = groupDiscussions.data
+        props.pagination = groupDiscussions.pagination
+    } catch (error) {
+        return handleSSRErrorProps({ props, error })
+    }
+
+    /**
+     * Return data to page template
+     */
+    return handleSSRSuccessProps({ props, context })
+
+});
 
 /**
  * Export page template

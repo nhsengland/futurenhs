@@ -208,25 +208,29 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS Strapline, g.PublicGroup AS IsPublic,( SELECT      CASE 
-                                                                                    WHEN        groupUser.MembershipUser_Id = @UserId
-                                                                                    AND         groupUser.Approved = 1
-                                                                                    AND         groupUser.Rejected = 0
-                                                                                    AND         groupUser.Locked = 0
-                                                                                    AND         groupUser.Banned = 0
-                                                                                    THEN        CAST(1 as bit) 
-                                                                                    ELSE        CAST(0 as bit) 
+                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS Strapline, g.PublicGroup AS IsPublic,( SELECT CASE 
+                                                                                    WHEN        gu.Approved = 1
+                                                                                    AND         gu.Rejected = 0
+                                                                                    AND         gu.Locked = 0
+                                                                                    AND         gu.Banned = 0
+                                                                                    THEN        'Approved'
+                                                                                    WHEN        gu.Approved = 0
+                                                                                    AND         gu.Rejected = 0
+                                                                                    AND         gu.Locked = 0
+                                                                                    AND         gu.Banned = 0
+                                                                                    THEN        'Pending Approval'
+                                                                                    ELSE        'Non Member'
                                                                                     END
-                                                                                  ) AS IsMember,		
+                                                                                  ) AS MemberStatus,		
                 image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName,  image.MediaType AS MediaType
 				FROM [Group] g
-                LEFT JOIN Image image ON image.Id = g.ImageId  
-                LEFT JOIN GroupUser groupUser ON GroupUser.Group_Id = g.Id  
-                WHERE g.Slug = @Slug AND g.IsDeleted = 0";
+                LEFT JOIN [Image] image ON image.Id = g.ImageId  
+                LEFT JOIN GroupUser gu ON (gu.Group_Id = g.Id and gu.MembershipUser_Id = @UserId)
+                WHERE g.Slug = @Slug AND g.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<Group, Image, Group>(query,
+            var group = await dbConnection.QueryAsync<Group, Image, Group>(query,
                 (group, image) =>
                 {
                     if (image is not null)
@@ -244,9 +248,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     UserId = userId
                 }, splitOn: "id");
 
-            var group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
-
-            return group;
+            return group.SingleOrDefault() ?? throw new NotFoundException("Group not found.");
         }
 
         public async Task<(uint, IEnumerable<GroupMember>)> GetGroupMembersAsync(string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken = default)
@@ -376,7 +378,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName,
-                                [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id
+                                [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id,
+                                [{nameof(ImageData.Id)}]		                    = [image].Id,
+                                [{nameof(ImageData.Height)}]	                    = [image].Height,
+                                [{nameof(ImageData.Width)}]		                    = [image].Width,
+                                [{nameof(ImageData.FileName)}]	                    = [image].FileName,
+                                [{nameof(ImageData.MediaType)}]	                    = [image].MediaType 
+
 
                     FROM        GroupUser groupUser
                     JOIN        [Group] groups 
@@ -385,19 +393,30 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          member.Id = groupUser.MembershipUser_Id
                     JOIN        MembershipRole memberRoles 
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
+                    LEFT JOIN   Image [image]
+                    ON          [image].Id = member.ImageId   
                     WHERE       groups.Slug = @Slug
                     AND         member.Id = @UserId
                     AND         groupUser.Approved = 1;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var member = await dbConnection.QueryFirstOrDefaultAsync<GroupMemberDetails>(query, new
-            {
-                UserId = userId,
-                Slug = slug
-            });
+            var groupMemberDetails = await dbConnection.QueryAsync<GroupMemberDetails, Image, GroupMemberDetails>(query,
+                            (member, image) =>
+                            {
+                                if (image is not null)
+                                {
+                                    return member with { Image = new ImageData(image, _options) };
+                                }
 
-            return member;
+                                return @member;
+                            }, new
+                            {
+                                UserId = userId,
+                                Slug = slug
+                            });
+
+            return groupMemberDetails.SingleOrDefault() ?? throw new NotFoundException("Group member details not found.");
         }
 
 
@@ -460,6 +479,42 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             var groupSiteData = await reader.ReadSingleOrDefaultAsync<GroupSite>();
 
             return groupSiteData;
+        }
+
+        public async Task<bool> GetGroupPrivacyStatusAsync(string groupSlug, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                             @$"SELECT
+                                    PublicGroup
+                               FROM[Group]
+                               WHERE Slug = @Slug";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var isPublicGroup = await dbConnection.QuerySingleOrDefaultAsync<bool>(query, new
+            {
+                Slug = groupSlug
+            });
+
+            return isPublicGroup;
+        }
+
+        public async Task<bool> GetGroupPrivacyStatusAsync(Guid GroupId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                            @$"SELECT 
+                                    PublicGroup
+                               FROM [Group] 
+                               WHERE Id = @Id";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var isPublicGroup = await dbConnection.QuerySingleOrDefaultAsync<bool>(query, new
+            {
+                Id = GroupId
+            });
+
+            return isPublicGroup;
         }
     }
 }

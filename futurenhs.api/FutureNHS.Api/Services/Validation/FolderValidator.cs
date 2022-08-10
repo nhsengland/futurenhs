@@ -11,11 +11,11 @@ namespace FutureNHS.Api.Services.Validation
         public FolderValidator(IFolderCommand folderCommand)
         {
             _folderCommand = folderCommand ?? throw new ArgumentNullException(nameof(folderCommand));
-            RuleFor(model => model.Title)
+            RuleFor(model => model.Name)
                 .NotEmpty()
-                .WithMessage("Enter the folder title");
+                .WithMessage("Enter the folder name");
 
-            RuleFor(model => model.Title)
+            RuleFor(model => model.Name)
                 .MaximumLength(200)
                 .WithMessage("Enter 200 or fewer characters");
 
@@ -25,13 +25,13 @@ namespace FutureNHS.Api.Services.Validation
 
             RuleFor(model => model)
                 .MustAsync(IsFolderUnique)
-                .OverridePropertyName(nameof(FolderDto.Title))
-                .WithMessage("Enter a unique folder title");                
+                .OverridePropertyName(nameof(FolderDto.Name))
+                .WithMessage("Enter a unique folder name");                
         }
 
         private async Task<bool> IsFolderUnique(FolderDto folder, CancellationToken cancellationToken)
         {
-            return await _folderCommand.IsFolderUniqueAsync(folder.Title, folder.Id, folder.ParentFolder, folder.GroupId, cancellationToken);
+            return await _folderCommand.IsFolderUniqueAsync(folder.Name, folder.Id, folder.ParentFolder, folder.GroupId, cancellationToken);
         }
     }
 }

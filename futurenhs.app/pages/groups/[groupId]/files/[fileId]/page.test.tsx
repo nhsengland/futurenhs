@@ -1,6 +1,7 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
+import { actions } from '@constants/actions'
 
 import { routes } from '@jestMocks/generic-props'
 import GroupFilePreviewTemplate, { getServerSideProps } from './index.page'
@@ -31,7 +32,7 @@ const props: Props = {
     routes: routes,
 }
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('file page', () => {
     const push = jest.fn()
@@ -40,8 +41,8 @@ describe('file page', () => {
     afterEach(() => mswServer.resetHandlers())
     afterAll(() => mswServer.close())
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/files');
-    });
+        mockRouter.setCurrentUrl('/files')
+    })
 
     it('renders correctly', () => {
         render(<GroupFilePreviewTemplate {...props} />)
@@ -51,6 +52,12 @@ describe('file page', () => {
     })
 
     it('gets required server side props', async () => {
+        mswServer.use(
+            handlers.getGroupActions({
+                data: { permissions: [actions.GROUPS_VIEW] },
+            })
+        )
+
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie-101' },
             params: {

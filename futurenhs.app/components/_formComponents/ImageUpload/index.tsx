@@ -73,7 +73,7 @@ export const ImageUpload: (props: Props) => JSX.Element = ({
         fileIdInput.current = document.getElementsByName(
             relatedFields?.fileId
         )[0]
-        initialFileIdValue.current = fileIdInput.current.value
+        initialFileIdValue.current = fileIdInput.current?.value
 
         if (initialFileIdValue.current) {
             setShouldRenderClearFileInput(true)

@@ -57,21 +57,21 @@ Feature: groupPublic
 
     @Core
     Scenario: FNHS45 - Join a public group
-        And the 'Join Group' link is displayed
-        When I click the 'Join Group' link
-        Then the 'Join Group' link is not displayed
+        And the 'Join group' button is displayed
+        When I click the 'Join group' button
+        Then the 'Join group' button is not displayed
         When I click the 'Members' tab
         Then the 'auto User' row is displayed on the 'Group Members' table
 
 
     Scenario: FNHS46 - Cancel leaving a group
-        When I select 'Leave group' from the actions accordion
-        Then I cancel this on the open 'Leave group' dialog
-        When I open the 'Actions' accordion
-        And the 'Leave group' link is displayed
+        When I select 'Leave group' from the group actions accordion
+        Then I cancel this on the open dialog
+        When I open the 'Group actions' accordion
+        And the 'Leave group' button is displayed
 
     @Core
     Scenario: FNHS47 - Leave a group
-        When I select 'Leave group' from the actions accordion
-        Then I confirm this on the open 'Leave group' dialog
-        And the 'Join Group' link is displayed
+        When I select 'Leave group' from the group actions accordion
+        Then I confirm this on the open dialog
+        And the 'Join group' button is displayed

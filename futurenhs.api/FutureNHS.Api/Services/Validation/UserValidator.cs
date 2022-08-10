@@ -11,10 +11,6 @@ namespace FutureNHS.Api.Services.Validation
             RuleFor(model => model.FirstName)
                     .NotEmpty()
                     .WithMessage("Enter the first name");
-
-            RuleFor(model => model.Surname)
-                    .NotEmpty()
-                    .WithMessage("Enter the last name");
         }
     }
 }

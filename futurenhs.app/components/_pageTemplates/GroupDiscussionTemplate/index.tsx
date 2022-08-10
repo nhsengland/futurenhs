@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment'
 import { postGroupDiscussionCommentReply } from '@services/postGroupDiscussionCommentReply'
 import { putGroupDiscussionCommentLike } from '@services/putGroupDiscussionCommentLike'
-import { selectForm, selectFormErrors } from '@selectors/forms'
+import { selectFormErrors } from '@selectors/forms'
 import { actions as actionsConstants } from '@constants/actions'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { getGenericFormError } from '@helpers/util/form'
@@ -25,7 +25,6 @@ import { Form } from '@components/Form'
 import { ErrorSummary } from '@components/ErrorSummary'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { PaginationWithStatus } from '@components/PaginationWithStatus'
-import { BackLink } from '@components/BackLink'
 import { UserMeta } from '@components/UserMeta'
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies'
 import { getRouteToParam } from '@helpers/routing/getRouteToParam'
@@ -34,6 +33,9 @@ import { DiscussionComment } from '@appTypes/discussion'
 
 import { Props } from './interfaces'
 import { getStandardServiceHeaders } from '@helpers/fetch'
+import { useFormConfig } from '@hooks/useForm'
+import { Image } from '@appTypes/image'
+import { ActionLink } from '@components/ActionLink'
 
 /**
  * Group discussion template
@@ -61,9 +63,9 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const router = useRouter()
     const errorSummaryRef: any = useRef()
 
-    const commentFormConfig: FormConfig = selectForm(
-        forms,
-        formTypes.CREATE_DISCUSSION_COMMENT
+    const commentFormConfig: FormConfig = useFormConfig(
+        formTypes.CREATE_DISCUSSION_COMMENT,
+        forms[formTypes.CREATE_DISCUSSION_COMMENT]
     )
     const [errors, setErrors] = useState(
         Object.assign(
@@ -117,13 +119,12 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     const creatorUserInitials: string = initials({
         value: createdBy?.text?.userName,
     })
+    const creatorProfileImage: Image = createdBy?.image
     const creatorUserName: string = createdBy?.text?.userName
     const creatorUserId: string = createdBy?.id
     const createdDate: string = dateTime({ value: created })
     const lastCommentUserName: string = modifiedBy?.text?.userName
     const lastCommentDate: string = dateTime({ value: modified })
-    const createCommentfields =
-        forms?.[formTypes.CREATE_DISCUSSION_COMMENT]?.steps[0]?.fields
 
     /**
      * Handle likes on comments
@@ -302,6 +303,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 })
                 const replyingUserName: string = createdBy?.text?.userName
                 const replyingUserId: string = createdBy?.id
+                const replyingUserProfileImage: Image = createdBy?.image
                 const replyCreatedDate: string = dateTime({ value: created })
                 const shouldEnableLikes: boolean =
                     shouldRenderCommentAndReplyForms && createdBy.id !== id
@@ -329,6 +331,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     >
                         <Comment
                             id={formattedCommentId}
+                            image={replyingUserProfileImage}
                             commentId={commentId}
                             csrfToken={csrfToken}
                             initialErrors={errors}
@@ -370,10 +373,14 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         className="u-mb-10"
                     />
                 )}
-                <BackLink
+
+                <ActionLink
                     href={backLinkHref}
+                    iconName="icon-chevron-left"
+                    className="u-mb-8"
                     text={{
-                        link: 'Back to discussions',
+                        body: 'Back to discussions',
+                        ariaLabel: 'Go back to list of group discussions',
                     }}
                 />
                 <div
@@ -393,7 +400,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 <LayoutColumnContainer>
                     <LayoutColumn tablet={8}>
                         <UserMeta
-                            image={null}
+                            image={creatorProfileImage}
                             text={{
                                 initials: creatorUserInitials,
                             }}
@@ -490,6 +497,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                         createdBy?.text?.userName
                                     const commenterUserId: string =
                                         createdBy?.id
+                                    const commenterProfileImage: Image =
+                                        createdBy?.image
                                     const commentCreatedDate: string = dateTime(
                                         { value: created }
                                     )
@@ -518,6 +527,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                                 originComment={originDiscussion}
                                                 csrfToken={csrfToken}
                                                 initialErrors={errors}
+                                                image={commenterProfileImage}
                                                 text={{
                                                     userName: commenterUserName,
                                                     initials:

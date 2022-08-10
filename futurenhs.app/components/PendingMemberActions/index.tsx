@@ -15,13 +15,13 @@ export const PendingMemberActions: (props: Props) => JSX.Element = ({
 
     const { acceptMember, rejectMember } = text
 
-    const acceptForm: FormConfig = useFormConfig(formTypes.ACCEPT_GROUP_MEMBER, { MembershipUserId: memberId })
-    const rejectForm: FormConfig = useFormConfig(formTypes.REJECT_GROUP_MEMBER, { MembershipUserId: memberId })
+    const acceptForm: FormConfig = useFormConfig(formTypes.ACCEPT_GROUP_MEMBER, { initialValues: { MembershipUserId: memberId } })
+    const rejectForm: FormConfig = useFormConfig(formTypes.REJECT_GROUP_MEMBER, { initialValues: { MembershipUserId: memberId } })
     const csrfToken: string = useCsrf()
 
 
     return (
-        <span className="u-flex u-justify-between u-w-full">
+        <div className="u-flex u-justify-between u-w-full">
             <Form
                 csrfToken={csrfToken}
                 formConfig={acceptForm}
@@ -40,7 +40,7 @@ export const PendingMemberActions: (props: Props) => JSX.Element = ({
                 submitAction={rejectAction}
                 submitButtonClassName="c-button-outline u-mb-0"
             />
-        </span>
+        </div>
     )
 
 }

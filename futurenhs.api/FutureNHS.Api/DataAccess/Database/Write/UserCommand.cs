@@ -78,7 +78,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 @$" SELECT
                                 [{nameof(MemberProfile.Id)}]                = member.Id,
                                 [{nameof(MemberProfile.FirstName)}]         = member.FirstName,
-                                [{nameof(MemberProfile.Surname)}]           = member.Surname,
+                                [{nameof(MemberProfile.LastName)}]           = member.Surname,
                                 [{nameof(MemberProfile.Pronouns)}]          = member.Pronouns,
                                 [{nameof(MemberProfile.ImageId)}]           = member.ImageId,
                                 [{nameof(MemberProfile.RoleId)}]            = memberInRole.RoleIdentifier,
@@ -89,13 +89,13 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(ImageData.FileName)}]              = image.FileName,
                                 [{nameof(ImageData.MediaType)}]             = image.MediaType
 				    
-                    FROM        [MembershipUser] member
-                    JOIN		MembershipUsersInRoles memberInRole
-					    ON			memberInRole.UserIdentifier = member.Id
-                    LEFT JOIN   Image image
-                        ON          image.Id = member.ImageId
-                    WHERE
-                                member.[Id] = @Id";
+            FROM        [MembershipUser] member
+            JOIN		MembershipUsersInRoles memberInRole
+            ON			memberInRole.UserIdentifier = member.Id
+            LEFT JOIN   Image image
+            ON          image.Id = member.ImageId
+            WHERE       
+                        member.[Id] = @Id";
 
 
             var queryDefinition = new CommandDefinition(query, new
@@ -229,20 +229,37 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(UserDto.LastLoginDateUtc)}]    = FORMAT(membershipUser.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
                                 [{nameof(UserDto.Slug)}]                = membershipUser.Slug,
                                 [{nameof(UserDto.FirstName)}]           = membershipUser.FirstName,
-                                [{nameof(UserDto.Surname)}]             = membershipUser.Surname,
-                                [{nameof(UserDto.Initials)}]            = membershipUser.Initials
+                                [{nameof(UserDto.LastName)}]            = membershipUser.Surname,
+                                [{nameof(UserDto.Initials)}]            = membershipUser.Initials,
+                                [{nameof(ImageData.Id)}]		        = [image].Id,
+                                [{nameof(ImageData.Height)}]	        = [image].Height,
+                                [{nameof(ImageData.Width)}]		        = [image].Width,
+                                [{nameof(ImageData.FileName)}]	        = [image].FileName,
+                                [{nameof(ImageData.MediaType)}]         = [image].MediaType
+
 
                     FROM        [MembershipUser] membershipUser
-                    WHERE       membershipUser.Id = @UserId;";
+                    LEFT JOIN   Image [image]
+                    ON          [image].Id = membershipUser.ImageId   
+                    WHERE       
+                                membershipUser.Id = @UserId;";
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-            var commandDefinition = new CommandDefinition(query, new
-            {
-                UserId = userId
-            }, cancellationToken: cancellationToken);
+            var userProfile = await dbConnection.QueryAsync<UserDto, Image, UserDto>(query,
+                (user, image) =>
+                {
+                    if (image is not null)
+                    {
+                        return @user with { Image = new ImageData(image, _options) };
+                    }
+                    return @user;
+                }, new
+                {
+                    UserId = userId
+                }, splitOn: "id");
 
-            return await dbConnection.QuerySingleOrDefaultAsync<UserDto>(commandDefinition);
+            return userProfile.SingleOrDefault() ?? throw new NotFoundException("User profile not found."); ;
         }
 
         public async Task<(uint totalCount, IEnumerable<MemberSearchDetails>)> SearchUsers(string term, uint offset, uint limit, string sort, CancellationToken cancellationToken)
@@ -296,7 +313,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             var results = reader.Read<MemberSearchDetails>();
 
-            var total = Convert.ToUInt32(await reader.ReadFirstAsync<int>());   
+            var total = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
 
             return (total, results);
         }

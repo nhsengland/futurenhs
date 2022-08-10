@@ -89,14 +89,15 @@ namespace FutureNHS.Api.Services
                 UserName = userResult.UserName,
                 Slug = userResult.Slug,
                 FirstName = userResult.FirstName,
-                LastName = userResult.Surname,
+                LastName = userResult.LastName,
                 Initials = userResult.Initials,
                 Email = userResult.Email,
                 DateJoinedUtc = groupUserResult.ApprovedDateUTCAsString,
                 LastLoginUtc = userResult.LastLoginDateUtc,
                 RoleId = roleResult.Id,
                 Role = roleResult.Name,
-                RowVersion = groupUserResult.RowVersion
+                RowVersion = groupUserResult.RowVersion,
+                Image = userResult.Image
             };
 
             return membershipUser;
@@ -208,7 +209,7 @@ namespace FutureNHS.Api.Services
 
             var groupUser = await _groupCommand.GetGroupUserAsync(userId, group.Id, cancellationToken);
 
-            if (groupUser is not null)
+            if (groupUser is not null && !groupUser.Rejected)
             {
                 throw new ValidationException(nameof(groupUser.MembershipUser), "User has already requested access to this group");
             }
@@ -261,7 +262,7 @@ namespace FutureNHS.Api.Services
             {
                 _logger.LogError($"Error: ApproveGroupUserAsync - User:{0} does not have permission to add a new user to this group:{1}(slug)", userId, slug);
                 throw new ForbiddenException($"Error: User does not have access");
-            }            
+            }
 
             var group = await _groupCommand.GetGroupAsync(slug, cancellationToken);
             if (group is null)

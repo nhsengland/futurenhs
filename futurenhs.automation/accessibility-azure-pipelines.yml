@@ -1,0 +1,54 @@
+trigger: 
+    branches:
+      include:
+      - SPRINT
+
+jobs:
+- job:
+  pool:
+    vmImage: windows-latest
+
+  steps:
+    - task: NodeTool@0
+      displayName: 'Use Node 14.16.1'
+      inputs:
+        versionSpec: 14.16.1
+
+    - task: Npm@1
+      displayName: 'npm install'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'i'
+        workingDir: '$(Build.SourcesDirectory)/futurenhs.automation'
+        
+    - script: 'npm run scenario wdio.headless.conf.js Url=$(ENVURL) FNHS:FED02'
+      workingDirectory: '$(Build.SourcesDirectory)/futurenhs.automation'
+      displayName: 'Execute Tests'
+      continueOnError: true
+      failOnStderr: true
+    - task: PublishTestResults@2
+      displayName: 'Publish Accessibility Test Results'
+      inputs:
+        testResultsFiles: '**/wdio-*.log'
+        mergeTestResults: true
+        testRunTitle: Accessibility
+        failTaskOnFailedTests: true
+      continueOnError: true
+      
+    - task: DeleteFiles@1
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)/futurenhs.automation/junitResults'
+        Contents: '**/wdio-*.log'
+    
+    - script: 'npm run scenario wdio.headless.conf.js Url=$(ENVURL) FNHS:FED01'
+      workingDirectory: '$(Build.SourcesDirectory)/futurenhs.automation'
+      displayName: 'Execute Tests'
+      continueOnError: true
+      failOnStderr: true
+    - task: PublishTestResults@2
+      displayName: 'Publish Lighthouse Test Results'
+      inputs:
+        testResultsFiles: '**/wdio-*.log'
+        mergeTestResults: true
+        testRunTitle: Lighthouse Performance

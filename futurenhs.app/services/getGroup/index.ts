@@ -13,7 +13,7 @@ import { User } from '@appTypes/user'
 declare type Options = {
     user: User
     groupId: string
-    isForEdit?: boolean
+    isForUpdate?: boolean
 }
 
 declare type Dependencies = {
@@ -27,9 +27,10 @@ export type GetGroupService = (
 ) => Promise<ServiceResponse<Group>>
 
 export const getGroup = async (
-    { user, groupId, isForEdit }: Options,
+    { user, groupId, isForUpdate }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<Group>> => {
+
     const serviceResponse: ServiceResponse<Group> = {
         data: null,
     }
@@ -42,7 +43,7 @@ export const getGroup = async (
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }/v1/users/${id}/groups/${groupId}${isForEdit ? '/update' : ''}`
+    }/v1/users/${id}/groups/${groupId}${isForUpdate ? '/update' : ''}`
 
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
@@ -85,7 +86,7 @@ export const getGroup = async (
             : null,
         imageId: apiData.imageId,
         themeId: apiData.themeId,
-        isPublic: apiData.isPublic
+        isPublic: apiData.isPublic,
     }
 
     return serviceResponse

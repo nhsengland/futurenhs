@@ -59,11 +59,11 @@
                 .Returns(mockPublishedContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>(), cancellationToken))
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>()))
                 .Returns(mockContentModelWithBlocks.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>(), cancellationToken))
+                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>()))
                 .Returns(mockContentModelWithoutBlocks.Object);
 
             var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object);
@@ -95,11 +95,11 @@
                 .Returns(mockPublishedContent.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>(), cancellationToken))
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>()))
                 .Returns(mockContentModelWithoutBlocks.Object);
 
             _mockFutureNhsContentService
-                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>(), cancellationToken))
+                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>()))
                 .Returns(mockContentModelWithBlocks.Object);
 
             var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object);
@@ -112,7 +112,41 @@
             Assert.True(contentResult.Succeeded);
         }
 
+        [Test]
+        public async Task PublishContentAndAssociatedContent_ContentAdded_Success()
+        {
+            // Arrange          
+            var contentId = Guid.NewGuid();
+            var mockDraftContent = GetMockContent(contentId);
+            var mockPublishedContent = GetMockPublishedContentItem(true);
+            var mockContentModelWithBlocks = GetMockContentModelWithBlocks(true);
+            var mockContentModelWithoutBlocks = GetMockContentModelWithBlocks(false);
 
+            _mockFutureNhsContentService
+                .Setup(x => x.GetDraftContent(It.IsAny<Guid>(), cancellationToken))
+                .Returns(mockDraftContent.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.GetPublishedContent(It.IsAny<Guid>(), cancellationToken))
+                .Returns(mockPublishedContent.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.ResolveDraftContent(It.IsAny<IContent>()))
+                .Returns(mockContentModelWithoutBlocks.Object);
+
+            _mockFutureNhsContentService
+                .Setup(x => x.ResolvePublishedContent(It.IsAny<IPublishedContent>(), It.IsAny<string>()))
+                .Returns(mockContentModelWithBlocks.Object);
+
+            var contentHandler = GetHandler(_config, _mockFutureNhsContentService.Object, _mockFutureNhsBlockService.Object);
+
+            // Act
+            var contentResult = contentHandler.PublishContentAndAssociatedContent(contentId, cancellationToken);
+
+            // Assert
+            Assert.IsNotNull(contentResult);
+            Assert.True(contentResult.Succeeded);
+        }
 
         #region Setup
 

@@ -30,14 +30,13 @@ Feature: Search
     @Core
     Scenario: FNHS98 - Search results display validation
         When I search for 'Automation'
-        And there are '9' search results displayed
         And the 'Automation Admin Group' search result card is displayed
             | Group                                                                            |
             | DO NOT USE - This group is reserved solely for use by our automated test scripts |
 
     @Core
     Scenario: FNHS99 - Search for a Group by Group Title
-        When I search for 'Automation Admin'
+        When I search for 'Automation Admin Group'
         And there are '1' search results displayed
         And the 'Automation Admin Group' search result card is displayed
             | Group                                                                            |
@@ -47,24 +46,22 @@ Feature: Search
 
 
     Scenario: FNHS100 - Search for a Group That Doesn't Exist
-        When I search for 'Automation Group'
+        When I search for 'Automaton Group'
         And there are '0' search results displayed
         And the 'Sorry no results found' textual value is displayed
 
 
     Scenario: FNHS101 - Search for a Group Where Not a Member
         When I search for 'Automation Created Group'
-        And there are '1' search results displayed
         And the 'Automation Created Group' search result card is displayed
-            | Group                                  |
-            | A group created to test group creation |
+            | Group                                                                            |
+            | DO NOT USE - This group is reserved solely for use by our automated test scripts |
         When I select the 'Automation Created Group' search result card
         Then the 'Automation Created Group' header is displayed
 
 
     Scenario: FNHS102 - Search for a Discussion by the Title
         When I search for 'General Discussion Validation'
-        And there are '1' search results displayed
         And the 'General Discussion Validation' search result card is displayed
             | Discussion on Automation Admin Group group forum |
             | Discussion for general feature validation        |
@@ -74,7 +71,6 @@ Feature: Search
 
     Scenario: FNHS103 - Search for a Comment by Comment Text
         When I search for 'Comment for Like test'
-        And there are '1' search results displayed
         And the 'Comment on discussion: General Discussion Validation' search result card is displayed
             | Discussion on Automation Admin Group group forum |
             | Comment for Like test                            |
@@ -88,7 +84,6 @@ Feature: Search
     @NotInLocal
     Scenario: FNHS104 - Search for a File by File Name
         When I search for 'docTest'
-        And there are '2' search results displayed
         And the 'DocTest' search result card is displayed
             | File on Automation Public Group group |
             | Test doc                             |
@@ -98,7 +93,6 @@ Feature: Search
     @NotInLocal
     Scenario: FNHS105 - Search for a File by File Description
         When I search for 'Test doc FNHS105'
-        And there are '1' search results displayed
         And the 'DocTest' search result card is displayed
             | File on Automation Admin Group group |
             | Test doc FNHS105                     |
@@ -108,7 +102,6 @@ Feature: Search
 
     Scenario: FNHS106 - Search for a Folder by Folder Name
         When I search for 'Automation Test Folder'
-        And there are '1' search results displayed
         And the 'Automation Test Folder' search result card is displayed
             | Folder on Automation Admin Group group |
         When I select the 'Automation Test Folder' search result card
@@ -119,7 +112,6 @@ Feature: Search
 
     Scenario: FNHS107 - Search for a File by Folder Description
         When I search for 'Empty folder for testing'
-        And there are '2' search results displayed
         And the 'Public Empty Folder' search result card is displayed
             | Folder on Automation Public Group group |
             | Empty Folder for testing                |
@@ -133,7 +125,6 @@ Feature: Search
 
     Scenario: FNHS108 - Search for a Group By the Strapline
         When I search for 'DO NOT USE - This group is reserved solely for use by our automated test scripts'
-        Then there are '6' search results displayed
         And the 'Automation Admin Group' search result card is displayed
             | Group                                                                            |
             | DO NOT USE - This group is reserved solely for use by our automated test scripts |
@@ -150,9 +141,8 @@ Feature: Search
 
     Scenario Outline: FNHS110 - Search field boundary validation
         When I search for '<searchTerm>'
-        And there are '<results>' search results displayed
         And the '<contentValidation>' textual value is displayed
         Examples:
-            | searchTerm | results | contentValidation                                                        |
-            | at         | 0       | Sorry no results found. Try a search term with at least three characters |
-            | aut        | 11      | Automation Admin Group                                                   |
+            | searchTerm | contentValidation                                                        |
+            | at         | Sorry no results found. Try a search term with at least three characters |
+            | aut        | Automation Admin Group                                                   |

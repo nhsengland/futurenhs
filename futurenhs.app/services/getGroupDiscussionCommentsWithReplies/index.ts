@@ -14,6 +14,7 @@ import { ApiResponse } from '@appTypes/service'
 import { DiscussionComment } from '@appTypes/discussion'
 import { User } from '@appTypes/user'
 import { Pagination } from '@appTypes/pagination'
+import { mapToProfileImageObject } from '@helpers/util/data'
 
 declare type Options = {
     groupId: string
@@ -107,6 +108,7 @@ export const getGroupDiscussionCommentsWithReplies = async (
                 text: {
                     userName: datum.firstRegistered?.by?.name ?? '',
                 },
+                image: mapToProfileImageObject(datum.firstRegistered?.by?.image, 'Profile image')
             },
             created: datum.firstRegistered?.atUtc ?? '',
             replyCount: datum.repliesCount ?? 0,

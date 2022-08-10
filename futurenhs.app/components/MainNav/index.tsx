@@ -5,6 +5,9 @@ import { SVGIcon } from '@components/SVGIcon'
 
 import { Props } from './interfaces'
 
+/**
+ * Displays a primary site navigation menu.
+ */
 export const MainNav: (props: Props) => JSX.Element = ({
     navMenuList,
     className,

@@ -20,8 +20,10 @@ const testProps: Props = {
             userName: 'Mock Name',
         },
         image: {
-            source: '/img.jpg',
+            src: '/img.jpg',
             altText: 'Image of Mock Name',
+            height: 100,
+            width: 100
         },
     },
     navMenuList: [],

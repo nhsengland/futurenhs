@@ -6,13 +6,7 @@ export default {
     component: Like,
     argTypes: {
         iconName: {
-            options: [
-                'icon-thumbs-up',
-                'icon-star',
-                'icon-tick',
-                'icon-plus-circle',
-                'icon-like-fill',
-            ],
+            options: (window.parent as any).sbIconList,
             control: { type: 'select' },
         },
     },
@@ -48,8 +42,8 @@ Disabled.args = {
     likeAction: () => true,
 }
 
-export const Star = Template.bind({})
-Star.args = {
+export const CustomIcon = Template.bind({})
+CustomIcon.args = {
     iconName: 'icon-star',
     shouldEnable: true,
     likeCount: 5,

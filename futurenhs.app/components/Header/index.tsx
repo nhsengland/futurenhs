@@ -23,9 +23,12 @@ import { routes } from '@constants/routes'
 import { capitalise } from '@helpers/formatters/capitalise'
 
 import { Props } from './interfaces'
+import { useAssetPath } from '@hooks/useAssetPath'
+import { Image as ImageType } from '@appTypes/image'
 
 /**
- * Site header
+ * Generic site header applied to all layouts.
+ * Renders logo, search input, user options and mobile navigation
  */
 export const Header: (props: Props) => JSX.Element = ({
     skipLinkList = [
@@ -69,12 +72,13 @@ export const Header: (props: Props) => JSX.Element = ({
     const isDesktop: boolean = useMediaQuery(mediaQueries.DESKTOP)
     const headerAccordionId: string = 'header-accordion'
     const userAccordionId: string = 'user-accordion'
+    const headerImageSrc: string = useAssetPath('/images/logo.svg')
+    const userProfileImage: ImageType = user?.image
     const logOutRoute: string = routes.LOG_OUT
     const shouldRenderUserLink: boolean = Boolean(user?.id)
     const shouldRenderAdminLink: boolean = actions?.includes(
         actionTypes.SITE_ADMIN_VIEW
     )
-
     /**
      * Handle expanding or collapsing accordions
      */
@@ -125,7 +129,7 @@ export const Header: (props: Props) => JSX.Element = ({
                     <Link href="/">
                         <a className="c-site-header_logo u-focus-item">
                             <Image
-                                src="/images/logo.svg"
+                                src={headerImageSrc}
                                 height={41}
                                 width={231}
                                 alt="FutureNHS home page"
@@ -183,7 +187,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                 <span className="c-site-header-nav_root-nav-image">
                                                                     <Avatar
                                                                         image={
-                                                                            null
+                                                                            userProfileImage
                                                                         }
                                                                         initials={
                                                                             userInitials
@@ -210,7 +214,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                 <span className="c-site-header-nav_root-nav-image">
                                                                     <Avatar
                                                                         image={
-                                                                            null
+                                                                            userProfileImage
                                                                         }
                                                                         initials={
                                                                             userInitials

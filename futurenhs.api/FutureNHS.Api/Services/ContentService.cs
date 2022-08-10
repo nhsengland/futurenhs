@@ -30,13 +30,13 @@ namespace FutureNHS.Api.Services
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == groupId) throw new ArgumentOutOfRangeException(nameof(groupId));
 
-            ContentDto content = new()
+            PageDto page = new()
             {
                 PageName = $"group:{groupId}",
                 PageParentId = createRequest?.PageParentId
             };
 
-            return await _contentCommand.CreatePageAsync(content, cancellationToken);
+            return await _contentCommand.CreatePageAsync(page, cancellationToken);
         }
 
         /// <inheritdoc />

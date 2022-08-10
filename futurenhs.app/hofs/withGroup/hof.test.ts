@@ -14,28 +14,37 @@ describe('withGroup hof', () => {
         FullName: 'Mock User 2',
         UserAvatar: null,
     }
-    const props: any = {}
-
-    const getServerSideProps = async (context) => {
-        return handleSSRSuccessProps({ props })
-    }
 
     it('returns group data', async () => {
-        const mockWithGroup = withGroup({ props, getServerSideProps })
-
         expect(
-            await mockWithGroup({ req: { user }, params: { groupId } } as any)
+            await withGroup({ 
+                req: { 
+                    user 
+                }, 
+                params: { 
+                    groupId 
+                },
+                page: {
+                    props: {}
+                } 
+            } as any, {}, {})
         ).toHaveProperty('props.themeId')
     })
 
     it('service error thrown', async () => {
         mswServer.use(handlers.getGroup({ status: 500 }))
 
-        const mockWithGroup = withGroup({ props, getServerSideProps })
-        const serverSideProps = await mockWithGroup({
-            req: { user },
-            params: { groupId },
-        } as any)
+        const serverSideProps = await withGroup({ 
+            req: { 
+                user 
+            }, 
+            params: { 
+                groupId 
+            },
+            page: {
+                props: {}
+            } 
+        } as any, {}, {})
 
         expect(serverSideProps).toHaveProperty('props.errors')
         expect(serverSideProps['props']['errors'].length).not.toBe(0)
@@ -43,10 +52,8 @@ describe('withGroup hof', () => {
 
     it('throws an error', async () => {
         try {
-            const mockWithGroup = withGroup({ props: null, getServerSideProps })
 
-            await mockWithGroup({ req: { user }, params: { groupId } } as any)
-            expect(false).toBe(true)
+            await withGroup({} as any, {}, {})
         } catch (err) {
             expect(err.message.length).not.toBe(0)
         }

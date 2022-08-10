@@ -32,6 +32,7 @@ export const getGroups: Service = async (
     { user, isMember, pagination }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<Group>>> => {
+
     const serviceResponse: ServicePaginatedResponse<Array<Group>> = {
         data: [],
     }

@@ -10,6 +10,7 @@ import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb'
 import { BreadCrumbList } from '@appTypes/routing'
 
 import { Props } from './interfaces'
+import { useRouter } from 'next/router'
 
 export const GroupLayout: (props: Props) => JSX.Element = ({
     tabId,
@@ -17,21 +18,20 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     entityText,
     image,
     actions,
+    memberStatus,
     routes,
     children,
     shouldRenderGroupHeader = true,
     pageTitle,
     ...rest
 }) => {
-    /**
-     * TODO: Determine whether user has access to group when back-end permissions work is complete
-     */
-    const hasAccessToGroup: boolean = true
+    const router: any = useRouter()
+    const isAboutRoute: boolean = router.asPath === routes.groupAboutRoot
 
     const navMenuList = getGroupNavMenuList({
         groupRoute: routes.groupRoot,
         activeId: tabId,
-        isRestricted: !hasAccessToGroup,
+        isRestricted: isAboutRoute,
     })
 
     const currentRoutePathElements: Array<string> =
@@ -67,6 +67,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                             actions={actions}
                             routes={routes}
                             navMenuList={navMenuList}
+                            memberStatus={memberStatus}
                         />
                     </ErrorBoundary>
                 )}

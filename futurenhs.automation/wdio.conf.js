@@ -1,3 +1,4 @@
+require('dotenv').config()
 const path = require('path')
 const fs = require('fs')
 const slackService = require('./util/SlackReporter')
@@ -41,15 +42,15 @@ exports.config = {
     ],
     suites: {
         fullRegression: [
-            './features/**/platformAdmin.feature',
             './features/**/userAccess.feature',
+            './features/**/platformAdmin.feature',
             './features/**/search.feature',
             './features/**/groupNavigation.feature',
             './features/**/groupMembers.feature',
             './features/**/groupAdmin.feature',
             './features/**/groupEdit.feature',
             './features/**/groupPublic.feature',
-            // './features/**/groupPrivate.feature',
+            './features/**/groupPrivate.feature',
             // './features/**/editablePagesValidation.feature',
             './features/**/forumNavigation.feature',
             './features/**/forumSubmission.feature',
@@ -58,7 +59,6 @@ exports.config = {
             './features/**/filesManagement.feature',
             './features/**/memberProfile.feature',
             './features/**/cookies.feature',
-            './features/**/systemPages.feature',
             './features/**/mobileNavigation.feature'
         ],
         smokeTest: [
@@ -168,7 +168,7 @@ exports.config = {
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    baseUrl: 'http://localhost:5000/',
+    baseUrl: process.env[`LOCAl_ENV`],
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
@@ -217,12 +217,12 @@ exports.config = {
     // see also: https://webdriver.io/docs/dot-reporter.html
     reporters: [
         'spec',
-        ['allure', {
-            outputDir: 'allureResults',
-            disableWebdriverStepsReporting: true,
-            disableWebdriverScreenshotsReporting: true,
-            useCucumberStepReporter: true
-        }],
+        // ['allure', {
+        //     outputDir: 'allureResults',
+        //     disableWebdriverStepsReporting: true,
+        //     disableWebdriverScreenshotsReporting: true,
+        //     useCucumberStepReporter: true
+        // }],
         ['junit', {
             outputDir: 'junitResults'
         }]
@@ -333,7 +333,7 @@ exports.config = {
         browser.setWindowSize(1920, 1080);
         browser.deleteAllCookies();
     },
-
+    
     /**
      * Runs before a Cucumber step
      */
@@ -341,19 +341,19 @@ exports.config = {
         var foundPage = browser.getUrl();
         pagesVisited.push(foundPage);
         if(foundPage === currentPage) {return}
-
+        
         // Phase Banner Passive Test 
         var result = genericPage.checkPhaseBanner();
         if(result != true){
             phaseBannerErrors.push(result);
         }
-
+        
         // Support Banner Passive Test
         var result = genericPage.checkSupportBanner();
         if(result != true){
             supportBannerErrors.push(result)
         }
-
+        
         // Axe Core Accessibility Page Test
         if(process.env.axe){
             var pageCount = 0
@@ -368,7 +368,7 @@ exports.config = {
         }
         currentPage = foundPage
     },
-
+    
     /**
      * Runs after a Cucumber step
      */

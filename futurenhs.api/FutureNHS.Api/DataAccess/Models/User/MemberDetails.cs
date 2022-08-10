@@ -12,6 +12,5 @@
         public string DateJoinedUtc { get; init; }
         public string LastLoginUtc { get; init; }
         public Image ProfileImage { get; init; }
-
     }
 }

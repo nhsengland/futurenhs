@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { formTypes } from '@constants/forms'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getGenericFormError } from '@helpers/util/form'
-import { selectForm } from '@selectors/forms'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
@@ -14,6 +13,7 @@ import { putGroupFolder } from '@services/putGroupFolder'
 import { FormErrors, FormConfig } from '@appTypes/form'
 
 import { Props } from './interfaces'
+import { useFormConfig } from '@hooks/useForm'
 
 /**
  * Group create/update folder template
@@ -31,7 +31,7 @@ export const GroupCreateUpdateFolderTemplate: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
 
-    const formConfig: FormConfig = selectForm(forms, formTypes.GROUP_FOLDER)
+    const formConfig: FormConfig = useFormConfig(formTypes.GROUP_FOLDER, forms[formTypes.GROUP_FOLDER])
     const [errors, setErrors] = useState(formConfig?.errors)
 
     const { text } = folder ?? {}

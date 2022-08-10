@@ -33,7 +33,7 @@ class filesPage extends basePage {
         // click download button
         var tableRow = $(`//tbody/tr[*[contains(normalize-space(.), "${fileName}")]]`)
         helpers.waitForLoaded(tableRow);
-        var downloadBtn = tableRow.$('./td/a[text()="Download file"]');
+        var downloadBtn = tableRow.$('./td//a[text()="Download file"]');
         helpers.click(downloadBtn);
         // locate file
         browser.waitUntil(() => { return fs.readdirSync(dir).filter(item => item.endsWith(`.${fileType}`)).length > 0 }, { timeout: 10000, timeoutMsg: "file not downloaded after 10s" });

@@ -14,7 +14,7 @@
             _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
         }
 
-        public void ValidateContentModel(ContentModelData contentModel)
+        public void ValidateContentModelData(ContentModelData contentModel)
         {
             var contentType = _contentTypeService.Get(contentModel.Item?.ContentType);
 
@@ -22,7 +22,7 @@
                 throw new KeyNotFoundException($"No content type for {contentModel.Item?.ContentType} found.");
 
             var expectedValues = contentType.PropertyTypes.Select(x => x.Alias).ToList();
-            var blockValues = contentModel.Content?.Select(x => x.Key.ToString()).ToList();
+            var blockValues = contentModel.Content?.Select(x => x.Key.ToString()).Where(x => x != "blocks").ToList(); // ignore 'blocks' as they're not set a contentType properties but are used to identify contentModel children in Umbraco.
 
             if (blockValues is not null)
             {

@@ -28,7 +28,19 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         public async Task UserJoinGroupAsync(GroupUserDto groupUser, CancellationToken cancellationToken = default)
         {
             const string query =
-                 @" INSERT INTO  [dbo].[GroupUser]
+                 @"IF EXISTS (SELECT [Id] FROM [dbo].[GroupUser] 
+                    WHERE        [MembershipUser_Id] = @UserId
+					AND	         [Group_Id]			 = @GroupId 
+					AND	         [Rejected]			 = 1)
+                    BEGIN
+                    UPDATE       [dbo].[GroupUser]
+                    SET          [Rejected]          = 0
+                    WHERE        [MembershipUser_Id] = @UserId
+                    AND          [Group_Id]	         = @GroupId
+                    END
+                    ELSE
+                    BEGIN
+                    INSERT INTO  [dbo].[GroupUser]
                                  ([Id]
                                 ,[Approved]
                                 ,[Rejected]
@@ -57,7 +69,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,@ApprovingUser
                                 ,@Role
                                 ,@UserId
-                                ,@GroupId)";
+                                ,@GroupId)
+                    END";
 
             var queryDefinition = new CommandDefinition(query, new
             {
@@ -143,7 +156,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryAsync<GroupData, Image, GroupData>(query,
+            var group = await dbConnection.QueryAsync<GroupData, Image, GroupData>(query,
                 (group, image) =>
                 {
                     if (image is not null)
@@ -157,9 +170,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     Slug = slug
                 }, splitOn: "id");
 
-            var group = reader.FirstOrDefault() ?? throw new NotFoundException("Group not found.");
-
-            return group;
+            return group.SingleOrDefault() ?? throw new NotFoundException("Group not found.");
         }
 
         public async Task<Guid> CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken)
@@ -263,15 +274,70 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 }
             }
 
-            if (insertGroupResult != 1)
+            if (!groupDto.GroupAdminUsers.Contains(groupDto.GroupOwnerId))
             {
-                _logger.LogError("Error: User request to create a group was not successful.", insertGroup);
-                throw new DataException("Error: User request to create a group was not successful.");
+                const string insertGroupOwner =
+                   @"
+                    INSERT INTO [dbo].[GroupUser]
+                    (
+                        [Approved],
+                        [Rejected],
+                        [Locked],
+                        [Banned],
+                        [RequestToJoinDateUTC],
+                        [ApprovedToJoinDateUTC],
+                        [ApprovingMembershipUser_Id],
+                        [MembershipRole_Id],
+                        [MembershipUser_Id],
+                        [Group_Id]
+                    )
+                    VALUES
+                    (
+                        '1',
+                        '0',
+                        '0',
+                        '0',
+                        @CurrentDateUtc,
+                        @CurrentDateUtc,
+                        @ApprovingMemberId,
+                        (
+                            SELECT [Id]
+                            FROM   [dbo].[MembershipRole]
+                            WHERE  [RoleName] = 'Admin'
+                        ),
+                        @MembershipUserId,
+                        @GroupId
+                    )";
+
+                var insertGroupUserInRoles = await connection.ExecuteAsync(insertGroupOwner, new
+                {
+                    CurrentDateUtc = groupDto.CreatedAtUtc,
+                    ApprovingMemberId = userId,
+                    MembershipUserId = groupDto.GroupOwnerId,
+                    GroupId = groupId
+                }, transaction: transaction);
+
+                if (insertGroupUserInRoles != 1)
+                {
+                    _logger.LogError("Error: User request to create a group user in roles was not successful.", insertGroupUserInRoles);
+                    throw new DataException("Error: User request to create a group user in roles was not successful.");
+                }
             }
 
-            await transaction.CommitAsync(cancellationToken);
-
-            await connection.CloseAsync();
+            try
+            {
+                await transaction.CommitAsync(cancellationToken);
+            } 
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Create group failed for user:{UserID}", userId);
+                throw;
+            }
+            finally
+            {
+                await connection.CloseAsync();
+            }
 
             return groupId;
         }

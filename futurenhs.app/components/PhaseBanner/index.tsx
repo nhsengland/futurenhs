@@ -5,6 +5,10 @@ import { RichText } from '@components/RichText'
 
 import { Props } from './interfaces'
 
+/**
+ * Derived from the GOV UK Design System Phase Banner component: https://design-system.service.gov.uk/components/phase-banner/.
+ * Used to show users the service is still being worked on.
+ */
 export const PhaseBanner: (props: Props) => JSX.Element = ({
     text,
     className,

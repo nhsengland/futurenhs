@@ -4,7 +4,6 @@
     using Services.FutureNhs.Interface;
     using Umbraco.Cms.Core.Composing;
     using Umbraco.Cms.Core.DependencyInjection;
-    using Umbraco9ContentApi.Core.Converters;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs;
     using Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
@@ -33,10 +32,6 @@
             builder.Services.AddScoped<IFutureNhsTemplateHandler, FutureNhsTemplateHandler>();
             builder.Services.AddScoped<IFutureNhsSiteMapHandler, FutureNhsSiteMapHandler>();
             builder.Services.AddScoped<IFutureNhsPageHandler, FutureNhsPageHandler>();
-
-            // Converters
-            builder.Converters().Replace<MultinodeTreepickerConverter, BlockPickerConverter>();
-            builder.Converters().Replace<TextAreaConverter, JsonContentConverter>();
 
             // Resolvers
             builder.Services.AddTransient<IFutureNhsContentResolver, FutureNhsContentResolver>();

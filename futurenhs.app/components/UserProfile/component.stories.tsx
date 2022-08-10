@@ -1,6 +1,8 @@
 import React from 'react'
+import { useAssetPath } from '@hooks/useAssetPath';
 import { UserProfile } from './index'
-import { defaultGroupLogos } from '@constants/icons'
+
+const exampleImageSrc: string = useAssetPath('/images/example-profile-image.svg');
 
 export default {
     title: 'UserProfile',
@@ -24,11 +26,17 @@ Basic.args = {
         emailLabel: 'Email',
     },
     profile: {
-        firstName: 'Stephen',
-        lastName: 'Stephenson',
-        pronouns: 'he/him',
-        email: 'stephen.stephenson@example.com',
+        firstName: 'Anne',
+        lastName: 'Example',
+        pronouns: 'she/her',
+        email: 'anne.example@example.com',
     },
+    image: {
+        src: exampleImageSrc,
+        altText: 'Image of user',
+        height: '250px',
+        width: '250px'
+    }
 }
 
 export const NamesOnly = Template.bind({})
@@ -41,13 +49,19 @@ NamesOnly.args = {
         emailLabel: 'Email',
     },
     profile: {
-        firstName: 'Stephen',
-        lastName: 'Stephenson',
+        firstName: 'Anne',
+        lastName: 'Example',
     },
+    image: {
+        src: exampleImageSrc,
+        altText: 'Image of user',
+        height: '250px',
+        width: '250px'
+    }
 }
 
-export const Image = Template.bind({})
-Image.args = {
+export const NoImage = Template.bind({})
+NoImage.args = {
     text: {
         heading: 'User Profile',
         firstNameLabel: 'First name',
@@ -56,10 +70,10 @@ Image.args = {
         emailLabel: 'Email',
     },
     profile: {
-        firstName: 'Stephen',
-        lastName: 'Stephenson',
-        pronouns: 'he/him',
-        email: 'stephen.stephenson@example.com',
+        firstName: 'Anne',
+        lastName: 'Example',
+        pronouns: 'she/her',
+        email: 'anne.example@example.com',
     },
-    image: defaultGroupLogos.large,
+    image: null 
 }

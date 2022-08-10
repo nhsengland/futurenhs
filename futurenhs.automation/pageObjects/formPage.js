@@ -8,24 +8,38 @@ class formPage extends basePage{
      * @param {string} label - expected label of the form element 
      * @param {string} interactionType - type of form control
      */
-    formActionSelect(valueToSet, label, interactionType){
+    formActionSelect(valueToSet, label, interactionType, instance){
         switch(interactionType){
-            case "field" : this.inputFieldSet(valueToSet, label)
+            case "field" : this.inputFieldSet(valueToSet, label, instance);
                 break;
-            case "text area" : this.textAreaSet(valueToSet, label)
+            case "text area" : this.textAreaSet(valueToSet, label, instance);
                 break;
-            case "text editor" : this.textEditorSet(valueToSet, label)                
+            case "text editor" : this.textEditorSet(valueToSet, label, instance);
                 break;
             default : throw new Error(`Type of control not found ` + interactionType);
         }
     }
 
+
+    /**
+     * 
+     * @param {*} label
+     * @param {*} foundElements
+     * @returns
+     */
+     findInstance(label, foundElements) {
+        var instance = foundElements.filter((item) => item != undefined && item.startsWith(label)).length;
+        foundElements.push(label);
+        return instance;
+    }
+    
     /**
      * Generic command to locate and element by it's label text value
      * @param {string} labelText - the textual value of the desired label used as the selector
      */
-    findLabel(labelText){
-        var label = $(`//label[starts-with(normalize-space(.), "${labelText}")]`)
+    findLabel(labelText, instance){
+        if(instance === undefined){ instance = 0 }
+        var label = $$(`//label[starts-with(normalize-space(.), "${labelText}")]`)[instance];
         helpers.waitForLoaded(label);
         return label
     }
@@ -35,8 +49,8 @@ class formPage extends basePage{
      * @param {string} valueToSet - textual value to set within the input field
      * @param {string} label - the textual value of the desired label used as part of the selector
      */
-    inputFieldSet(valueToSet, label){
-        var fieldLabel = this.findLabel(label);
+    inputFieldSet(valueToSet, label, instance){
+        var fieldLabel = this.findLabel(label, instance);
         var fieldInput = fieldLabel.parentElement().$('input');
         helpers.clearElement(fieldInput);
         fieldInput.addValue(valueToSet);
@@ -48,8 +62,8 @@ class formPage extends basePage{
      * @param {string} valueToSet - textual value to set within the text area
      * @param {string} label - the textual value of the desired label used as part of the selector
      */
-    textAreaSet(valueToSet, label){
-        var fieldLabel = this.findLabel(label);
+    textAreaSet(valueToSet, label, instance){
+        var fieldLabel = this.findLabel(label, instance);
         var areaInput = fieldLabel.parentElement().$('textarea');
         helpers.clearElement(areaInput);
         areaInput.addValue(valueToSet);
@@ -61,6 +75,7 @@ class formPage extends basePage{
      * @param {string} valueToSet - textual value to set within the rich text editor
      */
     textEditorSet(valueToSet, label){
+        if(valueToSet == null){ return }
         var txtEditorLabel = helpers.getEnabledInstance(`//label[starts-with(normalize-space(.), "${label}")]`);
         //Find the unique ID for the desired text editor iFrame
         txtEditorLabel.scrollIntoView();
@@ -77,12 +92,9 @@ class formPage extends basePage{
             global.postedComment = valueToSet
         }
         //Set value and return to main frame of the page
-        txtEditor.setValue(valueToSet);
+        helpers.clearElement(txtEditor);
+        txtEditor.addValue(valueToSet);
         browser.switchToParentFrame();
-        //Find sumbit button of the editor
-        var submitbtn = txtEditorLabel.parentElement().parentElement().parentElement().$('./div[2]/button[starts-with(@class, "c-form_submit-button")]');
-        //Click submit button of the editor
-        helpers.click(submitbtn);
     }
 
     /**
@@ -91,8 +103,7 @@ class formPage extends basePage{
      * @param {string} label - the textual value of the desired label used as part of the selector
      * @param {integer} instance - numerical value of the desired instance of the dropdown, this is used to combat hidden/duplicated fields
      */
-    dropdownSelect(dropdownOption, label, instance){ 
-        instance = instance ? instance - 1 : 0
+    dropdownSelect(dropdownOption, label){
         var dropdown = this.findLabel(label)
         helpers.click(dropdown);
         helpers.click(dropdown.$(`../select/option[contains(text(), "${dropdownOption}")]`));
@@ -118,12 +129,13 @@ class formPage extends basePage{
      * @param {*} label - textual value of the checkbox to select
      */
     checkboxSelect(label){
-        try{
-            var checkbox = this.findLabel(label)
-            checkbox.$(`../input[@type="checkbox"]`).click();
-        } catch (error){
-            throw new Error(`Unable to locate the '${label}' checkbox : '${error}'`);
+        if(label.includes('public?')){
+            var checkbox = $(`//label[@for="isPublic[0]"]`);
+            helpers.waitForLoaded(checkbox);
+        } else {
+            checkbox = this.findLabel(label);
         }
+        checkbox.$(`../input[@type="checkbox"]`).click();
     }
 
     /**
@@ -182,21 +194,15 @@ class formPage extends basePage{
      * Function to locate and validate an error message displayed within a form page
      * @param {string} messageTxt - textual value of the error message to validate against
      */
-    formErrorValidation(messageTxt, errorType) {
-        var foundErrors        
+    formErrorValidation(messageTxt) {
+        var errorSelector = `//div[contains(@class, "c-error-summary")]/ul/li|//span[contains(@class, "error-message")]`;
         var errors = ''
-        if(errorType === 'summary'){
-            var summaryBody = $('//div[contains(@class, "c-error-summary")][*[normalize-space(.) = "There is a problem"]]/ul');
-            helpers.waitForLoaded(summaryBody);        
-            foundErrors = summaryBody.$$('./li');
-        } else {
-            foundErrors = $$('//span[contains(@class, "error-message")]');
-        }
+        helpers.waitForLoaded(errorSelector);
+        var foundErrors = $$(errorSelector);
         foundErrors.forEach(error => {
             errors = errors.concat(error.getText(), ', ');            
         });
         expect(errors.includes(messageTxt)).toEqual(true);
     }
-
 }
 module.exports = new formPage();

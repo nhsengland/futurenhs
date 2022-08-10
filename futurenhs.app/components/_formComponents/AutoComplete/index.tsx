@@ -11,8 +11,10 @@ import { Service } from '@appTypes/service'
 import { Props } from './interfaces'
 
 /**
- * Form field component for autocomplete enhanced text input
- * Wraps alphagov autocomplete
+ * Derived from the NHS Design System Text Input component: https://service-manual.nhs.uk/design-system/components/text-input. 
+ * Used to allow users to enter text that’s no longer than a single line, such as their name or phone number.
+ * Progressively enhanced with autocomplete functionality using the alphagov component: https://github.com/alphagov/accessible-autocomplete.
+ * Use for autocomplete instances where the option count is in excess of several hundred - otherwise prefer to progressively enhance a select element. 
  */
 export const AutoComplete: (props: Props) => JSX.Element = ({
     input: { name, value, onChange },
@@ -94,8 +96,7 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
                 /**
                  * Get suggestions from service
                  */
-                services
-                    .getSiteUsersByTerm(Object.assign({ ...context, term }))
+                service(Object.assign({ ...context, term }))
                     .then(({ data }) => {
                         /**
                          * Clear the suggestions cache if full
@@ -153,8 +154,8 @@ export const AutoComplete: (props: Props) => JSX.Element = ({
      */
     useEffect(() => {
         autoCompleteField.current = document.getElementById(name)
-        autoCompleteField.current.addEventListener('keyup', handleInputChange)
-        autoCompleteField.current.addEventListener('change', handleInputChange)
+        autoCompleteField.current?.addEventListener('keyup', handleInputChange)
+        autoCompleteField.current?.addEventListener('change', handleInputChange)
 
         return () => {
             window.clearTimeout(serviceTimeOut?.current)

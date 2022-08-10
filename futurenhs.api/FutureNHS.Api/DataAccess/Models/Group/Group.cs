@@ -9,10 +9,9 @@
         public bool IsPublic { get; init; }
         public ImageData Image { get; init; }
         public Guid? ThemeId { get; init; }
-        public bool IsMember { get; init; }
+        public string MemberStatus { get; init; }
         public Guid OwnerId { get; init; }
         public string OwnerFirstName { get; init; }
         public string OwnerSurname { get; init; }
-
     }
 }

@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getServiceErrorDataValidationErrors } from '@services/index'
@@ -9,7 +10,6 @@ import { layoutIds, groupTabIds } from '@constants/routes'
 import { requestMethods } from '@constants/fetch'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
-import { withForms } from '@hofs/withForms'
 import { withGroup } from '@hofs/withGroup'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupDiscussion } from '@services/getGroupDiscussion'
@@ -23,164 +23,154 @@ import {
     selectFormData,
     selectRequestMethod,
     selectCsrfToken,
+    selectPageProps
 } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { Pagination } from '@appTypes/pagination'
 
-import { createDiscussionCommentForm } from '@formConfigs/create-discussion-comment'
-import { createDiscussionCommentReplyForm } from '@formConfigs/create-discussion-comment-reply'
 import { GroupDiscussionTemplate } from '@components/_pageTemplates/GroupDiscussionTemplate'
 import { Props } from '@components/_pageTemplates/GroupDiscussionTemplate/interfaces'
 import { formTypes } from '@constants/forms'
 import { ServerSideFormData } from '@helpers/util/form'
 import { FormErrors } from '@appTypes/form'
 
-const routeId: string = 'f9658510-6950-43c4-beea-4ddeca277a5f'
-const props: Partial<Props> = {}
-
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withUser({
-    props,
-    getServerSideProps: withRoutes({
-        props,
-        getServerSideProps: withGroup({
-            props,
-            getServerSideProps: withForms({
-                props,
-                routeId,
-                getServerSideProps: withTextContent({
-                    props,
-                    routeId,
-                    getServerSideProps: async (
-                        context: GetServerSidePropsContext
-                    ) => {
-                        const user: User = selectUser(context)
-                        const groupId: string = selectParam(
-                            context,
-                            routeParams.GROUPID
-                        )
-                        const discussionId: string = selectParam(
-                            context,
-                            routeParams.DISCUSSIONID
-                        )
-                        const pagination: Pagination = selectPagination(context)
-                        const formData: ServerSideFormData =
-                            selectFormData(context)
-                        const requestMethod: requestMethods =
-                            selectRequestMethod(context)
-                        const csrfToken: string = selectCsrfToken(context)
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => await pipeSSRProps(context, {
+    routeId: 'f9658510-6950-43c4-beea-4ddeca277a5f'
+}, [
+    withUser,
+    withRoutes,
+    withGroup,
+    withTextContent
+], async (context: GetServerSidePropsContext) => {
 
-                        const commentForm: any =
-                            props.forms[createDiscussionCommentForm.id]
-                        const replyForm: any =
-                            props.forms[createDiscussionCommentReplyForm.id]
+    /**
+     * Get context data
+     */
+    const props: Partial<Props> = selectPageProps(context);
+    const user: User = selectUser(context)
+    const groupId: string = selectParam(
+        context,
+        routeParams.GROUPID
+    )
+    const discussionId: string = selectParam(
+        context,
+        routeParams.DISCUSSIONID
+    )
+    const pagination: Pagination = selectPagination(context)
+    const formData: ServerSideFormData = selectFormData(context)
+    const requestMethod: requestMethods =
+        selectRequestMethod(context)
+    const csrfToken: string = selectCsrfToken(context)
 
-                        props.discussionId = discussionId
-                        props.layoutId = layoutIds.GROUP
-                        props.tabId = groupTabIds.FORUM
+    props.forms = {
+        [formTypes.CREATE_DISCUSSION_COMMENT]: {},
+        [formTypes.CREATE_DISCUSSION_COMMENT_REPLY]: {},
+    }
 
-                        if (formData && requestMethod === requestMethods.POST) {
-                            const formId = formData.get('_form-id')
-                            const commentId: string =
-                                formData.get('_instance-id')
-                            const headers = getStandardServiceHeaders({
-                                csrfToken,
-                            })
+    const commentForm: any =
+        props.forms[formTypes.CREATE_DISCUSSION_COMMENT]
+    const replyForm: any =
+        props.forms[formTypes.CREATE_DISCUSSION_COMMENT_REPLY]
 
-                            try {
-                                if (
-                                    formId ===
-                                    formTypes.CREATE_DISCUSSION_COMMENT
-                                ) {
-                                    commentForm.initialValues =
-                                        formData.getAll()
+    props.discussionId = discussionId
+    props.layoutId = layoutIds.GROUP
+    props.tabId = groupTabIds.FORUM
 
-                                    await postGroupDiscussionComment({
-                                        groupId,
-                                        discussionId,
-                                        user,
-                                        headers,
-                                        body: formData,
-                                    })
-                                } else if (
-                                    formId ===
-                                    formTypes.CREATE_DISCUSSION_COMMENT_REPLY
-                                ) {
-                                    replyForm.initialValues = formData.getAll()
+    if (formData && requestMethod === requestMethods.POST) {
+        const formId = formData.get('_form-id')
+        const commentId: string = formData.get('_instance-id')
+        const headers = getStandardServiceHeaders({
+            csrfToken,
+        })
 
-                                    await postGroupDiscussionCommentReply({
-                                        groupId,
-                                        discussionId,
-                                        commentId,
-                                        user,
-                                        headers,
-                                        body: formData,
-                                    })
-                                }
-                            } catch (error) {
-                                const validationErrors: FormErrors =
-                                    getServiceErrorDataValidationErrors(error)
+        try {
+            if (
+                formId === formTypes.CREATE_DISCUSSION_COMMENT
+            ) {
+                commentForm.initialValues = formData.getAll()
 
-                                if (validationErrors) {
-                                    if (
-                                        formId ===
-                                        formTypes.CREATE_DISCUSSION_COMMENT
-                                    ) {
-                                        commentForm.errors = validationErrors
-                                    } else if (
-                                        formId ===
-                                        formTypes.CREATE_DISCUSSION_COMMENT_REPLY
-                                    ) {
-                                        replyForm.errors = validationErrors
-                                    }
-                                } else {
-                                    return handleSSRErrorProps({ props, error })
-                                }
-                            }
-                        }
+                await postGroupDiscussionComment({
+                    groupId,
+                    discussionId,
+                    user,
+                    headers,
+                    body: formData,
+                })
+            } else if (
+                formId ===
+                formTypes.CREATE_DISCUSSION_COMMENT_REPLY
+            ) {
+                replyForm.initialValues = formData.getAll()
 
-                        /**
-                         * Get data from services
-                         */
-                        try {
-                            const [groupDiscussion, groupDiscussionComments] =
-                                await Promise.all([
-                                    getGroupDiscussion({
-                                        user,
-                                        groupId,
-                                        discussionId,
-                                    }),
-                                    getGroupDiscussionCommentsWithReplies({
-                                        user,
-                                        groupId,
-                                        discussionId,
-                                        pagination,
-                                    }),
-                                ])
+                await postGroupDiscussionCommentReply({
+                    groupId,
+                    discussionId,
+                    commentId,
+                    user,
+                    headers,
+                    body: formData,
+                })
+            }
+        } catch (error) {
+            const validationErrors: FormErrors =
+                getServiceErrorDataValidationErrors(error)
 
-                            props.discussion = groupDiscussion.data
-                            props.discussionCommentsList =
-                                groupDiscussionComments.data
-                            props.pagination =
-                                groupDiscussionComments.pagination
-                            props.pageTitle = `${props.entityText.title} - ${props.discussion.text.title}`
-                        } catch (error) {
-                            return handleSSRErrorProps({ props, error })
-                        }
+            if (validationErrors) {
+                if (
+                    formId ===
+                    formTypes.CREATE_DISCUSSION_COMMENT
+                ) {
+                    commentForm.errors = validationErrors
+                } else if (
+                    formId ===
+                    formTypes.CREATE_DISCUSSION_COMMENT_REPLY
+                ) {
+                    replyForm.errors = validationErrors
+                }
+            } else {
+                return handleSSRErrorProps({ props, error })
+            }
+        }
+    }
 
-                        /**
-                         * Return data to page template
-                         */
-                        return handleSSRSuccessProps({ props })
-                    },
+    /**
+     * Get data from services
+     */
+    try {
+        const [groupDiscussion, groupDiscussionComments] =
+            await Promise.all([
+                getGroupDiscussion({
+                    user,
+                    groupId,
+                    discussionId,
                 }),
-            }),
-        }),
-    }),
-})
+                getGroupDiscussionCommentsWithReplies({
+                    user,
+                    groupId,
+                    discussionId,
+                    pagination,
+                }),
+            ])
+
+        props.discussion = groupDiscussion.data
+        props.discussionCommentsList =
+            groupDiscussionComments.data
+        props.pagination = groupDiscussionComments.pagination
+        props.pageTitle = `${props.entityText.title} - ${props.discussion.text.title}`
+    } catch (error) {
+        return handleSSRErrorProps({ props, error })
+    }
+
+    /**
+     * Return data to page template
+     */
+    return handleSSRSuccessProps({ props, context })
+
+});
 
 /**
  * Export page template

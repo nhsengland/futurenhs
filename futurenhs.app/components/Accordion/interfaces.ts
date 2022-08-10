@@ -26,11 +26,11 @@ export interface Props {
     toggleAction?: (id: string, isOpen: boolean) => any
     children: any
     /**
-     * Text/element to be rendered to control accordion toggle when open
+     * Text/component to be rendered to control accordion toggle when open
      */
     toggleOpenChildren: any
     /**
-     * Text/element to be rendered to control accordion toggle when closed
+     * Text/component to be rendered to control accordion toggle when closed
      */
     toggleClosedChildren: any
     className?: string

@@ -2,6 +2,7 @@
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Web.Common.PublishedModels;
 using Umbraco.Extensions;
 using Umbraco9ContentApi.Core.Models.Content;
 using Umbraco9ContentApi.Core.Resolvers.Interfaces;
@@ -17,49 +18,43 @@ namespace UmbracoContentApi.Core.Resolvers
         private readonly IPublishedValueFallback _publishedValueFallback;
         private readonly IVariationContextAccessor _variationContextAccessor;
         private readonly IContentTypeService _contentTypeService;
+        private readonly IContentService _contentService;
 
         public FutureNhsContentResolver(
             IVariationContextAccessor variationContextAccessor,
             ConverterCollection converters,
             ILogger<FutureNhsContentResolver> logger,
-            IPublishedValueFallback publishedValueFallback, IContentTypeService contentTypeService)
+            IPublishedValueFallback publishedValueFallback, IContentTypeService contentTypeService, IContentService contentService)
         {
             _variationContextAccessor = variationContextAccessor;
             _converters = converters;
             _logger = logger;
             _publishedValueFallback = publishedValueFallback;
             _contentTypeService = contentTypeService;
+            _contentService = contentService;
         }
 
         public ContentModelData ResolveContent(IPublishedElement content, string propertyGroupAlias, Dictionary<string, object>? options = null)
         {
             try
             {
-                if (content == null)
+                if (content is null)
                 {
                     return new ContentModelData();
                 }
 
                 var contentType = _contentTypeService.Get(content.ContentType.Alias);
-                var group = contentType.PropertyGroups.FirstOrDefault(x => x.Alias == propertyGroupAlias);
-                var groupProperties = group?.PropertyTypes.Select(x => x.Alias);
-
-                if (groupProperties == null)
-                {
-                    throw new ArgumentNullException(nameof(groupProperties));
-                }
-
                 var contentModel = new ContentModelData
                 {
                     Item = new ContentModelItemData
                     {
                         Id = content.Key,
                         ContentType = content.ContentType.Alias,
-                        Type = content.ContentType.ItemType.ToString()
+                        Type = content.ContentType.ItemType.ToString(),
                     }
                 };
 
-                var dict = new Dictionary<string, object>();
+                var contentDictionary = new Dictionary<string, object>();
 
                 if (content is IPublishedContent publishedContent)
                 {
@@ -69,46 +64,61 @@ namespace UmbracoContentApi.Core.Resolvers
                     contentModel.Item.Name = publishedContent.Name;
                     contentModel.Item.UrlSegment = publishedContent.UrlSegment;
 
-                    if (options != null &&
+                    if (options is not null &&
                         options.ContainsKey("addUrl") &&
                         bool.TryParse(options["addUrl"].ToString(), out var addUrl) &&
                         addUrl)
                     {
                         contentModel.Item.Url = publishedContent.Url(mode: UrlMode.Absolute);
                     }
+
+                    // Add blocks to content if applicable (loops through all nested content)
+                    List<ContentModelData> contentModelDataList = new();
+                    if (publishedContent.Children is not null && publishedContent.Children.Any())
+                    {
+                        foreach (var child in publishedContent.Children.Where(x => x.ContentType.Alias is not GeneralWebPage.ModelTypeAlias))
+                        {
+                            contentModelDataList.Add(ResolveContent(child, "content"));
+                        }
+                        contentDictionary.Add("blocks", contentModelDataList);
+                    }
                 }
 
-                foreach (var property in content.Properties.Where(x => groupProperties.Contains(x.Alias)))
+                var group = contentType.PropertyGroups.FirstOrDefault(x => x.Alias == propertyGroupAlias);
+                var groupProperties = group?.PropertyTypes.Select(x => x.Alias);
+                if (groupProperties is not null)
                 {
-                    var converter =
-                        _converters.FirstOrDefault(x => x.EditorAlias.Equals(property.PropertyType.EditorAlias));
-                    if (converter != null)
+                    foreach (var property in content.Properties.Where(x => groupProperties.Contains(x.Alias)))
                     {
-                        var prop = property.Value(_publishedValueFallback);
-
-                        if (prop == null)
+                        var converter =
+                            _converters.FirstOrDefault(x => x.EditorAlias.Equals(property.PropertyType.EditorAlias));
+                        if (converter is not null)
                         {
-                            dict.Add(property.Alias, null);
-                            continue;
+                            var propertyValue = property.Value(_publishedValueFallback);
+
+                            if (propertyValue is null)
+                            {
+                                contentDictionary.Add(property.Alias, null);
+                                continue;
+                            }
+
+                            propertyValue = converter.Convert(propertyValue, options?.ToDictionary(x => x.Key, x => x.Value));
+
+                            if (propertyValue is not null)
+                            {
+                                contentDictionary.Add(property.Alias, propertyValue);
+                            }
                         }
-
-                        prop = converter.Convert(prop, options?.ToDictionary(x => x.Key, x => x.Value));
-
-                        if (prop != null)
+                        else
                         {
-                            dict.Add(property.Alias, prop);
+                            contentDictionary.Add(
+                                property.Alias,
+                                $"No converter implemented for editor: {property.PropertyType.EditorAlias}");
                         }
-                    }
-                    else
-                    {
-                        dict.Add(
-                            property.Alias,
-                            $"No converter implemented for editor: {property.PropertyType.EditorAlias}");
                     }
                 }
 
-                contentModel.Content = dict;
-
+                contentModel.Content = contentDictionary;
                 return contentModel;
             }
             catch (Exception e)
@@ -122,20 +132,12 @@ namespace UmbracoContentApi.Core.Resolvers
         {
             try
             {
-                if (content == null)
+                if (content is null)
                 {
                     return new ContentModelData();
                 }
 
                 var contentType = _contentTypeService.Get(content.ContentType.Alias);
-                var group = contentType.PropertyGroups.FirstOrDefault(x => x.Alias == propertyGroupAlias);
-                var groupProperties = group?.PropertyTypes.Select(x => x.Alias);
-
-                if (groupProperties == null)
-                {
-                    throw new ArgumentNullException(nameof(groupProperties));
-                }
-
                 var contentModel = new ContentModelData
                 {
                     Item = new ContentModelItemData
@@ -143,39 +145,57 @@ namespace UmbracoContentApi.Core.Resolvers
                         Id = content.Key,
                         ContentType = content.ContentType.Alias,
                         Name = content.Name,
-                        Type = content.ContentType.Name
+                        Type = content.ContentType.Name,
+                        EditedAt = content.UpdateDate
                     }
                 };
 
-                var dict = new Dictionary<string, object>();
+                var contentDictionary = new Dictionary<string, object>();
+
+                // Add blocks to content if applicable (loops through all nested content)
+                if (_contentService.HasChildren(content.Id))
+                {
+                    List<ContentModelData> contentModelDataList = new();
+                    long totalChildren;
+                    var children = _contentService.GetPagedChildren(content.Id, 0, int.MaxValue, out totalChildren);
+                    foreach (var child in children.Where(x => x.ContentType.Alias is not GeneralWebPage.ModelTypeAlias))
+                    {
+                        contentModelDataList.Add(ResolveContent(child, "content"));
+                    }
+
+                    contentDictionary.Add("blocks", contentModelDataList);
+                }
+
+                var group = contentType.PropertyGroups.FirstOrDefault(x => x.Alias == propertyGroupAlias);
+                var groupProperties = group?.PropertyTypes.Select(x => x.Alias);
 
                 foreach (var property in content.Properties.Where(x => groupProperties.Contains(x.Alias)))
                 {
                     var converter =
                         _converters.FirstOrDefault(x => x.EditorAlias.Equals(property.PropertyType.PropertyEditorAlias));
-                    if (converter != null)
+                    if (converter is not null)
                     {
-                        var prop = property.GetValue();
+                        var propertyValue = property.GetValue();
 
-                        if (prop == null)
+                        if (propertyValue is null)
                         {
-                            dict.Add(property.Alias, null);
+                            contentDictionary.Add(property.Alias, null);
                             continue;
                         }
 
-                        prop = converter.Convert(prop, options?.ToDictionary(x => x.Key, x => x.Value));
+                        propertyValue = converter.Convert(propertyValue, options?.ToDictionary(x => x.Key, x => x.Value));
 
-                        dict.Add(property.Alias, prop);
+                        contentDictionary.Add(property.Alias, propertyValue);
                     }
                     else
                     {
-                        dict.Add(
+                        contentDictionary.Add(
                             property.Alias,
                             $"No converter implemented for editor: {property.PropertyType.PropertyEditorAlias}");
                     }
                 }
 
-                contentModel.Content = dict;
+                contentModel.Content = contentDictionary;
                 return contentModel;
             }
             catch (Exception e)

@@ -87,23 +87,3 @@ Examples:
     | admin/groups/create |
     | admin/users |
     | admin/users/invite |
-
-@Pending
-Scenario Outline: Authenticated user - FuturneNHS full page testing
-    Given I have navigated to '/'
-    And I have logged in as a 'user'
-    Given I have navigated to '<url>'
-    Then I ensure the page is accessible
-    Then the page is performant and follows best practices
-Examples:
-    | url       |
-    | filePath  |
-
-@Pending
-Scenario Outline: Unauthenticated user - FutureNHS full page testing
-    Given I have navigated to '<url>'
-    Then I ensure the page is accessible
-    Then the page is performant and follows best practices
-Examples:
-    | url               |
-    | alternateFilePath |

@@ -54,7 +54,7 @@ Feature: Member Profile
         Then the image file '/media/toolargeimage.png' is uploaded and ready
         And I select the 'Please confirm that all changes are in line with the platforms terms and conditions' checkbox
         And I click the 'Save changes' button
-        Then the 'Image must be smaller than 5MB' error summary is displayed
+        Then the 'Image must be smaller than 5MB' error message is displayed
 
 
     Scenario Outline: FNHS80 - Edit my profile
@@ -96,5 +96,4 @@ Feature: Member Profile
         When I click the 'Edit profile' link
         Then the 'Edit profile' header is displayed
         When I click the 'Save changes' button
-        Then the 'Select to confirm the terms and conditions' error summary is displayed
         And the 'Select to confirm the terms and conditions' textual value is displayed

@@ -12,7 +12,7 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write.Interfaces
         /// <param name="content">The content.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<ApiResponse<string>> CreatePageAsync(ContentDto content, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> CreatePageAsync(PageDto content, CancellationToken cancellationToken);
         /// <summary>
         /// Creates the block asynchronous.
         /// </summary>

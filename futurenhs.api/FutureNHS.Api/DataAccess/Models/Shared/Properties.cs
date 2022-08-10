@@ -6,6 +6,6 @@ namespace FutureNHS.Api.DataAccess.Models.Shared
     {
         public string? AtUtc { get; init; }
 
-        public UserNavProperty? By  { get; init; }
+        public UserNavProperty? By { get; init; }
     }
 }

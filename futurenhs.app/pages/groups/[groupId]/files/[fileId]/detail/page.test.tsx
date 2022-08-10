@@ -1,5 +1,5 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
 import { routes } from '@jestMocks/generic-props'
 
@@ -8,6 +8,7 @@ import { Props } from '@components/_pageTemplates/GroupFileDetailTemplate/interf
 
 import { mswServer } from '../../../../../../jest-mocks/msw-server'
 import { handlers } from '../../../../../../jest-mocks/handlers'
+import { actions } from '@constants/actions'
 
 const props: Props = {
     id: 'mockId',
@@ -36,16 +37,15 @@ const props: Props = {
     routes: routes,
 }
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('file detail page', () => {
-
     beforeAll(() => mswServer.listen())
     afterEach(() => mswServer.resetHandlers())
     afterAll(() => mswServer.close())
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/files');
-    });
+        mockRouter.setCurrentUrl('/files')
+    })
 
     it('renders correctly', () => {
         render(<GroupFileDetailTemplate {...props} />)
@@ -57,6 +57,12 @@ describe('file detail page', () => {
     })
 
     it('gets required server side props', async () => {
+        mswServer.use(
+            handlers.getGroupActions({
+                data: { permissions: [actions.GROUPS_VIEW] },
+            })
+        )
+
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie-101' },
         } as any)

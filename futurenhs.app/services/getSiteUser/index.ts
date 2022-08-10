@@ -14,6 +14,7 @@ import { Member } from '@appTypes/member'
 declare type Options = {
     user: User
     targetUserId: string
+    isForUpdate?: boolean
 }
 
 declare type Dependencies = {
@@ -22,7 +23,7 @@ declare type Dependencies = {
 }
 
 export const getSiteUser = async (
-    { user, targetUserId }: Options,
+    { user, targetUserId, isForUpdate }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<Member>> => {
     const serviceResponse: ServiceResponse<Member> = {
@@ -35,7 +36,7 @@ export const getSiteUser = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${targetUserId}/update`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${targetUserId}${isForUpdate ? '/update' : ''}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
@@ -63,7 +64,7 @@ export const getSiteUser = async (
     serviceResponse.data = {
         id: apiData.id ?? '',
         firstName: apiData.firstName ?? '',
-        lastName: apiData.surname ?? '',
+        lastName: apiData.lastName ?? '',
         email: apiData.email ?? '',
         pronouns: apiData.pronouns ?? '',
         role: apiData.roleId ?? '',

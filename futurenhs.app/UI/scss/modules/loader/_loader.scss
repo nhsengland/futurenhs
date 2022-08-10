@@ -17,4 +17,24 @@
         height: 100%;
         background-color: $color_nhsuk-grey-5;
     }
+
+    &_content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 260px;
+        z-index: 1;
+    }
+
+    &_message {
+        @include lead-text;
+        max-width: fit-content;
+        font-weight: bold;
+        margin: 0 0 $nhsuk-spacing-point-5;
+    }
+
+    &_spinner {
+        width: 180px;
+    }
+
 }

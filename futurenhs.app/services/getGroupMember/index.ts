@@ -9,12 +9,13 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { GroupMember } from '@appTypes/group'
+import { mapToProfileImageObject } from '@helpers/util/data'
 
 declare type Options = {
     user: User
     groupId: string
     memberId: string
-    isForEdit?: boolean
+    isForUpdate?: boolean
 }
 
 declare type Dependencies = {
@@ -23,7 +24,7 @@ declare type Dependencies = {
 }
 
 export const getGroupMember = async (
-    { user, groupId, memberId, isForEdit }: Options,
+    { user, groupId, memberId, isForUpdate }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<GroupMember>> => {
     const serviceResponse: ServiceResponse<GroupMember> = {
@@ -39,7 +40,7 @@ export const getGroupMember = async (
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
     }/v1/users/${id}/groups/${groupId}/members/${memberId}${
-        isForEdit ? '/update' : ''
+        isForUpdate ? '/update' : ''
     }`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
@@ -74,6 +75,7 @@ export const getGroupMember = async (
         role: apiData.role ?? '',
         joinDate: apiData.dateJoinedUtc ?? '',
         lastLogInDate: apiData.lastLoginUtc ?? '',
+        image: mapToProfileImageObject(apiData.image, 'Profile image')
     }
 
     return serviceResponse

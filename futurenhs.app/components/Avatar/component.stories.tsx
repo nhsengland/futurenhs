@@ -1,5 +1,7 @@
 import { Avatar } from './index'
-import { defaultGroupLogos } from '@constants/icons'
+import { useAssetPath } from '@hooks/useAssetPath';
+
+const exampleImageSrc: string = useAssetPath('/images/example-profile-image.svg');
 
 export default {
     title: 'Avatar',
@@ -15,13 +17,19 @@ const Template = (args) => <Avatar {...args} />
 
 export const Basic = Template.bind({})
 Basic.args = {
-    image: defaultGroupLogos.large,
-    initials: 'AA',
+    image: {
+        src: exampleImageSrc,
+        altText: 'Image of user',
+        height: '250px',
+        width: '250px'
+    },
+    initials: 'AE',
+    className: 'u-w-36 u-h-36',
 }
 
 export const NoImage = Template.bind({})
 NoImage.args = {
     image: null,
-    initials: 'AA',
+    initials: 'AE',
     className: 'u-w-36 u-h-36',
 }

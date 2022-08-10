@@ -14,5 +14,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
         Task<GroupMemberDetails?> GetGroupMemberAsync(string slug, Guid userId, CancellationToken cancellationToken = default);
         Task<GroupSite> GetGroupSiteDataAsync(string groupSlug, CancellationToken cancellationToken);
         Task<IEnumerable<GroupMemberDetails>> GetGroupAdminsAsync(string groupSlug, CancellationToken cancellationToken = default);
+        Task<bool> GetGroupPrivacyStatusAsync(string groupSlug, CancellationToken cancellationToken = default);
+        Task<bool> GetGroupPrivacyStatusAsync(Guid GroupId, CancellationToken cancellationToken = default);
     }
 }

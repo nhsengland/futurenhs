@@ -3,7 +3,7 @@
 	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(), 
     [GroupId] UNIQUEIDENTIFIER NOT NULL, 
     [ContentRootId] UNIQUEIDENTIFIER NOT NULL, 
-    [CreatedBy]             UNIQUEIDENTIFIER    NOT NULL,
+    [CreatedBy]             UNIQUEIDENTIFIER    NULL,
     [CreatedAtUTC]          DATETIME2           NOT NULL,
     [ModifiedBy]            UNIQUEIDENTIFIER    NULL,
     [ModifiedAtUTC]         DATETIME2           NULL,

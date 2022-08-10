@@ -7,8 +7,8 @@
         display: block;
         width: 100%;
         height: auto;
-        background-color: $blue;
         border-radius: 50%;
+        background-color: $blue;
         z-index: 1;
     }
 
@@ -22,8 +22,8 @@
         display: block;
         width: 100%;
         height: auto;
-        border-radius: 50%;
         z-index: 2;
+        border-radius: 50%;
     }
 
 }

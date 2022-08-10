@@ -232,24 +232,6 @@
             <remarks></remarks>
             <returns>True or false.</returns>
         </member>
-        <member name="T:Umbraco9ContentApi.Core.Converters.BlockPickerConverter">
-            <summary>
-            BlockPickerConverter generates content models for template blocks.
-            </summary>
-            <seealso cref="T:UmbracoContentApi.Core.Converters.IConverter" />
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.#ctor(System.Lazy{Umbraco9ContentApi.Core.Resolvers.Interfaces.IFutureNhsContentResolver},Umbraco.Cms.Core.Services.IContentService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco9ContentApi.Core.Converters.BlockPickerConverter"/> class.
-            </summary>
-            <param name="contentResolver">The content resolver.</param>
-        </member>
-        <member name="P:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.EditorAlias">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Converters.BlockPickerConverter.Convert(System.Object,System.Collections.Generic.Dictionary{System.String,System.Object})">
-            <inheritdoc />
-        </member>
         <member name="M:Umbraco9ContentApi.Core.Extensions.ExtensionMethods.GetUdi(Umbraco9ContentApi.Core.Models.Content.ContentModelData)">
             <summary>
             Gets the udi of the content model.
@@ -264,9 +246,6 @@
             <seealso cref="T:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler" />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetAllBlocks(System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetBlock(System.Guid,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsBlockHandler.GetBlockPlaceholderValues(System.Guid,System.String,System.Threading.CancellationToken)">
@@ -357,14 +336,6 @@
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.FutureNhsTemplateHandler.GetAllTemplates(System.Threading.CancellationToken)">
             <inheritdoc />
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler.GetBlock(System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Gets the block.
-            </summary>
-            <param name="blockId">The block identifier.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns></returns>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface.IFutureNhsBlockHandler.GetAllBlocks(System.Threading.CancellationToken)">
             <summary>
@@ -614,7 +585,10 @@
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsBlockService.CreateBlock(Umbraco9ContentApi.Core.Models.Requests.CreateBlockRequest,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsBlockService.UpdateBlock(Umbraco9ContentApi.Core.Models.Content.ContentModelData,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsBlockService.UpdateBlock(Umbraco9ContentApi.Core.Models.Content.ContentModelData,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsBlockService.GetAllDescendentBlockIds(System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModelData},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService">
@@ -626,10 +600,13 @@
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetDraftContent(System.Guid,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.ResolvePublishedContent(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent,System.String,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.ResolvePublishedContent(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.ResolveDraftContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.ResolveDraftContent(Umbraco.Cms.Core.Models.IContent)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.CreateContentFromTemplate(System.String,System.Guid,System.Guid,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.CreateContent(System.String,System.Guid,System.String,System.Threading.CancellationToken)">
@@ -638,22 +615,16 @@
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.DeleteContent(System.Guid,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.DeleteContent(System.Collections.Generic.IEnumerable{System.Guid},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.PublishContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetTemplateBlocks(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.PublishContentWithDescendants(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.SaveAndPublishContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.AssignBlockToContent(Umbraco.Cms.Core.Models.IContent,System.Guid,System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.GetAssociatedPublishedContentBlocks(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.RollbackDraftContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
@@ -664,6 +635,40 @@
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.FutureNhsContentService.CompareContentModelLists(System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModelData},System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModelData})">
             <inheritdoc />
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsBlockService.GetBlockPlaceholderValues(System.Guid,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets the block placeholder values.
+            </summary>
+            <param name="blockId">The block identifier.</param>
+            <param name="propertyGroupAlias">The property group alias.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsBlockService.CreateBlock(Umbraco9ContentApi.Core.Models.Requests.CreateBlockRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates the block.
+            </summary>
+            <param name="createRequest">The create request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsBlockService.UpdateBlock(Umbraco9ContentApi.Core.Models.Content.ContentModelData,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Updates the block.
+            </summary>
+            <param name="block">The block.</param>
+            <param name="sortOrder">The sort order.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsBlockService.GetAllDescendentBlockIds(System.Collections.Generic.IEnumerable{Umbraco9ContentApi.Core.Models.Content.ContentModelData},System.Threading.CancellationToken)">
+            <summary>
+            Gets all the descendent block ids.
+            </summary>
+            <param name="blocks">The blocks.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetPublishedContent(System.Guid,System.Threading.CancellationToken)">
             <summary>
@@ -679,7 +684,7 @@
             <param name="contentId">The identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.ResolvePublishedContent(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent,System.String,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.ResolvePublishedContent(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent,System.String)">
             <summary>
             Resolves the published content.
             </summary>
@@ -687,7 +692,7 @@
             <param name="propertyGroupAlias">The property group alias.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.ResolveDraftContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.ResolveDraftContent(Umbraco.Cms.Core.Models.IContent)">
             <summary>
             Resolves the draft content.
             </summary>
@@ -703,6 +708,15 @@
             <param name="documentTypeAlias">The document type alias.</param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.CreateContentFromTemplate(System.String,System.Guid,System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Creates the content from template.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="parentId">The parent identifier.</param>
+            <param name="bluePrintId">The blue print identifier.</param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.DeleteContent(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Deletes the.
@@ -710,19 +724,25 @@
             <param name="contentId">The identifier.</param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.DeleteContent(System.Collections.Generic.IEnumerable{System.Guid},System.Threading.CancellationToken)">
+            <summary>
+            Deletes the content.
+            </summary>
+            <param name="contentIds">The content ids.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+        </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.PublishContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
             <summary>
-            Publishes the.
+            Publishes the content.
             </summary>
             <param name="content">The identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetTemplateBlocks(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.PublishContentWithDescendants(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
             <summary>
-            Gets the template blocks.
+            Publishes the content with descendants.
             </summary>
-            <param name="id">The identifier.</param>
-            <returns></returns>
+            <param name="content">The content.</param>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SetContentPropertyValue(Umbraco.Cms.Core.Models.IContent,System.String,System.Object,System.Threading.CancellationToken)">
             <summary>
@@ -736,28 +756,6 @@
         <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
             <summary>
             Saves the content.
-            </summary>
-            <param name="content">The content.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.SaveAndPublishContent(Umbraco.Cms.Core.Models.IContent,System.Threading.CancellationToken)">
-            <summary>
-            Saves the and publish content.
-            </summary>
-            <param name="content">The content.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.AssignBlockToContent(Umbraco.Cms.Core.Models.IContent,System.Guid,System.Threading.CancellationToken)">
-            <summary>
-            Assigns the block to the content.
-            </summary>
-            <param name="parentContent">The parent content.</param>
-            <param name="blockId">The block identifier.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsContentService.GetAssociatedPublishedContentBlocks(Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent,System.Threading.CancellationToken)">
-            <summary>
-            Gets the associated blocks.
             </summary>
             <param name="content">The content.</param>
             <returns></returns>
@@ -776,6 +774,12 @@
             <param name="contentModelList">The content model list.</param>
             <param name="comparedcontentModelList">The comparedcontent model list.</param>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco9ContentApi.Core.Services.FutureNhs.Interface.IFutureNhsValidationService.ValidateContentModelData(Umbraco9ContentApi.Core.Models.Content.ContentModelData)">
+            <summary>
+            Validates the content model data.
+            </summary>
+            <param name="contentModel">The content model.</param>
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.uSync.Interface.IuSyncBaseService.Import">
             <summary>
@@ -902,15 +906,6 @@
         </member>
         <member name="M:Umbraco9ContentApi.Core.Services.uSyncContentTypesService.Import">
             <inheritdoc />
-        </member>
-        <member name="M:UmbracoContentApi.Core.Converters.JsonContentConverter.IsValidJson(System.String)">
-            <summary>
-            Determines whether [is valid json] [the specified string input].
-            </summary>
-            <param name="strInput">The string input.</param>
-            <returns>
-              <c>true</c> if [is valid json] [the specified string input]; otherwise, <c>false</c>.
-            </returns>
         </member>
     </members>
 </doc>

@@ -12,10 +12,7 @@ import { dateTime } from '@helpers/formatters/dateTime'
 import { capitalise } from '@helpers/formatters/capitalise'
 
 import { Props } from './interfaces'
-import { formTypes } from '@constants/forms'
 import { FormConfig, FormErrors } from '@appTypes/form'
-import { Form } from '@components/Form'
-import { selectForm, selectFormErrors } from '@selectors/forms'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { postGroupMemberAccept } from '@services/postGroupMemberAccept'
 import { getGenericFormError } from '@helpers/util/form'
@@ -155,16 +152,16 @@ export const GroupMemberListingTemplate: (props: Props) => JSX.Element = ({
             pendingMembersList?.map(({ fullName, email, requestDate, id }) => {
                 const generatedCellClasses = {
                     name: classNames({
-                        ['u-justify-between u-w-full tablet:u-w-1/4']: true,
+                        ['u-justify-between u-w-full tablet:u-w-1/4 u-align-middle']: true,
                     }),
                     email: classNames({
-                        ['u-justify-between u-w-full tablet:u-w-1/4']: true,
+                        ['u-justify-between u-w-full tablet:u-w-1/4 u-align-middle']: true,
                     }),
                     requestDate: classNames({
-                        ['u-justify-between u-w-full tablet:u-w-1/6']: true,
+                        ['u-justify-between u-w-full tablet:u-w-1/4 u-align-middle']: true,
                     }),
                     actions: classNames({
-                        ['u-w-full tablet:u-w-1/6']: true,
+                        ['u-w-full tablet:u-w-1/4']: true,
                     }),
                 }
 

@@ -1,9 +1,10 @@
 import { GetServerSideProps } from 'next'
 
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getServiceErrorDataValidationErrors } from '@services/index'
-import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject'
+import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { routeParams } from '@constants/routes'
 import { requestMethods } from '@constants/fetch'
 import { formTypes } from '@constants/forms'
@@ -14,7 +15,6 @@ import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
 import { withGroup } from '@hofs/withGroup'
-import { withForms } from '@hofs/withForms'
 import {
     selectFormData,
     selectMultiPartFormData,
@@ -22,6 +22,7 @@ import {
     selectParam,
     selectUser,
     selectRequestMethod,
+    selectPageProps
 } from '@selectors/context'
 import { getGroup } from '@services/getGroup'
 import { putGroup } from '@services/putGroup'
@@ -29,137 +30,126 @@ import { GetServerSidePropsContext } from '@appTypes/next'
 import { FormErrors } from '@appTypes/form'
 
 import { GroupUpdateTemplate } from '@components/_pageTemplates/GroupUpdateTemplate'
-import { Props } from '@components/_pageTemplates/GroupUpdateTemplate/interfaces'
 import { User } from '@appTypes/user'
-
-const routeId: string = '578dfcc6-857f-4eda-8779-1d9b110888c7'
-const props: Partial<Props> = {}
 
 /**
  * Get props to inject into page on the initial server-side request
  */
-export const getServerSideProps: GetServerSideProps = withUser({
-    props,
-    getServerSideProps: withRoutes({
-        props,
-        getServerSideProps: withGroup({
-            props,
-            getServerSideProps: withTextContent({
-                props,
-                routeId,
-                    getServerSideProps: async (
-                        context: GetServerSidePropsContext
-                    ) => {
-                        const csrfToken: string = selectCsrfToken(context)
-                        const currentValues: any = selectFormData(context)
-                        const submission: any = selectMultiPartFormData(context)
-                        const groupId: string = selectParam(
-                            context,
-                            routeParams.GROUPID
-                        )
-                        const user: User = selectUser(context)
-                        const requestMethod: requestMethods =
-                            selectRequestMethod(context)
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => await pipeSSRProps(context, {
+    routeId: '578dfcc6-857f-4eda-8779-1d9b110888c7'
+}, [
+    withUser,
+    withRoutes,
+    withGroup,
+    withTextContent
+], async (context: GetServerSidePropsContext) => {
 
-                        const formId: string = formTypes.UPDATE_GROUP
+    /**
+     * Get data from request context
+     */
+    const props: Partial<any> = selectPageProps(context);
+    const csrfToken: string = selectCsrfToken(context)
+    const currentValues: any = selectFormData(context)
+    const submission: any = selectMultiPartFormData(context)
+    const groupId: string = selectParam(
+        context,
+        routeParams.GROUPID
+    )
+    const user: User = selectUser(context)
+    const requestMethod: requestMethods =
+        selectRequestMethod(context)
 
-                        props.csrfToken = csrfToken
-                        props.layoutId = layoutIds.GROUP
-                        props.tabId = groupTabIds.INDEX
-                        props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
+    const formId: string = formTypes.UPDATE_GROUP
 
-                        /**
-                         * Return not found if user does not have edit group action
-                         */
-                        if (!props.actions.includes(actions.GROUPS_EDIT)) {
-                            return {
-                                notFound: true,
-                            }
-                        }
+    props.csrfToken = csrfToken
+    props.layoutId = layoutIds.GROUP
+    props.tabId = groupTabIds.INDEX
+    props.pageTitle = `${props.entityText.title} - ${props.contentText.subTitle}`
 
-                        /**
-                         * Get data from services
-                         */
-                        try {
-                            const [group] = await Promise.all([
-                                getGroup({ user, groupId, isForEdit: true }),
-                            ])
-                            const etag = group.headers.get('etag')
+    /**
+     * Return not found if user does not have edit group action
+     */
+    if (!props.actions.includes(actions.GROUPS_EDIT)) {
+        return {
+            notFound: true,
+        }
+    }
 
-                            props.etag = etag
-                            props.isPublic = group.data.isPublic
-                            props.forms = {
-                                [formId]: {
-                                    initialValues: {
-                                        Name: group.data.text.title,
-                                        Strapline: group.data.text.strapLine,
-                                        ImageId: group.data.imageId,
-                                        ThemeId:
-                                            group.data.themeId &&
-                                            themes[group.data.themeId]
-                                                ? [group.data.themeId]
-                                                : [defaultThemeId],
-                                        isPublic: [group.data.isPublic]
-                                    }
-                                }
-                            }
-                         
-                            /**
-                             * Handle server-side form post
-                             */
-                            if (
-                                submission &&
-                                requestMethod === requestMethods.POST
-                            ) {
+    /**
+     * Get data from services
+     */
+    try {
+        const [group] = await Promise.all([
+            getGroup({ user, groupId, isForUpdate: true }),
+        ])
+        const etag = group.headers.get('etag')
 
-                                props.forms[formId].initialValues = currentValues.getAll();
+        props.etag = etag
+        props.isPublic = group.data.isPublic
+        props.forms = {
+            [formId]: {
+                initialValues: {
+                    Name: group.data.text.title,
+                    Strapline: group.data.text.strapLine,
+                    ImageId: group.data.imageId,
+                    ThemeId:
+                        group.data.themeId &&
+                            themes[group.data.themeId]
+                            ? [group.data.themeId]
+                            : [defaultThemeId],
+                    isPublic: [group.data.isPublic],
+                },
+            },
+        }
 
-                                const headers = {
-                                    ...getStandardServiceHeaders({
-                                        csrfToken,
-                                        etag,
-                                    }),
-                                    ...submission.getHeaders(),
-                                }
+        /**
+         * Handle server-side form post
+         */
+        if (
+            submission &&
+            requestMethod === requestMethods.POST
+        ) {
+            props.forms[formId].initialValues =
+                currentValues.getAll()
 
-                                await putGroup({
-                                    groupId,
-                                    user,
-                                    headers,
-                                    body: submission,
-                                })
+            const headers = {
+                ...getStandardServiceHeaders({
+                    csrfToken,
+                    etag,
+                }),
+                ...submission.getHeaders(),
+            }
 
-                                return {
-                                    redirect: {
-                                        permanent: false,
-                                        destination: props.routes.groupRoot,
-                                    },
-                                }
-                            }
-                        } catch (error: any) {
-                            const validationErrors: FormErrors =
-                                getServiceErrorDataValidationErrors(error)
+            await putGroup({
+                groupId,
+                user,
+                headers,
+                body: submission,
+            })
 
-                            if (validationErrors) {
-                                props.forms[formId].errors = validationErrors
-                            } else {
-                                return handleSSRErrorProps({ props, error })
-                            }
-                        }
+            return {
+                redirect: {
+                    permanent: false,
+                    destination: props.routes.groupRoot,
+                },
+            }
+        }
+    } catch (error: any) {
+        const validationErrors: FormErrors =
+            getServiceErrorDataValidationErrors(error)
 
-                        /**
-                         * Return data to page template
-                         */
-                        return {
-                            props: getJsonSafeObject({
-                                object: props,
-                            }),
-                        }
-                    },
-            }),
-        }),
-    }),
-})
+        if (validationErrors) {
+            props.forms[formId].errors = validationErrors
+        } else {
+            return handleSSRErrorProps({ props, error })
+        }
+    }
+
+    /**
+     * Return data to page template
+     */
+    return handleSSRSuccessProps({ props, context })
+});
 
 /**
  * Export page template

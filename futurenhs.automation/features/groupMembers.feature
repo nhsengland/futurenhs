@@ -6,7 +6,7 @@ Feature: groupMembers
         And I have logged in as a 'group admin' and accept the cookies
         Then the 'My Groups' header is displayed
 
-    @Pending
+    
     Scenario: FNHS26 - Accept group member request
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
@@ -16,7 +16,7 @@ Feature: groupMembers
         Then the 'Auto User2' link is displayed
         And the 'Auto User2' row is displayed on the 'Group Members' table
 
-    @Pending
+    
     Scenario: FNHS27 - Reject group member request
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
@@ -26,6 +26,7 @@ Feature: groupMembers
         Then the 'Pending members' table is not displayed
 
     @Pending
+    # DEPRECATED, USER REGISTRATION JOURNEY STILL IN DESIGN
     Scenario: FNHS28 - Add Registered User
         When I select the 'Automation Public Group' group card
         Then the 'Automation Public Group' header is displayed
@@ -36,6 +37,7 @@ Feature: groupMembers
         Then the 'The email address belongs to a member of this group.' link is not displayed
 
     @Pending
+    # DEPRECATED, USER REGISTRATION JOURNEY STILL IN DESIGN
     Scenario Outline: FNHS29 - Add Registered User Error Validation
         When I select the 'Automation Public Group' group card
         Then the 'Automation Public Group' header is displayed
@@ -43,7 +45,6 @@ Feature: groupMembers
         Then the 'Invite member' header is displayed
         When I enter '<input>' into the 'New member email address' field
         And I click the 'Add new member' option
-        Then the '<error message>' error summary is displayed
         Then the '<error message>' error message is displayed
         Examples:
             | input                | error message                                                                                                                                        |
@@ -85,7 +86,7 @@ Feature: groupMembers
             | Admin            |
             | Standard Members |
 
-    #NEED NEW USER TO REMOVE FROM GROUP
+    
     Scenario: FNHS94 - Remove member from a group
         When I select the 'Automation Admin Group' group card
         Then the 'Automation Admin Group' header is displayed
@@ -99,5 +100,5 @@ Feature: groupMembers
             | Email      | autoRemoveUser@test.co.uk |
         And the 'Remove from group' button is displayed
         When I click the 'Remove from group' button
-        Then I confirm this on the open 'Remove member' dialog
+        Then I confirm this on the open dialog
         And the 'Group Members' table exists

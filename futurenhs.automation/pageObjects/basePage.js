@@ -9,8 +9,14 @@ class basePage {
     findElement(path){
         var element
         browser.waitUntil(()=> {
-            element = $$(path).filter(item => {return item.isDisplayed()})[0]
-            return element != undefined
+            var elementsFound = $$(path)
+            if(elementsFound.length <= 1){
+                element = elementsFound.filter(item => {return item.isDisplayed()})[0]
+                return element != undefined
+            } else {
+                var openElement = $$(`${path}/ancestor::details`).findIndex(item => item.getProperty('open'));
+                return element = elementsFound[openElement]
+            }
         },
         {
             timeout: 5000,

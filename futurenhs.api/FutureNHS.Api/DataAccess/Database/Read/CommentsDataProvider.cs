@@ -1,9 +1,12 @@
 ﻿using Dapper;
 using FutureNHS.Api.Application.Application.HardCodedSettings;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.DataAccess.Models.User;
+using Microsoft.Extensions.Options;
 using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
@@ -12,13 +15,43 @@ namespace FutureNHS.Api.DataAccess.Database.Read
     {
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<CommentsDataProvider> _logger;
+        private readonly IOptions<AzureImageBlobStorageConfiguration> _options;
 
-        public CommentsDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<CommentsDataProvider> logger)
+        public CommentsDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<CommentsDataProvider> logger, IOptions<AzureImageBlobStorageConfiguration> options)
         {
             _logger = logger;
             _connectionFactory = connectionFactory;
+            _options = options;
         }
-        public async Task<(uint total, IEnumerable<Comment>?)> GetCommentsForDiscussionAsync(Guid? userId, string groupSlug, Guid topicId, uint offset, uint limit, CancellationToken cancellationToken)
+
+        public async Task<uint> GetCommentsCountForDiscussionAsync(string groupSlug, Guid discussionId, CancellationToken cancellationToken)
+        {
+            const string query =
+                $@"
+                    SELECT          COUNT(*) 
+
+                    FROM            Comment comment		
+					Join		    Discussion discussion
+					ON			    discussion.Entity_Id = comment.Parent_EntityId
+					JOIN		    [Group] groups
+					ON			    groups.Id = discussion.Group_Id
+					WHERE           comment.Parent_EntityId = @DiscussionId 
+                    AND             comment.ThreadId IS NULL
+                    AND             groups.Slug = @Slug;
+                ";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Slug = groupSlug,
+                DiscussionId = discussionId
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleAsync<uint>(commandDefinition);
+        }
+
+        public async Task<IEnumerable<Comment>?> GetCommentsForDiscussionAsync(Guid? userId, string groupSlug, Guid topicId, uint offset, uint limit, CancellationToken cancellationToken)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
@@ -60,7 +93,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                 FROM        [Entity_Like]  
                                                                                 WHERE       [Entity_Like].Entity_Id = comment.Entity_Id 
                                                                                 AND         [Entity_Like].MembershipUser_Id = @UserId
-                                                                              )
+                                                                              ),
+                                [{nameof(ImageData.Id)}]		            = [image].Id,
+                                [{nameof(ImageData.Height)}]	            = [image].Height,
+                                [{nameof(ImageData.Width)}]		            = [image].Width,
+                                [{nameof(ImageData.FileName)}]	            = [image].FileName,
+                                [{nameof(ImageData.MediaType)}]             = [image].MediaType
+
 
                     FROM            Comment comment
 					Join		    Discussion discussion
@@ -68,46 +107,69 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
-                    ON              CreateUser.Id = comment.CreatedBy		
+                    ON              CreateUser.Id = comment.CreatedBy	
+					LEFT JOIN       Image [image]
+                    ON              [image].Id = createUser.ImageId   
 					WHERE           comment.Parent_EntityId = @DiscussionId 
                     AND             comment.ThreadId IS NULL
                     AND             groups.Slug = @Slug
                     ORDER BY        comment.CreatedAtUTC
 
                     OFFSET          @Offset ROWS
-                    FETCH NEXT      @Limit ROWS ONLY;
-
-                    SELECT          COUNT(*) 
-
-                    FROM            Comment comment		
-					Join		    Discussion discussion
-					ON			    discussion.Entity_Id = comment.Parent_EntityId
-					JOIN		    [Group] groups
-					ON			    groups.Id = discussion.Group_Id
-					WHERE           comment.Parent_EntityId = @DiscussionId 
-                    AND             comment.ThreadId IS NULL
-                    AND             groups.Slug = @Slug";
+                    FETCH NEXT      @Limit ROWS ONLY;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryMultipleAsync(query, new
-            {
-                Offset = Convert.ToInt32(offset),
-                Limit = Convert.ToInt32(limit),
-                Slug = groupSlug,
-                DiscussionId = topicId,
-                UserId = userId
-            });
+            var results = await dbConnection.QueryAsync<CommentData, Image, CommentData>(query,
+                (comment, image) =>
+                {
+                    if (image is not null)
+                    {
+                        return comment with { Image = new ImageData(image, _options) };
+                    }
 
-            var commentsData = await reader.ReadAsync<CommentData>();
+                    return @comment;
+                }, new
+                {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
+                    Slug = groupSlug,
+                    DiscussionId = topicId,
+                    UserId = userId
+                });
 
-            var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
+            var totalCount = Convert.ToUInt32(results.Count());
 
-            return (totalCount, GenerateCommentModelFromData(commentsData));
+            return GenerateCommentModelFromData(results);
         }
 
+        public async Task<uint> GetRepliesCountForCommentAsync(string groupSlug, Guid commentId, CancellationToken cancellationToken)
+        {
+            const string query =
+                $@"
+                    SELECT          COUNT(*) 
 
-        public async Task<(uint total, IEnumerable<Comment>?)> GetRepliesForCommentAsync(Guid? userId, string groupSlug, Guid threadId, uint offset, uint limit, CancellationToken cancellationToken)
+                    FROM            Comment comment
+					JOIN		    Discussion discussion
+					ON			    discussion.Entity_Id = comment.Parent_EntityId
+					JOIN		    [Group] groups
+					ON			    groups.Id = discussion.Group_Id
+					WHERE           comment.ThreadId = @CommentId
+                    AND             groups.Slug = @Slug
+                ";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Slug = groupSlug,
+                CommentId = commentId
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleAsync<uint>(commandDefinition);
+        }
+
+        public async Task<IEnumerable<Comment>> GetRepliesForCommentAsync(Guid? userId, string groupSlug, Guid threadId, uint offset, uint limit, CancellationToken cancellationToken)
         {
             const string query =
                 @$"SELECT
@@ -141,7 +203,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                 WHERE       [Entity_Like].Entity_Id = comment.Entity_Id 
                                                                                 AND         [Entity_Like].MembershipUser_Id = @UserId
                                                                               ),
-                                [{nameof(CommentData.InReplyTo)}]           = comment.InReplyTo
+                                [{nameof(CommentData.InReplyTo)}]           = comment.InReplyTo,
+                                [{nameof(ImageData.Id)}]		            = [image].Id,
+                                [{nameof(ImageData.Height)}]	            = [image].Height,
+                                [{nameof(ImageData.Width)}]		            = [image].Width,
+                                [{nameof(ImageData.FileName)}]	            = [image].FileName,
+                                [{nameof(ImageData.MediaType)}]             = [image].MediaType
+
 
                     FROM            Comment comment
 					JOIN		    Discussion discussion
@@ -149,7 +217,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					JOIN		    [Group] groups
 					ON			    groups.Id = discussion.Group_Id
                     LEFT JOIN       MembershipUser createUser 
-                    ON              CreateUser.Id = comment.CreatedBy		
+                    ON              CreateUser.Id = comment.CreatedBy	
+					LEFT JOIN       Image [image]
+                    ON              [image].Id = createUser.ImageId   
 					WHERE           comment.ThreadId = @ThreadId
                     AND             groups.Slug = @Slug
                     ORDER BY        comment.CreatedAtUTC
@@ -169,20 +239,27 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryMultipleAsync(query, new
-            {
-                Offset = Convert.ToInt32(offset),
-                Limit = Convert.ToInt32(limit),
-                Slug = groupSlug,
-                ThreadId = threadId,
-                UserId = userId
-            });
+            var results = await dbConnection.QueryAsync<CommentData, Image, CommentData>(query,
+                (comment, image) =>
+                {
+                    if (image is not null)
+                    {
+                        return comment with { Image = new ImageData(image, _options) };
+                    }
 
-            var commentsData = await reader.ReadAsync<CommentData>();
+                    return @comment;
+                }, new
+                {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
+                    Slug = groupSlug,
+                    ThreadId = threadId,
+                    UserId = userId
+                });
 
-            var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
+            var totalCount = Convert.ToUInt32(results.Count());
 
-            return (totalCount, GenerateCommentModelFromData(commentsData));
+            return GenerateCommentModelFromData(results);
         }
 
         public async Task<CommentCreatorDetails> GetCommentCreatorDetailsAsync(Guid commentId, CancellationToken cancellationToken)
@@ -247,13 +324,14 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                         {
                             Id = item.CreatedById,
                             Name = item.CreatedByName,
-                            Slug = item.CreatedBySlug
+                            Slug = item.CreatedBySlug,
+                            Image = item.Image
                         }
                     },
                     CurrentUser = new UserCommentDetails
                     {
                         Created = item.CreatedByThisUser,
-                        Liked = item.LikedByThisUser
+                        Liked = item.LikedByThisUser,
                     }
                 });
         }

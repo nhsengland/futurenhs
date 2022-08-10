@@ -29,10 +29,13 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
     const formConfig: FormConfig = useFormConfig(
         formTypes.CONTENT_BLOCK_TEXT,
         {
-            [`title-${blockId}`]: title,
-            [`mainText-${blockId}`]: mainText,
-        },
-        initialErrors[blockId] ?? {}
+            initialValues: {
+                [`title-${blockId}`]: title,
+                [`mainText-${blockId}`]: mainText,
+            },
+            errors: initialErrors[blockId] ?? {}
+        }
+
     )
 
     const generatedClasses: any = {
@@ -81,13 +84,17 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
 
     return (
         <div id={blockId} className={generatedClasses.wrapper}>
-            <Heading
-                headingLevel={headingLevel}
-                className={generatedClasses.heading}
-            >
-                {title}
-            </Heading>
-            <RichText bodyHtml={mainText} wrapperElementType="div" />
+            {title &&
+                <Heading
+                    headingLevel={headingLevel}
+                    className={generatedClasses.heading}
+                >
+                    {title}
+                </Heading>
+            }
+            {mainText && 
+                <RichText bodyHtml={mainText} wrapperElementType="div" />
+            }
         </div>
     )
 }

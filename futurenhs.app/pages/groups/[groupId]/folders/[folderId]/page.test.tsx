@@ -1,5 +1,5 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { fireEvent, render, screen } from '@jestMocks/index'
 
 import { routes } from '@jestMocks/generic-props'
@@ -71,16 +71,15 @@ const props: Props = {
     routes: routes,
 }
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('folders/folderId page', () => {
-
     beforeAll(() => mswServer.listen())
     afterEach(() => mswServer.resetHandlers())
     afterAll(() => mswServer.close())
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/folders/folderId');
-    });
+        mockRouter.setCurrentUrl('/folders/folderId')
+    })
 
     it('renders correctly', () => {
         render(<GroupFolderContentsTemplate {...props} />)
@@ -265,6 +264,12 @@ describe('folders/folderId page', () => {
     })
 
     it('gets required server side props', async () => {
+        mswServer.use(
+            handlers.getGroupActions({
+                data: { permissions: [actions.GROUPS_VIEW] },
+            })
+        )
+
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie' },
             params: { groupId: 'mock-group-id', folderId: 'mock-folder-id' },

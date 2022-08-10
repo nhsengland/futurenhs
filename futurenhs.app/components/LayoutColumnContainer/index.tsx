@@ -4,23 +4,23 @@ import classNames from 'classnames'
 import { Props } from './interfaces'
 
 /**
- * Layout column container
+ * A Flexbox wrapper intended to be composed with child LayoutColumn components to create a responsive grid.
  */
 export const LayoutColumnContainer: (props: Props) => JSX.Element = ({
     direction = 'row',
-    justify = 'left',
+    justify = 'start',
     children,
     className,
 }) => {
     const generatedClasses: any = {
         container: classNames('l-col-container', className, {
-            ['u-flex-column']: direction === 'column',
-            ['u-flex-column-reverse']: direction === 'column-reverse',
+            ['u-flex-col']: direction === 'col',
+            ['u-flex-col-reverse']: direction === 'col-reverse',
             ['u-flex-row']: direction === 'row',
             ['u-flex-row-reverse']: direction === 'row-reverse',
-            ['u-justify-start']: justify === 'left',
+            ['u-justify-start']: justify === 'start',
             ['u-justify-center']: justify === 'centre',
-            ['u-justify-end']: justify === 'right',
+            ['u-justify-end']: justify === 'end',
         }),
     }
 

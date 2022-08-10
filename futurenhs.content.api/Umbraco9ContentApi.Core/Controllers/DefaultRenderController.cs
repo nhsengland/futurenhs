@@ -5,7 +5,7 @@
     /// <summary>
     /// Overrides the default homepage view to redirect to the swagger page.
     /// </summary>
-    public class DefaultRenderController : IRenderController
+    public sealed class DefaultRenderController : IRenderController
     {
         /// <summary>
         /// Default route.

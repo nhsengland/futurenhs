@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/router'
 import classNames from 'classnames'
 
 import { Props } from './interfaces'
 
+/**
+ * Based on the details element, an accordion which functions with or without JavaScript.
+ */
 export const Accordion: (props: Props) => JSX.Element = ({
     id,
     children,
@@ -20,7 +22,6 @@ export const Accordion: (props: Props) => JSX.Element = ({
     toggleAction,
 }) => {
     const wrapperRef: any = useRef(null)
-    const router: any = useRouter()
     const [internalIsOpen, setInternalIsOpen] = useState(isOpen)
 
     const generatedClasses: any = {

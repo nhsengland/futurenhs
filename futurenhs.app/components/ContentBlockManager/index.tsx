@@ -4,7 +4,6 @@ import deepEquals from 'fast-deep-equal'
 import FlipMove from 'react-flip-move'
 
 import { useDynamicElementClassName } from '@hooks/useDynamicElementClassName'
-import { useTheme } from '@hooks/useTheme'
 import {
     moveArrayItem,
     deleteArrayItem,
@@ -60,18 +59,18 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     const hasBlockInEditMode: boolean = blockIdsInEditMode.length > 0;
 
     const { headerReadBody,
-            headerPreviewBody,
-            headerCreateHeading,
-            headerCreateBody,
-            headerUpdateHeading,
-            headerUpdateBody,
-            headerEnterUpdateButton,
-            headerLeaveUpdateButton,
-            headerDiscardUpdateButton,
-            headerPreviewUpdateButton,
-            headerPublishUpdateButton,
-            createButton,
-            cancelCreateButton } = text ?? {};
+        headerPreviewBody,
+        headerCreateHeading,
+        headerCreateBody,
+        headerUpdateHeading,
+        headerUpdateBody,
+        headerEnterUpdateButton,
+        headerLeaveUpdateButton,
+        headerDiscardUpdateButton,
+        headerPreviewUpdateButton,
+        headerPublishUpdateButton,
+        createButton,
+        cancelCreateButton } = text ?? {};
 
     const generatedClasses: any = {
         wrapper: classNames(className),
@@ -200,10 +199,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
 
                 block.item.id = createdBlockId;
 
-                if(block.content.blocks){
+                for (const key in block.content) {
 
-                    block.content.blocks = [];
-                    
+                    block.content[key] = null;
+
                 }
 
                 updatedBlocks.push(block)
@@ -237,6 +236,7 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         })
 
         setBlocks(updatedBlocks)
+        setBlockIdsInEditMode([])
         blocksChangeAction?.(updatedBlocks)
     }
 
@@ -664,16 +664,9 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
             {(mode === cprud.UPDATE ||
                 mode === cprud.READ ||
                 mode === cprud.PREVIEW) && (
-                <>
-                    {hasBlocks && (
-                        <ul className="u-list-none u-p-0 u-relative">
-                            <FlipMove
-                                typeName={null}
-                                disableAllAnimations={mode !== cprud.UPDATE}
-                                enterAnimation="fade"
-                                leaveAnimation="fade"
-                                duration={100}
-                            >
+                    <>
+                        {hasBlocks && (
+                            <ul className="u-list-none u-p-0 u-relative">
                                 {blocks?.map(
                                     (block: CmsContentBlock, index: number) => {
                                         const blockId: string = block.item.id
@@ -751,30 +744,29 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                                         )
                                     }
                                 )}
-                            </FlipMove>
-                        </ul>
-                    )}
-                    {mode === cprud.UPDATE && hasTemplateBlocks && (
-                        <div className={generatedClasses.createBlock}>
-                            <div className={generatedClasses.blockBody}>
-                                <button
-                                    onClick={handleSetToCreateMode}
-                                    disabled={hasBlockInEditMode}
-                                    className="c-button c-button-outline u-drop-shadow"
-                                >
-                                    <SVGIcon
-                                        name="icon-add-content"
-                                        className="u-w-9 u-h-8 u-mr-4 u-align-middle"
-                                    />
-                                    <span className="u-align-middle">
-                                        {createButton}
-                                    </span>
-                                </button>
+                            </ul>
+                        )}
+                        {mode === cprud.UPDATE && hasTemplateBlocks && (
+                            <div className={generatedClasses.createBlock}>
+                                <div className={generatedClasses.blockBody}>
+                                    <button
+                                        onClick={handleSetToCreateMode}
+                                        disabled={hasBlockInEditMode}
+                                        className="c-button c-button-outline u-drop-shadow"
+                                    >
+                                        <SVGIcon
+                                            name="icon-add-content"
+                                            className="u-w-9 u-h-8 u-mr-4 u-align-middle"
+                                        />
+                                        <span className="u-align-middle">
+                                            {createButton}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </>
-            )}
+                        )}
+                    </>
+                )}
             <Dialog
                 id="dialog-discard-cms-block-changes"
                 isOpen={isDiscardChangesModalOpen}

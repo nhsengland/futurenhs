@@ -35,7 +35,8 @@ namespace FutureNHS.Api.Controllers
         public async Task<IActionResult> GetDiscussionsForGroupAsync(Guid? userId, string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
-            var (total, discussions) = await _discussionDataProvider.GetDiscussionsForGroupAsync(userId, slug, filter.Offset, filter.Limit, cancellationToken);
+            var discussions = await _discussionDataProvider.GetDiscussionsForGroupAsync(userId, slug, filter.Offset, filter.Limit, cancellationToken);
+            var total = await _discussionDataProvider.GetDiscussionCountForGroupAsync(slug, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(discussions, filter, total, route);
 
@@ -48,7 +49,7 @@ namespace FutureNHS.Api.Controllers
 
         public async Task<IActionResult> GetDiscussionAsync(Guid? userId, string slug, Guid id, CancellationToken cancellationToken)
         {
-           var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
+            var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
 
             if (discussion is null)
             {

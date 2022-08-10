@@ -3,8 +3,6 @@
     using Interface;
     using Microsoft.Extensions.Configuration;
     using Services.FutureNhs.Interface;
-    using Umbraco.Cms.Web.Common.PublishedModels;
-    using Umbraco9ContentApi.Core.Extensions;
     using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Response;
     using ContentModelData = Models.Content.ContentModelData;
@@ -33,7 +31,6 @@
         /// <inheritdoc />
         public ApiResponse<string> CreatePage(string pageName, string pageParentId, CancellationToken cancellationToken)
         {
-            ApiResponse<string> response = new ApiResponse<string>();
             Guid pageParentGuid;
             var pageFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
 
@@ -42,7 +39,7 @@
                 ? pageParentGuid
                 : pageFolderGuid;
 
-            var content = _futureNhsContentService.CreateContentFromBluePrint(pageName, parentId, Guid.Parse("CA0A2D59-E455-472D-BF9E-5E7303F55AB1"), cancellationToken);
+            var content = _futureNhsContentService.CreateContentFromTemplate(pageName, parentId, Guid.Parse("0B955A4A-9E26-43E8-BB4B-51010E264D64"), cancellationToken); // Guid = homepage template (Umbraco content)
 
             return new ApiResponse<string>().Success(content.Key.ToString(), "Page created successfully.");
         }
@@ -50,26 +47,24 @@
         /// <inheritdoc />
         public ApiResponse<string> UpdatePage(Guid pageId, PageModel pageModel, CancellationToken cancellationToken)
         {
-            List<string> pageBlockUdis = new();
-
             // Get the draft page to update
             var pageToUpdate = _futureNhsContentService.GetDraftContent(pageId, cancellationToken);
+            var pagePublished = _futureNhsContentService.GetPublishedContent(pageId, cancellationToken);
 
-            // Get current saved draft
-            var resolvedDraftContent = _futureNhsContentService.ResolveDraftContent(pageToUpdate, cancellationToken);
-            var resolvedDraftBlocks = resolvedDraftContent.Content.Where(x => x.Key == "blocks").Select(c => c.Value).FirstOrDefault();
+            // Get current draft blocks
+            var resolvedDraftBlocks = pagePublished.Children.Select(x => _futureNhsContentService.ResolveDraftContent(_futureNhsContentService.GetDraftContent(x.Key, cancellationToken)));
 
             // Get page model block child blocks
-            var pageModelBlockChildBlocks = _futureNhsBlockService.GetChildBlocks(pageModel.Blocks, cancellationToken);
+            var pageModelBlocksContentModelDataList = _futureNhsBlockService.GetAllDescendentBlockIds(pageModel.Blocks, cancellationToken).ToList();
 
             // Remove any blocks that were on the latest saved draft but not the new incoming draft
             if (resolvedDraftBlocks is not null && resolvedDraftBlocks is IEnumerable<ContentModelData> draftBlocks && draftBlocks.Any())
             {
                 // Get latest saved draft block child blocks
-                var savedDraftBlocksChildBlocks = _futureNhsBlockService.GetChildBlocks(draftBlocks, cancellationToken);
+                var savedDraftBlocksChildBlocks = _futureNhsBlockService.GetAllDescendentBlockIds(draftBlocks, cancellationToken);
 
-                // Find the difference between saved draft and incoming page model block child blocks
-                var blocksToRemove = _futureNhsContentService.CompareContentModelLists(savedDraftBlocksChildBlocks, pageModelBlockChildBlocks);
+                // Find the difference between saved draft and incoming page model blocks
+                var blocksToRemove = _futureNhsContentService.CompareContentModelLists(savedDraftBlocksChildBlocks, pageModelBlocksContentModelDataList);
 
                 foreach (var blockId in blocksToRemove)
                 {
@@ -77,33 +72,21 @@
                 }
             }
 
-            // If the incoming page update blocks have child blocks, update those too.
-            if (pageModelBlockChildBlocks is not null && pageModelBlockChildBlocks.Any())
+            // Update all page descendant blocks
+            if (pageModelBlocksContentModelDataList is not null && pageModelBlocksContentModelDataList.Any())
             {
-                foreach (var content in pageModelBlockChildBlocks)
+                for (int i = 0; i < pageModelBlocksContentModelDataList.Count(); i++)
                 {
-                    var update = _futureNhsBlockService.UpdateBlock(content, cancellationToken);
+                    var content = pageModelBlocksContentModelDataList[i];
+                    var sortOtder = i;
+
+                    var update = _futureNhsBlockService.UpdateBlock(content, sortOtder, cancellationToken);
                     _futureNhsContentService.SaveContent(update, cancellationToken);
                 }
             }
 
-            // Update the blocks and child blocks on the page
-            foreach (var block in pageModel.Blocks)
-            {
-                _futureNhsValidationService.ValidateContentModel(block);
-
-                var updatedBlock = _futureNhsBlockService.UpdateBlock(block, cancellationToken);
-                _futureNhsContentService.SaveContent(updatedBlock, cancellationToken);
-
-                // Add updated block to the list of blocks on this page 
-                pageBlockUdis.Add(block.GetUdi());
-            }
-
-            // Set the list of blocks on the page
-            var updateContentPropertyResult = _futureNhsContentService.SetContentPropertyValue(pageToUpdate, "blocks", string.Join(",", pageBlockUdis), cancellationToken);
-
             // Save the page
-            _futureNhsContentService.SaveContent(updateContentPropertyResult, cancellationToken);
+            _futureNhsContentService.SaveContent(pageToUpdate, cancellationToken);
 
             return new ApiResponse<string>().Success(pageId.ToString(), "Page updated successfully.");
         }
@@ -119,7 +102,7 @@
             {
                 foreach (var content in publishedContent)
                 {
-                    contentModels.Add(_futureNhsContentService.ResolvePublishedContent(content, "content", cancellationToken));
+                    contentModels.Add(_futureNhsContentService.ResolvePublishedContent(content));
                 }
             }
 

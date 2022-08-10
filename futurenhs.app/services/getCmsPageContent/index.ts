@@ -25,6 +25,7 @@ export const getCmsPageContent = async (
     { user, pageId, isPublished = true }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
+
     const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
         data: null,
     }

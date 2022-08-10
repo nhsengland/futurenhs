@@ -12,6 +12,7 @@ import { postGroupDiscussion } from '@services/postGroupDiscussion'
 import { FormErrors, FormConfig } from '@appTypes/form'
 
 import { Props } from './interfaces'
+import { useFormConfig } from '@hooks/useForm'
 
 /**
  * Group create discussion template
@@ -29,9 +30,9 @@ export const GroupCreateDiscussionTemplate: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
 
-    const formConfig: FormConfig = selectForm(
-        forms,
-        formTypes.CREATE_DISCUSSION
+    const formConfig: FormConfig = useFormConfig(
+        formTypes.CREATE_DISCUSSION,
+        forms[formTypes.CREATE_DISCUSSION]
     )
     const [errors, setErrors] = useState(formConfig?.errors)
 

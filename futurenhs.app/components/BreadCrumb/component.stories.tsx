@@ -14,7 +14,7 @@ export default {
         },
         seperatorIconName: {
             control: { type: 'select' },
-            options: ['icon-chevron-right', 'icon-arrow-right', 'icon-minus'],
+            options: (window.parent as any).sbIconList,
         },
     },
 }

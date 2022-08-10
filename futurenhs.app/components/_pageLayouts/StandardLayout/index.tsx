@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
 
@@ -22,6 +23,10 @@ import { useMediaQuery } from '@hooks/useMediaQuery'
 import { useLoading } from '@hooks/useLoading'
 
 import { Props } from './interfaces'
+import { NotificationBanner } from '@components/NotificationBanner'
+import { Notification } from '@components/NotificationBanner/interfaces'
+import { NotificationsContext } from '@contexts/index'
+import { PageBody } from '@components/PageBody'
 
 export const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderSearch = true,
@@ -36,9 +41,21 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     className,
     children,
 }) => {
+
     const router = useRouter()
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE)
-    const isLoading: boolean = useLoading().isLoading;
+    const isLoading: boolean = useLoading().isLoading
+
+    const notificationsContext: any = useContext(NotificationsContext)
+    const shouldRenderNotification: boolean =
+        notificationsContext?.notifications?.length > 0
+    const mostRecentNotification: Notification =
+        notificationsContext?.notifications?.[
+            notificationsContext.notifications.length - 1
+        ]
+    const notificationId: number = notificationsContext?.notifications?.indexOf(
+        mostRecentNotification
+    )
 
     const currentPathName: string = router?.pathname
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || ''
@@ -131,10 +148,15 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                 navMenuList={mainNavMenuList}
                 searchTerm={searchTerm}
             />
-            <main className={generatedClasses.wrapper}>
-                {isLoading &&
-                    <Loader delay={1000} />
-                }
+            <main className={generatedClasses.wrapper} aria-live="polite">
+                <Loader
+                    text={{
+                        loadingMessage: 'Loading, please wait',
+                    }}
+                    delay={1000}
+                    remain={750}
+                    isActive={isLoading}
+                />
                 {shouldRenderPhaseBanner && (
                     <div className="u-bg-theme-3">
                         <LayoutWidthContainer>
@@ -195,6 +217,17 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
                                         id="main"
                                         className={generatedClasses.content}
                                     >
+                                        {shouldRenderNotification && (
+                                            <PageBody>
+                                                <NotificationBanner
+                                                    id={notificationId}
+                                                    text={
+                                                        mostRecentNotification
+                                                    }
+                                                />
+                                            </PageBody>
+                                        )}
+
                                         {children}
                                     </LayoutColumn>
                                 </>

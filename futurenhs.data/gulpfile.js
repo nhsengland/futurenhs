@@ -39,40 +39,6 @@ const msbuild = (done) => {
     });
 };
 
-const msbuildAutomation = (done) => {
-
-    process.env.PATH = `${process.env.PATH};C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin`;
-
-    const proc = childProcess.spawn('msbuild.exe', [
-        'FutureNHS.Data\\FutureNHS.Data.sln',
-        '-t:rebuild',
-        '/p:Configuration=Automation'
-    ], {
-        cwd: process.cwd()
-    });
-
-    const re = /SCS\d{4}/;
-    proc.stdout.on('data', (data) => {
-        console.log(data.toString());
-
-        const match = re.exec(data.toString());
-        if (match) {
-            return done(new Error('Security warning found when building project'));
-        }
-    });
-
-    proc.stderr.on('data', (data) => {
-        console.log(data.toString());
-    });
-
-    proc.on('close', (code) => {
-        if (code !== 0) {
-            return done(new Error('Error compiling project'));
-        }
-
-        return done();
-    });
-};
 
 ///////////////////////////////////////
 //  FutureNHS DB TASKS
@@ -113,7 +79,7 @@ const deployAutomationFutureNHSDatabase = (done) => {
 
     var sqlPackage = childProcess.spawn('sqlpackage', [
         '/Action:Publish',
-        '/SourceFile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Automation/FutureNHS.Data.FutureNHS.dacpac',
+        '/SourceFile:./FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug/FutureNHS.Data.FutureNHS.dacpac',
         '/TargetDatabaseName:FutureNHS',
         '/TargetServerName:localhost',
         '/TargetUser:sa',
@@ -167,7 +133,6 @@ const dropFutureNHSDatabase = (done) => {
 
 module.exports = {
     msbuild,
-    msbuildAutomation,
     deployFutureNHSDatabase,
     deployAutomationFutureNHSDatabase
 }

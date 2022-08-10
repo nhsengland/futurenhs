@@ -24,6 +24,7 @@ export const getCmsPageTemplate = async (
     { user, templateId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
+
     const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
         data: null,
     }

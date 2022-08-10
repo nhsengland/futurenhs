@@ -5,7 +5,7 @@ namespace FutureNHS.Api.DataAccess.DTOs
     public sealed record FolderDto : BaseData
     {
         public Guid Id { get; init; }
-        public string Title { get; init; }
+        public string Name { get; init; }
         public string Description { get; init; }
         public Guid CreatedBy { get; init; }
         public DateTime CreatedAtUTC { get; init; }

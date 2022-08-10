@@ -1,7 +1,7 @@
 import { Link } from '@components/Link'
 import { AriaLiveRegion } from '@components/AriaLiveRegion'
 import { CollaboraFilePreview } from '@components/CollaboraFilePreview'
-import { NoScript } from '@components/NoScript'
+import { WarningCallout } from '@components/WarningCallout'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { BreadCrumb } from '@components/BreadCrumb'
 import { SVGIcon } from '@components/SVGIcon'
@@ -60,13 +60,15 @@ export const GroupFilePreviewTemplate: (props: Props) => JSX.Element = ({
                 )}
                 <h1 className="nhsuk-heading-l">{name}</h1>
                 <hr />
-                <NoScript
-                    headingLevel={3}
-                    text={{
-                        heading: 'Important',
-                        body: 'JavaScript must be enabled in your browser to view this file',
-                    }}
-                />
+                <noscript>
+                    <WarningCallout
+                        headingLevel={3}
+                        text={{
+                            heading: 'Important',
+                            body: 'JavaScript must be enabled in your browser to view this file',
+                        }}
+                    />
+                </noscript>
                 <AriaLiveRegion>
                     {hasCollaboraData && (
                         <CollaboraFilePreview

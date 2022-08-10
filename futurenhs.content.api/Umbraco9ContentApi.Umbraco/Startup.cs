@@ -3,17 +3,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.IO;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.EventLog;
 using Microsoft.Extensions.Options;
+using System;
+using System.IO;
+using System.Text.Json.Serialization;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Website.Controllers;
 using Umbraco.Extensions;
 using Umbraco9ContentApi.Core.Controllers;
-using Umbraco9ContentApi.Core.Extensions;
 using Umbraco9ContentApi.Umbraco.AzurePlatform;
 using Umbraco9ContentApi.Umbraco.Providers.Logging;
 
@@ -51,7 +50,7 @@ namespace UmbracoContentApi.Umbraco
         /// </remarks>
         public void ConfigureServices(IServiceCollection services)
         {
-            var loggingTableStorageConfig = services.Configure<AzureTableStorageConfiguration> (_config.GetSection("Logging:TableStorageConfiguration"));
+            var loggingTableStorageConfig = services.Configure<AzureTableStorageConfiguration>(_config.GetSection("Logging:TableStorageConfiguration"));
 #pragma warning disable IDE0022 // Use expression body for methods
             services.AddUmbraco(_env, _config)
                 .AddBackOffice()
@@ -80,7 +79,7 @@ namespace UmbracoContentApi.Umbraco
 
             var loggingTableStorageConnectionString = _config["Logging:TableStorageConfiguration:ConnectionString"];
             var loggingTableStorageTableName = _config["Logging:TableStorageConfiguration:TableName"];
-            
+
             services.AddSingleton<ILoggerProvider>(
                 sp =>
                 {

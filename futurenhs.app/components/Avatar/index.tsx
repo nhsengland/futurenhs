@@ -5,6 +5,9 @@ import { Image } from '@components/Image'
 
 import { Props } from './interfaces'
 
+/**
+ * Render a user image, or user initials if an image is not provided.
+ */
 export const Avatar: (props: Props) => JSX.Element = ({
     image,
     initials,

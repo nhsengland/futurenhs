@@ -3,10 +3,8 @@ import { useRouter } from 'next/router'
 
 import { formTypes } from '@constants/forms'
 import { actions as actionsConstants } from '@constants/actions'
-import { selectForm } from '@selectors/forms'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
-import { BackLink } from '@components/BackLink'
 import { UserProfile } from '@components/UserProfile'
 import { Form } from '@components/Form'
 import { ErrorSummary } from '@components/ErrorSummary'
@@ -19,6 +17,9 @@ import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { getGenericFormError } from '@helpers/util/form'
 import { putGroupMemberRole } from '@services/putGroupMemberRole'
+import { useFormConfig } from '@hooks/useForm'
+import { Image } from '@appTypes/image'
+import { ActionLink } from '@components/ActionLink'
 
 /**
  * Group member template
@@ -41,17 +42,15 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         setIsDeleteUserConfirmationModalOpen,
     ] = useState(false)
 
-    const updateFormConfig: FormConfig = selectForm(
-        forms,
-        formTypes.UPDATE_GROUP_MEMBER
-    )
-    const deleteFormConfig: FormConfig = selectForm(
-        forms,
-        formTypes.DELETE_GROUP_MEMBER
+    const updateFormConfig: FormConfig = forms[formTypes.UPDATE_GROUP_MEMBER]
+
+    const deleteFormConfig: FormConfig = useFormConfig(
+        formTypes.DELETE_GROUP_MEMBER,
+        forms[formTypes.DELETE_GROUP_MEMBER]
     )
 
     const [errors, setErrors] = useState(
-        updateFormConfig.errors || deleteFormConfig.errors
+        updateFormConfig?.errors || deleteFormConfig?.errors
     )
 
     const {
@@ -65,6 +64,8 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
     const shouldRenderDeleteForm: boolean = actions.includes(
         actionsConstants.GROUPS_MEMBERS_DELETE
     )
+
+    const memberProfileImage: Image = member.image
 
     /**
      * Handle client-side validation failure in forms
@@ -161,10 +162,13 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
      */
     return (
         <LayoutColumn className="c-page-body">
-            <BackLink
+            <ActionLink
                 href={routes.groupMembersRoot}
+                iconName="icon-chevron-left"
+                className="u-mb-8"
                 text={{
-                    link: 'Back',
+                    body: 'Back',
+                    ariaLabel: 'Go back to list of group members',
                 }}
             />
             <ErrorSummary
@@ -175,6 +179,7 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={11}>
                     <UserProfile
+                        image={memberProfileImage}
                         profile={member}
                         text={{
                             heading: secondaryHeading,

@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { Editor } from '@tinymce/tinymce-react'
 
+import { useAssetPath } from '@hooks/useAssetPath'
 import { RichText } from '@components/RichText'
 import { RemainingCharacterCount } from '@components/RemainingCharacterCount'
 import { getAriaFieldAttributes } from '@helpers/util/form'
@@ -9,13 +10,18 @@ import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 
 import { Props } from './interfaces'
 
+/**
+ * Derived from the NHS Design System Textarea component: https://service-manual.nhs.uk/design-system/components/textarea.
+ * Used to allow users to enter an amount of text that’s longer than a single line.
+ * Supports progressive enhancement to a configurable rich text field powered with TinyMCE: https://www.tiny.cloud
+ */
 export const TextArea: (props: Props) => JSX.Element = ({
     input,
     initialError,
     meta: { touched, error, submitError },
     text,
     shouldRenderAsRte,
-    rteToolBarOptions = 'undo redo | styleselect| forecolor  | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link unlink blockquote media image| code table emoticons charmap',
+    rteToolBarOptions = 'bold italic | bullist numlist | link unlink',
     shouldRenderRemainingCharacterCount,
     validators,
     minHeight = 200,
@@ -47,13 +53,29 @@ export const TextArea: (props: Props) => JSX.Element = ({
     )?.maxLength
     const elementMinHeight: string = `${minHeight}px`
 
-    const handleRteInit = (_, editor) => (editorRef.current = editor)
-    const handleRteChange = (value: any) => input.onChange(value)
+    const handleRteInit = (_, editor) => {
+        editorRef.current = editor
+        editorRef.current?.on?.('CloseWindow', () => {
+            const { top } =
+                editorRef.current?.contentAreaContainer.getBoundingClientRect() ??
+                {}
+
+            if (top) {
+                window.scrollTo(0, top)
+            }
+        })
+    }
+    const handleRteChange = (value: any) => {
+        input.onChange(value)
+    }
     const handleRteFocus = () => {
         input.onFocus()
         setIsRteFocussed(true)
     }
-    const handleRteBlur = () => setIsRteFocussed(false)
+    const handleRteBlur = () => {
+        input.onBlur()
+        setIsRteFocussed(false)
+    }
 
     const generatedIds: any = {
         hint: `${id}-hint`,
@@ -128,7 +150,9 @@ export const TextArea: (props: Props) => JSX.Element = ({
                     tabIndex={0}
                 >
                     <Editor
-                        tinymceScriptSrc="/js/tinymce/tinymce.min.js"
+                        tinymceScriptSrc={useAssetPath(
+                            '/js/tinymce/tinymce.min.js'
+                        )}
                         textareaName={input.name}
                         id={id}
                         value={input.value}
@@ -139,7 +163,7 @@ export const TextArea: (props: Props) => JSX.Element = ({
                         init={{
                             menubar: false,
                             plugins: [
-                                'autosave link image lists hr anchor wordcount visualblocks visualchars fullscreen media nonbreaking code autolink lists table emoticons charmap',
+                                'autosave link lists hr anchor wordcount visualblocks visualchars fullscreen nonbreaking autolink lists table emoticons charmap',
                             ],
                             toolbar: rteToolBarOptions,
                             content_style:

@@ -74,8 +74,10 @@ describe('getAuth service', () => {
                     userName: 'mockUserNameText',
                 },
                 image: {
-                    source: '/mockSrc',
+                    src: '/mockSrc',
                     altText: 'mockAltText',
+                    height: null,
+                    width: null,
                 },
             },
         })

@@ -2,10 +2,11 @@ import { useRef, useState } from 'react'
 
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
-import { BackLink } from '@components/BackLink'
 import { UserProfile } from '@components/UserProfile'
+import { Image } from '@appTypes/image'
 
 import { Props } from './interfaces'
+import { ActionLink } from '@components/ActionLink'
 
 /**
  * Group member template
@@ -25,20 +26,26 @@ export const GroupMemberTemplate: (props: Props) => JSX.Element = ({
         emailLabel,
     } = contentText ?? {}
 
+    const memberProfileImage: Image = member.image
+
     /**
      * Render
      */
     return (
         <LayoutColumn className="c-page-body">
-            <BackLink
+            <ActionLink
                 href={routes.groupMembersRoot}
+                iconName="icon-chevron-left"
+                className="u-mb-8"
                 text={{
-                    link: 'Back',
+                    body: 'Back',
+                    ariaLabel: 'Go back to list of group members',
                 }}
             />
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={11}>
                     <UserProfile
+                        image={memberProfileImage}
                         profile={member}
                         text={{
                             heading: secondaryHeading,

@@ -10,5 +10,6 @@ export interface Props {
     totalDiscussionCount?: number
     totalMemberCount?: number
     image?: Image
+    headingLevel?: number
     className?: string
 }

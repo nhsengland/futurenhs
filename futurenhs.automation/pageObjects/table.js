@@ -176,8 +176,14 @@ class table extends basePage {
         }
         var tablePath = this.getTable(tableName);
         var link = tablePath.$(`./tbody/tr[${tableRow}]/td//a[text()="${linkText}"]`);
-        helpers.waitForLoaded(link)
-        helpers.click(link);
+        var button = tablePath.$(`./tbody/tr[${tableRow}]/td//button[text()="${linkText}"]`);
+        if(link.isExisting() == true){
+            helpers.waitForLoaded(link);
+            helpers.click(link);
+        } else {
+            helpers.waitForLoaded(button);
+            helpers.click(button);    
+        }
     }
 
     /**
@@ -199,7 +205,7 @@ class table extends basePage {
      */
     tableNotExisting(tableName) {
         var table = this.getTable(tableName);
-        expect(table.isExisting()).toEqual(false);
+        browser.waitUntil(() => table.isExisting() === false);
     }
 }
 module.exports = new table();
