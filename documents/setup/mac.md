@@ -5,7 +5,9 @@ Load terminal and run the following commands
 
 ## Install homebrew
 [Brew instructions](https://brew.sh/)
-
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 ❗️Restart terminal
 
 ## Uninstall Node (If you don’t already have NVM installed)
@@ -107,7 +109,7 @@ python --version
 ## M1 Chip issues
 Some issues were found running on m1 chip, following the guidance [here](https://github.com/nuxt/image/issues/204) to fix them 
 
-###Install gcc
+### Install gcc
 The "libvps" depends on gcc, so do:
 ```
 brew install --build-from-source gcc
@@ -118,13 +120,13 @@ Also required by "libvps"
 xcode-select install
 ```
 
-###Install "vips"
+### Install "vips"
 ```
 brew install vips
 ```
 
 
-### Pull down packages for root and web app
+## Pull down packages for root and web app
 ```
 npm i
 cd futurenhs.app
@@ -162,7 +164,7 @@ cd ..
 gulp activate
 ```
 
-#Config Secrets
+# Config Secrets
 
 ## Api Secrets:
 ```

@@ -1,36 +1,19 @@
 
 # Windows Setup - FutureNHS
 
-Load terminal and run the following commands
+## Install Git
+[Git setup instructions](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+[Git download page](https://git-scm.com/download/win)
 
-```
-Sudo apt-get install git
-```
-
-## Install homebrew
-[Brew instructions](https://brew.sh/)
-
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-```
-
-❗️Restart terminal
 ## Uninstall Node (If you don’t already have NVM installed)
+(I'm sorry)
 
-```
-brew uninstall node
-```
+[Node Removal instructions](https://stackoverflow.com/questions/20711240/how-to-completely-remove-node-js-from-windows)
 
 ## Install NVM
+[NVM setup instructions](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows)
 
-```
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh |  shellenv
-```
-❗️Restart terminal
-
-## Install specific version of Node - 14.18.3
+### Install version 14.18.3 of Node
 
 ```
 nvm install v14.18.3
@@ -38,9 +21,34 @@ nvm use v14.18.3
 nvm alias default v14.18.3
 ```
 
-## Install Docker
+## Install Microsft Sql 2019
+[MS Sql setup instructions](https://www.microsoft.com/en-gb/evalcenter/evaluate-sql-server-2019)
 
-[Docker setup instructions](https://docs.docker.com/desktop/install/linux-install/)
+Use the default settings, make a note of the sa password, you will need this for later, you can alternatively create a separate user and use those credentials to connect, these details will need to be added to the shared secrets at the end.
+
+### Install MS Sql Management studio
+[MS Sql setup instructions](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16)
+
+## Install SqlPackage
+[SqlPackage setup instructions](https://docs.microsoft.com/en-us/sql/tools/sqlpackage/sqlpackage-download?view=sql-server-ver16)
+
+In addition to this also add it to your path in the windows environment variables.
+
+**To add a directory to the existing PATH in Windows**
+
+1. Launch "Control Panel"
+2. "System"
+3. "Advanced system settings"
+4. Switch to "Advanced" tab
+5. "Environment variables"
+6. Under "System Variables" (for all users), select "Path"
+7. "Edit"
+8. "New"
+9. C:\Program Files\Microsoft SQL Server\160\DAC\bin
+10. "Ok"
+
+## Install .Net 6.0 sdk
+[.Net 6 setup instructions](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 ## Install gulp
 
@@ -48,51 +56,6 @@ nvm alias default v14.18.3
 
 ```
 npm install --global gulp-cli
-```
-
-## Install MSSQL
-
-```
-sudo docker pull mcr.microsoft.com/mssql/server:2022-latest
-sudo docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=9um#Qu&6d3t5" -p 1433:1433 --name sql1 --hostname sql1  -d mcr.microsoft.com/mssql/server:2022-latest
-```
-
-## Install Azure data studio
-
-[Azure data studio setup instructions](https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver16)
-
-## Install SQL Package
-[SQL Package instructions](https://docs.microsoft.com/en-us/sql/tools/sqlpackage/sqlpackage-download?view=sql-server-ver16)
-
-❗️Sql Package uses an old version of libssl so need to install the old one.
-```
-wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb 
-wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/openssl_1.1.1f-1ubuntu2.16_amd64.deb 
-
-sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb 
-sudo dpkg -i openssl_1.1.1f-1ubuntu2.16_amd64.deb
-```
-
-slight tweak required to path as does not work in gulp, only terminal, when following the instructions from microsoft
-```
-mkdir sqlpackage
-unzip ~/Downloads/sqlpackage-linux-x64-en-<Version>.zip -d ~/sqlpackage 
-chmod a+x ~/sqlpackage/sqlpackage
-echo 'export PATH="$HOME/sqlpackage:$PATH"' >> ~/.bash_profile
-source ~/.bash_profile
-sqlpackage
-```
-
-## Install .net 6
-```
-wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-rm packages-microsoft-prod.deb
-```
-
-### Install the SDK
-```
-sudo apt-get update && \ sudo apt-get install -y dotnet-sdk-6.0
 ```
 
 ## Git Clone Repo
@@ -103,40 +66,25 @@ cd futurenhs
 git reset --hard origin/SPRINT
 ```
 
-## Install npm packages
-```
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-brew install vips
-```
-
-### Install yarn
-```
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt update
-sudo apt install yarn
-```
-
 ### Pull down packages for root and web app
 ```
-yarn
+npm i
 cd futurenhs.app
-yarn
+npm i
 ```
 
 ## Config 
-Save the config from below (Api Secrets) into an apisecrets.json file to your user’s drive and fill in all of the details with the relevant connections strings and credentials, make a note of the location for this file and run the following command:
+Save the config from below (Api Secrets) into an apisecrets.json file and fill in all of the details with the relevant connections strings and credentials, make a note of the location for this file and run the following command:
 cd ..
 
 ```
-cat ~/apisecrets.json | dotnet user-secrets set --project "futurenhs.api/FutureNHS.Api/FutureNHS.Api.csproj"
+type .\apisecrets.json | dotnet user-secrets set --project "futurenhs.api/FutureNHS.Api/FutureNHS.Api.csproj"
 ```
 
-Save the config from below (Umbraco Api Secrets) into an umbracosecrets.json file to your user’s drive and fill in all of the details with the relevant connections strings and credentials, make a note of the location for this file and run the following command:
+Save the config from below (Umbraco Api Secrets) into an umbracosecrets.json file and fill in all of the details with the relevant connections strings and credentials, make a note of the location for this file and run the following command:
 
 ```
-cat ~/umbracosecrets.json | dotnet user-secrets set --project "futurenhs.content.api/Umbraco9ContentApi.Umbraco/Umbraco9ContentApi.Umbraco.csproj"
+type .\umbracosecrets.json | dotnet user-secrets set --project "futurenhs.content.api/Umbraco9ContentApi.Umbraco/Umbraco9ContentApi.Umbraco.csproj"
 ```
 
 Save the config from below  (Web app secrets) into a file called .env.local in /futurenhs.app
@@ -156,7 +104,7 @@ cd ..
 gulp activate
 ```
 
-#Config Secrets
+# Config Secrets
 
 ## Api Secrets:
 ```
