@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next'
-
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { getSession } from 'next-auth/react'
 import { getAuthCsrfData } from '@services/getAuthCsrfData'
 import { selectQuery } from '@selectors/context'
@@ -7,23 +7,23 @@ import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
+import { selectPageProps } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
 import { AuthSignInTemplate } from '@components/_pageTemplates/AuthSignInTemplate'
 import { Props } from '@components/_pageTemplates/AuthSignInTemplate/interfaces'
 
-const routeId: string = '46524db4-44eb-4296-964d-69dfc2279f01'
-const props: Partial<Props> = {}
-
-/**
- * Get props to inject into page on the initial server-side request
- */
-export const getServerSideProps: GetServerSideProps = withRoutes({
-    props,
-    getServerSideProps: withTextContent({
-        props,
-        routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (
+    context: GetServerSidePropsContext
+) =>
+    await pipeSSRProps(
+        context,
+        {
+            routeId: '46524db4-44eb-4296-964d-69dfc2279f01',
+        },
+        [withRoutes, withTextContent],
+        async (context: GetServerSidePropsContext) => {
+            const props: Partial<Props> = selectPageProps(context)
             const { query } = context
             const error: string = selectQuery(context, 'error')
             const session = await getSession(context)
@@ -57,7 +57,7 @@ export const getServerSideProps: GetServerSideProps = withRoutes({
                     },
                 ]
 
-                return handleSSRSuccessProps({ props })
+                return handleSSRSuccessProps({ props, context })
             }
 
             /**
@@ -70,7 +70,6 @@ export const getServerSideProps: GetServerSideProps = withRoutes({
                 const [csrfData] = await Promise.all([
                     getAuthCsrfData({ query }),
                 ])
-
                 props.csrfToken = csrfData.data
 
                 /**
@@ -88,10 +87,9 @@ export const getServerSideProps: GetServerSideProps = withRoutes({
             /**
              * Return data to page template
              */
-            return handleSSRSuccessProps({ props })
-        },
-    }),
-})
+            return handleSSRSuccessProps({ props, context })
+        }
+    )
 
 /**
  * Export page template
