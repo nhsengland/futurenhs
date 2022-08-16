@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { getSession } from 'next-auth/react'
-
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { setFetchOpts, fetchJSON } from '@helpers/fetch'
 import { getAuthCsrfData } from '@services/getAuthCsrfData'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
@@ -8,23 +8,22 @@ import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
 import { GetServerSidePropsContext } from '@appTypes/next'
-
+import { selectPageProps } from '@selectors/context'
 import { AuthSignOutTemplate } from '@components/_pageTemplates/AuthSignOutTemplate'
 import { Props } from '@components/_pageTemplates/AuthSignOutTemplate/interfaces'
 import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 
-const routeId: string = '043b4409-7aa4-4d9d-af9b-30cb0b469f02'
-const props: Partial<Props> = {}
-
-/**
- * Get props to inject into page on the initial server-side request
- */
-export const getServerSideProps: GetServerSideProps = withRoutes({
-    props,
-    getServerSideProps: withTextContent({
-        props,
-        routeId,
-        getServerSideProps: async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (
+    context: GetServerSidePropsContext
+) =>
+    await pipeSSRProps(
+        context,
+        {
+            routeId: '043b4409-7aa4-4d9d-af9b-30cb0b469f02',
+        },
+        [withRoutes, withTextContent],
+        async (context: GetServerSidePropsContext) => {
+            const props: Partial<Props> = selectPageProps(context)
             const { query } = context
             const session = await getSession(context)
 
@@ -91,10 +90,9 @@ export const getServerSideProps: GetServerSideProps = withRoutes({
             /**
              * Return data to page template
              */
-            return handleSSRSuccessProps({ props })
-        },
-    }),
-})
+            return handleSSRSuccessProps({ props, context })
+        }
+    )
 
 /**
  * Export page template
