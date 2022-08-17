@@ -3,7 +3,7 @@ import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { getSession } from 'next-auth/react'
 import { getAuthCsrfData } from '@services/getAuthCsrfData'
 import { selectQuery } from '@selectors/context'
-import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
+import { handleSSRAuthSuccessProps } from '@helpers/util/ssr/handleSSRAuthSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
@@ -57,7 +57,7 @@ export const getServerSideProps: GetServerSideProps = async (
                     },
                 ]
 
-                return handleSSRSuccessProps({ props, context })
+                return handleSSRAuthSuccessProps({ props, context })
             }
 
             /**
@@ -87,7 +87,7 @@ export const getServerSideProps: GetServerSideProps = async (
             /**
              * Return data to page template
              */
-            return handleSSRSuccessProps({ props, context })
+            return handleSSRAuthSuccessProps({ props, context })
         }
     )
 
