@@ -123,22 +123,12 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/users/info")]
+        [Route("users/info")]
         public async Task<IActionResult> MemberInfoAsync([FromBody] MemberIdentityRequest memberIdentity, CancellationToken cancellationToken)
         {
-            var memberIdentityResponse = _userService.GetMemberInfoAsync(memberIdentity, cancellationToken);
-            if (memberIdentityResponse is null)
-            {
-                return Ok(memberIdentityResponse);
-            }
+            var memberInfoResponse = await _userService.GetMemberInfoAsync(memberIdentity, cancellationToken);
 
-            var isMemberInvited = await _userService.IsMemberInvitedAsync(memberIdentity.EmailAddress, cancellationToken);
-            if (isMemberInvited)
-            {
-                return Redirect("/users/register");
-            }
-
-            return Forbid();
+            return Ok(memberInfoResponse);
         }
     }
 }
