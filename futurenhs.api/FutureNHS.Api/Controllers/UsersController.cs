@@ -126,7 +126,7 @@ namespace FutureNHS.Api.Controllers
         [Route("/users/info")]
         public async Task<IActionResult> MemberInfoAsync([FromBody] MemberIdentityRequest memberIdentity, CancellationToken cancellationToken)
         {
-            var memberIdentityResponse = _userService.GetMemberIdentityAsync(memberIdentity.IdentityId, cancellationToken);
+            var memberIdentityResponse = _userService.GetMemberInfoAsync(memberIdentity, cancellationToken);
             if (memberIdentityResponse is null)
             {
                 return Ok(memberIdentityResponse);

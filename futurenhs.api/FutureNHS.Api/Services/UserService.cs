@@ -92,13 +92,6 @@ namespace FutureNHS.Api.Services
             return await _userCommand.GetMemberAsync(targetUserId, cancellationToken);
         }
 
-        public async Task<MemberIdentityResponse> GetMemberIdentityAsync(Guid IdentityId, CancellationToken cancellationToken)
-        {
-            if (Guid.Empty == IdentityId) throw new ArgumentOutOfRangeException(nameof(IdentityId));
-                        
-            return await _userDataProvider.GetMemberIdentityAsync(IdentityId, cancellationToken);
-        }
-
         public async Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
@@ -346,11 +339,51 @@ namespace FutureNHS.Api.Services
             return mediaType.Encoding;
         }
 
-        public Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken)
+        public async Task<MemberInfoResponse> GetMemberInfoAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.SubjectId)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.SubjectId));
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.EmailAddress)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.EmailAddress));
 
-            return _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
+
+            var memberInfo = await _userDataProvider.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
+            if (memberInfo is not null)
+            {
+                memberInfo.Status = MemberStatus.Member.ToString();
+                return memberInfo;
+            }
+
+            var memberDetailsResponse = await _userDataProvider.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
+            if (memberDetailsResponse is not null)
+            {
+                return new MemberInfoResponse
+                {
+                    FirstName = memberDetailsResponse.FirstName,
+                    LastName = memberDetailsResponse.LastName,
+                    MembershipUserId = memberDetailsResponse.Id,
+                    Status = MemberStatus.LegacyMember.ToString()
+                };
+            }
+
+            var isMemberInvited = await _userDataProvider.IsMemberInvitedAsync(memberIdentityRequest.EmailAddress, cancellationToken);
+            if (isMemberInvited)
+            {
+                return new MemberInfoResponse
+                {
+                    Status = MemberStatus.Invited.ToString()
+                };
+            }
+
+            return new MemberInfoResponse
+            {
+                Status = MemberStatus.Uninvited.ToString()
+            };
+        }
+
+        public Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentOutOfRangeException(nameof(emailAddress));
+
+            return _userDataProvider.GetMemberByEmailAsync(emailAddress, cancellationToken);
         }
     }
 }
