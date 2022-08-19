@@ -10,6 +10,7 @@ using FutureNHS.Api.Models.Identity.Enums;
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
+using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Services.Interfaces;
 using FutureNHS.Api.Services.Validation;
 using HeyRed.Mime;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using System.Data;
 using System.Net;
+using System.Net.Mail;
 using System.Security;
 using System.Text;
 
@@ -30,6 +32,7 @@ namespace FutureNHS.Api.Services
         private const string ListMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
         private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
         private const string EditMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/edit";
+        private const string DefaultRole = "Standard Members";
 
         private readonly string _fqdn;
         private readonly ILogger<UserService> _logger;
@@ -165,6 +168,40 @@ namespace FutureNHS.Api.Services
             {
                 _logger.LogError(ex, $"Error: UpdateUserAsync - Error updating user {0}");
             }
+        }
+
+        public async Task<Guid?> RegisterMemberAsync(MemberRegistrationRequest registrationRequest, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(registrationRequest.Subject)) throw new ArgumentNullException(nameof(registrationRequest.Subject));
+            if (string.IsNullOrEmpty(registrationRequest.Email)) throw new ArgumentNullException(nameof(registrationRequest.Email));
+            if (string.IsNullOrEmpty(registrationRequest.Issuer)) throw new ArgumentNullException(nameof(registrationRequest.Issuer));
+
+            var EmailAddress = new MailAddress(registrationRequest.Email);
+            var domain = EmailAddress.Host;
+
+            if (await IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
+            {
+                // todo validate user
+
+                var member = new MemberDto
+                {
+                    FirstName = registrationRequest.FirstName,
+                    Surname = registrationRequest.LastName,
+                    Email = registrationRequest.Email,
+                    CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
+                    AgreedToTerms = registrationRequest.Agreed
+                };
+                try
+                {
+                    return await _userCommand.RegisterUserAsync(member, registrationRequest.Subject, registrationRequest.Issuer, DefaultRole, cancellationToken);
+                }
+                catch (DBConcurrencyException ex)
+                {
+                    _logger.LogError(ex, $"Error: Error registering new user");
+                    throw;
+                }
+            }
+            return null;
         }
 
         private async Task<(MemberDto, ImageDto?)> UploadUserImageMultipartContent(Guid targetUserId, Stream requestBody, byte[] rowVersion, string? contentType, CancellationToken cancellationToken)

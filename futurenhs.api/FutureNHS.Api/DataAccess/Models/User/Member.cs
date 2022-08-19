@@ -13,5 +13,6 @@
         public string LastLoginUtc { get; init; }
         public string Role { get; init; }
         public Guid? ImageId { get; init; }
+        public bool AgreedToTerms { get; init; }
     }
 }

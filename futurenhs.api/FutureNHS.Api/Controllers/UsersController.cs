@@ -13,19 +13,22 @@ namespace FutureNHS.Api.Controllers
     [ApiVersion("1.0")]
     public sealed class UsersController : ControllerBase
     {
+        private const string defaultGroup = "default-group";
         private readonly ILogger<UsersController> _logger;
         private readonly IPermissionsService _permissionsService;
         private readonly IUserDataProvider _userDataProvider;
         private readonly IUserService _userService;
         private readonly IEtagService _etagService;
+        private readonly IGroupMembershipService _groupMembershipService;
 
-        public UsersController(ILogger<UsersController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider, IUserService userService, IEtagService etagService)
+        public UsersController(ILogger<UsersController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider, IUserService userService, IEtagService etagService, IGroupMembershipService groupMembershipService)
         {
             _logger = logger;
             _permissionsService = permissionsService;
             _userDataProvider = userDataProvider;
             _userService = userService;
             _etagService = etagService;
+            _groupMembershipService = groupMembershipService;
         }
 
         [HttpGet]
@@ -105,21 +108,18 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [Route("users/register")]
-        public async Task<IActionResult> RegisterMemberAsync([FromBody] MemberRegistrationRequest memberRegistrationRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> RegisterMemberAsync(MemberRegistrationRequest memberRegistrationRequest, CancellationToken cancellationToken)
         {
-            if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+           var userId = await _userService.RegisterMemberAsync(memberRegistrationRequest, cancellationToken);
+
+
+            if (userId.HasValue)
             {
-                return BadRequest("The data submitted is not in the multiform format");
+                await _groupMembershipService.UserJoinGroupAsync(userId.Value, defaultGroup, cancellationToken);
+                return Ok();
             }
 
-            var resp = memberRegistrationRequest;
-
-            var rowVersion = _etagService.GetIfMatch();
-
-            //await _userService.UpdateMemberAsync(userId, targetUserId, Request.Body, Request.ContentType, rowVersion, cancellationToken);
-
-            return Ok();
-            throw new NotImplementedException();
+            return Forbid();
         }
 
         [HttpPost]
