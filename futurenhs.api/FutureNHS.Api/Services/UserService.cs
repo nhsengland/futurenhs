@@ -32,7 +32,7 @@ namespace FutureNHS.Api.Services
         private const string ListMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
         private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
         private const string EditMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/edit";
-        private const string DefaultRole = "Standard Members";
+
 
         private readonly string _fqdn;
         private readonly ILogger<UserService> _logger;
@@ -44,7 +44,8 @@ namespace FutureNHS.Api.Services
         private readonly IEmailService _emailService;
         private readonly IUserImageService _imageService;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
-
+        private readonly string _defaultRole;
+        
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 5242880; // 5MB
 
@@ -61,7 +62,8 @@ namespace FutureNHS.Api.Services
             IOptionsSnapshot<GovNotifyConfiguration> notifyConfig,
             IOptionsSnapshot<ApplicationGateway> gatewayConfig,
             IUserImageService imageService,
-            IImageBlobStorageProvider blobStorageProvider)
+            IImageBlobStorageProvider blobStorageProvider,
+            IOptionsMonitor<DefaultSettings> defaultSettings)
         {
             _permissionsService = permissionsService;
             _userAdminDataProvider = userAdminDataProvider;
@@ -76,6 +78,8 @@ namespace FutureNHS.Api.Services
 
             // Notification template Ids
             _registrationEmailId = notifyConfig.Value.RegistrationEmailTemplateId;
+
+            _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
         }
 
         public async Task<MemberProfile> GetMemberAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
@@ -176,8 +180,9 @@ namespace FutureNHS.Api.Services
             if (string.IsNullOrEmpty(registrationRequest.Email)) throw new ArgumentNullException(nameof(registrationRequest.Email));
             if (string.IsNullOrEmpty(registrationRequest.Issuer)) throw new ArgumentNullException(nameof(registrationRequest.Issuer));
 
-            var EmailAddress = new MailAddress(registrationRequest.Email);
-            var domain = EmailAddress.Host;
+            // TODO Work for determining if domain is on auto approve list
+            var emailAddress = new MailAddress(registrationRequest.Email);
+            var domain = emailAddress.Host;
 
             if (await IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
             {
@@ -193,7 +198,7 @@ namespace FutureNHS.Api.Services
                 };
                 try
                 {
-                    return await _userCommand.RegisterUserAsync(member, registrationRequest.Subject, registrationRequest.Issuer, DefaultRole, cancellationToken);
+                    return await _userCommand.RegisterUserAsync(member, registrationRequest.Subject, registrationRequest.Issuer, _defaultRole, cancellationToken);
                 }
                 catch (DBConcurrencyException ex)
                 {

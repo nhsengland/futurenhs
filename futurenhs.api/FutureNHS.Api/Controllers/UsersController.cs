@@ -1,10 +1,12 @@
 using FutureNHS.Api.Attributes;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.Controllers
 {
@@ -13,15 +15,15 @@ namespace FutureNHS.Api.Controllers
     [ApiVersion("1.0")]
     public sealed class UsersController : ControllerBase
     {
-        private const string defaultGroup = "default-group";
+        private readonly string? _defaultGroup;
         private readonly ILogger<UsersController> _logger;
         private readonly IPermissionsService _permissionsService;
         private readonly IUserDataProvider _userDataProvider;
         private readonly IUserService _userService;
         private readonly IEtagService _etagService;
         private readonly IGroupMembershipService _groupMembershipService;
-
-        public UsersController(ILogger<UsersController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider, IUserService userService, IEtagService etagService, IGroupMembershipService groupMembershipService)
+  
+        public UsersController(ILogger<UsersController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider, IUserService userService, IEtagService etagService, IGroupMembershipService groupMembershipService, IOptionsMonitor<DefaultSettings> defaultSettings)
         {
             _logger = logger;
             _permissionsService = permissionsService;
@@ -29,6 +31,7 @@ namespace FutureNHS.Api.Controllers
             _userService = userService;
             _etagService = etagService;
             _groupMembershipService = groupMembershipService;
+            _defaultGroup = defaultSettings.CurrentValue.DefaultGroup;
         }
 
         [HttpGet]
@@ -112,14 +115,15 @@ namespace FutureNHS.Api.Controllers
         {
            var userId = await _userService.RegisterMemberAsync(memberRegistrationRequest, cancellationToken);
 
+           if (!userId.HasValue) return Forbid();
+           
+           if (_defaultGroup is not null)
+           {
+               await _groupMembershipService.UserJoinGroupAsync(userId.Value, _defaultGroup, cancellationToken);
+           }
 
-            if (userId.HasValue)
-            {
-                await _groupMembershipService.UserJoinGroupAsync(userId.Value, defaultGroup, cancellationToken);
-                return Ok();
-            }
+           return Ok(userId);
 
-            return Forbid();
         }
 
         [HttpPost]
