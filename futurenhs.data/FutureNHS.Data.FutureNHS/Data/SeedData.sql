@@ -133,6 +133,8 @@ BEGIN
 
 END
 
+UPDATE [dbo].[Identity] SET Subject_Id = '51e4087c-a3cb-465d-a9b2-7e4d6b213b04' where MembershipUser_Id = (SELECT id FROM MembershipUser WHERE UserName ='admin@futurenhs.co.uk')
+
 IF '$(RunAutomatedScripts)' = 'true'
 BEGIN
 		EXEC automationteardown
