@@ -15,6 +15,7 @@ variables:
   solution: 'FutureNHS.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'Release'
+  working-dir: 'FutureNHS.API'
 
 jobs:
 
