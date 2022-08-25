@@ -2,6 +2,7 @@
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
+using FutureNHS.Api.Models.Member.Request;
 
 namespace FutureNHS.Api.Services.Interfaces
 {
@@ -14,5 +15,7 @@ namespace FutureNHS.Api.Services.Interfaces
             CancellationToken cancellationToken);
         Task UpdateMemberAsync(Guid userId, Guid targetUserId, Stream requestBody, string? contentType, byte[] rowVersion, CancellationToken cancellationToken);
         Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken);
+
+        Task<Guid?> RegisterMemberAsync(MemberRegistrationRequest registrationRequest, CancellationToken cancellationToken);
     }
 }

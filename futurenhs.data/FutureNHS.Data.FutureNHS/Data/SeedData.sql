@@ -24,8 +24,8 @@ BEGIN
 	INSERT [dbo].[FileStatus] ([Name]) VALUES (N'Deleted')
 	
 
-	INSERT [dbo].[MembershipUser] ([UserName], [Password], [PasswordSalt], [Email], [PasswordQuestion], [PasswordAnswer], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC],[ModifiedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [PasswordResetToken], [PasswordResetTokenCreatedAtUTC], [Slug],  [IsExternalAccount], [LoginIdExpiresUTC], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials] ,[Pronouns], [ImageId], [IsDeleted]) VALUES (N'admin@futurenhs.co.uk', N'HkFI1o9bblG9zZOyMubT9BGyEscHTso/ieiz/4Em3zk=', N'Qn9tR051BS0cUSyVJbdg55VnRO4G22Ny', N'admin@futurenhs.co.uk',NULL,NULL,1,0,0,(SELECT GETUTCDATE()),NULL,NULL,NULL,NULL,NULL,0,0,NULL,NULL,N'admin',0,NULL,1,1,N'Admin',N'Account',N'AA',NULL,NULL,0)			
-	INSERT [dbo].[MembershipUser] ([UserName], [Password], [PasswordSalt], [Email], [PasswordQuestion], [PasswordAnswer], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC],[ModifiedAtUTC], [LastLoginDateUTC], [LastPasswordChangedDateUTC], [LastLockoutDateUTC], [LastActivityDateUTC], [FailedPasswordAttemptCount], [FailedPasswordAnswerAttempt], [PasswordResetToken], [PasswordResetTokenCreatedAtUTC], [Slug],  [IsExternalAccount], [LoginIdExpiresUTC], [HasAgreedToTermsAndConditions], [IsTrustedUser], [FirstName], [Surname], [Initials] ,[Pronouns], [ImageId], [IsDeleted]) VALUES (N'membershipuser@futurenhs.co.uk', N'HkFI1o9bblG9zZOyMubT9BGyEscHTso/ieiz/4Em3zk=', N'Qn9tR051BS0cUSyVJbdg55VnRO4G22Ny', N'membershipuser@futurenhs.co.uk',NULL,NULL,1,0,0,(SELECT GETUTCDATE()),NULL,NULL,NULL,NULL,NULL,0,0,NULL,NULL,N'membershipuser',0,NULL,1,1,N'MembershipUser',N'Account',N'MA',NULL,NULL,0)			
+	INSERT [dbo].[MembershipUser] ([UserName], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC],[ModifiedAtUTC], [LastLoginDateUTC], [Slug],  [HasAgreedToTermsAndConditions], [FirstName], [Surname], [Initials] ,[Pronouns], [ImageId], [IsDeleted]) VALUES (N'admin@futurenhs.co.uk', N'admin@futurenhs.co.uk',1,0,0,(SELECT GETUTCDATE()),NULL,NULL,N'admin',1,N'Admin',N'Account',N'AA',NULL,NULL,0)			
+	INSERT [dbo].[MembershipUser] ([UserName], [Email], [IsApproved], [IsLockedOut], [IsBanned], [CreatedAtUTC],[ModifiedAtUTC], [LastLoginDateUTC], [Slug],  [HasAgreedToTermsAndConditions], [FirstName], [Surname], [Initials] ,[Pronouns], [ImageId], [IsDeleted]) VALUES (N'membershipuser@futurenhs.co.uk', N'membershipuser@futurenhs.co.uk',1,0,0,(SELECT GETUTCDATE()),NULL,NULL,N'membershipuser',1,N'MembershipUser',N'Account',N'MA',NULL,NULL,0)			
 
 	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='admin@futurenhs.co.uk'), N'20b6eb88-0218-473c-9d37-51ba5c7f5ffb', N'CDSB2CTEST.onmicrosoft.com');
 	INSERT [dbo].[Identity] ([MembershipUser_Id], [Subject_Id], [Issuer]) VALUES ((SELECT id FROM MembershipUser WHERE UserName ='membershipuser@futurenhs.co.uk'), N'9a9a1c10-52ca-4774-aeef-14a745c39d55', N'CDSB2CTEST.onmicrosoft.com');
@@ -132,6 +132,8 @@ BEGIN
 	EXEC sp_msforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';	
 
 END
+
+UPDATE [dbo].[Identity] SET Subject_Id = '51e4087c-a3cb-465d-a9b2-7e4d6b213b04' where MembershipUser_Id = (SELECT id FROM MembershipUser WHERE UserName ='admin@futurenhs.co.uk')
 
 IF '$(RunAutomatedScripts)' = 'true'
 BEGIN

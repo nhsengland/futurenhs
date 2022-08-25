@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (
                 redirect: {
                     permanent: false,
                     destination:
-                        'https://cdsb2ctest.b2clogin.com/CDSB2CTEST.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_LocalDev&client_id=c7594320-2cfb-4c58-ae80-0203efdecaba&nonce=defaultNonce&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fapi%2Fauth&scope=openid&response_type=code&prompt=login',
+                        'https://mtb2cld.b2clogin.com/MTB2CLD.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_FNHSLocalDev&client_id=1b8ed2d8-0324-4be9-ac94-38d08043601a&nonce=defaultNonce&redirect_uri=http%3A%2F%2Flocalhost%3A5000&scope=openid&response_type=code&prompt=login',
                 },
             }
 

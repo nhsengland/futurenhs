@@ -4,6 +4,7 @@ using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models;
+using FutureNHS.Api.DataAccess.Models.Identity;
 using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Identity.Response;
@@ -79,7 +80,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 @$" SELECT
                                 [{nameof(MemberProfile.Id)}]                = member.Id,
                                 [{nameof(MemberProfile.FirstName)}]         = member.FirstName,
-                                [{nameof(MemberProfile.LastName)}]           = member.Surname,
+                                [{nameof(MemberProfile.LastName)}]          = member.Surname,
                                 [{nameof(MemberProfile.Pronouns)}]          = member.Pronouns,
                                 [{nameof(MemberProfile.ImageId)}]           = member.ImageId,
                                 [{nameof(MemberProfile.RoleId)}]            = memberInRole.RoleIdentifier,
@@ -316,6 +317,124 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             var total = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
 
             return (total, results);
+        }
+
+        public async Task<Guid> RegisterUserAsync(MemberDto user, string subjectId, string issuer, string defaultRole, CancellationToken cancellationToken)
+        {
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
+
+            await connection.OpenAsync(cancellationToken);
+            await using var transaction = connection.BeginTransaction();
+
+            try
+            {
+                const string memberInsertquery =
+                    @$" INSERT INTO   [dbo].[MembershipUser]
+
+                                 ([Email]
+                                 ,[UserName]
+                                 ,[FirstName]
+                                 ,[Surname]
+                                 ,[Pronouns]
+                                 ,[CreatedAtUTC]
+                                 ,[ModifiedAtUTC]
+                                 ,[IsApproved]
+                                 ,[IsLockedOut]
+                                 ,[IsBanned]
+                                 ,[Slug]
+                                 ,[HasAgreedToTermsAndConditions]
+                                 )
+                    OUTPUT       INSERTED.[Id]
+
+                    VALUES
+                                 (@Email
+                                  ,@Email
+                                  ,@FirstName
+                                  ,@LastName
+                                  ,@Pronouns
+                                  ,@CreatedAtUTC
+                                  ,@CreatedAtUTC
+                                  ,1
+                                  ,0
+                                  ,0
+                                  ,@Email
+                                  ,@AgreedToTerms
+                                 )";
+
+                var insertMemberResult = await connection.ExecuteScalarAsync<Guid?>(memberInsertquery, new
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.Surname,
+                    Pronouns = user.Pronouns,
+                    CreatedAtUtc = user.CreatedAtUTC,
+                    Email = user.Email,
+                    AgreedToTerms = user.AgreedToTerms
+
+                }, transaction: transaction);
+
+
+                const string identityInsertquery =
+                    @$" INSERT INTO   [dbo].[Identity]
+                                  
+                                 ([MembershipUser_Id]
+                                 ,[Subject_Id]
+                                 ,[Issuer]
+                                 )
+                    VALUES
+                                 (@MembershipUserId
+                                  ,@SubjectId
+                                  ,@Issuer                                  
+                                 )";
+
+                var insertIdentityResult = await connection.ExecuteAsync(identityInsertquery, new
+                {
+                    MembershipUserId = insertMemberResult.Value,
+                    SubjectId = subjectId,
+                    Issuer = issuer
+                }, transaction: transaction);
+
+                if (insertIdentityResult != 1)
+                {
+                    _logger.LogError($"Error: Failed to create identity mapping for user: {insertMemberResult.Value}");
+                    throw new DataException("Error: Failed to link user to identity mapping");
+                }
+
+                const string MemberRoleInsertquery =
+                    @$" INSERT INTO   [dbo].[MembershipUsersInRoles]
+                    
+                                 ([UserIdentifier]
+                                 ,[RoleIdentifier]
+                                 )
+                    VALUES
+                                 (@MembershipUserId
+                                  ,(
+                                    SELECT [Id]
+                                    FROM   [dbo].[MembershipRole]
+                                    WHERE  [RoleName] = @DefaultRole
+                                   )                               
+                                 )";
+
+                var MemberRoleInsertResult = await connection.ExecuteAsync(MemberRoleInsertquery, new
+                {
+                    MembershipUserId = insertMemberResult.Value,
+                    DefaultRole = defaultRole,
+                }, transaction: transaction);
+
+                if (insertIdentityResult != 1)
+                {
+                    _logger.LogError($"Error: Failed to create the default role for user: {insertMemberResult.Value}");
+                    throw new DataException("Error: Failed to create the default role");
+                }
+
+                await transaction.CommitAsync(cancellationToken);
+                return insertMemberResult.Value;
+            }
+            catch(Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }          
         }
     }
 }

@@ -133,5 +133,8 @@
         "webpack": "^5.72.0",
         "workbox-build": "^6.3.0"
     },
+    "resolutions": {
+        "sharp": "0.28.0"
+    },
     "license": "MIT"
 }

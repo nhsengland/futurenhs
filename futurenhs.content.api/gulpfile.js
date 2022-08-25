@@ -8,7 +8,7 @@ var exec = require('child_process').exec;
 // Build .net solution
 const msbuild = (done) => {
 
-    process.env.PATH = `${process.env.PATH};C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin`;
+    process.env.PATH = `${process.env.PATH}`;
 
     const proc = childProcess.spawn('dotnet', [
         'build'
@@ -42,7 +42,7 @@ const msbuild = (done) => {
 // Start the site
 const startSite = (done) => {
 
-    process.env.PATH = `${process.env.PATH};C:\\Program Files\\IIS Express`;
+    process.env.PATH = `${process.env.PATH}`;
 
     const proc = childProcess.spawn('node', [
         '../../node_modules/pm2/bin/pm2',

@@ -10,8 +10,8 @@ import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 
 export type Options = {
-    subjectId: string;
-    emailAddress: string;
+    subjectId: string
+    emailAddress: string
 }
 
 export type Dependencies = {
@@ -32,14 +32,12 @@ export const getUserInfo: GetUserInfoService = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${
-        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }/v1/users/info`;
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/info`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
-            body: { subjectId, emailAddress }
+            body: { subjectId, emailAddress },
         }),
         1000
     )
@@ -76,5 +74,4 @@ export const getUserInfo: GetUserInfoService = async (
                 : null,
         },
     }
-
 }

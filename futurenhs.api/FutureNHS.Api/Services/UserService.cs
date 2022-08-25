@@ -10,6 +10,7 @@ using FutureNHS.Api.Models.Identity.Enums;
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
+using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Services.Interfaces;
 using FutureNHS.Api.Services.Validation;
 using HeyRed.Mime;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using System.Data;
 using System.Net;
+using System.Net.Mail;
 using System.Security;
 using System.Text;
 
@@ -31,6 +33,7 @@ namespace FutureNHS.Api.Services
         private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
         private const string EditMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/edit";
 
+
         private readonly string _fqdn;
         private readonly ILogger<UserService> _logger;
         private readonly IUserAdminDataProvider _userAdminDataProvider;
@@ -41,7 +44,8 @@ namespace FutureNHS.Api.Services
         private readonly IEmailService _emailService;
         private readonly IUserImageService _imageService;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
-
+        private readonly string _defaultRole;
+        
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 5242880; // 5MB
 
@@ -58,7 +62,8 @@ namespace FutureNHS.Api.Services
             IOptionsSnapshot<GovNotifyConfiguration> notifyConfig,
             IOptionsSnapshot<ApplicationGateway> gatewayConfig,
             IUserImageService imageService,
-            IImageBlobStorageProvider blobStorageProvider)
+            IImageBlobStorageProvider blobStorageProvider,
+            IOptionsMonitor<DefaultSettings> defaultSettings)
         {
             _permissionsService = permissionsService;
             _userAdminDataProvider = userAdminDataProvider;
@@ -73,6 +78,8 @@ namespace FutureNHS.Api.Services
 
             // Notification template Ids
             _registrationEmailId = notifyConfig.Value.RegistrationEmailTemplateId;
+
+            _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
         }
 
         public async Task<MemberProfile> GetMemberAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
@@ -90,53 +97,6 @@ namespace FutureNHS.Api.Services
             }
 
             return await _userCommand.GetMemberAsync(targetUserId, cancellationToken);
-        }
-
-        public async Task<MemberInfoResponse> GetMemberInfoAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(memberIdentityRequest.SubjectId)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.SubjectId));
-            if (string.IsNullOrWhiteSpace(memberIdentityRequest.EmailAddress)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.EmailAddress));
-
-
-            var memberInfo = await _userDataProvider.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
-            if (memberInfo is not null)
-            {
-                memberInfo.Status = MemberStatus.Member.ToString();
-                return memberInfo;
-            }
-
-            var memberDetailsResponse = await _userDataProvider.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
-            if (memberDetailsResponse is not null)
-            {
-                return new MemberInfoResponse
-                {
-                    FirstName = memberDetailsResponse.FirstName,
-                    LastName = memberDetailsResponse.LastName,
-                    MembershipUserId = memberDetailsResponse.Id,
-                    Status = MemberStatus.LegacyMember.ToString()
-                };
-            }
-
-            var isMemberInvited = await _userDataProvider.IsMemberInvitedAsync(memberIdentityRequest.EmailAddress, cancellationToken);
-            if (isMemberInvited)
-            {
-                return new MemberInfoResponse
-                {
-                    Status = MemberStatus.Invited.ToString()
-                };
-            }
-
-            return new MemberInfoResponse
-            {
-                Status = MemberStatus.Uninvited.ToString()
-            };
-        }
-
-        public Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentOutOfRangeException(nameof(emailAddress));
-
-            return _userDataProvider.GetMemberByEmailAsync(emailAddress, cancellationToken);
         }
 
         public async Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort, CancellationToken cancellationToken)
@@ -212,6 +172,41 @@ namespace FutureNHS.Api.Services
             {
                 _logger.LogError(ex, $"Error: UpdateUserAsync - Error updating user {0}");
             }
+        }
+
+        public async Task<Guid?> RegisterMemberAsync(MemberRegistrationRequest registrationRequest, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(registrationRequest.Subject)) throw new ArgumentNullException(nameof(registrationRequest.Subject));
+            if (string.IsNullOrEmpty(registrationRequest.Email)) throw new ArgumentNullException(nameof(registrationRequest.Email));
+            if (string.IsNullOrEmpty(registrationRequest.Issuer)) throw new ArgumentNullException(nameof(registrationRequest.Issuer));
+
+            // TODO Work for determining if domain is on auto approve list
+            var emailAddress = new MailAddress(registrationRequest.Email);
+            var domain = emailAddress.Host;
+
+            if (await IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
+            {
+                // todo validate user
+
+                var member = new MemberDto
+                {
+                    FirstName = registrationRequest.FirstName,
+                    Surname = registrationRequest.LastName,
+                    Email = registrationRequest.Email,
+                    CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
+                    AgreedToTerms = registrationRequest.Agreed
+                };
+                try
+                {
+                    return await _userCommand.RegisterUserAsync(member, registrationRequest.Subject, registrationRequest.Issuer, _defaultRole, cancellationToken);
+                }
+                catch (DBConcurrencyException ex)
+                {
+                    _logger.LogError(ex, $"Error: Error registering new user");
+                    throw;
+                }
+            }
+            return null;
         }
 
         private async Task<(MemberDto, ImageDto?)> UploadUserImageMultipartContent(Guid targetUserId, Stream requestBody, byte[] rowVersion, string? contentType, CancellationToken cancellationToken)
@@ -384,6 +379,53 @@ namespace FutureNHS.Api.Services
                 return Encoding.UTF8;
             }
             return mediaType.Encoding;
+        }
+
+        public async Task<MemberInfoResponse> GetMemberInfoAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.SubjectId)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.SubjectId));
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.EmailAddress)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.EmailAddress));
+
+
+            var memberInfo = await _userDataProvider.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
+            if (memberInfo is not null)
+            {
+                memberInfo.Status = MemberStatus.Member.ToString();
+                return memberInfo;
+            }
+
+            var memberDetailsResponse = await _userDataProvider.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
+            if (memberDetailsResponse is not null)
+            {
+                return new MemberInfoResponse
+                {
+                    FirstName = memberDetailsResponse.FirstName,
+                    LastName = memberDetailsResponse.LastName,
+                    MembershipUserId = memberDetailsResponse.Id,
+                    Status = MemberStatus.LegacyMember.ToString()
+                };
+            }
+
+            var isMemberInvited = await _userDataProvider.IsMemberInvitedAsync(memberIdentityRequest.EmailAddress, cancellationToken);
+            if (isMemberInvited)
+            {
+                return new MemberInfoResponse
+                {
+                    Status = MemberStatus.Invited.ToString()
+                };
+            }
+
+            return new MemberInfoResponse
+            {
+                Status = MemberStatus.Uninvited.ToString()
+            };
+        }
+
+        public Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentOutOfRangeException(nameof(emailAddress));
+
+            return _userDataProvider.GetMemberByEmailAsync(emailAddress, cancellationToken);
         }
     }
 }
