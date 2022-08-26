@@ -80,8 +80,12 @@
     <Build Include="dbo\Tables\Identity.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FutureNHS.Data.FutureNHS.publish.xml" />
-    <None Include="FutureNHS.Data.FutureNHS-automated.publish.xml" />
+    <None Include="FutureNHS.Data.FutureNHS.publish.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="FutureNHS.Data.FutureNHS-automated.publish.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
