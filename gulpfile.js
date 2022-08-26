@@ -1,9 +1,9 @@
 const { series, parallel } = require('gulp'),
     mvcforum = require('./MVCForum/gulpfile'),
-    db = require('./futurenhs.data/gulpfile'),
     api = require('./futurenhs.api/gulpfile'),
+    db = require('./futurenhs.api/FutureNHS.Data/gulpfile'),
 	contentApi = require('./futurenhs.content.api/gulpfile'),
-    contentDb = require('./futurenhs.content.data/gulpfile'),
+    contentDb = require('./futurenhs.content.api/FutureNHS.Content.Data/gulpfile'),
     app = require('./futurenhs.app/gulpfile');
 
     
@@ -34,15 +34,15 @@ const deactivate = (done) => {
  * DATABASE TASKS
  */
 
-const activateDb = series(db.msbuild, db.deployFutureNHSDatabase);
+const activateDb = series(db.build, db.deployFutureNHSDatabase);
 
-const activateAutomationDb = series(db.msbuild, db.deployAutomationFutureNHSDatabase);
+const activateAutomationDb = series(db.build, db.deployAutomationFutureNHSDatabase);
 
 /**
  * CONTENT DATABASE TASKS
  */
 
- const activateContentDb = series(contentDb.msbuild, contentDb.deployFutureNHSContentDatabase);
+ const activateContentDb = series(contentDb.build, contentDb.deployFutureNHSContentDatabase);
 
 /**
  * APP TASKS

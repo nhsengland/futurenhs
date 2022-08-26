@@ -126,4 +126,14 @@ jobs:
 
        $result = InvokePutReques $restApiUpdateBuild
       pwsh: true
-    
+      
+- job: BuildDatabase
+  displayName: 'Build and deploy artifact for database'
+  pool :
+    vmImage: 'windows-latest'
+
+  steps:
+  - task: VSBuild@1
+    inputs:
+      solution: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.sln'
+    displayName: 'Build dacpac solution'
