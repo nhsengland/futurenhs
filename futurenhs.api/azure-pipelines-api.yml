@@ -133,7 +133,22 @@ jobs:
     vmImage: 'windows-latest'
 
   steps:
-  - task: VSBuild@1
+  - task: DotNetCoreCLI@2
     inputs:
-      solution: '$(Build.SourcesDirectory)/FutureNHS.Data/FutureNHS.Data.sln'
-    displayName: 'Build dacpac solution'
+      command: 'build'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.sqlproj'
+      arguments: '/p:NetCoreBuild=true /p:SystemDacpacsLocation="$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Data/ExperimentalBuildTools"'
+  
+  - task: CopyFiles@2
+    displayName: 'Copy files for artifact'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Data/FutureNHS.Data.FutureNHS/bin/Debug'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish artifact'
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'FNHSDB'
+      publishLocation: 'pipeline'
