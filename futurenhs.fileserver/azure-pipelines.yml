@@ -55,7 +55,7 @@ jobs:
       command: test
       configuration: 'Release'
       arguments: '--collect:"XPlat Code Coverage"'
-      projects: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Tests/FutureNHS.Tests.csproj'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/wopi-host-tests/FutureNHS-WOPI-Host-UnitTests/FutureNHS-WOPI-Host-UnitTests.csproj'
       workingDirectory: '$(Build.SourcesDirectory)/$(working-dir)'
       nobuild: true
 
