@@ -46,7 +46,7 @@ jobs:
     continueOnError: true
   - task: ArchiveFiles@2
     inputs:
-      rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app'
+      rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app/.next'
       includeRootFolder: false
       archiveType: 'zip'
       archiveFile: '$(Build.ArtifactStagingDirectory)/FNHSvNextApp.zip'
