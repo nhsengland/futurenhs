@@ -1,0 +1,98 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+ branches:
+    include:
+    - main
+ paths:
+    include:
+    - futurenhs.fileserver/*
+
+variables:
+  solution: 'FutureNHS-WOPI-FileServer.sln'
+  buildPlatform: 'x64'
+  buildConfiguration: 'Release'
+  working-dir: 'futurenhs.fileserver'
+
+jobs:
+
+- job: BuildFutureNHS
+  displayName: 'Build and publish artifact for FutureNHS Fileserver'
+  pool :
+    vmImage: 'windows-latest'
+
+  steps:
+   - task: UseDotNet@2
+     displayName: 'Set dotnet SDK to v6.0'
+     inputs:
+      packageType: 'sdk'
+      version: '6.x'
+      
+   - task: NuGetToolInstaller@1
+     inputs:
+      versionSpec: 
+      checkLatest: true
+
+   - task: NuGetCommand@2
+     inputs:
+      command: 'restore'
+      restoreSolution: '$(Build.SourcesDirectory)/$(working-dir)/*.sln'
+      feedsToUse: 'select'
+   - task: DotNetCoreCLI@2 
+     displayName: 'Build dotnet'
+     inputs:
+      command: 'build'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/*.sln'
+      configuration: 'Release'
+
+    # Run all tests with "/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura" to generate the code coverage file
+   - task: DotNetCoreCLI@2
+     displayName: Test
+     inputs:
+      command: test
+      configuration: 'Release'
+      arguments: '--collect:"XPlat Code Coverage"'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Tests/FutureNHS.Tests.csproj'
+      workingDirectory: '$(Build.SourcesDirectory)/$(working-dir)'
+      nobuild: true
+
+   - script: |
+       dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8
+       reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
+     displayName: Create Code coverage report
+
+    # Publish the code coverage result (summary and web site)
+    # The summary allows to view the coverage percentage in the summary tab
+    # The web site allows to view which lines are covered directly in Azure Pipeline
+   - task: PublishCodeCoverageResults@1
+     displayName: 'Publish code coverage'
+     inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+      failIfCoverageEmpty: false # Optional
+      
+   - task: DotNetCoreCLI@2
+     displayName: 'Publish FutureNHS Api'
+     inputs:
+      command: 'publish'
+      configuration: 'Release'
+      publishWebProjects: false
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
+      zipAfterPublish: false
+
+   - task: CopyFiles@2
+     displayName: 'Copy files for artifact'
+     inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/wopi-host/bin/Debug/net6.0/publish'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+   - task: PublishPipelineArtifact@1
+     displayName: 'Publish artifact'
+     inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'FNHSFileServer'
+      publishLocation: 'pipeline'
