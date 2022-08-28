@@ -1,0 +1,76 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>FutureNHS_WOPI_Host_UnitTests</RootNamespace>
+
+    <IsPackable>false</IsPackable>
+
+    <UserSecretsId>c0cb6557-ddb1-478e-b554-1e175843c192</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Excel-Spreadsheet.xlsx" />
+    <None Remove="Image-File.jpg" />
+    <None Remove="OpenDocument-Text-File.odt" />
+    <None Remove="Portable-Document-Format-File.pdf" />
+    <None Remove="PowerPoint-Presentation.pptx" />
+    <None Remove="Text-File.txt" />
+    <None Remove="Word-Document.docx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="Files\Excel-Spreadsheet.xlsx" />
+    <ApplicationDefinition Include="Files\Image-File.jpg" />
+    <ApplicationDefinition Include="Files\OpenDocument-Text-File.odt" />
+    <ApplicationDefinition Include="Files\Portable-Document-Format-File.pdf" />
+    <ApplicationDefinition Include="Files\PowerPoint-Presentation.pptx" />
+    <ApplicationDefinition Include="Files\Text-File.txt" />
+    <ApplicationDefinition Include="Files\Word-Document.docx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+    <PackageReference Include="coverlet.collector" Version="3.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\wopi-host\FutureNHS-WOPI-Host.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="FIles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="FIles\Excel-Spreadsheet.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FIles\Image-File.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FIles\OpenDocument-Text-File.odt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FIles\Portable-Document-Format-File.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FIles\PowerPoint-Presentation.pptx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FIles\Text-File.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FIles\Word-Document.docx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
