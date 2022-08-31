@@ -4,7 +4,7 @@
     "scripts": {
         "kill": "kill-port --port 5000",
         "build": "rimraf ./public && gulp build && next build",
-        "build:pipeline": "next build",
+        "build:pipeline": "rimraf ./public && next build",
         "build:analyze": "node node_modules/cross-env/src/bin/cross-env.js NODE_ENV=ANALYZE rimraf ./public && gulp build && next build",
         "start:dev": "node node_modules/cross-env/src/bin/cross-env.js NODE_ENV=development node server.js",
         "start:prod": "node node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production node server.js",
