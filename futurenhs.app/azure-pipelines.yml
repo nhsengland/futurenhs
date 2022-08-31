@@ -49,13 +49,13 @@ jobs:
       rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app'
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/FNHSvNextApp.zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/FNHSApp.zip'
       replaceExistingArchive: true
 
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'FNHSvNextApp'
+      artifact: 'FNHSApp'
       publishLocation: 'pipeline'
 
   - task: PublishTestResults@2
