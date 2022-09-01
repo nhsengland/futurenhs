@@ -327,6 +327,19 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+var swaggerBasePath = "api";
+
+app.UseSwagger(c =>
+{
+    c.RouteTemplate = swaggerBasePath + "/swagger/{documentName}/swagger.json";
+});
+
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint($"/{swaggerBasePath}/swagger/v1/swagger.json", $"APP API - {1}");
+    c.RoutePrefix = $"{swaggerBasePath}/swagger";
+});
+
 app.UseRouting();
 app.UseCors(_policyName);
 // Configure the HTTP request pipeline.
