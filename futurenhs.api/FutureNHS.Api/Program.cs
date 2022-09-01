@@ -267,7 +267,11 @@ builder.Services.AddScoped<INotificationProvider>(
 
 builder.Services.AddScoped<IEtagService, EtagService>();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen( c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "FutureNHS.Api", Version = "v1" });
+        c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); //This line
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 
@@ -327,7 +331,21 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+
+
+
+app.UseRouting();
+app.UseCors(_policyName);
+
+
 var swaggerBasePath = "api";
+var swaggerFullPath = swaggerBasePath;
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment()) 
+{
+    swaggerFullPath = $"gateway/{swaggerBasePath}";
+}
 
 app.UseSwagger(c =>
 {
@@ -336,18 +354,10 @@ app.UseSwagger(c =>
 
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint($"/{swaggerBasePath}/swagger/v1/swagger.json", $"APP API - {1}");
+    c.SwaggerEndpoint($"/{swaggerFullPath}/swagger/v1/swagger.json", "FutureNHS.Api v1");
     c.RoutePrefix = $"{swaggerBasePath}/swagger";
 });
 
-app.UseRouting();
-app.UseCors(_policyName);
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 app.UseAuthentication();    // NOTE: DEFAULT TEMPLATE DOES NOT HAVE THIS, THIS LINE IS REQUIRED AND HAS TO BE ADDED!!!
 app.UseAuthorization();
 app.UseMiddleware<ExceptionHandlerMiddleware>();
