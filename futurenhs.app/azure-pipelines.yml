@@ -18,11 +18,11 @@ jobs:
       versionSpec: '14.17.4'
     
   - task: Npm@1
-    displayName: 'Npm install'
     inputs:
-      command: 'install'
+      command: 'custom'
       workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
-    
+      customCommand: 'install --production'
+      
   - task: gulp@0
     displayName: 'Build front end assets'
     inputs:
