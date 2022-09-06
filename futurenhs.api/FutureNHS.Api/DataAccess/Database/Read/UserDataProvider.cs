@@ -39,8 +39,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(Member.Id)}]                   = member.Id,
                                 [{nameof(Member.Slug)}]                 = member.Slug, 
                                 [{nameof(Member.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
-                                [{nameof(Member.DateJoinedUtc)}]        = FORMAT(member.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(Member.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(Member.DateJoinedUtc)}]        = member.CreatedAtUTC,
+                                [{nameof(Member.LastLoginUtc)}]         = member.LastLoginDateUTC,
                                 [{nameof(Member.Role)}]                 = memberRoles.RoleName
 
                     FROM        MembershipUser member 
@@ -83,8 +83,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(MemberDetails.Initials)}]             = member.Initials, 
                                 [{nameof(MemberDetails.Email)}]                = member.Email, 
                                 [{nameof(MemberDetails.Pronouns)}]             = member.Pronouns, 
-                                [{nameof(MemberDetails.DateJoinedUtc)}]        = FORMAT(member.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(MemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(MemberDetails.DateJoinedUtc)}]        = member.CreatedAtUTC,
+                                [{nameof(MemberDetails.LastLoginUtc)}]         = member.LastLoginDateUTC,
                                 [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
 
                     FROM        MembershipUser member 
@@ -112,8 +112,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(MemberDetails.Initials)}]             = member.Initials, 
                                 [{nameof(MemberDetails.Email)}]                = member.Email, 
                                 [{nameof(MemberDetails.Pronouns)}]             = member.Pronouns, 
-                                [{nameof(MemberDetails.DateJoinedUtc)}]        = FORMAT(member.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(MemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(MemberDetails.DateJoinedUtc)}]        = member.CreatedAtUTC,
+                                [{nameof(MemberDetails.LastLoginUtc)}]         = member.LastLoginDateUTC,
                                 [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
 
                     FROM        MembershipUser member 

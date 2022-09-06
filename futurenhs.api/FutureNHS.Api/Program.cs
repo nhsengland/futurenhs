@@ -34,6 +34,8 @@ using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.EventLog;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Dapper;
+using FutureNHS.Api.DataAccess.Database.Providers.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -213,6 +215,9 @@ builder.Services.AddLogging();
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
 builder.Services.AddScoped<IFileTypeValidator, FileTypeValidator>();
+
+SqlMapper.AddTypeHandler(new DateTimeHandler());
+
 builder.Services.AddScoped<IAzureSqlDbConnectionFactory>(
     sp => {
         var config = sp.GetRequiredService<IOptionsSnapshot<AzurePlatformConfiguration>>().Value.AzureSql;

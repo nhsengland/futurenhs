@@ -17,7 +17,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                @$"SELECT
                                 [{nameof(EntityLikeData.EntityId)}]            = entityLike.Entity_Id,         
-                                [{nameof(EntityLikeData.CreatedAtUtc)}]        = FORMAT(entityLike.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(EntityLikeData.CreatedAtUtc)}]        = entityLike.CreatedAtUTC,
                                 [{nameof(EntityLikeData.MembershipUserId)}]    = entityLike.MembershipUser_Id,
 
                     FROM            Entity_Like entityLike

@@ -6,8 +6,8 @@
         public Guid GroupUserId { get; init; }
         public string Slug{ get; init; }
         public string Name { get; init; }
-        public string DateJoinedUtc { get; init; }
-        public string LastLoginUtc { get; init; }
+        public DateTime DateJoinedUtc { get; init; }
+        public DateTime LastLoginUtc { get; init; }
         public string Role { get; init; }
     }
 }

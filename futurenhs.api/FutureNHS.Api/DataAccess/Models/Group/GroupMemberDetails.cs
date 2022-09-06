@@ -10,8 +10,8 @@
         public string Initials { get; init; }
         public string Email { get; init; }
         public string Pronouns { get; init; }
-        public string DateJoinedUtc { get; init; }
-        public string LastLoginUtc { get; init; }
+        public DateTime? DateJoinedUtc { get; init; }
+        public DateTime? LastLoginUtc { get; init; }
         public Guid RoleId { get; init; }
         public string Role { get; init; }
         public ImageData Image { get; init; }

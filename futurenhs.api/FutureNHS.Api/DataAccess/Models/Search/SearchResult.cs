@@ -6,7 +6,7 @@
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
-        public string? LastUpdatedAtUtc { get; set; }
+        public DateTime? LastUpdatedAtUtc { get; set; }
         public GroupNavProperty Group { get; set; }
     }
 }

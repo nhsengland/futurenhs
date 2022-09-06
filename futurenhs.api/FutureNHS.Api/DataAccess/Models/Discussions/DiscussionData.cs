@@ -6,12 +6,12 @@
         public string Title { get; init; }
         public string Description { get; init; }
         public bool CreatedByThisUser { get; init; }
-        public string? CreatedAtUtc { get; init; }
+        public DateTime? CreatedAtUtc { get; init; }
         public Guid CreatedById { get; init; }
         public string CreatedByName { get; init; }
         public string CreatedBySlug { get; init; }
         public Guid? LastComment { get; init; }
-        public string? LastCommentAtUtc { get; init; }
+        public DateTime? LastCommentAtUtc { get; init; }
         public Guid? LastCommenterId { get; init; }
         public string? LastCommenterName { get; init; }
         public string? LastCommenterSlug { get; init; }

@@ -7,9 +7,9 @@ namespace FutureNHS.Api.DataAccess.DTOs
         public Guid Id { get; init; }
         public string UserName { get; init; }
         public string Email { get; init; }
-        public string CreatedAtUtc { get; init; }
-        public string ModifiedAtUtc { get; init; }
-        public string LastLoginDateUtc { get; init; }
+        public DateTime CreatedAtUtc { get; init; }
+        public DateTime ModifiedAtUtc { get; init; }
+        public DateTime LastLoginDateUtc { get; init; }
         public string Slug { get; init; }
         public string FirstName { get; init; }
         public string LastName { get; init; }

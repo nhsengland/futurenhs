@@ -264,8 +264,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMember.GroupUserId)}]          = groupUser.Id,
                                 [{nameof(GroupMember.Slug)}]                 = member.Slug, 
                                 [{nameof(GroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
-                                [{nameof(GroupMember.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMember.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMember.DateJoinedUtc)}]        = groupUser.ApprovedToJoinDateUTC,
+                                [{nameof(GroupMember.LastLoginUtc)}]         = member.LastLoginDateUTC,
                                 [{nameof(GroupMember.Role)}]                 = memberRoles.RoleName
 
                     FROM        GroupUser groupUser
@@ -318,8 +318,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(PendingGroupMember.Id)}]                   = member.Id,
                                 [{nameof(PendingGroupMember.Slug)}]                 = member.Slug, 
                                 [{nameof(PendingGroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
-                                [{nameof(PendingGroupMember.ApplicationDateUtc)}]   = FORMAT(groupUser.RequestToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(PendingGroupMember.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(PendingGroupMember.ApplicationDateUtc)}]   = groupUser.RequestToJoinDateUTC,
+                                [{nameof(PendingGroupMember.LastLoginUtc)}]         = member.LastLoginDateUTC,
                                 [{nameof(PendingGroupMember.Email)}]                = member.Email
 
                     FROM        GroupUser groupUser
@@ -375,8 +375,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMemberDetails.Initials)}]             = member.Initials, 
                                 [{nameof(GroupMemberDetails.Email)}]                = member.Email, 
                                 [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
-                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = groupUser.ApprovedToJoinDateUTC,
+                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = member.LastLoginDateUTC,
                                 [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName,
                                 [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id,
                                 [{nameof(ImageData.Id)}]		                    = [image].Id,
@@ -430,8 +430,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMemberDetails.LastName)}]             = member.Surname,
                                 [{nameof(GroupMemberDetails.Email)}]                = member.Email, 
                                 [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
-                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = FORMAT(groupUser.ApprovedToJoinDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
-                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = FORMAT(member.LastLoginDateUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = groupUser.ApprovedToJoinDateUTC,
+                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = member.LastLoginDateUTC,
                                 [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName,
                                 [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id
 
