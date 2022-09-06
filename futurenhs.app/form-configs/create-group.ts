@@ -88,7 +88,7 @@ export const createGroupForm: FormConfig = {
                 {
                     name: 'themeId',
                     text: {
-                        label: 'Choose your theme colour',
+                        label: 'Choose your colour theme',
                         hint: 'Please choose a colour theme for your group. Please note, all colour combinations are accessible. For more information, <a href="https://support-futurenhs.zendesk.com/hc/en-gb"> see our support site.</a>',
                     },
                     component: 'multiChoice',
