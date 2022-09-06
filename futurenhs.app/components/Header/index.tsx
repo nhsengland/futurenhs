@@ -158,7 +158,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                             id="term"
                                             value={searchTerm}
                                             text={{
-                                                label: 'Search the NHS website',
+                                                label: 'Search the FutureNHS platform for content and groups',
                                                 placeholder: 'Search for...',
                                             }}
                                         />
@@ -356,26 +356,26 @@ export const Header: (props: Props) => JSX.Element = ({
                                                         } = meta ?? {}
 
                                                         const generatedClasses =
-                                                            {
-                                                                link: classNames(
-                                                                    'c-site-header-nav_root-nav-trigger u-border-theme-8',
-                                                                    {
-                                                                        [`c-site-header-nav_root-nav-trigger--active`]:
-                                                                            isActive,
-                                                                        [`u-border-theme-${themeId}`]:
-                                                                            typeof themeId !==
-                                                                            'undefined',
-                                                                    }
-                                                                ),
-                                                                icon: classNames(
-                                                                    'c-site-header-nav_root-nav-content-icon',
-                                                                    {
-                                                                        [`u-fill-theme-${themeId}`]:
-                                                                            typeof themeId !==
-                                                                            'undefined',
-                                                                    }
-                                                                ),
-                                                            }
+                                                        {
+                                                            link: classNames(
+                                                                'c-site-header-nav_root-nav-trigger u-border-theme-8',
+                                                                {
+                                                                    [`c-site-header-nav_root-nav-trigger--active`]:
+                                                                        isActive,
+                                                                    [`u-border-theme-${themeId}`]:
+                                                                        typeof themeId !==
+                                                                        'undefined',
+                                                                }
+                                                            ),
+                                                            icon: classNames(
+                                                                'c-site-header-nav_root-nav-content-icon',
+                                                                {
+                                                                    [`u-fill-theme-${themeId}`]:
+                                                                        typeof themeId !==
+                                                                        'undefined',
+                                                                }
+                                                            ),
+                                                        }
 
                                                         return (
                                                             <li
