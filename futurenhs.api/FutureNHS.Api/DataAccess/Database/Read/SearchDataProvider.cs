@@ -35,7 +35,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 		                            [{nameof(SearchResult.Id)}] = results.[Id],
 		                            [{nameof(SearchResult.Name)}] = results.[Name],
 		                            [{nameof(SearchResult.Description)}] = results.[Description],
-		                            [{nameof(SearchResult.LastUpdatedAtUtc)}] = FORMAT(results.[LastUpdatedAtUtc],'yyyy-MM-ddTHH:mm:ssZ'), 
+		                            [{nameof(SearchResult.LastUpdatedAtUtc)}] = results.[LastUpdatedAtUtc], 
                                     [{nameof(GroupNavProperty.Id)}] = results.[GroupId],
 								    [{nameof(GroupNavProperty.Name)}] = groups.[Name],
                                     [{nameof(GroupNavProperty.Slug)}] = groups.[Slug]

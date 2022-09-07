@@ -73,7 +73,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                 ELSE        CAST(0 as bit) 
                                                                                 END
                                                                               ),               
-                                [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(comment.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(CommentData.CreatedAtUtc)}]        = comment.CreatedAtUTC,
                                 [{nameof(CommentData.CreatedById)}]         = comment.CreatedBy,
                                 [{nameof(CommentData.CreatedByName)}]       = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
@@ -186,7 +186,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                 ELSE        CAST(0 as bit) 
                                                                                 END
                                                                               ),               
-                                [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(comment.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(CommentData.CreatedAtUtc)}]        = comment.CreatedAtUTC,
                                 [{nameof(CommentData.CreatedById)}]         = comment.CreatedBy,
                                 [{nameof(CommentData.CreatedByName)}]       = createUser.FirstName + ' ' + createUser.Surname,
                                 [{nameof(CommentData.CreatedBySlug)}]       = createUser.Slug,
@@ -269,7 +269,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(CommentCreatorDetails.CommentId)}]            = comment.Entity_Id,
                                 [{nameof(CommentCreatorDetails.DiscussionId)}]         = discussion.Entity_Id,
                                 [{nameof(CommentCreatorDetails.GroupSlug)}]            = groups.Slug,
-                                [{nameof(CommentCreatorDetails.CreatedAtUtc)}]         = FORMAT(comment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(CommentCreatorDetails.CreatedAtUtc)}]         = comment.CreatedAtUtc,
                                 [{nameof(CommentCreatorDetails.CreatedById)}]          = comment.CreatedBy,
                                 [{nameof(CommentCreatorDetails.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
                                 [{nameof(CommentCreatorDetails.CreatedByEmail)}]       = createdByUser.Email

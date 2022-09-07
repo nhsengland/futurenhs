@@ -4,7 +4,7 @@ namespace FutureNHS.Api.DataAccess.Models.Shared
 {
     public record Properties
     {
-        public string? AtUtc { get; init; }
+        public DateTime? AtUtc { get; init; }
 
         public UserNavProperty? By { get; init; }
     }

@@ -26,7 +26,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 @$"SELECT
                                 [{nameof(CommentData.Id)}]                  = comment.Entity_Id,
                                 [{nameof(CommentData.Content)}]             = comment.Content,          
-                                [{nameof(CommentData.CreatedAtUtc)}]        = FORMAT(comment.CreatedAtUTC,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(CommentData.CreatedAtUtc)}]        = comment.CreatedAtUTC,
                                 [{nameof(CommentData.CreatedById)}]         = comment.CreatedBy,
                                 [{nameof(CommentData.RowVersion)}]          = comment.RowVersion
 
