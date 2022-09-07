@@ -96,3 +96,17 @@ jobs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: 'FNHSFileServer'
       publishLocation: 'pipeline'
+  
+   - task: CopyFiles@2
+     displayName: 'Copy files for Collabora artifact'
+     inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/wopi-client/Azure'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/Collabora'
+
+   - task: PublishPipelineArtifact@1
+     displayName: 'Publish Collabora artifact'
+     inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)/Collabora'
+      artifact: 'FNHSCollabora'
+      publishLocation: 'pipeline'
