@@ -1,74 +1,86 @@
 trigger:
-  branches:
-    include:
-    - main
+    branches:
+        include:
+            - main
 
-  paths:
-    include:
-    - futurenhs.app/*
+    paths:
+        include:
+            - futurenhs.app/*
 
 jobs:
+    - job: BuildNextApp
+      pool:
+          vmImage: ubuntu-latest
+      steps:
+          - task: NodeTool@0
+            inputs:
+                versionSpec: '14.18.3'
 
-- job: BuildNextApp
-  pool:
-    vmImage: ubuntu-latest
-  steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '14.17.4'
-    
-  - task: Npm@1
-    inputs:
-      command: 'custom'
-      workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
-      customCommand: 'install --production'
-      
-  - task: gulp@0
-    displayName: 'Build front end assets'
-    inputs:
-      gulpFile: '$(Build.SourcesDirectory)/futurenhs.app/gulpfile.js'
-      targets: 'build'
-      gulpjs: '$(Build.SourcesDirectory)/futurenhs.app/node_modules/gulp/bin/gulp.js'
+          - task: Npm@1
+            inputs:
+                command: 'custom'
+                customCommand: 'cache clean -f'
 
-  - task: Npm@1
-    displayName: 'Build Next.js assets'
-    inputs:
-      command: 'custom'
-      workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
-      customCommand: 'run build'
+          - task: Npm@1
+            displayName: 'NPM Install'
+            inputs:
+                command: 'install'
+                workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
 
-  - task: Npm@1
-    displayName: 'Unit tests'
-    inputs:
-      command: 'custom'
-      workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
-      customCommand: 'run test-js'
-    continueOnError: true
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app'
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/FNHSApp.zip'
-      replaceExistingArchive: true
+          - task: gulp@0
+            displayName: 'Build front end assets'
+            inputs:
+                gulpFile: '$(Build.SourcesDirectory)/futurenhs.app/gulpfile.js'
+                targets: 'build'
+                gulpjs: '$(Build.SourcesDirectory)/futurenhs.app/node_modules/gulp/bin/gulp.js'
 
-  - task: PublishPipelineArtifact@1
-    inputs:
-      targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'FNHSApp'
-      publishLocation: 'pipeline'
+          - task: Npm@1
+            displayName: 'Build Next.js assets'
+            inputs:
+                command: 'custom'
+                workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
+                customCommand: 'run build:pipeline'
 
-  - task: PublishTestResults@2
-    displayName: 'Publish Unit Test Results'
-    inputs:
-      testResultsFiles: 'jest-junit.xml'
-      searchFolder: '$(System.DefaultWorkingDirectory)/futurenhs.app/test-reports/unit'
-      testRunTitle: 'Unit Test Run'
-    continueOnError: true
+          - task: Npm@1
+            displayName: 'Unit tests'
+            inputs:
+                command: 'custom'
+                workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
+                customCommand: 'run test-js'
+            continueOnError: true
 
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish Code Coverage from Unit Tests'
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/futurenhs.app/test-reports/unit/cobertura-coverage.xml'
-      failIfCoverageEmpty: true
+          - task: Npm@1
+            displayName: 'NPM Prune dev dependencies'
+            inputs:
+                command: 'custom'
+                workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
+                customCommand: 'prune --production'
+
+          - task: ArchiveFiles@2
+            inputs:
+                rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app'
+                includeRootFolder: false
+                archiveType: 'zip'
+                archiveFile: '$(Build.ArtifactStagingDirectory)/FNHSApp.zip'
+                replaceExistingArchive: true
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+                targetPath: '$(Build.ArtifactStagingDirectory)'
+                artifact: 'FNHSApp'
+                publishLocation: 'pipeline'
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Unit Test Results'
+            inputs:
+                testResultsFiles: 'jest-junit.xml'
+                searchFolder: '$(System.DefaultWorkingDirectory)/futurenhs.app/test-reports/unit'
+                testRunTitle: 'Unit Test Run'
+            continueOnError: true
+
+          - task: PublishCodeCoverageResults@1
+            displayName: 'Publish Code Coverage from Unit Tests'
+            inputs:
+                codeCoverageTool: Cobertura
+                summaryFileLocation: '$(System.DefaultWorkingDirectory)/futurenhs.app/test-reports/unit/cobertura-coverage.xml'
+                failIfCoverageEmpty: true
