@@ -22,7 +22,7 @@ jobs:
 - job: BuildFutureNHS
   displayName: 'Build and publish artifact for FutureNHS Fileserver'
   pool :
-    vmImage: 'windows-latest'
+    vmImageName: ubuntu-18.04
 
   steps:
    - task: UseDotNet@2
