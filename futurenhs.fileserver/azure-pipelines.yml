@@ -97,7 +97,7 @@ jobs:
       artifact: 'FNHSFileServer'
       publishLocation: 'pipeline'
 
-- job: BuildFutureNHSFileServer
+- job: BuildFutureNHSCollabora
   displayName: 'Build and publish artifact for FutureNHS Fileserver'
   pool :
     vmImageName: 'ubuntu-18.04'
