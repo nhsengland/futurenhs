@@ -22,7 +22,7 @@ jobs:
 - job: BuildFutureNHSFileServer
   displayName: 'Build and publish artifact for FutureNHS Fileserver'
   pool :
-    vmImageName: 'windows-latest'
+    vmImage: 'windows-latest'
 
   steps:
    - task: UseDotNet@2
@@ -98,9 +98,9 @@ jobs:
       publishLocation: 'pipeline'
 
 - job: BuildFutureNHSCollabora
-  displayName: 'Build and publish artifact for FutureNHS Fileserver'
+  displayName: 'Build and publish artifact for FutureNHS Collabora'
   pool :
-    vmImageName: 'ubuntu-18.04'
+    vmImage: 'ubuntu-18.04'
   steps:  
    - task: CopyFiles@2
      displayName: 'Copy files for Collabora artifact'
