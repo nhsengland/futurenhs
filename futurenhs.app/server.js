@@ -30,9 +30,9 @@ const generateCSP = (nonce) => {
         'frame-src': `'self' https://collaborate.future.nhs.uk https://vars.hotjar.com`,
         'img-src': `'self' data: *.google-analytics.com https://data.eu.pendo.io`,
         'style-src': `'self' 'unsafe-inline'`,
-        'script-src': `'self' 'unsafe-inline' https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com https://ws2.hotjar.com wss://ws2.hotjar.com/api/v2/client/ws wss://ws15.hotjar.com/api/v2/client/ws *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`,
+        'script-src': `'self' 'unsafe-inline' https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com https://ws2.hotjar.com wss://*.hotjar.com/api/v2/client/ws *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`,
         'font-src': `'unsafe-inline' https://assets.nhs.uk`,
-        'connect-src': `'self' https://dc.services.visualstudio.com *.google-analytics.com *.hotjar.com https://ws2.hotjar.com wss://ws2.hotjar.com/api/v2/client/ws wss://ws15.hotjar.com/api/v2/client/ws *.googletagmanager.com https://assets.nhs.uk https://cdn.eu.pendo.io https://data.eu.pendo.io`,
+        'connect-src': `'self' https://dc.services.visualstudio.com *.google-analytics.com *.hotjar.com https://ws2.hotjar.com wss://*.hotjar.com/api/v2/client/ws *.googletagmanager.com https://assets.nhs.uk https://cdn.eu.pendo.io https://data.eu.pendo.io`,
         'worker-src': `'self'`,
     }
 
