@@ -159,7 +159,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                             value={searchTerm}
                                             text={{
                                                 label: 'Search the FutureNHS platform for content and groups',
-                                                placeholder: 'Search for...',
+                                                placeholder: 'Search FutureNHS for...',
                                             }}
                                         />
                                     )}
