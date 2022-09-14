@@ -383,20 +383,27 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         ariaLabel: 'Go back to list of group discussions',
                     }}
                 />
+                
                 <div
                     id={formattedDiscussionid}
                     tabIndex={-1}
-                    className="focus:u-outline-none"
+                    className="nhsuk-card focus:u-outline-none u-border-b-4 u-border-b-theme-8"
                 >
-                    <h2 className="nhsuk-heading-xl">{title}</h2>
-                    {discussionBody && (
-                        <RichText
-                            bodyHtml={discussionBody}
-                            wrapperElementType="div"
-                            className="u-mb-8"
-                        />
-                    )}
+
+                    <div className="nhsuk-card__content">
+                        <h3 className="nhsuk-card__heading">
+                            {title}
+                        </h3>
+                        {discussionBody && (
+                            <RichText
+                                bodyHtml={discussionBody}
+                                wrapperElementType="div"
+                                className="u-mb-8"
+                            />
+                        )}
+                    </div>
                 </div>
+                
                 <LayoutColumnContainer>
                     <LayoutColumn tablet={8}>
                         <UserMeta
