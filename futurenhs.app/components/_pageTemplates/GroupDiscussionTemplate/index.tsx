@@ -85,6 +85,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         paramName: routeParams.DISCUSSIONID,
     })
 
+    const commentButtonRef: any = useRef()
+
     const {
         createdByLabel,
         lastCommentLabel,
@@ -153,6 +155,14 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         setErrors(errors)
         errorSummaryRef?.current?.focus?.()
     }
+
+    /**
+     * Handle client-side add comment click
+     */
+    const handleAddCommentClick = () => {
+        commentButtonRef.current.scrollIntoView({ behavior: 'smooth' })
+    };
+
 
     /**
      * Handle client-side comment submission
@@ -447,11 +457,19 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     </LayoutColumn>
                 </LayoutColumnContainer>
                 <hr />
+               
                 {responseCount > 0 && (
                     <p className="u-hidden tablet:u-block u-text-lead u-text-bold">
                         {`Comments: ${responseCount}`}
                     </p>
                 )}
+
+                <button 
+                    onClick={handleAddCommentClick} 
+                    className="c-form_submit-button c-button u-w-full tablet:u-w-auto u-mb-6">
+                    Add a comment
+                </button>
+                
                 <ErrorBoundary boundaryId="group-discussion-comments">
                     {hasDiscussionComments && (
                         <DynamicListContainer
@@ -602,6 +620,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         className="u-mb-10"
                     />
                 </ErrorBoundary>
+                <div ref={commentButtonRef}>
                 {shouldRenderCommentAndReplyForms && (
                     <>
                         <h3 className="nhsuk-heading-l">{secondaryHeading}</h3>
@@ -615,7 +634,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                             csrfToken={csrfToken}
                             formConfig={commentFormConfig}
                             text={{
-                                submitButton: 'Add Comment',
+                                submitButton: 'Post comment',
                             }}
                             shouldClearOnSubmitSuccess={true}
                             validationFailAction={handleValidationFailure}
@@ -623,6 +642,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         />
                     </>
                 )}
+                </div>
             </LayoutColumn>
         </>
     )
