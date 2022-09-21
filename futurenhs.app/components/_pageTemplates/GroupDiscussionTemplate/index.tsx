@@ -11,7 +11,7 @@ import { getGenericFormError } from '@helpers/util/form'
 import { formTypes } from '@constants/forms'
 import { dateTime } from '@helpers/formatters/dateTime'
 import { initials } from '@helpers/formatters/initials'
-import { getFormattedCommentId } from '@helpers/dom'
+import {getFormattedCommentId, scrollToComponentAndSetFocus} from '@helpers/dom'
 import { routeParams } from '@constants/routes'
 import { Link } from '@components/Link'
 import { Accordion } from '@components/Accordion'
@@ -85,8 +85,6 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
         paramName: routeParams.DISCUSSIONID,
     })
 
-    const commentButtonRef: any = useRef()
-
     const {
         createdByLabel,
         lastCommentLabel,
@@ -159,11 +157,29 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side add comment click
      */
-    const handleAddCommentClick = () => {
-        commentButtonRef.current.scrollIntoView({ behavior: 'smooth' })
-    };
+    
 
+    const handleSubmitReplyClick = (event: any) => {
+        event.preventDefault()
 
+        const rteInstance: any = (
+            window as any
+        ).tinymce?.get('content')
+
+        if (rteInstance) {
+            const rteElement: HTMLElement =
+                rteInstance.getContentAreaContainer()
+
+            scrollToComponentAndSetFocus(
+                rteElement,
+                false,
+                120
+            )
+            rteInstance.focus()
+        } 
+    }
+        
+    
     /**
      * Handle client-side comment submission
      */
@@ -269,7 +285,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
             console.log(error)
         }
     }
-
+    
     /**
      * Render replies to individual comments
      */
@@ -473,12 +489,16 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                     </p>
                 )}
 
-                <button 
-                    onClick={handleAddCommentClick} 
-                    className="c-form_submit-button c-button u-w-full tablet:u-w-auto u-mb-6">
-                    Add a comment
-                </button>
-                
+                {responseCount > 2 && (
+                    <div>
+                        <button
+                            onClick={handleSubmitReplyClick}
+                            className="c-form_submit-button c-button u-w-full tablet:u-w-auto u-mb-6">
+                            Reply to this topic
+                        </button>
+                    </div>
+                   
+                )}
                 <ErrorBoundary boundaryId="group-discussion-comments">
                     {hasDiscussionComments && (
                         <DynamicListContainer
@@ -629,7 +649,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         className="u-mb-10"
                     />
                 </ErrorBoundary>
-                <div ref={commentButtonRef}>
+                <div tabIndex={-1}>
                 {shouldRenderCommentAndReplyForms && (
                     <>
                         <h3 className="nhsuk-heading-l">{secondaryHeading}</h3>
@@ -643,7 +663,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                             csrfToken={csrfToken}
                             formConfig={commentFormConfig}
                             text={{
-                                submitButton: 'Post comment',
+                                submitButton: 'Submit reply',
                             }}
                             shouldClearOnSubmitSuccess={true}
                             validationFailAction={handleValidationFailure}
