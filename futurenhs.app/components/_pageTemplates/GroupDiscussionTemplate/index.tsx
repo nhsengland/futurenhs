@@ -393,29 +393,34 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         ariaLabel: 'Go back to list of group discussions',
                     }}
                 />
+                
                 <div
                     id={formattedDiscussionid}
                     tabIndex={-1}
-                    className="focus:u-outline-none"
+                    className="nhsuk-card focus:u-outline-none u-border-b-4 u-border-b-theme-8"
                 >
-                    <h2 className="nhsuk-heading-xl">{title}</h2>
-                    {discussionBody && (
-                        <RichText
-                            bodyHtml={discussionBody}
-                            wrapperElementType="div"
-                            className="u-mb-8"
-                        />
-                    )}
-                </div>
-                <LayoutColumnContainer>
-                    <LayoutColumn tablet={8}>
-                        <UserMeta
-                            image={creatorProfileImage}
-                            text={{
-                                initials: creatorUserInitials,
-                            }}
-                            className="u-m-0 u-text-theme-7"
-                        >
+
+                    <div className="nhsuk-card__content">
+                        <h3 className="nhsuk-card__heading">
+                            {title}
+                        </h3>
+                        {discussionBody && (
+                            <RichText
+                                bodyHtml={discussionBody}
+                                wrapperElementType="div"
+                                className="u-mb-8"
+                            />
+                        )}
+
+                        <LayoutColumnContainer>
+                            <LayoutColumn tablet={8}>
+                                <UserMeta
+                                    image={creatorProfileImage}
+                                    text={{
+                                        initials: creatorUserInitials,
+                                    }}
+                                    className="u-m-0 u-text-theme-7"
+                                >
                             <span className="u-text-bold u-block">
                                 {createdByLabel}{' '}
                                 <Link
@@ -425,37 +430,41 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 </Link>{' '}
                                 {createdDate}
                             </span>
-                            {responseCount > 0 && lastCommentUserName && (
-                                <span className="u-block u-mt-1">
+                                    {responseCount > 0 && lastCommentUserName && (
+                                        <span className="u-block u-mt-1">
                                     {lastCommentLabel}{' '}
-                                    <Link
-                                        href={`${routes.groupMembersRoot}/${creatorUserId}`}
-                                    >
+                                            <Link
+                                                href={`${routes.groupMembersRoot}/${creatorUserId}`}
+                                            >
                                         <a>{lastCommentUserName}</a>
                                     </Link>{' '}
-                                    {lastCommentDate}
+                                            {lastCommentDate}
                                 </span>
-                            )}
-                        </UserMeta>
-                    </LayoutColumn>
-                    <LayoutColumn
-                        tablet={4}
-                        className="u-self-end tablet:u-text-right u-text-theme-7 u-text-bold u-mt-4"
-                    >
-                        {responseCount > 0 && (
-                            <span className="u-mr-5">
+                                    )}
+                                </UserMeta>
+                            </LayoutColumn>
+                            <LayoutColumn
+                                tablet={4}
+                                className="u-self-end tablet:u-text-right u-text-theme-7 u-text-bold u-mt-4"
+                            >
+                                {responseCount > 0 && (
+                                    <span className="u-mr-5">
                                 <SVGIcon
                                     name="icon-comments"
                                     className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle"
                                 />
-                                {totalRecordsLabel}: {responseCount}
+                                        {totalRecordsLabel}: {responseCount}
                             </span>
-                        )}
-                        {/* {viewCount > 0 &&
+                                )}
+                                {/* {viewCount > 0 &&
                             <><SVGIcon name="icon-view" className="u-h-5 u-w-5 u-fill-theme-8 u-mr-1 u-align-middle" />{viewCountLabel}: {viewCount}</>
                         } */}
-                    </LayoutColumn>
-                </LayoutColumnContainer>
+                            </LayoutColumn>
+                        </LayoutColumnContainer>
+                    </div>
+                    
+                </div>
+               
                 <hr />
                
                 {responseCount > 0 && (
