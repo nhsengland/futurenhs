@@ -277,6 +277,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
                     WHERE       groups.Slug = @Slug
                     AND         groupUser.Approved = 1
+                    AND         member.IsDeleted = 0
                     ORDER BY    RoleName asc, Name asc
 
                     OFFSET      @Offset ROWS
@@ -332,6 +333,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     AND         groupUser.Rejected = 0
                     AND         groupUser.Locked = 0
                     AND         groupUser.Banned = 0
+                    AND         member.IsDeleted = 0
                     ORDER BY    groupUser.RequestToJoinDateUTC desc
 
                     OFFSET      @Offset ROWS
@@ -397,7 +399,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          [image].Id = member.ImageId   
                     WHERE       groups.Slug = @Slug
                     AND         member.Id = @UserId
-                    AND         groupUser.Approved = 1;";
+                    AND         groupUser.Approved = 1
+                    AND         member.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -443,6 +446,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     JOIN        MembershipRole memberRoles 
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
                     WHERE       groups.Slug = @GroupSlug
+                    AND         member.IsDeleted = 0
                     AND         groupUser.MembershipRole_Id = (SELECT Id FROM MembershipRole WHERE RoleName = 'Admin')";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);

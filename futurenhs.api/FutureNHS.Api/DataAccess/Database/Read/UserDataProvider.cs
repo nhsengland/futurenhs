@@ -46,6 +46,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					ON			membersInRole.UserIdentifier = member.Id
                     JOIN        MembershipRole memberRoles 
                     ON          membersInRole.RoleIdentifier = memberRoles.Id
+                    WHERE       member.IsDeleted = 0
                     ORDER BY    RoleName asc, member.FirstName asc
 
                     OFFSET      @Offset ROWS
@@ -86,7 +87,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
 
                     FROM        MembershipUser member 
-                    WHERE       member.Id = @UserId";
+                    WHERE       member.Id = @UserId
+                    AND         member.IsDeleted = 0";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -115,9 +117,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 				    
                     FROM        [MembershipUser] member
                     LEFT JOIN   Image image
-                        ON          image.Id = member.ImageId
-                    WHERE
-                                member.[Id] = @Id";
+                    ON          image.Id = member.ImageId
+                    WHERE       member.[Id] = @Id
+                    AND         member.IsDeleted = 0";
 
 
             var queryDefinition = new CommandDefinition(query, new
