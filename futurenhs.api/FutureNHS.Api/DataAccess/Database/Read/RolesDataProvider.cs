@@ -28,21 +28,23 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                    FROM MembershipUser mu 
                    JOIN MembershipUsersInRoles mir on mir.UserIdentifier = mu.Id
                    JOIN MembershipRole mr on mr.Id = mir.RoleIdentifier
-                   WHERE mu.Id = @UserId AND
-                   mu.IsApproved = 1 AND
-                   mu.IsBanned = 0 AND
-                   mu.IsLockedOut = 0;
+                   WHERE mu.Id = @UserId 
+                    AND         mu.IsDeleted = 0
+                    AND         mu.IsApproved = 1
+                    AND         mu.IsBanned = 0 
+                    AND         mu.IsLockedOut = 0;
 
                   SELECT mr.RoleName, gu.Approved, gu.Rejected, gu.Locked, gu.Banned
                    FROM MembershipUser mu
                    JOIN GroupUser gu on gu.MembershipUser_Id = mu.Id
                    JOIN [Group] g on g.Id = gu.Group_Id
                    JOIN MembershipRole mr on mr.Id = gu.MembershipRole_Id
-                   WHERE mu.Id = @UserId AND 
-                   g.Id = @GroupId AND
-                   mu.IsApproved = 1 AND
-                   mu.IsBanned = 0 AND
-                   mu.IsLockedOut = 0;
+                   WHERE mu.Id = @UserId 
+                    AND         g.Id = @GroupId               
+                    AND         mu.IsDeleted = 0
+                    AND         mu.IsApproved = 1
+                    AND         mu.IsBanned = 0 
+                    AND         mu.IsLockedOut = 0;
                 ";
 
             var queryDefinition = new CommandDefinition(query, new
@@ -70,21 +72,23 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                    FROM MembershipUser mu 
                    JOIN MembershipUsersInRoles mir on mir.UserIdentifier = mu.Id
                    JOIN MembershipRole mr on mr.Id = mir.RoleIdentifier
-                   WHERE mu.Id = @UserId AND
-                   mu.IsApproved = 1 AND
-                   mu.IsBanned = 0 AND
-                   mu.IsLockedOut = 0;
+                   WHERE mu.Id = @UserId 
+                    AND         mu.IsDeleted = 0
+                    AND         mu.IsApproved = 1
+                    AND         mu.IsBanned = 0 
+                    AND         mu.IsLockedOut = 0;
 
                   SELECT mr.RoleName, gu.Approved, gu.Rejected, gu.Locked, gu.Banned
                    FROM MembershipUser mu
                    JOIN GroupUser gu on gu.MembershipUser_Id = mu.Id
                    JOIN [Group] g on g.Id = gu.Group_Id
                    JOIN MembershipRole mr on mr.Id = gu.MembershipRole_Id
-                   WHERE mu.Id = @UserId AND 
-                   g.Slug = @Slug AND
-                   mu.IsApproved = 1 AND
-                   mu.IsBanned = 0 AND
-                   mu.IsLockedOut = 0;
+                   WHERE mu.Id = @UserId 
+                    AND         g.Slug = @Slug
+                    AND         mu.IsDeleted = 0
+                    AND         mu.IsApproved = 1
+                    AND         mu.IsBanned = 0 
+                    AND         mu.IsLockedOut = 0;
                 ";
 
             var queryDefinition = new CommandDefinition(query, new
@@ -111,10 +115,11 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                    FROM MembershipUser mu 
                    JOIN MembershipUsersInRoles mir on mir.UserIdentifier = mu.Id
                    JOIN MembershipRole mr on mr.Id = mir.RoleIdentifier
-                   WHERE mu.Id = @UserId AND
-                   mu.IsApproved = 1 AND
-                   mu.IsBanned = 0 AND
-                   mu.IsLockedOut = 0;
+                   WHERE mu.Id = @UserId 
+                    AND         mu.IsDeleted = 0
+                    AND         mu.IsApproved = 1
+                    AND         mu.IsBanned = 0 
+                    AND         mu.IsLockedOut = 0;
                 ";
 
             var queryDefinition = new CommandDefinition(query, new

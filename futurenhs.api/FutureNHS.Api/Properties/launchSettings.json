@@ -8,6 +8,7 @@
       "sslPort": 0
     }
   },
+
   "profiles": {
     "FutureNHSApi": {
       "commandName": "Project",
@@ -19,7 +20,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": "true",
-      "applicationUrl": "http://localhost:9999"
+      "applicationUrl": "http://localhost:9999",
+      "launchUrl": "api/swagger"
     },
     "IIS Express": {
       "commandName": "IISExpress",

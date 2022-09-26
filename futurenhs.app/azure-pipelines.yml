@@ -1,146 +1,86 @@
 trigger:
-  branches:
-    include:
-    - SPRINT
+    branches:
+        include:
+            - main
 
-  paths:
-    include:
-    - futurenhs.app/*
+    paths:
+        include:
+            - futurenhs.app/*
 
 jobs:
-- job: CheckChangesInPaths
-  displayName: 'Check commit contains changes for FutureNHS App'
-  pool:
-    vmImage: 'windows-latest'
-  steps: 
-  - powershell: |
-     $buildsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds?definitions=$(System.DefinitionId)&resultFilter=succeeded&queryOrder=descending&api-version=6.0-preview"
-     $buildsresult = Invoke-RestMethod -Uri $buildsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
-     
-     $buildId = $buildsresult.value[0].id
-     if($buildId -eq $null)
-     {
-          $matchFound=$true
-          echo "##vso[task.setvariable variable=futurenhs.app;isOutput=true]$True"
-     }
-     else
-     {
-      echo "Build to check from: $buildId to: $(Build.BuildId)"
-      $commitsUrl = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/changes?fromBuildId=$buildId&toBuildId=$(Build.BuildId)&api-version=6.0-preview.2"
-      $commitsresult = Invoke-RestMethod -Uri $commitsUrl -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
-     
-      foreach($commit in $commitsresult.value)
-      {
-       $commitId = $commit.id
-       echo "Checking commit for changes: $commitId"
-       $url="$(System.CollectionUri)/$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$commitId/changes?api-version=5.1"
-       $result = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $(System.AccessToken)"} -Method GET
-     
-       $changesFolder  = $result.changes | Where-Object{$_.item.gitObjectType -match "tree"} | Select-Object -Property {$_.item.path}
-       $matchFound=$False
-       foreach($path in $changesFolder ){
-        if($path -match '/FutureNHS.Data'){
-          $matchFound=$true
-          echo "##vso[task.setvariable variable=futurenhs.app;isOutput=true]$True"      
-          break
-         }       
-        }
-        if($matchFound)
-        {
-          echo "Changed detected in FutureNHS.App in commit: $commitId - Stopping..."
-          break
-        }
-      }
-     }
-    name: ChangesInPaths
+    - job: BuildNextApp
+      pool:
+          vmImage: ubuntu-latest
+      steps:
+          - task: NodeTool@0
+            inputs:
+                versionSpec: '14.18.3'
 
-- job: BuildNextApp
-  pool:
-    vmImage: ubuntu-latest
-  steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '14.17.4'
-    
-  - task: Npm@1
-    displayName: 'Npm install'
-    inputs:
-      command: 'install'
-      workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
-    
-  - task: gulp@0
-    displayName: 'Build front end assets'
-    inputs:
-      gulpFile: '$(Build.SourcesDirectory)/futurenhs.app/gulpfile.js'
-      targets: 'build'
-      gulpjs: '$(Build.SourcesDirectory)/futurenhs.app/node_modules/gulp/bin/gulp.js'
+          - task: Npm@1
+            inputs:
+                command: 'custom'
+                customCommand: 'cache clean -f'
 
-  - task: Npm@1
-    displayName: 'Build Next.js assets'
-    inputs:
-      command: 'custom'
-      workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
-      customCommand: 'run build'
+          - task: Npm@1
+            displayName: 'NPM Install'
+            inputs:
+                command: 'install'
+                workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
 
-  - task: Npm@1
-    displayName: 'Unit tests'
-    inputs:
-      command: 'custom'
-      workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
-      customCommand: 'run test-js'
-    continueOnError: true
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app'
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/FNHSvNextApp.zip'
-      replaceExistingArchive: true
+          - task: gulp@0
+            displayName: 'Build front end assets'
+            inputs:
+                gulpFile: '$(Build.SourcesDirectory)/futurenhs.app/gulpfile.js'
+                targets: 'build'
+                gulpjs: '$(Build.SourcesDirectory)/futurenhs.app/node_modules/gulp/bin/gulp.js'
 
-  - task: PublishPipelineArtifact@1
-    inputs:
-      targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'FNHSvNextApp'
-      publishLocation: 'pipeline'
+          - task: Npm@1
+            displayName: 'Build Next.js assets'
+            inputs:
+                command: 'custom'
+                workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
+                customCommand: 'run build:pipeline'
 
-  - task: PublishTestResults@2
-    displayName: 'Publish Unit Test Results'
-    inputs:
-      testResultsFiles: 'jest-junit.xml'
-      searchFolder: '$(System.DefaultWorkingDirectory)/futurenhs.app/test-reports/unit'
-      testRunTitle: 'Unit Test Run'
-    continueOnError: true
+          - task: Npm@1
+            displayName: 'Unit tests'
+            inputs:
+                command: 'custom'
+                workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
+                customCommand: 'run test-js'
+            continueOnError: true
 
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish Code Coverage from Unit Tests'
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/futurenhs.app/test-reports/unit/cobertura-coverage.xml'
-      failIfCoverageEmpty: true
+          - task: Npm@1
+            displayName: 'NPM Prune dev dependencies'
+            inputs:
+                command: 'custom'
+                workingDir: '$(Build.SourcesDirectory)/futurenhs.app'
+                customCommand: 'prune --production'
 
-  - task: PowerShell@2
-    displayName: 'Add RUN Tag to trigger Release'
-    env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-    inputs:
-      targetType: 'inline'
-      script: |
-        $user = ""
-        $token = $env:SYSTEM_ACCESSTOKEN
+          - task: ArchiveFiles@2
+            inputs:
+                rootFolderOrFile: '$(Build.SourcesDirectory)/futurenhs.app'
+                includeRootFolder: false
+                archiveType: 'zip'
+                archiveFile: '$(Build.ArtifactStagingDirectory)/FNHSApp.zip'
+                replaceExistingArchive: true
 
-        $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$token)))
+          - task: PublishPipelineArtifact@1
+            inputs:
+                targetPath: '$(Build.ArtifactStagingDirectory)'
+                artifact: 'FNHSApp'
+                publishLocation: 'pipeline'
 
-        $org = "$(System.CollectionUri)"
-        $teamProject = "$(System.TeamProject)"
-        $buildId = "$(Build.BuildId)"
-        $tagName = "RUN"
+          - task: PublishTestResults@2
+            displayName: 'Publish Unit Test Results'
+            inputs:
+                testResultsFiles: 'jest-junit.xml'
+                searchFolder: '$(System.DefaultWorkingDirectory)/futurenhs.app/test-reports/unit'
+                testRunTitle: 'Unit Test Run'
+            continueOnError: true
 
-        $restApiUpdateBuild = "$org/$teamProject/_apis/build/builds/$buildId/tags/$tagName`?api-version=6.0"
-
-        function InvokePutReques ($PutUrl)
-        {   
-            return Invoke-RestMethod -Uri $PutUrl -Method Put -ContentType "application/json" -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
-        }
-
-        $result = InvokePutReques $restApiUpdateBuild
-      pwsh: true
+          - task: PublishCodeCoverageResults@1
+            displayName: 'Publish Code Coverage from Unit Tests'
+            inputs:
+                codeCoverageTool: Cobertura
+                summaryFileLocation: '$(System.DefaultWorkingDirectory)/futurenhs.app/test-reports/unit/cobertura-coverage.xml'
+                failIfCoverageEmpty: true

@@ -6,7 +6,7 @@
 trigger:
  branches:
     include:
-    - sprint
+    - main
  paths:
     include:
     - futurenhs.content.api/*
@@ -15,6 +15,7 @@ variables:
   solution: 'FutureNHSContentApi.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'Release'
+  working-dir: 'futurenhs.content.api'
 
 jobs:
 
@@ -22,8 +23,7 @@ jobs:
   displayName: 'Build and deploy artifact for FutureNHS Api'
   pool :
     vmImage: 'windows-latest'
-   ##dependsOn: CheckChangesInPaths
-   ##condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHS'], 'true') 
+
   steps:
    - task: UseDotNet@2
      displayName: 'Set dotnet SDK to v6.0'
@@ -96,33 +96,31 @@ jobs:
      displayName: 'Publish artifact'
      inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'FNHSApi'
+      artifact: 'FNHSContentApi'
       publishLocation: 'pipeline'
       
-   - task: PowerShell@2
-     displayName: 'Add RUN Tag to trigger Release'
-     env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-     inputs:
-      targetType: 'inline'
-      script: |
-       $user = ""
-       $token = $env:SYSTEM_ACCESSTOKEN
+- job: BuildDatabase
+  displayName: 'Build and deploy artifact for database'
+  pool :
+    vmImage: 'windows-latest'
 
-       $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$token)))
+  steps:
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Content.Data/FutureNHS.Content.Data/FutureNHS.Content.Data.sqlproj'
+      arguments: '/p:NetCoreBuild=true /p:SystemDacpacsLocation="$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Content.Data/ExperimentalBuildTools"'
+  
+  - task: CopyFiles@2
+    displayName: 'Copy files for artifact'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Content.Data/FutureNHS.Content.Data/bin/Debug'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-       $org = "$(System.CollectionUri)"
-       $teamProject = "$(System.TeamProject)"
-       $buildId = "$(Build.BuildId)"
-       $tagName = "RUN"
-
-       $restApiUpdateBuild = "$org/$teamProject/_apis/build/builds/$buildId/tags/$tagName`?api-version=6.0"
-
-       function InvokePutReques ($PutUrl)
-       {   
-           return Invoke-RestMethod -Uri $PutUrl -Method Put -ContentType "application/json" -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
-       }
-
-       $result = InvokePutReques $restApiUpdateBuild
-      pwsh: true
-    
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish artifact'
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'FNHSContentDB'
+      publishLocation: 'pipeline'

@@ -1,8 +1,8 @@
-const { series } = require('gulp'),
-    db = require('./futurenhs.data/gulpfile'),
+const { series, parallel } = require('gulp'),
     api = require('./futurenhs.api/gulpfile'),
-    contentApi = require('./futurenhs.content.api/gulpfile'),
-    contentDb = require('./futurenhs.content.data/gulpfile'),
+    db = require('./futurenhs.api/FutureNHS.Data/gulpfile'),
+	contentApi = require('./futurenhs.content.api/gulpfile'),
+    contentDb = require('./futurenhs.content.api/FutureNHS.Content.Data/gulpfile'),
     app = require('./futurenhs.app/gulpfile');
 
 /**

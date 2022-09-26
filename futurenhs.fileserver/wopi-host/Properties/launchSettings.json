@@ -1,0 +1,38 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/futurenhs-wopi-doc-server",
+      "sslPort": 0
+    },
+    "iisExpress": {
+      "applicationUrl": "https://localhost:44355/",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "wopi/collabora",
+      "environmentVariables": {
+        "USE_AZURE_APP_CONFIGURATION": "true",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "FutureNHS.WOPIHost": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "wopi/collabora",
+      "environmentVariables": {
+        "USE_AZURE_APP_CONFIGURATION": "false",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://127.0.0.1:44355"
+    },
+    "IIS": {
+      "commandName": "IIS"
+    }
+  }
+}
