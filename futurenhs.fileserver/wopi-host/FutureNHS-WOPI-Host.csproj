@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.3.0" />
     <PackageReference Include="Azure.Identity" Version="1.5.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.19.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
