@@ -171,7 +171,7 @@ cd futurenhs.app
 
 npm run start:dev 
 ```
-Tip:
+### Tip:
 
  - Allow keychain popups
  - Make sure your AirPlay receiver [System Preferences -> Sharing] is ticked off to listen port 5000
