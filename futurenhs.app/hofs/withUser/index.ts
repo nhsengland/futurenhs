@@ -1,7 +1,8 @@
+import { getSession } from 'next-auth/react'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getSiteActions } from '@services/getSiteActions'
-import { getUser } from '@services/getUser'
-import { GetUserService } from '@services/getUser'
+import { getUserInfo } from '@services/getUserInfo'
+import { GetUserInfoService } from '@services/getUserInfo'
 import { getSiteUser } from '@services/getSiteUser'
 import { User } from '@appTypes/user'
 import { Hof } from '@appTypes/hof'
@@ -10,40 +11,68 @@ export const withUser: Hof = async (
     context,
     config,
     dependencies?: {
-        getUserService?: GetUserService
-        getSiteUserService?: any;
-        getSiteActionsService?: any;
+        getUserInfoService?: GetUserInfoService
+        getSiteActionsService?: any
     }
 ) => {
-
-    const getUserService = dependencies?.getUserService ?? getUser
-    const getSiteUserService = dependencies?.getSiteUserService ?? getSiteUser
+    const getUserInfoService = dependencies?.getUserInfoService ?? getUserInfo
     const getSiteActionsService =
         dependencies?.getSiteActionsService ?? getSiteActions
 
-    const isRequired: boolean = config?.isRequired ?? true;
+    const isRequired: boolean = config?.isRequired ?? true
 
-    let user: User = null;
+    let user: User = null
 
-    try {
-        const { data } = await getUserService({
-            cookies: context.req?.cookies,
-        })
+    const session = await getSession(context)
 
-        user = data;
+    if (!session && isRequired) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: `${process.env.APP_URL}/auth/signin`,
+            },
+        }
+    }
 
-    } catch (error) {
-        if (isRequired) {
-            const returnUrl: string = encodeURI(
-                `${process.env.APP_URL}${context.resolvedUrl}`
-            )
+    if (session) {
+        try {
+            const { data } = await getUserInfoService({
+                subjectId: session.sub as string,
+                emailAddress: session.user?.email,
+            })
 
-            return {
-                redirect: {
-                    permanent: false,
-                    destination: `${process.env.NEXT_PUBLIC_MVC_FORUM_LOGIN_URL}?ReturnUrl=${returnUrl}`,
-                },
+            user = data
+            context.req.user = user
+
+            if (isRequired) {
+                const { status } = user
+
+                if (status === 'LegacyMember' || status === 'Invited') {
+                    const targetPath: string = `/auth/register`
+
+                    if (context.resolvedUrl !== targetPath) {
+                        return {
+                            redirect: {
+                                permanent: false,
+                                destination: `${process.env.APP_URL}${targetPath}`,
+                            },
+                        }
+                    }
+                } else if (status === 'Uninvited') {
+                    const targetPath: string = `/auth/unregistered`
+
+                    if (context.resolvedUrl !== targetPath) {
+                        return {
+                            redirect: {
+                                permanent: false,
+                                destination: `${process.env.APP_URL}${targetPath}`,
+                            },
+                        }
+                    }
+                }
             }
+        } catch (error) {
+            return handleSSRErrorProps({ props: context.page.props, error })
         }
     }
 
@@ -51,9 +80,11 @@ export const withUser: Hof = async (
      * Temporary solution until new auth is in place to fetch users profile image from a separate endpoint
      */
     if (user) {
-
         try {
-            const { data: profile } = await getSiteUserService({ user, targetUserId: user.id })
+            const { data: profile } = await getSiteUser({
+                user: user,
+                targetUserId: user.id,
+            })
 
             user.image = profile.image
         } catch (error) {
@@ -64,13 +95,11 @@ export const withUser: Hof = async (
             const { data: actions } = await getSiteActionsService({ user })
 
             context.page.props.actions = actions
-
         } catch (error) {
             return handleSSRErrorProps({ props: context.page.props, error })
         }
     }
 
-    context.req.user = user;
-    context.page.props.user = user;
-
+    context.req.user = user
+    context.page.props.user = user
 }

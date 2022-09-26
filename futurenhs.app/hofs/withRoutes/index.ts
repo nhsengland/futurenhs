@@ -4,7 +4,6 @@ import { getRouteToParam2 } from '@helpers/routing/getRouteToParam'
 import { Hof } from '@appTypes/hof'
 
 export const withRoutes: Hof = (context) => {
-
     /**
      * Set up current routing data relative to context
      */
@@ -23,18 +22,18 @@ export const withRoutes: Hof = (context) => {
                 adminUsersInvite: '/admin/users/invite',
                 adminGroupsRoot: '/admin/groups',
                 adminGroupsCreate: '/admin/users/create',
+                authApiSignInAzureB2C: '/api/auth/signin/azure-ad-b2c',
+                authApiSignOut: '/api/auth/signout/azure-ad-b2c',
+                authSignIn: '/auth/signin',
+                authSignOut: '/auth/signout',
                 groupsRoot: '/groups',
                 groupsDiscover: '/groups/discover',
                 groupRoot: groupIndexRoute ? groupIndexRoute : null,
                 groupUpdate: groupIndexRoute
                     ? `${groupIndexRoute}/update`
                     : null,
-                groupJoin: groupIndexRoute
-                    ? `${groupIndexRoute}/join`
-                    : null,
-                groupLeave: groupIndexRoute
-                    ? `${groupIndexRoute}/leave`
-                    : null,
+                groupJoin: groupIndexRoute ? `${groupIndexRoute}/join` : null,
+                groupLeave: groupIndexRoute ? `${groupIndexRoute}/leave` : null,
                 groupInvite: groupIndexRoute
                     ? `${groupIndexRoute}/invite`
                     : null,
@@ -62,5 +61,4 @@ export const withRoutes: Hof = (context) => {
     } catch (error) {
         return handleSSRErrorProps({ props: context.page.props, error })
     }
-
 }

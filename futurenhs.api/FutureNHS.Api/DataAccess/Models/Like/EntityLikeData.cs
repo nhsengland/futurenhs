@@ -5,6 +5,6 @@
         public Guid EntityId { get; init; }
         public Guid MembershipUserId { get; init; }
         public bool CreatedByThisUser { get; init; }
-        public string? CreatedAtUtc { get; init; }
+        public DateTime? CreatedAtUtc { get; init; }
     }
 }

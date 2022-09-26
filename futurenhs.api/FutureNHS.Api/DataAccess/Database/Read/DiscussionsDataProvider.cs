@@ -66,12 +66,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                     ELSE        CAST(0 as bit) 
                                                                                     END
                                                                                   ),       
-                                [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.CreatedAtUtc)}]         = discussion.CreatedAtUtc,
                                 [{nameof(DiscussionData.CreatedById)}]          = discussion.CreatedBy,
                                 [{nameof(DiscussionData.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
                                 [{nameof(DiscussionData.CreatedBySlug)}]        = createdByUser.Slug,
                                 [{nameof(DiscussionData.LastComment)}]			= latestComment.Entity_Id,
-                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(latestComment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = latestComment.CreatedAtUtc,
                                 [{nameof(DiscussionData.LastCommenterId)}]      = latestComment.CreatedBy,
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
@@ -150,12 +150,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                                                                     ELSE        CAST(0 as bit) 
                                                                                     END
                                                                                   ),   
-                                [{nameof(DiscussionData.CreatedAtUtc)}]         = FORMAT(discussion.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.CreatedAtUtc)}]         = discussion.CreatedAtUtc,
                                 [{nameof(DiscussionData.CreatedById)}]          = discussion.CreatedBy,
                                 [{nameof(DiscussionData.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
                                 [{nameof(DiscussionData.CreatedBySlug)}]        = createdByUser.Slug,
                                 [{nameof(DiscussionData.LastComment)}]			= latestComment.Entity_Id,
-                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = FORMAT(latestComment.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionData.LastCommentAtUtc)}]     = latestComment.CreatedAtUtc,
                                 [{nameof(DiscussionData.LastCommenterId)}]      = latestComment.CreatedBy,
                                 [{nameof(DiscussionData.LastCommenterName)}]    = lastCommentUser.FirstName + ' ' + lastCommentUser.Surname,
                                 [{nameof(DiscussionData.LastCommenterSlug)}]    = lastCommentUser.Slug,
@@ -222,7 +222,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 @$" SELECT
                                 [{nameof(DiscussionCreatorDetails.DiscussionId)}]         = discussion.Entity_Id,
                                 [{nameof(DiscussionCreatorDetails.GroupSlug)}]            = groups.Slug,
-                                [{nameof(DiscussionCreatorDetails.CreatedAtUtc)}]         = FORMAT(discussion.CreatedAtUtc,'yyyy-MM-ddTHH:mm:ssZ'),
+                                [{nameof(DiscussionCreatorDetails.CreatedAtUtc)}]         = discussion.CreatedAtUtc,
                                 [{nameof(DiscussionCreatorDetails.CreatedById)}]          = discussion.CreatedBy,
                                 [{nameof(DiscussionCreatorDetails.CreatedByName)}]        = createdByUser.FirstName + ' ' + createdByUser.Surname,
                                 [{nameof(DiscussionCreatorDetails.CreatedByEmail)}]       = createdByUser.Email

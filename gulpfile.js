@@ -1,26 +1,9 @@
 const { series, parallel } = require('gulp'),
-    mvcforum = require('./MVCForum/gulpfile'),
     api = require('./futurenhs.api/gulpfile'),
     db = require('./futurenhs.api/FutureNHS.Data/gulpfile'),
 	contentApi = require('./futurenhs.content.api/gulpfile'),
     contentDb = require('./futurenhs.content.api/FutureNHS.Content.Data/gulpfile'),
     app = require('./futurenhs.app/gulpfile');
-
-    
-/**
- * MVCFORUM TASKS
- */
-
-const activateMvcForum = series(mvcforum.stopSite, mvcforum.msbuild, mvcforum.buildWeb, mvcforum.startSite);
-
-/*const activateLight = (done) => {
-    return gulp.series(mvcforum.stopSite, mvcforum.build, mvcforum.buildWebLight, mvcforum.startSite)();
-};
-
-const deactivate = (done) => {
-    return gulp.series(mvcforum.stopSite)();
-};
-*/
 
 /**
  * API TASKS
@@ -73,29 +56,31 @@ const watchApp = (done) => {
  */
 const acivatecontentdb = series(activateContentDb);
 
-const activate = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApi, activateContentApi, activateApp);
+const activate = series(activateAutomationDb, activateContentDb, activateApi, activateContentApi, activateApp);
 
-const activateNoApp = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApi, activateContentApi);
+const activateNoApp = series(activateAutomationDb, activateContentDb, activateApi, activateContentApi);
 
-const activateNoApi = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApp, activateContentApi);
+const activateNoApi = series(activateAutomationDb, activateContentDb, activateApp, activateContentApi);
 
-const activateNoUmbraco = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApi, activateApp);
+const activateNoAppApi = series(activateAutomationDb, activateContentDb, activateContentApi);
 
-const activateNoUmbracoNoApi = series(activateAutomationDb, activateContentDb, activateMvcForum, activateApp);
+const activateNoUmbraco = series(activateAutomationDb, activateContentDb, activateApi, activateApp);
 
-const activateNoAutomation = series(activateDb, activateContentDb, activateMvcForum, activateApi, activateContentApi, activateApp);
+const activateNoUmbracoNoApi = series(activateAutomationDb, activateContentDb, activateApp);
 
-const deactivate = series(mvcforum.stopSite, api.stopSite, contentApi.stopSite, app.stopSite);
+const activateNoAutomation = series(activateDb, activateContentDb, activateApi, activateContentApi, activateApp);
+
+const deactivate = series(api.stopSite, contentApi.stopSite, app.stopSite);
 
 module.exports = {
     activate,
     activateNoApp,
     activateNoApi,
-	activateNoUmbraco,
+    activateNoAppApi,
+    activateNoUmbraco,
     activateApi,
-	activateContentApi,
+    activateContentApi,
     activateNoUmbracoNoApi,
-    activateMvcForum,
     activateDb,
     activateAutomationDb,
     activateNoAutomation,

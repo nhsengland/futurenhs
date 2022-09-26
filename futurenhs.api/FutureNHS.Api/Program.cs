@@ -34,6 +34,8 @@ using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.EventLog;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Dapper;
+using FutureNHS.Api.DataAccess.Database.Providers.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -160,11 +162,11 @@ if (useAppConfig)
 
 builder.Services.AddMemoryCache();
 
-var _policyName = "CorsPolicy";
+var policyName = "CorsPolicy";
 
 builder.Services.AddCors(opt =>
 {
-    opt.AddPolicy(name: _policyName, builder =>
+    opt.AddPolicy(name: policyName, builder =>
     {
         builder.WithOrigins("http://localhost:5000")
             .AllowAnyMethod()
@@ -193,6 +195,7 @@ builder.Services.Configure<FileServerTemplateUrlStrings>(settings.GetSection("Fi
 builder.Services.Configure<ApplicationGateway>(settings.GetSection("AzurePlatform:ApplicationGateway"));
 builder.Services.Configure<GovNotifyConfiguration>(settings.GetSection("GovNotify"));
 builder.Services.Configure<AzureTableStorageConfiguration>(settings.GetSection("Logging:TableStorageConfiguration"));
+builder.Services.Configure<DefaultSettings>(settings.GetSection("DefaultSettings"));
 
 builder.Services.AddSingleton<ILoggerProvider>(
     sp =>
@@ -203,7 +206,7 @@ builder.Services.AddSingleton<ILoggerProvider>(
            return new AzureTableLoggerProvider(config.CurrentValue.ConnectionString, config.CurrentValue.TableName);
         }
 
-        return new EventLogLoggerProvider();
+        return new ColorConsoleLoggerProvider();
 
     });
 
@@ -212,6 +215,9 @@ builder.Services.AddLogging();
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 builder.Services.AddScoped<IDbRetryPolicy, DbRetryPolicy>();
 builder.Services.AddScoped<IFileTypeValidator, FileTypeValidator>();
+
+SqlMapper.AddTypeHandler(new DateTimeHandler());
+
 builder.Services.AddScoped<IAzureSqlDbConnectionFactory>(
     sp => {
         var config = sp.GetRequiredService<IOptionsSnapshot<AzurePlatformConfiguration>>().Value.AzureSql;
@@ -335,7 +341,7 @@ var app = builder.Build();
 
 
 app.UseRouting();
-app.UseCors(_policyName);
+app.UseCors(policyName);
 
 
 var swaggerBasePath = "api";

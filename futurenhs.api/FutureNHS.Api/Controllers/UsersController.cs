@@ -1,8 +1,12 @@
 using FutureNHS.Api.Attributes;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Helpers;
+using FutureNHS.Api.Models.Identity.Request;
+using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.Controllers
 {
@@ -11,19 +15,23 @@ namespace FutureNHS.Api.Controllers
     [ApiVersion("1.0")]
     public sealed class UsersController : ControllerBase
     {
+        private readonly string? _defaultGroup;
         private readonly ILogger<UsersController> _logger;
         private readonly IPermissionsService _permissionsService;
         private readonly IUserDataProvider _userDataProvider;
         private readonly IUserService _userService;
         private readonly IEtagService _etagService;
-
-        public UsersController(ILogger<UsersController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider, IUserService userService, IEtagService etagService)
+        private readonly IGroupMembershipService _groupMembershipService;
+  
+        public UsersController(ILogger<UsersController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider, IUserService userService, IEtagService etagService, IGroupMembershipService groupMembershipService, IOptionsMonitor<DefaultSettings> defaultSettings)
         {
             _logger = logger;
             _permissionsService = permissionsService;
             _userDataProvider = userDataProvider;
             _userService = userService;
             _etagService = etagService;
+            _groupMembershipService = groupMembershipService;
+            _defaultGroup = defaultSettings.CurrentValue.DefaultGroup;
         }
 
         [HttpGet]
@@ -80,6 +88,51 @@ namespace FutureNHS.Api.Controllers
             await _userService.UpdateMemberAsync(userId, targetUserId, Request.Body, Request.ContentType, rowVersion, cancellationToken);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("users/register/{emailAddress}")]
+        public async Task<IActionResult> RegisterMemberAsync(string emailAddress, CancellationToken cancellationToken)
+        {
+            var memberDetailsResponse = await _userService.GetMemberByEmailAsync(emailAddress, cancellationToken);
+            if (memberDetailsResponse is not null)
+            {
+                return Ok(memberDetailsResponse);
+            }
+
+            var isMemberInvited = await _userService.IsMemberInvitedAsync(emailAddress, cancellationToken);
+            if (isMemberInvited)
+            {
+                return Ok();
+            }
+
+            return Forbid();
+        }
+
+        [HttpPost]
+        [Route("users/register")]
+        public async Task<IActionResult> RegisterMemberAsync(MemberRegistrationRequest memberRegistrationRequest, CancellationToken cancellationToken)
+        {
+           var userId = await _userService.RegisterMemberAsync(memberRegistrationRequest, cancellationToken);
+
+           if (!userId.HasValue) return Forbid();
+           
+           if (_defaultGroup is not null)
+           {
+               await _groupMembershipService.UserJoinGroupAsync(userId.Value, _defaultGroup, cancellationToken);
+           }
+
+           return Ok(userId);
+
+        }
+
+        [HttpPost]
+        [Route("users/info")]
+        public async Task<IActionResult> MemberInfoAsync([FromBody] MemberIdentityRequest memberIdentity, CancellationToken cancellationToken)
+        {
+            var memberInfoResponse = await _userService.GetMemberInfoAsync(memberIdentity, cancellationToken);
+
+            return Ok(memberInfoResponse);
         }
     }
 }

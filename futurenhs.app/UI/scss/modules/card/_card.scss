@@ -59,7 +59,6 @@ $card-hero-padding: 10px;
     &_heading {
         @include medium-heading;
         margin-bottom: $nhsuk-spacing-point-2;
-        max-width: 60%;
         align-self: center;
     }
 

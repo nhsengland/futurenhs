@@ -16,6 +16,16 @@ const os = require('os')
 const { randomBytes } = require('crypto')
 const { AbortController } = require('node-abort-controller')
 
+const csrfExcludedPaths = [
+    '/api/auth/csrf',
+    '/api/auth/signin',
+    '/api/auth/signout',
+    '/api/auth/signout/azure-ad-b2c',
+    '/api/auth/signin/azure-ad-b2c',
+    '/auth/signout',
+]
+const shouldExcludePathFromCsrf = (path) => csrfExcludedPaths.includes(path)
+
 /**
  * Generate Content Security Policy settings
  */
@@ -126,9 +136,22 @@ nextApp.prepare().then(() => {
     })
 
     /**
+     * Create a custom CSRF handler which excludes certain routes e.g. next-auth routes handle CSRF themselves
+     */
+    const conditionalCsrf = (req, res, next) => {
+        const shouldExclude = shouldExcludePathFromCsrf(req.path)
+
+        if (shouldExclude) {
+            return next()
+        }
+
+        csrfProtection(req, res, next)
+    }
+
+    /**
      * Set response headers
      */
-    app.use(csrfProtection, (req, res, next) => {
+    app.use((req, res, next) => {
         const nonce = generateNonce()
 
         res.set({
@@ -151,19 +174,28 @@ nextApp.prepare().then(() => {
     /**
      * Handle GET requests
      */
-    app.get('*', csrfProtection, (req, res) => {
-        const token = req.csrfToken()
+    app.get('*', conditionalCsrf, (req, res) => {
+        try {
+            if (!shouldExcludePathFromCsrf(req.path)) {
+                const token = req.csrfToken()
+
+                /**
+                 * Set CSRF cookie
+                 */
+                res.cookie('XSRF-TOKEN', token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                })
+            }
+        } catch (error) {
+            if (!shouldExcludePathFromCsrf(req.path)) {
+                throw new Error('Missing CSRF')
+            }
+        }
+
         const parsedUrl = url.parse(req.url, true)
         const { pathname } = parsedUrl
-
-        /**
-         * Set CSRF cookie
-         */
-        res.cookie('XSRF-TOKEN', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-        })
 
         /**
          * Handle health-check pings
@@ -234,7 +266,7 @@ nextApp.prepare().then(() => {
     /**
      * Handle POST requests
      */
-    app.post('*', csrfProtection, (req, res) => {
+    app.post('*', conditionalCsrf, (req, res) => {
         return handle(req, res)
     })
 

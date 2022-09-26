@@ -92,7 +92,7 @@ namespace FutureNHS.Api.Services
                 LastName = userResult.LastName,
                 Initials = userResult.Initials,
                 Email = userResult.Email,
-                DateJoinedUtc = groupUserResult.ApprovedDateUTCAsString,
+                DateJoinedUtc = groupUserResult.ApprovedDateUTC,
                 LastLoginUtc = userResult.LastLoginDateUtc,
                 RoleId = roleResult.Id,
                 Role = roleResult.Name,

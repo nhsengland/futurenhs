@@ -4,14 +4,14 @@ export const enum routes {
     ADMIN_USERS = '/admin/users',
     ADMIN_GROUPS = '/admin/groups',
     USERS = '/users',
-    LOG_OUT = '/log-out',
+    SIGN_IN = '/auth/signin',
+    SIGN_OUT = '/auth/signout',
     GROUPS = '/groups',
     ACCESSIBILITY = '/accessibility-statement',
     CONTACT_US = '/contact-us',
     COOKIES = '/cookies',
     PRIVACY_POLICY = '/privacy-policy',
     TERMS_AND_CONDITIONS = '/terms-and-conditions',
-    API_LOGIN = '/api/log-in',
 }
 
 export const enum queryParams {

@@ -55,7 +55,7 @@ export const updateGroupForm: FormConfig = {
                 {
                     name: 'Strapline',
                     text: {
-                        label: 'Strap line (optional)',
+                        label: 'Strapline (optional)',
                         hint: 'Add a strapline to encapsulate your group, include keywords for search',
                     },
                     component: 'input',
@@ -87,8 +87,8 @@ export const updateGroupForm: FormConfig = {
                 {
                     name: 'ThemeId',
                     text: {
-                        label: 'Choose your theme colour',
-                        hint: 'Please choose a colour theme for your group. Please note, all colour combinations are accessible. For more information, see our knowledge hub.',
+                        label: 'Choose your colour theme',
+                        hint: 'Please choose a colour theme for your group. Please note, all colour combinations are accessible. For more information, <a href="https://support-futurenhs.zendesk.com/hc/en-gb"> see our support site.</a>',
                     },
                     component: 'multiChoice',
                     options: [

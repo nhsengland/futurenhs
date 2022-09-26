@@ -5,8 +5,8 @@ import { groupFolderForm } from './group-folder'
 import { createFileForm } from './create-file'
 import { createGroupForm } from './create-group'
 import { updateGroupForm } from './update-group'
-import { acceptGroupMemberForm } from './accept-group-member';
-import { rejectGroupMemberForm } from './reject-group-member';
+import { acceptGroupMemberForm } from './accept-group-member'
+import { rejectGroupMemberForm } from './reject-group-member'
 import { deleteGroupMemberForm } from './delete-group-member'
 import { updateGroupMemberForm } from './update-group-member'
 import { inviteUserForm } from './invite-user'
@@ -16,6 +16,7 @@ import { contentBlockTextForm } from './content-block-text'
 import { contentBlockQuickLinksWrapper } from './content-block-quick-links-wrapper'
 import { contentBlockQuickLink } from './content-block-quick-link'
 import { formTypes } from '@constants/forms'
+import { registerSiteMemberForm } from './register-site-user'
 
 export default {
     [formTypes.CREATE_DISCUSSION]: createDiscussionForm,
@@ -33,6 +34,7 @@ export default {
     [formTypes.INVITE_USER]: inviteUserForm,
     [formTypes.UPDATE_SITE_USER]: updateSiteMemberForm,
     [formTypes.UPDATE_SITE_USER_ROLE]: updateSiteUserRoleForm,
+    [formTypes.REGISTER_SITE_USER]: registerSiteMemberForm,
     [formTypes.CONTENT_BLOCK_TEXT]: contentBlockTextForm,
     [formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER]:
         contentBlockQuickLinksWrapper,

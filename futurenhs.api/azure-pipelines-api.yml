@@ -23,8 +23,7 @@ jobs:
   displayName: 'Build and deploy artifact for FutureNHS Api'
   pool :
     vmImage: 'windows-latest'
-   ##dependsOn: CheckChangesInPaths
-   ##condition: eq(dependencies.CheckChangesInPaths.outputs['ChangesInPaths.FutureNHS'], 'true') 
+
   steps:
    - task: UseDotNet@2
      displayName: 'Set dotnet SDK to v6.0'
@@ -99,33 +98,6 @@ jobs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: 'FNHSApi'
       publishLocation: 'pipeline'
-      
-   - task: PowerShell@2
-     displayName: 'Add RUN Tag to trigger Release'
-     env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-     inputs:
-      targetType: 'inline'
-      script: |
-       $user = ""
-       $token = $env:SYSTEM_ACCESSTOKEN
-
-       $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$token)))
-
-       $org = "$(System.CollectionUri)"
-       $teamProject = "$(System.TeamProject)"
-       $buildId = "$(Build.BuildId)"
-       $tagName = "RUN"
-
-       $restApiUpdateBuild = "$org/$teamProject/_apis/build/builds/$buildId/tags/$tagName`?api-version=6.0"
-
-       function InvokePutReques ($PutUrl)
-       {   
-           return Invoke-RestMethod -Uri $PutUrl -Method Put -ContentType "application/json" -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
-       }
-
-       $result = InvokePutReques $restApiUpdateBuild
-      pwsh: true
       
 - job: BuildDatabase
   displayName: 'Build and deploy artifact for database'

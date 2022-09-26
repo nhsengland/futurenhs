@@ -31,6 +31,9 @@ export const GroupMemberInviteTemplate: (props: Props) => JSX.Element = ({
     const [errors, setErrors] = useState(formConfig?.errors)
     const notificationsContext: any = useContext(NotificationsContext)
 
+    
+   
+
     const { secondaryHeading } = contentText
 
     /**

@@ -299,3 +299,9 @@ axeReports/reportResults.json
 /futurenhs.app/.vercel
 /futurenhs.app/storybook-static
 
+
+futurenhs.api/FutureNHS.Data/.DS_Store
+
+futurenhs.api/FutureNHS.Data/FutureNHS.Data.FutureNHS/.DS_Store
+
+futurenhs.content.api/FutureNHS.Content.Data/.DS_Store
