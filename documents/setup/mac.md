@@ -55,7 +55,7 @@ npm install --global gulp-cli
 ```
 sudo docker pull mcr.microsoft.com/azure-sql-edge
 
-sudo docker run --cap-add SYS_PTRACE -e 'ACCEPT_EULA=1' -e 'MSSQL_SA_PASSWORD=<STRONGPASSWORDHERE>' -p 1433:1433 --name sqledge -d mcr.microsoft.com/azure-sql-edge
+sudo docker run --cap-add SYS_PTRACE -e 'ACCEPT_EULA=1' -e 'MSSQL_SA_PASSWORD=<ENTERSTRONGPASSWORDHERE>' -p 1433:1433 --name sqledge -d mcr.microsoft.com/azure-sql-edge
 ```
 
 ## Install Azure data studio
@@ -70,7 +70,7 @@ slight tweak required to path as does not work in gulp, only terminal, when foll
 ```
 mkdir sqlpackage
 unzip ~/Downloads/sqlpackage-osx-<version string>.zip -d /usr/local/share/sqlpackage
-chmod +x /usr/local/share/sqlpackage
+chmod +x /usr/local/share/sqlpackage/sqlpackage
 echo 'export PATH="/usr/local/share/sqlpackage:$PATH"' >> ~/.bash_profile
 source ~/.bash_profile
 sqlpackage
@@ -117,7 +117,7 @@ brew install --build-from-source gcc
 Install XCode Build Tools CLI
 Also required by "libvps"
 ```
-xcode-select install
+xcode-select --install
 ```
 
 ### Install "vips"
@@ -163,6 +163,18 @@ cd ..
 
 gulp activate
 ```
+
+## Run the app
+
+```
+cd futurenhs.app
+
+npm run start:dev 
+```
+Tip:
+
+ - Allow keychain popups
+ - Make sure your AirPlay receiver [System Preferences -> Sharing] is ticked off to listen port 5000
 
 # Config Secrets
 
