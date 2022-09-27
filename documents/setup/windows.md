@@ -61,9 +61,9 @@ npm install --global gulp-cli
 ## Git Clone Repo
 cd to location you want to pull code down to, eg cd Documents/Source
 ```
-git clone https://github.com/tim-hunt/futurenhs.git
+git clone https://github.com/nhsengland/futurenhs.git
 cd futurenhs
-git reset --hard origin/SPRINT
+git reset --hard origin/main
 ```
 
 ### Pull down packages for root and web app

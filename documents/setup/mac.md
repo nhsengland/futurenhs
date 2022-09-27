@@ -84,9 +84,9 @@ For M1 chips select Arm64 version otherwise pick x64
 ## Git Clone Repo
 cd to location you want to pull code down to, eg cd Documents/Source
 ```
-git clone https://github.com/tim-hunt/futurenhs.git
+git clone https://github.com/nhsengland/futurenhs.git
 cd futurenhs
-git reset --hard origin/SPRINT
+git reset --hard origin/main
 ```
 
 ## Ensure python is in the env path

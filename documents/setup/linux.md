@@ -98,9 +98,9 @@ sudo apt-get update && \ sudo apt-get install -y dotnet-sdk-6.0
 ## Git Clone Repo
 cd to location you want to pull code down to, eg cd Documents/Source
 ```
-git clone https://github.com/tim-hunt/futurenhs.git
+git clone https://github.com/nhsengland/futurenhs.git
 cd futurenhs
-git reset --hard origin/SPRINT
+git reset --hard origin/main
 ```
 
 ## Install npm packages
