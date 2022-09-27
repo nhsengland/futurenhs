@@ -7,6 +7,6 @@ export default {
     intro: '<p>Collaborate, connect, share and learn.</p>',
     secondaryHeading: 'Register your interest',
     bodyHtml:
-        '<p>Don\'t have an account? <a href="mailto:support@futurenhs.zendesk.com?subject=Register%20Interest">Register your interest</a>.</p>',
+        '<p>Don\'t have an account? <a  class="gtm-register-interest" href="https://forms.office.com/r/6EQABP3Fkr">Register your interest</a>.</p>',
     signIn: 'Sign in',
 } as GenericPageTextContent
