@@ -225,7 +225,7 @@ namespace FutureNHS.Api.Services.Admin
 
         private string CreateRegistrationLink()
         {
-            var registrationLink = $"{_fqdn}/members/register";
+            var registrationLink = $"{_fqdn}/auth/signin";
             return registrationLink;
         }
     }
