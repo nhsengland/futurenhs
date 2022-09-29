@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
-import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { getSession } from 'next-auth/react'
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { getAuthCsrfData } from '@services/getAuthCsrfData'
 import { selectQuery } from '@selectors/context'
 import { handleSSRAuthSuccessProps } from '@helpers/util/ssr/handleSSRAuthSuccessProps'
@@ -20,7 +20,7 @@ interface ContentText extends GenericPageTextContent {
     signIn: string
 }
 
-interface Props extends Page {
+export interface Props extends Page {
     contentText: ContentText
 }
 

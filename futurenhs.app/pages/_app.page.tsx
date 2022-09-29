@@ -1,4 +1,4 @@
-import '../UI/scss/screen.scss'
+import '../assets/scss/screen.scss'
 
 import React, { useEffect, useState, useRef } from 'react'
 import App from 'next/app'
@@ -108,8 +108,10 @@ const CustomApp = ({ Component, pageProps }) => {
     }
 
     if (hasServerError) {
-
-        const errorsToRender: Record<string, any> = process.env.NEXT_PUBLIC_APP_DEBUG ? errors : null
+        const errorsToRender: Record<string, any> = process.env
+            .NEXT_PUBLIC_APP_DEBUG
+            ? errors
+            : null
 
         return (
             <NotificationsContext.Provider
@@ -119,7 +121,10 @@ const CustomApp = ({ Component, pageProps }) => {
                     <FormsContext.Provider value={formsContextConfig}>
                         <LoadingContext.Provider value={loadingContextConfig}>
                             <StandardLayout {...pageProps} user={null}>
-                                <ErrorPage errors={errorsToRender} statusCode={500} />
+                                <ErrorPage
+                                    errors={errorsToRender}
+                                    statusCode={500}
+                                />
                             </StandardLayout>
                         </LoadingContext.Provider>
                     </FormsContext.Provider>

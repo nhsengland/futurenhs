@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
-import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { getSession } from 'next-auth/react'
+import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
@@ -9,7 +9,6 @@ import { selectPageProps } from '@selectors/context'
 import { Link } from '@components/Link'
 import { PageBody } from '@components/PageBody'
 import { RichText } from '@components/RichText'
-
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
 

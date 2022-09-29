@@ -2,12 +2,11 @@ import { GetServerSideProps } from 'next'
 import { getProviders } from 'next-auth/react'
 //import getAuthorizationUrl from 'next-auth/core/lib/oauth/authorization-url'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
-import authConfig from '@pages/api/auth/[...nextauth].page'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
 import { GetServerSidePropsContext } from '@appTypes/next'
-import { Props } from '@components/_pageTemplates/AuthSignInTemplate/interfaces'
+import { Props } from '@pages/auth/signin/index.page'
 import { selectPageProps } from '@selectors/context'
 
 /**

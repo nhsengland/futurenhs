@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { getSession } from 'next-auth/react'
+import Link from 'next/link'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { setFetchOpts, fetchJSON } from '@helpers/fetch'
 import { getAuthCsrfData } from '@services/getAuthCsrfData'
@@ -14,8 +15,6 @@ import { PageBody } from '@components/PageBody'
 import { RichText } from '@components/RichText'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
-import Link from 'next/link'
-
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
 
