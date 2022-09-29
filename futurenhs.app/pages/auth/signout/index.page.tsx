@@ -9,9 +9,58 @@ import { withRoutes } from '@hofs/withRoutes'
 import { withTextContent } from '@hofs/withTextContent'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { selectPageProps } from '@selectors/context'
-import { AuthSignOutTemplate } from '@components/_pageTemplates/AuthSignOutTemplate'
-import { Props } from '@components/_pageTemplates/AuthSignOutTemplate/interfaces'
 import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
+import { PageBody } from '@components/PageBody'
+import { RichText } from '@components/RichText'
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
+import { LayoutColumn } from '@components/LayoutColumn'
+import Link from 'next/link'
+
+import { Page } from '@appTypes/page'
+import { GenericPageTextContent } from '@appTypes/content'
+
+interface ContentText extends GenericPageTextContent {
+    signIn: string
+}
+
+interface Props extends Page {
+    contentText: ContentText
+}
+
+/**
+ * Auth signout template
+ */
+const AuthSignOutPage: (props: Props) => JSX.Element = ({
+    routes,
+    contentText,
+}) => {
+    const { authSignIn } = routes ?? {}
+    const { mainHeading, intro, signIn } = contentText ?? {}
+
+    return (
+        <PageBody className="tablet:u-px-0">
+            <LayoutColumnContainer justify="centre">
+                <LayoutColumn tablet={8} desktop={6}>
+                    {mainHeading && (
+                        <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
+                    )}
+                    {intro && (
+                        <RichText
+                            wrapperElementType="div"
+                            className="u-mb-8"
+                            bodyHtml={intro}
+                        />
+                    )}
+                    {authSignIn && signIn && (
+                        <Link href={authSignIn}>
+                            <a className="c-button">{signIn}</a>
+                        </Link>
+                    )}
+                </LayoutColumn>
+            </LayoutColumnContainer>
+        </PageBody>
+    )
+}
 
 export const getServerSideProps: GetServerSideProps = async (
     context: GetServerSidePropsContext
@@ -94,7 +143,4 @@ export const getServerSideProps: GetServerSideProps = async (
         }
     )
 
-/**
- * Export page template
- */
-export default AuthSignOutTemplate
+export default AuthSignOutPage

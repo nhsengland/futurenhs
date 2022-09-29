@@ -2,8 +2,6 @@ import { GetServerSideProps } from 'next'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
-import { layoutIds, routeParams } from '@constants/routes'
-import { withUser } from '@hofs/withUser'
 import { withTextContent } from '@hofs/withTextContent'
 import { withRoutes } from '@hofs/withRoutes'
 import {
@@ -11,35 +9,151 @@ import {
     selectFormData,
     selectMultiPartFormData,
     selectPageProps,
-    selectParam,
     selectRequestMethod,
-    selectUser,
 } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
-import { getSiteUser } from '@services/getSiteUser'
-import { getSiteUserRole } from '@services/getSiteUserRole'
 import { formTypes } from '@constants/forms'
 import { FormConfig, FormOptions } from '@appTypes/form'
-import { setFormConfigOptions } from '@helpers/util/form'
-import { Props } from '@components/_pageTemplates/AuthRegisterTemplate/interfaces'
-import { withTokens } from '@hofs/withTokens'
 import { requestMethods } from '@constants/fetch'
 import { getStandardServiceHeaders } from '@helpers/fetch'
-import { putSiteUser } from '@services/putSiteUser'
 import { FormErrors } from '@appTypes/form'
 import { getServiceErrorDataValidationErrors } from '@services/index'
-import { User } from '@appTypes/user'
-import { SiteUserUpdateTemplate } from '@components/_pageTemplates/SiteUserUpdateTemplate'
-import { actions } from '@constants/actions'
-import { putSiteUserRole } from '@services/putSiteUserRole'
-import { getSiteUserRoles } from '@services/getSiteUserRoles'
-import { selectForm } from '@selectors/forms'
-import formConfigs from '@formConfigs/index'
+import { selectFormErrors } from '@selectors/forms'
 import { postRegisterSiteUser } from '@services/postRegisterSiteUser'
-import { AuthRegisterTemplate } from '@components/_pageTemplates/AuthRegisterTemplate'
 import { getSession } from 'next-auth/react'
+import { useRef, useState } from 'react'
+import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
+import { LayoutColumn } from '@components/LayoutColumn'
+import { Form } from '@components/Form'
+import { ErrorSummary } from '@components/ErrorSummary'
+import { getGenericFormError } from '@helpers/util/form'
+import { useRouter } from 'next/router'
+import { useFormConfig } from '@hooks/useForm'
+import { PageBody } from '@components/PageBody'
+import { RichText } from '@components/RichText'
+import { GenericPageTextContent } from '@appTypes/content'
+import { Page } from '@appTypes/page'
 
-const props: Partial<Props> = {}
+declare interface ContentText extends GenericPageTextContent {
+    firstNameLabel: string
+    lastNameLabel: string
+    pronounsLabel: string
+    emailLabel: string
+    editHeading?: string
+    editButtonLabel?: string
+    editRoleHeading?: string
+    signOut: string
+}
+
+export interface Props extends Page {
+    siteUser: any
+    contentText: ContentText
+    subjectId: string
+    emailAddress: string
+    issuer: string
+}
+
+const AuthRegisterPage: (props: Props) => JSX.Element = ({
+    contentText,
+    forms,
+    csrfToken,
+    routes,
+    etag,
+    subjectId,
+    emailAddress,
+    issuer,
+}) => {
+    const router = useRouter()
+    const errorSummaryRef: any = useRef()
+
+    //const { authSignOut } = routes;
+    const profileFormConfig: FormConfig = useFormConfig(
+        formTypes.REGISTER_SITE_USER,
+        forms[formTypes.REGISTER_SITE_USER]
+    )
+
+    const [errors, setErrors] = useState(
+        Object.assign({}, selectFormErrors(forms, formTypes.REGISTER_SITE_USER))
+    )
+
+    const { mainHeading, bodyHtml } = contentText ?? {}
+
+    /**
+     * Handle client-side validation failure in forms
+     */
+    const handleValidationFailure = (errors: FormErrors): void => {
+        setErrors(errors)
+        errorSummaryRef?.current?.focus?.()
+    }
+
+    /**
+     * Handle client-side update submission for profile details
+     */
+    const handleProfileSubmit = async (
+        formData: FormData
+    ): Promise<FormErrors> => {
+        return new Promise((resolve) => {
+            const etagToUse: string =
+                typeof etag === 'object' ? etag.profileEtag : etag
+
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag: etagToUse,
+            })
+
+            postRegisterSiteUser({
+                body: formData,
+                headers,
+                subjectId: subjectId,
+                emailAddress: emailAddress,
+                issuer: issuer,
+            })
+                .then(() => {
+                    router.push(routes.groupsRoot)
+                    setErrors({})
+                    resolve({})
+                })
+                .catch((error) => {
+                    const errors: FormErrors =
+                        getServiceErrorDataValidationErrors(error) ||
+                        getGenericFormError(error)
+
+                    setErrors(errors)
+                    resolve(errors)
+                })
+        })
+    }
+
+    /**
+     * Render
+     */
+    return (
+        <PageBody className="tablet:u-px-0">
+            <LayoutColumnContainer justify="centre">
+                <LayoutColumn tablet={8} desktop={6}>
+                    <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
+                    <RichText bodyHtml={bodyHtml} />
+                    <ErrorSummary
+                        ref={errorSummaryRef}
+                        errors={errors}
+                        className="u-mb-10"
+                    />
+                    <Form
+                        csrfToken={csrfToken}
+                        formConfig={profileFormConfig}
+                        text={{
+                            submitButton: 'Save changes',
+                            cancelButton: 'Discard changes',
+                        }}
+                        submitAction={handleProfileSubmit}
+                        cancelHref={`signout`}
+                        validationFailAction={handleValidationFailure}
+                    />
+                </LayoutColumn>
+            </LayoutColumnContainer>
+        </PageBody>
+    )
+}
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -131,7 +245,4 @@ export const getServerSideProps: GetServerSideProps = async (
         }
     )
 
-/**
- * Export page template
- */
-export default AuthRegisterTemplate
+export default AuthRegisterPage
