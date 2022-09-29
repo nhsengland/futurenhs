@@ -1,11 +1,13 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
 
-import AdminUsersTemplate, { getServerSideProps } from './index.page'
+import AdminUsersPage, {
+    Props,
+    getServerSideProps,
+} from '@pages/admin/users/index.page'
 import { routes } from '@jestMocks/generic-props'
 import { layoutIds } from '@constants/routes'
-import { Props } from '@components/_pageTemplates/AdminUsersTemplate/interfaces'
 
 import { mswServer } from '../../../jest-mocks/msw-server'
 import { handlers } from '../../../jest-mocks/handlers'
@@ -50,19 +52,18 @@ const props: Props = {
     ],
 }
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe('admin/users page', () => {
-
     beforeAll(() => mswServer.listen())
     afterEach(() => mswServer.resetHandlers())
     afterAll(() => mswServer.close())
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/admin/groups');
-    });
+        mockRouter.setCurrentUrl('/admin/groups')
+    })
 
     it('renders correctly', () => {
-        render(<AdminUsersTemplate {...props} />)
+        render(<AdminUsersPage {...props} />)
 
         expect(
             screen.getAllByText(props.usersList[0].firstName).length

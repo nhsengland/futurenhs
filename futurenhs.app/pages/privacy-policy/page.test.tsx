@@ -5,7 +5,7 @@ import { layoutIds } from '@constants/routes'
 import { routes } from '@jestMocks/generic-props'
 import Page, { getServerSideProps } from './index.page'
 
-import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfaces'
+import { Props } from '@components/_pageLayouts/GenericContentLayout/interfaces'
 
 const props: Props = {
     id: 'mockPageId',
@@ -29,7 +29,7 @@ describe('Privacy policy page', () => {
     it('gets required server side props', async () => {
         const serverSideProps = await getServerSideProps({
             req: {},
-            res: {}
+            res: {},
         } as any)
 
         expect(serverSideProps).toHaveProperty('props.contentText')

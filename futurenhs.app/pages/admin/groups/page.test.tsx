@@ -1,17 +1,17 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
-
-import AdminGroupsTemplate, { getServerSideProps } from './index.page'
+import AdminGroupsPage, {
+    getServerSideProps,
+    Props,
+} from '@pages/admin/groups/index.page'
 import { routes } from '@jestMocks/generic-props'
 import { layoutIds } from '@constants/routes'
-import { Props } from '@components/_pageTemplates/AdminGroupsTemplate/interfaces'
-
 import { mswServer } from '../../../jest-mocks/msw-server'
 import { handlers } from '../../../jest-mocks/handlers'
 import { actions } from '@constants/actions'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 const props: Props = {
     id: 'mockId',
@@ -49,16 +49,15 @@ const props: Props = {
 }
 
 describe('groups page', () => {
-
     beforeAll(() => mswServer.listen())
     afterAll(() => mswServer.close())
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/admin/groups');
-    });
+        mockRouter.setCurrentUrl('/admin/groups')
+    })
     afterEach(() => mswServer.resetHandlers())
 
     it('renders correctly', () => {
-        render(<AdminGroupsTemplate {...props} />)
+        render(<AdminGroupsPage {...props} />)
 
         expect(
             screen.getAllByText(props.groupsList[0].text.mainHeading).length

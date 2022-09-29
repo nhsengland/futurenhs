@@ -1,10 +1,8 @@
 import * as React from 'react'
 import { cleanup, render, screen } from '@jestMocks/index'
 import mockRouter from 'next-router-mock'
-
 import { routes } from '@jestMocks/generic-props'
-import { SearchListingTemplate } from './index'
-import { Props } from './interfaces'
+import SearchListingPage, { Props } from '@pages/search/index.page'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -30,7 +28,7 @@ describe('Search listing template', () => {
     }
 
     it('renders correctly', () => {
-        render(<SearchListingTemplate {...props} />)
+        render(<SearchListingPage {...props} />)
         const { metaDescription, title, mainHeading } = props.contentText ?? {}
         expect(
             screen.getAllByText(
@@ -40,7 +38,7 @@ describe('Search listing template', () => {
     })
 
     it('conditionally renders search results if results are found/resultsList is not empty', () => {
-        render(<SearchListingTemplate {...props} />)
+        render(<SearchListingPage {...props} />)
 
         expect(screen.getAllByText('Mock no results found').length).toBe(1)
 
@@ -70,7 +68,7 @@ describe('Search listing template', () => {
             },
         })
 
-        render(<SearchListingTemplate {...propsCopy} />)
+        render(<SearchListingPage {...propsCopy} />)
 
         expect(screen.getAllByText('Mock search result body').length).toBe(1)
     })
@@ -78,7 +76,7 @@ describe('Search listing template', () => {
     it('renders minimum required term length message if search term is less than minimum length', () => {
         const propsCopy: Props = Object.assign({}, props, { term: 'no' })
 
-        render(<SearchListingTemplate {...propsCopy} />)
+        render(<SearchListingPage {...propsCopy} />)
 
         expect(
             screen.getAllByText('Mock no results minimum term length').length

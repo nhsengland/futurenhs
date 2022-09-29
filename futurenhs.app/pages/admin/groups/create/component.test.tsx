@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { cleanup, render, screen } from '@jestMocks/index'
-
-import { AdminCreateGroupTemplate } from './index'
+import AdminCreateGroupPage, {
+    Props,
+} from '@pages/admin/groups/create/index.page'
 import { routes } from '@jestMocks/generic-props'
 import forms from '@formConfigs/index'
-
-import { Props } from './interfaces'
 
 describe('Admin users invite template', () => {
     afterEach(cleanup)
@@ -24,7 +23,7 @@ describe('Admin users invite template', () => {
     }
 
     it('renders correctly', () => {
-        render(<AdminCreateGroupTemplate {...props} />)
+        render(<AdminCreateGroupPage {...props} />)
 
         expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
     })

@@ -1,12 +1,12 @@
 import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
-
-import AdminHomeTemplate, { getServerSideProps } from './index.page'
 import { routes } from '@jestMocks/generic-props'
 import { layoutIds } from '@constants/routes'
-import { Props } from '@components/_pageTemplates/AdminHomeTemplate/interfaces'
-
+import AdminHomePage, {
+    Props,
+    getServerSideProps,
+} from '@pages/admin/index.page'
 import { mswServer } from '../../jest-mocks/msw-server'
 import { actions } from '@constants/actions'
 
@@ -48,7 +48,7 @@ describe('admin page', () => {
     afterAll(() => mswServer.close())
 
     it('renders correctly', () => {
-        render(<AdminHomeTemplate {...props} />)
+        render(<AdminHomePage {...props} />)
 
         expect(screen.getAllByText('Manage users').length).toEqual(1)
         expect(screen.getAllByText('Manage groups').length).toEqual(1)

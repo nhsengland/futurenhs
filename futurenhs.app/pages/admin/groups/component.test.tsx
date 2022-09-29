@@ -2,11 +2,8 @@ import * as React from 'react'
 import { cleanup, render, screen } from '@jestMocks/index'
 import mockRouter from 'next-router-mock'
 import { actions as actionConstants } from '@constants/actions'
-
-import { AdminGroupsTemplate } from './index'
+import AdminGroupsPage, { Props } from '@pages/admin/groups/index.page'
 import { routes } from '@jestMocks/generic-props'
-
-import { Props } from './interfaces'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -30,13 +27,13 @@ describe('Admin Groups Template', () => {
     }
 
     it('renders correctly', () => {
-        render(<AdminGroupsTemplate {...props} />)
+        render(<AdminGroupsPage {...props} />)
 
         expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
     })
 
     it('conditionally renders create user link', () => {
-        render(<AdminGroupsTemplate {...props} />)
+        render(<AdminGroupsPage {...props} />)
 
         expect(screen.queryByText('Create group')).toBeNull()
 
@@ -46,7 +43,7 @@ describe('Admin Groups Template', () => {
             actions: [actionConstants.SITE_ADMIN_MEMBERS_ADD],
         })
 
-        render(<AdminGroupsTemplate {...propsCopy} />)
+        render(<AdminGroupsPage {...propsCopy} />)
 
         expect(screen.getAllByText('Create group').length).toBe(1)
     })

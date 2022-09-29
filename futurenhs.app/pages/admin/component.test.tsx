@@ -2,11 +2,8 @@ import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { cleanup, render, screen } from '@jestMocks/index'
 import { actions as actionConstants } from '@constants/actions'
-
-import { AdminHomeTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
-
-import { Props } from './interfaces'
+import AdminHomePage, { Props } from '@pages/admin/index.page'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -27,7 +24,7 @@ describe('Admin home template', () => {
     }
 
     it('conditionally renders manage users button', () => {
-        render(<AdminHomeTemplate {...props} />)
+        render(<AdminHomePage {...props} />)
 
         expect(screen.getAllByText('Manage users').length).toBe(1)
         expect(screen.getAllByText('Manage groups').length).toBe(1)
@@ -38,7 +35,7 @@ describe('Admin home template', () => {
             actions: [],
         })
 
-        render(<AdminHomeTemplate {...propsCopy} />)
+        render(<AdminHomePage {...propsCopy} />)
 
         expect(screen.queryByText('Manage users')).toBeNull()
         expect(screen.queryByText('Manage groups')).toBeNull()

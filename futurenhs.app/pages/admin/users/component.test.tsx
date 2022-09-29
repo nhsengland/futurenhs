@@ -2,11 +2,8 @@ import * as React from 'react'
 import { cleanup, render, screen } from '@jestMocks/index'
 import mockRouter from 'next-router-mock'
 import { actions as actionConstants } from '@constants/actions'
-
-import { AdminUsersTemplate } from './index'
+import AdminUsersPage, { Props } from '@pages/admin/users/index.page'
 import { routes } from '@jestMocks/generic-props'
-
-import { Props } from './interfaces'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -29,7 +26,7 @@ describe('Admin users template', () => {
     }
 
     it('renders correctly', () => {
-        render(<AdminUsersTemplate {...props} />)
+        render(<AdminUsersPage {...props} />)
 
         expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
     })
@@ -45,13 +42,13 @@ describe('Admin users template', () => {
             ],
         })
 
-        render(<AdminUsersTemplate {...propsCopy} />)
+        render(<AdminUsersPage {...propsCopy} />)
 
         expect(screen.getAllByText('Test User').length).toBe(1)
     })
 
     it('conditionally renders create user link', () => {
-        render(<AdminUsersTemplate {...props} />)
+        render(<AdminUsersPage {...props} />)
 
         expect(screen.queryByText('Invite user')).toBeNull()
 
@@ -61,7 +58,7 @@ describe('Admin users template', () => {
             actions: [actionConstants.SITE_ADMIN_MEMBERS_ADD],
         })
 
-        render(<AdminUsersTemplate {...propsCopy} />)
+        render(<AdminUsersPage {...propsCopy} />)
 
         expect(screen.getAllByText('Invite user').length).toBe(1)
     })

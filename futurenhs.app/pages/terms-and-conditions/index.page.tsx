@@ -9,30 +9,32 @@ import { selectPageProps } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
 import { GenericContentTemplate } from '@components/_pageTemplates/GenericContentTemplate'
-import { Props } from '@components/_pageTemplates/GenericContentTemplate/interfaces'
+import { Props } from '@components/_pageLayouts/GenericContentLayout/interfaces'
 
 /**
  * Get props to inject into page on the initial server-side request
  */
- export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => await pipeSSRProps(context, {
-    routeId: 'c0e49c49-f9cb-40c0-bafe-4f603b495b1f'
-}, [
-    [withUser, { isRequired: false }],
-    withRoutes,
-    withTextContent
-], async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (
+    context: GetServerSidePropsContext
+) =>
+    await pipeSSRProps(
+        context,
+        {
+            routeId: 'c0e49c49-f9cb-40c0-bafe-4f603b495b1f',
+        },
+        [[withUser, { isRequired: false }], withRoutes, withTextContent],
+        async (context: GetServerSidePropsContext) => {
+            /**
+             * Get data from request context
+             */
+            const props: Partial<Props> = selectPageProps(context)
 
-    /**
-     * Get data from request context
-     */
-    const props: Partial<Props> = selectPageProps(context);
-
-    /**
-     * Return data to page template
-     */
-    return handleSSRSuccessProps({ props, context })
-
-});
+            /**
+             * Return data to page template
+             */
+            return handleSSRSuccessProps({ props, context })
+        }
+    )
 
 /**
  * Export page template
