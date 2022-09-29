@@ -1,4 +1,4 @@
-import '../UI/scss/screen.scss'
+import '../assets/scss/screen.scss'
 import * as NextImage from 'next/image'
 
 import { themes } from '../constants/themes'
