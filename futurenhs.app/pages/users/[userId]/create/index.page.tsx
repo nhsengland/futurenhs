@@ -15,28 +15,25 @@ import {
     selectUser,
 } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
-import { getSiteUser } from '@services/getSiteUser'
-import { getSiteUserRole } from '@services/getSiteUserRole'
 import { formTypes } from '@constants/forms'
-import { FormConfig, FormOptions } from '@appTypes/form'
-import { setFormConfigOptions } from '@helpers/util/form'
-import { Props } from '@components/_pageTemplates/SiteUserTemplate/interfaces'
-import { withTokens } from '@hofs/withTokens'
+import { FormConfig } from '@appTypes/form'
+import { Props } from '@pages/users/[userId]/index.page'
 import { requestMethods } from '@constants/fetch'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { putSiteUser } from '@services/putSiteUser'
 import { FormErrors } from '@appTypes/form'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { User } from '@appTypes/user'
-import { SiteUserUpdateTemplate } from '@components/_pageTemplates/SiteUserUpdateTemplate'
 import { actions } from '@constants/actions'
-import { putSiteUserRole } from '@services/putSiteUserRole'
-import { getSiteUserRoles } from '@services/getSiteUserRoles'
-import { selectForm } from '@selectors/forms'
-import formConfigs from '@formConfigs/index'
 
 const routeId: string = '9e86c5cc-6836-4319-8d9d-b96249d4c909'
 const props: Partial<Props> = {}
+
+const CreateUserPage = () => (
+    <div className="c-page-body u-w-full tablet:u-px-4 u-py-10 tablet:u-px-0">
+        <h1>Create user profile</h1>
+    </div>
+)
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -135,11 +132,4 @@ export const getServerSideProps: GetServerSideProps = async (
         }
     )
 
-/**
- * Export page template
- */
-export default () => (
-    <div className="c-page-body u-w-full tablet:u-px-4 u-py-10 tablet:u-px-0">
-        <h1>Create user profile</h1>
-    </div>
-)
+export default CreateUserPage
