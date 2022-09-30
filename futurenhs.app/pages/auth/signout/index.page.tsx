@@ -53,17 +53,17 @@ export const getServerSideProps: GetServerSideProps = async (
                     ])
                     const csrfToken: string = csrfData.data
 
-                    /**
-                     * Sign out locally
-                     */
-                    await fetchJSON(
-                        `${process.env.APP_URL}${props.routes.authApiSignOut}`,
-                        setFetchOpts({
-                            method: requestMethods.POST,
-                            body: { csrfToken, callbackUrl },
-                        }),
-                        defaultTimeOutMillis
-                    )
+                    // /**
+                    //  * Sign out locally
+                    //  */
+                    // await fetchJSON(
+                    //     `${process.env.APP_URL}${props.routes.authApiSignOut}`,
+                    //     setFetchOpts({
+                    //         method: requestMethods.POST,
+                    //         body: { csrfToken, callbackUrl },
+                    //     }),
+                    //     defaultTimeOutMillis
+                    // )
 
                     /**
                      * Ensure the request to clear the token is passed through to the browser
