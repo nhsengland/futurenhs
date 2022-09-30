@@ -1,14 +1,18 @@
 import classNames from 'classnames'
 import Head from 'next/head'
-
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { LayoutColumn } from '@components/LayoutColumn'
 import { PageBody } from '@components/PageBody'
 import { RichText } from '@components/RichText'
+import { Page } from '@appTypes/page'
+import { User } from '@appTypes/user'
 
-import { Props } from './interfaces'
+export interface Props extends Page {
+    user: User
+    pageTitle?: string
+}
 
-export const GenericContentTemplate: (props: Props) => JSX.Element = ({
+const GenericLayout: (props: Props) => JSX.Element = ({
     user,
     contentText,
     pageTitle,
@@ -33,3 +37,5 @@ export const GenericContentTemplate: (props: Props) => JSX.Element = ({
         </>
     )
 }
+
+export default GenericLayout

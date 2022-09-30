@@ -7,9 +7,7 @@ import { withTextContent } from '@hofs/withTextContent'
 import { withRoutes } from '@hofs/withRoutes'
 import { selectPageProps } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
-
-import { GenericContentTemplate } from '@components/_pageTemplates/GenericContentTemplate'
-import { Props } from '@components/_pageLayouts/GenericContentLayout/interfaces'
+import GenericLayout, { Props } from '@components/_pageLayouts/GenericLayout'
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -39,4 +37,4 @@ export const getServerSideProps: GetServerSideProps = async (
 /**
  * Export page template
  */
-export default GenericContentTemplate
+export default GenericLayout

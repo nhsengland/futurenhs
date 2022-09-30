@@ -1,11 +1,11 @@
 import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
-
-import { GroupMemberTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
 import forms from '@formConfigs/index'
-import { Props } from './interfaces'
+import GroupMemberPage, {
+    Props,
+} from '@pages/groups/[groupId]/members/[memberId]/index.page'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -35,7 +35,7 @@ describe('Group member template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupMemberTemplate {...props} />)
+        render(<GroupMemberPage {...props} />)
 
         expect(
             screen.getAllByText('Mock secondary heading html').length
@@ -53,7 +53,7 @@ describe('Group member template', () => {
             },
         })
 
-        render(<GroupMemberTemplate {...propsCopy} />)
+        render(<GroupMemberPage {...propsCopy} />)
 
         expect(screen.getAllByText('Mock first name label').length).toBe(1)
     })

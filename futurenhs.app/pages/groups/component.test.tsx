@@ -1,10 +1,8 @@
 import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { cleanup, render, screen } from '@jestMocks/index'
-
-import { GroupListingTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
-import { Props } from './interfaces'
+import GroupsPage, { Props } from '@pages/groups/index.page'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -41,13 +39,13 @@ describe('GroupListingTemplate', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupListingTemplate {...props} />)
+        render(<GroupsPage {...props} />)
 
         expect(screen.getAllByText('Mock main heading html').length).toEqual(1)
     })
 
     it('renders a group list', () => {
-        render(<GroupListingTemplate {...props} />)
+        render(<GroupsPage {...props} />)
 
         expect(screen.getAllByText('Mock Group card heading 1').length).toEqual(
             1
@@ -63,13 +61,13 @@ describe('GroupListingTemplate', () => {
             altText: 'Mock alt text',
         }
 
-        render(<GroupListingTemplate {...propsCopy} />)
+        render(<GroupsPage {...propsCopy} />)
 
         expect(screen.getAllByAltText('Mock alt text').length).toBe(1)
 
         cleanup()
 
-        render(<GroupListingTemplate {...props} />)
+        render(<GroupsPage {...props} />)
 
         expect(screen.queryByAltText('Mock alt text')).toBeNull
     })

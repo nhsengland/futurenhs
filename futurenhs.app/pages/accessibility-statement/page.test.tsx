@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { render, screen } from '@jestMocks/index'
-
 import Page, { getServerSideProps } from './index.page'
 import { layoutIds } from '@constants/routes'
 import { routes } from '@jestMocks/generic-props'
-import { Props } from '@components/_pageLayouts/GenericContentLayout/interfaces'
+import { Props } from '@components/_pageLayouts/GenericLayout'
 
 const props: Props = {
     id: 'mockId',

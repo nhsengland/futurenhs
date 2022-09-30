@@ -1,7 +1,6 @@
 import { useContext } from 'react'
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
-
 import { mediaQueries } from '@constants/css'
 import Head from '@components/DocumentHead'
 import { ErrorBoundary } from '@components/ErrorBoundary'
@@ -21,14 +20,29 @@ import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb'
 import { BreadCrumbList } from '@appTypes/routing'
 import { useMediaQuery } from '@hooks/useMediaQuery'
 import { useLoading } from '@hooks/useLoading'
-
-import { Props } from './interfaces'
 import { NotificationBanner } from '@components/NotificationBanner'
 import { Notification } from '@components/NotificationBanner/interfaces'
 import { NotificationsContext } from '@contexts/index'
 import { PageBody } from '@components/PageBody'
+import { actions } from '@constants/actions'
 
-export const StandardLayout: (props: Props) => JSX.Element = ({
+export interface Props {
+    routeId?: string
+    shouldRenderSearch?: boolean
+    shouldRenderUserNavigation?: boolean
+    shouldRenderPhaseBanner?: boolean
+    shouldRenderBreadCrumb?: boolean
+    shouldRenderMainNav?: boolean
+    user?: any
+    actions?: Array<actions>
+    breadCrumbList?: BreadCrumbList
+    searchTerm?: any
+    className?: string
+    children: any
+    pageTitle?: string
+}
+
+const StandardLayout: (props: Props) => JSX.Element = ({
     shouldRenderSearch = true,
     shouldRenderUserNavigation = true,
     shouldRenderPhaseBanner = true,
@@ -41,7 +55,6 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
     className,
     children,
 }) => {
-
     const router = useRouter()
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE)
     const isLoading: boolean = useLoading().isLoading
@@ -255,3 +268,5 @@ export const StandardLayout: (props: Props) => JSX.Element = ({
         </>
     )
 }
+
+export default StandardLayout

@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { render, screen } from '@jestMocks/index'
-
-import { GroupAboutUsTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
-
-import { Props } from './interfaces'
+import GroupAboutUsPage, {
+    Props,
+} from '@pages/groups/[groupId]/about/index.page'
 
 describe('Group about us template', () => {
     const props: Props = {
@@ -23,7 +22,7 @@ describe('Group about us template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupAboutUsTemplate {...props} />)
+        render(<GroupAboutUsPage {...props} />)
 
         expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
     })

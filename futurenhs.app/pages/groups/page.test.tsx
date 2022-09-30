@@ -1,17 +1,15 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
-import { fireEvent, render, screen } from '@jestMocks/index'
+import mockRouter from 'next-router-mock'
+import { render, screen } from '@jestMocks/index'
 import { routes } from '@jestMocks/generic-props'
-
-import GroupListingTemplate, { getServerSideProps } from './index.page'
+import { getServerSideProps } from '@pages/groups/index.page'
 import { layoutIds } from '@constants/routes'
-import { Props } from '@components/_pageTemplates/GroupListingTemplate/interfaces'
-
+import GroupsPage, { Props } from '@pages/groups/index.page'
 import { mswServer } from '../../jest-mocks/msw-server'
 import { handlers } from '../../jest-mocks/handlers'
 import { actions } from '@constants/actions'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 const props: Props = {
     id: 'mockId',
@@ -53,11 +51,11 @@ describe('groups page', () => {
     afterEach(() => mswServer.resetHandlers())
     afterAll(() => mswServer.close())
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/groups');
-    });
+        mockRouter.setCurrentUrl('/groups')
+    })
 
     it('renders correctly', () => {
-        render(<GroupListingTemplate {...props} />)
+        render(<GroupsPage {...props} />)
 
         expect(
             screen.getAllByText(props.groupsList[0].text.mainHeading).length

@@ -3,10 +3,9 @@ import { cleanup, render, screen } from '@jestMocks/index'
 import forms from '@formConfigs/index'
 import mockRouter from 'next-router-mock'
 import { actions as actionConstants } from '@constants/actions'
-
-import { GroupMemberUpdateTemplate } from './index'
-
-import { Props } from './interfaces'
+import GroupMemberUpdatePage, {
+    Props,
+} from '@pages/groups/[groupId]/members/[memberId]/update/index.page'
 
 describe('Group member update template', () => {
     beforeEach(() => {
@@ -30,13 +29,13 @@ describe('Group member update template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupMemberUpdateTemplate {...props} />)
+        render(<GroupMemberUpdatePage {...props} />)
 
         expect(screen.getAllByText('Steven').length).toBe(1)
     })
 
     it('conditionally renders remove from group form', () => {
-        render(<GroupMemberUpdateTemplate {...props} />)
+        render(<GroupMemberUpdatePage {...props} />)
 
         expect(screen.queryByText('Remove from group')).toBeNull()
 
@@ -46,7 +45,7 @@ describe('Group member update template', () => {
             actions: [actionConstants.GROUPS_MEMBERS_DELETE],
         })
 
-        render(<GroupMemberUpdateTemplate {...propsCopy} />)
+        render(<GroupMemberUpdatePage {...propsCopy} />)
 
         expect(screen.getAllByText('Remove from group').length).toBe(1)
     })

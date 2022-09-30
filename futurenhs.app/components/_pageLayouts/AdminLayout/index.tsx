@@ -1,9 +1,21 @@
 import Head from 'next/head'
-
-import { PageBody } from '@components/PageBody'
-import { StandardLayout } from '@components/_pageLayouts/StandardLayout'
-
-import { Props } from './interfaces'
+import StandardLayout from '@components/_pageLayouts/StandardLayout'
+import { GenericPageTextContent } from '@appTypes/content'
+import { Theme } from '@appTypes/theme'
+export interface Props {
+    shouldRenderSearch?: boolean
+    shouldRenderUserNavigation?: boolean
+    shouldRenderPhaseBanner?: boolean
+    shouldRenderBreadCrumb?: boolean
+    shouldRenderMainNav?: boolean
+    user?: any
+    actions?: any
+    theme?: Theme
+    className?: string
+    contentText?: GenericPageTextContent
+    children?: any
+    pageTitle?: string
+}
 
 export const AdminLayout: (props: Props) => JSX.Element = ({
     contentText,

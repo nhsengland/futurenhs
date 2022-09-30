@@ -1,10 +1,7 @@
 import React from 'react'
 import { render, screen } from '@jestMocks/index'
-
-import { GenericContentTemplate } from './index'
+import GenericPage, { Props } from '@components/_pageLayouts/GenericLayout'
 import { routes } from '@jestMocks/generic-props'
-
-import { Props } from './interfaces'
 
 const props: Props = {
     id: 'mockId',
@@ -19,7 +16,7 @@ const props: Props = {
 
 describe('Generic content template', () => {
     it('renders correctly', () => {
-        render(<GenericContentTemplate {...props} />)
+        render(<GenericPage {...props} />)
 
         expect(screen.getAllByText('mockMainHeading').length).toEqual(1)
     })

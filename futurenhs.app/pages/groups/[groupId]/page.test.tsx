@@ -1,24 +1,24 @@
 import * as React from 'react'
-import mockRouter from 'next-router-mock';
+import mockRouter from 'next-router-mock'
 import { render } from '@jestMocks/index'
 
-import GroupHomeTemplate, { getServerSideProps } from './index.page'
-import { Props } from '@components/_pageTemplates/GroupHomeTemplate/interfaces'
+import GroupHomePage, {
+    Props,
+    getServerSideProps,
+} from '@pages/groups/[groupId]/index.page'
 import { routes } from '@jestMocks/generic-props'
-
 import { mswServer } from '../../../jest-mocks/msw-server'
 import { handlers } from '../../../jest-mocks/handlers'
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/router', () => require('next-router-mock'))
 
 describe.only('group (groups/[groupId]) page', () => {
-
     beforeAll(() => mswServer.listen())
     afterEach(() => mswServer.resetHandlers())
     afterAll(() => mswServer.close())
     beforeEach(() => {
-        mockRouter.setCurrentUrl('/groups');
-    });
+        mockRouter.setCurrentUrl('/groups')
+    })
 
     //Only rendering layout so far -- TO BE COMPLETED
 
@@ -37,7 +37,7 @@ describe.only('group (groups/[groupId]) page', () => {
             routes: routes,
         }
 
-        render(<GroupHomeTemplate {...props} />)
+        render(<GroupHomePage {...props} />)
     })
 
     it('gets required server side props', async () => {

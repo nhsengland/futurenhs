@@ -1,11 +1,11 @@
 import React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
-
-import { GroupUpdateTemplate } from './index'
 import { routes } from '@jestMocks/generic-props'
 import forms from '@formConfigs/index'
-import { Props } from './interfaces'
+import GroupUpdatePage, {
+    Props,
+} from '@pages/groups/[groupId]/update/index.page'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -37,7 +37,7 @@ describe('Group update template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupUpdateTemplate {...props} />)
+        render(<GroupUpdatePage {...props} />)
 
         expect(screen.getAllByText('Mock main heading').length).toEqual(1)
     })

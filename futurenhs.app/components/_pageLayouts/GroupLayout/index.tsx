@@ -1,16 +1,36 @@
-import classNames from 'classnames'
 import Head from 'next/head'
-
-import { StandardLayout } from '@components/_pageLayouts/StandardLayout'
+import { useRouter } from 'next/router'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 import { GroupPageHeader } from '@components/GroupPageHeader'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { getGroupNavMenuList } from '@helpers/routing/getGroupNavMenuList'
 import { getBreadCrumbList } from '@helpers/routing/getBreadCrumb'
 import { BreadCrumbList } from '@appTypes/routing'
+import { GroupsPageTextContent } from '@appTypes/content'
+import { Image } from '@appTypes/image'
+import { Routes } from '@appTypes/routing'
+import { User } from '@appTypes/user'
+import StandardLayout from '@components/_pageLayouts/StandardLayout'
 
-import { Props } from './interfaces'
-import { useRouter } from 'next/router'
+export interface Props {
+    tabId: 'index' | 'forum' | 'files' | 'members'
+    routes: Routes
+    shouldRenderSearch?: boolean
+    shouldRenderUserNavigation?: boolean
+    shouldRenderPhaseBanner?: boolean
+    shouldRenderBreadCrumb?: boolean
+    shouldRenderMainNav?: boolean
+    shouldRenderGroupHeader?: boolean
+    user?: User
+    actions?: any
+    memberStatus?: string
+    themeId?: string
+    className?: string
+    entityText?: GroupsPageTextContent
+    image?: Image
+    children?: any
+    pageTitle?: string
+}
 
 export const GroupLayout: (props: Props) => JSX.Element = ({
     tabId,

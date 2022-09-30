@@ -1,12 +1,11 @@
 import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen, cleanup } from '@jestMocks/index'
-
-import forms from '@formConfigs/index'
 import { actions } from '@constants/actions'
 import { routes } from '@jestMocks/generic-props'
-import { GroupMemberListingTemplate } from './index'
-import { Props } from './interfaces'
+import GroupMemberListingPage, {
+    Props,
+} from '@pages/groups/[groupId]/members/index.page'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -22,7 +21,7 @@ describe('Group member listing template', () => {
         user: undefined,
         actions: [],
         forms: {
-            initial: {}
+            initial: {},
         },
         contentText: {
             pendingMemberRequestsHeading: 'Mock pending members heading',
@@ -75,7 +74,7 @@ describe('Group member listing template', () => {
             actions: [],
         })
 
-        render(<GroupMemberListingTemplate {...pendingMembersNoViewAccess} />)
+        render(<GroupMemberListingPage {...pendingMembersNoViewAccess} />)
 
         expect(screen.queryByText('Mock pending members heading')).toBeNull()
         expect(screen.queryByText('Mock pending name 1')).toBeNull()
@@ -99,7 +98,7 @@ describe('Group member listing template', () => {
             ],
         })
 
-        render(<GroupMemberListingTemplate {...pendingMembersViewAccess} />)
+        render(<GroupMemberListingPage {...pendingMembersViewAccess} />)
 
         // Temporarily removed functionality for private beta
         // expect(screen.getAllByText('Mock pending members heading').length).toBe(1);
@@ -144,7 +143,7 @@ describe('Group member listing template', () => {
     // });
 
     it('conditionally renders members list', () => {
-        render(<GroupMemberListingTemplate {...props} />)
+        render(<GroupMemberListingPage {...props} />)
 
         expect(screen.getAllByText('Mock member name').length).toBe(1)
 
@@ -159,7 +158,7 @@ describe('Group member listing template', () => {
             },
         ]
 
-        render(<GroupMemberListingTemplate {...props} />)
+        render(<GroupMemberListingPage {...props} />)
 
         expect(screen.getAllByText('Mock member role').length).toBeGreaterThan(
             1
@@ -170,7 +169,7 @@ describe('Group member listing template', () => {
 
         const propsCopy: Props = Object.assign({}, props, { members: [] })
 
-        render(<GroupMemberListingTemplate {...propsCopy} />)
+        render(<GroupMemberListingPage {...propsCopy} />)
 
         expect(screen.getAllByText('Mock no members text').length).toBe(1)
         expect(screen.queryByText('Mock member name')).toBeNull()
@@ -179,7 +178,7 @@ describe('Group member listing template', () => {
     it('conditionally renders member edit button', () => {
         props.actions.push(actions.GROUPS_MEMBERS_EDIT)
 
-        render(<GroupMemberListingTemplate {...props} />)
+        render(<GroupMemberListingPage {...props} />)
 
         expect(screen.getAllByText('Edit').length).toBe(1)
 
@@ -189,7 +188,7 @@ describe('Group member listing template', () => {
             actions: [],
         })
 
-        render(<GroupMemberListingTemplate {...propsCopy} />)
+        render(<GroupMemberListingPage {...propsCopy} />)
 
         expect(screen.queryByText('Edit')).toBeNull()
     })

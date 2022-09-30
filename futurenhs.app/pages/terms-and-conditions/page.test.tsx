@@ -4,8 +4,7 @@ import { render, screen } from '@jestMocks/index'
 import Page, { getServerSideProps } from './index.page'
 import { routes } from '@jestMocks/generic-props'
 import { layoutIds } from '@constants/routes'
-
-import { Props } from '@components/_pageLayouts/GenericContentLayout/interfaces'
+import { Props } from '@components/_pageLayouts/GenericLayout'
 
 const props: Props = {
     layoutId: layoutIds.BASE,
