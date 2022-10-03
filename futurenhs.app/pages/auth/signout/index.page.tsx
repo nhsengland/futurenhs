@@ -71,9 +71,10 @@ export const getServerSideProps = async (
     if (session) {
         if (typeof window !== 'undefined') {
             try {
-                await signOut({
-                    redirect: true,
-                    callbackUrl: process.env.NEXTAUTH_URL,
+                const callbackUrl: string = `${process.env.APP_URL}${context.resolvedUrl}`
+                const idTokenHint: string = session.id_token as string
+                await signOut().then(() => {
+                    return (window.location.href = `https://${process.env.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW}/oauth2/v2.0/logout?post_logout_redirect_uri=${callbackUrl}&id_token_hint=${idTokenHint}`)
                 })
             } catch (e) {}
         }
