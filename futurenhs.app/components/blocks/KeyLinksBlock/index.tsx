@@ -5,14 +5,14 @@ import FlipMove from 'react-flip-move'
 import { simpleClone, deleteArrayItem, moveArrayItem } from '@helpers/util/data'
 import { formTypes } from '@constants/forms'
 import { cmsBlocks } from '@constants/blocks'
-import { useTheme } from '@hooks/useTheme'
-import { useFormConfig } from '@hooks/useForm'
-import { useCsrf } from '@hooks/useCsrf'
-import { Heading } from '@components/Heading'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
-import { Form } from '@components/Form'
-import { SVGIcon } from '@components/SVGIcon'
+import { useTheme } from '@helpers/hooks/useTheme'
+import { useFormConfig } from '@helpers/hooks/useForm'
+import { useCsrf } from '@helpers/hooks/useCsrf'
+import { Heading } from '@components/layouts/Heading'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
+import { Form } from '@components/forms/Form'
+import { SVGIcon } from '@components/generic/SVGIcon'
 import { Theme } from '@appTypes/theme'
 import { FormConfig } from '@appTypes/form'
 import { CmsContentBlock } from '@appTypes/contentBlock'
@@ -45,8 +45,8 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
         formTypes.CONTENT_BLOCK_QUICK_LINKS_WRAPPER,
         {
             initialValues: { [`title-${blockId}`]: title },
-            errors: initialErrors[blockId] ?? {}
-        },
+            errors: initialErrors[blockId] ?? {},
+        }
     )
 
     const generatedClasses: any = {
@@ -71,7 +71,11 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
                         },
                     }
 
-                    updatedBlock.content.blocks = Array.isArray(updatedBlock.content?.blocks) ? updatedBlock.content.blocks : [];
+                    updatedBlock.content.blocks = Array.isArray(
+                        updatedBlock.content?.blocks
+                    )
+                        ? updatedBlock.content.blocks
+                        : []
                     updatedBlock.content.blocks.push(newBlock)
                     elementIdToFocus.current = createdBlockId
 
@@ -115,8 +119,8 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
         const blockIdToUse: string = childBlockId ?? blockId
         const content: Record<string, any> = childBlockId
             ? updatedBlock.content.blocks.find(
-                (block) => block.item.id === childBlockId
-            )?.content ?? {}
+                  (block) => block.item.id === childBlockId
+              )?.content ?? {}
             : updatedBlock.content
 
         /**
@@ -179,10 +183,12 @@ export const KeyLinksBlock: (props: Props) => JSX.Element = ({
                                         initialValues: {
                                             [`linkText-${childBlockId}`]:
                                                 content?.linkText,
-                                            [`url-${childBlockId}`]: content?.url,
+                                            [`url-${childBlockId}`]:
+                                                content?.url,
                                         },
-                                        errors: initialErrors[childBlockId] ?? {}
-                                    },
+                                        errors:
+                                            initialErrors[childBlockId] ?? {},
+                                    }
                                 )
 
                                 const shouldRenderMovePrevious: boolean =

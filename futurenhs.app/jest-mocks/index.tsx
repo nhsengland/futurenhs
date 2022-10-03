@@ -1,18 +1,18 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 
-import { ThemesContext, FormsContext } from '@contexts/index';
-import formConfigs from '@formConfigs/index';
-import { themes } from '@constants/themes';
+import { ThemesContext, FormsContext } from '@helpers/contexts/index'
+import formConfigs from '@config/form-configs/index'
+import { themes } from '@constants/themes'
 
 const formsContextConfig: Record<string, any> = {
     csrfToken: 'mockCsrfToken',
-    templates: formConfigs
-};
+    templates: formConfigs,
+}
 
 const themesContextConfig: Record<string, any> = {
-    themes: themes
-};
+    themes: themes,
+}
 
 const Providers = ({ children }) => {
     return (

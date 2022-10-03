@@ -11,10 +11,10 @@ import { formTypes } from '@constants/forms'
 import { actions } from '@constants/actions'
 import { layoutIds, groupTabIds } from '@constants/routes'
 import { themes, defaultThemeId } from '@constants/themes'
-import { withUser } from '@hofs/withUser'
-import { withRoutes } from '@hofs/withRoutes'
-import { withTextContent } from '@hofs/withTextContent'
-import { withGroup } from '@hofs/withGroup'
+import { withUser } from '@helpers/hofs/withUser'
+import { withRoutes } from '@helpers/hofs/withRoutes'
+import { withTextContent } from '@helpers/hofs/withTextContent'
+import { withGroup } from '@helpers/hofs/withGroup'
 import {
     selectFormData,
     selectMultiPartFormData,
@@ -23,20 +23,20 @@ import {
     selectUser,
     selectRequestMethod,
     selectPageProps,
-} from '@selectors/context'
+} from '@helpers/selectors/context'
 import { getGroup } from '@services/getGroup'
 import { putGroup } from '@services/putGroup'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { FormErrors } from '@appTypes/form'
 import { User } from '@appTypes/user'
 import { useRouter } from 'next/router'
-import { useFormConfig } from '@hooks/useForm'
-import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
+import { useFormConfig } from '@helpers/hooks/useForm'
+import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { FormConfig, FormField } from '@appTypes/form'
 import { getFormField, getGenericFormError } from '@helpers/util/form'
-import { Dialog } from '@components/Dialog'
+import { Dialog } from '@components/generic/Dialog'
 import { GroupPage } from '@appTypes/page'
 
 export interface Props extends GroupPage {

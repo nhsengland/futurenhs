@@ -1,6 +1,6 @@
 import { routes } from '@jestMocks/generic-props'
 import { cleanup, render, screen } from '@jestMocks/index'
-import forms from '@formConfigs/index'
+import forms from '@config/form-configs/index'
 import mockRouter from 'next-router-mock'
 import { actions as actionConstants } from '@constants/actions'
 import GroupMemberUpdatePage, {

@@ -1,6 +1,6 @@
 import { routes } from '@jestMocks/generic-props'
 import { render, screen } from '@jestMocks/index'
-import forms from '@formConfigs/index'
+import forms from '@config/form-configs/index'
 import GroupCreateFilePage, {
     Props,
 } from '@pages/groups/[groupId]/files/create/index.page'

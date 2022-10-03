@@ -1,5 +1,7 @@
-const { alpha, lighten, darken } = require('./helpers/util/tailwind/color');
-const { generateBorderSides } = require('./helpers/util/tailwind/plugins/border-sides');
+const { alpha, lighten, darken } = require('./helpers/util/tailwind/color')
+const {
+    generateBorderSides,
+} = require('./helpers/util/tailwind/plugins/border-sides')
 
 const themeColors = {
     ['theme-0']: 'rgba(0, 0, 0, 1)',
@@ -22,8 +24,8 @@ const themeColors = {
     ['theme-17']: '#ed8b00',
     ['theme-18']: '#ffb81c',
     ['theme-19']: '#78be20',
-    ['theme-20']: '#006747'
-};
+    ['theme-20']: '#006747',
+}
 
 //add darker and lighter tints to colors
 Object.keys(themeColors).map((colorName) => {
@@ -31,61 +33,59 @@ Object.keys(themeColors).map((colorName) => {
         DEFAULT: themeColors[colorName],
         lighter: lighten(themeColors[colorName], 0.1),
         darker: darken(themeColors[colorName], 0.25),
-        '75': alpha(themeColors[colorName], 0.75),
+        75: alpha(themeColors[colorName], 0.75),
     }
-}
-);
-
+})
 
 module.exports = {
     mode: 'jit',
     prefix: 'u-',
     content: [
-        "./pages/**/*.js",
-        "./pages/**/*.ts",
-        "./pages/**/*.jsx",
-        "./pages/**/*.tsx",
-        "./components/**/*.js",
-        "./components/**/*.ts",
-        "./components/**/*.jsx",
-        "./components/**/*.tsx",
-        "./form-configs/**/*.ts"
+        './pages/**/*.js',
+        './pages/**/*.ts',
+        './pages/**/*.jsx',
+        './pages/**/*.tsx',
+        './components/**/*.js',
+        './components/**/*.ts',
+        './components/**/*.jsx',
+        './components/**/*.tsx',
+        './config/form-configs/**/*.ts',
     ],
     safelist: [
         {
-            pattern: /bg-theme-\d{1,2}$/
+            pattern: /bg-theme-\d{1,2}$/,
         },
         {
-            pattern: /text-theme-\d{1,2}$/
+            pattern: /text-theme-\d{1,2}$/,
         },
         {
-            pattern: /text-theme-\d{1,2}$/
+            pattern: /text-theme-\d{1,2}$/,
         },
         {
-            pattern: /border-theme-\d{1,2}$/
+            pattern: /border-theme-\d{1,2}$/,
         },
         {
-            pattern: /fill-theme-\d{1,2}$/
+            pattern: /fill-theme-\d{1,2}$/,
         },
         {
-            pattern: /border-[lrtb]-theme-\d{1,2}-?\w+$/g
-        }
+            pattern: /border-[lrtb]-theme-\d{1,2}-?\w+$/g,
+        },
     ],
     theme: {
         screens: {
-            'tablet': '768px',
-            'desktop': '960px',
+            tablet: '768px',
+            desktop: '960px',
             'desktop-large': '1446px',
         },
         colors: themeColors,
-        fill: theme => theme('colors'),
-        stroke: theme => theme('colors'),
+        fill: (theme) => theme('colors'),
+        stroke: (theme) => theme('colors'),
     },
     variants: {
         extend: {
             border: ['hover', 'DEFAULT'],
             // IF you wish to extend variants for border-{side}-theme-n, then look at how the plugin adds the utilities
-        }
+        },
     },
-    plugins: [generateBorderSides]
+    plugins: [generateBorderSides],
 }

@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 
-import { RichText } from '@components/RichText'
-import { RemainingCharacterCount } from '@components/RemainingCharacterCount'
+import { RichText } from '@components/generic/RichText'
+import { RemainingCharacterCount } from '@components/forms/RemainingCharacterCount'
 import { getAriaFieldAttributes } from '@helpers/util/form'
 
 import { Props } from './interfaces'

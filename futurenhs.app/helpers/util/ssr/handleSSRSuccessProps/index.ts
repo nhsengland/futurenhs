@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject'
-import { selectCsrfToken } from '@selectors/context'
+import { selectCsrfToken } from '@helpers/selectors/context'
 
 declare interface Config {
     props: Record<any, any>

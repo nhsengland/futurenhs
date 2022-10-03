@@ -5,7 +5,7 @@ import AdminUsersInvitePage, {
     Props,
 } from '@pages/admin/users/invite/index.page'
 import { routes } from '@jestMocks/generic-props'
-import forms from '@formConfigs/index'
+import forms from '@config/form-configs/index'
 
 describe('Admin users invite template', () => {
     afterEach(cleanup)

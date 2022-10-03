@@ -10,9 +10,9 @@ import { layoutIds, groupTabIds } from '@constants/routes'
 import { requestMethods } from '@constants/fetch'
 import { routeParams } from '@constants/routes'
 import { actions as actionConstants } from '@constants/actions'
-import { withUser } from '@hofs/withUser'
-import { withRoutes } from '@hofs/withRoutes'
-import { withGroup } from '@hofs/withGroup'
+import { withUser } from '@helpers/hofs/withUser'
+import { withRoutes } from '@helpers/hofs/withRoutes'
+import { withGroup } from '@helpers/hofs/withGroup'
 import {
     selectCsrfToken,
     selectMultiPartFormData,
@@ -21,20 +21,20 @@ import {
     selectQuery,
     selectRequestMethod,
     selectPageProps,
-} from '@selectors/context'
+} from '@helpers/selectors/context'
 import { postGroupFile } from '@services/postGroupFile'
 import { getGroupFolder } from '@services/getGroupFolder'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
-import { withTextContent } from '@hofs/withTextContent'
+import { withTextContent } from '@helpers/hofs/withTextContent'
 import { formTypes } from '@constants/forms'
 import { getGenericFormError } from '@helpers/util/form'
-import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
-import { RichText } from '@components/RichText'
+import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
+import { RichText } from '@components/generic/RichText'
 import { FormErrors, FormConfig } from '@appTypes/form'
-import { useFormConfig } from '@hooks/useForm'
+import { useFormConfig } from '@helpers/hooks/useForm'
 import { Folder } from '@appTypes/file'
 import { GroupPage } from '@appTypes/page'
 

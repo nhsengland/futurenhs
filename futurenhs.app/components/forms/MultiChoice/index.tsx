@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { RichText } from '@components/RichText'
+import { RichText } from '@components/generic/RichText'
 
 import { Props } from './interfaces'
 
@@ -21,8 +21,7 @@ export const MultiChoice: Function = ({
     const radio: string = 'radio'
 
     // https://github.com/erikras/redux-form/issues/2880
-    const elementType: string =
-        inputType === 'checkBox' ? checkbox : radio
+    const elementType: string = inputType === 'checkBox' ? checkbox : radio
     /**
      * Render out checkboxes/ radio buttons and bind event handler to update values
      */
@@ -41,21 +40,25 @@ export const MultiChoice: Function = ({
                         currentValues.length && currentValues.includes(value)
 
                     const generatedClasses: any = {
-                        inputWrapper: classNames({
-                            ['nhsuk-radios__item']: elementType === radio,
-                            ['nhsuk-checkboxes__item']: elementType === checkbox
-                        },
+                        inputWrapper: classNames(
+                            {
+                                ['nhsuk-radios__item']: elementType === radio,
+                                ['nhsuk-checkboxes__item']:
+                                    elementType === checkbox,
+                            },
                             optionClassName
                         ),
                         input: classNames({
                             ['nhsuk-radios__input--validation-failed']:
                                 hasError,
                             ['nhsuk-radios__input']: elementType === radio,
-                            ['nhsuk-checkboxes__input']: elementType === checkbox
+                            ['nhsuk-checkboxes__input']:
+                                elementType === checkbox,
                         }),
                         label: classNames('nhsuk-label', {
                             [`nhsuk-radios__label`]: elementType === radio,
-                            ['nhsuk-checkboxes__label']: elementType === checkbox
+                            ['nhsuk-checkboxes__label']:
+                                elementType === checkbox,
                         }),
                     }
 
@@ -118,16 +121,12 @@ export const MultiChoice: Function = ({
     }
 
     const generatedClasses: any = {
-        wrapper: classNames(
-            'nhsuk-form-group',
-            className,
-            {
-                ['nhsuk-checkboxes']: elementType === checkbox,
-                ['nhsuk-radios']: elementType === radio,
-                ['nhsuk-radios--inline']: elementType === radio,
-                ['nhsuk-form-group--error']: hasError,
-            }
-        ),
+        wrapper: classNames('nhsuk-form-group', className, {
+            ['nhsuk-checkboxes']: elementType === checkbox,
+            ['nhsuk-radios']: elementType === radio,
+            ['nhsuk-radios--inline']: elementType === radio,
+            ['nhsuk-form-group--error']: hasError,
+        }),
         fieldset: classNames('nhsuk-fieldset'),
         legend: classNames('nhsuk-fieldset__legend'),
         hint: classNames('nhsuk-hint'),

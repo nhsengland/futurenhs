@@ -11,9 +11,9 @@ import { formTypes } from '@constants/forms'
 import { routeParams } from '@constants/routes'
 import { requestMethods } from '@constants/fetch'
 import { actions as actionConstants } from '@constants/actions'
-import { withUser } from '@hofs/withUser'
-import { withRoutes } from '@hofs/withRoutes'
-import { withGroup } from '@hofs/withGroup'
+import { withUser } from '@helpers/hofs/withUser'
+import { withRoutes } from '@helpers/hofs/withRoutes'
+import { withGroup } from '@helpers/hofs/withGroup'
 import {
     selectCsrfToken,
     selectFormData,
@@ -21,20 +21,20 @@ import {
     selectUser,
     selectRequestMethod,
     selectPageProps,
-} from '@selectors/context'
+} from '@helpers/selectors/context'
 import { putGroupFolder } from '@services/putGroupFolder'
 import { getGroupFolder } from '@services/getGroupFolder'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
-import { withTextContent } from '@hofs/withTextContent'
+import { withTextContent } from '@helpers/hofs/withTextContent'
 import { ServerSideFormData } from '@helpers/util/form'
 import { getGenericFormError } from '@helpers/util/form'
-import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
+import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { postGroupFolder } from '@services/postGroupFolder'
 import { FormErrors, FormConfig } from '@appTypes/form'
-import { useFormConfig } from '@hooks/useForm'
+import { useFormConfig } from '@helpers/hooks/useForm'
 import { Folder } from '@appTypes/file'
 import { GroupPage } from '@appTypes/page'
 

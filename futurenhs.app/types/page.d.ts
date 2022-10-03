@@ -1,13 +1,11 @@
 import { actions } from '@constants/actions'
 import { Image } from './image'
-
 import { layoutIds } from '@constants/routes'
 import { Pagination } from '@appTypes/pagination'
 import { FormConfig } from '@appTypes/form'
 import { Routes } from '@appTypes/routing'
 import { Service } from '@appTypes/service'
-import { ContentBlock } from '@components/ContentBlock'
-import { Notification } from '@components/NotificationBanner/interfaces'
+import { Notification } from '@components/layouts/NotificationBanner/interfaces'
 import {
     GenericPageTextContent,
     GroupsPageTextContent,

@@ -3,7 +3,7 @@ import mockRouter from 'next-router-mock'
 import { render, screen, cleanup } from '@jestMocks/index'
 import { actions as userActions } from '@constants/actions'
 import { routes } from '@jestMocks/generic-props'
-import formConfigs from '@formConfigs/index'
+import formConfigs from '@config/form-configs/index'
 import GroupDiscussionPage, {
     Props,
 } from '@pages/groups/[groupId]/forum/[discussionId]/index.page'

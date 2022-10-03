@@ -9,26 +9,26 @@ import { getStandardServiceHeaders } from '@helpers/fetch'
 import { layoutIds } from '@constants/routes'
 import { requestMethods } from '@constants/fetch'
 import { actions as actionConstants } from '@constants/actions'
-import { withUser } from '@hofs/withUser'
-import { withRoutes } from '@hofs/withRoutes'
-import { withTextContent } from '@hofs/withTextContent'
+import { withUser } from '@helpers/hofs/withUser'
+import { withRoutes } from '@helpers/hofs/withRoutes'
+import { withTextContent } from '@helpers/hofs/withTextContent'
 import {
     selectCsrfToken,
     selectMultiPartFormData,
     selectRequestMethod,
     selectUser,
     selectPageProps,
-} from '@selectors/context'
+} from '@helpers/selectors/context'
 import { postGroup } from '@services/postGroup'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { FormConfig, FormErrors } from '@appTypes/form'
 import { formTypes } from '@constants/forms'
 import { getGenericFormError } from '@helpers/util/form'
-import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
-import { useFormConfig } from '@hooks/useForm'
+import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
+import { useFormConfig } from '@helpers/hooks/useForm'
 import { GroupPage } from '@appTypes/page'
 
 export interface Props extends GroupPage {

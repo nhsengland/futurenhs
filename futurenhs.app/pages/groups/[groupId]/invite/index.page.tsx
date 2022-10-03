@@ -4,11 +4,11 @@ import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { actions as actionConstants } from '@constants/actions'
 import { groupTabIds, layoutIds, routeParams } from '@constants/routes'
-import { withUser } from '@hofs/withUser'
-import { withRoutes } from '@hofs/withRoutes'
+import { withUser } from '@helpers/hofs/withUser'
+import { withRoutes } from '@helpers/hofs/withRoutes'
 import { GetServerSidePropsContext } from '@appTypes/next'
-import { withTextContent } from '@hofs/withTextContent'
-import { withGroup } from '@hofs/withGroup'
+import { withTextContent } from '@helpers/hofs/withTextContent'
+import { withGroup } from '@helpers/hofs/withGroup'
 import { formTypes } from '@constants/forms'
 import {
     selectCsrfToken,
@@ -17,7 +17,7 @@ import {
     selectRequestMethod,
     selectUser,
     selectPageProps,
-} from '@selectors/context'
+} from '@helpers/selectors/context'
 import { User } from '@appTypes/user'
 import { ServerSideFormData } from '@helpers/util/form'
 import { requestMethods } from '@constants/fetch'
@@ -27,12 +27,12 @@ import { getServiceErrorDataValidationErrors } from '@services/index'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { notifications } from '@constants/notifications'
 import { FormConfig, FormErrors } from '@appTypes/form'
-import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
-import { LayoutColumn } from '@components/LayoutColumn'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { NotificationsContext } from '@contexts/index'
-import { useFormConfig } from '@hooks/useForm'
-import { useNotification } from '@hooks/useNotification'
+import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { NotificationsContext } from '@helpers/contexts/index'
+import { useFormConfig } from '@helpers/hooks/useForm'
+import { useNotification } from '@helpers/hooks/useNotification'
 import { GroupPage } from '@appTypes/page'
 
 export interface Props extends GroupPage {}

@@ -6,9 +6,9 @@ import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { layoutIds, groupTabIds } from '@constants/routes'
 import { routeParams } from '@constants/routes'
 import { actions as actionConstants } from '@constants/actions'
-import { withUser } from '@hofs/withUser'
-import { withRoutes } from '@hofs/withRoutes'
-import { withGroup } from '@hofs/withGroup'
+import { withUser } from '@helpers/hofs/withUser'
+import { withRoutes } from '@helpers/hofs/withRoutes'
+import { withGroup } from '@helpers/hofs/withGroup'
 import { deleteGroupFolder } from '@services/deleteGroupFolder'
 import {
     selectParam,
@@ -16,20 +16,20 @@ import {
     selectQuery,
     selectCsrfToken,
     selectPageProps,
-} from '@selectors/context'
+} from '@helpers/selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { formTypes } from '@constants/forms'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getGenericFormError } from '@helpers/util/form'
 import { getServiceErrorDataValidationErrors } from '@services/index'
-import { FormWithErrorSummary } from '@components/FormWithErrorSummary'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
+import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { postGroupFolder } from '@services/postGroupFolder'
 import { putGroupFolder } from '@services/putGroupFolder'
 import { FormErrors, FormConfig } from '@appTypes/form'
-import { useFormConfig } from '@hooks/useForm'
+import { useFormConfig } from '@helpers/hooks/useForm'
 import { Folder } from '@appTypes/file'
 import { GroupPage } from '@appTypes/page'
 

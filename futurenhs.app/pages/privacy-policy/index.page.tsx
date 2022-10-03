@@ -2,12 +2,12 @@ import { GetServerSideProps } from 'next'
 
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
-import { withUser } from '@hofs/withUser'
-import { withTextContent } from '@hofs/withTextContent'
-import { withRoutes } from '@hofs/withRoutes'
-import { selectPageProps } from '@selectors/context'
+import { withUser } from '@helpers/hofs/withUser'
+import { withTextContent } from '@helpers/hofs/withTextContent'
+import { withRoutes } from '@helpers/hofs/withRoutes'
+import { selectPageProps } from '@helpers/selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
-import GenericLayout, { Props } from '@components/layouts/GenericLayout'
+import GenericLayout, { Props } from '@components/layouts/pages/GenericLayout'
 
 /**
  * Get props to inject into page on the initial server-side request

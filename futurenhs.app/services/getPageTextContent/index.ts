@@ -23,7 +23,7 @@ export const getPageTextContent = async (
     // TODO: use locale to return appropriate content
 
     return new Promise((resolve: Function, reject: Function) => {
-        import(`../../content-configs/${id}.ts`)
+        import(`../../config/content-configs/${id}.ts`)
             .then(({ default: content }) => {
                 resolve({
                     data: content,

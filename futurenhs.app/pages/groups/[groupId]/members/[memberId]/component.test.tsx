@@ -2,7 +2,7 @@ import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
 import { routes } from '@jestMocks/generic-props'
-import forms from '@formConfigs/index'
+import forms from '@config/form-configs/index'
 import GroupMemberPage, {
     Props,
 } from '@pages/groups/[groupId]/members/[memberId]/index.page'

@@ -2,11 +2,11 @@ import { useRef, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { Editor } from '@tinymce/tinymce-react'
 
-import { useAssetPath } from '@hooks/useAssetPath'
-import { RichText } from '@components/RichText'
-import { RemainingCharacterCount } from '@components/RemainingCharacterCount'
+import { useAssetPath } from '@helpers/hooks/useAssetPath'
+import { RichText } from '@components/generic/RichText'
+import { RemainingCharacterCount } from '@components/forms/RemainingCharacterCount'
 import { getAriaFieldAttributes } from '@helpers/util/form'
-import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@helpers/hooks/useIntersectionObserver'
 
 import { Props } from './interfaces'
 

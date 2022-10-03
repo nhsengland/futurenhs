@@ -5,7 +5,7 @@ import { layoutIds } from '@constants/routes'
 import { routes } from '@jestMocks/generic-props'
 import Page, { getServerSideProps } from './index.page'
 
-import { Props } from '@components/layouts/GenericLayout'
+import { Props } from '@components/layouts/pages/GenericLayout'
 
 const props: Props = {
     id: 'mockPageId',

@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
-import { withUser } from '@hofs/withUser'
-import { withRoutes } from '@hofs/withRoutes'
-import { selectPageProps } from '@selectors/context'
+import { withUser } from '@helpers/hofs/withUser'
+import { withRoutes } from '@helpers/hofs/withRoutes'
+import { selectPageProps } from '@helpers/selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 
 const NoopTemplate = (props: any) => null

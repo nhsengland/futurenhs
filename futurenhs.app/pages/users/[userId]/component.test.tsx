@@ -1,7 +1,7 @@
 import { render, screen, cleanup } from '@jestMocks/index'
 import UserPage, { Props } from '@pages/users/[userId]/index.page'
 import mockRouter from 'next-router-mock'
-import forms from '@formConfigs/index'
+import forms from '@config/form-configs/index'
 import { routes } from '@jestMocks/generic-props'
 import { actions } from '@constants/actions'
 

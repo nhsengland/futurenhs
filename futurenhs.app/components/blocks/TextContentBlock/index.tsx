@@ -1,13 +1,13 @@
 import classNames from 'classnames'
 
 import { simpleClone } from '@helpers/util/data'
-import { useCsrf } from '@hooks/useCsrf'
-import { useFormConfig } from '@hooks/useForm'
-import { Heading } from '@components/Heading'
-import { RichText } from '@components/RichText'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
-import { Form } from '@components/Form'
+import { useCsrf } from '@helpers/hooks/useCsrf'
+import { useFormConfig } from '@helpers/hooks/useForm'
+import { Heading } from '@components/layouts/Heading'
+import { RichText } from '@components/generic/RichText'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
+import { Form } from '@components/forms/Form'
 import { formTypes } from '@constants/forms'
 import { FormConfig } from '@appTypes/form'
 import { CmsContentBlock } from '@appTypes/contentBlock'
@@ -26,17 +26,13 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
     const { title, mainText } = block?.content ?? {}
 
     const csrfToken: string = useCsrf()
-    const formConfig: FormConfig = useFormConfig(
-        formTypes.CONTENT_BLOCK_TEXT,
-        {
-            initialValues: {
-                [`title-${blockId}`]: title,
-                [`mainText-${blockId}`]: mainText,
-            },
-            errors: initialErrors[blockId] ?? {}
-        }
-
-    )
+    const formConfig: FormConfig = useFormConfig(formTypes.CONTENT_BLOCK_TEXT, {
+        initialValues: {
+            [`title-${blockId}`]: title,
+            [`mainText-${blockId}`]: mainText,
+        },
+        errors: initialErrors[blockId] ?? {},
+    })
 
     const generatedClasses: any = {
         wrapper: classNames(className),
@@ -84,17 +80,17 @@ export const TextContentBlock: (props: Props) => JSX.Element = ({
 
     return (
         <div id={blockId} className={generatedClasses.wrapper}>
-            {title &&
+            {title && (
                 <Heading
                     headingLevel={headingLevel}
                     className={generatedClasses.heading}
                 >
                     {title}
                 </Heading>
-            }
-            {mainText && 
+            )}
+            {mainText && (
                 <RichText bodyHtml={mainText} wrapperElementType="div" />
-            }
+            )}
         </div>
     )
 }

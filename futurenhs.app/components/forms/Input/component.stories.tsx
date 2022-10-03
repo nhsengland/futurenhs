@@ -1,5 +1,5 @@
 import { Input } from './index'
-import { Form } from '@components/Form'
+import { Form } from '@components/forms/Form'
 
 export default {
     title: 'Input',

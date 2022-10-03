@@ -4,7 +4,7 @@ import AdminCreateGroupPage, {
     Props,
 } from '@pages/admin/groups/create/index.page'
 import { routes } from '@jestMocks/generic-props'
-import forms from '@formConfigs/index'
+import forms from '@config/form-configs/index'
 
 describe('Admin users invite template', () => {
     afterEach(cleanup)

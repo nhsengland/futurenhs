@@ -1,29 +1,22 @@
 import Head from 'next/head'
 
-import { LayoutWidthContainer } from '@components/LayoutWidthContainer'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
-import { WarningCallout } from '@components/WarningCallout'
+import { LayoutWidthContainer } from '@components/layouts/LayoutWidthContainer'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
+import { WarningCallout } from '@components/generic/WarningCallout'
 
 /**
  * Error 500 page
  */
 const Index: (props) => JSX.Element = ({ errors }) => {
+    let formattedErrors: string = ''
 
-    let formattedErrors: string = '';
-
-    if(errors && Object.keys(errors).length > 0){
-
+    if (errors && Object.keys(errors).length > 0) {
         try {
-
-            formattedErrors = JSON.stringify(errors, null, 4);
-
-        } catch(error){
-
-            console.log('Failed to parse error data');
-
+            formattedErrors = JSON.stringify(errors, null, 4)
+        } catch (error) {
+            console.log('Failed to parse error data')
         }
-
     }
 
     return (
@@ -40,21 +33,24 @@ const Index: (props) => JSX.Element = ({ errors }) => {
                             technical difficulties.
                         </h1>
                         <p className="u-text-lead">
-                            We are working to resolve these issues. Please try again
-                            later. Thank you for your patience.
+                            We are working to resolve these issues. Please try
+                            again later. Thank you for your patience.
                         </p>
-                        <p className="u-text-lead">Thank you for your patience.</p>
-                        {formattedErrors && 
+                        <p className="u-text-lead">
+                            Thank you for your patience.
+                        </p>
+                        {formattedErrors && (
                             <pre className="u-overflow-x-auto">
-                                <WarningCallout 
+                                <WarningCallout
                                     headingLevel={2}
                                     text={{
                                         heading: 'Error data',
-                                        body: formattedErrors
+                                        body: formattedErrors,
                                     }}
-                                    className="u-mb-0" />
+                                    className="u-mb-0"
+                                />
                             </pre>
-                        }
+                        )}
                     </LayoutColumn>
                 </LayoutColumnContainer>
             </LayoutWidthContainer>

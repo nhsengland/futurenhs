@@ -1,12 +1,12 @@
 import classNames from 'classnames'
 
-import { RichText } from '@components/RichText'
+import { RichText } from '@components/generic/RichText'
 import { getAriaFieldAttributes } from '@helpers/util/form'
 
 import { Props } from './interfaces'
 
 /**
- * Derived from the NHS Design System Checkboxes component: https://service-manual.nhs.uk/design-system/components/checkboxes. 
+ * Derived from the NHS Design System Checkboxes component: https://service-manual.nhs.uk/design-system/components/checkboxes.
  * Used to let users select 1 or more options on a form.
  */
 export const CheckBox: (props: Props) => JSX.Element = ({

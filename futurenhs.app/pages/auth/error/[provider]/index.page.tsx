@@ -3,11 +3,11 @@ import { getProviders } from 'next-auth/react'
 //import getAuthorizationUrl from 'next-auth/core/lib/oauth/authorization-url'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
-import { withUser } from '@hofs/withUser'
-import { withRoutes } from '@hofs/withRoutes'
+import { withUser } from '@helpers/hofs/withUser'
+import { withRoutes } from '@helpers/hofs/withRoutes'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { Props } from '@pages/auth/signin/index.page'
-import { selectPageProps } from '@selectors/context'
+import { selectPageProps } from '@helpers/selectors/context'
 
 /**
  * Get props to inject into page on the initial server-side request

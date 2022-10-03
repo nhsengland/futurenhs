@@ -3,18 +3,18 @@ import classNames from 'classnames'
 import Autocomplete from 'accessible-autocomplete/react'
 
 import { getSiteUsersByTerm } from '@services/getSiteUsersByTerm'
-import { RichText } from '@components/RichText'
-import { RemainingCharacterCount } from '@components/RemainingCharacterCount'
+import { RichText } from '@components/generic/RichText'
+import { RemainingCharacterCount } from '@components/forms/RemainingCharacterCount'
 import { Option } from '@appTypes/option'
 import { Service } from '@appTypes/service'
 
 import { Props } from './interfaces'
 
 /**
- * Derived from the NHS Design System Text Input component: https://service-manual.nhs.uk/design-system/components/text-input. 
+ * Derived from the NHS Design System Text Input component: https://service-manual.nhs.uk/design-system/components/text-input.
  * Used to allow users to enter text that’s no longer than a single line, such as their name or phone number.
  * Progressively enhanced with autocomplete functionality using the alphagov component: https://github.com/alphagov/accessible-autocomplete.
- * Use for autocomplete instances where the option count is in excess of several hundred - otherwise prefer to progressively enhance a select element. 
+ * Use for autocomplete instances where the option count is in excess of several hundred - otherwise prefer to progressively enhance a select element.
  */
 export const AutoComplete: (props: Props) => JSX.Element = ({
     input: { name, value, onChange },

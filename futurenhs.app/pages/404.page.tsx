@@ -1,8 +1,8 @@
 import Head from 'next/head'
 
-import { Link } from '@components/Link'
-import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
-import { LayoutColumn } from '@components/LayoutColumn'
+import { Link } from '@components/generic/Link'
+import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
+import { LayoutColumn } from '@components/layouts/LayoutColumn'
 
 /**
  * Error 404 page

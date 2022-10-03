@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 
-import { RichText } from '@components/RichText'
+import { RichText } from '@components/generic/RichText'
 
 import { Props } from './interfaces'
 

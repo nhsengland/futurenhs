@@ -5,7 +5,7 @@ import { routes } from '@jestMocks/generic-props'
 import GroupDeleteFolderPage, {
     Props,
 } from '@pages/groups/[groupId]/folders/[folderId]/delete/index.page'
-import forms from '@formConfigs/index'
+import forms from '@config/form-configs/index'
 
 jest.mock('next/router', () => require('next-router-mock'))
 

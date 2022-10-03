@@ -5,17 +5,17 @@ import App from 'next/app'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import ErrorPage from '@pages/500.page'
-import StandardLayout from '@components/layouts/StandardLayout'
-import { GroupLayout } from '@components/layouts/GroupLayout'
-import { AdminLayout } from '@components/layouts/AdminLayout'
-import formConfigs from '@formConfigs/index'
+import StandardLayout from '@components/layouts/pages/StandardLayout'
+import { GroupLayout } from '@components/layouts/pages/GroupLayout'
+import { AdminLayout } from '@components/layouts/pages/AdminLayout'
+import formConfigs from '@config/form-configs/index'
 import { themes } from '@constants/themes'
 import {
     ThemesContext,
     FormsContext,
     LoadingContext,
     NotificationsContext,
-} from '@contexts/index'
+} from '@helpers/contexts/index'
 import { layoutIds } from '@constants/routes'
 
 const CustomApp = ({ Component, pageProps }) => {

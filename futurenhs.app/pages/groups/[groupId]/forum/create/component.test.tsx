@@ -5,7 +5,7 @@ import { routes } from '@jestMocks/generic-props'
 import GroupCreateDiscussionPage, {
     Props,
 } from '@pages/groups/[groupId]/forum/create/index.page'
-import forms from '@formConfigs/index'
+import forms from '@config/form-configs/index'
 
 jest.mock('next/router', () => require('next-router-mock'))
 

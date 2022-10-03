@@ -3,9 +3,9 @@ import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { layoutIds, routeParams } from '@constants/routes'
-import { withUser } from '@hofs/withUser'
-import { withTextContent } from '@hofs/withTextContent'
-import { withRoutes } from '@hofs/withRoutes'
+import { withUser } from '@helpers/hofs/withUser'
+import { withTextContent } from '@helpers/hofs/withTextContent'
+import { withRoutes } from '@helpers/hofs/withRoutes'
 import {
     selectCsrfToken,
     selectFormData,
@@ -13,7 +13,7 @@ import {
     selectParam,
     selectRequestMethod,
     selectUser,
-} from '@selectors/context'
+} from '@helpers/selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { formTypes } from '@constants/forms'
 import { FormConfig } from '@appTypes/form'

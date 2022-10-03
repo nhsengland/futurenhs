@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { Field } from 'react-final-form'
 import classNames from 'classnames'
 
-import { RichText } from '@components/RichText'
+import { RichText } from '@components/generic/RichText'
 import { getAriaFieldAttributes } from '@helpers/util/form'
 
 import { Props } from './interfaces'

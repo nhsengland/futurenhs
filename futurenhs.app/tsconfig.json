@@ -18,16 +18,12 @@
             "@pages/*": ["pages/*"],
             "@components/*": ["components/*"],
             "@constants/*": ["constants/*"],
-            "@contexts/*": ["contexts/*"],
             "@helpers/*": ["helpers/*"],
             "@services/*": ["services/*"],
-            "@selectors/*": ["selectors/*"],
-            "@hooks/*": ["hooks/*"],
-            "@hofs/*": ["hofs/*"],
             "@lib/*": ["lib/*"],
             "@appTypes/*": ["types/*"],
-            "@formConfigs/*": ["form-configs/*"],
-            "@jestMocks/*": ["jest-mocks/*"]
+            "@jestMocks/*": ["jest-mocks/*"],
+            "@config/*": ["config/*"]
         },
         "incremental": true
     },
