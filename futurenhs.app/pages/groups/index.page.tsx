@@ -167,7 +167,7 @@ export const getServerSideProps: GetServerSideProps = async (
             const session = await getSession(context)
             const idTokenHint: string = session.id_token as string
             const signOutPath = routes.SIGN_OUT
-            const callbackUrl: string = 'https://www.google.co.uk'
+            const callbackUrl: string = `${process.env.APP_URL}${signOutPath}`
             const B2CSignOutURL = `https://${process.env.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW}/oauth2/v2.0/logout?post_logout_redirect_uri=${callbackUrl}&id_token_hint=${idTokenHint}`
 
             /**
