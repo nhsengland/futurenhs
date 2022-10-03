@@ -71,7 +71,10 @@ export const getServerSideProps = async (
     if (session) {
         if (typeof window !== 'undefined') {
             try {
-                await signOut({ callbackUrl: process.env.NEXTAUTH_URL })
+                await signOut({
+                    redirect: true,
+                    callbackUrl: process.env.NEXTAUTH_URL,
+                })
             } catch (e) {}
         }
         /**
