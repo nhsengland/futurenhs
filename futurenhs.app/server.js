@@ -22,6 +22,7 @@ const csrfExcludedPaths = [
     '/api/auth/signout',
     '/api/auth/signout/azure-ad-b2c',
     '/api/auth/signin/azure-ad-b2c',
+    '/auth/signout',
 ]
 const shouldExcludePathFromCsrf = (path) => csrfExcludedPaths.includes(path)
 
