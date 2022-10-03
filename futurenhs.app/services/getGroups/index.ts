@@ -87,6 +87,7 @@ export const getGroups: Service = async (
             themeId: datum.themeId,
             totalMemberCount: datum.memberCount ?? 0,
             totalDiscussionCount: datum.discussionCount ?? 0,
+            isPublic: datum.isPublic,
             image: datum.image
                 ? {
                       src: `${datum.image?.source}`,

@@ -20,6 +20,7 @@ export interface Props {
         description?: string
         navMenuTitle: string
     }
+    isPublic?: boolean
     /**
      * Adds list of links to navigation menu
      */

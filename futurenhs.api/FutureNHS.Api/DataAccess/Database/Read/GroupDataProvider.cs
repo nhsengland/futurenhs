@@ -110,6 +110,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     [{nameof(AdminGroupSummary.Slug)}]                 = groups.Slug,
                     [{nameof(AdminGroupSummary.NameText)}]             = groups.Name,
                     [{nameof(AdminGroupSummary.StrapLineText)}]        = groups.Subtitle,
+                    [{nameof(AdminGroupSummary.IsPublic)}]             = groups.IsPublic,
                     [{nameof(AdminGroupSummary.MemberCount)}]          = (SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = groups.Id AND groupUser.Approved = 1 ), 
 				    [{nameof(AdminGroupSummary.DiscussionCount)}]      = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),
                     [{nameof(ImageData.Id)}]		                   = image.Id,

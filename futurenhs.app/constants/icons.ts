@@ -3,6 +3,7 @@ export const enum iconNames {
     PLUS_CIRCLE = 'icon-plus-circle',
     CHEVRON_UP = 'icon-chevron-up',
     CHEVRON_DOWN = 'icon-chevron-down',
+    LOCK = 'icon-lock',
 }
 
 export const defaultGroupLogos = {

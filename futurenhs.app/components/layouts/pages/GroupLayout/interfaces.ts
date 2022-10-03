@@ -21,4 +21,5 @@ export interface Props {
     image?: Image
     children?: any
     pageTitle?: string
+    isPublic?: boolean
 }

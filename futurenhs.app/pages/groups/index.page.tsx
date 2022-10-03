@@ -115,6 +115,7 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
                         },
                     ]}
                     shouldRenderActionsMenu={false}
+                    isPublic={true}
                     className="u-bg-theme-14"
                 />
                 <PageBody>

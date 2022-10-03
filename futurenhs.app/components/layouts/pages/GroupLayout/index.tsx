@@ -30,6 +30,7 @@ export interface Props {
     image?: Image
     children?: any
     pageTitle?: string
+    isPublic?: boolean
 }
 
 export const GroupLayout: (props: Props) => JSX.Element = ({
@@ -37,6 +38,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     themeId,
     entityText,
     image,
+    isPublic,
     actions,
     memberStatus,
     routes,
@@ -82,6 +84,7 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                                 description: strapLine,
                                 navMenuTitle: 'Group menu',
                             }}
+                            isPublic={isPublic}
                             image={image}
                             themeId={themeId}
                             actions={actions}

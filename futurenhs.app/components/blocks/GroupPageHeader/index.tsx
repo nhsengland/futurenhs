@@ -40,6 +40,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     shouldRenderActionsMenu = true,
     memberStatus,
     className,
+    isPublic,
 }) => {
     const router = useRouter()
 
@@ -219,7 +220,12 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                             </div>
                         )}
                         <h1 className={generatedClasses.heading}>
-                            {mainHeading}
+                        {!isPublic?<SVGIcon
+                            name={iconNames.LOCK}
+                            className="c-card_footer-icon u-fill-theme-0"
+                        />:null} 
+                        {mainHeading} 
+                        {!isPublic?" (Restricted)":null}
                         </h1>
                         {description && (
                             <RichText

@@ -12,4 +12,5 @@ export interface Props {
     image?: Image
     headingLevel?: number
     className?: string
+    isPublic?: boolean
 }
