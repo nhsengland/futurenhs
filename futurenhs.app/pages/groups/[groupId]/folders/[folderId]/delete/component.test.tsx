@@ -1,11 +1,10 @@
 import React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen, cleanup } from '@jestMocks/index'
-
-import { groupFolderForm } from '@formConfigs/group-folder'
 import { routes } from '@jestMocks/generic-props'
-import { GroupCreateUpdateFolderTemplate } from './index'
-import { Props } from './interfaces'
+import GroupDeleteFolderPage, {
+    Props,
+} from '@pages/groups/[groupId]/folders/[folderId]/delete/index.page'
 import forms from '@formConfigs/index'
 
 jest.mock('next/router', () => require('next-router-mock'))
@@ -36,13 +35,13 @@ describe('Group folder create/update template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupCreateUpdateFolderTemplate {...props} />)
+        render(<GroupDeleteFolderPage {...props} />)
 
         expect(screen.getAllByText('Save and continue').length).toEqual(1)
     })
 
     it('conditionally renders folder name when passed folder prop', () => {
-        render(<GroupCreateUpdateFolderTemplate {...props} />)
+        render(<GroupDeleteFolderPage {...props} />)
 
         expect(screen.getAllByText('Mock folder name').length).toEqual(1)
 
@@ -51,7 +50,7 @@ describe('Group folder create/update template', () => {
         const propsCopy = Object.assign({}, props)
         delete propsCopy.folder
 
-        render(<GroupCreateUpdateFolderTemplate {...propsCopy} />)
+        render(<GroupDeleteFolderPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock folder name')).toBeNull()
     })

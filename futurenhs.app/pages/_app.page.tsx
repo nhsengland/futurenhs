@@ -5,10 +5,9 @@ import App from 'next/app'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import ErrorPage from '@pages/500.page'
-import StandardLayout from '@components/_pageLayouts/StandardLayout'
-import { GroupLayout } from '@components/_pageLayouts/GroupLayout'
-import { AdminLayout } from '@components/_pageLayouts/AdminLayout'
-import { layoutIds } from '@constants/routes'
+import StandardLayout from '@components/layouts/StandardLayout'
+import { GroupLayout } from '@components/layouts/GroupLayout'
+import { AdminLayout } from '@components/layouts/AdminLayout'
 import formConfigs from '@formConfigs/index'
 import { themes } from '@constants/themes'
 import {
@@ -17,6 +16,7 @@ import {
     LoadingContext,
     NotificationsContext,
 } from '@contexts/index'
+import { layoutIds } from '@constants/routes'
 
 const CustomApp = ({ Component, pageProps }) => {
     const activeRequests: any = useRef([])

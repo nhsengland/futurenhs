@@ -4,8 +4,11 @@ import { render, screen } from '@jestMocks/index'
 import { actions } from '@constants/actions'
 
 import { routes } from '@jestMocks/generic-props'
-import GroupFilePreviewTemplate, { getServerSideProps } from './index.page'
-import { Props } from '@components/_pageTemplates/GroupFilePreviewTemplate/interfaces'
+import GroupFilePreviewPage, {
+    getServerSideProps,
+    Props,
+} from '@pages/groups/[groupId]/files/[fileId]/index.page'
+import {} from '@components/_pageTemplates/GroupFileDetailTemplate/interfaces'
 
 import { mswServer } from '../../../../../jest-mocks/msw-server'
 import { handlers } from '../../../../../jest-mocks/handlers'
@@ -45,7 +48,7 @@ describe('file page', () => {
     })
 
     it('renders correctly', () => {
-        render(<GroupFilePreviewTemplate {...props} />)
+        render(<GroupFilePreviewPage {...props} />)
 
         expect(screen.getAllByText(props.file.name).length).toEqual(1)
         expect(screen.getAllByText('View details').length).toEqual(1)

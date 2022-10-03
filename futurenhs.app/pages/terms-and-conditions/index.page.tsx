@@ -7,7 +7,7 @@ import { withTextContent } from '@hofs/withTextContent'
 import { withRoutes } from '@hofs/withRoutes'
 import { selectPageProps } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
-import GenericLayout, { Props } from '@components/_pageLayouts/GenericLayout'
+import GenericLayout, { Props } from '@components/layouts/GenericLayout'
 
 /**
  * Get props to inject into page on the initial server-side request

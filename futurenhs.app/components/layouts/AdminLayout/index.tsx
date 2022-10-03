@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import StandardLayout from '@components/_pageLayouts/StandardLayout'
+import StandardLayout from '@components/layouts/StandardLayout'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Theme } from '@appTypes/theme'
 export interface Props {

@@ -3,8 +3,10 @@ import mockRouter from 'next-router-mock'
 import { fireEvent, render, screen } from '@jestMocks/index'
 
 import { routes } from '@jestMocks/generic-props'
-import GroupFolderContentsTemplate, { getServerSideProps } from './index.page'
-import { Props } from '@components/_pageTemplates/GroupFolderContentsTemplate/interfaces'
+import GroupFolderIdContentsPage, {
+    getServerSideProps,
+    Props,
+} from '@pages/groups/[groupId]/folders/[folderId]/index.page'
 
 import { mswServer } from '../../../../../jest-mocks/msw-server'
 import { handlers } from '../../../../../jest-mocks/handlers'
@@ -82,7 +84,7 @@ describe('folders/folderId page', () => {
     })
 
     it('renders correctly', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderIdContentsPage {...props} />)
 
         expect(screen.getAllByText(props.folder.text.name).length).not.toBe(0)
     })
@@ -90,7 +92,7 @@ describe('folders/folderId page', () => {
     it('renders foldersHeading instead of folder header when folderId is missing', () => {
         const propsCopy = Object.assign({}, props, { folderId: null })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(screen.queryByText(propsCopy.folder.text.name)).toBeNull()
         expect(
@@ -125,7 +127,7 @@ describe('folders/folderId page', () => {
             ],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(screen.getAllByText('View details').length).toBe(1)
     })
@@ -157,7 +159,7 @@ describe('folders/folderId page', () => {
             ],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(screen.getAllByText('Download file').length).toBe(1)
     })
@@ -189,7 +191,7 @@ describe('folders/folderId page', () => {
             ],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(screen.queryAllByText('Download file').length).toBe(0)
         expect(screen.queryAllByText('View details').length).toBe(0)
@@ -201,7 +203,7 @@ describe('folders/folderId page', () => {
             folder: { text: { body: `<span>${text}</span>` } },
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(screen.getAllByText(text).length).toBe(1)
     })
@@ -212,7 +214,7 @@ describe('folders/folderId page', () => {
             folderContents: [],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(
             screen.getAllByText(propsCopy.contentText.noFolders).length
@@ -224,7 +226,7 @@ describe('folders/folderId page', () => {
             actions: [actions.GROUPS_FOLDERS_ADD],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(
             screen.getAllByText(propsCopy.contentText.createFolder).length
@@ -234,7 +236,7 @@ describe('folders/folderId page', () => {
     it('does not render createFolder when missing Add Folders action', () => {
         const propsCopy = Object.assign({}, props, { actions: [] })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(
             screen.queryAllByText(propsCopy.contentText.createFolder).length
@@ -246,7 +248,7 @@ describe('folders/folderId page', () => {
             actions: [actions.GROUPS_FILES_ADD],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(
             screen.getAllByText(propsCopy.contentText.createFile).length
@@ -256,7 +258,7 @@ describe('folders/folderId page', () => {
     it('does not render createFile when missing Add Files action', () => {
         const propsCopy = Object.assign({}, props, { actions: [] })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(
             screen.queryAllByText(propsCopy.contentText.createFile).length

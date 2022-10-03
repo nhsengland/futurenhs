@@ -17,8 +17,8 @@ import { Dialog } from '@components/Dialog'
 import { ContentBlockWrapper } from '@components/ContentBlockWrapper'
 import { CmsContentBlock } from '@appTypes/contentBlock'
 import { RichText } from '@components/RichText'
-import { TextContentBlock } from '@components/_contentBlockComponents/TextContentBlock'
-import { KeyLinksBlock } from '@components/_contentBlockComponents/KeyLinksBlock'
+import { TextContentBlock } from '@components/blocks/TextContentBlock'
+import { KeyLinksBlock } from '@components/blocks/KeyLinksBlock'
 
 import { Props } from './interfaces'
 import { FormErrors } from '@appTypes/form'
@@ -42,23 +42,24 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
     saveBlocksAction,
     className,
 }) => {
+    const localErrors: any = useRef({})
+    const blockUpdateCache: any = useRef({})
+    const blockUpdateCacheTimeOut: any = useRef(null)
 
-    const localErrors: any = useRef({});
-    const blockUpdateCache: any = useRef({});
-    const blockUpdateCacheTimeOut: any = useRef(null);
+    const [mode, setMode] = useState(initialState)
+    const [referenceBlocks, setReferenceBlocks] = useState(sourceBlocks)
+    const [blocks, setBlocks] = useState(sourceBlocks)
+    const [hasEditedBlocks, setHasEditedBlocks] = useState(false)
+    const [isDiscardChangesModalOpen, setIsDiscardChangesModalOpen] =
+        useState(false)
+    const [blockIdsInEditMode, setBlockIdsInEditMode] = useState([])
 
-    const [mode, setMode] = useState(initialState);
-    const [referenceBlocks, setReferenceBlocks] = useState(sourceBlocks);
-    const [blocks, setBlocks] = useState(sourceBlocks);
-    const [hasEditedBlocks, setHasEditedBlocks] = useState(false);
-    const [isDiscardChangesModalOpen, setIsDiscardChangesModalOpen] = useState(false);
-    const [blockIdsInEditMode, setBlockIdsInEditMode] = useState([]);
+    const hasTemplateBlocks: boolean = blocksTemplate?.length > 0
+    const hasBlocks: boolean = blocks?.length > 0
+    const hasBlockInEditMode: boolean = blockIdsInEditMode.length > 0
 
-    const hasTemplateBlocks: boolean = blocksTemplate?.length > 0;
-    const hasBlocks: boolean = blocks?.length > 0;
-    const hasBlockInEditMode: boolean = blockIdsInEditMode.length > 0;
-
-    const { headerReadBody,
+    const {
+        headerReadBody,
         headerPreviewBody,
         headerCreateHeading,
         headerCreateBody,
@@ -70,14 +71,13 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
         headerPreviewUpdateButton,
         headerPublishUpdateButton,
         createButton,
-        cancelCreateButton } = text ?? {};
+        cancelCreateButton,
+    } = text ?? {}
 
     const generatedClasses: any = {
         wrapper: classNames(className),
         header: classNames('u-mb-14', 'u-no-js-hidden'),
-        headerCallOut: classNames(
-            'nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full'
-        ),
+        headerCallOut: classNames('nhsuk-inset-text u-m-0 u-pr-0 u-max-w-full'),
         headerCallOutText: classNames('nhsuk-heading-m u-text-bold'),
         headerCallOutButton: classNames(
             'c-button c-button-outline c-button--min-width u-w-full u-drop-shadow u-mt-4 tablet:u-mt-0 tablet:u-ml-5'
@@ -197,12 +197,10 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
                     )
                 )
 
-                block.item.id = createdBlockId;
+                block.item.id = createdBlockId
 
                 for (const key in block.content) {
-
-                    block.content[key] = null;
-
+                    block.content[key] = null
                 }
 
                 updatedBlocks.push(block)
@@ -501,17 +499,14 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
      * Reset the active block data to the API block data if it is updated
      */
     useEffect(() => {
-
-        setBlocks(sourceBlocks);
-        setReferenceBlocks(sourceBlocks);
-
-    }, [sourceBlocks]);
+        setBlocks(sourceBlocks)
+        setReferenceBlocks(sourceBlocks)
+    }, [sourceBlocks])
 
     /**
      * Conditionally reset blocks from edit mode
      */
     useEffect(() => {
-
         if (
             blockIdsInEditMode.length > 0 &&
             (mode === cprud.READ || mode === cprud.PREVIEW)
@@ -664,109 +659,105 @@ export const ContentBlockManager: (props: Props) => JSX.Element = ({
             {(mode === cprud.UPDATE ||
                 mode === cprud.READ ||
                 mode === cprud.PREVIEW) && (
-                    <>
-                        {hasBlocks && (
-                            <ul className="u-list-none u-p-0 u-relative">
-                                {blocks?.map(
-                                    (block: CmsContentBlock, index: number) => {
-                                        const blockId: string = block.item.id
+                <>
+                    {hasBlocks && (
+                        <ul className="u-list-none u-p-0 u-relative">
+                            {blocks?.map(
+                                (block: CmsContentBlock, index: number) => {
+                                    const blockId: string = block.item.id
 
-                                        const key: string = index + blockId
-                                        const shouldRenderMovePrevious: boolean =
-                                            index > 0
-                                        const shouldRenderMoveNext: boolean =
-                                            index < blocks.length - 1
-                                        const isInEditMode: boolean =
-                                            blockIdsInEditMode.includes(blockId)
-                                        const isEditable: boolean =
-                                            mode !== cprud.READ &&
-                                            mode !== cprud.PREVIEW
-                                        const hasErrors: boolean =
-                                            getHasBlockErrors(blockId)
+                                    const key: string = index + blockId
+                                    const shouldRenderMovePrevious: boolean =
+                                        index > 0
+                                    const shouldRenderMoveNext: boolean =
+                                        index < blocks.length - 1
+                                    const isInEditMode: boolean =
+                                        blockIdsInEditMode.includes(blockId)
+                                    const isEditable: boolean =
+                                        mode !== cprud.READ &&
+                                        mode !== cprud.PREVIEW
+                                    const hasErrors: boolean =
+                                        getHasBlockErrors(blockId)
 
-                                        return (
-                                            <li key={key} className="u-mb-10">
-                                                {isEditable ? (
-                                                    <ContentBlockWrapper
-                                                        key={key}
-                                                        mode={mode}
-                                                        block={block}
-                                                        isInEditMode={
-                                                            isInEditMode
-                                                        }
-                                                        shouldRenderMovePrevious={
-                                                            shouldRenderMovePrevious
-                                                        }
-                                                        shouldRenderMoveNext={
-                                                            shouldRenderMoveNext
-                                                        }
-                                                        shouldEnableMovePrevious={
-                                                            !hasBlockInEditMode
-                                                        }
-                                                        shouldEnableMoveNext={
-                                                            !hasBlockInEditMode
-                                                        }
-                                                        shouldEnableDelete={
-                                                            !hasBlockInEditMode ||
-                                                            isInEditMode
-                                                        }
-                                                        shouldEnableEnterUpdate={
-                                                            !hasBlockInEditMode
-                                                        }
-                                                        shouldEnableEnterRead={
-                                                            isInEditMode &&
-                                                            !hasErrors
-                                                        }
-                                                        movePreviousAction={
-                                                            handleMoveBlockPrevious
-                                                        }
-                                                        moveNextAction={
-                                                            handleMoveBlockNext
-                                                        }
-                                                        deleteAction={
-                                                            handleDeleteBlock
-                                                        }
-                                                        enterReadModeAction={
-                                                            handleSetEditableBlockToReadMode
-                                                        }
-                                                        enterUpdateModeAction={
-                                                            handleSetEditableBlockToUpdateMode
-                                                        }
-                                                    >
-                                                        {renderBlockContent(
-                                                            block
-                                                        )}
-                                                    </ContentBlockWrapper>
-                                                ) : (
-                                                    renderBlockContent(block)
-                                                )}
-                                            </li>
-                                        )
-                                    }
-                                )}
-                            </ul>
-                        )}
-                        {mode === cprud.UPDATE && hasTemplateBlocks && (
-                            <div className={generatedClasses.createBlock}>
-                                <div className={generatedClasses.blockBody}>
-                                    <button
-                                        onClick={handleSetToCreateMode}
-                                        disabled={hasBlockInEditMode}
-                                        className="c-button c-button-outline u-drop-shadow"
-                                    >
-                                        <SVGIcon
-                                            name="icon-add-content"
-                                            className="u-w-9 u-h-8 u-mr-4 u-align-middle"
-                                        />
-                                        <span className="u-align-middle">
-                                            {createButton}
-                                        </span>
-                                    </button>
-                                </div>
+                                    return (
+                                        <li key={key} className="u-mb-10">
+                                            {isEditable ? (
+                                                <ContentBlockWrapper
+                                                    key={key}
+                                                    mode={mode}
+                                                    block={block}
+                                                    isInEditMode={isInEditMode}
+                                                    shouldRenderMovePrevious={
+                                                        shouldRenderMovePrevious
+                                                    }
+                                                    shouldRenderMoveNext={
+                                                        shouldRenderMoveNext
+                                                    }
+                                                    shouldEnableMovePrevious={
+                                                        !hasBlockInEditMode
+                                                    }
+                                                    shouldEnableMoveNext={
+                                                        !hasBlockInEditMode
+                                                    }
+                                                    shouldEnableDelete={
+                                                        !hasBlockInEditMode ||
+                                                        isInEditMode
+                                                    }
+                                                    shouldEnableEnterUpdate={
+                                                        !hasBlockInEditMode
+                                                    }
+                                                    shouldEnableEnterRead={
+                                                        isInEditMode &&
+                                                        !hasErrors
+                                                    }
+                                                    movePreviousAction={
+                                                        handleMoveBlockPrevious
+                                                    }
+                                                    moveNextAction={
+                                                        handleMoveBlockNext
+                                                    }
+                                                    deleteAction={
+                                                        handleDeleteBlock
+                                                    }
+                                                    enterReadModeAction={
+                                                        handleSetEditableBlockToReadMode
+                                                    }
+                                                    enterUpdateModeAction={
+                                                        handleSetEditableBlockToUpdateMode
+                                                    }
+                                                >
+                                                    {renderBlockContent(block)}
+                                                </ContentBlockWrapper>
+                                            ) : (
+                                                renderBlockContent(block)
+                                            )}
+                                        </li>
+                                    )
+                                }
+                            )}
+                        </ul>
+                    )}
+                    {mode === cprud.UPDATE && hasTemplateBlocks && (
+                        <div className={generatedClasses.createBlock}>
+                            <div className={generatedClasses.blockBody}>
+                                <button
+                                    onClick={handleSetToCreateMode}
+                                    disabled={hasBlockInEditMode}
+                                    className="c-button c-button-outline u-drop-shadow"
+                                >
+                                    <SVGIcon
+                                        name="icon-add-content"
+                                        className="u-w-9 u-h-8 u-mr-4 u-align-middle"
+                                    />
+                                    <span className="u-align-middle">
+                                        {createButton}
+                                    </span>
+                                </button>
                             </div>
-                        )}
-                    </>
-                )}
+                        </div>
+                    )}
+                </>
+            )}
             <Dialog
                 id="dialog-discard-cms-block-changes"
                 isOpen={isDiscardChangesModalOpen}

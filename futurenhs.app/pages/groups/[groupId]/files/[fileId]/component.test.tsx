@@ -3,8 +3,9 @@ import mockRouter from 'next-router-mock'
 import { routes } from '@jestMocks/generic-props'
 import { render, screen, cleanup } from '@jestMocks/index'
 
-import { GroupFilePreviewTemplate } from './index'
-import { Props } from './interfaces'
+import GroupFilePreviewPage, {
+    Props,
+} from '@pages/groups/[groupId]/files/[fileId]/index.page'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -54,13 +55,13 @@ describe('Group file preview template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupFilePreviewTemplate {...props} />)
+        render(<GroupFilePreviewPage {...props} />)
 
         expect(screen.getAllByText('Mock file name').length).toEqual(1)
     })
 
     it('conditionally renders breadcrumbs if path is included in props.file', () => {
-        render(<GroupFilePreviewTemplate {...props} />)
+        render(<GroupFilePreviewPage {...props} />)
 
         expect(screen.getAllByText('Mock breadcrumb').length).toBe(1)
 
@@ -74,7 +75,7 @@ describe('Group file preview template', () => {
             },
         })
 
-        render(<GroupFilePreviewTemplate {...propsCopy} />)
+        render(<GroupFilePreviewPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock breadcrumb')).toBeNull()
     })

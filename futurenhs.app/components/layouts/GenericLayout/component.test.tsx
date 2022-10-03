@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@jestMocks/index'
-import GenericPage, { Props } from '@components/_pageLayouts/GenericLayout'
+import GenericPage, { Props } from '@components/layouts/GenericLayout'
 import { routes } from '@jestMocks/generic-props'
 
 const props: Props = {

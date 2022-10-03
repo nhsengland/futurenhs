@@ -2,9 +2,11 @@ import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
 import { routes } from '@jestMocks/generic-props'
-
-import GroupFileDetailTemplate, { getServerSideProps } from './index.page'
-import { Props } from '@components/_pageTemplates/GroupFileDetailTemplate/interfaces'
+import GroupFileDetailPage, {
+    getServerSideProps,
+    Props,
+} from '@pages/groups/[groupId]/files/[fileId]/detail/index.page'
+import {} from '@components/_pageTemplates/GroupFileDetailTemplate/interfaces'
 
 import { mswServer } from '../../../../../../jest-mocks/msw-server'
 import { handlers } from '../../../../../../jest-mocks/handlers'
@@ -48,7 +50,7 @@ describe('file detail page', () => {
     })
 
     it('renders correctly', () => {
-        render(<GroupFileDetailTemplate {...props} />)
+        render(<GroupFileDetailPage {...props} />)
 
         expect(screen.getAllByText(props.file.name).length).not.toEqual(0)
         expect(

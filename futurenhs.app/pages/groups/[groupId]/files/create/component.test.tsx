@@ -1,10 +1,9 @@
 import { routes } from '@jestMocks/generic-props'
 import { render, screen } from '@jestMocks/index'
 import forms from '@formConfigs/index'
-
-import { GroupCreateFileTemplate } from './index'
-
-import { Props } from './interfaces'
+import GroupCreateFilePage, {
+    Props,
+} from '@pages/groups/[groupId]/files/create/index.page'
 
 describe('Group create file template', () => {
     const props: Props = {
@@ -30,7 +29,7 @@ describe('Group create file template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupCreateFileTemplate {...props} />)
+        render(<GroupCreateFilePage {...props} />)
 
         expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
     })

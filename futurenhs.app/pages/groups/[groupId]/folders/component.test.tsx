@@ -3,9 +3,10 @@ import mockRouter from 'next-router-mock'
 import { render, screen, cleanup } from '@jestMocks/index'
 import { actions as userActions } from '@constants/actions'
 
-import { GroupFolderContentsTemplate } from './index'
+import GroupFolderContentsPage, {
+    Props,
+} from '@pages/groups/[groupId]/folders/index.page'
 import { routes } from '@jestMocks/generic-props'
-import { Props } from './interfaces'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -67,13 +68,13 @@ describe('Group folders template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText('Mock folder').length).toEqual(1)
     })
 
     it('conditionally renders breadcrumbs if path is included in props.folder', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText('Mock breadcrumb').length).toBe(1)
 
@@ -89,13 +90,13 @@ describe('Group folders template', () => {
             },
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderContentsPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock breadcrumb')).toBeNull()
     })
 
     it('conditionally renders delete/edit buttons', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText('Update folder').length).toBe(1)
         // expect(screen.getAllByText('Delete folder').length).toBe(0);
@@ -106,14 +107,14 @@ describe('Group folders template', () => {
             actions: [],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderContentsPage {...propsCopy} />)
 
         expect(screen.queryByText('Update folder')).toBeNull()
         expect(screen.queryByText('Delete folder')).toBeNull()
     })
 
     it('conditionally renders folder name', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText('Mock folder').length).toBe(1)
 
@@ -123,13 +124,13 @@ describe('Group folders template', () => {
             folderId: null,
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderContentsPage {...propsCopy} />)
 
         expect(screen.getAllByText('Mock folder heading').length).toBe(1)
     })
 
     it('conditionally renders folder body text', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText('Mock folder body text').length).toBe(1)
 
@@ -145,13 +146,13 @@ describe('Group folders template', () => {
             },
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderContentsPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock folder body text')).toBeNull()
     })
 
     it('conditionally renders folder contents', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText('Mock folder content name').length).toBe(1)
 
@@ -162,13 +163,13 @@ describe('Group folders template', () => {
             folderId: null,
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderContentsPage {...propsCopy} />)
 
         expect(screen.getAllByText('No folders').length).toBe(1)
     })
 
     it('conditionally renders create folder button', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText('Create folder').length).toBe(1)
 
@@ -182,13 +183,13 @@ describe('Group folders template', () => {
             ],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderContentsPage {...propsCopy} />)
 
         expect(screen.queryByText('Create folder')).toBeNull()
     })
 
     it('conditionally renders create folder button', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText('Upload file').length).toBe(1)
 
@@ -202,7 +203,7 @@ describe('Group folders template', () => {
             ],
         })
 
-        render(<GroupFolderContentsTemplate {...propsCopy} />)
+        render(<GroupFolderContentsPage {...propsCopy} />)
 
         expect(screen.queryByText('Upload file')).toBeNull()
     })

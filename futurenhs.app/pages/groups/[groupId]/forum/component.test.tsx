@@ -3,9 +3,8 @@ import mockRouter from 'next-router-mock'
 import { cleanup, render, screen } from '@jestMocks/index'
 import { actions } from '@constants/actions'
 
-import { GroupForumTemplate } from './index'
+import GroupForumPage, { Props } from '@pages/groups/[groupId]/forum/index.page'
 import { routes } from '@jestMocks/generic-props'
-import { Props } from './interfaces'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -64,7 +63,7 @@ describe('Group forum template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupForumTemplate {...props} />)
+        render(<GroupForumPage {...props} />)
 
         expect(screen.getAllByText('Mock content text heading').length).toEqual(
             1
@@ -72,7 +71,7 @@ describe('Group forum template', () => {
     })
 
     it('conditionally renders discussions', () => {
-        render(<GroupForumTemplate {...props} />)
+        render(<GroupForumPage {...props} />)
 
         expect(screen.getAllByText('Mock discussion title').length).toBe(1)
 
@@ -82,13 +81,13 @@ describe('Group forum template', () => {
             discussionsList: [],
         })
 
-        render(<GroupForumTemplate {...propsCopy} />)
+        render(<GroupForumPage {...propsCopy} />)
 
         expect(screen.getAllByText('Mock no discussions text').length).toBe(1)
     })
 
     it('conditionally renders sticky tag', () => {
-        render(<GroupForumTemplate {...props} />)
+        render(<GroupForumPage {...props} />)
 
         expect(screen.getAllByText('Mock sticky label').length).toBe(1)
 
@@ -97,13 +96,13 @@ describe('Group forum template', () => {
         const propsCopy = JSON.parse(JSON.stringify(props))
         propsCopy.discussionsList[0].isSticky = false
 
-        render(<GroupForumTemplate {...propsCopy} />)
+        render(<GroupForumPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock sticky label')).toBeNull()
     })
 
     it('conditionally renders last comment by section', () => {
-        render(<GroupForumTemplate {...props} />)
+        render(<GroupForumPage {...props} />)
 
         expect(screen.getAllByText('Mock modifiedBy username').length).toBe(1)
 
@@ -112,13 +111,13 @@ describe('Group forum template', () => {
         const propsCopy = JSON.parse(JSON.stringify(props))
         propsCopy.discussionsList[0].responseCount = 0
 
-        render(<GroupForumTemplate {...propsCopy} />)
+        render(<GroupForumPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock modifiedBy username')).toBeNull()
     })
 
     it('conditionally renders create discussion button', () => {
-        render(<GroupForumTemplate {...props} />)
+        render(<GroupForumPage {...props} />)
 
         expect(screen.getAllByText('Mock create discussion text').length).toBe(
             1
@@ -130,7 +129,7 @@ describe('Group forum template', () => {
             actions: [],
         })
 
-        render(<GroupForumTemplate {...propsCopy} />)
+        render(<GroupForumPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock create discussion text')).toBeNull()
     })

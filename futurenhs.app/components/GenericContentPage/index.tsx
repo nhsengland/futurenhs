@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import { StandardLayout } from '@components/_pageLayouts/StandardLayout'
+import StandardLayout from '@components/layouts/StandardLayout'
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer'
 
 import { Props } from './interfaces'

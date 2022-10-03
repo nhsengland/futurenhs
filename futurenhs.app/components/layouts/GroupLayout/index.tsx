@@ -10,7 +10,7 @@ import { GroupsPageTextContent } from '@appTypes/content'
 import { Image } from '@appTypes/image'
 import { Routes } from '@appTypes/routing'
 import { User } from '@appTypes/user'
-import StandardLayout from '@components/_pageLayouts/StandardLayout'
+import StandardLayout from '@components/layouts/StandardLayout'
 
 export interface Props {
     tabId: 'index' | 'forum' | 'files' | 'members'

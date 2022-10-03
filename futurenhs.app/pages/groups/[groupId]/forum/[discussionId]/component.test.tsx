@@ -4,9 +4,9 @@ import { render, screen, cleanup } from '@jestMocks/index'
 import { actions as userActions } from '@constants/actions'
 import { routes } from '@jestMocks/generic-props'
 import formConfigs from '@formConfigs/index'
-
-import { GroupDiscussionTemplate } from './index'
-import { Props } from './interfaces'
+import GroupDiscussionPage, {
+    Props,
+} from '@pages/groups/[groupId]/forum/[discussionId]/index.page'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -86,13 +86,13 @@ describe('Group discussion template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupDiscussionTemplate {...props} />)
+        render(<GroupDiscussionPage {...props} />)
 
         expect(screen.getAllByText('Mock discussion title').length).toBe(1)
     })
 
     it('conditionally renders discussion body', () => {
-        render(<GroupDiscussionTemplate {...props} />)
+        render(<GroupDiscussionPage {...props} />)
 
         expect(screen.getAllByText('Mock discussion body text').length).toBe(1)
 
@@ -102,13 +102,13 @@ describe('Group discussion template', () => {
 
         delete propsCopy.discussion.text.body
 
-        render(<GroupDiscussionTemplate {...propsCopy} />)
+        render(<GroupDiscussionPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock discussion body text')).toBeNull()
     })
 
     it('conditionally renders last comment by section if a comment has been made', () => {
-        render(<GroupDiscussionTemplate {...props} />)
+        render(<GroupDiscussionPage {...props} />)
 
         expect(screen.queryByText('Last comment by')).toBeNull()
 
@@ -124,14 +124,14 @@ describe('Group discussion template', () => {
             },
         }
 
-        render(<GroupDiscussionTemplate {...propsCopy} />)
+        render(<GroupDiscussionPage {...propsCopy} />)
 
         expect(screen.getAllByText('Last comment by').length).toBe(1)
         expect(screen.getAllByText('Mock last comment username').length).toBe(1)
     })
 
     it('conditionally renders comment count if there are any comments', () => {
-        render(<GroupDiscussionTemplate {...props} />)
+        render(<GroupDiscussionPage {...props} />)
 
         expect(screen.getAllByText('Comments: 99').length).toBeGreaterThan(0)
 
@@ -141,13 +141,13 @@ describe('Group discussion template', () => {
 
         props.discussion.responseCount = 0
 
-        render(<GroupDiscussionTemplate {...propsCopy} />)
+        render(<GroupDiscussionPage {...propsCopy} />)
 
         expect(screen.queryByText('Comments: 99')).toBeNull()
     })
 
     it('conditionally renders discussion comments', () => {
-        render(<GroupDiscussionTemplate {...props} />)
+        render(<GroupDiscussionPage {...props} />)
 
         expect(screen.getAllByText('Mock comment text').length).toBe(1)
 
@@ -157,13 +157,13 @@ describe('Group discussion template', () => {
             discussionCommentsList: null,
         })
 
-        render(<GroupDiscussionTemplate {...propsCopy} />)
+        render(<GroupDiscussionPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock comment text')).toBeNull()
     })
 
     it('conditionally renders comment replies', () => {
-        render(<GroupDiscussionTemplate {...props} />)
+        render(<GroupDiscussionPage {...props} />)
 
         expect(screen.getAllByText('Mock reply text').length).toBe(1)
 
@@ -172,7 +172,7 @@ describe('Group discussion template', () => {
         const propsCopy = JSON.parse(JSON.stringify(props))
         propsCopy.discussionCommentsList[0].replies = null
 
-        render(<GroupDiscussionTemplate {...propsCopy} />)
+        render(<GroupDiscussionPage {...propsCopy} />)
 
         expect(screen.queryByText('Mock reply text')).toBeNull()
     })
@@ -186,13 +186,13 @@ describe('Group discussion template', () => {
             },
         }
 
-        render(<GroupDiscussionTemplate {...propsCopy} />)
+        render(<GroupDiscussionPage {...propsCopy} />)
 
         expect(screen.getAllByText('Show more replies').length).toBe(1)
 
         cleanup()
 
-        render(<GroupDiscussionTemplate {...props} />)
+        render(<GroupDiscussionPage {...props} />)
 
         expect(screen.queryByText('Show more replies')).toBeNull()
     })
@@ -208,13 +208,13 @@ describe('Group discussion template', () => {
             },
         })
 
-        render(<GroupDiscussionTemplate {...propsCopy} />)
+        render(<GroupDiscussionPage {...propsCopy} />)
 
         expect(screen.getAllByText('Join in the conversation').length).toBe(1)
 
         cleanup()
 
-        render(<GroupDiscussionTemplate {...props} />)
+        render(<GroupDiscussionPage {...props} />)
 
         expect(screen.queryByText('Join in the conversation')).toBeNull()
     })

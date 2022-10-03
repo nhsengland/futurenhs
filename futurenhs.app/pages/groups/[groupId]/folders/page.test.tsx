@@ -3,8 +3,11 @@ import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
 
 import { routes } from '@jestMocks/generic-props'
-import GroupFolderContentsTemplate, { getServerSideProps } from './index.page'
-import { Props } from '@components/_pageTemplates/GroupFolderContentsTemplate/interfaces'
+
+import GroupFolderContentsPage, {
+    Props,
+    getServerSideProps,
+} from '@pages/groups/[groupId]/folders/index.page'
 
 import { mswServer } from '../../../../jest-mocks/msw-server'
 import { handlers } from '../../../../jest-mocks/handlers'
@@ -80,7 +83,7 @@ describe('folders page', () => {
     })
 
     it('renders correctly', () => {
-        render(<GroupFolderContentsTemplate {...props} />)
+        render(<GroupFolderContentsPage {...props} />)
 
         expect(screen.getAllByText(props.folder.text.name).length).not.toBe(0)
     })

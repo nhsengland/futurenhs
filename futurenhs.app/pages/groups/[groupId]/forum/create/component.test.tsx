@@ -1,11 +1,10 @@
 import React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
-
-import { createDiscussionForm } from '@formConfigs/create-discussion'
 import { routes } from '@jestMocks/generic-props'
-import { GroupCreateDiscussionTemplate } from './index'
-import { Props } from './interfaces'
+import GroupCreateDiscussionPage, {
+    Props,
+} from '@pages/groups/[groupId]/forum/create/index.page'
 import forms from '@formConfigs/index'
 
 jest.mock('next/router', () => require('next-router-mock'))
@@ -38,7 +37,7 @@ describe('Group create discussion template', () => {
     }
 
     it('renders correctly', () => {
-        render(<GroupCreateDiscussionTemplate {...props} />)
+        render(<GroupCreateDiscussionPage {...props} />)
 
         expect(screen.getAllByText('Mock secondary heading').length).toEqual(1)
     })

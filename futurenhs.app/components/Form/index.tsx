@@ -4,7 +4,7 @@ import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import classNames from 'classnames'
 
 import { Link } from '@components/Link'
-import { formComponents } from '@components/_formComponents'
+import { formComponents } from '@components/forms'
 import { Dialog } from '@components/Dialog'
 import { validate } from '@helpers/validators'
 import { requestMethods } from '@constants/fetch'
@@ -68,7 +68,7 @@ export const Form: (props: Props) => JSX.Element = ({
         }
 
         templatedFields.forEach((field) => {
-            field.name = instanceId ? field.name + '-' + instanceId : field.name;
+            field.name = instanceId ? field.name + '-' + instanceId : field.name
             field.initialError = initialErrors?.[field.name] || null
         })
 
