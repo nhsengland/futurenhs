@@ -25,7 +25,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid id, bool isMember, uint offset, uint limit, CancellationToken cancellationToken = default)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
@@ -36,22 +36,34 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             IEnumerable<GroupSummary> groups;
 
-            const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS NameText, g.Subtitle AS StraplineText, 
-				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
-				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id AND discussion.IsDeleted = 0) AS DiscussionCount,
-                image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
-				FROM [Group] g
-                JOIN GroupUser groupUser ON groupUser.Group_Id = g.Id
-                LEFT JOIN Image image ON image.Id = g.ImageId 
-                WHERE g.IsDeleted = 0 AND groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1
-                ORDER BY g.Name
+            var isMemberQuery = isMember == true
+                ? "JOIN GroupUser groupUser ON groupUser.Group_Id = groups.Id WHERE groups.IsDeleted = 0 AND groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1"
+                : "WHERE groups.IsDeleted = 0 AND NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = groups.Id AND gu.Approved = 1)";
+            
+            string query =
+                @$"SELECT 
+                    [{nameof(GroupSummary.Id)}]                        = groups.Id,
+                    [{nameof(GroupSummary.ThemeId)}]                   = groups.ThemeId,
+                    [{nameof(GroupSummary.Slug)}]                      = groups.Slug,
+                    [{nameof(GroupSummary.NameText)}]                  = groups.Name,
+                    [{nameof(GroupSummary.StraplineText)}]             = groups.Subtitle,
+                    [{nameof(GroupSummary.IsPublic)}]                  = groups.IsPublic,
+                    [{nameof(GroupSummary.MemberCount)}]               = (SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = groups.Id AND groupUser.Approved = 1 ), 
+				    [{nameof(GroupSummary.DiscussionCount)}]           = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),
+                    [{nameof(ImageData.Id)}]		                   = image.Id,
+                    [{nameof(ImageData.Height)}]	                   = image.Height,
+                    [{nameof(ImageData.Width)}]		                   = image.Width,
+                    [{nameof(ImageData.FileName)}]	                   = image.FileName,
+                    [{nameof(ImageData.MediaType)}]	                   = image.MediaType
+				FROM [Group] groups
+                LEFT JOIN Image image ON image.Id = groups.ImageId                         
+                {isMemberQuery}
+                ORDER BY groups.Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @Limit ROWS ONLY;
 
-                SELECT COUNT(*) FROM GroupUser groupUser
-                JOIN [Group] g ON g.Id = groupUser.Group_Id
-                WHERE g.IsDeleted = 0 AND groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1";
+                SELECT COUNT(*) FROM [Group] groups
+                {isMemberQuery}";
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
                 using var reader = await dbConnection.QueryMultipleAsync(query, new
@@ -80,62 +92,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return (totalCount, groups);
         }
 
-        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> DiscoverGroupsForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
-        {
-            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
-            {
-                throw new ArgumentOutOfRangeException(nameof(limit));
-            }
-
-            uint totalCount;
-
-            IEnumerable<GroupSummary> groups;
-
-            const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS NameText, g.Subtitle AS StraplineText, 
-				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
-				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id AND discussion.IsDeleted = 0) AS DiscussionCount,
-                image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType
-				FROM [Group] g    
-                LEFT JOIN Image image ON image.Id = g.ImageId  
-                WHERE g.IsDeleted = 0
-				AND NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)
-                ORDER BY g.Name
-                OFFSET @Offset ROWS
-                FETCH NEXT @Limit ROWS ONLY;
-
-                SELECT COUNT(*) FROM [Group] g
-                WHERE g.IsDeleted = 0
-				AND NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = g.Id AND gu.Approved = 1)";
-
-            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
-            {
-                using var reader = await dbConnection.QueryMultipleAsync(query, new
-                {
-                    Offset = Convert.ToInt32(offset),
-                    Limit = Convert.ToInt32(limit),
-                    UserId = id
-                });
-                groups = reader.Read<GroupSummary, ImageData, GroupSummary>(
-                    (group, image) =>
-                    {
-                        if (image is not null)
-                        {
-                            var groupWithImage = group with { Image = new ImageData(image, _options) };
-
-                            return groupWithImage;
-                        }
-
-                        return group;
-
-                    }, splitOn: "id");
-
-                totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
-            }
-
-            return (totalCount, groups);
-        }
-
         public async Task<(uint totalGroups, IEnumerable<AdminGroupSummary> groupSummaries)> AdminGetGroupsAsync(uint offset, uint limit, CancellationToken cancellationToken = default)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
@@ -148,22 +104,33 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             IEnumerable<AdminGroupSummary> groups;
 
             const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS NameText, g.Subtitle AS StrapLineText,
-				(SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = g.Id AND groupUser.Approved = 1 ) AS MemberCount, 
-				(SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = g.Id AND discussion.IsDeleted = 0) AS DiscussionCount,
-                image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName, image.MediaType AS MediaType,
-                owner.Id, owner.FirstName + ' ' + owner.Surname AS Name, owner.Slug AS Slug
-				FROM [Group] g
-                LEFT JOIN Image image ON image.Id = g.ImageId
-                LEFT JOIN MembershipUser owner ON owner.Id = g.GroupOwner
-                WHERE g.IsDeleted = 0
-                ORDER BY g.Name
+                @$"SELECT 
+                    [{nameof(AdminGroupSummary.Id)}]                   = groups.Id,
+                    [{nameof(AdminGroupSummary.ThemeId)}]              = groups.ThemeId,
+                    [{nameof(AdminGroupSummary.Slug)}]                 = groups.Slug,
+                    [{nameof(AdminGroupSummary.NameText)}]             = groups.Name,
+                    [{nameof(AdminGroupSummary.StrapLineText)}]        = groups.Subtitle,
+                    [{nameof(AdminGroupSummary.MemberCount)}]          = (SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = groups.Id AND groupUser.Approved = 1 ), 
+				    [{nameof(AdminGroupSummary.DiscussionCount)}]      = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),
+                    [{nameof(ImageData.Id)}]		                   = image.Id,
+                    [{nameof(ImageData.Height)}]	                   = image.Height,
+                    [{nameof(ImageData.Width)}]		                   = image.Width,
+                    [{nameof(ImageData.FileName)}]	                   = image.FileName,
+                    [{nameof(ImageData.MediaType)}]	                   = image.MediaType,  
+                    [{nameof(UserNavProperty.Id)}]	                   = owner.Id,  
+                    [{nameof(UserNavProperty.Name)}]	               = owner.FirstName + ' ' + owner.Surname,
+                    [{nameof(UserNavProperty.Slug)}]	               = owner.Slug
+				FROM [Group] groups 
+                LEFT JOIN Image image ON image.Id = groups.ImageId
+                LEFT JOIN MembershipUser owner ON owner.Id = groups.GroupOwner
+                WHERE groups.IsDeleted = 0
+                ORDER BY groups.Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @Limit ROWS ONLY;
 
                 SELECT COUNT(*) 
-                FROM [Group] g
-                WHERE g.IsDeleted = 0";
+                FROM [Group] groups
+                WHERE groups.IsDeleted = 0";
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
                 using var reader = await dbConnection.QueryMultipleAsync(query, new
@@ -208,25 +175,35 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS Strapline, g.PublicGroup AS IsPublic,( SELECT CASE 
-                                                                                    WHEN        gu.Approved = 1
-                                                                                    AND         gu.Rejected = 0
-                                                                                    AND         gu.Locked = 0
-                                                                                    AND         gu.Banned = 0
-                                                                                    THEN        'Approved'
-                                                                                    WHEN        gu.Approved = 0
-                                                                                    AND         gu.Rejected = 0
-                                                                                    AND         gu.Locked = 0
-                                                                                    AND         gu.Banned = 0
-                                                                                    THEN        'Pending Approval'
-                                                                                    ELSE        'Non Member'
-                                                                                    END
-                                                                                  ) AS MemberStatus,		
-                image.Id, image.Height AS Height, image.Width AS Width, image.FileName AS FileName,  image.MediaType AS MediaType
-				FROM [Group] g
-                LEFT JOIN [Image] image ON image.Id = g.ImageId  
-                LEFT JOIN GroupUser gu ON (gu.Group_Id = g.Id and gu.MembershipUser_Id = @UserId)
-                WHERE g.Slug = @Slug AND g.IsDeleted = 0;";
+                @$"SELECT 
+                    [{nameof(Group.Id)}]                   = groups.Id,
+                    [{nameof(Group.ThemeId)}]              = groups.ThemeId,
+                    [{nameof(Group.Slug)}]                 = groups.Slug,
+                    [{nameof(Group.Name)}]                 = groups.Name,
+                    [{nameof(Group.Strapline)}]            = groups.Subtitle,
+                    [{nameof(Group.IsPublic)}]             = groups.IsPublic,
+                    [{nameof(Group.MemberStatus)}]         = ( SELECT CASE 
+                                                                        WHEN        gu.Approved = 1
+                                                                        AND         gu.Rejected = 0
+                                                                        AND         gu.Locked = 0
+                                                                        AND         gu.Banned = 0
+                                                                        THEN        'Approved'
+                                                                        WHEN        gu.Approved = 0
+                                                                        AND         gu.Rejected = 0
+                                                                        AND         gu.Locked = 0
+                                                                        AND         gu.Banned = 0
+                                                                        THEN        'Pending Approval'
+                                                                        ELSE        'Non Member'
+                                                                        END),
+                    [{nameof(ImageData.Id)}]		        = image.Id,
+                    [{nameof(ImageData.Height)}]	        = image.Height,
+                    [{nameof(ImageData.Width)}]		        = image.Width,
+                    [{nameof(ImageData.FileName)}]	        = image.FileName,
+                    [{nameof(ImageData.MediaType)}]	        = image.MediaType
+				FROM [Group] groups
+                LEFT JOIN [Image] image ON image.Id = groups.ImageId  
+                LEFT JOIN GroupUser gu ON (gu.Group_Id = groups.Id and gu.MembershipUser_Id = @UserId)
+                WHERE groups.Slug = @Slug AND groups.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
@@ -467,7 +444,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 gs.GroupId,
                                 gs.ContentRootId,
 								g.Slug
-
                     FROM [GroupSite] gs
 					JOIN        [Group] g
                     ON          g.Id = gs.GroupId
@@ -489,7 +465,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         {
             const string query =
                              @$"SELECT
-                                    PublicGroup
+                                    IsPublic
                                FROM[Group]
                                WHERE Slug = @Slug";
 
@@ -507,7 +483,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         {
             const string query =
                             @$"SELECT 
-                                    PublicGroup
+                                    IsPublic
                                FROM [Group] 
                                WHERE Id = @Id";
 

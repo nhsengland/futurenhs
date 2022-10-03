@@ -19,9 +19,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         public async Task<Image> GetImageAsync(Guid id, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT Id, MediaType, Data
-				FROM Image
-                WHERE Id = @ImageId AND Deleted = 0";
+                @$"SELECT 
+                        [{nameof(Image.Id)}]		                = Image.Id,    
+                        [{nameof(Image.MediaType)}]		            = Image.MediaType,
+                        [{nameof(Image.Data)}]		                = Image.Data
+				    FROM Image
+                    WHERE Id = @ImageId AND Deleted = 0";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 

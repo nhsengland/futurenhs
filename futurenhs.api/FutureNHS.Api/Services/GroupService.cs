@@ -466,7 +466,7 @@ namespace FutureNHS.Api.Services
             return await _groupDataProvider.GetGroupSiteDataAsync(slug, cancellationToken);
         }
 
-        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid userId, bool isMember, uint offset, uint limit, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
 
@@ -477,21 +477,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            return await _groupDataProvider.GetGroupsForUserAsync(userId, offset, limit, cancellationToken);
-        }
-
-        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> DiscoverGroupsForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
-        {
-            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
-
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, GroupViewRole, cancellationToken);
-            if (!userCanPerformAction)
-            {
-                _logger.LogError($"Error: DiscoverGroupsForUserAsync - User:{0} does not have permission to discover groups for user", userId);
-                throw new ForbiddenException($"Error: User does not have access");
-            }
-
-            return await _groupDataProvider.DiscoverGroupsForUserAsync(userId, offset, limit, cancellationToken);
+            return await _groupDataProvider.GetGroupsForUserAsync(userId, isMember, offset, limit, cancellationToken);
         }
     }
 }

@@ -139,7 +139,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(GroupData.Strapline)}]         = g.Subtitle,
                                 [{nameof(GroupData.ThemeId)}]           = g.ThemeId, 
                                 [{nameof(GroupData.ImageId)}]           = g.ImageId, 
-                                [{nameof(GroupData.IsPublic)}]          = g.PublicGroup, 
+                                [{nameof(GroupData.IsPublic)}]          = g.IsPublic, 
                                 [{nameof(GroupData.Slug)}]              = g.Slug, 
                                 [{nameof(GroupData.RowVersion)}]        = g.RowVersion, 
                                 [{nameof(GroupData.Image.Id)}]          = image.Id,  
@@ -192,7 +192,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 ,[Slug]
                                 ,[CreatedBy]
                                 ,[ImageId]
-                                ,[PublicGroup])
+                                ,[IsPublic])
    
                     VALUES
                                 (@Id
@@ -351,7 +351,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                  [Subtitle]      = @Subtitle,
                                  [ThemeId]       = @Theme,
                                  [ImageId]       = @Image,
-                                 [PublicGroup]   = @IsPublic
+                                 [IsPublic]   = @IsPublic
                     WHERE 
                                  [Slug]          = @Slug
                     AND          [RowVersion]    = @RowVersion";

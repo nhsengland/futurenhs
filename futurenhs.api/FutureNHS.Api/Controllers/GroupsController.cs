@@ -44,21 +44,11 @@ namespace FutureNHS.Api.Controllers
             uint total;
             IEnumerable<GroupSummary> groups;
 
-            if (isMember)
-            {
-                var (totalGroups, groupSummaries) = await _groupService.GetGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
+            
+            var (totalGroups, groupSummaries) = await _groupService.GetGroupsForUserAsync(userId, isMember, filter.Offset, filter.Limit, cancellationToken);
 
-                total = totalGroups;
-                groups = groupSummaries;
-
-            }
-            else
-            {
-                var (totalGroups, groupSummaries) = await _groupService.DiscoverGroupsForUserAsync(userId, filter.Offset, filter.Limit, cancellationToken);
-
-                total = totalGroups;
-                groups = groupSummaries;
-            }
+            total = totalGroups;
+            groups = groupSummaries;
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(groups, filter, total, route);
 

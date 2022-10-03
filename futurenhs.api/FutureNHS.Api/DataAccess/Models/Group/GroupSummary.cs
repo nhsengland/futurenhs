@@ -8,6 +8,7 @@
         public int MemberCount { get; init; }
         public int DiscussionCount { get; init; }
         public string Slug { get; init; }
+        public bool IsPublic { get; init; }
         public ImageData Image { get; init; }
         public Guid? ThemeId { get; init; }
         public Guid OwnerId { get; init; }

@@ -19,7 +19,6 @@ namespace FutureNHS.Api.Services.Interfaces
         Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken);
         Task<GroupMemberDetails> GetGroupMemberAsync(Guid userId, string slug, Guid memberId, CancellationToken cancellationToken);
         Task<GroupSite> GetGroupSiteDataAsync(Guid userId, string groupSlug, CancellationToken cancellationToken);
-        Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken);
-        Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> DiscoverGroupsForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken);
+        Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid userId, bool isMember, uint offset, uint limit, CancellationToken cancellationToken);
     }
 }
