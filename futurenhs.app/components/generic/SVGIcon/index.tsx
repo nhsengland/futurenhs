@@ -1,9 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
-
 import { useAssetPath } from '@helpers/hooks/useAssetPath'
-
 import { Props } from './interfaces'
+import Icon from '@mdi/react'
 
 /**
  * Renders an inline SVG icon from a an SVG 'sprite' via a use statement.
@@ -13,6 +12,8 @@ export const SVGIcon: (props: Props) => JSX.Element = ({
     url = '/icons/icons.svg',
     name,
     className,
+    material,
+    size = '21px',
 }) => {
     const fullPath: string = useAssetPath(url)
     const xlinkHref: string = fullPath ? `${fullPath}#${name}` : `#${name}`
@@ -21,7 +22,7 @@ export const SVGIcon: (props: Props) => JSX.Element = ({
         wrapper: classNames('c-svg-icon', className),
     }
 
-    return (
+    return !material ? (
         <svg
             aria-hidden="true"
             role="presentation"
@@ -29,5 +30,7 @@ export const SVGIcon: (props: Props) => JSX.Element = ({
         >
             <use xlinkHref={xlinkHref} />
         </svg>
+    ) : (
+        <Icon path={name} title={name} size={size} />
     )
 }

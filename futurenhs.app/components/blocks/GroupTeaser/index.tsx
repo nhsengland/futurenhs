@@ -1,8 +1,7 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-
+import { mdiLockOutline } from '@mdi/js'
 import { defaultGroupLogos } from '@constants/icons'
-import { iconNames } from '@constants/icons'
 import { Heading } from '@components/layouts/Heading'
 import { Card } from '@components/generic/Card'
 import { SVGIcon } from '@components/generic/SVGIcon'
@@ -22,7 +21,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     totalMemberCount,
     headingLevel = 3,
     className,
-    isPublic, 
+    isPublic,
 }) => {
     const { mainHeading, strapLine } = text ?? {}
 
@@ -50,13 +49,11 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
                 level={headingLevel}
                 className="c-card_heading o-truncated-text-lines-3"
             >
-                {!isPublic?<SVGIcon
-                    name={iconNames.LOCK}
-                    className="c-card_footer-icon u-fill-theme-0"
-                />:null}
+                {!isPublic ? <SVGIcon name={mdiLockOutline} material /> : null}
                 <Link href={cardLinkHref}>
-                    <a>{mainHeading}</a> 
-                </Link> {!isPublic?"Restricted":null}
+                    <a>{mainHeading}</a>
+                </Link>{' '}
+                {!isPublic ? 'Restricted' : null}
             </Heading>
             <div className="c-card_body">
                 <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
