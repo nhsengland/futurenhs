@@ -18,6 +18,17 @@ export const authOptions: NextAuthOptions = {
         signOut: '/auth/signout',
         error: '500',
     },
+    cookies: {
+        sessionToken: {
+            name: 'next-auth.session-token',
+            options: {
+                path: '/',
+                httpOnly: true,
+                sameSite: 'lax',
+                secure: false,
+            },
+        },
+    },
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
             if (profile?.iss) console.log('issuer :' + profile?.iss)

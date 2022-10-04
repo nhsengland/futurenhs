@@ -123,7 +123,7 @@ export const getServerSideProps: GetServerSideProps = async (
                      */
                     context.res.setHeader(
                         'Set-Cookie',
-                        '__Secure-next-auth.session-token=; path=/; max-age=0'
+                        'next-auth.session-token=; path=/; max-age=0'
                     )
 
                     /**
