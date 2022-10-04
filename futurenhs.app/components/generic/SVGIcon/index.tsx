@@ -31,6 +31,6 @@ export const SVGIcon: (props: Props) => JSX.Element = ({
             <use xlinkHref={xlinkHref} />
         </svg>
     ) : (
-        <Icon path={name} title={name} size={size} />
+        <Icon path={name} title={name} size={size} className={className} />
     )
 }
