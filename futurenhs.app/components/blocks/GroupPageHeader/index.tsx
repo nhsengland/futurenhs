@@ -222,8 +222,10 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                             </div>
                         )}
                         <h1 className={generatedClasses.heading}>
-                        {mainHeading} 
-                        {!isDiscover??<GroupPrivacy isPublic={isPublic} colour="white" />}
+                            {mainHeading}
+                            {!isDiscover ? (
+                                <GroupPrivacy isPublic={isPublic} isHeader />
+                            ) : null}
                         </h1>
                         {description && (
                             <RichText

@@ -107,7 +107,7 @@ export const GroupsDiscoverPage: (props: Props) => JSX.Element = ({
                         },
                     ]}
                     shouldRenderActionsMenu={false}
-                    isDiscover={true}
+                    isDiscover
                     className="u-bg-theme-14"
                 />
                 <PageBody>

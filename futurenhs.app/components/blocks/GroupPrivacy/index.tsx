@@ -1,26 +1,26 @@
 import { SVGIcon } from '@components/generic/SVGIcon'
 import classNames from 'classnames'
-import { mdiEarth, mdiGlobeLightOutline, mdiGlobeModel, mdiLockOutline } from '@mdi/js'
+import {
+    mdiEarth,
+    mdiGlobeLightOutline,
+    mdiGlobeModel,
+    mdiLockOutline,
+} from '@mdi/js'
 import React from 'react'
 
 type Props = {
     isPublic: boolean
-    colour?: "white"|"grey"
+    isHeader?: boolean
 }
 
-function GroupPrivacy({ isPublic, colour="grey" }: Props) {
-    
-    const textColour = `${colour==="white"?'u-text-theme-1':'u-text-theme-7'}`
+function GroupPrivacy({ isPublic, isHeader = false }: Props) {
+    const textColour = `${isHeader ? 'u-text-theme-1' : 'u-text-theme-7'}`
     const text = `${isPublic ? 'Public' : 'Private'} group`
     const iconPath = isPublic ? mdiEarth : mdiLockOutline
     const generatedClasses: any = {
         wrapper: classNames(textColour, 'c-group-privacy'),
-        header: classNames(
-            textColour,
-            'u-d-inline',
-            'c-group-privacy__header'
-        ),
-        icon: classNames('c-group-privacy__icon'),
+        header: classNames(textColour, 'u-d-inline', 'c-group-privacy__header'),
+        icon: classNames(`c-group-privacy__icon`),
     }
 
     return (
