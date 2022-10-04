@@ -1,8 +1,8 @@
-import NextAuth from 'next-auth'
+import NextAuth, { NextAuthOptions } from 'next-auth'
 import { getToken } from 'next-auth/jwt'
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c'
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
     providers: [
         AzureADB2CProvider({
             tenantId: process.env.AZURE_AD_B2C_TENANT_NAME,
@@ -39,4 +39,5 @@ export default NextAuth({
             return token
         },
     },
-})
+}
+export default NextAuth(authOptions)
