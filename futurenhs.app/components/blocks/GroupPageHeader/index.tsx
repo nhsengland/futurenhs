@@ -42,6 +42,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     memberStatus,
     className,
     isPublic,
+    isDiscover,
 }) => {
     const router = useRouter()
 
@@ -222,7 +223,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         )}
                         <h1 className={generatedClasses.heading}>
                         {mainHeading} 
-                        <GroupPrivacy isPublic={isPublic} colour="white" />
+                        {!isDiscover??<GroupPrivacy isPublic={isPublic} colour="white" />}
                         </h1>
                         {description && (
                             <RichText
