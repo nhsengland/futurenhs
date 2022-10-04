@@ -23,6 +23,7 @@ import { useCsrf } from '@helpers/hooks/useCsrf'
 import { Theme } from '@appTypes/theme'
 
 import { Props } from './interfaces'
+import GroupPrivacy from '@components/blocks/GroupPrivacy'
 import { groupMemberStatus } from '@constants/group-member-status'
 import { requestMethods } from '@constants/fetch'
 
@@ -220,12 +221,8 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                             </div>
                         )}
                         <h1 className={generatedClasses.heading}>
-                        {!isPublic?<SVGIcon
-                            name={iconNames.LOCK}
-                            className="c-card_footer-icon u-fill-theme-0"
-                        />:null} 
                         {mainHeading} 
-                        {!isPublic?" (Restricted)":null}
+                        <GroupPrivacy isPublic={isPublic} colour="white" />
                         </h1>
                         {description && (
                             <RichText
