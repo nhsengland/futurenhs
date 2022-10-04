@@ -13,6 +13,8 @@ namespace FutureNHS.Api.DataAccess.Models.Group
         public ImageData Image { get; init; }
         public Guid? ThemeId { get; init; }
         public UserNavProperty Owner { get; init; }
+        public bool IsPublic { get; init; }
+        
         public bool IsDeleted { get; init; }
     }
 }
