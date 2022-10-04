@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import {useState, useCallback, useRef, useEffect} from 'react'
 import { useRouter } from 'next/router'
 
 import { postGroupDiscussionComment } from '@services/postGroupDiscussionComment'
@@ -62,7 +62,8 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
     const errorSummaryRef: any = useRef()
-
+    const formRef = useRef(null)
+    
     const commentFormConfig: FormConfig = useFormConfig(
         formTypes.CREATE_DISCUSSION_COMMENT,
         forms[formTypes.CREATE_DISCUSSION_COMMENT]
@@ -157,26 +158,21 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
     /**
      * Handle client-side add comment click
      */
-    
 
-    const handleSubmitReplyClick = (event: any) => {
-        event.preventDefault()
 
-        const rteInstance: any = (
-            window as any
-        ).tinymce?.get('content')
-
-        if (rteInstance) {
-            const rteElement: HTMLElement =
-                rteInstance.getContentAreaContainer()
-
-            scrollToComponentAndSetFocus(
-                rteElement,
-                false,
-                120
-            )
-            rteInstance.focus()
-        } 
+    const formFocusHandler = async () => {
+        formRef.current.scrollIntoView({ behavior: 'smooth' })
+        const scrollTimeoutMls = 1100
+        await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(true)
+            }, scrollTimeoutMls)
+        })
+        const rteInstance = (window as any).tinymce?.get('content')
+        if (!rteInstance) return
+        const rteElement = rteInstance.getContentAreaContainer()
+        scrollToComponentAndSetFocus(rteElement, false, 120)
+        rteInstance.focus()
     }
         
     
@@ -492,7 +488,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                 {responseCount > 2 && (
                     <div>
                         <button
-                            onClick={handleSubmitReplyClick}
+                            onClick={formFocusHandler}
                             className="c-form_submit-button c-button u-w-full tablet:u-w-auto u-mb-6">
                             Reply to this topic
                         </button>
@@ -649,7 +645,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                         className="u-mb-10"
                     />
                 </ErrorBoundary>
-                <div tabIndex={-1}>
+                <div>
                 {shouldRenderCommentAndReplyForms && (
                     <>
                         <h3 className="nhsuk-heading-l">{secondaryHeading}</h3>
@@ -659,6 +655,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                                 <a>{userName}</a>
                             </Link>
                         </p>
+                        <div ref={formRef}>
                         <Form
                             csrfToken={csrfToken}
                             formConfig={commentFormConfig}
@@ -669,6 +666,7 @@ export const GroupDiscussionTemplate: (props: Props) => JSX.Element = ({
                             validationFailAction={handleValidationFailure}
                             submitAction={handleCommentSubmit}
                         />
+                        </div>
                     </>
                 )}
                 </div>
