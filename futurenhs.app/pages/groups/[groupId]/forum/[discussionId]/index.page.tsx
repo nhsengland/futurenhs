@@ -102,6 +102,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
 }) => {
     const router = useRouter()
     const errorSummaryRef: any = useRef()
+    const commentButtonRef: any = useRef(null)
 
     const commentFormConfig: FormConfig = useFormConfig(
         formTypes.CREATE_DISCUSSION_COMMENT,
@@ -193,6 +194,13 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
         setErrors(errors)
         errorSummaryRef?.current?.focus?.()
     }
+
+    /**
+     * Handle client-side add comment click
+     */
+    const handleAddCommentClick = () => {
+        commentButtonRef.current.scrollIntoView({ behavior: 'smooth' })
+    };
 
     /**
      * Handle client-side comment submission
@@ -497,6 +505,17 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                         {`Comments: ${responseCount}`}
                     </p>
                 )}
+
+                {responseCount > 2 && (
+                    <div>
+                        <button
+                            onClick={handleAddCommentClick}
+                            className="c-form_submit-button c-button u-w-full tablet:u-w-auto u-mb-6">
+                            Reply to this topic
+                        </button>
+                    </div>
+
+                )}
                 <ErrorBoundary boundaryId="group-discussion-comments">
                     {hasDiscussionComments && (
                         <DynamicListContainer
@@ -656,16 +675,18 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                 <a>{userName}</a>
                             </Link>
                         </p>
+                        <div ref={commentButtonRef}>
                         <Form
                             csrfToken={csrfToken}
                             formConfig={commentFormConfig}
                             text={{
-                                submitButton: 'Add Comment',
+                                submitButton: 'Submit reply',
                             }}
                             shouldClearOnSubmitSuccess={true}
                             validationFailAction={handleValidationFailure}
                             submitAction={handleCommentSubmit}
                         />
+                        </div>
                     </>
                 )}
             </LayoutColumn>
