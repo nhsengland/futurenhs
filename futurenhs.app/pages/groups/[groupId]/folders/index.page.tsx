@@ -304,14 +304,17 @@ export const GroupFolderContentsPage: (props: Props) => JSX.Element = ({
                                     />
                                 )}
                                 {fileDetailPath && (
-                                    <ActionLink
-                                        href={fileDetailPath}
-                                        text={{
-                                            body: 'View details',
-                                            ariaLabel: `View details of ${name}`,
-                                        }}
-                                        iconName="icon-view"
-                                    />
+                                    <p>
+                                        <Link href={fileDetailPath} aria-label={`File information of ${name}`}>
+                                            <a>
+                                                <SVGIcon
+                                                    name="icon-info"
+                                                    className="u-w-6 u-h-10 u-mr-1 u-align-middle"
+                                                />
+                                                File information
+                                            </a>
+                                        </Link>
+                                    </p>
                                 )}
                             </>
                         ),

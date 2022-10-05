@@ -118,13 +118,13 @@ export const GroupFilePreviewPage: (props: Props) => JSX.Element = ({
                     )}
                 </AriaLiveRegion>
                 <p>
-                    <Link href={fileDetailPath}>
+                    <Link href={fileDetailPath} aria-label={`File information of ${name}`}>
                         <a>
                             <SVGIcon
-                                name="icon-view"
-                                className="u-w-4 u-h-6 u-mr-2 u-align-middle u-fill-theme-8"
+                                name="icon-info"
+                                className="u-w-6 u-h-10 u-mr-1 u-align-middle"
                             />
-                            View details
+                            File information
                         </a>
                     </Link>
                 </p>

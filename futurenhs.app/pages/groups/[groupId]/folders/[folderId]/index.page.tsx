@@ -304,7 +304,6 @@ export const GroupFolderIdContentsPage: (props: Props) => JSX.Element = ({
                                     />
                                 )}
                                 {fileDetailPath && (
-
                                     <p>
                                         <Link href={fileDetailPath} aria-label={`File information of ${name}`}>
                                             <a>
