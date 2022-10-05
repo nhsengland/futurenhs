@@ -26,15 +26,12 @@ import { PageBody } from '@components/layouts/PageBody'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { Page } from '@appTypes/page'
 import { Group } from '@appTypes/group'
-import { getSession } from 'next-auth/react'
-import { routes } from '@constants/routes'
 
 const isMember: boolean = true
 
 export interface Props extends Page {
     isGroupMember: boolean
     groupsList: Array<Group>
-    B2CSignOut: string
 }
 
 /**
@@ -46,9 +43,7 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
     isGroupMember,
     groupsList,
     pagination,
-    B2CSignOut,
 }) => {
-    console.log(B2CSignOut)
     const { pathname } = useRouter()
 
     const [dynamicGroupsList, setGroupsList] = useState(groupsList)
@@ -94,7 +89,6 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
                 <meta name="description" content={metaDescription} />
             </Head>
             <LayoutColumnContainer>
-                <a href={B2CSignOut}>SIGN OUT</a>
                 <GroupPageHeader
                     id="my-groups"
                     text={{
@@ -165,12 +159,6 @@ export const getServerSideProps: GetServerSideProps = async (
         },
         [withUser, withRoutes, withTextContent],
         async (context: GetServerSidePropsContext) => {
-            const session = await getSession(context)
-            const idTokenHint: string = session.id_token as string
-            const signOutPath = routes.SIGN_OUT
-            const callbackUrl: string = `${process.env.APP_URL}${signOutPath}`
-            const B2CSignOutURL = `https://${process.env.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW}/oauth2/v2.0/logout?post_logout_redirect_uri=${callbackUrl}&id_token_hint=${idTokenHint}`
-
             /**
              * Get data from request context
              */
@@ -193,7 +181,6 @@ export const getServerSideProps: GetServerSideProps = async (
 
                 props.groupsList = groupsList.data ?? []
                 props.pagination = groupsList.pagination
-                props.B2CSignOut = B2CSignOutURL
             } catch (error) {
                 return handleSSRErrorProps({ props, error })
             }
