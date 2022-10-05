@@ -19,7 +19,7 @@ import {
     selectPageProps,
 } from '@helpers/selectors/context'
 import { User } from '@appTypes/user'
-import { ServerSideFormData } from '@helpers/util/form'
+import { getGenericFormError, ServerSideFormData } from '@helpers/util/form'
 import { requestMethods } from '@constants/fetch'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { postGroupMemberInvite } from '@services/postGroupMemberInvite'
@@ -60,23 +60,23 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
      * Client-side submission handler - TODO: Pending API
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
-        // try {
-        //     await postGroupMemberInvite({
-        //         user,
-        //         body: formData as any,
-        //         groupId,
-        //     })
+        try {
+            await postGroupMemberInvite({
+                user,
+                body: formData as any,
+                groupId,
+            })
 
-        //     return Promise.resolve({})
-        // } catch (error) {
-        //     const errors: FormErrors =
-        //         getServiceErrorDataValidationErrors(error) ||
-        //         getGenericFormError(error)
+            return Promise.resolve({})
+        } catch (error) {
+            const errors: FormErrors =
+                getServiceErrorDataValidationErrors(error) ||
+                getGenericFormError(error)
 
-        //     setErrors(errors)
+            setErrors(errors)
 
-        //     return Promise.resolve(errors)
-        // }
+            return Promise.resolve(errors)
+        }
 
         const emailAddress: FormDataEntryValue = formData.get('Email')
         useNotification({
@@ -166,17 +166,6 @@ export const getServerSideProps: GetServerSideProps = async (
                 props.forms[formTypes.INVITE_USER].initialValues = formData
 
                 try {
-                    const headers: any = getStandardServiceHeaders({
-                        csrfToken,
-                    })
-
-                    await postGroupMemberInvite({
-                        user,
-                        headers,
-                        body: formData,
-                        groupId,
-                    })
-
                     const emailAddress: string = formData.get('Email')
                     props.notifications = [
                         {

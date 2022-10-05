@@ -31,18 +31,17 @@ export const postGroupMemberInvite = async (
 
     const { id } = user
     const emailAddress: FormDataEntryValue = body.get('Email')
-    /**
-     * TODO: Actual endpoint TBD
-     */
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/invite`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/registration/invite`
+    const apiBody = {
+        emailAddress,
+        groupId,
+    }
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
             headers: headers,
-            body: {
-                emailAddress: emailAddress,
-            },
+            body: apiBody,
         }),
         defaultTimeOutMillis
     )
@@ -53,6 +52,7 @@ export const postGroupMemberInvite = async (
     const { ok, status, statusText } = apiMeta
 
     if (!ok) {
+        console.log({ ok, status, statusText })
         throw new ServiceError(
             'An unexpected error occurred when attempting to invite a group member',
             {
@@ -62,6 +62,8 @@ export const postGroupMemberInvite = async (
                 body: apiData,
             }
         )
+    } else {
+        console.log('request did something')
     }
 
     return null
