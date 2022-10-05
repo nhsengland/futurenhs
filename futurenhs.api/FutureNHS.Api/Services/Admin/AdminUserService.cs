@@ -151,16 +151,17 @@ namespace FutureNHS.Api.Services.Admin
                 EmailAddress = emailAddress.Address.ToLowerInvariant(),
                 GroupId = groupId,
                 CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
+                CreatedBy = adminUserId
 
             };
 
-            var registrationLink = CreateRegistrationLink();
+            var userInviteId = await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
+            var registrationLink = CreateRegistrationLink(userInviteId);
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"registration_link", registrationLink}
             };
-
-            await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
+            
             await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
         }
 
@@ -223,9 +224,9 @@ namespace FutureNHS.Api.Services.Admin
             await _userCommand.UpdateUserRoleAsync(memberRoleUpdate, rowVersion, cancellationToken);
         }
 
-        private string CreateRegistrationLink()
+        private string CreateRegistrationLink(Guid userInviteId)
         {
-            var registrationLink = $"{_fqdn}/auth/signin";
+            var registrationLink = $"{_fqdn}/auth/invited?id={userInviteId}";
             return registrationLink;
         }
     }
