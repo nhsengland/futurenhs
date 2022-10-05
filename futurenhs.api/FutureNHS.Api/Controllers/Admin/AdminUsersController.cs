@@ -63,18 +63,6 @@ namespace FutureNHS.Api.Controllers
             return Ok(pagedResponse);
         }
 
-        [HttpPost]
-        [Route("users/{adminUserId:guid}/admin/users/invite")]
-        public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid adminUserId, [FromBody] UserInvite userInvite, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrEmpty(userInvite.EmailAddress))
-                throw new ArgumentNullException(nameof(userInvite.EmailAddress));
-
-            await _adminUserService.InviteMemberToGroupAndPlatformAsync(adminUserId, userInvite.GroupId, userInvite.EmailAddress, cancellationToken);
-
-            return Ok();
-        }
-
         [HttpGet]
         [Route("users/{adminUserId:guid}/admin/users/roles")]
         public async Task<IActionResult> GetMembershipRolesAsync(Guid adminUserId, CancellationToken cancellationToken)
