@@ -207,7 +207,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                     <LayoutColumn
                         tablet={8}
                         desktop={9}
-                        className="u-flex u-flex-wrap tablet:u-block"
+                        className="u-flex u-flex-column "
                     >
                         {image && (
                             <div className={generatedClasses.hero}>
@@ -223,7 +223,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         )}
                         <div>
                             <h1 className={generatedClasses.heading}>
-                                {mainHeading}   
+                                {mainHeading}
                             </h1>
                             {isDiscover ? (
                                 <RichText
@@ -231,7 +231,9 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                     wrapperElementType="p"
                                     bodyHtml={description}
                                 />
-                                ) : !isPublic ? <PrivateGroup  isHeader /> : null}
+                            ) : !isPublic ? (
+                                <PrivateGroup isHeader />
+                            ) : null}
                         </div>
                     </LayoutColumn>
                     {shouldRenderActionsMenu && (
