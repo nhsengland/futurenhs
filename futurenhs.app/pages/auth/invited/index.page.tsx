@@ -15,26 +15,16 @@ import { PageBody } from '@components/layouts/PageBody'
 import { RichText } from '@components/generic/RichText'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Page } from '@appTypes/page'
+import { redirect } from 'next/dist/server/api-utils'
+import { getGroupsByInvite } from '@services/getGroupsByInvite'
 declare interface ContentText extends GenericPageTextContent {}
 
 export interface Props extends Page {
-    siteUser: any
     contentText: ContentText
-    subjectId: string
-    emailAddress: string
-    issuer: string
+    group: string
 }
 
-const AuthRegisterPage: (props: Props) => JSX.Element = ({
-    contentText,
-    forms,
-    csrfToken,
-    routes,
-    etag,
-    subjectId,
-    emailAddress,
-    issuer,
-}) => {
+const AuthRegisterPage: (props: Props) => JSX.Element = ({ contentText }) => {
     const router = useRouter()
 
     const { mainHeading, bodyHtml } = contentText ?? {}
@@ -71,7 +61,16 @@ export const getServerSideProps: GetServerSideProps = async (
         [withRoutes, withTextContent],
         async (context: GetServerSidePropsContext) => {
             const props: Partial<Props> = selectPageProps(context)
-
+            const { id } = context.query
+            if (id && typeof id === 'string') {
+                try {
+                    const res = await getGroupsByInvite({ id })
+                    res.group = 'Test Group'
+                    return handleSSRSuccessProps({ props, context })
+                } catch (e) {}
+            } else {
+                return { redirect: {} }
+            }
             /**
              * Hide breadcrumbs
              */
@@ -80,7 +79,6 @@ export const getServerSideProps: GetServerSideProps = async (
             /**
              * Return data to page template
              */
-            return handleSSRSuccessProps({ props, context })
         }
     )
 
