@@ -8,7 +8,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write.Interfaces
     public interface IUserCommand
     {
         Task<UserDto> GetUserAsync(Guid userId, CancellationToken cancellationToken);
-        Task CreateInviteUserAsync(GroupInviteDto entityLike, CancellationToken cancellationToken);
+        Task<Guid> CreateInviteUserAsync(GroupInviteDto entityLike, CancellationToken cancellationToken);
         Task UpdateUserAsync(MemberDto userDto, byte[] rowVersion, CancellationToken cancellationToken);
         Task<MemberProfile> GetMemberAsync(Guid id, CancellationToken CancellationToken);
         Task<MemberRole> GetMembershipUsersInRoleAsync(Guid userId, CancellationToken cancellationToken);

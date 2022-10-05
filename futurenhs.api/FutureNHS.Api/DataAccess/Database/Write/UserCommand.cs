@@ -30,48 +30,45 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task CreateInviteUserAsync(GroupInviteDto entityLike, CancellationToken cancellationToken)
+        public async Task<Guid> CreateInviteUserAsync(GroupInviteDto groupInvite, CancellationToken cancellationToken)
         {
-            try
-            {
-                const string query =
+            const string query =
 
                     @"  
 	                INSERT INTO  [dbo].[GroupInvite]
                                  ([EmailAddress]
                                  ,[GroupId]
                                  ,[CreatedAtUTC]
+                                 ,[CreatedBy]
                                  ,[ExpiresAtUTC])
+	                OUTPUT       INSERTED.[Id]
                     VALUES
                                  (@EmailAddress
                                  ,@GroupId
                                  ,@CreatedAtUTC
+                                 ,@CreatedBy
                                  ,@ExpiresAtUTC)";
 
 
                 var queryDefinition = new CommandDefinition(query, new
                 {
-                    EmailAddress = entityLike.EmailAddress,
-                    GroupId = entityLike.GroupId,
-                    CreatedAtUTC = entityLike.CreatedAtUTC,
-                    ExpiresAtUTC = entityLike.ExpiresAtUTC
+                    EmailAddress = groupInvite.EmailAddress,
+                    GroupId = groupInvite.GroupId,
+                    CreatedAtUTC = groupInvite.CreatedAtUTC,
+                    CreatedBy = groupInvite.CreatedBy,
+                    ExpiresAtUTC = groupInvite.ExpiresAtUTC
                 }, cancellationToken: cancellationToken);
 
                 using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-                var result = await dbConnection.ExecuteAsync(queryDefinition);
-                if (result != 1)
+                var result = await dbConnection.ExecuteScalarAsync<Guid?>(queryDefinition);
+                if (result.HasValue is false)
                 {
                     _logger.LogError("Error: CreateInviteUserAsync - User request to create was not successful.", queryDefinition);
                     throw new DBConcurrencyException("Error: User request was not successful.");
                 }
 
-            }
-            catch (SqlException ex)
-            {
-                _logger.LogError(ex, "Error: CreateInviteUserAsync - User request to create was not successful.");
-                throw new DBConcurrencyException("Error: User request was not successful.");
-            }
+                return result.Value;
         }
 
         public async Task<MemberProfile> GetMemberAsync(Guid id, CancellationToken cancellationToken)
