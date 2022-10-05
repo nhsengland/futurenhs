@@ -74,7 +74,7 @@ export const getSiteUsersByTerm = async (
     apiData.data?.forEach((datum) => {
         serviceResponse.data.push({
             value: datum.id,
-            label: `${datum.firstName} ${datum.lastName}`,
+            label: `${datum.firstName} ${datum.lastName} (${datum.email})`,
         })
     })
 
