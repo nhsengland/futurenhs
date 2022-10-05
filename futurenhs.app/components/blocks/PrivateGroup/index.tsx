@@ -9,14 +9,13 @@ import {
 import React from 'react'
 
 type Props = {
-    isPublic: boolean
     isHeader?: boolean
 }
 
-function GroupPrivacy({ isPublic, isHeader = false }: Props) {
+function PrivateGroup({ isHeader = false }: Props) {
     const textColour = `${isHeader ? 'u-text-theme-1' : 'u-text-theme-7'}`
-    const text = `${isPublic ? 'Public' : 'Private'} group`
-    const iconPath = isPublic ? mdiEarth : mdiLockOutline
+    const text = 'Restricted group'
+    const iconPath = mdiLockOutline
     const generatedClasses: any = {
         wrapper: classNames(textColour, 'c-group-privacy'),
         header: classNames(textColour, 'u-d-inline', 'c-group-privacy__header'),
@@ -35,4 +34,4 @@ function GroupPrivacy({ isPublic, isHeader = false }: Props) {
     )
 }
 
-export default GroupPrivacy
+export default PrivateGroup

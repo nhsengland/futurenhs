@@ -5,7 +5,7 @@ import { Heading } from '@components/layouts/Heading'
 import { Card } from '@components/generic/Card'
 import { SVGIcon } from '@components/generic/SVGIcon'
 import { useTheme } from '@helpers/hooks/useTheme'
-import GroupPrivacy from '@components/blocks/GroupPrivacy'
+import PrivateGroup from '@components/blocks/PrivateGroup'
 import { Props } from './interfaces'
 
 /**
@@ -51,7 +51,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
                 <Link href={cardLinkHref}>
                     <a>{mainHeading}</a>
                 </Link>
-                <GroupPrivacy isPublic={isPublic} />
+                {!isPublic ? <PrivateGroup/> : null}
             </Heading>
             <div className="c-card_body">
                 <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">

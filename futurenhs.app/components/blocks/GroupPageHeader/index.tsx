@@ -23,7 +23,7 @@ import { useCsrf } from '@helpers/hooks/useCsrf'
 import { Theme } from '@appTypes/theme'
 
 import { Props } from './interfaces'
-import GroupPrivacy from '@components/blocks/GroupPrivacy'
+import PrivateGroup from '@components/blocks/PrivateGroup'
 import { groupMemberStatus } from '@constants/group-member-status'
 import { requestMethods } from '@constants/fetch'
 
@@ -221,19 +221,18 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                                 </div>
                             </div>
                         )}
-                        <h1 className={generatedClasses.heading}>
-                            {mainHeading}
-                            {!isDiscover ? (
-                                <GroupPrivacy isPublic={isPublic} isHeader />
-                            ) : null}
-                        </h1>
-                        {description && (
-                            <RichText
-                                className={generatedClasses.description}
-                                wrapperElementType="p"
-                                bodyHtml={description}
-                            />
-                        )}
+                        <div>
+                            <h1 className={generatedClasses.heading}>
+                                {mainHeading}   
+                            </h1>
+                            {isDiscover ? (
+                                <RichText
+                                    className={generatedClasses.description}
+                                    wrapperElementType="p"
+                                    bodyHtml={description}
+                                />
+                                ) : !isPublic ? <PrivateGroup  isHeader /> : null}
+                        </div>
                     </LayoutColumn>
                     {shouldRenderActionsMenu && (
                         <LayoutColumn
