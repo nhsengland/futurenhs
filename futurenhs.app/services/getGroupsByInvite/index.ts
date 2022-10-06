@@ -35,7 +35,7 @@ export const getGroupsByInvite = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${id}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/registration/invite/${id}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),

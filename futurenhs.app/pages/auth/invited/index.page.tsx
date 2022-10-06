@@ -1,7 +1,4 @@
 import { GetServerSideProps } from 'next'
-import { getSession } from 'next-auth/react'
-import { useRef, useState } from 'react'
-import { useRouter } from 'next/router'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
@@ -27,10 +24,7 @@ const AuthRegisterPage: (props: Props) => JSX.Element = ({
     contentText,
     group,
 }) => {
-    const router = useRouter()
-
     const { mainHeading, title, bodyHtml } = contentText ?? {}
-    console.log(group)
     /**
      * Render
      */
@@ -39,9 +33,11 @@ const AuthRegisterPage: (props: Props) => JSX.Element = ({
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={8} desktop={6}>
                     <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
-                    <h2 className="nhsuk-heading-md">
-                        {title.replace('%GROUPNAME%', group)}
-                    </h2>
+                    {!!group ?? (
+                        <h2 className="nhsuk-heading-md">
+                            {title.replace('%GROUPNAME%', group)}
+                        </h2>
+                    )}
                     <RichText bodyHtml={bodyHtml} />
                     <a className="c-button u-w-full" href={'/auth/signin'}>
                         Sign Up
@@ -72,8 +68,8 @@ export const getServerSideProps: GetServerSideProps = async (
                     const res = await getGroupsByInvite({ id })
                     props.group = res.data.group
                     return handleSSRSuccessProps({ props, context })
-                } catch (e) {
-                    return handleSSRSuccessProps({ props, context })
+                } catch (error) {
+                    return handleSSRErrorProps({ props, error })
                 }
             }
             /**
