@@ -15,20 +15,26 @@ import { Page } from '@appTypes/page'
 import { getGroupsByInvite } from '@services/getGroupsByInvite'
 import { Group, GroupInvitedBy } from '@appTypes/group'
 import { GroupTeaser } from '@components/blocks/GroupTeaser'
+import { routes } from '@constants/routes'
 declare interface ContentText extends GenericPageTextContent {}
 
 export interface Props extends Page {
     contentText: ContentText
     group: Group
     invitedBy: GroupInvitedBy
+    b2cUrl: string
 }
 
 const AuthInvitedPage: (props: Props) => JSX.Element = ({
     contentText,
     group,
     invitedBy,
+    b2cUrl,
 }) => {
-    const { bodyHtml, mainHeading, secondaryHeading } = contentText
+    const { bodyHtml, mainHeading, secondaryHeading } = contentText ?? {}
+    const subHeader = secondaryHeading
+        .replace('%GROUPNAME%', group.text.mainHeading)
+        .replace('%INVITEDBY%', invitedBy.name)
     /**
      * Render
      */
@@ -37,18 +43,14 @@ const AuthInvitedPage: (props: Props) => JSX.Element = ({
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={8} desktop={6}>
                     <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
-
                     {group ? (
                         <h4 className="nhsuk-heading-md">
-                            {secondaryHeading
-                                .replace('%GROUPNAME%', group.text.mainHeading)
-                                .replace('%INVITEDBY%', invitedBy.name)}
-                            <GroupTeaser {...group} isSignUp />{' '}
+                            {subHeader}
+                            <GroupTeaser {...group} isSignUp />
                         </h4>
                     ) : null}
-
                     <RichText bodyHtml={bodyHtml} />
-                    <a className="c-button u-w-full" href={'/auth/signin'}>
+                    <a className="c-button" href={b2cUrl}>
                         Sign Up
                     </a>
                 </LayoutColumn>
@@ -73,11 +75,14 @@ export const getServerSideProps: GetServerSideProps = async (
             const props: Partial<Props> = selectPageProps(context)
             const { id } = context.query
             if (id && typeof id === 'string') {
+                const callbackUrl: string = `${process.env.APP_URL}${routes.SIGN_IN}`
+                const b2cUrl = `https://${process.env.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_SIGNUP_USER_FLOW}/oauth2/v2.0/authorize?client_id=${process.env.AZURE_AD_B2C_CLIENT_ID}&scope=offline_access%20openid&response_type=code&redirect_uri=${callbackUrl}`
                 try {
                     const res = await getGroupsByInvite({ id })
                     const { invitedBy, group } = res.data
                     props.invitedBy = invitedBy
                     props.group = group
+                    props.b2cUrl = b2cUrl
                     return handleSSRSuccessProps({ props, context })
                 } catch (error) {
                     return handleSSRErrorProps({ props, error })
