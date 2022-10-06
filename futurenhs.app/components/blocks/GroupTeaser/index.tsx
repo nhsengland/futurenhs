@@ -51,7 +51,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
                 <Link href={cardLinkHref}>
                     <a>{mainHeading}</a>
                 </Link>
-                {!isPublic ? <PrivateGroup/> : null}
+                {!isPublic ? <PrivateGroup /> : null}
             </Heading>
             <div className="c-card_body">
                 <p className="c-card_content u-text-theme-7 o-truncated-text-lines-2">
