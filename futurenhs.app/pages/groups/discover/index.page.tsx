@@ -20,12 +20,12 @@ import { Group } from '@appTypes/group'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
-import { GroupPageHeader } from '@components/blocks/GroupPageHeader'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { PageBody } from '@components/layouts/PageBody'
 import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { GroupTeaser } from '@components/blocks/GroupTeaser'
+import { GroupPageHeader } from '@components/blocks/GroupPageHeader'
 
 const isMember: boolean = false
 

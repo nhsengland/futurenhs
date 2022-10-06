@@ -13,31 +13,32 @@ import { RichText } from '@components/generic/RichText'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Page } from '@appTypes/page'
 import { getGroupsByInvite } from '@services/getGroupsByInvite'
+import { Group } from '@appTypes/group'
+import { GroupTeaser } from '@components/blocks/GroupTeaser'
 declare interface ContentText extends GenericPageTextContent {}
 
 export interface Props extends Page {
     contentText: ContentText
-    group: string
+    group: Group
 }
 
-const AuthRegisterPage: (props: Props) => JSX.Element = ({
+const AuthInvitedPage: (props: Props) => JSX.Element = ({
     contentText,
     group,
 }) => {
-    const { mainHeading, title, bodyHtml } = contentText ?? {}
+    const { bodyHtml, mainHeading, secondaryHeading } = contentText
     /**
      * Render
      */
+    console.log(group)
     return (
         <PageBody className="tablet:u-px-0">
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={8} desktop={6}>
                     <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
-                    {!!group ?? (
-                        <h2 className="nhsuk-heading-md">
-                            {title.replace('%GROUPNAME%', group)}
-                        </h2>
-                    )}
+                    <h2 className="nhsuk-heading-md">
+                        {group ? <GroupTeaser {...group} /> : null}
+                    </h2>
                     <RichText bodyHtml={bodyHtml} />
                     <a className="c-button u-w-full" href={'/auth/signin'}>
                         Sign Up
@@ -84,4 +85,4 @@ export const getServerSideProps: GetServerSideProps = async (
         }
     )
 
-export default AuthRegisterPage
+export default AuthInvitedPage

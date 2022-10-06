@@ -36,7 +36,6 @@ export const postGroupMemberInvite = async (
         emailAddress,
         groupSlug: groupId,
     }
-    debugger
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({

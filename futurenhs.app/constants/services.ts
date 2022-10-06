@@ -52,4 +52,5 @@ export const enum services {
     PUT_GROUP_MEMBER_ROLE = 'putGroupMemberRole',
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
+    GET_GROUP_INVITE = 'getGroupInvite',
 }

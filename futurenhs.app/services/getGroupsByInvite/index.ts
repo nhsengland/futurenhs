@@ -7,11 +7,10 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
-import { User } from '@appTypes/user'
-import { GroupMember } from '@appTypes/group'
+import { Group } from '@appTypes/group'
 
 declare type Response = {
-    group: string
+    group: Group
 }
 
 declare type Options = {
@@ -49,9 +48,9 @@ export const getGroupsByInvite = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the site user',
+            'An unexpected error occurred when attempting to get the group invite',
             {
-                serviceId: services.GET_SITE_USER,
+                serviceId: services.GET_GROUP_INVITE,
                 status: status,
                 statusText: statusText,
                 body: apiData,
