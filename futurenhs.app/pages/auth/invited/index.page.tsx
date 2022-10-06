@@ -65,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async (
             if (id && typeof id === 'string') {
                 try {
                     const res = await getGroupsByInvite({ id })
-                    res.group = 'Test Group'
+                    // res.group = 'Test Group'
                     return handleSSRSuccessProps({ props, context })
                 } catch (e) {}
             } else {
