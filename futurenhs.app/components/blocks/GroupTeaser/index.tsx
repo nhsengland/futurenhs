@@ -21,6 +21,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     headingLevel = 3,
     className,
     isPublic,
+    isSignUp,
 }) => {
     const { mainHeading, strapLine } = text ?? {}
 
@@ -41,16 +42,20 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
         <Card
             id={`group-${groupId}`}
             image={imageToUse}
-            clickableHref={cardLinkHref}
+            clickableHref={!isSignUp ? cardLinkHref : undefined}
             className={generatedClasses.wrapper}
         >
             <Heading
                 level={headingLevel}
                 className="c-card_heading o-truncated-text-lines-3"
             >
-                <Link href={cardLinkHref}>
-                    <a>{mainHeading}</a>
-                </Link>
+                {!isSignUp ? (
+                    <Link href={cardLinkHref}>
+                        <a>{mainHeading}</a>
+                    </Link>
+                ) : (
+                    <a className="u-text-theme-0">{mainHeading}</a>
+                )}
                 {!isPublic ? <PrivateGroup /> : null}
             </Heading>
             <div className="c-card_body">

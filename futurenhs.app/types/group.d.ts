@@ -13,7 +13,9 @@ export interface Group {
     owner?: Partial<User>
     isDeleted?: boolean
     isPublic?: boolean
-    nameText?: string
 }
 
+export interface GroupInvitedBy {
+    name: string
+}
 export interface GroupMember extends Member {}

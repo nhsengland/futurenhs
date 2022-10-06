@@ -13,32 +13,40 @@ import { RichText } from '@components/generic/RichText'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Page } from '@appTypes/page'
 import { getGroupsByInvite } from '@services/getGroupsByInvite'
-import { Group } from '@appTypes/group'
+import { Group, GroupInvitedBy } from '@appTypes/group'
 import { GroupTeaser } from '@components/blocks/GroupTeaser'
 declare interface ContentText extends GenericPageTextContent {}
 
 export interface Props extends Page {
     contentText: ContentText
     group: Group
+    invitedBy: GroupInvitedBy
 }
 
 const AuthInvitedPage: (props: Props) => JSX.Element = ({
     contentText,
     group,
+    invitedBy,
 }) => {
     const { bodyHtml, mainHeading, secondaryHeading } = contentText
     /**
      * Render
      */
-    console.log(group)
     return (
         <PageBody className="tablet:u-px-0">
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={8} desktop={6}>
                     <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
-                    <h2 className="nhsuk-heading-md">
-                        {group ? <GroupTeaser {...group} /> : null}
-                    </h2>
+
+                    {group ? (
+                        <h4 className="nhsuk-heading-md">
+                            {secondaryHeading
+                                .replace('%GROUPNAME%', group.text.mainHeading)
+                                .replace('%INVITEDBY%', invitedBy.name)}
+                            <GroupTeaser {...group} isSignUp />{' '}
+                        </h4>
+                    ) : null}
+
                     <RichText bodyHtml={bodyHtml} />
                     <a className="c-button u-w-full" href={'/auth/signin'}>
                         Sign Up
@@ -67,7 +75,9 @@ export const getServerSideProps: GetServerSideProps = async (
             if (id && typeof id === 'string') {
                 try {
                     const res = await getGroupsByInvite({ id })
-                    props.group = res.data.group
+                    const { invitedBy, group } = res.data
+                    props.invitedBy = invitedBy
+                    props.group = group
                     return handleSSRSuccessProps({ props, context })
                 } catch (error) {
                     return handleSSRErrorProps({ props, error })

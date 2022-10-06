@@ -8,7 +8,7 @@ import { GenericPageTextContent } from '@appTypes/content'
  */
 export default {
     title: "You've been invited to join FutureNHS",
-    secondaryHeading: " You've been invited to join %GROUPNAME%",
+    secondaryHeading: '%INVITEDBY% has invited you to join %GROUPNAME%!',
     mainHeading: 'Welcome to FutureNHS',
     bodyHtml: `<p>The FutureNHS platform helps you connect, share, learn and make a difference to the community. 
     Choose to collaborate as a group member or setup and customise your own group.</p>

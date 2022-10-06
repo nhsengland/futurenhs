@@ -7,9 +7,11 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
-import { Group } from '@appTypes/group'
+import { Group, GroupInvitedBy } from '@appTypes/group'
+import { mapGroupData } from '@helpers/formatters/mapGroupData'
 
 declare type Response = {
+    invitedBy: GroupInvitedBy
     group: Group
 }
 
@@ -57,10 +59,11 @@ export const getGroupsByInvite = async (
             }
         )
     }
-
+    const group = mapGroupData(apiData.group)
     serviceResponse.headers = headers
     serviceResponse.data = {
-        group: apiData.group ?? '',
+        invitedBy: apiData.invitedBy,
+        group,
     }
 
     return serviceResponse
