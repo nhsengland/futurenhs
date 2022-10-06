@@ -59,6 +59,7 @@
   <ItemGroup>
     <Folder Include="Models\Content\Requests\" />
     <Folder Include="Models\Search\" />
+    <Folder Include="Services\Registration\Interfaces" />
   </ItemGroup>
 
 </Project>
