@@ -20,13 +20,12 @@ namespace FutureNHS.Api.Services
 
         private readonly string _fqdn;
         private readonly ILogger<AdminUserService> _logger;
-        private readonly IUserAdminDataProvider _userAdminDataProvider;
-        private readonly IRolesDataProvider _rolesDataProvider;
         private readonly IPermissionsService _permissionsService;
         private readonly ISystemClock _systemClock;
         private readonly IUserCommand _userCommand;
         private readonly IEmailService _emailService;
         private readonly IGroupCommand _groupCommand;
+        private readonly IRegistrationDataProvider _registrationDataProvider;
 
         // Notification template Ids
         private readonly string _registrationEmailId;
@@ -34,18 +33,16 @@ namespace FutureNHS.Api.Services
         public RegistrationService(ILogger<AdminUserService> logger,
             ISystemClock systemClock,
             IPermissionsService permissionsService, 
-            IUserAdminDataProvider userAdminDataProvider,
-            IRolesDataProvider rolesDataProvider,
             IUserCommand userCommand,
             IEmailService emailService,
             IGroupCommand groupCommand,
+            IRegistrationDataProvider registrationDataProvider,
             IOptionsSnapshot<GovNotifyConfiguration> notifyConfig,
             IOptionsSnapshot<ApplicationGateway> gatewayConfig)
         {
             _groupCommand = groupCommand;
             _permissionsService = permissionsService;
-            _userAdminDataProvider = userAdminDataProvider;
-            _rolesDataProvider = rolesDataProvider;
+            _registrationDataProvider = registrationDataProvider;
             _systemClock = systemClock;
             _logger = logger;
             _userCommand = userCommand;
@@ -112,7 +109,8 @@ namespace FutureNHS.Api.Services
 
         public async Task<InviteDetails> GetRegistrationInviteDetailsAsync(Guid id, CancellationToken cancellationToken)
         {
-            return new InviteDetails();
+            var invite = await _registrationDataProvider.GetRegistrationInviteAsync(id, cancellationToken);
+            return invite;
         }
 
         private string CreateRegistrationLink(Guid userInviteId)
