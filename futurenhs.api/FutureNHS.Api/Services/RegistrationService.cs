@@ -4,6 +4,7 @@ using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Registration;
 using FutureNHS.Api.Services.Admin;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -109,6 +110,10 @@ namespace FutureNHS.Api.Services
             await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
         }
 
+        public async Task<InviteDetails> GetRegistrationInviteDetailsAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return new InviteDetails();
+        }
 
         private string CreateRegistrationLink(Guid userInviteId)
         {
