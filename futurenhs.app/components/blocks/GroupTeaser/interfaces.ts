@@ -13,4 +13,5 @@ export interface Props {
     headingLevel?: number
     className?: string
     isPublic?: boolean
+    isSignUp?: boolean
 }
