@@ -13,27 +13,27 @@ namespace FutureNHS.Api.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
         private readonly IPermissionsService _permissionsService;
-        private readonly IAdminUserService _adminUserService;
+        private readonly IRegistrationService _registrationService;
 
-        public RegistrationController(ILogger<RegistrationController> logger, IPermissionsService permissionsService, IAdminUserService adminUserService)
+        public RegistrationController(ILogger<RegistrationController> logger, IPermissionsService permissionsService, IRegistrationService registrationService)
         {
             _logger = logger;
             _permissionsService = permissionsService;
-            _adminUserService = adminUserService;
+            _registrationService = registrationService;
 
         }
 
 
 
         [HttpPost]
-        [Route("users/{adminUserId:guid}/registration/invite")]
-        public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid adminUserId,
+        [Route("users/{userId:guid}/registration/invite")]
+        public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid userId,
             [FromBody] UserInvite userInvite, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(userInvite.EmailAddress))
                 throw new ArgumentNullException(nameof(userInvite.EmailAddress));
 
-            await _adminUserService.InviteMemberToGroupAndPlatformAsync(adminUserId, userInvite.GroupId,
+            await _registrationService.InviteMemberToGroupAndPlatformAsync(userId, userInvite.GroupSlug,
                 userInvite.EmailAddress, cancellationToken);
 
             return Ok();

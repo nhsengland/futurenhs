@@ -15,7 +15,6 @@ import { PageBody } from '@components/layouts/PageBody'
 import { RichText } from '@components/generic/RichText'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Page } from '@appTypes/page'
-import { redirect } from 'next/dist/server/api-utils'
 import { getGroupsByInvite } from '@services/getGroupsByInvite'
 declare interface ContentText extends GenericPageTextContent {}
 
@@ -24,11 +23,14 @@ export interface Props extends Page {
     group: string
 }
 
-const AuthRegisterPage: (props: Props) => JSX.Element = ({ contentText }) => {
+const AuthRegisterPage: (props: Props) => JSX.Element = ({
+    contentText,
+    group,
+}) => {
     const router = useRouter()
 
-    const { mainHeading, bodyHtml } = contentText ?? {}
-
+    const { mainHeading, title, bodyHtml } = contentText ?? {}
+    console.log(group)
     /**
      * Render
      */
@@ -37,6 +39,9 @@ const AuthRegisterPage: (props: Props) => JSX.Element = ({ contentText }) => {
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={8} desktop={6}>
                     <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
+                    <h2 className="nhsuk-heading-md">
+                        {title.replace('%GROUPNAME%', group)}
+                    </h2>
                     <RichText bodyHtml={bodyHtml} />
                     <a className="c-button u-w-full" href={'/auth/signin'}>
                         Sign Up
@@ -65,11 +70,11 @@ export const getServerSideProps: GetServerSideProps = async (
             if (id && typeof id === 'string') {
                 try {
                     const res = await getGroupsByInvite({ id })
-                    // res.group = 'Test Group'
+                    props.group = res.data.group
                     return handleSSRSuccessProps({ props, context })
-                } catch (e) {}
-            } else {
-                return { redirect: {} }
+                } catch (e) {
+                    return handleSSRSuccessProps({ props, context })
+                }
             }
             /**
              * Hide breadcrumbs
@@ -79,6 +84,7 @@ export const getServerSideProps: GetServerSideProps = async (
             /**
              * Return data to page template
              */
+            return handleSSRSuccessProps({ props, context })
         }
     )
 

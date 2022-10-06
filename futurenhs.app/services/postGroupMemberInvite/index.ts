@@ -34,8 +34,9 @@ export const postGroupMemberInvite = async (
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/registration/invite`
     const apiBody = {
         emailAddress,
-        groupId,
+        groupSlug: groupId,
     }
+    debugger
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({

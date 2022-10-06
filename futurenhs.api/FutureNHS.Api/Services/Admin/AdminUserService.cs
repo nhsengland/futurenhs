@@ -115,56 +115,6 @@ namespace FutureNHS.Api.Services.Admin
             return await _userCommand.SearchUsers(term, offset, limit, sort, cancellationToken);
         }
 
-        public async Task InviteMemberToGroupAndPlatformAsync(Guid adminUserId, Guid? groupId, string email, CancellationToken cancellationToken)
-        {
-            if (Guid.Empty == adminUserId) throw new ArgumentOutOfRangeException(nameof(adminUserId));
-
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(adminUserId, AddMembersRole, cancellationToken);
-            if (!userCanPerformAction)
-            {
-                _logger.LogError($"Error: InviteMemberToGroupAndPlatformAsync - User:{0} does not have access to perform admin actions", adminUserId);
-                throw new SecurityException($"Error: User does not have access");
-            }
-
-            if (string.IsNullOrEmpty(email))
-            {
-                throw new ArgumentNullException($"Email was not provided");
-            }
-
-            if (email.Length > 254)
-            {
-                throw new ArgumentOutOfRangeException($"Email must be less than 254 characters");
-            }
-
-            MailAddress emailAddress;
-            try
-            {
-                emailAddress = new MailAddress(email);
-            }
-            catch (Exception)
-            {
-                throw new ArgumentOutOfRangeException($"Email is not in a valid format");
-            }
-
-            var userInvite = new GroupInviteDto
-            {
-                EmailAddress = emailAddress.Address.ToLowerInvariant(),
-                GroupId = groupId,
-                CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
-                CreatedBy = adminUserId
-
-            };
-
-            var userInviteId = await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
-            var registrationLink = CreateRegistrationLink(userInviteId);
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"registration_link", registrationLink}
-            };
-            
-            await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
-        }
-
         public async Task<IEnumerable<RoleDto>> GetMemberRolesAsync(Guid adminUserId, CancellationToken cancellationToken)
         {
             if (Guid.Empty == adminUserId) throw new ArgumentOutOfRangeException(nameof(adminUserId));
