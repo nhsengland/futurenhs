@@ -30,7 +30,6 @@ namespace FutureNHS.Api.Services
     public class UserService : IUserService
     {
         private const string ListMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
-        private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
         private const string EditMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/edit";
 
 
@@ -41,16 +40,12 @@ namespace FutureNHS.Api.Services
         private readonly ISystemClock _systemClock;
         private readonly IUserCommand _userCommand;
         private readonly IUserDataProvider _userDataProvider;
-        private readonly IEmailService _emailService;
         private readonly IUserImageService _imageService;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
         private readonly string _defaultRole;
         
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 5242880; // 5MB
-
-        // Notification template Ids
-        private readonly string _registrationEmailId;
 
         public UserService(ILogger<UserService> logger,
             ISystemClock systemClock,
@@ -71,13 +66,9 @@ namespace FutureNHS.Api.Services
             _logger = logger;
             _userCommand = userCommand;
             _userDataProvider = userDataProvider;
-            _emailService = emailService;
             _fqdn = gatewayConfig.Value.FQDN;
             _imageService = imageService;
             _blobStorageProvider = blobStorageProvider;
-
-            // Notification template Ids
-            _registrationEmailId = notifyConfig.Value.RegistrationEmailTemplateId;
 
             _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
         }
