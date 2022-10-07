@@ -8,6 +8,7 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { Member } from '@appTypes/member'
+import { api } from '@constants/routes'
 
 declare type Options = {
     email: string
@@ -30,7 +31,9 @@ export const getRegisterSiteUser = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/register/${email}`
+    const apiUrl: string = `${
+        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
+    }${api.USER_INVITED.replace('%EMAIL%', email)}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),

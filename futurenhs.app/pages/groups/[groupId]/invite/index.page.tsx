@@ -21,8 +21,6 @@ import {
 import { User } from '@appTypes/user'
 import { getGenericFormError, ServerSideFormData } from '@helpers/util/form'
 import { requestMethods } from '@constants/fetch'
-import { getStandardServiceHeaders } from '@helpers/fetch'
-import { postGroupMemberInvite } from '@services/postGroupMemberInvite'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { notifications } from '@constants/notifications'
@@ -34,6 +32,7 @@ import { NotificationsContext } from '@helpers/contexts/index'
 import { useFormConfig } from '@helpers/hooks/useForm'
 import { useNotification } from '@helpers/hooks/useNotification'
 import { GroupPage } from '@appTypes/page'
+import { postGroupUserInvite } from '@services/postGroupUserInvite'
 
 export interface Props extends GroupPage {}
 
@@ -61,10 +60,19 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
         try {
-            await postGroupMemberInvite({
+            await postGroupUserInvite({
                 user,
                 body: formData as any,
                 groupId,
+            })
+
+            const emailAddress: FormDataEntryValue = formData.get('Email')
+            useNotification({
+                notificationsContext,
+                text: {
+                    heading: notifications.SUCCESS,
+                    body: `Invite sent to ${emailAddress}`,
+                },
             })
 
             return Promise.resolve({})
@@ -77,17 +85,6 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
 
             return Promise.resolve(errors)
         }
-
-        const emailAddress: FormDataEntryValue = formData.get('Email')
-        useNotification({
-            notificationsContext,
-            text: {
-                heading: notifications.SUCCESS,
-                body: `Invite sent to ${emailAddress}`,
-            },
-        })
-
-        return Promise.resolve(errors)
     }
 
     /**

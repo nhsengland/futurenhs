@@ -6,8 +6,7 @@ import { services } from '@constants/services'
 import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
-import { User } from '@appTypes/user'
-import { getSession } from 'next-auth/react'
+import { api } from '@constants/routes'
 
 declare type Options = {
     headers?: any
@@ -29,8 +28,8 @@ export const postRegisterSiteUser = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/register`
+    const registerPath = api.USER_REGISTER
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${registerPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({

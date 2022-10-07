@@ -33,7 +33,7 @@ export const postSiteUserInvite = async (
     const emailAddress: FormDataEntryValue = body.get('Email')
 
     const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    const registrationPath = api.ADMIN_INVITE.replace('%ID%', id)
+    const registrationPath = api.SITE_INVITE.replace('%USER_ID%', id)
     const apiUrl: string = gateway + registrationPath
     const apiResponse: any = await fetchJSON(
         apiUrl,
@@ -56,7 +56,7 @@ export const postSiteUserInvite = async (
         throw new ServiceError(
             'An unexpected error occurred when attempting to invite a user',
             {
-                serviceId: services.POST_SITE_USER_INVITE,
+                serviceId: services.POST_SITE_INVITE,
                 status: status,
                 statusText: statusText,
                 body: apiData,
