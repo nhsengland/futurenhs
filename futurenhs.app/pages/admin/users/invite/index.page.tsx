@@ -26,7 +26,7 @@ import { formTypes } from '@constants/forms'
 import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
-import { postSiteUserInvite } from '@services/postSiteUserInvite'
+import { postGroupUserInvite } from '@services/postGroupUserInvite'
 import { FormConfig, FormErrors } from '@appTypes/form'
 import { useFormConfig } from '@helpers/hooks/useForm'
 import { GroupPage } from '@appTypes/page'
@@ -45,7 +45,7 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
     user,
     contentText,
     services = {
-        postSiteUserInvite: postSiteUserInvite,
+        postGroupUserInvite: postGroupUserInvite,
     },
 }) => {
     const formConfig: FormConfig = useFormConfig(
@@ -61,7 +61,10 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
         try {
-            await services.postSiteUserInvite({ user, body: formData as any })
+            await services.postGroupUserInvite({
+                user,
+                body: formData as any,
+            })
 
             return Promise.resolve({})
         } catch (error) {
@@ -126,8 +129,6 @@ export const getServerSideProps: GetServerSideProps = async (
              * Get data from request context
              */
             const props: Partial<Props> = selectPageProps(context)
-            const user: User = selectUser(context)
-            const csrfToken: string = selectCsrfToken(context)
             const formData: ServerSideFormData = selectFormData(context)
             const requestMethod: requestMethods = selectRequestMethod(context)
 
@@ -155,16 +156,6 @@ export const getServerSideProps: GetServerSideProps = async (
                 props.forms[formTypes.INVITE_USER].initialValues = formData
 
                 try {
-                    const headers: any = getStandardServiceHeaders({
-                        csrfToken,
-                    })
-
-                    await postSiteUserInvite({
-                        user,
-                        headers,
-                        body: formData,
-                    })
-
                     return {
                         props: props,
                     }

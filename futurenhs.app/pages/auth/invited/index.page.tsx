@@ -20,8 +20,8 @@ declare interface ContentText extends GenericPageTextContent {}
 
 export interface Props extends Page {
     contentText: ContentText
-    group: Group
-    invitedBy: GroupInvitedBy
+    group: Group | null
+    invitedBy: GroupInvitedBy | null
     b2cUrl: string
 }
 
@@ -32,23 +32,28 @@ const AuthInvitedPage: (props: Props) => JSX.Element = ({
     b2cUrl,
 }) => {
     const { bodyHtml, mainHeading, secondaryHeading } = contentText ?? {}
-    const subHeader = secondaryHeading
-        .replace('%GROUPNAME%', group.text.mainHeading)
-        .replace('%INVITEDBY%', invitedBy.name)
+
     /**
      * Render
      */
+
+    const GroupSubheader = () => {
+        const subHeader = secondaryHeading
+            .replace('%GROUPNAME%', group?.text?.mainHeading)
+            .replace('%INVITEDBY%', invitedBy?.name)
+        return group && invitedBy ? (
+            <h4 className="nhsuk-heading-md">
+                {subHeader}
+                <GroupTeaser {...group} isSignUp />
+            </h4>
+        ) : null
+    }
     return (
         <PageBody className="tablet:u-px-0">
             <LayoutColumnContainer justify="centre">
                 <LayoutColumn tablet={8} desktop={6}>
                     <h1 className="nhsuk-heading-xl">{mainHeading}</h1>
-                    {group ? (
-                        <h4 className="nhsuk-heading-md">
-                            {subHeader}
-                            <GroupTeaser {...group} isSignUp />
-                        </h4>
-                    ) : null}
+                    <GroupSubheader />
                     <RichText bodyHtml={bodyHtml} />
                     <a className="c-button" href={b2cUrl}>
                         Sign Up

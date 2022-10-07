@@ -14,6 +14,11 @@ export const enum routes {
     TERMS_AND_CONDITIONS = '/terms-and-conditions',
 }
 
+export const enum api {
+    ADMIN_INVITE = '',
+    GROUP_ADMIN_INVITE = '/v1/users/%ID%/registration/invite',
+}
+
 export const enum queryParams {
     RETURNURL = 'returnUrl',
     EDIT = 'edit',
