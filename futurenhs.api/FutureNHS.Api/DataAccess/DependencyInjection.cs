@@ -33,6 +33,7 @@ namespace FutureNHS.Api.DataAccess
             services.AddScoped<IUserAdminDataProvider, UserDataProvider>();
             services.AddScoped<IUserDataProvider, UserDataProvider>();
             services.AddScoped<ILikeDataProvider, LikeDataProvider>();
+            services.AddScoped<IDomainDataProvider, DomainDataProvider>();
 
             // Write
             services.AddScoped<ICommentCommand, CommentCommand>();
@@ -46,7 +47,7 @@ namespace FutureNHS.Api.DataAccess
             services.AddScoped<IContentCommand, ContentCommand>();
             services.AddScoped<IRolesCommand, RolesCommand>();
             services.AddScoped<IUserCommand, UserCommand>();
-
+            services.AddScoped<IDomainCommand, DomainCommand>();
 
 
             return services;
