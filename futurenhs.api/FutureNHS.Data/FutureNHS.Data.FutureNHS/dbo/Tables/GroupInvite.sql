@@ -3,7 +3,7 @@
     [EmailAddress] NVARCHAR (254)   NOT NULL UNIQUE,
     [GroupId]      UNIQUEIDENTIFIER NULL,
     [CreatedAtUTC] DATETIME2         NOT NULL,
-    [CreatedBy]    UNIQUEIDENTIFIER NOT NULL,
+    [CreatedBy]    UNIQUEIDENTIFIER  NULL,
     [ExpiresAtUTC] DATETIME2         NULL,
     [IsDeleted]    BIT  DEFAULT ((0)) NOT NULL, 
     [RowVersion]   ROWVERSION NOT NULL, 
