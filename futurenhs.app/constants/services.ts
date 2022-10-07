@@ -33,6 +33,7 @@ export const enum services {
     GET_USER_INFO = 'getUserInfo',
     POST_CMS_BLOCK = 'postCmsBlock',
     POST_SITE_USER_INVITE = 'postSiteUserInvite',
+    POST_GROUP_USER_INVITE = 'postGroup',
     POST_GROUP = 'postGroup',
     POST_GROUP_DISCUSSION = 'postGroupDiscussion',
     POST_GROUP_DISCUSSION_COMMENT = 'postGroupDiscussionComment',

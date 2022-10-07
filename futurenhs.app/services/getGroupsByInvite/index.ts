@@ -11,8 +11,8 @@ import { Group, GroupInvitedBy } from '@appTypes/group'
 import { mapGroupData } from '@helpers/formatters/mapGroupData'
 
 declare type Response = {
-    invitedBy: GroupInvitedBy
-    group: Group
+    invitedBy: GroupInvitedBy | null
+    group: Group | null
 }
 
 declare type Options = {
