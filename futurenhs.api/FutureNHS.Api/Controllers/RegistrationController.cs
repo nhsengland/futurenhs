@@ -38,20 +38,20 @@ namespace FutureNHS.Api.Controllers
 
 
 
-        // [HttpPost]
-        // [Route("users/{userId:guid}/group/{groupId:groupid}/registration/invite")]
-        // public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid userId,
-        //     [FromBody] UserInvite userInvite, CancellationToken cancellationToken)
-        // {
-        //     //CHECK EMAIL DOMAIN
-        //     if (string.IsNullOrEmpty(userInvite.EmailAddress))
-        //         throw new ArgumentNullException(nameof(userInvite.EmailAddress));
-        //
-        //     await _registrationService.InviteMemberToGroupAndPlatformAsync(userId, userInvite.GroupSlug,
-        //         userInvite.EmailAddress, cancellationToken);
-        //
-        //     return Ok();
-        // }
+        [HttpPost]
+        [Route("users/{userId:guid}/groups/{slug}/registration/invite")]
+        public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid userId,
+            [FromBody] UserInvite userInvite, string slug, CancellationToken cancellationToken)
+        {
+            //CHECK EMAIL DOMAIN
+            if (string.IsNullOrEmpty(userInvite.EmailAddress))
+                throw new ArgumentNullException(nameof(userInvite.EmailAddress));
+        
+            await _registrationService.InviteMemberToGroupAndPlatformAsync(userId, slug,
+                userInvite.EmailAddress, cancellationToken);
+        
+            return Ok();
+        }
         
         [HttpPost]
         [Route("users/{userId:guid}/registration/invite")]
