@@ -1,6 +1,7 @@
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Models.Registration;
+using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Models.UserInvite;
 using FutureNHS.Api.Services;
@@ -117,6 +118,14 @@ namespace FutureNHS.Api.Controllers
 
         }
 
+        [HttpPost]
+        [Route("registration/identity")]
+        public async Task<IActionResult> AddMemberIdentityAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
+        {
+            var response = await _registrationService.MapMemberToIdentityAsync(memberIdentityRequest, cancellationToken);
 
+            return Ok(response);
+
+        }
     }
 }

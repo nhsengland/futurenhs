@@ -60,9 +60,9 @@ export const getInviteDetails = async (
     }
 
     serviceResponse.headers = headers
-    serviceResponse.data = {
-        group: apiData.group ?? '',
-    }
+    // serviceResponse.data = {
+    //     group: apiData.group ?? '',
+    // }
 
     return serviceResponse
 }
