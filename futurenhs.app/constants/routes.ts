@@ -16,8 +16,8 @@ export const enum routes {
 
 export const enum api {
     SITE_INVITE = '/v1/users/%USER_ID%/registration/invite',
-    // GROUP_INVITE = '/vi/users/%USER_ID%/group/%GROUP_ID%/registration/invite',
-    GROUP_INVITE = '/v1/users/%USER_ID%/registration/invite',
+    GROUP_INVITE = '/v1/users/%USER_ID%/groups/%GROUP_ID%/registration/invite',
+    INVITE_DETAILS = '/v1/registration/invite/%INVITE_ID%',
     USER_INVITED = '/v1/registration/register',
     USER_REGISTER = '/v1/registration/register/%EMAIL_ADDRESS%',
 }

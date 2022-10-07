@@ -9,6 +9,7 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { Group, GroupInvitedBy } from '@appTypes/group'
 import { mapGroupData } from '@helpers/formatters/mapGroupData'
+import { api } from '@constants/routes'
 
 declare type Response = {
     invitedBy: GroupInvitedBy | null
@@ -36,7 +37,9 @@ export const getGroupsByInvite = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/registration/invite/${id}`
+    const apiUrl: string = `${
+        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
+    }${api.INVITE_DETAILS.replace('%INVITE_ID%', id)}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
@@ -52,7 +55,7 @@ export const getGroupsByInvite = async (
         throw new ServiceError(
             'An unexpected error occurred when attempting to get the group invite',
             {
-                serviceId: services.GET_GROUP_INVITE,
+                serviceId: services.GET_INVITE_DETAILS,
                 status: status,
                 statusText: statusText,
                 body: apiData,

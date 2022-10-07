@@ -54,4 +54,5 @@ export const enum services {
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
     GET_GROUP_INVITE = 'getGroupInvite',
+    GET_INVITE_DETAILS = 'getInviteDetails',
 }
