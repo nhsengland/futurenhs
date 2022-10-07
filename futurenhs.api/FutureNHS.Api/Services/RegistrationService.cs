@@ -63,7 +63,8 @@ namespace FutureNHS.Api.Services
         public async Task InviteMemberToGroupAndPlatformAsync(Guid userId, string groupSlug, string email, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
-            
+            if (string.IsNullOrEmpty(groupSlug)) throw new ArgumentOutOfRangeException(nameof(groupSlug));
+
             
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AddMembersRole, cancellationToken);
             if (!userCanPerformAction)
@@ -110,7 +111,7 @@ namespace FutureNHS.Api.Services
             
             await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
         }
-        public async Task InviteMemberToPlatformAsync(Guid userId, string? groupSlug, string email, CancellationToken cancellationToken)
+        public async Task InviteMemberToPlatformAsync(Guid userId, string email, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
 
@@ -141,14 +142,9 @@ namespace FutureNHS.Api.Services
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
 
-            var groupId = string.IsNullOrEmpty(groupSlug)
-                ? null
-                : await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
-
             var userInvite = new GroupInviteDto
             {
                 EmailAddress = emailAddress.Address.ToLowerInvariant(),
-                GroupId = groupId,
                 CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
                 CreatedBy = userId
 

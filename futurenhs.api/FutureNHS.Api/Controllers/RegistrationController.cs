@@ -62,7 +62,7 @@ namespace FutureNHS.Api.Controllers
             if (string.IsNullOrEmpty(userInvite.EmailAddress))
                 throw new ArgumentNullException(nameof(userInvite.EmailAddress));
 
-            await _registrationService.InviteMemberToPlatformAsync(userId, userInvite.GroupSlug,
+            await _registrationService.InviteMemberToPlatformAsync(userId,
                 userInvite.EmailAddress, cancellationToken);
 
             return Ok();
