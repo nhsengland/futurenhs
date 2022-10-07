@@ -33,7 +33,7 @@ export const getRegisterSiteUser = async (
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }${api.USER_INVITED.replace('%EMAIL%', email)}`
+    }${api.INVITE_DETAILS.replace('%EMAIL%', email)}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),

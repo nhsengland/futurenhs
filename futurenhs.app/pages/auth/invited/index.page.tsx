@@ -12,10 +12,10 @@ import { PageBody } from '@components/layouts/PageBody'
 import { RichText } from '@components/generic/RichText'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Page } from '@appTypes/page'
-import { getGroupsByInvite } from '@services/getGroupsByInvite'
 import { Group, GroupInvitedBy } from '@appTypes/group'
 import { GroupTeaser } from '@components/blocks/GroupTeaser'
 import { routes } from '@constants/routes'
+import { getGroupsByInvite } from '@services/getGroupsByInvite'
 declare interface ContentText extends GenericPageTextContent {}
 
 export interface Props extends Page {
