@@ -1,10 +1,9 @@
 import { GetServerSideProps } from 'next'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getServiceErrorDataValidationErrors } from '@services/index'
-import { getStandardServiceHeaders } from '@helpers/fetch'
 import { requestMethods } from '@constants/fetch'
 import { actions as actionConstants } from '@constants/actions'
 import { layoutIds } from '@constants/routes'
@@ -12,13 +11,10 @@ import { withUser } from '@helpers/hofs/withUser'
 import { withRoutes } from '@helpers/hofs/withRoutes'
 import {
     selectFormData,
-    selectCsrfToken,
-    selectUser,
     selectRequestMethod,
     selectPageProps,
 } from '@helpers/selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
-import { User } from '@appTypes/user'
 import { withTextContent } from '@helpers/hofs/withTextContent'
 import { ServerSideFormData } from '@helpers/util/form'
 import { getGenericFormError } from '@helpers/util/form'
@@ -26,10 +22,13 @@ import { formTypes } from '@constants/forms'
 import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
-import { postGroupUserInvite } from '@services/postGroupUserInvite'
+import { postSiteUserInvite } from '@services/postSiteUserInvite'
 import { FormConfig, FormErrors } from '@appTypes/form'
 import { useFormConfig } from '@helpers/hooks/useForm'
 import { GroupPage } from '@appTypes/page'
+import { useNotification } from '@helpers/hooks/useNotification'
+import { NotificationsContext } from '@helpers/contexts/index'
+import { notifications } from '@constants/notifications'
 
 export interface Props extends GroupPage {
     folderId: string
@@ -45,7 +44,7 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
     user,
     contentText,
     services = {
-        postGroupUserInvite: postGroupUserInvite,
+        postSiteUserInvite: postSiteUserInvite,
     },
 }) => {
     const formConfig: FormConfig = useFormConfig(
@@ -53,7 +52,7 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
         forms[formTypes.INVITE_USER]
     )
     const [errors, setErrors] = useState(formConfig?.errors)
-
+    const notificationsContext: any = useContext(NotificationsContext)
     const { secondaryHeading } = contentText ?? {}
 
     /**
@@ -61,11 +60,18 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
         try {
-            await services.postGroupUserInvite({
+            await services.postSiteUserInvite({
                 user,
                 body: formData as any,
             })
-
+            const emailAddress: FormDataEntryValue = formData.get('Email')
+            useNotification({
+                notificationsContext,
+                text: {
+                    heading: notifications.SUCCESS,
+                    body: `Invite sent to ${emailAddress}`,
+                },
+            })
             return Promise.resolve({})
         } catch (error) {
             const errors: FormErrors =

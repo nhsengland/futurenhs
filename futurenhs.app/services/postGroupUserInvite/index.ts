@@ -12,6 +12,7 @@ import { api } from '@constants/routes'
 
 declare type Options = {
     user: User
+    groupId: string
     headers?: any
     body: FormData | ServerSideFormData
 }
@@ -22,19 +23,19 @@ declare type Dependencies = {
 }
 
 export const postGroupUserInvite = async (
-    { user, headers = {}, body }: Options,
+    { user, groupId, headers = {}, body }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
-    debugger
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-
-    const { id } = user
     const emailAddress: FormDataEntryValue = body.get('Email')
 
     const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    const registrationPath = api.GROUP_ADMIN_INVITE.replace('%ID%', id)
+    const registrationPath = api.GROUP_INVITE.replace(
+        '%USER_ID%',
+        user.id
+    ).replace('%GROUP_ID%', groupId)
     const apiUrl: string = gateway + registrationPath
     const apiResponse: any = await fetchJSON(
         apiUrl,
@@ -56,7 +57,7 @@ export const postGroupUserInvite = async (
         throw new ServiceError(
             'An unexpected error occurred when attempting to invite a user',
             {
-                serviceId: services.POST_GROUP_USER_INVITE,
+                serviceId: services.POST_GROUP_INVITE,
                 status: status,
                 statusText: statusText,
                 body: apiData,

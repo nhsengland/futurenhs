@@ -15,8 +15,11 @@ export const enum routes {
 }
 
 export const enum api {
-    ADMIN_INVITE = '',
-    GROUP_ADMIN_INVITE = '/v1/users/%ID%/registration/invite',
+    SITE_INVITE = '/v1/users/%USER_ID%/registration/invite',
+    // GROUP_INVITE = '/vi/users/%USER_ID%/group/%GROUP_ID%/registration/invite',
+    GROUP_INVITE = '/v1/users/%USER_ID%/registration/invite',
+    USER_INVITED = '/v1/registration/register',
+    USER_REGISTER = '/v1/registration/register/%EMAIL_ADDRESS%',
 }
 
 export const enum queryParams {
