@@ -6,6 +6,7 @@ import { GetUserInfoService } from '@services/getUserInfo'
 import { getSiteUser } from '@services/getSiteUser'
 import { User } from '@appTypes/user'
 import { Hof } from '@appTypes/hof'
+import { postMapIdentityToSiteUser } from '@services/postMapIdentityToSiteUser'
 
 export const withUser: Hof = async (
     context,
@@ -47,7 +48,19 @@ export const withUser: Hof = async (
             if (isRequired) {
                 const { status } = user
 
-                if (status === 'LegacyMember' || status === 'Invited') {
+                if (status === 'LegacyMember') {
+                    await postMapIdentityToSiteUser({
+                        subjectId: session.sub as string,
+                        emailAddress: session.user?.email,
+                        issuer: session.iss as string,
+                    })
+                    return {
+                        redirect: {
+                            permanent: false,
+                            destination: `${process.env.APP_URL}`,
+                        },
+                    }
+                } else if (status === 'Invited') {
                     const targetPath: string = `/auth/register`
 
                     if (context.resolvedUrl !== targetPath) {

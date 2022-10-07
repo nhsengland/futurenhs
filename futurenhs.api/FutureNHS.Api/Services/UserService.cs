@@ -371,6 +371,8 @@ namespace FutureNHS.Api.Services
             }
             return mediaType.Encoding;
         }
+        
+
 
         public async Task<MemberInfoResponse> GetMemberInfoAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
         {
@@ -378,14 +380,14 @@ namespace FutureNHS.Api.Services
             if (string.IsNullOrWhiteSpace(memberIdentityRequest.EmailAddress)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.EmailAddress));
 
 
-            var memberInfo = await _userDataProvider.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
+            var memberInfo = await _userCommand.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
             if (memberInfo is not null)
             {
                 memberInfo.Status = MemberStatus.Member.ToString();
                 return memberInfo;
             }
 
-            var memberDetailsResponse = await _userDataProvider.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
+            var memberDetailsResponse = await _userCommand.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
             if (memberDetailsResponse is not null)
             {
                 return new MemberInfoResponse
@@ -416,7 +418,7 @@ namespace FutureNHS.Api.Services
         {
             if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentOutOfRangeException(nameof(emailAddress));
 
-            return _userDataProvider.GetMemberByEmailAsync(emailAddress, cancellationToken);
+            return _userCommand.GetMemberByEmailAsync(emailAddress, cancellationToken);
         }
     }
 }

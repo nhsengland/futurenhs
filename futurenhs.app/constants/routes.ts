@@ -20,6 +20,7 @@ export const enum api {
     INVITE_DETAILS = '/v1/registration/invite/%INVITE_ID%',
     USER_INVITED = '/v1/registration/register',
     USER_REGISTER = '/v1/registration/register/%EMAIL_ADDRESS%',
+    MAP_IDENTITY = '/v1/registration/identity',
 }
 
 export const enum queryParams {

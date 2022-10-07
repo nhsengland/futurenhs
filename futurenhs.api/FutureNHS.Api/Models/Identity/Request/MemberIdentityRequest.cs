@@ -4,5 +4,6 @@
     {
         public string SubjectId { get; init; }
         public string EmailAddress { get; init; }
+        public string? Issuer { get; init; }
     }
 }

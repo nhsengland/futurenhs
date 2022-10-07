@@ -6,6 +6,9 @@ using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Registration;
+using FutureNHS.Api.Exceptions;
+using FutureNHS.Api.Models.Identity.Request;
+using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Services.Admin;
 using FutureNHS.Api.Services.Interfaces;
@@ -195,6 +198,26 @@ namespace FutureNHS.Api.Services
             return null;
         }
 
+        public async Task<MemberInfoResponse> MapMemberToIdentityAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.SubjectId)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.SubjectId));
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.EmailAddress)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.EmailAddress));
+            if (string.IsNullOrWhiteSpace(memberIdentityRequest.Issuer)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.Issuer));
+
+            var memberInfo = await _userCommand.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
+            if (memberInfo is not null)
+            {
+                throw new PreconditionFailedExeption("Precondition Failed: User already mapped to this identity");
+            }
+
+            var memberDetailsResponse = await _userCommand.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
+            if (memberDetailsResponse is not null)
+            {
+                await _userCommand.MapIdentityToExistingUserAsync(memberDetailsResponse.Id, memberIdentityRequest.SubjectId, memberIdentityRequest.Issuer, cancellationToken);
+                return await _userCommand.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
+            }
+            throw new NotFoundException("Could not find a user with this email to map the identity to");
+        }
 
         public async Task<InviteDetails> GetRegistrationInviteDetailsAsync(Guid id, CancellationToken cancellationToken)
         {

@@ -44,6 +44,7 @@ export const enum services {
     POST_GROUP_MEMBER_INVITE = 'postGroupMemberInvite',
     POST_CMS_PAGE_CONTENT = 'postCmsPageContent',
     POST_REGISTER_SITE_USER = 'postRegisterSiteUser',
+    POST_MAP_IDENTITY_TO_SITE_USER = 'postMapIdentityToSiteUser',
     PUT_CMS_PAGE_CONTENT = 'putCmsPageContent',
     PUT_GROUP = 'putGroup',
     PUT_GROUP_FOLDER = 'putGroupFolder',
