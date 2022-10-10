@@ -8,6 +8,7 @@ import { ServiceError } from '..'
 import { ServerSideFormData } from '@helpers/util/form'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import { api } from '@constants/routes'
 
 declare type Options = {
     user: User
@@ -21,20 +22,21 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const postGroupMemberInvite = async (
-    { user, headers = {}, body, groupId }: Options,
+export const postGroupUserInvite = async (
+    { user, groupId, headers = {}, body }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-
-    const { id } = user
     const emailAddress: FormDataEntryValue = body.get('Email')
-    /**
-     * TODO: Actual endpoint TBD
-     */
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/invite`
+
+    const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
+    const registrationPath = api.GROUP_INVITE.replace(
+        '%USER_ID%',
+        user.id
+    ).replace('%GROUP_ID%', groupId)
+    const apiUrl: string = gateway + registrationPath
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
@@ -51,12 +53,11 @@ export const postGroupMemberInvite = async (
     const apiData: any = apiResponse.json
 
     const { ok, status, statusText } = apiMeta
-
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to invite a group member',
+            'An unexpected error occurred when attempting to invite a user',
             {
-                serviceId: services.POST_GROUP_MEMBER_INVITE,
+                serviceId: services.POST_GROUP_INVITE,
                 status: status,
                 statusText: statusText,
                 body: apiData,

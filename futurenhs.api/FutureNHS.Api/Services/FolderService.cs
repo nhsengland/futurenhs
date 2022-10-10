@@ -31,7 +31,7 @@ namespace FutureNHS.Api.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<Folder> GetFolderAsync(Guid userId, string slug, Guid folderId, CancellationToken cancellationToken)
+        public async Task<Folder> GetFolderAsync(Guid userId, string? slug, Guid folderId, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == folderId) throw new ArgumentOutOfRangeException(nameof(userId));

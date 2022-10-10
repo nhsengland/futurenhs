@@ -3,6 +3,6 @@
     public record UserInvite
     {
       public string? EmailAddress { get; init; }
-      public Guid?  GroupId { get; init; }
+      public string?  GroupSlug { get; init; }
     }
 }

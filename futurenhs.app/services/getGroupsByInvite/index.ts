@@ -7,11 +7,13 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
-import { User } from '@appTypes/user'
-import { GroupMember } from '@appTypes/group'
+import { Group, GroupInvitedBy } from '@appTypes/group'
+import { mapGroupData } from '@helpers/formatters/mapGroupData'
+import { api } from '@constants/routes'
 
 declare type Response = {
-    group: string
+    invitedBy: GroupInvitedBy | null
+    group: Group | null
 }
 
 declare type Options = {
@@ -35,7 +37,9 @@ export const getGroupsByInvite = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${id}`
+    const apiUrl: string = `${
+        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
+    }${api.INVITE_DETAILS.replace('%INVITE_ID%', id)}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
@@ -49,19 +53,20 @@ export const getGroupsByInvite = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the site user',
+            'An unexpected error occurred when attempting to get the group invite',
             {
-                serviceId: services.GET_SITE_USER,
+                serviceId: services.GET_INVITE_DETAILS,
                 status: status,
                 statusText: statusText,
                 body: apiData,
             }
         )
     }
-
+    const group = mapGroupData(apiData.group)
     serviceResponse.headers = headers
     serviceResponse.data = {
-        group: apiData.group ?? '',
+        invitedBy: apiData.invitedBy,
+        group,
     }
 
     return serviceResponse

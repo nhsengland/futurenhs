@@ -16,6 +16,7 @@ import {
 import { Pagination } from '@appTypes/pagination'
 import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
+import { mapGroupData } from '@helpers/formatters/mapGroupData'
 
 declare type Options = {
     user: User
@@ -78,25 +79,7 @@ export const getGroups: Service = async (
     }
 
     apiData.data?.forEach((datum) => {
-        serviceResponse.data.push({
-            text: {
-                mainHeading: datum.nameText ?? null,
-                strapLine: datum.straplineText ?? null,
-            } as any,
-            groupId: datum.slug,
-            themeId: datum.themeId,
-            totalMemberCount: datum.memberCount ?? 0,
-            totalDiscussionCount: datum.discussionCount ?? 0,
-            isPublic: datum.isPublic,
-            image: datum.image
-                ? {
-                      src: `${datum.image?.source}`,
-                      height: datum.image?.height ?? null,
-                      width: datum.image?.width ?? null,
-                      altText: `Group image for ${datum.nameText}`,
-                  }
-                : null,
-        })
+        serviceResponse.data.push(mapGroupData(datum))
     })
 
     serviceResponse.pagination = getClientPaginationFromApi({

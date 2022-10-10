@@ -3,17 +3,15 @@ import {
     fetchJSON as fetchJSONHelper,
 } from '@helpers/fetch'
 import { services } from '@constants/services'
-import { requestMethods, defaultTimeOutMillis } from '@constants/fetch'
+import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
-import { ServerSideFormData } from '@helpers/util/form'
 import { ServiceResponse } from '@appTypes/service'
-import { User } from '@appTypes/user'
 import { api } from '@constants/routes'
 
 declare type Options = {
-    user: User
-    headers?: any
-    body: FormData | ServerSideFormData
+    subjectId: string
+    emailAddress: string
+    issuer: string
 }
 
 declare type Dependencies = {
@@ -21,27 +19,23 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const postSiteUserInvite = async (
-    { user, headers = {}, body }: Options,
+export const postMapIdentityToSiteUser = async (
+    { subjectId, emailAddress, issuer }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-
-    const { id } = user
-    const emailAddress: FormDataEntryValue = body.get('Email')
-
-    const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    const registrationPath = api.SITE_INVITE.replace('%USER_ID%', id)
-    const apiUrl: string = gateway + registrationPath
+    const mapIdentity = api.MAP_IDENTITY
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${mapIdentity}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
-            headers: headers,
             body: {
-                emailAddress: emailAddress,
+                SubjectId: subjectId,
+                EmailAddress: emailAddress,
+                Issuer: issuer,
             },
         }),
         defaultTimeOutMillis
@@ -54,9 +48,9 @@ export const postSiteUserInvite = async (
 
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to invite a user',
+            'An unexpected error occurred when attempting to update the user',
             {
-                serviceId: services.POST_SITE_INVITE,
+                serviceId: services.POST_MAP_IDENTITY_TO_SITE_USER,
                 status: status,
                 statusText: statusText,
                 body: apiData,

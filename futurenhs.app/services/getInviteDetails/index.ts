@@ -7,11 +7,15 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
-import { Member } from '@appTypes/member'
-import { api } from '@constants/routes'
+import { User } from '@appTypes/user'
+import { GroupMember } from '@appTypes/group'
+
+declare type Response = {
+    registrationInvite: string
+}
 
 declare type Options = {
-    email: string
+    id: string
 }
 
 declare type Dependencies = {
@@ -19,11 +23,11 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const getRegisterSiteUser = async (
-    { email }: Options,
+export const getInviteDetails = async (
+    { id }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<Member>> => {
-    const serviceResponse: ServiceResponse<Member> = {
+): Promise<ServiceResponse<Response>> => {
+    const serviceResponse: ServiceResponse<Response> = {
         data: null,
     }
 
@@ -31,16 +35,14 @@ export const getRegisterSiteUser = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${
-        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }${api.INVITE_DETAILS.replace('%EMAIL%', email)}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/registration/invite/${id}/}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
         defaultTimeOutMillis
     )
 
-    const apiData: ApiResponse<any> = apiResponse.json
+    const apiData: ApiResponse<Response> = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText, headers } = apiMeta
@@ -58,23 +60,9 @@ export const getRegisterSiteUser = async (
     }
 
     serviceResponse.headers = headers
-    serviceResponse.data = {
-        id: apiData.id ?? '',
-        firstName: apiData.firstName ?? '',
-        lastName: apiData.lastName ?? '',
-        email: apiData.email ?? '',
-        pronouns: apiData.pronouns ?? '',
-        image: apiData.image
-            ? {
-                  src: `${apiData.image?.source}`,
-                  height: apiData?.image?.height,
-                  width: apiData?.image?.width,
-                  altText: 'Profile image',
-              }
-            : null,
-        imageId: apiData.imageId ?? '',
-        subject: apiData.subject,
-    }
+    // serviceResponse.data = {
+    //     group: apiData.group ?? '',
+    // }
 
     return serviceResponse
 }

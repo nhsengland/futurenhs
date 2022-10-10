@@ -1,10 +1,9 @@
 import { GetServerSideProps } from 'next'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getServiceErrorDataValidationErrors } from '@services/index'
-import { getStandardServiceHeaders } from '@helpers/fetch'
 import { requestMethods } from '@constants/fetch'
 import { actions as actionConstants } from '@constants/actions'
 import { layoutIds } from '@constants/routes'
@@ -12,13 +11,10 @@ import { withUser } from '@helpers/hofs/withUser'
 import { withRoutes } from '@helpers/hofs/withRoutes'
 import {
     selectFormData,
-    selectCsrfToken,
-    selectUser,
     selectRequestMethod,
     selectPageProps,
 } from '@helpers/selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
-import { User } from '@appTypes/user'
 import { withTextContent } from '@helpers/hofs/withTextContent'
 import { ServerSideFormData } from '@helpers/util/form'
 import { getGenericFormError } from '@helpers/util/form'
@@ -30,6 +26,9 @@ import { postSiteUserInvite } from '@services/postSiteUserInvite'
 import { FormConfig, FormErrors } from '@appTypes/form'
 import { useFormConfig } from '@helpers/hooks/useForm'
 import { GroupPage } from '@appTypes/page'
+import { useNotification } from '@helpers/hooks/useNotification'
+import { NotificationsContext } from '@helpers/contexts/index'
+import { notifications } from '@constants/notifications'
 
 export interface Props extends GroupPage {
     folderId: string
@@ -53,7 +52,7 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
         forms[formTypes.INVITE_USER]
     )
     const [errors, setErrors] = useState(formConfig?.errors)
-
+    const notificationsContext: any = useContext(NotificationsContext)
     const { secondaryHeading } = contentText ?? {}
 
     /**
@@ -61,8 +60,18 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
         try {
-            await services.postSiteUserInvite({ user, body: formData as any })
-
+            await services.postSiteUserInvite({
+                user,
+                body: formData as any,
+            })
+            const emailAddress: FormDataEntryValue = formData.get('Email')
+            useNotification({
+                notificationsContext,
+                text: {
+                    heading: notifications.SUCCESS,
+                    body: `Invite sent to ${emailAddress}`,
+                },
+            })
             return Promise.resolve({})
         } catch (error) {
             const errors: FormErrors =
@@ -126,8 +135,6 @@ export const getServerSideProps: GetServerSideProps = async (
              * Get data from request context
              */
             const props: Partial<Props> = selectPageProps(context)
-            const user: User = selectUser(context)
-            const csrfToken: string = selectCsrfToken(context)
             const formData: ServerSideFormData = selectFormData(context)
             const requestMethod: requestMethods = selectRequestMethod(context)
 
@@ -155,16 +162,6 @@ export const getServerSideProps: GetServerSideProps = async (
                 props.forms[formTypes.INVITE_USER].initialValues = formData
 
                 try {
-                    const headers: any = getStandardServiceHeaders({
-                        csrfToken,
-                    })
-
-                    await postSiteUserInvite({
-                        user,
-                        headers,
-                        body: formData,
-                    })
-
                     return {
                         props: props,
                     }

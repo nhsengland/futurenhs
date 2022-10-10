@@ -16,6 +16,5 @@ namespace FutureNHS.Api.Services.Interfaces
         Task UpdateMemberAsync(Guid userId, Guid targetUserId, Stream requestBody, string? contentType, byte[] rowVersion, CancellationToken cancellationToken);
         Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken);
 
-        Task<Guid?> RegisterMemberAsync(MemberRegistrationRequest registrationRequest, CancellationToken cancellationToken);
     }
 }

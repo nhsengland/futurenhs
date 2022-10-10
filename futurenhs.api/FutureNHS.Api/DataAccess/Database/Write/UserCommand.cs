@@ -30,48 +30,45 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task CreateInviteUserAsync(GroupInviteDto entityLike, CancellationToken cancellationToken)
+        public async Task<Guid> CreateInviteUserAsync(GroupInviteDto groupInvite, CancellationToken cancellationToken)
         {
-            try
-            {
-                const string query =
+            const string query =
 
                     @"  
 	                INSERT INTO  [dbo].[GroupInvite]
                                  ([EmailAddress]
                                  ,[GroupId]
                                  ,[CreatedAtUTC]
+                                 ,[CreatedBy]
                                  ,[ExpiresAtUTC])
+	                OUTPUT       INSERTED.[Id]
                     VALUES
                                  (@EmailAddress
                                  ,@GroupId
                                  ,@CreatedAtUTC
+                                 ,@CreatedBy
                                  ,@ExpiresAtUTC)";
 
 
                 var queryDefinition = new CommandDefinition(query, new
                 {
-                    EmailAddress = entityLike.EmailAddress,
-                    GroupId = entityLike.GroupId,
-                    CreatedAtUTC = entityLike.CreatedAtUTC,
-                    ExpiresAtUTC = entityLike.ExpiresAtUTC
+                    EmailAddress = groupInvite.EmailAddress,
+                    GroupId = groupInvite.GroupId,
+                    CreatedAtUTC = groupInvite.CreatedAtUTC,
+                    CreatedBy = groupInvite.CreatedBy,
+                    ExpiresAtUTC = groupInvite.ExpiresAtUTC
                 }, cancellationToken: cancellationToken);
 
                 using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-                var result = await dbConnection.ExecuteAsync(queryDefinition);
-                if (result != 1)
+                var result = await dbConnection.ExecuteScalarAsync<Guid?>(queryDefinition);
+                if (result.HasValue is false)
                 {
                     _logger.LogError("Error: CreateInviteUserAsync - User request to create was not successful.", queryDefinition);
                     throw new DBConcurrencyException("Error: User request was not successful.");
                 }
 
-            }
-            catch (SqlException ex)
-            {
-                _logger.LogError(ex, "Error: CreateInviteUserAsync - User request to create was not successful.");
-                throw new DBConcurrencyException("Error: User request was not successful.");
-            }
+                return result.Value;
         }
 
         public async Task<MemberProfile> GetMemberAsync(Guid id, CancellationToken cancellationToken)
@@ -436,5 +433,117 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 throw;
             }          
         }
+
+        public async Task<MemberInfoResponse> GetMemberInfoAsync(string subjectId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT                                
+                                [{nameof(Identity.MembershipUserId)}]                = id.MembershipUser_Id,
+                                [{nameof(Identity.SubjectId)}]                       = id.Subject_Id,
+                                [{nameof(Identity.Issuer)}]                          = id.Issuer,
+                                [{nameof(Member.Id)}]                                = member.Id,
+                                [{nameof(Member.FirstName)}]                         = member.FirstName,
+                                [{nameof(Member.LastName)}]                          = member.Surname,
+                                [{nameof(ImageData.Id)}]                             = image.Id,
+                                [{nameof(ImageData.Height)}]                         = image.Height,
+                                [{nameof(ImageData.Width)}]                          = image.Width,
+                                [{nameof(ImageData.FileName)}]                       = image.FileName,
+                                [{nameof(ImageData.MediaType)}]                      = image.MediaType
+				    
+                    FROM        [Identity] id
+                    INNER JOIN  [MembershipUser] member ON member.Id = id.MembershipUser_Id
+                    LEFT JOIN   [Image] image ON image.Id = member.ImageId
+                    WHERE       id.[Subject_Id] = @subjectId;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryAsync<Identity, Member, Image, MemberInfoResponse>(query,
+                (identity, member, image) =>
+                {
+                    return new MemberInfoResponse()
+                    {
+                        MembershipUserId = identity.MembershipUserId,
+                        SubjectId = identity.SubjectId,
+                        FirstName = member.FirstName,
+                        LastName = member.LastName,
+                        Image = image is not null ? new ImageData(image, _options) : null
+                    };
+                }, new
+                {
+                    SubjectId = subjectId,
+                }, splitOn: "id");
+
+            return reader.SingleOrDefault();
+        }
+
+
+        public async Task<MemberDetails?> GetMemberByEmailAsync(string emailAddress, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(MemberDetails.Id)}]                   = member.Id,
+                                [{nameof(MemberDetails.Slug)}]                 = member.Slug, 
+                                [{nameof(MemberDetails.FirstName)}]            = member.FirstName,
+                                [{nameof(MemberDetails.LastName)}]             = member.Surname,
+                                [{nameof(MemberDetails.Initials)}]             = member.Initials, 
+                                [{nameof(MemberDetails.Email)}]                = member.Email, 
+                                [{nameof(MemberDetails.Pronouns)}]             = member.Pronouns, 
+                                [{nameof(MemberDetails.DateJoinedUtc)}]        = member.CreatedAtUTC,
+                                [{nameof(MemberDetails.LastLoginUtc)}]         = member.LastLoginDateUTC,
+                                [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
+
+                    FROM        MembershipUser member 
+                    WHERE       member.Email = @EmailAddress";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var member = await dbConnection.QuerySingleOrDefaultAsync<MemberDetails>(query, new
+            {
+                EmailAddress = emailAddress
+            });
+
+            return member;
+        }
+
+
+        public async Task MapIdentityToExistingUserAsync(Guid membershipUserId, string subjectId, string issuer, CancellationToken cancellationToken)
+        {
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
+
+            try
+            {             
+                const string identityInsertquery =
+                    @$" INSERT INTO   [dbo].[Identity]
+                                  
+                                 ([MembershipUser_Id]
+                                 ,[Subject_Id]
+                                 ,[Issuer]
+                                 )
+                    VALUES
+                                 (@MembershipUserId
+                                  ,@SubjectId
+                                  ,@Issuer                                  
+                                 )";
+
+                var insertIdentityResult = await connection.ExecuteAsync(identityInsertquery, new
+                {
+                    MembershipUserId = membershipUserId,
+                    SubjectId = subjectId,
+                    Issuer = issuer
+                });
+
+                if (insertIdentityResult != 1)
+                {
+                    _logger.LogError($"Error: Failed to create identity mapping for user: {membershipUserId}");
+                    throw new DataException("Error: Failed to link user to identity mapping");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

@@ -19,10 +19,8 @@ import {
     selectPageProps,
 } from '@helpers/selectors/context'
 import { User } from '@appTypes/user'
-import { ServerSideFormData } from '@helpers/util/form'
+import { getGenericFormError, ServerSideFormData } from '@helpers/util/form'
 import { requestMethods } from '@constants/fetch'
-import { getStandardServiceHeaders } from '@helpers/fetch'
-import { postGroupMemberInvite } from '@services/postGroupMemberInvite'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { notifications } from '@constants/notifications'
@@ -34,6 +32,7 @@ import { NotificationsContext } from '@helpers/contexts/index'
 import { useFormConfig } from '@helpers/hooks/useForm'
 import { useNotification } from '@helpers/hooks/useNotification'
 import { GroupPage } from '@appTypes/page'
+import { postGroupUserInvite } from '@services/postGroupUserInvite'
 
 export interface Props extends GroupPage {}
 
@@ -60,34 +59,32 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
      * Client-side submission handler - TODO: Pending API
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
-        // try {
-        //     await postGroupMemberInvite({
-        //         user,
-        //         body: formData as any,
-        //         groupId,
-        //     })
+        try {
+            await postGroupUserInvite({
+                user,
+                body: formData as any,
+                groupId,
+            })
 
-        //     return Promise.resolve({})
-        // } catch (error) {
-        //     const errors: FormErrors =
-        //         getServiceErrorDataValidationErrors(error) ||
-        //         getGenericFormError(error)
+            const emailAddress: FormDataEntryValue = formData.get('Email')
+            useNotification({
+                notificationsContext,
+                text: {
+                    heading: notifications.SUCCESS,
+                    body: `Invite sent to ${emailAddress}`,
+                },
+            })
 
-        //     setErrors(errors)
+            return Promise.resolve({})
+        } catch (error) {
+            const errors: FormErrors =
+                getServiceErrorDataValidationErrors(error) ||
+                getGenericFormError(error)
 
-        //     return Promise.resolve(errors)
-        // }
+            setErrors(errors)
 
-        const emailAddress: FormDataEntryValue = formData.get('Email')
-        useNotification({
-            notificationsContext,
-            text: {
-                heading: notifications.SUCCESS,
-                body: `Invite sent to ${emailAddress}`,
-            },
-        })
-
-        return Promise.resolve(errors)
+            return Promise.resolve(errors)
+        }
     }
 
     /**
@@ -166,17 +163,6 @@ export const getServerSideProps: GetServerSideProps = async (
                 props.forms[formTypes.INVITE_USER].initialValues = formData
 
                 try {
-                    const headers: any = getStandardServiceHeaders({
-                        csrfToken,
-                    })
-
-                    await postGroupMemberInvite({
-                        user,
-                        headers,
-                        body: formData,
-                        groupId,
-                    })
-
                     const emailAddress: string = formData.get('Email')
                     props.notifications = [
                         {

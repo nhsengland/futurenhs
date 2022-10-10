@@ -30,7 +30,6 @@ namespace FutureNHS.Api.Services
     public class UserService : IUserService
     {
         private const string ListMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
-        private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
         private const string EditMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/edit";
 
 
@@ -41,16 +40,12 @@ namespace FutureNHS.Api.Services
         private readonly ISystemClock _systemClock;
         private readonly IUserCommand _userCommand;
         private readonly IUserDataProvider _userDataProvider;
-        private readonly IEmailService _emailService;
         private readonly IUserImageService _imageService;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
         private readonly string _defaultRole;
         
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 5242880; // 5MB
-
-        // Notification template Ids
-        private readonly string _registrationEmailId;
 
         public UserService(ILogger<UserService> logger,
             ISystemClock systemClock,
@@ -71,13 +66,9 @@ namespace FutureNHS.Api.Services
             _logger = logger;
             _userCommand = userCommand;
             _userDataProvider = userDataProvider;
-            _emailService = emailService;
             _fqdn = gatewayConfig.Value.FQDN;
             _imageService = imageService;
             _blobStorageProvider = blobStorageProvider;
-
-            // Notification template Ids
-            _registrationEmailId = notifyConfig.Value.RegistrationEmailTemplateId;
 
             _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
         }
@@ -380,6 +371,8 @@ namespace FutureNHS.Api.Services
             }
             return mediaType.Encoding;
         }
+        
+
 
         public async Task<MemberInfoResponse> GetMemberInfoAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
         {
@@ -387,14 +380,14 @@ namespace FutureNHS.Api.Services
             if (string.IsNullOrWhiteSpace(memberIdentityRequest.EmailAddress)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.EmailAddress));
 
 
-            var memberInfo = await _userDataProvider.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
+            var memberInfo = await _userCommand.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
             if (memberInfo is not null)
             {
                 memberInfo.Status = MemberStatus.Member.ToString();
                 return memberInfo;
             }
 
-            var memberDetailsResponse = await _userDataProvider.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
+            var memberDetailsResponse = await _userCommand.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
             if (memberDetailsResponse is not null)
             {
                 return new MemberInfoResponse
@@ -425,7 +418,7 @@ namespace FutureNHS.Api.Services
         {
             if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentOutOfRangeException(nameof(emailAddress));
 
-            return _userDataProvider.GetMemberByEmailAsync(emailAddress, cancellationToken);
+            return _userCommand.GetMemberByEmailAsync(emailAddress, cancellationToken);
         }
     }
 }

@@ -15,6 +15,7 @@ import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { RichText } from '@components/generic/RichText'
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
+import SignInSubmitButton from '@components/forms/SignInSubmitButton'
 
 interface ContentText extends GenericPageTextContent {
     signIn: string
@@ -50,26 +51,11 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
                             bodyHtml={intro}
                         />
                     )}
-                    <form
+                    <SignInSubmitButton
+                        submitText="Sign In"
+                        csrfToken={csrfToken}
                         action={authApiSignInAzureB2C}
-                        method="POST"
-                        encType="multipart/form-data"
-                        className="u-mb-12"
-                    >
-                        <input
-                            type="hidden"
-                            name="csrfToken"
-                            value={csrfToken}
-                        />
-                        <input
-                            type="hidden"
-                            name="callbackUrl"
-                            value={process.env.APP_URL}
-                        />
-                        <button type="submit" className="c-button">
-                            {signIn}
-                        </button>
-                    </form>
+                    />
                     {secondaryHeading && (
                         <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                     )}
