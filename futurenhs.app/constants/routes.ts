@@ -18,8 +18,7 @@ export const enum api {
     SITE_INVITE = '/v1/users/%USER_ID%/registration/invite',
     GROUP_INVITE = '/v1/users/%USER_ID%/groups/%GROUP_ID%/registration/invite',
     INVITE_DETAILS = '/v1/registration/invite/%INVITE_ID%',
-    USER_INVITED = '/v1/registration/register',
-    USER_REGISTER = '/v1/registration/register/%EMAIL_ADDRESS%',
+    USER_REGISTER = '/v1/registration/register/',
     MAP_IDENTITY = '/v1/registration/identity',
 }
 
