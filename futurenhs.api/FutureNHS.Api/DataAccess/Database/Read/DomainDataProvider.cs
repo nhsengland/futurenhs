@@ -17,31 +17,29 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             _logger = logger;
         }
 
-        public async Task<WhitelistDomain> GetWhitelistedDomainsAsync(string emailDomain, CancellationToken cancellationToken = default)
+        public async Task<bool> IsDomainApprovedAsync(string emailDomain, CancellationToken cancellationToken = default)
         {
             const string query =
                 @"SELECT 
-                        wd.Id,    
-                        wd.EmailDomain,
-				    FROM WhitelistedDomain wd 
-                    WHERE wd.IsDeleted = 0
-                        AND wd.EmailDomain = @EmailDomain";
+                    CASE WHEN EXISTS 
+                        (SELECT * 
+                         FROM ApprovedDomain 
+                         WHERE EmailDomain = @EmailDomain
+                         AND IsDeleted = 0) 
+                    THEN CAST(1 AS BIT)
+                    ELSE CAST(0 AS BIT)
+                    END";
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                EmailDomain = emailDomain
+                EmailDomain = emailDomain.ToLower()
             }, cancellationToken: cancellationToken);
             
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var domain = await dbConnection.QuerySingleAsync<WhitelistDomain>(queryDefinition);
+            var domain = await dbConnection.QuerySingleAsync<bool>(queryDefinition);
 
             return domain;
-        }
-
-        public Task<WhitelistDomain> GetWhitelistedDomainAsync(string emailDomain, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
         }
     }
 }

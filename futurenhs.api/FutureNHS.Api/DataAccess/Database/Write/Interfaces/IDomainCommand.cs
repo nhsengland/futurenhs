@@ -4,7 +4,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 
 public interface IDomainCommand
 {
-    Task CreateWhitelistDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken);
-    Task DeleteWhitelistDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken);
+    Task CreateApprovedDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken);
+    Task DeleteApprovedDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken);
 }
 

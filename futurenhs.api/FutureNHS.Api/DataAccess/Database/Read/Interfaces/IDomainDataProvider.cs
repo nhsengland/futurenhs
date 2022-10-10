@@ -5,6 +5,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
 {
     public interface IDomainDataProvider
     {
-        Task<WhitelistDomain> GetWhitelistedDomainAsync(string emailDomain, CancellationToken cancellationToken = default);
+        Task<bool> IsDomainApprovedAsync(string emailDomain, CancellationToken cancellationToken = default);
     }
 }

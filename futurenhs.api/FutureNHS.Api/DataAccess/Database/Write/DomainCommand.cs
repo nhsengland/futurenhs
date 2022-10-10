@@ -19,33 +19,22 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             _logger = logger;
         }
 
-        public async Task CreateWhitelistDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken)
+        public async Task CreateApprovedDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken)
         {
             try
             {
                 const string query =
-                 @"  
-	            IF EXISTS (SELECT 1
-		                   FROM [dbo].[WhitelistDomain]
-		                   WHERE [IsDeleted] = 0
-			               AND [EmailDomain] = @EmailDomain)
-	                RETURN
-
-                ELSE
-	                INSERT INTO [dbo].[WhitelistDomain] 
+                 @"INSERT INTO [dbo].[ApprovedDomain] 
                         ([Id]
-		                ,[EmailDomain]
-		                ,[IsDeleted])
+		                ,[EmailDomain])
 	                VALUES 
-                        (@Entity_Id
-		                ,@EmailDomain
-		                ,@IsDeleted)";
+                        (@Id
+		                ,@EmailDomain)";
 
                 var queryDefinition = new CommandDefinition(query, new
                 {
-                    Entity_Id = emailDomain.Id,
+                    Id = emailDomain.Id,
                     EmailDomain = emailDomain.EmailDomain,
-                    IsDeleted = emailDomain.IsDeleted
                 }, cancellationToken: cancellationToken);
 
                 using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
@@ -54,30 +43,34 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 if (result != 1)
                 {
                     _logger.LogError("Error: User request to add domain  was unsuccessful.", queryDefinition);
-                    throw new DBConcurrencyException("Error: User unable to add domain.");
+                    throw new DataException("Error: User unable to add domain.");
                 }
             }
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Error: User request to create was not successful.");
-                throw new DBConcurrencyException("Error: User request to add domain was not successful.");
+                throw new DataException("Error: User request to add domain was not successful.");
             }
         }
 
-        public async Task DeleteWhitelistDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken)
+        public async Task DeleteApprovedDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken)
         {
             try
             {
                 const string query =
 
                     @"  
-	                DELETE FROM   [dbo].[WhitelistDomain]
+	                UPDATE   [dbo].[ApprovedDomain]
+                    SET [IsDeleted] = 1
                     WHERE         
-                         [EmailDomain] = @EmailDomain";
+                         [EmailDomain] = @EmailDomain
+                          AND [RowVersion] = @RowVersion
+                    ";
 
                 var queryDefinition = new CommandDefinition(query, new
                 {
                     EmailDomain = emailDomain.EmailDomain,
+                    RowVersion = emailDomain.RowVersion,
                 }, cancellationToken: cancellationToken);
 
                 using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
