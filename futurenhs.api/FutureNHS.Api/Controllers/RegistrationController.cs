@@ -1,6 +1,7 @@
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Models.Registration;
+using FutureNHS.Api.Models.Domain.Request;
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Models.UserInvite;
@@ -126,6 +127,24 @@ namespace FutureNHS.Api.Controllers
 
             return Ok(response);
 
+        }
+
+        [HttpPut]
+        [Route("registration/domains/{domain}")]
+        public async Task<IActionResult> UpdateDomainAsync(string domain, CancellationToken cancellationToken)
+        {
+            var response = await _registrationService.UpdateDomainAsync(domain, cancellationToken);
+
+            return Ok(response);
+        }
+        
+        [HttpPost]
+        [Route("registration/domains")]
+        public async Task<IActionResult> AddDomainAsync(RegisterDomainRequest registerDomainRequest, CancellationToken cancellationToken)
+        {
+            var response = await _registrationService.AddDomainAsync(registerDomainRequest, cancellationToken);
+
+            return Ok(response);
         }
     }
 }

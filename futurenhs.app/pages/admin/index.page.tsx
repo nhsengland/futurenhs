@@ -15,6 +15,7 @@ import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { Card } from '@components/generic/Card'
 import { Page } from '@appTypes/page'
 import { SearchResult } from '@appTypes/search'
+import { postBanDomain } from '@services/postBanDomain'
 
 export interface Props extends Page {
     term: string | Array<string>
@@ -29,6 +30,17 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
     actions,
 }) => {
     const generatedClasses = {}
+
+    const submitDomainBan = async (e) => {
+        e.preventDefault()
+        const emailInput = e.target.querySelector('#emailAddress')
+        try {
+            const res = await postBanDomain({ domain: emailInput.value })
+            console.log(res)
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     const shouldRenderUsersLink: boolean =
         actions.includes(actionConstants.SITE_ADMIN_MEMBERS_ADD) ||
@@ -51,6 +63,11 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
                                 </Link>
                             </h2>
                         </Card>
+                        <form onSubmit={(e) => submitDomainBan(e)}>
+                            <label htmlFor="">email address</label>
+                            <input id="emailAddress"></input>
+                            <button type="submit">BAN</button>
+                        </form>
                     </LayoutColumn>
                 )}
                 {shouldRenderGroupsLink && (

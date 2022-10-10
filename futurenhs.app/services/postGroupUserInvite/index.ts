@@ -53,7 +53,19 @@ export const postGroupUserInvite = async (
     const apiData: any = apiResponse.json
 
     const { ok, status, statusText } = apiMeta
+    const { error } = apiData
+    const duplicateErrorKey = 'duplicate'
+    const hasDuplicateError =
+        error && error.toLowerCase().includes(duplicateErrorKey)
     if (!ok) {
+        if (hasDuplicateError) {
+            throw new ServiceError('This user is already a member', {
+                serviceId: services.PUT_SITE_USER,
+                status: status,
+                statusText: statusText,
+                body: apiData,
+            })
+        }
         throw new ServiceError(
             'An unexpected error occurred when attempting to invite a user',
             {

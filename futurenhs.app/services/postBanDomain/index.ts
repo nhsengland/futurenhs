@@ -10,10 +10,7 @@ import { api } from '@constants/routes'
 
 declare type Options = {
     headers?: any
-    body: FormData
-    subjectId: string
-    emailAddress: string
-    issuer: string
+    domain: string
 }
 
 declare type Dependencies = {
@@ -21,27 +18,23 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const postRegisterSiteUser = async (
-    { headers, body, subjectId, emailAddress, issuer }: Options,
+export const postBanDomain = async (
+    { headers, domain }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const registerPath = api.USER_REGISTER
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${registerPath}`
+    const domainPath = api.BAN_DOMAIN
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
+    debugger
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
             headers: headers,
             body: {
-                Subject: subjectId,
-                Email: emailAddress,
-                Issuer: issuer,
-                FirstName: body.get('firstName'),
-                LastName: body.get('lastName'),
-                Agreed: Boolean(body.get('terms')),
+                Domain: domain,
             },
         }),
         defaultTimeOutMillis
@@ -51,24 +44,9 @@ export const postRegisterSiteUser = async (
     const apiData: any = apiResponse.json
 
     const { ok, status, statusText } = apiMeta
-    const { error } = apiData
-    const userDomainErrorKey = 'domain'
-    const hasDomainError =
-        error && error.toLowerCase().includes(userDomainErrorKey)
     if (!ok) {
-        if (hasDomainError) {
-            throw new ServiceError(
-                'Sorry, this email domain is currently not accepted on this platform',
-                {
-                    serviceId: services.PUT_SITE_USER,
-                    status: status,
-                    statusText: statusText,
-                    body: apiData,
-                }
-            )
-        }
         throw new ServiceError(
-            'An unexpected error occurred when attempting to update the user',
+            'An unexpected error occurred when attempting to ban the domain',
             {
                 serviceId: services.PUT_SITE_USER,
                 status: status,

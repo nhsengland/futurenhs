@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Security;
 using FutureNHS.Api.Configuration;
@@ -7,6 +8,7 @@ using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Registration;
 using FutureNHS.Api.Exceptions;
+using FutureNHS.Api.Models.Domain.Request;
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member.Request;
@@ -28,6 +30,8 @@ namespace FutureNHS.Api.Services
         private readonly IUserCommand _userCommand;
         private readonly IEmailService _emailService;
         private readonly IGroupCommand _groupCommand;
+        private readonly IDomainCommand _domainCommand;
+        private readonly IDomainDataProvider _domainDataProvider;
         private readonly IRegistrationDataProvider _registrationDataProvider;
         private readonly IUserService _userService;
         // Notification template Ids
@@ -45,6 +49,8 @@ namespace FutureNHS.Api.Services
             IRegistrationDataProvider registrationDataProvider,
             IOptionsSnapshot<GovNotifyConfiguration> notifyConfig,
             IOptionsSnapshot<ApplicationGateway> gatewayConfig,
+            IDomainCommand domainCommand,
+            IDomainDataProvider domainDataProvider,
             IOptionsMonitor<DefaultSettings> defaultSettings)
         {
             _groupCommand = groupCommand;
@@ -55,6 +61,8 @@ namespace FutureNHS.Api.Services
             _userService = userService;
             _userCommand = userCommand;
             _emailService = emailService;
+            _domainCommand = domainCommand;
+            _domainDataProvider = domainDataProvider;
             _fqdn = gatewayConfig.Value.FQDN;
 
             // Notification template Ids
@@ -106,6 +114,7 @@ namespace FutureNHS.Api.Services
             };
 
             var userInviteId = await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
+            //TODO: Check user is on platform and add to group invites list
             var registrationLink = CreateRegistrationLink(userInviteId);
             var personalisation = new Dictionary<string, dynamic>
             {
@@ -163,6 +172,7 @@ namespace FutureNHS.Api.Services
             await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
         }
 
+
         public async Task<Guid?> RegisterMemberAsync(MemberRegistrationRequest registrationRequest, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(registrationRequest.Subject)) throw new ArgumentNullException(nameof(registrationRequest.Subject));
@@ -172,6 +182,17 @@ namespace FutureNHS.Api.Services
             // TODO Work for determining if domain is on auto approve list
             var emailAddress = new MailAddress(registrationRequest.Email);
             var domain = emailAddress.Host;
+            // Boolean isDomainAllowed = true;
+            // try
+            // {
+            //     isDomainAllowed = await _domainDataProvider.IsDomainApproved(domain, cancellationToken);
+            // }
+            // catch (DBConcurrencyException ex)
+            // {
+            //     _logger.LogError(ex, $"Error: User domain not listed");
+            //     throw;
+            // }
+
 
             if (await _userService.IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
             {
@@ -223,6 +244,30 @@ namespace FutureNHS.Api.Services
         {
             var invite = await _registrationDataProvider.GetRegistrationInviteAsync(id, cancellationToken);
             return invite;
+        }
+
+        public async Task<Boolean> UpdateDomainAsync(string domain, CancellationToken cancellationToken)
+        {
+            return true;
+        }
+        
+        public async Task<Boolean> AddDomainAsync(RegisterDomainRequest domainRequest, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var domainDto = new DomainDto
+                {
+                    Id = Guid.NewGuid(),
+                    EmailDomain = domainRequest.EmailDomain
+                };
+                await _domainCommand.CreateApprovedDomainAsync(domainDto, cancellationToken);
+                return true;
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, $"Error: Error creating new domain");
+                throw;
+            }
         }
 
         private string CreateRegistrationLink(Guid userInviteId)
