@@ -33,6 +33,7 @@ import { PageBody } from '@components/layouts/PageBody'
 import { RichText } from '@components/generic/RichText'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Page } from '@appTypes/page'
+import { routes } from '@constants/routes'
 
 declare interface ContentText extends GenericPageTextContent {
     firstNameLabel: string
@@ -174,6 +175,14 @@ export const getServerSideProps: GetServerSideProps = async (
             const submission: any = selectMultiPartFormData(context)
             const requestMethod: requestMethods = selectRequestMethod(context)
             const session = await getSession(context)
+            if (!session) {
+                return {
+                    redirect: {
+                        permanent: false,
+                        destination: `${process.env.APP_URL}${routes.SIGN_IN}`,
+                    },
+                }
+            }
             props.subjectId = session.sub as string
             props.emailAddress = session.user?.email
             props.issuer = session.iss as string
