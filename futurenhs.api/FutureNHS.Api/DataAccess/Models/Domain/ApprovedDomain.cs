@@ -1,6 +1,6 @@
 namespace FutureNHS.Api.DataAccess.Models.Domain
 {
-    public record WhitelistDomain
+    public record ApprovedDomain
     {
         public byte[] Data { get; init; }
     }
