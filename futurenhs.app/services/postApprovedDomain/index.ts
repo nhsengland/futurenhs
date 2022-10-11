@@ -18,7 +18,7 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const postBanDomain = async (
+export const postApprovedDomain = async (
     { headers, domain }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
@@ -27,19 +27,19 @@ export const postBanDomain = async (
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
     const domainPath = api.BAN_DOMAIN
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
-    debugger
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
             headers: headers,
             body: {
-                Domain: domain,
+                EmailDomain: domain,
             },
         }),
         defaultTimeOutMillis
     )
 
+    debugger
     const apiMeta: any = apiResponse.meta
     const apiData: any = apiResponse.json
 
