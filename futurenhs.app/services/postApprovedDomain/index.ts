@@ -39,7 +39,6 @@ export const postApprovedDomain = async (
         defaultTimeOutMillis
     )
 
-    debugger
     const apiMeta: any = apiResponse.meta
     const apiData: any = apiResponse.json
 
