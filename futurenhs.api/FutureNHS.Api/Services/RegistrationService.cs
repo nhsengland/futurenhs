@@ -178,31 +178,24 @@ namespace FutureNHS.Api.Services
             if (string.IsNullOrEmpty(registrationRequest.Subject)) throw new ArgumentNullException(nameof(registrationRequest.Subject));
             if (string.IsNullOrEmpty(registrationRequest.Email)) throw new ArgumentNullException(nameof(registrationRequest.Email));
             if (string.IsNullOrEmpty(registrationRequest.Issuer)) throw new ArgumentNullException(nameof(registrationRequest.Issuer));
-
-            // TODO Work for determining if domain is on auto approve list
-            var emailAddress = new MailAddress(registrationRequest.Email);
-            var domain = emailAddress.Host;
-            // Boolean isDomainAllowed = true;
-            // try
-            // {
-            //     isDomainAllowed = await _domainDataProvider.IsDomainApproved(domain, cancellationToken);
-            // }
-            // catch (DBConcurrencyException ex)
-            // {
-            //     _logger.LogError(ex, $"Error: User domain not listed");
-            //     throw;
-            // }
-
+            
+            MailAddress emailAddress;
+            try
+            {
+                emailAddress = new MailAddress(registrationRequest.Email);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentOutOfRangeException($"Email is not in a valid format");
+            }
 
             if (await _userService.IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
             {
-                // todo validate user
-
                 var member = new MemberDto
                 {
                     FirstName = registrationRequest.FirstName,
                     Surname = registrationRequest.LastName,
-                    Email = registrationRequest.Email,
+                    Email = emailAddress.Address,
                     CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
                     AgreedToTerms = registrationRequest.Agreed
                 };
