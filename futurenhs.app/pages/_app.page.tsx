@@ -104,18 +104,6 @@ const CustomApp = ({ Component, pageProps }) => {
         }
     }
 
-    const SetSession = ({ children }) => {
-        const session = useSession()
-        const { setSession } = useSessionStore(({ setSession }: any) => ({
-            setSession,
-        }))
-        useEffect(() => {
-            setSession(session)
-        }, [session])
-
-        return children
-    }
-
     if (hasFormErrors) {
         headTitle = `Error: ${headTitle}`
     }
@@ -128,93 +116,6 @@ const CustomApp = ({ Component, pageProps }) => {
 
         return (
             <SessionProvider>
-                <SetSession>
-                    <NotificationsContext.Provider
-                        value={{ notifications, setNotifications }}
-                    >
-                        <ThemesContext.Provider value={themesContextConfig}>
-                            <FormsContext.Provider value={formsContextConfig}>
-                                <LoadingContext.Provider
-                                    value={loadingContextConfig}
-                                >
-                                    <StandardLayout {...pageProps} user={null}>
-                                        <ErrorPage
-                                            errors={errorsToRender}
-                                            statusCode={500}
-                                        />
-                                    </StandardLayout>
-                                </LoadingContext.Provider>
-                            </FormsContext.Provider>
-                        </ThemesContext.Provider>
-                    </NotificationsContext.Provider>
-                </SetSession>
-            </SessionProvider>
-        )
-    }
-
-    if (layoutId === layoutIds.GROUP) {
-        return (
-            <SessionProvider>
-                <SetSession>
-                    <NotificationsContext.Provider
-                        value={{ notifications, setNotifications }}
-                    >
-                        <ThemesContext.Provider value={themesContextConfig}>
-                            <FormsContext.Provider value={formsContextConfig}>
-                                <LoadingContext.Provider
-                                    value={loadingContextConfig}
-                                >
-                                    <GroupLayout {...pageProps}>
-                                        <Head>
-                                            <title>{headTitle}</title>
-                                        </Head>
-                                        <Component
-                                            {...pageProps}
-                                            key={router.asPath}
-                                        />
-                                    </GroupLayout>
-                                </LoadingContext.Provider>
-                            </FormsContext.Provider>
-                        </ThemesContext.Provider>
-                    </NotificationsContext.Provider>
-                </SetSession>
-            </SessionProvider>
-        )
-    }
-
-    if (layoutId === layoutIds.ADMIN) {
-        return (
-            <SessionProvider>
-                <SetSession>
-                    <NotificationsContext.Provider
-                        value={{ notifications, setNotifications }}
-                    >
-                        <ThemesContext.Provider value={themesContextConfig}>
-                            <FormsContext.Provider value={formsContextConfig}>
-                                <LoadingContext.Provider
-                                    value={loadingContextConfig}
-                                >
-                                    <AdminLayout {...pageProps}>
-                                        <Head>
-                                            <title>{headTitle}</title>
-                                        </Head>
-                                        <Component
-                                            {...pageProps}
-                                            key={router.asPath}
-                                        />
-                                    </AdminLayout>
-                                </LoadingContext.Provider>
-                            </FormsContext.Provider>
-                        </ThemesContext.Provider>
-                    </NotificationsContext.Provider>
-                </SetSession>
-            </SessionProvider>
-        )
-    }
-
-    return (
-        <SessionProvider>
-            <SetSession>
                 <NotificationsContext.Provider
                     value={{ notifications, setNotifications }}
                 >
@@ -223,7 +124,32 @@ const CustomApp = ({ Component, pageProps }) => {
                             <LoadingContext.Provider
                                 value={loadingContextConfig}
                             >
-                                <StandardLayout {...pageProps}>
+                                <StandardLayout {...pageProps} user={null}>
+                                    <ErrorPage
+                                        errors={errorsToRender}
+                                        statusCode={500}
+                                    />
+                                </StandardLayout>
+                            </LoadingContext.Provider>
+                        </FormsContext.Provider>
+                    </ThemesContext.Provider>
+                </NotificationsContext.Provider>
+            </SessionProvider>
+        )
+    }
+
+    if (layoutId === layoutIds.GROUP) {
+        return (
+            <SessionProvider>
+                <NotificationsContext.Provider
+                    value={{ notifications, setNotifications }}
+                >
+                    <ThemesContext.Provider value={themesContextConfig}>
+                        <FormsContext.Provider value={formsContextConfig}>
+                            <LoadingContext.Provider
+                                value={loadingContextConfig}
+                            >
+                                <GroupLayout {...pageProps}>
                                     <Head>
                                         <title>{headTitle}</title>
                                     </Head>
@@ -231,12 +157,61 @@ const CustomApp = ({ Component, pageProps }) => {
                                         {...pageProps}
                                         key={router.asPath}
                                     />
-                                </StandardLayout>
+                                </GroupLayout>
                             </LoadingContext.Provider>
                         </FormsContext.Provider>
                     </ThemesContext.Provider>
                 </NotificationsContext.Provider>
-            </SetSession>
+            </SessionProvider>
+        )
+    }
+
+    if (layoutId === layoutIds.ADMIN) {
+        return (
+            <SessionProvider>
+                <NotificationsContext.Provider
+                    value={{ notifications, setNotifications }}
+                >
+                    <ThemesContext.Provider value={themesContextConfig}>
+                        <FormsContext.Provider value={formsContextConfig}>
+                            <LoadingContext.Provider
+                                value={loadingContextConfig}
+                            >
+                                <AdminLayout {...pageProps}>
+                                    <Head>
+                                        <title>{headTitle}</title>
+                                    </Head>
+                                    <Component
+                                        {...pageProps}
+                                        key={router.asPath}
+                                    />
+                                </AdminLayout>
+                            </LoadingContext.Provider>
+                        </FormsContext.Provider>
+                    </ThemesContext.Provider>
+                </NotificationsContext.Provider>
+            </SessionProvider>
+        )
+    }
+
+    return (
+        <SessionProvider>
+            <NotificationsContext.Provider
+                value={{ notifications, setNotifications }}
+            >
+                <ThemesContext.Provider value={themesContextConfig}>
+                    <FormsContext.Provider value={formsContextConfig}>
+                        <LoadingContext.Provider value={loadingContextConfig}>
+                            <StandardLayout {...pageProps}>
+                                <Head>
+                                    <title>{headTitle}</title>
+                                </Head>
+                                <Component {...pageProps} key={router.asPath} />
+                            </StandardLayout>
+                        </LoadingContext.Provider>
+                    </FormsContext.Provider>
+                </ThemesContext.Provider>
+            </NotificationsContext.Provider>
         </SessionProvider>
     )
 }
