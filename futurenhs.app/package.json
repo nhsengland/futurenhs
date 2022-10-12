@@ -71,7 +71,8 @@
         "tinymce": "^5.10.2",
         "urlencoded-body-parser": "^3.0.0",
         "uuid": "^8.3.2",
-        "workbox-build": "^6.5.4"
+        "workbox-build": "^6.5.4",
+        "zustand": "^4.1.2"
     },
     "devDependencies": {
         "@axe-core/puppeteer": "^4.3.1",

@@ -15,7 +15,7 @@ import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { Card } from '@components/generic/Card'
 import { Page } from '@appTypes/page'
 import { SearchResult } from '@appTypes/search'
-import { postBanDomain } from '@services/postBanDomain'
+import { postApprovedDomain } from '@services/postApprovedDomain'
 
 export interface Props extends Page {
     term: string | Array<string>
@@ -35,8 +35,7 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
         e.preventDefault()
         const emailInput = e.target.querySelector('#emailAddress')
         try {
-            const res = await postBanDomain({ domain: emailInput.value })
-            console.log(res)
+            const res = await postApprovedDomain({ domain: emailInput.value })
         } catch (e) {
             console.log(e)
         }

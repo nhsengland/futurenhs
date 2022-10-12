@@ -17,6 +17,8 @@ import {
     NotificationsContext,
 } from '@helpers/contexts/index'
 import { layoutIds } from '@constants/routes'
+import { SessionProvider, useSession } from 'next-auth/react'
+import useSessionStore from 'store/session'
 
 const CustomApp = ({ Component, pageProps }) => {
     const activeRequests: any = useRef([])
@@ -102,6 +104,18 @@ const CustomApp = ({ Component, pageProps }) => {
         }
     }
 
+    const SetSession = ({ children }) => {
+        const session = useSession()
+        const { setSession } = useSessionStore(({ setSession }: any) => ({
+            setSession,
+        }))
+        useEffect(() => {
+            setSession(session)
+        }, [session])
+
+        return children
+    }
+
     if (hasFormErrors) {
         headTitle = `Error: ${headTitle}`
     }
@@ -113,84 +127,117 @@ const CustomApp = ({ Component, pageProps }) => {
             : null
 
         return (
-            <NotificationsContext.Provider
-                value={{ notifications, setNotifications }}
-            >
-                <ThemesContext.Provider value={themesContextConfig}>
-                    <FormsContext.Provider value={formsContextConfig}>
-                        <LoadingContext.Provider value={loadingContextConfig}>
-                            <StandardLayout {...pageProps} user={null}>
-                                <ErrorPage
-                                    errors={errorsToRender}
-                                    statusCode={500}
-                                />
-                            </StandardLayout>
-                        </LoadingContext.Provider>
-                    </FormsContext.Provider>
-                </ThemesContext.Provider>
-            </NotificationsContext.Provider>
+            <SessionProvider>
+                <SetSession>
+                    <NotificationsContext.Provider
+                        value={{ notifications, setNotifications }}
+                    >
+                        <ThemesContext.Provider value={themesContextConfig}>
+                            <FormsContext.Provider value={formsContextConfig}>
+                                <LoadingContext.Provider
+                                    value={loadingContextConfig}
+                                >
+                                    <StandardLayout {...pageProps} user={null}>
+                                        <ErrorPage
+                                            errors={errorsToRender}
+                                            statusCode={500}
+                                        />
+                                    </StandardLayout>
+                                </LoadingContext.Provider>
+                            </FormsContext.Provider>
+                        </ThemesContext.Provider>
+                    </NotificationsContext.Provider>
+                </SetSession>
+            </SessionProvider>
         )
     }
 
     if (layoutId === layoutIds.GROUP) {
         return (
-            <NotificationsContext.Provider
-                value={{ notifications, setNotifications }}
-            >
-                <ThemesContext.Provider value={themesContextConfig}>
-                    <FormsContext.Provider value={formsContextConfig}>
-                        <LoadingContext.Provider value={loadingContextConfig}>
-                            <GroupLayout {...pageProps}>
-                                <Head>
-                                    <title>{headTitle}</title>
-                                </Head>
-                                <Component {...pageProps} key={router.asPath} />
-                            </GroupLayout>
-                        </LoadingContext.Provider>
-                    </FormsContext.Provider>
-                </ThemesContext.Provider>
-            </NotificationsContext.Provider>
+            <SessionProvider>
+                <SetSession>
+                    <NotificationsContext.Provider
+                        value={{ notifications, setNotifications }}
+                    >
+                        <ThemesContext.Provider value={themesContextConfig}>
+                            <FormsContext.Provider value={formsContextConfig}>
+                                <LoadingContext.Provider
+                                    value={loadingContextConfig}
+                                >
+                                    <GroupLayout {...pageProps}>
+                                        <Head>
+                                            <title>{headTitle}</title>
+                                        </Head>
+                                        <Component
+                                            {...pageProps}
+                                            key={router.asPath}
+                                        />
+                                    </GroupLayout>
+                                </LoadingContext.Provider>
+                            </FormsContext.Provider>
+                        </ThemesContext.Provider>
+                    </NotificationsContext.Provider>
+                </SetSession>
+            </SessionProvider>
         )
     }
 
     if (layoutId === layoutIds.ADMIN) {
         return (
-            <NotificationsContext.Provider
-                value={{ notifications, setNotifications }}
-            >
-                <ThemesContext.Provider value={themesContextConfig}>
-                    <FormsContext.Provider value={formsContextConfig}>
-                        <LoadingContext.Provider value={loadingContextConfig}>
-                            <AdminLayout {...pageProps}>
-                                <Head>
-                                    <title>{headTitle}</title>
-                                </Head>
-                                <Component {...pageProps} key={router.asPath} />
-                            </AdminLayout>
-                        </LoadingContext.Provider>
-                    </FormsContext.Provider>
-                </ThemesContext.Provider>
-            </NotificationsContext.Provider>
+            <SessionProvider>
+                <SetSession>
+                    <NotificationsContext.Provider
+                        value={{ notifications, setNotifications }}
+                    >
+                        <ThemesContext.Provider value={themesContextConfig}>
+                            <FormsContext.Provider value={formsContextConfig}>
+                                <LoadingContext.Provider
+                                    value={loadingContextConfig}
+                                >
+                                    <AdminLayout {...pageProps}>
+                                        <Head>
+                                            <title>{headTitle}</title>
+                                        </Head>
+                                        <Component
+                                            {...pageProps}
+                                            key={router.asPath}
+                                        />
+                                    </AdminLayout>
+                                </LoadingContext.Provider>
+                            </FormsContext.Provider>
+                        </ThemesContext.Provider>
+                    </NotificationsContext.Provider>
+                </SetSession>
+            </SessionProvider>
         )
     }
 
     return (
-        <NotificationsContext.Provider
-            value={{ notifications, setNotifications }}
-        >
-            <ThemesContext.Provider value={themesContextConfig}>
-                <FormsContext.Provider value={formsContextConfig}>
-                    <LoadingContext.Provider value={loadingContextConfig}>
-                        <StandardLayout {...pageProps}>
-                            <Head>
-                                <title>{headTitle}</title>
-                            </Head>
-                            <Component {...pageProps} key={router.asPath} />
-                        </StandardLayout>
-                    </LoadingContext.Provider>
-                </FormsContext.Provider>
-            </ThemesContext.Provider>
-        </NotificationsContext.Provider>
+        <SessionProvider>
+            <SetSession>
+                <NotificationsContext.Provider
+                    value={{ notifications, setNotifications }}
+                >
+                    <ThemesContext.Provider value={themesContextConfig}>
+                        <FormsContext.Provider value={formsContextConfig}>
+                            <LoadingContext.Provider
+                                value={loadingContextConfig}
+                            >
+                                <StandardLayout {...pageProps}>
+                                    <Head>
+                                        <title>{headTitle}</title>
+                                    </Head>
+                                    <Component
+                                        {...pageProps}
+                                        key={router.asPath}
+                                    />
+                                </StandardLayout>
+                            </LoadingContext.Provider>
+                        </FormsContext.Provider>
+                    </ThemesContext.Provider>
+                </NotificationsContext.Provider>
+            </SetSession>
+        </SessionProvider>
     )
 }
 
