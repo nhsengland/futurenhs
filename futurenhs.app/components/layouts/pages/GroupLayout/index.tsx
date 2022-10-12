@@ -11,6 +11,9 @@ import { Image } from '@appTypes/image'
 import { Routes } from '@appTypes/routing'
 import { User } from '@appTypes/user'
 import StandardLayout from '@components/layouts/pages/StandardLayout'
+import { useSession } from 'next-auth/react'
+import useSessionStore from 'store/session'
+import { useEffect } from 'react'
 
 export interface Props {
     tabId: 'index' | 'forum' | 'files' | 'members'
@@ -48,6 +51,13 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     ...rest
 }) => {
     const router: any = useRouter()
+    const session = useSession()
+    const { setSession } = useSessionStore(({ setSession }: any) => ({
+        setSession,
+    }))
+    useEffect(() => {
+        setSession(session)
+    }, [session])
     const isAboutRoute: boolean = router.asPath === routes.groupAboutRoot
 
     const navMenuList = getGroupNavMenuList({

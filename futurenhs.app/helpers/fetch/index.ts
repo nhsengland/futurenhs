@@ -83,25 +83,34 @@ export const setFetchOpts = ({
     isMultiPartForm?: boolean
     body?: any
 }): FetchOptions => {
-    const headersToUse: Headers = new Headers({
+    let defaultHeaders: any = {
+        ...headers,
         Accept: 'application/json',
-    })
-
-    const sessionState: any = useSessionStore.getState()
-    if (!isMultiPartForm) {
-        headersToUse.set('Content-Type', 'application/json')
     }
+    const sessionState: any = useSessionStore.getState()
+    if (
+        sessionState.session &&
+        sessionState.session.data &&
+        sessionState.session.data.accesstoken
+    ) {
+        defaultHeaders = {
+            ...defaultHeaders,
+            Authorization: `Bearer ${sessionState.session.data.accesstoken}`,
+        }
+    }
+    const headersToUse: Headers = new Headers(defaultHeaders)
 
-    if (headers) {
-        for (const key in headers) {
-            headersToUse.set(key, headers[key])
+    if (!isMultiPartForm) {
+        defaultHeaders = {
+            ...defaultHeaders,
+            'Content-Type': 'application/json',
         }
     }
 
     const fetchOpts: FetchOptions = {
         method: method,
         credentials: 'include',
-        headers: headersToUse,
+        headers: defaultHeaders,
     }
 
     if (

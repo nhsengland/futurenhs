@@ -2,6 +2,9 @@ import Head from 'next/head'
 import StandardLayout from '@components/layouts/pages/StandardLayout'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Theme } from '@appTypes/theme'
+import { useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import useSessionStore from 'store/session'
 export interface Props {
     shouldRenderSearch?: boolean
     shouldRenderUserNavigation?: boolean
@@ -25,6 +28,13 @@ export const AdminLayout: (props: Props) => JSX.Element = ({
     pageTitle,
 }) => {
     const { metaDescription, title, mainHeading } = contentText ?? {}
+    const session = useSession()
+    const { setSession } = useSessionStore(({ setSession }: any) => ({
+        setSession,
+    }))
+    useEffect(() => {
+        setSession(session)
+    }, [session])
 
     const generatedIds: any = {}
 

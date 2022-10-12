@@ -78,11 +78,18 @@ app.use(
         proxyReqPathResolver: (req) =>
             '/api' + req.originalUrl.split(`gateway`)[1],
         proxyReqOptDecorator: (proxyReqOpts) => {
-            proxyReqOpts.headers[
-                'Authorization'
-            ] = `Bearer ${process.env.SHAREDSECRETS_APIAPPLICATION}`
+            if (proxyReqOpts.headers.authorization) {
+                console.log('JWT TOKEN: ', proxyReqOpts.headers.authorization)
+            }
+            const headers = {
+                ...proxyReqOpts.headers,
+                Authorization: `Bearer ${process.env.SHAREDSECRETS_APIAPPLICATION}`,
+            }
 
-            return proxyReqOpts
+            return {
+                ...proxyReqOpts,
+                headers,
+            }
         },
     })
 )
