@@ -49,7 +49,7 @@ export const TabbedNav: (props: Props) => JSX.Element = ({
                             <Link href={url}>
                                 <a
                                     role="menuitem"
-                                    aria-current={isActive}
+                                    aria-current={isActive ? "page" : true}
                                     className={generatedClasses.link}
                                 >
                                     <span>{text}</span>
