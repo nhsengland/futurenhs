@@ -51,13 +51,6 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     ...rest
 }) => {
     const router: any = useRouter()
-    const session = useSession()
-    const { setSession } = useSessionStore(({ setSession }: any) => ({
-        setSession,
-    }))
-    useEffect(() => {
-        setSession(session)
-    }, [session])
     const isAboutRoute: boolean = router.asPath === routes.groupAboutRoot
 
     const navMenuList = getGroupNavMenuList({

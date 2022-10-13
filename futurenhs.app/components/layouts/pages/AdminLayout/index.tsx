@@ -28,13 +28,6 @@ export const AdminLayout: (props: Props) => JSX.Element = ({
     pageTitle,
 }) => {
     const { metaDescription, title, mainHeading } = contentText ?? {}
-    const session = useSession()
-    const { setSession } = useSessionStore(({ setSession }: any) => ({
-        setSession,
-    }))
-    useEffect(() => {
-        setSession(session)
-    }, [session])
 
     const generatedIds: any = {}
 

@@ -57,13 +57,6 @@ const StandardLayout: (props: Props) => JSX.Element = ({
     className,
     children,
 }) => {
-    const session = useSession()
-    const { setSession } = useSessionStore(({ setSession }: any) => ({
-        setSession,
-    }))
-    useEffect(() => {
-        setSession(session)
-    }, [session])
     const router = useRouter()
     const isMobile: boolean = useMediaQuery(mediaQueries.MOBILE)
     const isLoading: boolean = useLoading().isLoading
