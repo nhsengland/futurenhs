@@ -128,6 +128,14 @@ export const getServerSideProps: GetServerSideProps = async (
                         'Set-Cookie',
                         'next-auth.session-token.1=; path=/; max-age=0'
                     )
+                    context.res.setHeader(
+                        'Set-Cookie',
+                        'next-auth.session-token.1.0=; path=/; max-age=0'
+                    )
+                    context.res.setHeader(
+                        'Set-Cookie',
+                        'next-auth.session-token.1.1=; path=/; max-age=0'
+                    )
 
                     /**
                      * Sign out on Azure
