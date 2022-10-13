@@ -1,11 +1,7 @@
-using System.Net;
 using FutureNHS.Api.Attributes;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.Extensions;
 using FutureNHS.Api.Helpers;
-using FutureNHS.Api.Models.Pagination.Filter;
-using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

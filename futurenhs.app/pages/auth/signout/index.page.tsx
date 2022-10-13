@@ -97,7 +97,6 @@ export const getServerSideProps: GetServerSideProps = async (
                 try {
                     const callbackUrl: string = `${process.env.APP_URL}${context.resolvedUrl}`
                     const idTokenHint: string = session.id_token as string
-
                     /**
                      * Get next-auth specific csrf token and associated cookie header
                      */
@@ -123,7 +122,11 @@ export const getServerSideProps: GetServerSideProps = async (
                      */
                     context.res.setHeader(
                         'Set-Cookie',
-                        'next-auth.session-token=; path=/; max-age=0'
+                        'next-auth.session-token.0=; path=/; max-age=0'
+                    )
+                    context.res.setHeader(
+                        'Set-Cookie',
+                        'next-auth.session-token.1=; path=/; max-age=0'
                     )
 
                     /**
