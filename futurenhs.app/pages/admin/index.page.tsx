@@ -65,7 +65,6 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
                         <form onSubmit={(e) => submitDomainBan(e)}>
                             <label htmlFor="">email address</label>
                             <input id="emailAddress"></input>
-                            <button type="submit">BAN</button>
                         </form>
                     </LayoutColumn>
                 )}
