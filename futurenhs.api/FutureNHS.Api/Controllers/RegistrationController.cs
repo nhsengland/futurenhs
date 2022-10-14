@@ -4,6 +4,8 @@ using FutureNHS.Api.DataAccess.Models.Registration;
 using FutureNHS.Api.Models.Domain.Request;
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Member.Request;
+using FutureNHS.Api.Models.Pagination.Filter;
+using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Models.UserInvite;
 using FutureNHS.Api.Services;
 using FutureNHS.Api.Services.Admin.Interfaces;
@@ -25,8 +27,9 @@ namespace FutureNHS.Api.Controllers
         private readonly IRegistrationService _registrationService;
         private readonly IGroupMembershipService _groupMembershipService;
         private readonly IUserService _userService;
+        private readonly IEtagService _etagService;
 
-        public RegistrationController(ILogger<RegistrationController> logger, IPermissionsService permissionsService, IUserService userService, IGroupMembershipService groupMembershipService, IRegistrationService registrationService, IOptionsMonitor<DefaultSettings> defaultSettings)
+        public RegistrationController(ILogger<RegistrationController> logger, IEtagService etagService, IPermissionsService permissionsService, IUserService userService, IGroupMembershipService groupMembershipService, IRegistrationService registrationService, IOptionsMonitor<DefaultSettings> defaultSettings)
         {
             _logger = logger;
             _permissionsService = permissionsService;
@@ -34,6 +37,7 @@ namespace FutureNHS.Api.Controllers
             _defaultGroup = defaultSettings.CurrentValue.DefaultGroup;
             _groupMembershipService = groupMembershipService;
             _userService = userService;
+            _etagService = etagService;
 
 
         }
@@ -128,23 +132,47 @@ namespace FutureNHS.Api.Controllers
             return Ok(response);
 
         }
+        
+        // [HttpGet]
+        // [Route("user/{userId}/registration/domains/{domainId}")]
+        // public async Task<IActionResult> GetDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
+        // {
+        //     var rowVersion = _etagService.GetIfMatch();
+        //     await _registrationService.GetDomainAsync(userId, domainId, cancellationToken);
+        //
+        //     return Ok();
+        // }
 
-        [HttpPut]
-        [Route("registration/domains/{domain}")]
-        public async Task<IActionResult> UpdateDomainAsync(string domain, CancellationToken cancellationToken)
+        [HttpDelete]
+        [Route("user/{userId}/registration/domains/{domainId}")]
+        public async Task<IActionResult> DeleteDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
         {
-            var response = await _registrationService.UpdateDomainAsync(domain, cancellationToken);
+            var rowVersion = _etagService.GetIfMatch();
+            await _registrationService.DeleteDomainAsync(userId, rowVersion, cancellationToken);
 
-            return Ok(response);
+            return Ok();
         }
         
         [HttpPost]
-        [Route("registration/domains")]
-        public async Task<IActionResult> AddDomainAsync(RegisterDomainRequest registerDomainRequest, CancellationToken cancellationToken)
+        [Route("user/{userId}/registration/domains")]
+        public async Task<IActionResult> AddDomainAsync(Guid userId, RegisterDomainRequest registerDomainRequest, CancellationToken cancellationToken)
         {
-            var response = await _registrationService.AddDomainAsync(registerDomainRequest, cancellationToken);
+            await _registrationService.AddDomainAsync(userId, registerDomainRequest, cancellationToken);
 
-            return Ok(response);
+            return Ok();
+        }
+        
+        [HttpGet]
+        [Route("user/{userId}/registration/domains")]
+        public async Task<IActionResult> GetDomainsAsync(Guid userId, Guid adminUserId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        {
+            var route = Request.Path.Value;
+
+            var (total, domains) = await _registrationService.GetDomainsAsync(userId, filter.Offset, filter.Limit, cancellationToken);
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(domains, filter, total, route);
+
+            return Ok(pagedResponse);
         }
     }
 }

@@ -3,6 +3,7 @@ export const enum routes {
     ADMIN = '/admin',
     ADMIN_USERS = '/admin/users',
     ADMIN_GROUPS = '/admin/groups',
+    ADMIN_DOMAINS = '/admin/domains',
     USERS = '/users',
     SIGN_IN = '/auth/signin',
     SIGN_OUT = '/auth/signout',
@@ -20,7 +21,8 @@ export const enum api {
     INVITE_DETAILS = '/v1/registration/invite/%INVITE_ID%',
     USER_REGISTER = '/v1/registration/register',
     MAP_IDENTITY = '/v1/registration/identity',
-    BAN_DOMAIN = '/v1/registration/domains',
+    ALLOW_DOMAIN = '/v1/user/%USER_ID%/registratiot/domains',
+    DELETE_DOMAIN = '/v1/user/%USER_ID%/registration/domains/%DOMAIN%',
 }
 
 export const enum queryParams {

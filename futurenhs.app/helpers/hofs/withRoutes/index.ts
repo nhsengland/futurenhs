@@ -20,6 +20,7 @@ export const withRoutes: Hof = (context) => {
                 adminRoot: '/admin',
                 adminUsersRoot: '/admin/users',
                 adminUsersInvite: '/admin/users/invite',
+                adminDomainsAdd: '/admin/domains/add',
                 adminGroupsRoot: '/admin/groups',
                 adminGroupsCreate: '/admin/users/create',
                 authApiSignInAzureB2C: '/api/auth/signin/azure-ad-b2c',

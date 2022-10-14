@@ -6,6 +6,7 @@ using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Domain;
 using FutureNHS.Api.DataAccess.Models.Registration;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Domain.Request;
@@ -22,6 +23,9 @@ namespace FutureNHS.Api.Services
     public sealed class RegistrationService : IRegistrationService
     {
         private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
+        private const string ListDomainsRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
+        private const string AddDomainRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
+        private const string UpdateDomainRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
 
         private readonly string _fqdn;
         private readonly ILogger<AdminUserService> _logger;
@@ -239,13 +243,41 @@ namespace FutureNHS.Api.Services
             return invite;
         }
 
-        public async Task<Boolean> UpdateDomainAsync(string domain, CancellationToken cancellationToken)
+        public async Task DeleteDomainAsync(Guid userId, byte[] rowVersion, CancellationToken cancellationToken)
         {
-            return true;
+            // var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, UpdateDomainRole, cancellationToken);
+            //
+            // if (!userCanPerformAction)
+            // {
+            //     _logger.LogError($"Error: CreateDiscussionAsync - User:{0} does not have access to perform admin actions", userId);
+            //     throw new SecurityException($"Error: User does not have access");
+            // }
+            
+            try
+            {         
+                var domainDto = new DomainDto
+                {
+                    RowVersion = rowVersion
+                };
+                await _domainCommand.DeleteApprovedDomainAsync(domainDto, cancellationToken);
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, $"Error: Error updating domain");
+                throw;
+            }
         }
         
-        public async Task<Boolean> AddDomainAsync(RegisterDomainRequest domainRequest, CancellationToken cancellationToken)
+        public async Task AddDomainAsync(Guid userId, RegisterDomainRequest domainRequest, CancellationToken cancellationToken)
         {
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AddDomainRole, cancellationToken);
+
+            // if (!userCanPerformAction)
+            // {
+            //     _logger.LogError($"Error: CreateDiscussionAsync - User:{0} does not have access to perform admin actions", userId);
+            //     throw new SecurityException($"Error: User does not have access");
+            // }
+            
             try
             {
                 var domainDto = new DomainDto
@@ -254,13 +286,27 @@ namespace FutureNHS.Api.Services
                     EmailDomain = domainRequest.EmailDomain
                 };
                 await _domainCommand.CreateApprovedDomainAsync(domainDto, cancellationToken);
-                return true;
             }
             catch (DBConcurrencyException ex)
             {
                 _logger.LogError(ex, $"Error: Error creating new domain");
                 throw;
             }
+        }
+        
+        public async Task<(uint, IEnumerable<ApprovedDomain>)> GetDomainsAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            // var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ListDomainsRole, cancellationToken);
+            //
+            // if (!userCanPerformAction)
+            // {
+            //     _logger.LogError($"Error: CreateDiscussionAsync - User:{0} does not have access to perform admin actions", userId);
+            //     throw new SecurityException($"Error: User does not have access");
+            // }
+
+            return await _domainDataProvider.GetDomainsAsync(offset, limit, cancellationToken);
         }
 
         private string CreateRegistrationLink(Guid userInviteId)

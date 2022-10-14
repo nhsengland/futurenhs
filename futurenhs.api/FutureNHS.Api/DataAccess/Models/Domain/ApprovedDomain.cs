@@ -2,6 +2,8 @@ namespace FutureNHS.Api.DataAccess.Models.Domain
 {
     public record ApprovedDomain
     {
-        public byte[] Data { get; init; }
+        public Guid Id { get; init; }
+        
+        public string EmailDomain { get; init; }
     }
 }

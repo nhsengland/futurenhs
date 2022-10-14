@@ -56,4 +56,6 @@ export const enum services {
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
     GET_GROUP_INVITE = 'getGroupInvite',
     GET_INVITE_DETAILS = 'getInviteDetails',
+    GET_DOMAINS = 'getDomains',
+    ADD_DOMAIN = 'postDomain',
 }

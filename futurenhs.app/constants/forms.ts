@@ -1,4 +1,5 @@
 export const enum formTypes {
+    ADD_DOMAIN = 'd948e4aa-77c2-46ca-afbe-76f33c70ff54',
     CREATE_DISCUSSION = 'dd844b57-9c48-4ab8-9fe8-984f0c013702',
     CREATE_DISCUSSION_COMMENT = '98a61f47-3fe9-404c-9def-3992b127ac34',
     CREATE_DISCUSSION_COMMENT_REPLY = '9c49ffdc-23ea-4c98-bbd1-c5178c97df8f',
