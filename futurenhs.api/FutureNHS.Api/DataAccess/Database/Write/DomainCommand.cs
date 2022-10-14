@@ -60,8 +60,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 const string query =
 
                     @"  
-	                UPDATE   [dbo].[ApprovedDomain]
-                    SET [IsDeleted] = 1
+	                DELETE FROM   [dbo].[ApprovedDomain]
                     WHERE         
                          [EmailDomain] = @EmailDomain
                           AND [RowVersion] = @RowVersion
