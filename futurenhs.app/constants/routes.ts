@@ -22,7 +22,7 @@ export const enum api {
     USER_REGISTER = '/v1/registration/register',
     MAP_IDENTITY = '/v1/registration/identity',
     ALLOW_DOMAIN = '/v1/user/%USER_ID%/registratiot/domains',
-    DELETE_DOMAIN = '/v1/user/%USER_ID%/registration/domains/%DOMAIN%',
+    GET_DOMAIN = '/v1/user/%USER_ID%/registration/domains/%DOMAIN%',
 }
 
 export const enum queryParams {

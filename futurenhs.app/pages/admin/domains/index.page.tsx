@@ -54,7 +54,7 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
     actions,
     pagination,
     routes,
-    domainsList = [{ domain: 'test', dateAdded: 'testtt' }],
+    domainsList,
     user,
 }) => {
     const [dynamicDomainsList, setDomainsList] = useState(domainsList)
@@ -62,11 +62,11 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
     const notificationsContext: any = useContext(NotificationsContext)
 
     const { secondaryHeading, noDomains, addDomain } = contentText ?? {}
-    const handleDeleteDomain = async (domain: string) => {
+    const handleDeleteDomain = async (domain, domainId: string) => {
         debugger
         try {
             const res = await deleteDomain({
-                domain,
+                domainId,
                 user,
             })
             useNotification({
@@ -90,10 +90,6 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
             className: '',
         },
         {
-            children: 'Date added',
-            className: '',
-        },
-        {
             children: `Actions`,
             className: 'tablet:u-text-right',
         },
@@ -101,22 +97,16 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
 
     const rowList = useMemo(
         () =>
-            dynamicDomainsList.map(({ domain, dateAdded }) => {
+            dynamicDomainsList.map(({ id, domain }) => {
                 const generatedCellClasses = {
                     domain: classNames({
                         ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
                             true,
                     }),
-                    dateAdded: classNames({
-                        ['u-justify-between u-w-full tablet:u-w-1/4']: true,
-                    }),
                 }
 
                 const generatedHeaderCellClasses = {
                     domain: classNames({
-                        ['u-text-bold']: true,
-                    }),
-                    dateAdded: classNames({
                         ['u-text-bold']: true,
                     }),
                 }
@@ -128,16 +118,10 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
                         headerClassName: generatedHeaderCellClasses.domain,
                     },
                     {
-                        children: `${dateTime({ value: dateAdded })}`,
-                        className: generatedCellClasses.dateAdded,
-                        headerClassName: generatedHeaderCellClasses.dateAdded,
-                        shouldRenderCellHeader: true,
-                    },
-                    {
                         children: (
                             <ClickLink
                                 onClick={() => {
-                                    handleDeleteDomain(domain)
+                                    handleDeleteDomain(domain, id)
                                 }}
                                 text={{
                                     body: 'Delete',

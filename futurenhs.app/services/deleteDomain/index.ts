@@ -21,7 +21,7 @@ import { api } from '@constants/routes'
 declare type Options = {
     headers?: any
     user: User
-    domain: string
+    domainId: string
 }
 
 declare type Dependencies = {
@@ -30,7 +30,7 @@ declare type Dependencies = {
 }
 
 export const deleteDomain = async (
-    { headers, user, domain }: Options,
+    { headers, user, domainId }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<Domain>>> => {
     const serviceResponse: ServicePaginatedResponse<Array<Domain>> = {
@@ -40,18 +40,16 @@ export const deleteDomain = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    console.log(domain)
     const id: string = user.id
-    const domainPath = api.ALLOW_DOMAIN.replace('%USER_ID%', id)
+    const domainPath = api.GET_DOMAIN.replace('%USER_ID%', id).replace(
+        '%DOMAIN%',
+        domainId
+    )
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
-            method: requestMethods.POST,
-            headers: headers,
-            body: {
-                EmailDomain: domain,
-            },
+            method: requestMethods.DELETE,
         }),
         defaultTimeOutMillis
     )
@@ -75,7 +73,7 @@ export const deleteDomain = async (
 
     apiData.data?.forEach((datum) => {
         serviceResponse.data.push({
-            dateAdded: datum.id,
+            id: datum.id,
             domain: datum.emailDomain,
         })
     })

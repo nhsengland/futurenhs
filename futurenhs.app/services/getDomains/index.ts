@@ -71,7 +71,7 @@ export const getDomains = async (
 
     apiData.data?.forEach((datum) => {
         serviceResponse.data.push({
-            dateAdded: datum.id,
+            id: datum.id,
             domain: datum.emailDomain,
         })
     })

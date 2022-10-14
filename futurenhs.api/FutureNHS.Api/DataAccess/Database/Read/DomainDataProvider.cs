@@ -25,8 +25,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     CASE WHEN EXISTS 
                         (SELECT * 
                          FROM ApprovedDomain 
-                         WHERE EmailDomain = @EmailDomain
-                         AND IsDeleted = 0) 
+                         WHERE EmailDomain = @EmailDomain) 
                     THEN CAST(1 AS BIT)
                     ELSE CAST(0 AS BIT)
                     END";
@@ -55,8 +54,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(ApprovedDomain.EmailDomain)}]          = EmailDomain
 
  
-                    FROM        ApprovedDomain 
-                    WHERE       IsDeleted = 0
+                    FROM        ApprovedDomain
                     ORDER BY    EmailDomain desc
                     OFFSET      @Offset ROWS
                     FETCH NEXT  @Limit ROWS ONLY;
